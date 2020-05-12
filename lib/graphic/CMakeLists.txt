@@ -1,4 +1,4 @@
-project(lib LANGUAGES CXX)
+project(libGraphic LANGUAGES CXX)
 
 # SDL 2
 find_package(SDL2 REQUIRED)
