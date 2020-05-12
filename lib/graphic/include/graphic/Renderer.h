@@ -8,14 +8,18 @@ class Window;
 class Renderer
 {
 public:
-	Renderer(Window * win);
-	~Renderer();
+    Renderer(Window * win);
+    ~Renderer();
 
-	void Clear();
-	void Finalize();
+    void SetRenderColor(unsigned char r, unsigned char g,
+                        unsigned char b, unsigned char a);
+
+    void Clear();
+
+    void Finalize();
 
 private:
-	void * mRenderer = nullptr;
+    void * mRenderer = nullptr;
 };
 
 } // namespace graphic

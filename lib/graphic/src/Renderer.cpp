@@ -13,27 +13,32 @@ namespace lib
 namespace graphic
 {
 
-
 Renderer::Renderer(Window * win)
 {
-	assert(win);
+    assert(win);
 
-	mRenderer = SDL_CreateRenderer(static_cast<SDL_Window *>(win->mWin), -1, SDL_RENDERER_ACCELERATED);
+    mRenderer = SDL_CreateRenderer(static_cast<SDL_Window *>(win->mWin),
+                                   -1, SDL_RENDERER_ACCELERATED);
 }
 
 Renderer::~Renderer()
 {
-	SDL_DestroyRenderer(SYS_render);
+    SDL_DestroyRenderer(SYS_render);
 }
 
+void Renderer::SetRenderColor(unsigned char r, unsigned char g,
+                              unsigned char b, unsigned char a)
+{
+    SDL_SetRenderDrawColor(SYS_render, r, g, b, a);
+}
 void Renderer::Clear()
 {
-	SDL_RenderClear(SYS_render);
+    SDL_RenderClear(SYS_render);
 }
 
 void Renderer::Finalize()
 {
-	SDL_RenderPresent(SYS_render);
+    SDL_RenderPresent(SYS_render);
 }
 
 } // namespace graphic
