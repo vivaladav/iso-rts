@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#define SDL_win static_cast<SDL_Window *>(mWin)
+#define SYS_window static_cast<SDL_Window *>(mWin)
 
 namespace lib
 {
@@ -17,7 +17,7 @@ Window::Window(const char * title, int w, int h)
 
 Window::~Window()
 {
-	SDL_DestroyWindow(SDL_win);
+	SDL_DestroyWindow(SYS_window);
 }
 
 } // namespace graphic

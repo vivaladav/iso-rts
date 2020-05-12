@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <graphic/Renderer.h>
 #include <graphic/Window.h>
 
 #include <SDL2/SDL.h>
@@ -20,7 +21,8 @@ int main(int argc, char * argv[])
 		return -1;
 	}
 
-	lib::graphic::Window w(TITLE, 1600, 900);
+	lib::graphic::Window win(TITLE, 1600, 900);
+	lib::graphic::Renderer renderer(&win);
 
 	bool running = true;
 
@@ -38,8 +40,12 @@ int main(int argc, char * argv[])
 					running = false;
 			}
 		}
-	}
 
+		renderer.Clear();
+		renderer.Finalize();
+
+		SDL_Delay(16);
+	}
 
 	return 0;
 }
