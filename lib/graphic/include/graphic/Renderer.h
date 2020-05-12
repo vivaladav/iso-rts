@@ -1,3 +1,5 @@
+struct SDL_Renderer;
+
 namespace lib
 {
 namespace graphic
@@ -19,7 +21,7 @@ public:
     void Finalize();
 
 private:
-    void * mRenderer = nullptr;
+    SDL_Renderer * mRenderer = nullptr;
 };
 
 } // namespace graphic

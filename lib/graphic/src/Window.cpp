@@ -2,8 +2,6 @@
 
 #include <SDL2/SDL.h>
 
-#define SYS_window static_cast<SDL_Window *>(mWin)
-
 namespace lib
 {
 namespace graphic
@@ -17,7 +15,7 @@ Window::Window(const char * title, int w, int h)
 
 Window::~Window()
 {
-    SDL_DestroyWindow(SYS_window);
+    SDL_DestroyWindow(mWin);
 }
 
 } // namespace graphic

@@ -6,8 +6,6 @@
 
 #include <cassert>
 
-#define SYS_render static_cast<SDL_Renderer *>(mRenderer)
-
 namespace lib
 {
 namespace graphic
@@ -23,22 +21,22 @@ Renderer::Renderer(Window * win)
 
 Renderer::~Renderer()
 {
-    SDL_DestroyRenderer(SYS_render);
+    SDL_DestroyRenderer(mRenderer);
 }
 
 void Renderer::SetRenderColor(unsigned char r, unsigned char g,
                               unsigned char b, unsigned char a)
 {
-    SDL_SetRenderDrawColor(SYS_render, r, g, b, a);
+    SDL_SetRenderDrawColor(mRenderer, r, g, b, a);
 }
 void Renderer::Clear()
 {
-    SDL_RenderClear(SYS_render);
+    SDL_RenderClear(mRenderer);
 }
 
 void Renderer::Finalize()
 {
-    SDL_RenderPresent(SYS_render);
+    SDL_RenderPresent(mRenderer);
 }
 
 } // namespace graphic

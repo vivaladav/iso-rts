@@ -1,3 +1,5 @@
+struct SDL_Window;
+
 namespace lib
 {
 namespace graphic
@@ -12,7 +14,7 @@ public:
     ~Window();
 
 private:
-    void * mWin = nullptr;
+    SDL_Window * mWin = nullptr;
 
     // Renderer needs to access the low level window
     friend class Renderer;
