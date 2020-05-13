@@ -50,5 +50,10 @@ void Application::Run()
     }
 }
 
+void Application::Exit()
+{
+    mRunning = false;
+}
+
 } // namespace core
 } // namespace lib

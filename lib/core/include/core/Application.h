@@ -13,6 +13,8 @@ public:
 
     void Run();
 
+    void Exit();
+
 private:
     virtual void Update() = 0;
 
