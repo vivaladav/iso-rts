@@ -1,3 +1,5 @@
+#pragma once
+
 #include <core/Application.h>
 
 namespace lib

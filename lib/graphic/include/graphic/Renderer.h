@@ -1,3 +1,5 @@
+#pragma once
+
 struct SDL_Renderer;
 
 namespace lib
