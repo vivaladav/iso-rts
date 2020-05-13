@@ -1,9 +1,12 @@
 #include "core/Application.h"
 
-#include <cstdlib>
-#include <iostream>
+#include "event/DummyListener.h"
+#include "event/EventDispatcher.h"
 
 #include <SDL2/SDL.h>
+
+#include <cstdlib>
+#include <iostream>
 
 namespace lib
 {
@@ -19,10 +22,23 @@ Application::Application(int argc, char * argv[])
         std::cerr << "SDL init failed:" << SDL_GetError() << std::endl;
         exit(-1);
     }
+
+    mDefaultListener = new DummyListener(this);
+    mEventDispatcher = new EventDispatcher(mDefaultListener);
 }
 
 Application::~Application()
 {
+    delete mEventDispatcher;
+    delete mDefaultListener;
+}
+
+void Application::SetEventListener(EventListener * listener)
+{
+    if(listener)
+        mEventDispatcher->SetListener(listener);
+    else
+        mEventDispatcher->SetListener(mDefaultListener);
 }
 
 void Application::Run()
@@ -31,18 +47,7 @@ void Application::Run()
 
     while(mRunning)
     {
-        SDL_Event event;
-
-        while(SDL_PollEvent(&event))
-        {
-            if(event.type == SDL_QUIT)
-                mRunning = false;
-            else if(event.type == SDL_KEYUP)
-            {
-                if(SDLK_ESCAPE == event.key.keysym.sym)
-                    mRunning = false;
-            }
-        }
+        mEventDispatcher->Update();
 
         Update();
 
