@@ -45,7 +45,6 @@ void EventDispatcher::Update()
             break;
 
             case SDL_KEYDOWN:
-
             break;
 
             case SDL_KEYUP:

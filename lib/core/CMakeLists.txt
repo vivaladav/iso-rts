@@ -10,6 +10,7 @@ add_library(core
             src/event/DummyListener.cpp
             src/event/EventDispatcher.cpp
             src/event/EventListener.cpp
+            src/event/KeyboardEvent.cpp
             )
 
 target_include_directories(core
