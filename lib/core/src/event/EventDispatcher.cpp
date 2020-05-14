@@ -6,6 +6,8 @@
 
 #include <cassert>
 
+#include<iostream>
+
 namespace lib
 {
 namespace core
@@ -29,16 +31,35 @@ void EventDispatcher::Update()
 
     while(SDL_PollEvent(&event))
     {
-        if(event.type == SDL_QUIT)
-            mActiveListener->OnApplicationQuit();
-        else if(event.type == SDL_KEYUP)
+        switch(event.type)
         {
-//            if(SDLK_ESCAPE == event.key.keysym.sym)
-//                mRunning = false;
+            case SDL_MOUSEMOTION:
+            break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                std::cout << "SDL_MOUSEBUTTONDOWN" << std::endl;
+            break;
+
+            case SDL_MOUSEBUTTONUP:
+                std::cout << "SDL_MOUSEBUTTONUP" << std::endl;
+            break;
+
+            case SDL_KEYDOWN:
+
+            break;
+
+            case SDL_KEYUP:
+            break;
+
+            case SDL_QUIT:
+                mActiveListener->OnApplicationQuit();
+            break;
+
+            default:
+            break;
         }
     }
 }
-
 
 } // namespace core
 } // namespace lib
