@@ -43,14 +43,14 @@ void EventDispatcher::Update()
 
             case SDL_KEYDOWN:
             {
-                KeyboardEvent e(KeyboardEvent::DOWN, event.key.keysym.sym);
+                KeyboardEvent e(event.key.keysym.sym);
                 mActiveListener->OnKeyDown(e);
             }
             break;
 
             case SDL_KEYUP:
             {
-                KeyboardEvent e(KeyboardEvent::UP, event.key.keysym.sym);
+                KeyboardEvent e(event.key.keysym.sym);
                 mActiveListener->OnKeyUp(e);
             }
             break;

@@ -12,16 +12,16 @@ class EventDispatcher;
 class KeyboardEvent : public Event
 {
 public:
-    enum EventType : int
-    {
-        DOWN,
-        UP
-    };
+    int GetKey() const;
 
-// == KEYS ==
+private:
+    KeyboardEvent(int  key);
+
+public:
+    // == KEYS ==
     static const int KEY_UNKNOWN;
 
-// -- NUMBERS --
+    // -- NUMBERS --
     static const int KEY_0;
     static const int KEY_1;
     static const int KEY_2;
@@ -33,7 +33,7 @@ public:
     static const int KEY_8;
     static const int KEY_9;
 
-// -- LETTERS --
+    // -- LETTERS --
     static const int KEY_A;
     static const int KEY_B;
     static const int KEY_C;
@@ -61,7 +61,7 @@ public:
     static const int KEY_Y;
     static const int KEY_Z;
 
-// - KEYPAD --
+    // -- KEYPAD --
     static const int KEY_KP_0;
     static const int KEY_KP_00;
     static const int KEY_KP_000;
@@ -124,7 +124,7 @@ public:
     static const int KEY_KP_VERTICALBAR;
     static const int KEY_KP_XOR;
 
-// -- F-KEYS --
+    // -- F-KEYS --
     static const int KEY_F1;
     static const int KEY_F2;
     static const int KEY_F3;
@@ -149,7 +149,8 @@ public:
     static const int KEY_F22;
     static const int KEY_F23;
     static const int KEY_F24;
-// -- SYMBOLS --
+
+    // -- SYMBOLS --
     static const int KEY_AMPERSAND;
     static const int KEY_ASTERISK;
     static const int KEY_AT;
@@ -179,7 +180,7 @@ public:
     static const int KEY_SLASH;
     static const int KEY_UNDERSCORE;
 
-// -- FORMATTING --
+    // -- FORMATTING --
     static const int KEY_BACKSPACE;
     static const int KEY_DELETE;
     static const int KEY_ESCAPE;
@@ -187,7 +188,7 @@ public:
     static const int KEY_SPACE;
     static const int KEY_TAB;
 
-// -- MODIFIERS --
+    // -- MODIFIERS --
     static const int KEY_CAPSLOCK;
     static const int KEY_LALT;
     static const int KEY_LCTRL;
@@ -200,7 +201,7 @@ public:
     static const int KEY_RGUI;
     static const int KEY_RSHIFT;
 
-// -- APPLICATION CONTROLS --
+    // -- APPLICATION CONTROLS --
     static const int KEY_AC_BACK;
     static const int KEY_AC_BOOKMARKS;
     static const int KEY_AC_FORWARD;
@@ -209,7 +210,7 @@ public:
     static const int KEY_AC_SEARCH;
     static const int KEY_AC_STOP;
 
-// -- NAVIGATION --
+    // -- NAVIGATION --
     static const int KEY_DOWN;
     static const int KEY_LEFT;
     static const int KEY_PAGEDOWN;
@@ -217,7 +218,7 @@ public:
     static const int KEY_RIGHT;
     static const int KEY_UP;
 
-// -- AUDIO --
+    // -- AUDIO --
     static const int KEY_AUDIOMUTE;
     static const int KEY_AUDIONEXT;
     static const int KEY_AUDIOPLAY;
@@ -228,7 +229,7 @@ public:
     static const int KEY_VOLUMEDOWN;
     static const int KEY_VOLUMEUP;
 
-// -- OTHERS --
+    // -- OTHERS --
     static const int KEY_AGAIN;
     static const int KEY_ALTERASE;
     static const int KEY_APPLICATION;
@@ -278,7 +279,7 @@ public:
     static const int KEY_UNDO;
     static const int KEY_WWW;
 
-// == MODIFIERS FLAGS ==
+    // == MODIFIERS FLAGS ==
     static const int MOD_ALT;           // LALT or RALT
     static const int MOD_CAPSLOCK;
     static const int MOD_CTRL;          // LCTRL or RCTRL
@@ -296,16 +297,7 @@ public:
     static const int MOD_RSHIFT;
     static const int MOD_SHIFT;         // LSHIFT or RSHIFT
 
-public:
-    int GetType() const;
-
-    int GetKey() const;
-
 private:
-    KeyboardEvent(int type, int  key);
-
-private:
-    int mType;
     int mKey;
 
     // only EventDispatcher can create an event
@@ -313,12 +305,10 @@ private:
 };
 
 
-inline KeyboardEvent::KeyboardEvent(int type, int  key)
-    : mType(type), mKey(key)
+inline KeyboardEvent::KeyboardEvent(int  key)
+    : mKey(key)
 {
 }
-
-inline int KeyboardEvent::GetType() const { return mType; }
 
 inline int KeyboardEvent::GetKey() const { return mKey; }
 
