@@ -9,12 +9,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(lib)
 
 # main executable
-add_executable(game
-               src/Game.cpp
-               src/main.cpp
-              )
+add_executable(
+    game
+    src/Game.cpp
+    src/main.cpp
+)
 
-target_link_libraries(game
-                      PRIVATE core
-                      PRIVATE graphic
-                     )
+target_link_libraries(
+    game
+    PRIVATE core
+    PRIVATE graphic
+)
