@@ -7,10 +7,17 @@ namespace lib
 namespace core
 {
 
+class EventDispatcher;
+
 class KeyboardEvent : public Event
 {
-
 public:
+    enum EventType : int
+    {
+        DOWN,
+        UP
+    };
+
 // == KEYS ==
     static const int KEY_UNKNOWN;
 
@@ -288,7 +295,32 @@ public:
     static const int MOD_RGUI;
     static const int MOD_RSHIFT;
     static const int MOD_SHIFT;         // LSHIFT or RSHIFT
+
+public:
+    int GetType() const;
+
+    int GetKey() const;
+
+private:
+    KeyboardEvent(int type, int  key);
+
+private:
+    int mType;
+    int mKey;
+
+    // only EventDispatcher can create an event
+    friend class EventDispatcher;
 };
+
+
+inline KeyboardEvent::KeyboardEvent(int type, int  key)
+    : mType(type), mKey(key)
+{
+}
+
+inline int KeyboardEvent::GetType() const { return mType; }
+
+inline int KeyboardEvent::GetKey() const { return mKey; }
 
 } // namespace core
 } // namespace lib

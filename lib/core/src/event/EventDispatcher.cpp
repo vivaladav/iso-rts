@@ -1,12 +1,11 @@
 #include "EventDispatcher.h"
 
 #include "core/event/EventListener.h"
+#include "core/event/KeyboardEvent.h"
 
 #include <SDL2/SDL.h>
 
 #include <cassert>
-
-#include<iostream>
 
 namespace lib
 {
@@ -37,17 +36,23 @@ void EventDispatcher::Update()
             break;
 
             case SDL_MOUSEBUTTONDOWN:
-                std::cout << "SDL_MOUSEBUTTONDOWN" << std::endl;
             break;
 
             case SDL_MOUSEBUTTONUP:
-                std::cout << "SDL_MOUSEBUTTONUP" << std::endl;
             break;
 
             case SDL_KEYDOWN:
+            {
+                KeyboardEvent e(KeyboardEvent::DOWN, event.key.keysym.sym);
+                mActiveListener->OnKeyDown(e);
+            }
             break;
 
             case SDL_KEYUP:
+            {
+                KeyboardEvent e(KeyboardEvent::UP, event.key.keysym.sym);
+                mActiveListener->OnKeyUp(e);
+            }
             break;
 
             case SDL_QUIT:

@@ -7,7 +7,8 @@ namespace core
 
 class Event
 {
-
+public:
+    virtual ~Event();
 };
 
 } // namespace core

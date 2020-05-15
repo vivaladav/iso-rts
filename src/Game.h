@@ -4,6 +4,11 @@
 
 namespace lib
 {
+    namespace core
+    {
+        class EventListener;
+    }
+
     namespace graphic
     {
         class Renderer;
@@ -21,6 +26,8 @@ private:
     void Update() override;
 
 private:
+    lib::core::EventListener * mListener = nullptr;
+
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
 };

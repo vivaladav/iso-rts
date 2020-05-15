@@ -6,6 +6,7 @@ namespace core
 {
 
 class EventDispatcher;
+class KeyboardEvent;
 
 class EventListener
 {
@@ -17,8 +18,8 @@ private:
     virtual void OnApplicationQuit();
 
     // -- keyboard events --
-    virtual void OnKeyDown();
-    virtual void OnKeyUp();
+    virtual void OnKeyDown(const KeyboardEvent & event);
+    virtual void OnKeyUp(const KeyboardEvent & event);
 
     // -- mouse event --
     virtual void OnMouseButtonDown();

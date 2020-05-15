@@ -9,8 +9,8 @@ EventListener::~EventListener() { }
 
 void EventListener::OnApplicationQuit() { }
 
-void EventListener::OnKeyDown() { }
-void EventListener::OnKeyUp() { }
+void EventListener::OnKeyDown(const KeyboardEvent &) { }
+void EventListener::OnKeyUp(const KeyboardEvent &) { }
 
 void EventListener::OnMouseButtonDown() { }
 void EventListener::OnMouseButtonUp() { }
