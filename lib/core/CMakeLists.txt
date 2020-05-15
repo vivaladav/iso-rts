@@ -8,6 +8,7 @@ add_library(core
             src/Application.cpp
 
             src/event/DummyListener.cpp
+            src/event/Event.cpp
             src/event/EventDispatcher.cpp
             src/event/EventListener.cpp
             src/event/KeyboardEvent.cpp

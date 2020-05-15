@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Event.h"
+
 namespace lib
 {
 namespace core
 {
 
-class KeyboardEvent
+class KeyboardEvent : public Event
 {
 
 public:
