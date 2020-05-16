@@ -15,6 +15,8 @@ namespace core
 
 Application::Application(int argc, char * argv[])
 {
+    ProcessArguments(argc, argv);
+
     atexit(SDL_Quit);
 
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
@@ -31,6 +33,10 @@ Application::~Application()
 {
     delete mEventDispatcher;
     delete mDefaultListener;
+}
+
+void Application::ProcessArguments(int, char * [])
+{
 }
 
 void Application::SetEventListener(EventListener * listener)

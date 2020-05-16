@@ -21,6 +21,8 @@ public:
     void Exit();
 
 private:
+    virtual void ProcessArguments(int argc, char * argv[]);
+
     virtual void Update() = 0;
 
 private:
