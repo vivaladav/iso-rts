@@ -11,6 +11,9 @@ add_library(
     src/event/EventDispatcher.cpp
     src/event/EventListener.cpp
     src/event/KeyboardEvent.cpp
+    src/event/MouseButtonEvent.cpp
+    src/event/MouseEvent.cpp
+    src/event/MouseMotionEvent.cpp
 )
 
 target_include_directories(
