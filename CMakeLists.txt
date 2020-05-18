@@ -20,3 +20,7 @@ target_link_libraries(
     PRIVATE core
     PRIVATE graphic
 )
+
+# copy data to build directory when CMake is executed
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/)
+file(COPY ${CMAKE_SOURCE_DIR}/data/ DESTINATION ${CMAKE_BINARY_DIR}/data/)
