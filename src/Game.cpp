@@ -4,6 +4,7 @@
 #include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <core/event/MouseMotionEvent.h>
+#include <graphic/Image.h>
 #include <graphic/Renderer.h>
 #include <graphic/Window.h>
 
@@ -45,22 +46,28 @@ Game::Game(int argc, char * argv[])
     mListener = new TestListener(this);
     SetEventListener(mListener);
 
-    mWin = new lib::graphic::Window("Iso RTS - v. 0.0.1", 1600, 900);
+    mWin = lib::graphic::Window::Create("Iso RTS - v. 0.0.1", 960, 540);
+    mRenderer = lib::graphic::Renderer::Create(mWin);
 
-    mRenderer = new lib::graphic::Renderer(mWin);
+    mImg = new lib::graphic::Image("data/img/tile01.png");
 }
 
 Game::~Game()
 {
     delete mListener;
-    delete mRenderer;
-    delete mWin;
+
+    delete mImg;
+
+    lib::graphic::Renderer::Destroy();
+    lib::graphic::Window::Destroy();
 }
 
 void Game::Update()
 {
     mRenderer->SetRenderColor(0xEE, 0xEE, 0xEE, 0xFF);
     mRenderer->Clear();
+
+    mImg->Render();
 
     mRenderer->Finalize();
 }

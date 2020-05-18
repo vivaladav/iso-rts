@@ -11,6 +11,7 @@ namespace lib
 
     namespace graphic
     {
+        class Image;
         class Renderer;
         class Window;
     }
@@ -30,4 +31,6 @@ private:
 
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
+
+    lib::graphic::Image * mImg = nullptr;
 };

@@ -12,8 +12,9 @@ class Window;
 class Renderer
 {
 public:
-    Renderer(Window * win);
-    ~Renderer();
+    static Renderer * Create(Window * win);
+    static Renderer * Instance();
+    static void Destroy();
 
     void SetRenderColor(unsigned char r, unsigned char g,
                         unsigned char b, unsigned char a);
@@ -22,9 +23,22 @@ public:
 
     void Finalize();
 
+    void RenderTexture();
+
 private:
-    SDL_Renderer * mRenderer = nullptr;
+    Renderer(Window * win);
+    ~Renderer();
+
+private:
+    static Renderer * mInstance;
+
+    SDL_Renderer * mSysRenderer = nullptr;
+
+    friend class Image;
 };
+
+
+inline Renderer * Renderer::Instance() { return mInstance; }
 
 } // namespace graphic
 } // namespace lib

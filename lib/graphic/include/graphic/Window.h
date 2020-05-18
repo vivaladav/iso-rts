@@ -12,15 +12,24 @@ class Renderer;
 class Window
 {
 public:
+    static Window * Create(const char * title, int w, int h);
+    static Window * Instance();
+    static void Destroy();
+
+private:
     Window(const char * title, int w, int h);
     ~Window();
 
 private:
-    SDL_Window * mWin = nullptr;
+    static Window * mInstance;
+
+    SDL_Window * mSysWin = nullptr;
 
     // Renderer needs to access the low level window
     friend class Renderer;
 };
+
+inline Window * Window::Instance() { return mInstance; }
 
 } // namespace graphic
 } // namespace lib
