@@ -63,15 +63,18 @@ void Image::ScaleH(float s) { mRect->h *= s; }
 
 void Image::SetFlip(int flip)
 {
-    if(flip >= SDL_FLIP_NONE && flip <= SDL_FLIP_VERTICAL)
+    if(flip > SDL_FLIP_NONE && flip <= SDL_FLIP_VERTICAL)
         mFlip = flip;
+    else
+        mFlip = SDL_FLIP_NONE;
 }
 
 void Image::Render()
 {
     SDL_Renderer * r = Renderer::Instance()->mSysRenderer;
+    const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(mFlip);
 
-    SDL_RenderCopyEx(r, mTex, nullptr, mRect, mRot, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(r, mTex, nullptr, mRect, mRot, nullptr, flip);
 }
 
 } // namespace graphic
