@@ -25,5 +25,4 @@ target_include_directories(
 target_link_libraries(
     core
     PRIVATE SDL2
-    PRIVATE -lSDL2_image
 )

@@ -18,5 +18,5 @@ target_include_directories(
 target_link_libraries(
     graphic
     PRIVATE SDL2
-    PRIVATE -lSDL2_image
+    PRIVATE SDL2_image
 )

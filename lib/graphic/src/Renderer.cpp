@@ -3,8 +3,10 @@
 #include "graphic/Window.h"
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <cassert>
+#include <iostream>
 
 namespace lib
 {
@@ -33,6 +35,15 @@ Renderer::Renderer(Window * win)
 {
     SDL_Window * w = static_cast<SDL_Window *>(win->mSysWin);
     mSysRenderer = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
+
+    // -- init SDL_image --
+    const int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
+
+    if(IMG_Init(imgFlags) != imgFlags)
+    {
+        std::cerr << "SDL_image init failed: " << IMG_GetError() << std::endl;
+        exit(-1);
+    }
 }
 
 Renderer::~Renderer()

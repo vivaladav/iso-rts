@@ -4,7 +4,6 @@
 #include "event/EventDispatcher.h"
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 
 #include <cstdlib>
 #include <iostream>
@@ -22,14 +21,7 @@ Application::Application(int argc, char * argv[])
 
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
     {
-        std::cerr << "SDL init failed:" << SDL_GetError() << std::endl;
-        exit(-1);
-    }
-
-    const int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
-    if(IMG_Init(imgFlags) != imgFlags)
-    {
-        std::cerr << "SDL_image init failed:" << IMG_GetError() << std::endl;
+        std::cerr << "SDL init failed: " << SDL_GetError() << std::endl;
         exit(-1);
     }
 
