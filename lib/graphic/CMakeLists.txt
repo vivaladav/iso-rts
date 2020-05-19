@@ -7,6 +7,7 @@ add_library(
     graphic
     src/Image.cpp
     src/Renderer.cpp
+    src/Texture.cpp
     src/Window.cpp
 )
 

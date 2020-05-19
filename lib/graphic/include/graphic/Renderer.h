@@ -34,7 +34,9 @@ private:
 
     SDL_Renderer * mSysRenderer = nullptr;
 
+    // classess that need to access the low level system renderer
     friend class Image;
+    friend class Texture;
 };
 
 

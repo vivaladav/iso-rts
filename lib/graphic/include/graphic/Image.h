@@ -1,18 +1,18 @@
 #pragma once
 
 struct SDL_Rect;
-struct SDL_Texture;
 
 namespace lib
 {
 namespace graphic
 {
 
+class Texture;
+
 class Image
 {
 public:
     Image(const char * file);
-
     ~Image();
 
     void SetPosition(int x, int y);
@@ -35,7 +35,7 @@ public:
     static const int FLIP_VERT;
 
 private:
-    SDL_Texture * mTex = nullptr;
+    Texture * mTex = nullptr;
 
     SDL_Rect * mRect = nullptr;
     double mRot = 0;
