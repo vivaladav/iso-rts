@@ -32,5 +32,7 @@ private:
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
 
-    lib::graphic::Image * mImg = nullptr;
+    lib::graphic::Image * mImg1 = nullptr;
+    lib::graphic::Image * mImg2 = nullptr;
+    lib::graphic::Image * mImg3 = nullptr;
 };

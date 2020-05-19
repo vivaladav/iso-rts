@@ -36,6 +36,26 @@ Image::~Image()
     delete mRect;
 }
 
+void Image::SetPosition(int x, int y)
+{
+    mRect->x = x;
+    mRect->y = y;
+}
+
+void Image::SetX(int x) { mRect->x = x; }
+
+void Image::SetY(int y) { mRect->y = y; }
+
+void Image::Scale(float s)
+{
+    mRect->w *= s;
+    mRect->h *= s;
+}
+
+void Image::ScaleW(float s) { mRect->w *= s; }
+
+void Image::ScaleH(float s) { mRect->h *= s; }
+
 void Image::Render()
 {
     SDL_Renderer * r = Renderer::Instance()->mSysRenderer;

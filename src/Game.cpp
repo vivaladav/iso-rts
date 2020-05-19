@@ -49,14 +49,24 @@ Game::Game(int argc, char * argv[])
     mWin = lib::graphic::Window::Create("Iso RTS - v. 0.0.1", 960, 540);
     mRenderer = lib::graphic::Renderer::Create(mWin);
 
-    mImg = new lib::graphic::Image("data/img/tile01.png");
+    // -- Image testing --
+    mImg1 = new lib::graphic::Image("data/img/tile01.png");
+
+    mImg2 = new lib::graphic::Image("data/img/tile01.png");
+    mImg2->SetPosition(128, 64);
+
+    mImg3 = new lib::graphic::Image("data/img/tile01.png");
+    mImg3->SetPosition(256, 128);
+    mImg3->Scale(0.5f);
 }
 
 Game::~Game()
 {
     delete mListener;
 
-    delete mImg;
+    delete mImg1;
+    delete mImg2;
+    delete mImg3;
 
     lib::graphic::Renderer::Destroy();
     lib::graphic::Window::Destroy();
@@ -67,7 +77,9 @@ void Game::Update()
     mRenderer->SetRenderColor(0xEE, 0xEE, 0xEE, 0xFF);
     mRenderer->Clear();
 
-    mImg->Render();
+    mImg1->Render();
+    mImg2->Render();
+    mImg3->Render();
 
     mRenderer->Finalize();
 }
