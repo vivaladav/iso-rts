@@ -57,7 +57,8 @@ Game::Game(int argc, char * argv[])
 
     mImg3 = new lib::graphic::Image("data/img/tile01.png");
     mImg3->SetPosition(256, 128);
-    mImg3->Scale(0.5f);
+    mImg3->ScaleH(2.f);
+    mImg3->SetRotation(45.f);
 }
 
 Game::~Game()

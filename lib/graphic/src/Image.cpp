@@ -13,7 +13,12 @@ namespace lib
 namespace graphic
 {
 
+const int Image::FLIP_NO    = SDL_FLIP_NONE;
+const int Image::FLIP_HORIZ = SDL_FLIP_HORIZONTAL;
+const int Image::FLIP_VERT  = SDL_FLIP_VERTICAL;
+
 Image::Image(const char * file)
+    : mFlip(FLIP_NO)
 {
     assert(file);
 
@@ -56,11 +61,17 @@ void Image::ScaleW(float s) { mRect->w *= s; }
 
 void Image::ScaleH(float s) { mRect->h *= s; }
 
+void Image::SetFlip(int flip)
+{
+    if(flip >= SDL_FLIP_NONE && flip <= SDL_FLIP_VERTICAL)
+        mFlip = flip;
+}
+
 void Image::Render()
 {
     SDL_Renderer * r = Renderer::Instance()->mSysRenderer;
 
-    SDL_RenderCopyEx(r, mTex, nullptr, mRect, 0, nullptr, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(r, mTex, nullptr, mRect, mRot, nullptr, SDL_FLIP_NONE);
 }
 
 } // namespace graphic
