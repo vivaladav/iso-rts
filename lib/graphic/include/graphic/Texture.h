@@ -31,6 +31,5 @@ private:
 inline int Texture::GetWidth() const { return mW; }
 inline int Texture::GetHeight() const { return mH; }
 
-
 } // namespace graphic
 } // namespace lib

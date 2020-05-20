@@ -8,6 +8,7 @@ add_library(
     src/Image.cpp
     src/Renderer.cpp
     src/Texture.cpp
+    src/TextureManager.cpp
     src/Window.cpp
 )
 

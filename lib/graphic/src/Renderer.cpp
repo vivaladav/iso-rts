@@ -1,5 +1,6 @@
 #include "graphic/Renderer.h"
 
+#include "graphic/TextureManager.h"
 #include "graphic/Window.h"
 
 #include <SDL2/SDL.h>
@@ -44,10 +45,16 @@ Renderer::Renderer(Window * win)
         std::cerr << "SDL_image init failed: " << IMG_GetError() << std::endl;
         exit(-1);
     }
+
+    // -- init TextureManager --
+    // TODO decide if keeping this here or move it to a ModuleGraphic
+    TextureManager::Create();
 }
 
 Renderer::~Renderer()
 {
+    TextureManager::Destroy();
+
     SDL_DestroyRenderer(mSysRenderer);
 }
 

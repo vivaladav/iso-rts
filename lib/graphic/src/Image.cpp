@@ -2,6 +2,7 @@
 
 #include "graphic/Renderer.h"
 #include "graphic/Texture.h"
+#include "graphic/TextureManager.h"
 
 #include <SDL2/SDL.h>
 
@@ -21,15 +22,13 @@ Image::Image(const char * file)
 {
     assert(file);
 
-    mTex = new Texture(file);
+    mTex = TextureManager::Instance()->GetTexture(file);
 
-    mRect = new SDL_Rect{0, 0, mTex->GetWidth(), mTex->GetHeight() };
+    mRect = new SDL_Rect{ 0, 0, mTex->GetWidth(), mTex->GetHeight() };
 }
 
 Image::~Image()
 {
-    delete mTex;
-
     delete mRect;
 }
 
