@@ -15,12 +15,13 @@ public:
     StateManager();
     ~StateManager();
 
-    bool AddState(int stateId, State * state);
+    bool AddState(State * state);
     State * RemoveState(int stateId);
     void RemoveAndDestroyState(int stateId);
     bool RequestNextActiveState(int stateId);
     void UpdateActive();
 
+    bool SetActiveState(int stateId);
     State * GetActiveState() const;
 
 private:

@@ -13,12 +13,20 @@ add_executable(
     game
     src/Game.cpp
     src/main.cpp
+    src/Screens/Screen.cpp
+    src/Screens/ScreenTest.cpp
+)
+
+target_include_directories(
+    game
+    PRIVATE src/
 )
 
 target_link_libraries(
     game
     PRIVATE core
     PRIVATE graphic
+    PRIVATE utilities
 )
 
 # copy data to build directory when CMake is executed

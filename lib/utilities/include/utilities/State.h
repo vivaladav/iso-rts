@@ -35,7 +35,7 @@ inline State::~State() { }
 
 inline unsigned int State::GetStateId() const { return mId; }
 
-StateManager * State::GetManager() const { return mManager; }
+inline StateManager * State::GetManager() const { return mManager; }
 
 } // namespace utilities
 } // namespace lib

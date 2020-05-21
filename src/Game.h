@@ -11,14 +11,21 @@ namespace lib
 
     namespace graphic
     {
-        class Image;
         class Renderer;
         class Window;
     }
+
+    namespace utilities { class StateManager; }
 }
 
 class Game : public lib::core::Application
 {
+public:
+    enum Screens : int
+    {
+        TEST = 1
+    };
+
 public:
     Game(int argc, char * argv[]);
     ~Game();
@@ -27,12 +34,8 @@ private:
     void Update() override;
 
 private:
-    lib::core::EventListener * mListener = nullptr;
-
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
 
-    lib::graphic::Image * mImg1 = nullptr;
-    lib::graphic::Image * mImg2 = nullptr;
-    lib::graphic::Image * mImg3 = nullptr;
+    lib::utilities::StateManager * mStateMan = nullptr;
 };

@@ -9,10 +9,7 @@ namespace lib
 namespace utilities
 {
 
-State dummy(0xFFFFFFFF);
-
 StateManager::StateManager()
-    : mActive(&dummy)
 {
 }
 
@@ -24,11 +21,13 @@ StateManager::~StateManager()
         delete s.second;
 }
 
-bool StateManager::AddState(int stateId, State * state)
+bool StateManager::AddState(State * state)
 {
     // no state
     if(!state)
         return false;
+
+    const unsigned int stateId = state->GetStateId();
 
     auto res = mStates.find(stateId);
 
@@ -53,10 +52,6 @@ State * StateManager::RemoveState(int stateId)
     if(res != mStates.end())
     {
         mStates.erase(res);
-
-        // if state is active replace it with the dummy one
-        if(res->second == mActive)
-            mActive = &dummy;
 
         return res->second;
     }
@@ -93,12 +88,23 @@ void StateManager::UpdateActive()
     if(!mNext)
         return;
 
-    mActive->OnInactive();
+    if(mActive)
+        mActive->OnInactive();
 
     mActive = mNext;
     mNext = nullptr;
 
     mActive->OnActive();
+}
+
+bool StateManager::SetActiveState(int stateId)
+{
+   bool res = RequestNextActiveState(stateId);
+
+   if(res)
+       UpdateActive();
+
+   return res;
 }
 
 } // namespace utilities
