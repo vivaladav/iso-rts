@@ -19,7 +19,7 @@ public:
     virtual void OnInactive();
 
 protected:
-    StateManager * GetManager() const;
+    StateManager * GetStateManager() const;
 
 private:
     StateManager * mManager = nullptr;
@@ -35,7 +35,7 @@ inline State::~State() { }
 
 inline unsigned int State::GetStateId() const { return mId; }
 
-inline StateManager * State::GetManager() const { return mManager; }
+inline StateManager * State::GetStateManager() const { return mManager; }
 
 } // namespace utilities
 } // namespace lib

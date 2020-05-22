@@ -6,6 +6,7 @@
 #include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Image.h>
+#include <utilities/StateManager.h>
 
 #include <iostream>
 
@@ -45,8 +46,14 @@ void ScreenTest::OnApplicationQuit() { mGame->Exit(); }
 
 void ScreenTest::OnKeyUp(const lib::core::KeyboardEvent & event)
 {
-    if(event.GetKey() == lib::core::KeyboardEvent::KEY_ESC)
+    using namespace lib::core;
+
+    const int key = event.GetKey();
+
+    if(key == KeyboardEvent::KEY_ESC)
         mGame->Exit();
+    else if(key == KeyboardEvent::KEY_M)
+        GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
 }
 
 void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
