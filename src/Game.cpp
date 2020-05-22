@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include "Screens/ScreenIds.h"
+#include "Screens/ScreenMainMenu.h"
 #include "Screens/ScreenTest.h"
 
 #include <graphic/Image.h>
@@ -8,6 +10,9 @@
 #include <utilities/StateManager.h>
 
 #include <iostream>
+
+namespace game
+{
 
 Game::Game(int argc, char * argv[])
     : lib::core::Application(argc, argv)
@@ -18,10 +23,10 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new lib::utilities::StateManager;
 
-    Screen * s = new ScreenTest(Screens::TEST, this);
-    mStateMan->AddState(s);
+    mStateMan->AddState(new ScreenTest(this));
+    mStateMan->AddState(new ScreenMainMenu(this));
 
-    mStateMan->SetActiveState(Screens::TEST);
+    mStateMan->RequestNextActiveState(ScreenId::MAIN_MENU);
 }
 
 Game::~Game()
@@ -37,7 +42,10 @@ void Game::Update()
     mRenderer->SetRenderColor(0xEE, 0xEE, 0xEE, 0xFF);
     mRenderer->Clear();
 
+    mStateMan->UpdateActive();
     static_cast<Screen *>(mStateMan->GetActiveState())->Update();
 
     mRenderer->Finalize();
 }
+
+} // namespace game

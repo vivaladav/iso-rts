@@ -85,6 +85,7 @@ bool StateManager::RequestNextActiveState(int stateId)
 
 void StateManager::UpdateActive()
 {
+    // no next scheduled -> nothing to do
     if(!mNext)
         return;
 
@@ -95,16 +96,6 @@ void StateManager::UpdateActive()
     mNext = nullptr;
 
     mActive->OnActive();
-}
-
-bool StateManager::SetActiveState(int stateId)
-{
-   bool res = RequestNextActiveState(stateId);
-
-   if(res)
-       UpdateActive();
-
-   return res;
 }
 
 } // namespace utilities

@@ -2,7 +2,12 @@
 
 #include "Game.h"
 
+namespace game
+{
+
 void Screen::OnActive()
 {
-    mApp->SetEventListener(this);
+    mGame->SetEventListener(this);
 }
+
+} // namespace game

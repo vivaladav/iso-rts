@@ -21,7 +21,6 @@ public:
     bool RequestNextActiveState(int stateId);
     void UpdateActive();
 
-    bool SetActiveState(int stateId);
     State * GetActiveState() const;
 
 private:

@@ -18,14 +18,11 @@ namespace lib
     namespace utilities { class StateManager; }
 }
 
+namespace game
+{
+
 class Game : public lib::core::Application
 {
-public:
-    enum Screens : int
-    {
-        TEST = 1
-    };
-
 public:
     Game(int argc, char * argv[]);
     ~Game();
@@ -39,3 +36,5 @@ private:
 
     lib::utilities::StateManager * mStateMan = nullptr;
 };
+
+} // namespace game

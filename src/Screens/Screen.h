@@ -3,12 +3,15 @@
 #include <core/event/EventListener.h>
 #include <utilities/State.h>
 
+namespace game
+{
+
 class Game;
 
 class Screen : public lib::core::EventListener, public lib::utilities::State
 {
 public:
-    Screen(unsigned int screenId, Game * app);
+    Screen(unsigned int screenId, Game * game);
     virtual ~Screen();
 
     virtual void Update() = 0;
@@ -16,13 +19,15 @@ public:
     void OnActive();
 
 protected:
-    Game * mApp;
+    Game * mGame;
 };
 
-inline Screen::Screen(unsigned int screenId, Game * app)
+inline Screen::Screen(unsigned int screenId, Game * game)
     : lib::utilities::State(screenId)
-    , mApp(app)
+    , mGame(game)
 {
 }
 
 inline Screen::~Screen() { }
+
+} // namespace game
