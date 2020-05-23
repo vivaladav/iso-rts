@@ -28,6 +28,18 @@ void Window::SetSize(int w, int h)
     SDL_SetWindowSize(mSysWin, w, h);
 }
 
+void Window::SetFullscreen(bool f)
+{
+    if(mFullscreen == f)
+        return ;
+
+    mFullscreen = f;
+
+    const unsigned int flag = mFullscreen ? SDL_WINDOW_FULLSCREEN : 0;
+
+    SDL_SetWindowFullscreen(mSysWin, flag);
+}
+
 Window::Window(const char * title, int w, int h)
 {
     const int posX = SDL_WINDOWPOS_CENTERED;

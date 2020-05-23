@@ -17,7 +17,7 @@ namespace game
 Game::Game(int argc, char * argv[])
     : lib::core::Application(argc, argv)
 {
-    mWin = lib::graphic::Window::Create("Iso RTS - v. 0.0.1", 960, 540);
+    mWin = lib::graphic::Window::Create("Iso RTS - v. 0.0.1", 1280, 720);
     mRenderer = lib::graphic::Renderer::Create(mWin);
 
     // -- State Manager --

@@ -56,6 +56,8 @@ void ScreenTest::OnKeyUp(const lib::core::KeyboardEvent & event)
         mGame->Exit();
     else if(key == KeyboardEvent::KEY_M)
         GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
+    else if(key == KeyboardEvent::KEY_F)
+        Window::Instance()->SwitchFullscreen();
     else if(key == KeyboardEvent::KEY_1)
         Window::Instance()->SetSize(960, 540);
     else if(key == KeyboardEvent::KEY_2)
