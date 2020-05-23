@@ -14,6 +14,7 @@ add_executable(
     src/Game.cpp
     src/main.cpp
     src/Screens/Screen.cpp
+    src/Screens/ScreenGame.cpp
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenTest.cpp
 )

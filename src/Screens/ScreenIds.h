@@ -5,8 +5,9 @@ namespace game
 
 enum ScreenId : int
 {
-    TEST = 0,
+    GAME,
     MAIN_MENU,
+    TEST,
 
     NUM_SCREENS // keep last
 };

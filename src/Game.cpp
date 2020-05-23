@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "Screens/ScreenIds.h"
+#include "Screens/ScreenGame.h"
 #include "Screens/ScreenMainMenu.h"
 #include "Screens/ScreenTest.h"
 
@@ -24,6 +25,7 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new lib::utilities::StateManager;
 
+    mStateMan->AddState(new ScreenGame(this));
     mStateMan->AddState(new ScreenTest(this));
     mStateMan->AddState(new ScreenMainMenu(this));
 
