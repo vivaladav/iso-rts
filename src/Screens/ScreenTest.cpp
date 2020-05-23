@@ -21,7 +21,7 @@ ScreenTest::ScreenTest(Game * game)
     mImg1 = new lib::graphic::Image("data/img/tile01.png");
 
     mImg2 = new lib::graphic::Image("data/img/tile01.png");
-    mImg2->SetPosition(128, 64);
+    mImg2->SetPosition(64, 32);
 
     mImg3 = new lib::graphic::Image("data/img/tile01.png");
     mImg3->SetPosition(256, 128);

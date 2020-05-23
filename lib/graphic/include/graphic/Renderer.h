@@ -16,6 +16,8 @@ public:
     static Renderer * Instance();
     static void Destroy();
 
+    bool SetLogicalSize(int w, int h);
+
     void SetRenderColor(unsigned char r, unsigned char g,
                         unsigned char b, unsigned char a);
 

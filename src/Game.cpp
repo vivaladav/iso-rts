@@ -19,6 +19,7 @@ Game::Game(int argc, char * argv[])
 {
     mWin = lib::graphic::Window::Create("Iso RTS - v. 0.0.1", 1280, 720);
     mRenderer = lib::graphic::Renderer::Create(mWin);
+    mRenderer->SetLogicalSize(1920, 1080);
 
     // -- State Manager --
     mStateMan = new lib::utilities::StateManager;

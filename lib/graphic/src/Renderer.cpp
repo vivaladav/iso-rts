@@ -58,6 +58,17 @@ Renderer::~Renderer()
     SDL_DestroyRenderer(mSysRenderer);
 }
 
+bool Renderer::SetLogicalSize(int w, int h)
+{
+    if(SDL_RenderSetLogicalSize(mSysRenderer, w, h) != 0)
+    {
+        std::cerr << "Renderer::SetLogicalSize - " << SDL_GetError() << std::endl;
+        return false;
+    }
+    else
+        return true;
+}
+
 void Renderer::SetRenderColor(unsigned char r, unsigned char g,
                               unsigned char b, unsigned char a)
 {
