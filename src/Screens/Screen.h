@@ -16,7 +16,8 @@ public:
 
     virtual void Update() = 0;
 
-    void OnActive();
+protected:
+    void OnActive() override;
 
 protected:
     Game * mGame;

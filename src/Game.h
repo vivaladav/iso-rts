@@ -27,6 +27,8 @@ public:
     Game(int argc, char * argv[]);
     ~Game();
 
+    void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
 private:
     void Update() override;
 
@@ -35,6 +37,19 @@ private:
     lib::graphic::Window * mWin = nullptr;
 
     lib::utilities::StateManager * mStateMan = nullptr;
+
+    unsigned char mClearR = 0;
+    unsigned char mClearG = 0;
+    unsigned char mClearB = 0;
+    unsigned char mClearA = 255;
 };
+
+inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    mClearR = r;
+    mClearG = g;
+    mClearB = b;
+    mClearA = a;
+}
 
 } // namespace game

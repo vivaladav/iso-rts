@@ -20,6 +20,9 @@ public:
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
+    void OnActive() override;
+
+private:
     lib::graphic::Image * mImg1 = nullptr;
     lib::graphic::Image * mImg2 = nullptr;
     lib::graphic::Image * mImg3 = nullptr;

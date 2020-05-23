@@ -46,4 +46,11 @@ void ScreenMainMenu::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
 }
 
+void ScreenMainMenu::OnActive()
+{
+    Screen::OnActive();
+
+    mGame->SetClearColor(0x11, 0x11, 0x11, 0xFF);
+}
+
 } // namespace game

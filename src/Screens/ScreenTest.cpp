@@ -62,4 +62,11 @@ void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
               << " - pos: " << event.GetX() << " , " << event.GetY() << std::endl;
 }
 
+void ScreenTest::OnActive()
+{
+    Screen::OnActive();
+
+    mGame->SetClearColor(0x22, 0x22, 0x22, 0xFF);
+}
+
 } // namespace game

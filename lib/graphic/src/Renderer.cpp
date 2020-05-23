@@ -68,6 +68,12 @@ void Renderer::Clear()
     SDL_RenderClear(mSysRenderer);
 }
 
+void Renderer::Clear(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    SDL_SetRenderDrawColor(mSysRenderer, r, g, b, a);
+    SDL_RenderClear(mSysRenderer);
+}
+
 void Renderer::Finalize()
 {
     SDL_RenderPresent(mSysRenderer);

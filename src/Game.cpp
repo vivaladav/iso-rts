@@ -39,8 +39,7 @@ Game::~Game()
 
 void Game::Update()
 {
-    mRenderer->SetRenderColor(0xEE, 0xEE, 0xEE, 0xFF);
-    mRenderer->Clear();
+    mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);
 
     mStateMan->UpdateActive();
     static_cast<Screen *>(mStateMan->GetActiveState())->Update();

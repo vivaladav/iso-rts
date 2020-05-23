@@ -20,6 +20,8 @@ public:
                         unsigned char b, unsigned char a);
 
     void Clear();
+    void Clear(unsigned char r, unsigned char g,
+               unsigned char b, unsigned char a);
 
     void Finalize();
 

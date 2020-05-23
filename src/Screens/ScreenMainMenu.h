@@ -17,7 +17,8 @@ public:
     void OnKeyUp(const lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
-private:
+protected:
+    void OnActive() override;
 };
 
 } // namespace game
