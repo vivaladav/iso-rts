@@ -16,6 +16,8 @@ public:
     static Window * Instance();
     static void Destroy();
 
+    void SetSize(int w, int h);
+
 private:
     Window(const char * title, int w, int h);
     ~Window();
