@@ -25,6 +25,9 @@ void Window::Destroy()
 
 void Window::SetSize(int w, int h)
 {
+    mW = w;
+    mH = h;
+
     SDL_SetWindowSize(mSysWin, w, h);
 }
 
@@ -41,6 +44,8 @@ void Window::SetFullscreen(bool f)
 }
 
 Window::Window(const char * title, int w, int h)
+    : mW(w)
+    , mH(h)
 {
     const int posX = SDL_WINDOWPOS_CENTERED;
     const int posY = SDL_WINDOWPOS_CENTERED;

@@ -16,6 +16,8 @@ public:
     static Renderer * Instance();
     static void Destroy();
 
+    int GetWidth() const;
+    int GetHeight() const;
     bool SetLogicalSize(int w, int h);
 
     void SetRenderColor(unsigned char r, unsigned char g,
@@ -38,13 +40,18 @@ private:
 
     SDL_Renderer * mSysRenderer = nullptr;
 
+    int mW = 0;
+    int mH = 0;
+
     // classess that need to access the low level system renderer
     friend class Image;
     friend class Texture;
 };
 
-
 inline Renderer * Renderer::Instance() { return mInstance; }
+
+inline int Renderer::GetWidth() const { return mW; }
+inline int Renderer::GetHeight() const { return mH; }
 
 } // namespace graphic
 } // namespace lib

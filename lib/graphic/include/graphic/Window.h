@@ -16,6 +16,8 @@ public:
     static Window * Instance();
     static void Destroy();
 
+    int GetWidth() const;
+    int GetHeight() const;
     void SetSize(int w, int h);
 
     bool IsFullscreen() const;
@@ -28,6 +30,9 @@ private:
 
 private:
     static Window * mInstance;
+
+    int mW = 0;
+    int mH = 0;
 
     SDL_Window * mSysWin = nullptr;
 
@@ -44,6 +49,9 @@ inline void Window::SwitchFullscreen()
 {
     SetFullscreen(!mFullscreen);
 }
+
+inline int Window::GetWidth() const { return mW; }
+inline int Window::GetHeight() const { return mH; }
 
 } // namespace graphic
 } // namespace lib

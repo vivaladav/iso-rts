@@ -26,11 +26,42 @@ IsoMap::~IsoMap()
         delete img;
 }
 
-void IsoMap::AddTile(const char * file)
+bool IsoMap::AddTile(const char * file)
 {
     assert(file);
 
-    mTiles.emplace_back(new lib::graphic::Image(file));
+    using namespace lib::graphic;
+
+    Image * img = new Image(file);
+
+    const int imgW = img->GetWidth();
+    const int imgH = img->GetHeight();
+
+    // set size of tile when adding the first one
+    if(mTiles.empty())
+    {
+        mTileW = imgW;
+        mTileH = imgH;
+        mTileHalfH = imgH * 0.5f;
+    }
+    else
+    {
+        if(mTileW != imgW || mTileH != imgH)
+        {
+            std::cerr << "IsoMap::AddTile - new tile size ("
+                      << imgW << "," << imgH
+                      << ") is differnt from allowed size ("
+                      << mTileW << "," << mTileH << ")" << std::endl;
+
+            delete img;
+
+            return false;
+        }
+    }
+
+    mTiles.emplace_back(img);
+
+    return true;
 }
 
 void IsoMap::Render()
@@ -44,18 +75,11 @@ void IsoMap::Render()
             const unsigned int ind = indb + c;
 
             lib::graphic::Image * img = mTiles[mMap[ind]];
-            const int imgW = img->GetWidth();
-            const int imgHalfW = imgW * 0.5f;
-            const int imgH = img->GetHeight();
-            const int imgHalfH = imgH * 0.5f;
 
-            // x = h * c - w/2 * r
-            // y = h/2 * c + h/2 * r
-            const int x = mX0 + imgH * c - imgHalfW * r;
-            const int y = mY0 + imgHalfH * c + imgHalfH * r;
-
-            if(r == 14 && c == 0)
-                std::cout << "[14,0] = " << x << "," << y << std::endl;
+            // x = (h * c)   -  (h  * r)    = h * (c - r)
+            // y = (h/2 * c) +  (h/2 * r)   = h/2 * (c + r)
+            const int x = mX0 + mTileH * (c - r);
+            const int y = mY0 + mTileHalfH * (c + r);
 
             img->SetPosition(x, y);
             img->Render();

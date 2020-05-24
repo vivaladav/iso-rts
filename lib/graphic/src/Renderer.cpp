@@ -34,8 +34,10 @@ void Renderer::Destroy()
 
 Renderer::Renderer(Window * win)
 {
-    SDL_Window * w = static_cast<SDL_Window *>(win->mSysWin);
-    mSysRenderer = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
+    mW = win->GetWidth();
+    mH = win->GetHeight();
+
+    mSysRenderer = SDL_CreateRenderer(win->mSysWin, -1, SDL_RENDERER_ACCELERATED);
 
     // -- init SDL_image --
     const int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
@@ -66,7 +68,12 @@ bool Renderer::SetLogicalSize(int w, int h)
         return false;
     }
     else
+    {
+        mW = w;
+        mH = h;
+
         return true;
+    }
 }
 
 void Renderer::SetRenderColor(unsigned char r, unsigned char g,
