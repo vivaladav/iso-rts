@@ -1,6 +1,7 @@
 #include "Screens/ScreenGame.h"
 
 #include "Game.h"
+#include "IsoMap.h"
 #include "Screens/ScreenIds.h"
 
 #include <core/event/KeyboardEvent.h>
@@ -16,16 +17,23 @@ namespace game
 ScreenGame::ScreenGame(Game * game)
     : Screen(ScreenId::GAME, game)
 {
-
+    mMap = new IsoMap(15, 15);
+    mMap->SetOrigin(896, 60);
+    mMap->AddTile("data/img/tile02.png");
 }
 
 ScreenGame::~ScreenGame()
 {
-
+    delete mMap;
 }
 
 void ScreenGame::Update()
 {
+}
+
+void ScreenGame::Render()
+{
+    mMap->Render();
 }
 
 void ScreenGame::OnApplicationQuit() { mGame->Exit(); }

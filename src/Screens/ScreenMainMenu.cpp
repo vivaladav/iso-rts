@@ -29,6 +29,10 @@ void ScreenMainMenu::Update()
 {
 }
 
+void ScreenMainMenu::Render()
+{
+}
+
 void ScreenMainMenu::OnApplicationQuit() { mGame->Exit(); }
 
 void ScreenMainMenu::OnKeyUp(const lib::core::KeyboardEvent & event)

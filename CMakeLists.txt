@@ -12,6 +12,7 @@ add_subdirectory(lib)
 add_executable(
     game
     src/Game.cpp
+    src/IsoMap.cpp
     src/main.cpp
     src/Screens/Screen.cpp
     src/Screens/ScreenGame.cpp

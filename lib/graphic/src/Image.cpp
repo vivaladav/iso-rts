@@ -52,6 +52,9 @@ void Image::ScaleW(float s) { mRect->w *= s; }
 
 void Image::ScaleH(float s) { mRect->h *= s; }
 
+int Image::GetWidth() const { return mRect->w; }
+int Image::GetHeight() const { return mRect->h; }
+
 void Image::SetFlip(int flip)
 {
     if(flip > SDL_FLIP_NONE && flip <= SDL_FLIP_VERTICAL)

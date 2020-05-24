@@ -5,6 +5,8 @@
 namespace game
 {
 
+class IsoMap;
+
 class ScreenGame : public Screen
 {
 public:
@@ -12,13 +14,17 @@ public:
     ~ScreenGame();
 
     void Update() override;
+    void Render() override;
 
     void OnApplicationQuit() override;
     void OnKeyUp(const lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
-protected:
+private:
     void OnActive() override;
+
+private:
+    IsoMap * mMap = nullptr;
 };
 
 } // namespace game

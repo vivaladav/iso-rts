@@ -45,7 +45,10 @@ void Game::Update()
     mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);
 
     mStateMan->UpdateActive();
-    static_cast<Screen *>(mStateMan->GetActiveState())->Update();
+
+    Screen * screen = static_cast<Screen *>(mStateMan->GetActiveState());
+    screen->Update();
+    screen->Render();
 
     mRenderer->Finalize();
 }

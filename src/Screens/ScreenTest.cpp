@@ -37,6 +37,10 @@ ScreenTest::~ScreenTest()
 
 void ScreenTest::Update()
 {
+}
+
+void ScreenTest::Render()
+{
     mImg1->Render();
     mImg2->Render();
     mImg3->Render();

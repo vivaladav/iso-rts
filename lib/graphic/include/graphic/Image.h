@@ -23,6 +23,9 @@ public:
     void ScaleW(float s);
     void ScaleH(float s);
 
+    int GetWidth() const;
+    int GetHeight() const;
+
     void SetRotation(double degs);
 
     void SetFlip(int flip);
