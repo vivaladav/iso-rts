@@ -76,8 +76,8 @@ void IsoMap::Render()
 
             lib::graphic::Image * img = mTiles[mMap[ind]];
 
-            // x = (h * c)   -  (h  * r)    = h * (c - r)
-            // y = (h/2 * c) +  (h/2 * r)   = h/2 * (c + r)
+            // x =  (h * c)   -   (h * r)   = h * (c - r)
+            // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)
             const int x = mX0 + mTileH * (c - r);
             const int y = mY0 + mTileHalfH * (c + r);
 
