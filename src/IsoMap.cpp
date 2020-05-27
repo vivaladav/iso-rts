@@ -3,11 +3,7 @@
 #include <graphic/Image.h>
 
 #include <cassert>
-#include <cmath>
 #include <iostream>
-
-const float COS_M45 =  0.70710678f;
-const float SIN_M45 = -0.70710678f;
 
 namespace game
 {

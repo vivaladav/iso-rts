@@ -19,6 +19,7 @@ ScreenGame::ScreenGame(Game * game)
     : Screen(ScreenId::GAME, game)
 {
     mMap = new IsoMap(15, 15);
+    mMap->AddTile("data/img/tile01.png");
     mMap->AddTile("data/img/tile02.png");
     mMap->AddTile("data/img/tile03.png");
     mMap->AddTile("data/img/tile04.png");
@@ -31,8 +32,6 @@ ScreenGame::ScreenGame(Game * game)
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     mMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
-
-    //mMap->SetOrigin(0, 0);
 }
 
 ScreenGame::~ScreenGame()
@@ -77,7 +76,7 @@ void ScreenGame::OnActive()
 {
     Screen::OnActive();
 
-    mGame->SetClearColor(0x33, 0x33, 0x33, 0xFF);
+    mGame->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
 }
 
 } // namespace game
