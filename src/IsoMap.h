@@ -7,6 +7,14 @@ namespace lib { namespace graphic { class Image; } }
 namespace game
 {
 
+struct Cell2D
+{
+    Cell2D(int r, int c) : row(r), col(c) {}
+
+    int row = 0;
+    int col = 0;
+};
+
 class IsoMap
 {
 public:
@@ -25,13 +33,17 @@ public:
 
     void Render();
 
+    Cell2D TileFromScreenPoint(int x, int y) const;
+
 private:
     int mX0 = 0;
+    int mRenderX0 = 0;
     int mY0 = 0;
 
     int mTileW = 0;
     int mTileH = 0;
     int mTileHalfH = 0;
+    int mOrthoTileSize = 0;
 
     unsigned int mRows = 0;
     unsigned int mCols = 0;
@@ -50,6 +62,9 @@ inline void IsoMap::SetOrigin(int x, int y)
 {
     mX0 = x;
     mY0 = y;
+
+    // rendering x is shifted of -w/2 because image origin is TL corner
+    mRenderX0 = x - mTileH;
 }
 
 } // namespace game

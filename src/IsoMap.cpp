@@ -3,7 +3,11 @@
 #include <graphic/Image.h>
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
+
+const float COS_M45 =  0.70710678f;
+const float SIN_M45 = -0.70710678f;
 
 namespace game
 {
@@ -18,6 +22,9 @@ IsoMap::IsoMap(unsigned int rows, unsigned int cols)
 
     // TODO read map from file
     mMap.assign(size, 0);
+
+    mMap[1] = 1;
+    mMap[2 * mCols + 14] = 2;
 }
 
 IsoMap::~IsoMap()
@@ -78,13 +85,27 @@ void IsoMap::Render()
 
             // x =  (h * c)   -   (h * r)   = h * (c - r)
             // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)
-            const int x = mX0 + mTileH * (c - r);
+            const int x = mRenderX0 + mTileH * (c - r);
             const int y = mY0 + mTileHalfH * (c + r);
 
             img->SetPosition(x, y);
             img->Render();
         }
     }
+}
+
+Cell2D IsoMap::TileFromScreenPoint(int x, int y) const
+{
+    const float xf = x - mX0;
+    const float yf = y - mY0;
+    const float w = mTileW;
+    const float h = mTileH;
+
+    const float col = (2. * yf + xf) / w;
+    const float row = col - (xf / h);
+
+    const Cell2D cell(static_cast<int>(row), static_cast<int>(col));
+    return cell;
 }
 
 } // namespace game
