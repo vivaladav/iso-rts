@@ -12,8 +12,11 @@ class Texture;
 class Image
 {
 public:
+    Image();
     Image(const char * file);
     ~Image();
+
+    bool Load(const char * file);
 
     void SetPosition(int x, int y);
     void SetX(int x);

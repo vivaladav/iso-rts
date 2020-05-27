@@ -17,19 +17,40 @@ const int Image::FLIP_NO    = SDL_FLIP_NONE;
 const int Image::FLIP_HORIZ = SDL_FLIP_HORIZONTAL;
 const int Image::FLIP_VERT  = SDL_FLIP_VERTICAL;
 
+Image::Image()
+    : mFlip(FLIP_NO)
+{
+    mRect = new SDL_Rect{ 0 };
+}
+
 Image::Image(const char * file)
     : mFlip(FLIP_NO)
 {
-    assert(file);
+    mRect = new SDL_Rect{ 0 };
 
-    mTex = TextureManager::Instance()->GetTexture(file);
-
-    mRect = new SDL_Rect{ 0, 0, mTex->GetWidth(), mTex->GetHeight() };
+    Load(file);
 }
 
 Image::~Image()
 {
     delete mRect;
+}
+
+bool Image::Load(const char * file)
+{
+    assert(file);
+
+    mTex = TextureManager::Instance()->GetTexture(file);
+
+    if(mTex)
+    {
+        mRect->w = mTex->GetWidth();
+        mRect->h = mTex->GetHeight();
+
+        return true;
+    }
+    else
+        return false;
 }
 
 void Image::SetPosition(int x, int y)
