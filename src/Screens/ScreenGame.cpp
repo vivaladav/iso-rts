@@ -11,6 +11,8 @@
 #include <utilities/StateManager.h>
 
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace game
 {
@@ -18,11 +20,18 @@ namespace game
 ScreenGame::ScreenGame(Game * game)
     : Screen(ScreenId::GAME, game)
 {
-    mMap = new IsoMap(15, 15);
-    mMap->AddTile("data/img/tile01.png");
-    mMap->AddTile("data/img/tile02.png");
-    mMap->AddTile("data/img/tile03.png");
-    mMap->AddTile("data/img/tile04.png");
+    const int SIDE = 15;
+    const int TILE_W = 128;
+
+    const std::vector<std::string> tileFiles = {
+                                                "data/img/tile01.png",
+                                                "data/img/tile02.png",
+                                                "data/img/tile03.png",
+                                                "data/img/tile04.png"
+                                               };
+
+    mMap = new IsoMap(SIDE, SIDE, TILE_W);
+    mMap->SetTiles(tileFiles);
 
     // center map on screen
     const int mapW = mMap->GetWidth();

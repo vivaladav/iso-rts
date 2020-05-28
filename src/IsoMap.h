@@ -1,5 +1,8 @@
 #pragma once
 
+#include <core/Point.h>
+
+#include <string>
 #include <vector>
 
 namespace lib { namespace graphic { class Image; } }
@@ -18,10 +21,10 @@ struct Cell2D
 class IsoMap
 {
 public:
-    IsoMap(unsigned int rows, unsigned int cols);
+    IsoMap(unsigned int rows, unsigned int cols, int tileW);
     ~IsoMap();
 
-    bool AddTile(const char * file);
+    void SetTiles(const std::vector<std::string> & files);
 
     int GetTileWidth() const;
     int GetTileHeight() const;
@@ -36,6 +39,12 @@ public:
     Cell2D TileFromScreenPoint(int x, int y) const;
 
 private:
+    void UpdateTilePositions();
+
+private:
+    unsigned int mRows = 0;
+    unsigned int mCols = 0;
+
     int mX0 = 0;
     int mRenderX0 = 0;
     int mY0 = 0;
@@ -45,11 +54,9 @@ private:
     int mTileHalfH = 0;
     int mOrthoTileSize = 0;
 
-    unsigned int mRows = 0;
-    unsigned int mCols = 0;
-
     std::vector<unsigned int> mMap;
     std::vector<lib::graphic::Image *> mTiles;
+    std::vector<lib::core::Point2D> mTilePositions;
 };
 
 inline int IsoMap::GetTileWidth() const { return mTileW; }
@@ -65,6 +72,8 @@ inline void IsoMap::SetOrigin(int x, int y)
 
     // rendering x is shifted of -w/2 because image origin is TL corner
     mRenderX0 = x - mTileH;
+
+    UpdateTilePositions();
 }
 
 } // namespace game

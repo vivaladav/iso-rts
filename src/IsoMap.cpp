@@ -8,13 +8,17 @@
 namespace game
 {
 
-IsoMap::IsoMap(unsigned int rows, unsigned int cols)
+IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
     : mRows(rows)
     , mCols(cols)
+    , mTileW(tileW)
+    , mTileH(tileW * 0.5f)
+    , mTileHalfH(tileW * 0.25f)
 {
     const int size = rows * cols;
 
     mMap.reserve(size);
+    mTilePositions.reserve(size);
 
     // TODO read map from file
     mMap.assign(size, 0);
@@ -29,42 +33,16 @@ IsoMap::~IsoMap()
         delete img;
 }
 
-bool IsoMap::AddTile(const char * file)
+void IsoMap::SetTiles(const std::vector<std::string> & files)
 {
-    assert(file);
-
-    using namespace lib::graphic;
-
-    Image * img = new Image(file);
-
-    const int imgW = img->GetWidth();
-    const int imgH = img->GetHeight();
-
-    // set size of tile when adding the first one
-    if(mTiles.empty())
+    for(const std::string & file : files)
     {
-        mTileW = imgW;
-        mTileH = imgH;
-        mTileHalfH = imgH * 0.5f;
-    }
-    else
-    {
-        if(mTileW != imgW || mTileH != imgH)
-        {
-            std::cerr << "IsoMap::AddTile - new tile size ("
-                      << imgW << "," << imgH
-                      << ") is differnt from allowed size ("
-                      << mTileW << "," << mTileH << ")" << std::endl;
+        auto * img = new lib::graphic::Image(file.c_str());
 
-            delete img;
-
-            return false;
-        }
+        mTiles.emplace_back(img);
     }
 
-    mTiles.emplace_back(img);
-
-    return true;
+    UpdateTilePositions();
 }
 
 void IsoMap::Render()
@@ -79,12 +57,9 @@ void IsoMap::Render()
 
             lib::graphic::Image * img = mTiles[mMap[ind]];
 
-            // x =  (h * c)   -   (h * r)   = h * (c - r)
-            // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)
-            const int x = mRenderX0 + mTileH * (c - r);
-            const int y = mY0 + mTileHalfH * (c + r);
+            const lib::core::Point2D & p = mTilePositions[ind];
 
-            img->SetPosition(x, y);
+            img->SetPosition(p.x, p.y);
             img->Render();
         }
     }
@@ -102,6 +77,26 @@ Cell2D IsoMap::TileFromScreenPoint(int x, int y) const
 
     const Cell2D cell(static_cast<int>(row), static_cast<int>(col));
     return cell;
+}
+
+void IsoMap::UpdateTilePositions()
+{
+    for(unsigned int r = 0; r < mRows; ++r)
+    {
+        const unsigned int indb = r * mCols;
+
+        for(unsigned int c = 0; c < mCols; ++c)
+        {
+            const unsigned int ind = indb + c;
+
+            lib::core::Point2D & p = mTilePositions[ind];
+
+            // x =  (h * c)   -   (h * r)   = h * (c - r)
+            // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)
+            p.x = mRenderX0 + mTileH * (c - r);
+            p.y = mY0 + mTileHalfH * (c + r);
+        }
+    }
 }
 
 } // namespace game
