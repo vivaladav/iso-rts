@@ -34,6 +34,8 @@ public:
 
     void SetOrigin(int x, int y);
 
+    bool Load(const char * file);
+
     void Render();
 
     Cell2D TileFromScreenPoint(int x, int y) const;

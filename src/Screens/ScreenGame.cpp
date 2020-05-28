@@ -32,6 +32,7 @@ ScreenGame::ScreenGame(Game * game)
 
     mMap = new IsoMap(SIDE, SIDE, TILE_W);
     mMap->SetTiles(tileFiles);
+    mMap->Load("data/maps/001.map");
 
     // center map on screen
     const int mapW = mMap->GetWidth();

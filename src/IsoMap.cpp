@@ -3,6 +3,7 @@
 #include <graphic/Image.h>
 
 #include <cassert>
+#include <fstream>
 #include <iostream>
 
 namespace game
@@ -20,11 +21,7 @@ IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
     mMap.reserve(size);
     mTilePositions.reserve(size);
 
-    // TODO read map from file
     mMap.assign(size, 0);
-
-    mMap[1] = 1;
-    mMap[2 * mCols + 14] = 2;
 }
 
 IsoMap::~IsoMap()
@@ -43,6 +40,32 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
     }
 
     UpdateTilePositions();
+}
+
+bool IsoMap::Load(const char * file)
+{
+    std::fstream f(file);
+
+    if(!f.is_open())
+        return false;
+
+    std::string line;
+
+    for(unsigned int r = 0; r < mRows; ++r)
+    {
+        const unsigned int indb = r * mCols;
+
+        std::getline(f, line);
+
+        for(unsigned int c = 0; c < mCols; ++c)
+        {
+            const unsigned int ind = indb + c;
+
+            mMap[ind] = line[c] - '0';
+        }
+    }
+
+    return true;
 }
 
 void IsoMap::Render()
