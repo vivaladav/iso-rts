@@ -95,8 +95,15 @@ Cell2D IsoMap::TileFromScreenPoint(int x, int y) const
     const float w = mTileW;
     const float h = mTileH;
 
-    const float col = (2. * yf + xf) / w;
-    const float row = col - (xf / h);
+    float col = (2. * yf + xf) / w;
+    float row = col - (xf / h);
+
+    // negative cells need special handling
+    if(row < 0.f)
+        row -= 1.f;
+
+    if(col < 0.f)
+        col -= 1.f;
 
     const Cell2D cell(static_cast<int>(row), static_cast<int>(col));
     return cell;
@@ -104,6 +111,7 @@ Cell2D IsoMap::TileFromScreenPoint(int x, int y) const
 
 void IsoMap::UpdateTilePositions()
 {
+    // TODO consider image size of the different tiles
     for(unsigned int r = 0; r < mRows; ++r)
     {
         const unsigned int indb = r * mCols;
