@@ -40,8 +40,12 @@ void Application::ProcessArguments(int, char * [])
 
 void Application::AddEventListener(EventListener * listener)
 {
-    if(listener)
-        mEventDispatcher->AddListener(listener);
+    mEventDispatcher->AddListener(listener);
+}
+
+void Application::RemoveEventListener(EventListener * listener)
+{
+    mEventDispatcher->RemoveListener(listener);
 }
 
 void Application::Run()

@@ -15,6 +15,7 @@ public:
     virtual ~Application();
 
     void AddEventListener(EventListener * listener);
+    void RemoveEventListener(EventListener * listener);
 
     void Run();
 

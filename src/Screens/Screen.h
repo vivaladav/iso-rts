@@ -20,6 +20,7 @@ public:
 
 protected:
     void OnActive() override;
+    void OnInactive() override;
 
     Game * GetGame() const;
 

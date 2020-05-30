@@ -7,12 +7,35 @@
 
 #include <SDL2/SDL.h>
 
+#include <algorithm>
 #include <cassert>
 
 namespace lib
 {
 namespace core
 {
+
+void EventDispatcher::AddListener(lib::core::EventListener * el)
+{
+    // do not add NULL
+    if(!el)
+        return ;
+
+    auto it = std::find(mListeners.begin(), mListeners.end(), el);
+
+    // listener not found -> add it
+    if(mListeners.end() == it)
+        mListeners.emplace_back(el);
+}
+
+void EventDispatcher::RemoveListener(EventListener * el)
+{
+    auto it = std::find(mListeners.begin(), mListeners.end(), el);
+
+    // listener found -> remove it
+    if(it != mListeners.end())
+        mListeners.erase(it);
+}
 
 void EventDispatcher::Update()
 {

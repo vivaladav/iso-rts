@@ -12,15 +12,14 @@ class EventListener;
 class EventDispatcher
 {
 public:
-    void AddListener(EventListener * listener);
+    void AddListener(EventListener * el);
+    void RemoveListener(EventListener * el);
 
     void Update();
 
 private:
     std::vector<EventListener *> mListeners;
 };
-
-inline void EventDispatcher::AddListener(lib::core::EventListener * el) { mListeners.emplace_back(el); }
 
 } // namespace core
 } // namespace lib
