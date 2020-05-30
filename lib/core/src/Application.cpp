@@ -1,6 +1,5 @@
 #include "core/Application.h"
 
-#include "event/DummyListener.h"
 #include "event/EventDispatcher.h"
 
 #include <SDL2/SDL.h>
@@ -14,6 +13,7 @@ namespace core
 {
 
 Application::Application(int argc, char * argv[])
+    : mEventDispatcher(new EventDispatcher)
 {
     ProcessArguments(argc, argv);
 
@@ -24,9 +24,6 @@ Application::Application(int argc, char * argv[])
         std::cerr << "SDL init failed: " << SDL_GetError() << std::endl;
         exit(-1);
     }
-
-    mDefaultListener = new DummyListener(this);
-    mEventDispatcher = new EventDispatcher;
 }
 
 Application::~Application()

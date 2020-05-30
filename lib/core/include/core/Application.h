@@ -27,7 +27,6 @@ private:
     virtual void Update() = 0;
 
 private:
-    EventListener * mDefaultListener = nullptr;
     EventDispatcher * mEventDispatcher = nullptr;
 
     bool mRunning = false;

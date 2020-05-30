@@ -47,7 +47,9 @@ void EventDispatcher::Update()
         {
             case SDL_MOUSEMOTION:
             {
-                MouseMotionEvent e(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel, event.motion.state);
+                const SDL_MouseMotionEvent & m = event.motion;
+
+                MouseMotionEvent e(m.x, m.y, m.xrel, m.yrel, m.state);
 
                 for(EventListener * el : mListeners)
                     el->OnMouseMotion(e);
@@ -56,7 +58,9 @@ void EventDispatcher::Update()
 
             case SDL_MOUSEBUTTONDOWN:
             {
-                MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
+                const SDL_MouseButtonEvent & b = event.button;
+
+                MouseButtonEvent e(b.x, b.y, b.button);
 
                 for(EventListener * el : mListeners)
                     el->OnMouseButtonDown(e);
@@ -65,7 +69,9 @@ void EventDispatcher::Update()
 
             case SDL_MOUSEBUTTONUP:
             {
-                MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
+                const SDL_MouseButtonEvent & b = event.button;
+
+                MouseButtonEvent e(b.x, b.y, b.button);
 
                 for(EventListener * el : mListeners)
                     el->OnMouseButtonUp(e);
