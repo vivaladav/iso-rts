@@ -1,18 +1,20 @@
 #pragma once
 
-#include <core/event/EventListener.h>
 #include <utilities/State.h>
 
 namespace game
 {
 
 class Game;
+class SharedScreenListener;
 
-class Screen : public lib::core::EventListener, public lib::utilities::State
+class Screen : public lib::utilities::State
 {
 public:
     Screen(unsigned int screenId, Game * game);
     virtual ~Screen();
+
+    Game * GetGame() const;
 
     virtual void Update() = 0;
 
@@ -22,19 +24,11 @@ protected:
     void OnActive() override;
     void OnInactive() override;
 
-    Game * GetGame() const;
-
 private:
-    Game * mGame;
+    Game * mGame = nullptr;
+
+    SharedScreenListener * mSharedListener = nullptr;
 };
-
-inline Screen::Screen(unsigned int screenId, Game * game)
-    : lib::utilities::State(screenId)
-    , mGame(game)
-{
-}
-
-inline Screen::~Screen() { }
 
 inline Game * Screen::GetGame() const { return mGame; }
 

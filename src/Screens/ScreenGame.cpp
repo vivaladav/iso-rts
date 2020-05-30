@@ -4,11 +4,9 @@
 #include "IsoMap.h"
 #include "Screens/ScreenIds.h"
 
-#include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Image.h>
 #include <graphic/Renderer.h>
-#include <utilities/StateManager.h>
 
 #include <iostream>
 #include <string>
@@ -58,22 +56,6 @@ void ScreenGame::Render()
     mMap->Render();
 }
 
-void ScreenGame::OnApplicationQuit() { GetGame()->Exit(); }
-
-void ScreenGame::OnKeyUp(const lib::core::KeyboardEvent & event)
-{
-    using namespace lib::core;
-
-    const int key = event.GetKey();
-
-    if(key == KeyboardEvent::KEY_ESC)
-        GetGame()->Exit();
-    else if(key == KeyboardEvent::KEY_M)
-        GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
-    else if(key == KeyboardEvent::KEY_T)
-        GetStateManager()->RequestNextActiveState(ScreenId::TEST);
-}
-
 void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
     const Cell2D c = mMap->TileFromScreenPoint(event.GetX(), event.GetY());
@@ -86,7 +68,16 @@ void ScreenGame::OnActive()
 {
     Screen::OnActive();
 
+    GetGame()->AddEventListener(this);
+
     GetGame()->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
+}
+
+void ScreenGame::OnInactive()
+{
+    Screen::OnInactive();
+
+    GetGame()->RemoveEventListener(this);
 }
 
 } // namespace game

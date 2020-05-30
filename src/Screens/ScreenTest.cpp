@@ -3,10 +3,8 @@
 #include "Game.h"
 #include "Screens/ScreenIds.h"
 
-#include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Image.h>
-#include <utilities/StateManager.h>
 
 #include <iostream>
 
@@ -46,22 +44,6 @@ void ScreenTest::Render()
     mImg3->Render();
 }
 
-void ScreenTest::OnApplicationQuit() { GetGame()->Exit(); }
-
-void ScreenTest::OnKeyUp(const lib::core::KeyboardEvent & event)
-{
-    using namespace lib::core;
-
-    const int key = event.GetKey();
-
-    if(key == KeyboardEvent::KEY_ESC)
-        GetGame()->Exit();
-    else if(key == KeyboardEvent::KEY_G)
-        GetStateManager()->RequestNextActiveState(ScreenId::GAME);
-    else if(key == KeyboardEvent::KEY_M)
-        GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
-}
-
 void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
     std::cout << "Mouse clicked - button: " << event.GetButton()
@@ -72,7 +54,16 @@ void ScreenTest::OnActive()
 {
     Screen::OnActive();
 
+    GetGame()->AddEventListener(this);
+
     GetGame()->SetClearColor(0x22, 0x22, 0x22, 0xFF);
+}
+
+void ScreenTest::OnInactive()
+{
+    Screen::OnInactive();
+
+    GetGame()->RemoveEventListener(this);
 }
 
 } // namespace game

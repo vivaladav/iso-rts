@@ -18,6 +18,7 @@ add_executable(
     src/Screens/ScreenGame.cpp
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenTest.cpp
+    src/Screens/SharedScreenListener.cpp
 )
 
 target_include_directories(

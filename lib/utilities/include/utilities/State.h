@@ -18,7 +18,6 @@ public:
     virtual void OnActive();
     virtual void OnInactive();
 
-protected:
     StateManager * GetStateManager() const;
 
 private:

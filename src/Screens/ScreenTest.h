@@ -2,12 +2,14 @@
 
 #include "Screen.h"
 
+#include <core/event/EventListener.h>
+
 namespace lib { namespace graphic { class Image; } }
 
 namespace game
 {
 
-class ScreenTest : public Screen
+class ScreenTest : public Screen, public lib::core::EventListener
 {
 public:
     ScreenTest(Game * game);
@@ -16,12 +18,11 @@ public:
     void Update() override;
     void Render() override;
 
-    void OnApplicationQuit() override;
-    void OnKeyUp(const lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
     void OnActive() override;
+    void OnInactive() override;
 
 private:
     lib::graphic::Image * mImg1 = nullptr;
