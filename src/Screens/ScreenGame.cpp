@@ -58,7 +58,7 @@ void ScreenGame::Render()
     mMap->Render();
 }
 
-void ScreenGame::OnApplicationQuit() { mGame->Exit(); }
+void ScreenGame::OnApplicationQuit() { GetGame()->Exit(); }
 
 void ScreenGame::OnKeyUp(const lib::core::KeyboardEvent & event)
 {
@@ -67,7 +67,7 @@ void ScreenGame::OnKeyUp(const lib::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     if(key == KeyboardEvent::KEY_ESC)
-        mGame->Exit();
+        GetGame()->Exit();
     else if(key == KeyboardEvent::KEY_M)
         GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
     else if(key == KeyboardEvent::KEY_T)
@@ -86,7 +86,7 @@ void ScreenGame::OnActive()
 {
     Screen::OnActive();
 
-    mGame->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
+    GetGame()->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
 }
 
 } // namespace game

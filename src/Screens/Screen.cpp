@@ -7,7 +7,7 @@ namespace game
 
 void Screen::OnActive()
 {
-    mGame->SetEventListener(this);
+    mGame->AddEventListener(this);
 }
 
 } // namespace game

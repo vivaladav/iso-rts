@@ -14,7 +14,7 @@ public:
     Application(int argc, char * argv[]);
     virtual ~Application();
 
-    void SetEventListener(EventListener * listener);
+    void AddEventListener(EventListener * listener);
 
     void Run();
 

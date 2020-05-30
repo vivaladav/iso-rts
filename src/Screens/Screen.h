@@ -21,7 +21,9 @@ public:
 protected:
     void OnActive() override;
 
-protected:
+    Game * GetGame() const;
+
+private:
     Game * mGame;
 };
 
@@ -32,5 +34,7 @@ inline Screen::Screen(unsigned int screenId, Game * game)
 }
 
 inline Screen::~Screen() { }
+
+inline Game * Screen::GetGame() const { return mGame; }
 
 } // namespace game

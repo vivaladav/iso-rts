@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 namespace lib
 {
 namespace core
@@ -10,15 +12,15 @@ class EventListener;
 class EventDispatcher
 {
 public:
-    EventDispatcher(EventListener * listener);
-
-    void SetListener(EventListener * listener);
+    void AddListener(EventListener * listener);
 
     void Update();
 
 private:
-    EventListener * mActiveListener = nullptr;
+    std::vector<EventListener *> mListeners;
 };
+
+inline void EventDispatcher::AddListener(lib::core::EventListener * el) { mListeners.emplace_back(el); }
 
 } // namespace core
 } // namespace lib

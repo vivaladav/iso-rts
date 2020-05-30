@@ -14,18 +14,6 @@ namespace lib
 namespace core
 {
 
-EventDispatcher::EventDispatcher(EventListener * listener) : mActiveListener(listener)
-{
-    assert(listener);
-}
-
-void EventDispatcher::SetListener(EventListener * listener)
-{
-    assert(listener);
-
-    mActiveListener = listener;
-}
-
 void EventDispatcher::Update()
 {
     SDL_Event event;
@@ -37,40 +25,51 @@ void EventDispatcher::Update()
             case SDL_MOUSEMOTION:
             {
                 MouseMotionEvent e(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel, event.motion.state);
-                mActiveListener->OnMouseMotion(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseMotion(e);
             }
             break;
 
             case SDL_MOUSEBUTTONDOWN:
             {
                 MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
-                mActiveListener->OnMouseButtonDown(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseButtonDown(e);
             }
             break;
 
             case SDL_MOUSEBUTTONUP:
             {
                 MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
-                mActiveListener->OnMouseButtonUp(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseButtonUp(e);
             }
             break;
 
             case SDL_KEYDOWN:
             {
                 KeyboardEvent e(event.key.keysym.sym);
-                mActiveListener->OnKeyDown(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnKeyDown(e);
             }
             break;
 
             case SDL_KEYUP:
             {
                 KeyboardEvent e(event.key.keysym.sym);
-                mActiveListener->OnKeyUp(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnKeyUp(e);
             }
             break;
 
             case SDL_QUIT:
-                mActiveListener->OnApplicationQuit();
+                for(EventListener * el : mListeners)
+                    el->OnApplicationQuit();
             break;
 
             default:
