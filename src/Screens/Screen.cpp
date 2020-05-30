@@ -7,7 +7,12 @@ namespace game
 
 void Screen::OnActive()
 {
-    mGame->SetEventListener(this);
+    mGame->AddEventListener(this);
+}
+
+void Screen::OnInactive()
+{
+    mGame->RemoveEventListener(this);
 }
 
 } // namespace game

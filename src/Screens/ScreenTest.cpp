@@ -46,7 +46,7 @@ void ScreenTest::Render()
     mImg3->Render();
 }
 
-void ScreenTest::OnApplicationQuit() { mGame->Exit(); }
+void ScreenTest::OnApplicationQuit() { GetGame()->Exit(); }
 
 void ScreenTest::OnKeyUp(const lib::core::KeyboardEvent & event)
 {
@@ -55,7 +55,7 @@ void ScreenTest::OnKeyUp(const lib::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     if(key == KeyboardEvent::KEY_ESC)
-        mGame->Exit();
+        GetGame()->Exit();
     else if(key == KeyboardEvent::KEY_G)
         GetStateManager()->RequestNextActiveState(ScreenId::GAME);
     else if(key == KeyboardEvent::KEY_M)
@@ -72,7 +72,7 @@ void ScreenTest::OnActive()
 {
     Screen::OnActive();
 
-    mGame->SetClearColor(0x22, 0x22, 0x22, 0xFF);
+    GetGame()->SetClearColor(0x22, 0x22, 0x22, 0xFF);
 }
 
 } // namespace game

@@ -7,6 +7,7 @@
 
 #include <SDL2/SDL.h>
 
+#include <algorithm>
 #include <cassert>
 
 namespace lib
@@ -14,16 +15,26 @@ namespace lib
 namespace core
 {
 
-EventDispatcher::EventDispatcher(EventListener * listener) : mActiveListener(listener)
+void EventDispatcher::AddListener(lib::core::EventListener * el)
 {
-    assert(listener);
+    // do not add NULL
+    if(!el)
+        return ;
+
+    auto it = std::find(mListeners.begin(), mListeners.end(), el);
+
+    // listener not found -> add it
+    if(mListeners.end() == it)
+        mListeners.emplace_back(el);
 }
 
-void EventDispatcher::SetListener(EventListener * listener)
+void EventDispatcher::RemoveListener(EventListener * el)
 {
-    assert(listener);
+    auto it = std::find(mListeners.begin(), mListeners.end(), el);
 
-    mActiveListener = listener;
+    // listener found -> remove it
+    if(it != mListeners.end())
+        mListeners.erase(it);
 }
 
 void EventDispatcher::Update()
@@ -37,40 +48,51 @@ void EventDispatcher::Update()
             case SDL_MOUSEMOTION:
             {
                 MouseMotionEvent e(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel, event.motion.state);
-                mActiveListener->OnMouseMotion(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseMotion(e);
             }
             break;
 
             case SDL_MOUSEBUTTONDOWN:
             {
                 MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
-                mActiveListener->OnMouseButtonDown(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseButtonDown(e);
             }
             break;
 
             case SDL_MOUSEBUTTONUP:
             {
                 MouseButtonEvent e(event.button.x, event.button.y, event.button.button);
-                mActiveListener->OnMouseButtonUp(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnMouseButtonUp(e);
             }
             break;
 
             case SDL_KEYDOWN:
             {
                 KeyboardEvent e(event.key.keysym.sym);
-                mActiveListener->OnKeyDown(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnKeyDown(e);
             }
             break;
 
             case SDL_KEYUP:
             {
                 KeyboardEvent e(event.key.keysym.sym);
-                mActiveListener->OnKeyUp(e);
+
+                for(EventListener * el : mListeners)
+                    el->OnKeyUp(e);
             }
             break;
 
             case SDL_QUIT:
-                mActiveListener->OnApplicationQuit();
+                for(EventListener * el : mListeners)
+                    el->OnApplicationQuit();
             break;
 
             default:

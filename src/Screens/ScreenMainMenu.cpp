@@ -33,7 +33,7 @@ void ScreenMainMenu::Render()
 {
 }
 
-void ScreenMainMenu::OnApplicationQuit() { mGame->Exit(); }
+void ScreenMainMenu::OnApplicationQuit() { GetGame()->Exit(); }
 
 void ScreenMainMenu::OnKeyUp(const lib::core::KeyboardEvent & event)
 {
@@ -43,7 +43,7 @@ void ScreenMainMenu::OnKeyUp(const lib::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     if(key == KeyboardEvent::KEY_ESC)
-        mGame->Exit();
+        GetGame()->Exit();
     else if(key == KeyboardEvent::KEY_G)
         GetStateManager()->RequestNextActiveState(ScreenId::GAME);
     else if(key == KeyboardEvent::KEY_T)
@@ -68,7 +68,7 @@ void ScreenMainMenu::OnActive()
 {
     Screen::OnActive();
 
-    mGame->SetClearColor(0x11, 0x11, 0x11, 0xFF);
+    GetGame()->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 }
 
 } // namespace game

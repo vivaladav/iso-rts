@@ -26,25 +26,26 @@ Application::Application(int argc, char * argv[])
     }
 
     mDefaultListener = new DummyListener(this);
-    mEventDispatcher = new EventDispatcher(mDefaultListener);
+    mEventDispatcher = new EventDispatcher;
 }
 
 Application::~Application()
 {
     delete mEventDispatcher;
-    delete mDefaultListener;
 }
 
 void Application::ProcessArguments(int, char * [])
 {
 }
 
-void Application::SetEventListener(EventListener * listener)
+void Application::AddEventListener(EventListener * listener)
 {
-    if(listener)
-        mEventDispatcher->SetListener(listener);
-    else
-        mEventDispatcher->SetListener(mDefaultListener);
+    mEventDispatcher->AddListener(listener);
+}
+
+void Application::RemoveEventListener(EventListener * listener)
+{
+    mEventDispatcher->RemoveListener(listener);
 }
 
 void Application::Run()
