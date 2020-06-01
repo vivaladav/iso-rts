@@ -30,6 +30,7 @@ target_link_libraries(
     game
     PRIVATE core
     PRIVATE graphic
+    PRIVATE sgui
     PRIVATE utilities
 )
 

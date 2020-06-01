@@ -2,6 +2,8 @@
 
 #include "Screen.h"
 
+namespace lib { namespace sgui { class PushButton; } }
+
 namespace game
 {
 
@@ -16,6 +18,9 @@ public:
 
 protected:
     void OnActive() override;
+
+private:
+    lib::sgui::PushButton * mButtonNew = nullptr;
 };
 
 } // namespace game
