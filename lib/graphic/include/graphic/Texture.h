@@ -9,14 +9,19 @@ namespace graphic
 
 class Image;
 
+enum TextureQuality : int;
+
 class Texture
 {
 public:
-    Texture(const char * file);
+    Texture(const char * file, TextureQuality q);
     ~Texture();
 
     int GetWidth() const;
     int GetHeight() const;
+
+private:
+    void SetTextureQuality(TextureQuality q);
 
 private:
     SDL_Texture * mData = nullptr;

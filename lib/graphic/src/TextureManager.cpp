@@ -1,5 +1,6 @@
 #include "graphic/TextureManager.h"
 
+#include "graphic/GraphicConstants.h"
 #include "graphic/Texture.h"
 
 namespace lib
@@ -22,6 +23,11 @@ void TextureManager::Destroy()
     delete mInstance;
 }
 
+TextureManager::TextureManager()
+    : mTexQuality(TextureQuality::GOOD)
+{
+}
+
 Texture * TextureManager::GetTexture(const char * file)
 {
     const std::string strFile(file);
@@ -34,7 +40,7 @@ Texture * TextureManager::GetTexture(const char * file)
         tex = res->second;
     else
     {
-        tex = new Texture(file);
+        tex = new Texture(file, mTexQuality);
         mTextures.emplace(strFile, tex);
     }
 

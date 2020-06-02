@@ -10,6 +10,8 @@ namespace graphic
 
 class Texture;
 
+enum TextureQuality : int;
+
 class TextureManager
 {
 public:
@@ -21,6 +23,9 @@ public:
     void DestroyTexture(const char * file);
     void DestroyTextures();
 
+    TextureQuality GetNewTextureQuality() const;
+    void SetNewTextureQuality(TextureQuality q);
+
 private:
     TextureManager();
     ~TextureManager();
@@ -30,12 +35,15 @@ private:
 
     std::unordered_map<std::string, Texture *> mTextures;
 
+    TextureQuality mTexQuality;
 };
 
-inline TextureManager::TextureManager() { }
 inline TextureManager::~TextureManager() { DestroyTextures(); }
 
 inline TextureManager * TextureManager::Instance() { return mInstance; }
+
+inline TextureQuality TextureManager::GetNewTextureQuality() const { return mTexQuality;}
+inline void TextureManager::SetNewTextureQuality(TextureQuality q) { mTexQuality = q; }
 
 } // namespace graphic
 } // namespace lib
