@@ -20,14 +20,12 @@ const int Image::FLIP_VERT  = SDL_FLIP_VERTICAL;
 Image::Image()
     : mFlip(FLIP_NO)
 {
-    mRect = new SDL_Rect{ 0 };
+    mRect = new SDL_Rect{0, 0, 0, 0};
 }
 
 Image::Image(const char * file)
-    : mFlip(FLIP_NO)
+    : Image()
 {
-    mRect = new SDL_Rect{ 0 };
-
     Load(file);
 }
 

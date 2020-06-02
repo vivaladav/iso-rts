@@ -13,10 +13,14 @@ namespace core
 {
 
 Application::Application(int argc, char * argv[])
-    : mEventDispatcher(new EventDispatcher)
+    : mArgc(argc)
+    , mEventDispatcher(new EventDispatcher)
 {
-    ProcessArguments(argc, argv);
+    // -- STORE ARGUMENTS --
+    for(int i = 0; i < argc; ++i)
+        mArgv.emplace_back(argv[i]);
 
+    // -- INIT SDL 2 --
     atexit(SDL_Quit);
 
     if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
@@ -31,7 +35,7 @@ Application::~Application()
     delete mEventDispatcher;
 }
 
-void Application::ProcessArguments(int, char * [])
+void Application::ProcessArguments()
 {
 }
 
