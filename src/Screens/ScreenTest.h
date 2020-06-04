@@ -2,14 +2,14 @@
 
 #include "Screen.h"
 
-#include <core/event/EventListener.h>
+#include <core/event/MouseEventListener.h>
 
 namespace lib { namespace graphic { class Image; } }
 
 namespace game
 {
 
-class ScreenTest : public Screen, public lib::core::EventListener
+class ScreenTest : public Screen, public lib::core::MouseEventListener
 {
 public:
     ScreenTest(Game * game);

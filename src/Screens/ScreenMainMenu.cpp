@@ -14,9 +14,10 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(ScreenId::MAIN_MENU, game)
 {
     const int VMARGIN = 100;
+    int buttonId = 0;
 
     // -- BUTTON NEW GAME --
-    mButtonNew = new lib::sgui::PushButton(0);
+    mButtonNew = new lib::sgui::PushButton(buttonId++);
     mButtonNew->SetBackground("data/img/buttons/new_game-01.png");
 
     const int buttonX = (lib::graphic::Renderer::Instance()->GetWidth() - mButtonNew->GetWidth()) * 0.5f;
@@ -26,19 +27,21 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     mButtonNew->SetOnClickFunction([this] { GetStateManager()->RequestNextActiveState(ScreenId::GAME); });
 
-    GetGame()->AddEventListener(mButtonNew);
+    GetGame()->AddKeyboardListener(mButtonNew);
+    GetGame()->AddMouseListener(mButtonNew);
 
     buttonY += mButtonNew->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    mButtonExit = new lib::sgui::PushButton(0);
+    mButtonExit = new lib::sgui::PushButton(buttonId++);
     mButtonExit->SetBackground("data/img/buttons/exit-01.png");
 
     mButtonExit->SetPosition(buttonX, buttonY);
 
     mButtonExit->SetOnClickFunction([this] { GetGame()->Exit(); });
 
-    GetGame()->AddEventListener(mButtonExit);
+    GetGame()->AddKeyboardListener(mButtonExit);
+    GetGame()->AddMouseListener(mButtonExit);
 }
 
 ScreenMainMenu::~ScreenMainMenu()

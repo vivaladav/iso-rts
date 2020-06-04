@@ -1,8 +1,10 @@
 #include "EventDispatcher.h"
 
-#include "core/event/EventListener.h"
+#include "core/event/ApplicationEventListener.h"
 #include "core/event/KeyboardEvent.h"
+#include "core/event/KeyboardEventListener.h"
 #include "core/event/MouseButtonEvent.h"
+#include "core/event/MouseEventListener.h"
 #include "core/event/MouseMotionEvent.h"
 
 #include <SDL2/SDL.h>
@@ -15,26 +17,70 @@ namespace lib
 namespace core
 {
 
-void EventDispatcher::AddListener(lib::core::EventListener * el)
+void EventDispatcher::AddApplicationListener(lib::core::ApplicationEventListener * el)
 {
     // do not add NULL
     if(!el)
         return ;
 
-    auto it = std::find(mListeners.begin(), mListeners.end(), el);
+    auto it = std::find(mApplicationListeners.begin(), mApplicationListeners.end(), el);
 
     // listener not found -> add it
-    if(mListeners.end() == it)
-        mListeners.emplace_back(el);
+    if(mApplicationListeners.end() == it)
+        mApplicationListeners.emplace_back(el);
 }
 
-void EventDispatcher::RemoveListener(EventListener * el)
+void EventDispatcher::AddKeyboardListener(lib::core::KeyboardEventListener * el)
 {
-    auto it = std::find(mListeners.begin(), mListeners.end(), el);
+    // do not add NULL
+    if(!el)
+        return ;
+
+    auto it = std::find(mKeyboardListeners.begin(), mKeyboardListeners.end(), el);
+
+    // listener not found -> add it
+    if(mKeyboardListeners.end() == it)
+        mKeyboardListeners.emplace_back(el);
+}
+
+void EventDispatcher::AddMouseListener(lib::core::MouseEventListener * el)
+{
+    // do not add NULL
+    if(!el)
+        return ;
+
+    auto it = std::find(mMouseListeners.begin(), mMouseListeners.end(), el);
+
+    // listener not found -> add it
+    if(mMouseListeners.end() == it)
+        mMouseListeners.emplace_back(el);
+}
+
+void EventDispatcher::RemoveApplicationListener(ApplicationEventListener * el)
+{
+    auto it = std::find(mApplicationListeners.begin(), mApplicationListeners.end(), el);
 
     // listener found -> remove it
-    if(it != mListeners.end())
-        mListeners.erase(it);
+    if(it != mApplicationListeners.end())
+        mApplicationListeners.erase(it);
+}
+
+void EventDispatcher::RemoveKeyboardListener(KeyboardEventListener * el)
+{
+    auto it = std::find(mKeyboardListeners.begin(), mKeyboardListeners.end(), el);
+
+    // listener found -> remove it
+    if(it != mKeyboardListeners.end())
+        mKeyboardListeners.erase(it);
+}
+
+void EventDispatcher::RemoveMouseListener(MouseEventListener * el)
+{
+    auto it = std::find(mMouseListeners.begin(), mMouseListeners.end(), el);
+
+    // listener found -> remove it
+    if(it != mMouseListeners.end())
+        mMouseListeners.erase(it);
 }
 
 void EventDispatcher::Update()
@@ -51,7 +97,7 @@ void EventDispatcher::Update()
 
                 MouseMotionEvent e(m.x, m.y, m.xrel, m.yrel, m.state);
 
-                for(EventListener * el : mListeners)
+                for(MouseEventListener * el : mMouseListeners)
                     el->OnMouseMotion(e);
             }
             break;
@@ -62,7 +108,7 @@ void EventDispatcher::Update()
 
                 MouseButtonEvent e(b.x, b.y, b.button);
 
-                for(EventListener * el : mListeners)
+                for(MouseEventListener * el : mMouseListeners)
                     el->OnMouseButtonDown(e);
             }
             break;
@@ -73,7 +119,7 @@ void EventDispatcher::Update()
 
                 MouseButtonEvent e(b.x, b.y, b.button);
 
-                for(EventListener * el : mListeners)
+                for(MouseEventListener * el : mMouseListeners)
                     el->OnMouseButtonUp(e);
             }
             break;
@@ -82,7 +128,7 @@ void EventDispatcher::Update()
             {
                 KeyboardEvent e(event.key.keysym.sym);
 
-                for(EventListener * el : mListeners)
+                for(KeyboardEventListener * el : mKeyboardListeners)
                     el->OnKeyDown(e);
             }
             break;
@@ -91,13 +137,13 @@ void EventDispatcher::Update()
             {
                 KeyboardEvent e(event.key.keysym.sym);
 
-                for(EventListener * el : mListeners)
+                for(KeyboardEventListener * el : mKeyboardListeners)
                     el->OnKeyUp(e);
             }
             break;
 
             case SDL_QUIT:
-                for(EventListener * el : mListeners)
+                for(ApplicationEventListener * el : mApplicationListeners)
                     el->OnApplicationQuit();
             break;
 

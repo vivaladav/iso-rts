@@ -6,24 +6,15 @@ namespace core
 {
 
 class EventDispatcher;
-class KeyboardEvent;
 class MouseButtonEvent;
 class MouseMotionEvent;
 
-class EventListener
+class MouseEventListener
 {
 public:
-    virtual ~EventListener();
+    virtual ~MouseEventListener();
 
 private:
-    // -- application events --
-    virtual void OnApplicationQuit();
-
-    // -- keyboard events --
-    virtual void OnKeyDown(const KeyboardEvent & event);
-    virtual void OnKeyUp(const KeyboardEvent & event);
-
-    // -- mouse event --
     virtual void OnMouseButtonDown(const MouseButtonEvent & event);
     virtual void OnMouseButtonUp(const MouseButtonEvent & event);
     virtual void OnMouseMotion(const MouseMotionEvent & event);

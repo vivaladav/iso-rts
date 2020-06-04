@@ -35,20 +35,43 @@ Application::~Application()
     delete mEventDispatcher;
 }
 
+// ===== command line arguments =====
 void Application::ProcessArguments()
 {
 }
 
-void Application::AddEventListener(EventListener * listener)
+// ===== events =====
+void Application::AddApplicationListener(ApplicationEventListener * listener)
 {
-    mEventDispatcher->AddListener(listener);
+    mEventDispatcher->AddApplicationListener(listener);
 }
 
-void Application::RemoveEventListener(EventListener * listener)
+void Application::AddKeyboardListener(KeyboardEventListener * listener)
 {
-    mEventDispatcher->RemoveListener(listener);
+    mEventDispatcher->AddKeyboardListener(listener);
 }
 
+void Application::AddMouseListener(MouseEventListener * listener)
+{
+    mEventDispatcher->AddMouseListener(listener);
+}
+
+void Application::RemoveApplicationListener(ApplicationEventListener * listener)
+{
+    mEventDispatcher->RemoveApplicationListener(listener);
+}
+
+void Application::RemoveKeyboardListener(KeyboardEventListener * listener)
+{
+    mEventDispatcher->RemoveKeyboardListener(listener);
+}
+
+void Application::RemoveMouseListener(MouseEventListener * listener)
+{
+    mEventDispatcher->RemoveMouseListener(listener);
+}
+
+// ===== execution =====
 void Application::Run()
 {
     mRunning = true;

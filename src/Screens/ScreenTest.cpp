@@ -54,7 +54,7 @@ void ScreenTest::OnActive()
 {
     Screen::OnActive();
 
-    GetGame()->AddEventListener(this);
+    GetGame()->AddMouseListener(this);
 
     GetGame()->SetClearColor(0x22, 0x22, 0x22, 0xFF);
 }
@@ -63,7 +63,7 @@ void ScreenTest::OnInactive()
 {
     Screen::OnInactive();
 
-    GetGame()->RemoveEventListener(this);
+    GetGame()->RemoveMouseListener(this);
 }
 
 } // namespace game

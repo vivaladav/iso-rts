@@ -7,18 +7,27 @@ namespace lib
 namespace core
 {
 
-class EventListener;
+class ApplicationEventListener;
+class KeyboardEventListener;
+class MouseEventListener;
 
 class EventDispatcher
 {
 public:
-    void AddListener(EventListener * el);
-    void RemoveListener(EventListener * el);
+    void AddApplicationListener(ApplicationEventListener * el);
+    void AddKeyboardListener(KeyboardEventListener * el);
+    void AddMouseListener(MouseEventListener * el);
+
+    void RemoveApplicationListener(ApplicationEventListener * el);
+    void RemoveKeyboardListener(KeyboardEventListener * el);
+    void RemoveMouseListener(MouseEventListener * el);
 
     void Update();
 
 private:
-    std::vector<EventListener *> mListeners;
+    std::vector<ApplicationEventListener *> mApplicationListeners;
+    std::vector<KeyboardEventListener *> mKeyboardListeners;
+    std::vector<MouseEventListener *> mMouseListeners;
 };
 
 } // namespace core

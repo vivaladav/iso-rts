@@ -6,12 +6,14 @@ find_package(SDL2 REQUIRED)
 add_library(
     core
     src/Application.cpp
+    src/event/ApplicationEventListener.cpp
     src/event/Event.cpp
     src/event/EventDispatcher.cpp
-    src/event/EventListener.cpp
     src/event/KeyboardEvent.cpp
+    src/event/KeyboardEventListener.cpp
     src/event/MouseButtonEvent.cpp
     src/event/MouseEvent.cpp
+    src/event/MouseEventListener.cpp
     src/event/MouseMotionEvent.cpp
 )
 

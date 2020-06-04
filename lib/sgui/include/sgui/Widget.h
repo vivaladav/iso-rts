@@ -1,13 +1,14 @@
 #pragma once
 
-#include "core/event/EventListener.h"
+#include "core/event/KeyboardEventListener.h"
+#include "core/event/MouseEventListener.h"
 
 namespace lib
 {
 namespace sgui
 {
 
-class Widget : public core::EventListener
+class Widget : public core::KeyboardEventListener, public core::MouseEventListener
 {
 public:
     Widget(int wid, Widget * parent = nullptr);

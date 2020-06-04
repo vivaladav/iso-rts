@@ -2,14 +2,14 @@
 
 #include "Screen.h"
 
-#include <core/event/EventListener.h>
+#include <core/event/MouseEventListener.h>
 
 namespace game
 {
 
 class IsoMap;
 
-class ScreenGame : public Screen, public lib::core::EventListener
+class ScreenGame : public Screen, public lib::core::MouseEventListener
 {
 public:
     ScreenGame(Game * game);

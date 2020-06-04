@@ -8,8 +8,10 @@ namespace lib
 namespace core
 {
 
+class ApplicationEventListener;
 class EventDispatcher;
-class EventListener;
+class KeyboardEventListener;
+class MouseEventListener;
 
 class Application
 {
@@ -17,15 +19,22 @@ public:
     Application(int argc, char * argv[]);
     virtual ~Application();
 
+    // -- command line arguments --
     int GetNumArguments() const;
     const std::vector<std::string> & GetArguments() const;
     virtual void ProcessArguments();
 
-    void AddEventListener(EventListener * listener);
-    void RemoveEventListener(EventListener * listener);
+    // -- events --
+    void AddApplicationListener(ApplicationEventListener * el);
+    void AddKeyboardListener(KeyboardEventListener * el);
+    void AddMouseListener(MouseEventListener * el);
 
+    void RemoveApplicationListener(ApplicationEventListener * el);
+    void RemoveKeyboardListener(KeyboardEventListener * el);
+    void RemoveMouseListener(MouseEventListener * el);
+
+    // -- execution --
     void Run();
-
     void Exit();
 
 private:

@@ -17,12 +17,14 @@ Screen::~Screen() { delete mSharedListener; }
 
 void Screen::OnActive()
 {
-    mGame->AddEventListener(mSharedListener);
+    mGame->AddApplicationListener(mSharedListener);
+    mGame->AddKeyboardListener(mSharedListener);
 }
 
 void Screen::OnInactive()
 {
-    mGame->RemoveEventListener(mSharedListener);
+    mGame->RemoveApplicationListener(mSharedListener);
+    mGame->RemoveKeyboardListener(mSharedListener);
 }
 
 } // namespace game

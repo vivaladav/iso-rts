@@ -1,13 +1,14 @@
 #pragma once
 
-#include <core/event/EventListener.h>
+#include <core/event/ApplicationEventListener.h>
+#include <core/event/KeyboardEventListener.h>
 
 namespace game
 {
 
 class Screen;
 
-class SharedScreenListener : public lib::core::EventListener
+class SharedScreenListener : public lib::core::ApplicationEventListener, public lib::core::KeyboardEventListener
 {
 public:
     SharedScreenListener(Screen * parent);
