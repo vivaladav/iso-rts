@@ -20,6 +20,7 @@ protected:
     void OnActive() override;
 
 private:
+    lib::sgui::PushButton * mButtonExit = nullptr;
     lib::sgui::PushButton * mButtonNew = nullptr;
 };
 
