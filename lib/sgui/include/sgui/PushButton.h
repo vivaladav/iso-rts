@@ -1,12 +1,14 @@
 #pragma once
 
-#include "graphic/Image.h"
 #include "sgui/Widget.h"
 
 #include <functional>
 
 namespace lib
 {
+
+namespace graphic { class Image; }
+
 namespace sgui
 {
 

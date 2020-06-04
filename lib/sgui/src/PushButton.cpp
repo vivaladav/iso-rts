@@ -1,6 +1,7 @@
 #include "sgui/PushButton.h"
 
 #include "core/event/MouseButtonEvent.h"
+#include "graphic/Image.h"
 
 #include <cassert>
 
