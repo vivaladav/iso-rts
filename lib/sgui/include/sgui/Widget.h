@@ -31,8 +31,11 @@ public:
 
     void SetVisible(bool val);
     bool IsVisible() const;
+
     int GetX() const;
     int GetY() const;
+    int GetScreenX() const;
+    int GetScreenY() const;
     void SetPosition(int x, int y);
     void SetX(int x);
     void SetY(int y);
@@ -60,6 +63,9 @@ private:
     virtual void OnRender();
     void PropagateRender();
 
+    void OnParentPositionChanged(int dx, int dy);
+    void PropagateParentPositionChanged(int dx, int dy);
+
 private:
     std::vector<Widget *> mWidgets;
 
@@ -67,6 +73,9 @@ private:
     Widget * mParent = nullptr;
 
     int mId = -1;
+
+    int mRelX = 0;
+    int mRelY = 0;
 
     int mScreenX = 0;
     int mScreenY = 0;
@@ -89,16 +98,10 @@ inline bool Widget::IsEnabled() const { return mEnabled; }
 
 inline bool Widget::IsVisible() const { return mVisible; }
 
-inline int Widget::GetX() const { return mScreenX; }
-inline int Widget::GetY() const { return mScreenY; }
-
-inline void Widget::SetPosition(int x, int y)
-{
-    mScreenX = x;
-    mScreenY = y;
-}
-inline void Widget::SetX(int x) { mScreenX = x; }
-inline void Widget::SetY(int y) { mScreenY = y; }
+inline int Widget::GetX() const { return mRelX; }
+inline int Widget::GetY() const { return mRelY; }
+inline int Widget::GetScreenX() const { return mScreenX; }
+inline int Widget::GetScreenY() const { return mScreenY; }
 
 inline int Widget::GetWidth() const { return mWidth; }
 inline int Widget::GetHeight() const { return mHeight; }

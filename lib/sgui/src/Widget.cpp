@@ -16,6 +16,9 @@ Widget::Widget(int wid, Widget * parent)
     {
         mParent = parent;
         parent->AddChild(this);
+
+        mScreenX = parent->GetScreenX();
+        mScreenY = parent->GetScreenY();
     }
     else
     {
@@ -78,6 +81,42 @@ void Widget::OnChildVisibleChanged(Widget * /*child*/)
     // TODO - handle visible changed in child
 }
 
+void Widget::SetPosition(int x, int y)
+{
+    const int dx = x - mRelX;
+    const int dy = y - mRelY;
+
+    mRelX = x;
+    mRelY = y;
+
+    mScreenX += dx;
+    mScreenY += dy;
+
+    PropagateParentPositionChanged(dx, dy);
+}
+
+void Widget::SetX(int x)
+{
+    const int dx = x - mRelX;
+
+    mRelX = x;
+
+    mScreenX += dx;
+
+    PropagateParentPositionChanged(dx, 0);
+}
+
+void Widget::SetY(int y)
+{
+    const int dy = y - mRelY;
+
+    mRelY = y;
+
+    mScreenY += dy;
+
+    PropagateParentPositionChanged(0, dy);
+}
+
 void Widget::AddChild(Widget * w)
 {
     // widget already added
@@ -137,6 +176,21 @@ void Widget::PropagateRender()
     {
         w->OnRender();
         w->PropagateRender();
+    }
+}
+
+void Widget::OnParentPositionChanged(int dx, int dy)
+{
+    mScreenX += dx;
+    mScreenY += dy;
+}
+
+void Widget::PropagateParentPositionChanged(int dx, int dy)
+{
+    for(Widget * w : mWidgets)
+    {
+        w->OnParentPositionChanged(dx, dy);
+        w->PropagateParentPositionChanged(dx, dy);
     }
 }
 

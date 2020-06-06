@@ -14,34 +14,39 @@ namespace game
 ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(ScreenId::MAIN_MENU, game)
 {
+    using namespace lib::graphic;
     using namespace lib::sgui;
 
     mStage = Stage::Create();
     game->AddMouseListener(mStage);
 
+    int buttonId = 10;
+
+    Widget * container = new Widget(0);
+
+    int buttonY = 0;
     const int VMARGIN = 100;
-    int buttonId = 0;
 
     // -- BUTTON NEW GAME --
-    mButtonNew = new lib::sgui::PushButton(buttonId++);
+    mButtonNew = new PushButton(buttonId++, container);
     mButtonNew->SetBackground("data/img/buttons/new_game-01.png");
-
-    const int buttonX = (lib::graphic::Renderer::Instance()->GetWidth() - mButtonNew->GetWidth()) * 0.5f;
-    int buttonY = 300;
-
-    mButtonNew->SetPosition(buttonX, buttonY);
 
     mButtonNew->SetOnClickFunction([this] { GetStateManager()->RequestNextActiveState(ScreenId::GAME); });
 
     buttonY += mButtonNew->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    mButtonExit = new lib::sgui::PushButton(buttonId++);
+    mButtonExit = new PushButton(buttonId++, container);
     mButtonExit->SetBackground("data/img/buttons/exit-01.png");
 
-    mButtonExit->SetPosition(buttonX, buttonY);
-
     mButtonExit->SetOnClickFunction([this] { GetGame()->Exit(); });
+
+    mButtonExit->SetY(buttonY);
+
+    // position buttons panel
+    const int containerX = (Renderer::Instance()->GetWidth() - mButtonNew->GetWidth()) * 0.5f;
+    const int containerY = 300;
+    container->SetPosition(containerX, containerY);
 }
 
 ScreenMainMenu::~ScreenMainMenu()

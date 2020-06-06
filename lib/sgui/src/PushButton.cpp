@@ -36,14 +36,14 @@ void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent & event)
     const int x = event.GetX();
     const int y = event.GetY();
 
-    if(x > GetX() && x < (GetX() + mBg->GetWidth()) &&
-       y > GetY() && y < (GetY() + mBg->GetHeight()))
+    if(x > GetScreenX() && x < (GetScreenX() + mBg->GetWidth()) &&
+       y > GetScreenY() && y < (GetScreenY() + mBg->GetHeight()))
         mOnClick();
 }
 
 void PushButton::OnRender()
 {
-    mBg->SetPosition(GetX(), GetY());
+    mBg->SetPosition(GetScreenX(), GetScreenY());
     mBg->Render();
 }
 
