@@ -5,6 +5,7 @@
 
 #include <graphic/Renderer.h>
 #include <sgui/PushButton.h>
+#include <sgui/Stage.h>
 #include <utilities/StateManager.h>
 
 namespace game
@@ -13,6 +14,11 @@ namespace game
 ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(ScreenId::MAIN_MENU, game)
 {
+    using namespace lib::sgui;
+
+    mStage = Stage::Create();
+    game->AddMouseListener(mStage);
+
     const int VMARGIN = 100;
     int buttonId = 0;
 
@@ -27,9 +33,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     mButtonNew->SetOnClickFunction([this] { GetStateManager()->RequestNextActiveState(ScreenId::GAME); });
 
-    GetGame()->AddKeyboardListener(mButtonNew);
-    GetGame()->AddMouseListener(mButtonNew);
-
     buttonY += mButtonNew->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
@@ -39,15 +42,11 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     mButtonExit->SetPosition(buttonX, buttonY);
 
     mButtonExit->SetOnClickFunction([this] { GetGame()->Exit(); });
-
-    GetGame()->AddKeyboardListener(mButtonExit);
-    GetGame()->AddMouseListener(mButtonExit);
 }
 
 ScreenMainMenu::~ScreenMainMenu()
 {
-    delete mButtonNew;
-    delete mButtonExit;
+    lib::sgui::Stage::Destroy();
 }
 
 void ScreenMainMenu::Update()
@@ -56,8 +55,7 @@ void ScreenMainMenu::Update()
 
 void ScreenMainMenu::Render()
 {
-    mButtonNew->Render();
-    mButtonExit->Render();
+    mStage->Render();
 }
 
 void ScreenMainMenu::OnActive()

@@ -20,12 +20,12 @@ public:
 
     void SetBackground(const char * file);
 
-    void Render() override;
-
-    // -- mouse event --
-    void OnMouseButtonUp(const core::MouseButtonEvent & event) override;
-
     void SetOnClickFunction(std::function<void()> f);
+
+private:
+    void HandleMouseButtonUp(const core::MouseButtonEvent & event) override;
+
+    void OnRender() override;
 
 private:
     std::function<void()> mOnClick;

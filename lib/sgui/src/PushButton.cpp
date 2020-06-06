@@ -30,14 +30,8 @@ void PushButton::SetBackground(const char * file)
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 }
 
-void PushButton::Render()
-{
-    mBg->SetPosition(GetX(), GetY());
-    mBg->Render();
-}
-
 // -- mouse event --
-void PushButton::OnMouseButtonUp(const core::MouseButtonEvent & event)
+void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent & event)
 {
     const int x = event.GetX();
     const int y = event.GetY();
@@ -45,6 +39,12 @@ void PushButton::OnMouseButtonUp(const core::MouseButtonEvent & event)
     if(x > GetX() && x < (GetX() + mBg->GetWidth()) &&
        y > GetY() && y < (GetY() + mBg->GetHeight()))
         mOnClick();
+}
+
+void PushButton::OnRender()
+{
+    mBg->SetPosition(GetX(), GetY());
+    mBg->Render();
 }
 
 } // namespace sgui
