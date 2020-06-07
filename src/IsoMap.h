@@ -38,7 +38,7 @@ public:
 
     void Render();
 
-    Cell2D TileFromScreenPoint(int x, int y) const;
+    Cell2D CellFromScreenPoint(int x, int y) const;
 
 private:
     void UpdateTilePositions();

@@ -88,7 +88,7 @@ void IsoMap::Render()
     }
 }
 
-Cell2D IsoMap::TileFromScreenPoint(int x, int y) const
+Cell2D IsoMap::CellFromScreenPoint(int x, int y) const
 {
     const float xf = x - mX0;
     const float yf = y - mY0;

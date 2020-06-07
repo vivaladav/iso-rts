@@ -58,7 +58,7 @@ void ScreenGame::Render()
 
 void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
-    const Cell2D c = mMap->TileFromScreenPoint(event.GetX(), event.GetY());
+    const Cell2D c = mMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
               << "cell " << c.row << "," << c.col << std::endl;
