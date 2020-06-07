@@ -1,5 +1,6 @@
 #include "sgui/Stage.h"
 
+#include "core/event/MouseMotionEvent.h"
 #include "sgui/Widget.h"
 
 #include <algorithm>
@@ -81,10 +82,21 @@ void Stage::OnMouseButtonUp(const core::MouseButtonEvent & event)
 
 void Stage::OnMouseMotion(const core::MouseMotionEvent & event)
 {
+    const int x = event.GetX();
+    const int y = event.GetY();
+
     for(Widget * w : mWidgets)
     {
-        w->PropagateMouseMotion(event);
-        w->HandleMouseMotion(event);
+        if(w->IsScreenPointInside(x, y))
+        {
+            w->PropagateMouseMotion(event);
+
+            w->SetMouseOver();
+
+            w->HandleMouseMotion(event);
+        }
+        else
+            w->SetMouseOut();
     }
 }
 

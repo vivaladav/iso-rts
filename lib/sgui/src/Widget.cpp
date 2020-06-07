@@ -1,8 +1,10 @@
 #include "sgui/Widget.h"
 
+#include "core/event/MouseMotionEvent.h"
 #include "sgui/Stage.h"
 
 #include <algorithm>
+#include <iostream>
 
 namespace lib
 {
@@ -70,6 +72,16 @@ void Widget::RemoveChild(Widget * w)
     mChildren.erase(res);
 }
 */
+
+void Widget::HandleMouseOver()
+{
+    std::cout << "Widget::HandleMouseOver - ID: " << mId << std::endl;
+}
+
+void Widget::HandleMouseOut()
+{
+    std::cout << "Widget::HandleMouseOut - ID: " << mId << std::endl;
+}
 
 void Widget::OnChildEnableChanged(Widget * /*child*/)
 {
@@ -164,11 +176,48 @@ void Widget::HandleMouseMotion(const core::MouseMotionEvent &) { }
 
 void Widget::PropagateMouseMotion(const core::MouseMotionEvent & event)
 {
+    const int x = event.GetX();
+    const int y = event.GetY();
+
     for(Widget * w : mWidgets)
     {
-        w->PropagateMouseMotion(event);
-        w->HandleMouseMotion(event);
+        if(w->IsScreenPointInside(x, y))
+        {
+            w->PropagateMouseMotion(event);
+
+            w->SetMouseOver();
+
+            w->HandleMouseMotion(event);
+        }
+        else
+            w->SetMouseOut();
     }
+}
+
+void Widget::SetMouseOver()
+{
+    // mouse already over -> nothing to do
+    if(mMouseOver)
+        return;
+
+    mMouseOver = true;
+
+    HandleMouseOver();
+}
+
+void Widget::SetMouseOut()
+{
+    // mouse already over -> nothing to do
+    if(!mMouseOver)
+        return;
+
+    mMouseOver = false;
+
+    // propagate out to handle case of overlapping widgets
+    for(Widget * w : mWidgets)
+        w->SetMouseOut();
+
+    HandleMouseOut();
 }
 
 void Widget::OnRender()

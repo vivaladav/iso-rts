@@ -40,6 +40,7 @@ public:
     void SetX(int x);
     void SetY(int y);
 
+    bool IsMouseOver() const;
     bool IsScreenPointInside(int x, int y);
 
     int GetWidth() const;
@@ -47,6 +48,9 @@ public:
 
 protected:
     void SetSize(int w, int h);
+
+    virtual void HandleMouseOver();
+    virtual void HandleMouseOut();
 
 private:
     void OnChildEnableChanged(Widget * child);
@@ -61,6 +65,9 @@ private:
     void PropagateMouseButtonUp(const core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(const core::MouseMotionEvent & event);
     void PropagateMouseMotion(const core::MouseMotionEvent & event);
+
+    void SetMouseOver();
+    void SetMouseOut();
 
     virtual void OnRender();
     void PropagateRender();
@@ -87,6 +94,7 @@ private:
 
     bool mEnabled = true;
     bool mVisible = true;
+    bool mMouseOver = false;
 
     // access private methods for events and rendering
     friend class Stage;
@@ -104,6 +112,8 @@ inline int Widget::GetX() const { return mRelX; }
 inline int Widget::GetY() const { return mRelY; }
 inline int Widget::GetScreenX() const { return mScreenX; }
 inline int Widget::GetScreenY() const { return mScreenY; }
+
+inline bool Widget::IsMouseOver() const { return mMouseOver; }
 
 inline int Widget::GetWidth() const { return mWidth; }
 inline int Widget::GetHeight() const { return mHeight; }
