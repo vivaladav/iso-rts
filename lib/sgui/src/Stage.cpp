@@ -1,5 +1,6 @@
 #include "sgui/Stage.h"
 
+#include "core/event/MouseButtonEvent.h"
 #include "core/event/MouseMotionEvent.h"
 #include "sgui/Widget.h"
 
@@ -43,15 +44,6 @@ Stage::~Stage()
         delete w;
 }
 
-void Stage::AddChild(Widget * w)
-{
-    // widget already added
-    if(std::find(mWidgets.begin(), mWidgets.end(), w) != mWidgets.end())
-        return ;
-
-    mWidgets.emplace_back(w);
-}
-
 void Stage::OnChildEnableChanged(Widget * /*child*/)
 {
     // TODO - handle enable changed in child
@@ -64,19 +56,31 @@ void Stage::OnChildVisibleChanged(Widget * /*child*/)
 
 void Stage::OnMouseButtonDown(const core::MouseButtonEvent & event)
 {
+    const int x = event.GetX();
+    const int y = event.GetY();
+
     for(Widget * w : mWidgets)
     {
-        w->PropagateMouseButtonDown(event);
-        w->HandleMouseButtonDown(event);
+        if(w->IsScreenPointInside(x, y))
+        {
+            w->PropagateMouseButtonDown(event);
+            w->HandleMouseButtonDown(event);
+        }
     }
 }
 
 void Stage::OnMouseButtonUp(const core::MouseButtonEvent & event)
 {
+    const int x = event.GetX();
+    const int y = event.GetY();
+
     for(Widget * w : mWidgets)
     {
-        w->PropagateMouseButtonUp(event);
-        w->HandleMouseButtonUp(event);
+        if(w->IsScreenPointInside(x, y))
+        {
+            w->PropagateMouseButtonUp(event);
+            w->HandleMouseButtonUp(event);
+        }
     }
 }
 
@@ -98,6 +102,18 @@ void Stage::OnMouseMotion(const core::MouseMotionEvent & event)
         else
             w->SetMouseOut();
     }
+}
+
+void Stage::AddChild(Widget * w)
+{
+    mWidgets.emplace_back(w);
+}
+
+void Stage::RemoveChild(Widget * w)
+{
+    auto res = std::find(mWidgets.begin(), mWidgets.end(), w);
+
+    mWidgets.erase(res);
 }
 
 } // namespace sgui

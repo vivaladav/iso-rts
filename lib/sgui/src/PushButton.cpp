@@ -31,13 +31,9 @@ void PushButton::SetBackground(const char * file)
 }
 
 // -- mouse event --
-void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent & event)
+void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent &)
 {
-    const int x = event.GetX();
-    const int y = event.GetY();
-
-    if(IsScreenPointInside(x, y))
-        mOnClick();
+    mOnClick();
 }
 
 void PushButton::OnRender()

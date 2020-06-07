@@ -32,21 +32,23 @@ private:
     Stage();
     ~Stage();
 
-    void AddChild(Widget * w);
-
     void OnChildEnableChanged(Widget * child);
     void OnChildVisibleChanged(Widget * child);
 
-    void OnMouseButtonDown(const core::MouseButtonEvent & event);
-    void OnMouseButtonUp(const core::MouseButtonEvent & event);
-    void OnMouseMotion(const core::MouseMotionEvent & event);
+    void OnMouseButtonDown(const core::MouseButtonEvent & event) override;
+    void OnMouseButtonUp(const core::MouseButtonEvent & event) override;
+    void OnMouseMotion(const core::MouseMotionEvent & event) override;
+
+private:
+    void AddChild(Widget * w);
+    void RemoveChild(Widget * w);
 
 private:
     static Stage * mInstance;
 
     std::vector<Widget *> mWidgets;
 
-    // add private methods to notify changes
+    // access private methods to notify changes
     friend class Widget;
 };
 

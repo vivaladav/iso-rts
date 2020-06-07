@@ -25,6 +25,7 @@ public:
     int GetWidgetId() const;
 
     Widget * GetParent() const;
+    void SetParent(Widget * parent);
 
     void SetEnabled(bool val);
     bool IsEnabled() const;
@@ -51,6 +52,8 @@ protected:
 
     virtual void HandleMouseOver();
     virtual void HandleMouseOut();
+
+    virtual void UpdateSize();
 
 private:
     void OnChildEnableChanged(Widget * child);
@@ -117,11 +120,6 @@ inline bool Widget::IsMouseOver() const { return mMouseOver; }
 
 inline int Widget::GetWidth() const { return mWidth; }
 inline int Widget::GetHeight() const { return mHeight; }
-inline void Widget::SetSize(int w, int h)
-{
-    mWidth = w;
-    mHeight = h;
-}
 
 } // namespace sgui
 } // namespace lib
