@@ -40,16 +40,18 @@ public:
     void SetX(int x);
     void SetY(int y);
 
+    bool IsScreenPointInside(int x, int y);
+
     int GetWidth() const;
     int GetHeight() const;
 
 protected:
     void SetSize(int w, int h);
 
+private:
     void OnChildEnableChanged(Widget * child);
     void OnChildVisibleChanged(Widget * child);
 
-private:
     void AddChild(Widget * w);
     void RemoveChild(Widget * w);
 

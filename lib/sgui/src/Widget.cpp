@@ -117,6 +117,11 @@ void Widget::SetY(int y)
     PropagateParentPositionChanged(0, dy);
 }
 
+bool Widget::IsScreenPointInside(int x, int y)
+{
+    return x > mScreenX && x < (mScreenX + mWidth) && y > mScreenY && y < (mScreenY + mHeight);
+}
+
 void Widget::AddChild(Widget * w)
 {
     // widget already added

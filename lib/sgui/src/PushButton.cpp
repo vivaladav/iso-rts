@@ -36,8 +36,7 @@ void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent & event)
     const int x = event.GetX();
     const int y = event.GetY();
 
-    if(x > GetScreenX() && x < (GetScreenX() + mBg->GetWidth()) &&
-       y > GetScreenY() && y < (GetScreenY() + mBg->GetHeight()))
+    if(IsScreenPointInside(x, y))
         mOnClick();
 }
 
