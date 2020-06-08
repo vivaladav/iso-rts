@@ -1,26 +1,18 @@
 #pragma once
 
-#include <vector>
+#include "sgui/WidgetContainer.h"
 
 namespace lib
 {
-
-namespace core
-{
-    class MouseButtonEvent;
-    class MouseMotionEvent;
-}
-
 namespace sgui
 {
 
 class Stage;
 
-class Widget
+class Widget : public WidgetContainer
 {
 public:
     Widget(int wid, Widget * parent = nullptr);
-    virtual ~Widget();
 
     int GetWidgetId() const;
 
@@ -56,31 +48,19 @@ protected:
     virtual void UpdateSize();
 
 private:
-    void OnChildEnableChanged(Widget * child);
-    void OnChildVisibleChanged(Widget * child);
-
-    void AddChild(Widget * w);
-    void RemoveChild(Widget * w);
-
     virtual void HandleMouseButtonDown(const core::MouseButtonEvent & event);
-    void PropagateMouseButtonDown(const core::MouseButtonEvent & event);
     virtual void HandleMouseButtonUp(const core::MouseButtonEvent & event);
-    void PropagateMouseButtonUp(const core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(const core::MouseMotionEvent & event);
-    void PropagateMouseMotion(const core::MouseMotionEvent & event);
 
     void SetMouseOver();
     void SetMouseOut();
 
     virtual void OnRender();
-    void PropagateRender();
 
     void OnParentPositionChanged(int dx, int dy);
     void PropagateParentPositionChanged(int dx, int dy);
 
 private:
-    std::vector<Widget *> mWidgets;
-
     Stage * mStage = nullptr;
     Widget * mParent = nullptr;
 
@@ -100,7 +80,7 @@ private:
     bool mMouseOver = false;
 
     // access private methods for events and rendering
-    friend class Stage;
+    friend class WidgetContainer;
 };
 
 inline int Widget::GetWidgetId() const { return mId; }

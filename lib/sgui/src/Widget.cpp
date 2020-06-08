@@ -4,7 +4,6 @@
 #include "core/event/MouseMotionEvent.h"
 #include "sgui/Stage.h"
 
-#include <algorithm>
 #include <iostream>
 
 namespace lib
@@ -18,18 +17,13 @@ Widget::Widget(int wid, Widget * parent)
     SetParent(parent);
 }
 
-Widget::~Widget()
-{
-    for(Widget * w : mWidgets)
-        delete w;
-}
-
 void Widget::SetParent(Widget * parent)
 {
     // remove from current parent
     if(mParent)
     {
         mParent->RemoveChild(this);
+        mParent->UpdateSize();
         mParent = nullptr;
     }
     else if(mStage)
@@ -43,6 +37,7 @@ void Widget::SetParent(Widget * parent)
     {
         mParent = parent;
         parent->AddChild(this);
+        parent->UpdateSize();
 
         mScreenX = mRelX + parent->GetScreenX();
         mScreenY = mRelY + parent->GetScreenY();
@@ -128,16 +123,6 @@ void Widget::UpdateSize()
               << " - new size: " << mWidth << " x " << mHeight << std::endl;
 }
 
-void Widget::OnChildEnableChanged(Widget * /*child*/)
-{
-    // TODO - handle enable changed in child
-}
-
-void Widget::OnChildVisibleChanged(Widget * /*child*/)
-{
-    // TODO - handle visible changed in child
-}
-
 void Widget::SetPosition(int x, int y)
 {
     const int dx = x - mRelX;
@@ -188,77 +173,9 @@ bool Widget::IsScreenPointInside(int x, int y)
     return x > mScreenX && x < (mScreenX + mWidth) && y > mScreenY && y < (mScreenY + mHeight);
 }
 
-void Widget::AddChild(Widget * w)
-{
-    mWidgets.emplace_back(w);
-
-    UpdateSize();
-}
-
-void Widget::RemoveChild(Widget * w)
-{
-    auto res = std::find(mWidgets.begin(), mWidgets.end(), w);
-
-    mWidgets.erase(res);
-
-    UpdateSize();
-}
-
 void Widget::HandleMouseButtonDown(const core::MouseButtonEvent &) { }
-
-void Widget::PropagateMouseButtonDown(const core::MouseButtonEvent & event)
-{
-    const int x = event.GetX();
-    const int y = event.GetY();
-
-    for(Widget * w : mWidgets)
-    {
-        if(w->IsScreenPointInside(x, y))
-        {
-            w->PropagateMouseButtonDown(event);
-            w->HandleMouseButtonDown(event);
-        }
-    }
-}
-
 void Widget::HandleMouseButtonUp(const core::MouseButtonEvent &) { }
-
-void Widget::PropagateMouseButtonUp(const core::MouseButtonEvent & event)
-{
-    const int x = event.GetX();
-    const int y = event.GetY();
-
-    for(Widget * w : mWidgets)
-    {
-        if(w->IsScreenPointInside(x, y))
-        {
-            w->PropagateMouseButtonUp(event);
-            w->HandleMouseButtonUp(event);
-        }
-    }
-}
-
 void Widget::HandleMouseMotion(const core::MouseMotionEvent &) { }
-
-void Widget::PropagateMouseMotion(const core::MouseMotionEvent & event)
-{
-    const int x = event.GetX();
-    const int y = event.GetY();
-
-    for(Widget * w : mWidgets)
-    {
-        if(w->IsScreenPointInside(x, y))
-        {
-            w->PropagateMouseMotion(event);
-
-            w->SetMouseOver();
-
-            w->HandleMouseMotion(event);
-        }
-        else
-            w->SetMouseOut();
-    }
-}
 
 void Widget::SetMouseOver()
 {
@@ -286,18 +203,7 @@ void Widget::SetMouseOut()
     HandleMouseOut();
 }
 
-void Widget::OnRender()
-{
-}
-
-void Widget::PropagateRender()
-{
-    for(Widget * w : mWidgets)
-    {
-        w->OnRender();
-        w->PropagateRender();
-    }
-}
+void Widget::OnRender() { }
 
 void Widget::OnParentPositionChanged(int dx, int dy)
 {

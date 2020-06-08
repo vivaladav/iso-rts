@@ -8,6 +8,7 @@ add_library(
     src/PushButton.cpp
     src/Stage.cpp
     src/Widget.cpp
+    src/WidgetContainer.cpp
 )
 
 target_link_libraries(
