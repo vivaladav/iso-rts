@@ -1,7 +1,6 @@
 #include "Screens/ScreenTest.h"
 
 #include "Game.h"
-#include "Screens/ScreenIds.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Image.h>
@@ -12,8 +11,10 @@ namespace game
 {
 
 ScreenTest::ScreenTest(Game * game)
-    : Screen(ScreenId::TEST, game)
+    : Screen(game)
 {
+    game->SetClearColor(0x22, 0x22, 0x22, 0xFF);
+
     // -- Image testing --
     mImg1 = new lib::graphic::Image("data/img/tile01.png");
 
@@ -48,22 +49,6 @@ void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
     std::cout << "Mouse clicked - button: " << event.GetButton()
               << " - pos: " << event.GetX() << " , " << event.GetY() << std::endl;
-}
-
-void ScreenTest::OnActive()
-{
-    Screen::OnActive();
-
-    GetGame()->AddMouseListener(this);
-
-    GetGame()->SetClearColor(0x22, 0x22, 0x22, 0xFF);
-}
-
-void ScreenTest::OnInactive()
-{
-    Screen::OnInactive();
-
-    GetGame()->RemoveMouseListener(this);
 }
 
 } // namespace game

@@ -3,7 +3,7 @@
 namespace game
 {
 
-enum ScreenId : int
+enum StateId : int
 {
     GAME,
     MAIN_MENU,

@@ -2,11 +2,10 @@
 
 #include "Game.h"
 #include "Screens/Screen.h"
-#include "Screens/ScreenIds.h"
+#include "States/StatesIds.h"
 
 #include <core/event/KeyboardEvent.h>
 #include <graphic/Window.h>
-#include <utilities/StateManager.h>
 
 namespace game
 {
@@ -25,11 +24,11 @@ void SharedScreenListener::OnKeyUp(const lib::core::KeyboardEvent & event)
 
     // -- SCREENS NAVIGATION --
     else if(key == KeyboardEvent::KEY_G)
-        mScreen->GetStateManager()->RequestNextActiveState(ScreenId::GAME);
+        mScreen->GetGame()->RequestNextActiveState(StateId::GAME);
     else if(key == KeyboardEvent::KEY_M)
-        mScreen->GetStateManager()->RequestNextActiveState(ScreenId::MAIN_MENU);
+        mScreen->GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
     else if(key == KeyboardEvent::KEY_T)
-        mScreen->GetStateManager()->RequestNextActiveState(ScreenId::TEST);
+        mScreen->GetGame()->RequestNextActiveState(StateId::TEST);
 
     // -- WINDOW --
     else if(key == KeyboardEvent::KEY_F)

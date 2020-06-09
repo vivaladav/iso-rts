@@ -1,6 +1,7 @@
 #pragma once
 
-#include <utilities/State.h>
+#include <core/event/KeyboardEventListener.h>
+#include <core/event/MouseEventListener.h>
 
 namespace game
 {
@@ -8,21 +9,17 @@ namespace game
 class Game;
 class SharedScreenListener;
 
-class Screen : public lib::utilities::State
+class Screen : public lib::core::KeyboardEventListener , public lib::core::MouseEventListener
 {
 public:
-    Screen(unsigned int screenId, Game * game);
-    virtual ~Screen();
+    Screen(Game * game);
+    ~Screen();
 
     Game * GetGame() const;
 
     virtual void Update() = 0;
 
     virtual void Render() = 0;
-
-protected:
-    void OnActive() override;
-    void OnInactive() override;
 
 private:
     Game * mGame = nullptr;

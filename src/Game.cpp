@@ -1,9 +1,9 @@
 #include "Game.h"
 
-#include "Screens/ScreenIds.h"
-#include "Screens/ScreenGame.h"
-#include "Screens/ScreenMainMenu.h"
-#include "Screens/ScreenTest.h"
+#include "States/StatesIds.h"
+#include "States/StateGame.h"
+#include "States/StateMainMenu.h"
+#include "States/StateTest.h"
 
 #include <graphic/GraphicConstants.h>
 #include <graphic/Image.h>
@@ -31,11 +31,11 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new lib::utilities::StateManager;
 
-    mStateMan->AddState(new ScreenGame(this));
-    mStateMan->AddState(new ScreenTest(this));
-    mStateMan->AddState(new ScreenMainMenu(this));
+    mStateMan->AddState(new StateGame(this));
+    mStateMan->AddState(new StateTest(this));
+    mStateMan->AddState(new StateMainMenu(this));
 
-    mStateMan->RequestNextActiveState(ScreenId::MAIN_MENU);
+    mStateMan->RequestNextActiveState(StateId::MAIN_MENU);
 }
 
 Game::~Game()
@@ -46,15 +46,18 @@ Game::~Game()
     lib::graphic::Window::Destroy();
 }
 
+void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }
+
 void Game::Update()
 {
     mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);
 
     mStateMan->UpdateActive();
 
-    Screen * screen = static_cast<Screen *>(mStateMan->GetActiveState());
-    screen->Update();
-    screen->Render();
+    auto * state = static_cast<BaseGameState *>(mStateMan->GetActiveState());
+
+    state->Update();
+    state->Render();
 
     mRenderer->Finalize();
 }

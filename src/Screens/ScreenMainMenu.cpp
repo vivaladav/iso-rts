@@ -1,21 +1,22 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
-#include "Screens/ScreenIds.h"
+#include "States/StatesIds.h"
 
 #include <graphic/Renderer.h>
 #include <sgui/PushButton.h>
 #include <sgui/Stage.h>
-#include <utilities/StateManager.h>
 
 namespace game
 {
 
 ScreenMainMenu::ScreenMainMenu(Game * game)
-    : Screen(ScreenId::MAIN_MENU, game)
+    : Screen(game)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
+
+    game->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 
     mStage = Stage::Create();
     game->AddMouseListener(mStage);
@@ -31,7 +32,10 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     mButtonNew = new PushButton(buttonId++, container);
     mButtonNew->SetBackground("data/img/buttons/new_game-01.png");
 
-    mButtonNew->SetOnClickFunction([this] { GetStateManager()->RequestNextActiveState(ScreenId::GAME); });
+    mButtonNew->SetOnClickFunction([this]
+    {
+        GetGame()->RequestNextActiveState(StateId::GAME);
+    });
 
     buttonY += mButtonNew->GetHeight() + VMARGIN;
 
@@ -51,6 +55,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
 ScreenMainMenu::~ScreenMainMenu()
 {
+    GetGame()->RemoveMouseListener(mStage);
+
     lib::sgui::Stage::Destroy();
 }
 
@@ -61,13 +67,6 @@ void ScreenMainMenu::Update()
 void ScreenMainMenu::Render()
 {
     mStage->Render();
-}
-
-void ScreenMainMenu::OnActive()
-{
-    Screen::OnActive();
-
-    GetGame()->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 }
 
 } // namespace game

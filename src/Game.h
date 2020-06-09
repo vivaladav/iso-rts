@@ -21,6 +21,8 @@ namespace lib
 namespace game
 {
 
+enum StateId : int;
+
 class Game : public lib::core::Application
 {
 public:
@@ -28,6 +30,8 @@ public:
     ~Game();
 
     void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
+    void RequestNextActiveState(StateId sid);
 
 private:
     void Update() override;

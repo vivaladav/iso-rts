@@ -19,6 +19,10 @@ add_executable(
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenTest.cpp
     src/Screens/SharedScreenListener.cpp
+    src/States/BaseGameState.cpp
+    src/States/StateGame.cpp
+    src/States/StateMainMenu.cpp
+    src/States/StateTest.cpp
 )
 
 target_include_directories(

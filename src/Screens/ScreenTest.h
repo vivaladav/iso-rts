@@ -2,14 +2,12 @@
 
 #include "Screen.h"
 
-#include <core/event/MouseEventListener.h>
-
 namespace lib { namespace graphic { class Image; } }
 
 namespace game
 {
 
-class ScreenTest : public Screen, public lib::core::MouseEventListener
+class ScreenTest : public Screen
 {
 public:
     ScreenTest(Game * game);
@@ -19,10 +17,6 @@ public:
     void Render() override;
 
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
-
-private:
-    void OnActive() override;
-    void OnInactive() override;
 
 private:
     lib::graphic::Image * mImg1 = nullptr;

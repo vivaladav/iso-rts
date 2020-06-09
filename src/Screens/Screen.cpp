@@ -6,25 +6,20 @@
 namespace game
 {
 
-Screen::Screen(unsigned int screenId, Game * game)
-    : lib::utilities::State(screenId)
-    , mGame(game)
+Screen::Screen(Game * game)
+    : mGame(game)
     , mSharedListener(new SharedScreenListener(this))
-{
-}
-
-Screen::~Screen() { delete mSharedListener; }
-
-void Screen::OnActive()
 {
     mGame->AddApplicationListener(mSharedListener);
     mGame->AddKeyboardListener(mSharedListener);
 }
 
-void Screen::OnInactive()
+Screen::~Screen()
 {
     mGame->RemoveApplicationListener(mSharedListener);
     mGame->RemoveKeyboardListener(mSharedListener);
+
+    delete mSharedListener;
 }
 
 } // namespace game

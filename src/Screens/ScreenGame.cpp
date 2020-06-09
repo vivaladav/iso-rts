@@ -2,7 +2,6 @@
 
 #include "Game.h"
 #include "IsoMap.h"
-#include "Screens/ScreenIds.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Image.h>
@@ -16,8 +15,10 @@ namespace game
 {
 
 ScreenGame::ScreenGame(Game * game)
-    : Screen(ScreenId::GAME, game)
+    : Screen(game)
 {
+    game->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
+
     const int SIDE = 15;
     const int TILE_W = 128;
 
@@ -62,22 +63,6 @@ void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
               << "cell " << c.row << "," << c.col << std::endl;
-}
-
-void ScreenGame::OnActive()
-{
-    Screen::OnActive();
-
-    GetGame()->AddMouseListener(this);
-
-    GetGame()->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
-}
-
-void ScreenGame::OnInactive()
-{
-    Screen::OnInactive();
-
-    GetGame()->RemoveMouseListener(this);
 }
 
 } // namespace game

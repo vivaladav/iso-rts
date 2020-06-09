@@ -23,9 +23,6 @@ public:
     void Update() override;
     void Render() override;
 
-protected:
-    void OnActive() override;
-
 private:
     lib::sgui::Stage * mStage = nullptr;
     lib::sgui::PushButton * mButtonExit = nullptr;
