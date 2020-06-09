@@ -27,7 +27,12 @@ void PushButton::SetBackground(const char * file)
 
     mBg = new graphic::Image(file);
 
-    SetSize(mBg->GetWidth(), mBg->GetHeight());
+    // update button size if bigger (this shouldn't happen)
+    const int w = mBg->GetWidth();
+    const int h = mBg->GetHeight();
+
+    if(w > GetWidth() || h > GetHeight())
+        SetSize(w, h);
 }
 
 // -- mouse event --
