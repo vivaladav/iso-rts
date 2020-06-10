@@ -21,6 +21,8 @@ class WidgetContainer
 public:
     virtual ~WidgetContainer();
 
+    void ClearWidgets();
+
 protected:
     void AddChild(Widget * w);
     void RemoveChild(Widget * w);

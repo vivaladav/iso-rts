@@ -24,7 +24,6 @@ public:
     void Render() override;
 
 private:
-    lib::sgui::Stage * mStage = nullptr;
     lib::sgui::PushButton * mButtonExit = nullptr;
     lib::sgui::PushButton * mButtonNew = nullptr;
 };

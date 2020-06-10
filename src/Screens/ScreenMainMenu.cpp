@@ -18,9 +18,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     game->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 
-    mStage = Stage::Create();
-    game->AddMouseListener(mStage);
-
     int buttonId = 10;
 
     Widget * container = new Widget(0);
@@ -55,9 +52,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
 ScreenMainMenu::~ScreenMainMenu()
 {
-    GetGame()->RemoveMouseListener(mStage);
-
-    lib::sgui::Stage::Destroy();
+    lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenMainMenu::Update()
@@ -66,7 +61,6 @@ void ScreenMainMenu::Update()
 
 void ScreenMainMenu::Render()
 {
-    mStage->Render();
 }
 
 } // namespace game

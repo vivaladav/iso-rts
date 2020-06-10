@@ -10,6 +10,7 @@
 #include <graphic/Renderer.h>
 #include <graphic/TextureManager.h>
 #include <graphic/Window.h>
+#include <sgui/Stage.h>
 #include <utilities/StateManager.h>
 
 #include <iostream>
@@ -36,10 +37,19 @@ Game::Game(int argc, char * argv[])
     mStateMan->AddState(new StateMainMenu(this));
 
     mStateMan->RequestNextActiveState(StateId::MAIN_MENU);
+
+    // -- SGUI Stage --
+    mStage = lib::sgui::Stage::Create();
+    AddKeyboardListener(mStage);
+    AddMouseListener(mStage);
 }
 
 Game::~Game()
 {
+    RemoveKeyboardListener(mStage);
+    RemoveMouseListener(mStage);
+    lib::sgui::Stage::Destroy();
+
     delete mStateMan;
 
     lib::graphic::Renderer::Destroy();
@@ -57,7 +67,9 @@ void Game::Update()
     auto * state = static_cast<BaseGameState *>(mStateMan->GetActiveState());
 
     state->Update();
+
     state->Render();
+    mStage->Render();
 
     mRenderer->Finalize();
 }

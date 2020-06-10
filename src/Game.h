@@ -15,6 +15,8 @@ namespace lib
         class Window;
     }
 
+    namespace sgui { class Stage; }
+
     namespace utilities { class StateManager; }
 }
 
@@ -41,6 +43,8 @@ private:
     lib::graphic::Window * mWin = nullptr;
 
     lib::utilities::StateManager * mStateMan = nullptr;
+
+    lib::sgui::Stage * mStage = nullptr;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;

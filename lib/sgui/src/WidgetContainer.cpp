@@ -13,8 +13,15 @@ namespace sgui
 
 WidgetContainer::~WidgetContainer()
 {
+    ClearWidgets();
+}
+
+void WidgetContainer::ClearWidgets()
+{
     for(Widget * w : mWidgets)
         delete w;
+
+    mWidgets.clear();
 }
 
 void WidgetContainer::AddChild(Widget * w)
