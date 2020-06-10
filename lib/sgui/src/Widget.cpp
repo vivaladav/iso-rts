@@ -4,8 +4,6 @@
 #include "core/event/MouseMotionEvent.h"
 #include "sgui/Stage.h"
 
-#include <iostream>
-
 namespace lib
 {
 namespace sgui
@@ -89,12 +87,10 @@ void Widget::SetSize(int w, int h)
 
 void Widget::HandleMouseOver()
 {
-    std::cout << "Widget::HandleMouseOver - ID: " << mId << std::endl;
 }
 
 void Widget::HandleMouseOut()
 {
-    std::cout << "Widget::HandleMouseOut - ID: " << mId << std::endl;
 }
 
 // current behavior for Widgets is to grow according to children position and size
@@ -118,9 +114,6 @@ void Widget::UpdateSize()
 
     mWidth = maxX;
     mHeight = maxY;
-
-    std::cout << "Widget::UpdateSize - ID: " << mId
-              << " - new size: " << mWidth << " x " << mHeight << std::endl;
 }
 
 void Widget::SetPosition(int x, int y)
