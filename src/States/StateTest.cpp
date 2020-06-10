@@ -20,8 +20,6 @@ void StateTest::OnActive()
 
 void StateTest::OnInactive()
 {
-    mGame->RemoveMouseListener(mScreen);
-
     delete mScreen;
     mScreen = nullptr;
 }

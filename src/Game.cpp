@@ -46,8 +46,6 @@ Game::Game(int argc, char * argv[])
 
 Game::~Game()
 {
-    RemoveKeyboardListener(mStage);
-    RemoveMouseListener(mStage);
     lib::sgui::Stage::Destroy();
 
     delete mStateMan;

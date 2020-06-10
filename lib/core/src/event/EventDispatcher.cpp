@@ -27,7 +27,10 @@ void EventDispatcher::AddApplicationListener(lib::core::ApplicationEventListener
 
     // listener not found -> add it
     if(mApplicationListeners.end() == it)
+    {
+        el->mDispatcher = this;
         mApplicationListeners.emplace_back(el);
+    }
 }
 
 void EventDispatcher::AddKeyboardListener(lib::core::KeyboardEventListener * el)
@@ -40,7 +43,10 @@ void EventDispatcher::AddKeyboardListener(lib::core::KeyboardEventListener * el)
 
     // listener not found -> add it
     if(mKeyboardListeners.end() == it)
+    {
+        el->mDispatcher = this;
         mKeyboardListeners.emplace_back(el);
+    }
 }
 
 void EventDispatcher::AddMouseListener(lib::core::MouseEventListener * el)
@@ -53,7 +59,10 @@ void EventDispatcher::AddMouseListener(lib::core::MouseEventListener * el)
 
     // listener not found -> add it
     if(mMouseListeners.end() == it)
+    {
+        el->mDispatcher = this;
         mMouseListeners.emplace_back(el);
+    }
 }
 
 void EventDispatcher::RemoveApplicationListener(ApplicationEventListener * el)

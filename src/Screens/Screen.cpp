@@ -16,9 +16,6 @@ Screen::Screen(Game * game)
 
 Screen::~Screen()
 {
-    mGame->RemoveApplicationListener(mSharedListener);
-    mGame->RemoveKeyboardListener(mSharedListener);
-
     delete mSharedListener;
 }
 

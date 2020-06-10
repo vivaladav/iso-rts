@@ -12,10 +12,13 @@ class ApplicationEventListener
 public:
     virtual ~ApplicationEventListener();
 
-protected:
+private:
     virtual void OnApplicationQuit();
 
-    // EventDispatcher can generate events
+private:
+    EventDispatcher * mDispatcher = nullptr;
+
+    // only EventDispatcher can generate events
     friend class EventDispatcher;
 };
 

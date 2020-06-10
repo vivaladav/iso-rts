@@ -13,11 +13,14 @@ class KeyboardEventListener
 public:
     virtual ~KeyboardEventListener();
 
-protected:
+private:
     virtual void OnKeyDown(const KeyboardEvent & event);
     virtual void OnKeyUp(const KeyboardEvent & event);
 
-    // EventDispatcher can generate events
+private:
+    EventDispatcher * mDispatcher = nullptr;
+
+    // only EventDispatcher can generate events
     friend class EventDispatcher;
 };
 
