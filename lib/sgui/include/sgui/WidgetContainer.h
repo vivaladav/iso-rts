@@ -23,6 +23,8 @@ public:
 
     void ClearWidgets();
 
+    int GetNumChildren() const;
+
 protected:
     void AddChild(Widget * w);
     void RemoveChild(Widget * w);
@@ -39,6 +41,8 @@ protected:
 protected:
     std::vector<Widget *> mWidgets;
 };
+
+inline int WidgetContainer::GetNumChildren() const { return mWidgets.size(); }
 
 } // namespace sgui
 } // namespace lib

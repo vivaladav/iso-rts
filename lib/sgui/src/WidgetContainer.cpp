@@ -18,8 +18,20 @@ WidgetContainer::~WidgetContainer()
 
 void WidgetContainer::ClearWidgets()
 {
-    for(Widget * w : mWidgets)
-        delete w;
+    // nothing to do if empty
+    if(mWidgets.empty())
+        return ;
+
+    // make a copy of the list of Widgets because deleted ones will remove themselves
+    // from the original list
+    std::vector<Widget *> widgets = mWidgets;
+    auto it = widgets.rbegin();
+
+    while(it != widgets.rend())
+    {
+        delete *it;
+        ++it;
+    }
 
     mWidgets.clear();
 }

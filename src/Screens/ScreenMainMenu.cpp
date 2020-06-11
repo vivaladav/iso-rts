@@ -20,34 +20,34 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     int buttonId = 10;
 
-    Widget * container = new Widget(0);
+    Widget * panel = new Widget(0);
 
     int buttonY = 0;
     const int VMARGIN = 100;
 
     // -- BUTTON NEW GAME --
-    mButtonNew = new PushButton(buttonId++, container);
-    mButtonNew->SetBackground("data/img/buttons/new_game-01.png");
+    PushButton * button = new PushButton(buttonId++, panel);
+    button->SetBackground("data/img/buttons/new_game-01.png");
 
-    mButtonNew->SetOnClickFunction([this]
+    button->SetOnClickFunction([this]
     {
         GetGame()->RequestNextActiveState(StateId::GAME);
     });
 
-    buttonY += mButtonNew->GetHeight() + VMARGIN;
+    buttonY += button->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    mButtonExit = new PushButton(buttonId++, container);
-    mButtonExit->SetBackground("data/img/buttons/exit-01.png");
+    button = new PushButton(buttonId++, panel);
+    button->SetBackground("data/img/buttons/exit-01.png");
 
-    mButtonExit->SetOnClickFunction([this] { GetGame()->Exit(); });
+    button->SetOnClickFunction([this] { GetGame()->Exit(); });
 
-    mButtonExit->SetY(buttonY);
+    button->SetY(buttonY);
 
     // position buttons panel
-    const int containerX = (Renderer::Instance()->GetWidth() - mButtonNew->GetWidth()) * 0.5f;
+    const int containerX = (Renderer::Instance()->GetWidth() - panel->GetWidth()) * 0.5f;
     const int containerY = 300;
-    container->SetPosition(containerX, containerY);
+    panel->SetPosition(containerX, containerY);
 }
 
 ScreenMainMenu::~ScreenMainMenu()

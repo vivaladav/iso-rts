@@ -13,6 +13,7 @@ class Widget : public WidgetContainer
 {
 public:
     Widget(int wid, Widget * parent = nullptr);
+    ~Widget();
 
     int GetWidgetId() const;
 

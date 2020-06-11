@@ -2,15 +2,6 @@
 
 #include "Screen.h"
 
-namespace lib
-{
-    namespace sgui
-    {
-        class PushButton;
-        class Stage;
-    }
-}
-
 namespace game
 {
 
@@ -22,10 +13,6 @@ public:
 
     void Update() override;
     void Render() override;
-
-private:
-    lib::sgui::PushButton * mButtonExit = nullptr;
-    lib::sgui::PushButton * mButtonNew = nullptr;
 };
 
 } // namespace game

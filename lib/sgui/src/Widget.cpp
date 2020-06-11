@@ -15,6 +15,14 @@ Widget::Widget(int wid, Widget * parent)
     SetParent(parent);
 }
 
+Widget::~Widget()
+{
+    if(mParent)
+        mParent->RemoveChild(this);
+    else
+        mStage->RemoveChild(this);
+}
+
 void Widget::SetParent(Widget * parent)
 {
     // remove from current parent
