@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <cassert>
 #include <iostream>
@@ -40,11 +41,22 @@ Renderer::Renderer(Window * win)
     mSysRenderer = SDL_CreateRenderer(win->mSysWin, -1, SDL_RENDERER_ACCELERATED);
 
     // -- init SDL_image --
+    atexit(IMG_Quit);
+
     const int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
 
     if(IMG_Init(imgFlags) != imgFlags)
     {
         std::cerr << "SDL_image init failed: " << IMG_GetError() << std::endl;
+        exit(-1);
+    }
+
+    // -- init SDL_ttf --
+    atexit(TTF_Quit);
+
+    if(TTF_Init() == -1)
+    {
+        std::cerr << "SDL_ttf init failed: " << TTF_GetError() << std::endl;
         exit(-1);
     }
 

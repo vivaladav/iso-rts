@@ -5,8 +5,10 @@ find_package(SDL2 REQUIRED)
 
 add_library(
     graphic
+    src/Font.cpp
     src/Image.cpp
     src/Renderer.cpp
+    src/Text.cpp
     src/Texture.cpp
     src/TextureManager.cpp
     src/Window.cpp
@@ -21,4 +23,5 @@ target_link_libraries(
     graphic
     PRIVATE SDL2
     PRIVATE SDL2_image
+    PRIVATE SDL2_ttf
 )

@@ -4,7 +4,6 @@
 
 #include <SDL2/SDL.h>
 
-#include <cstdlib>
 #include <iostream>
 
 namespace lib
