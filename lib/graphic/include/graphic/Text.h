@@ -1,14 +1,19 @@
 #pragma once
 
+#include "graphic/TexturedRenderable.h"
+
 namespace lib
 {
 namespace graphic
 {
 
-class Text
+class Font;
+
+class Text : public TexturedRenderable
 {
 public:
-    Text(const char * text);
+    Text(const char * text, Font * font);
+    ~Text();
 };
 
 } // namespace graphic

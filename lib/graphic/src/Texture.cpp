@@ -14,6 +14,19 @@ namespace lib
 namespace graphic
 {
 
+Texture::Texture(SDL_Surface *data, TextureQuality q)
+{
+    assert(data);
+
+    // sest quality BEFORE creating a new texture
+    SetTextureQuality(q);
+
+    mData = SDL_CreateTextureFromSurface(Renderer::Instance()->mSysRenderer, data);
+
+    mW = data->w;
+    mH = data->h;
+}
+
 Texture::Texture(const char * file, TextureQuality q)
 {
     assert(file);

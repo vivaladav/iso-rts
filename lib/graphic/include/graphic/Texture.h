@@ -1,5 +1,6 @@
 #pragma once
 
+struct SDL_Surface;
 struct SDL_Texture;
 
 namespace lib
@@ -7,13 +8,14 @@ namespace lib
 namespace graphic
 {
 
-class Image;
+class TexturedRenderable;
 
 enum TextureQuality : int;
 
 class Texture
 {
 public:
+    Texture(SDL_Surface * data, TextureQuality q);
     Texture(const char * file, TextureQuality q);
     ~Texture();
 
@@ -30,7 +32,7 @@ private:
     int mH = 0;
 
     // access SDL Texture data
-    friend class Image;
+    friend class TexturedRenderable;
 };
 
 inline int Texture::GetWidth() const { return mW; }

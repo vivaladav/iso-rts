@@ -2,7 +2,15 @@
 
 #include "Screen.h"
 
-namespace lib { namespace graphic { class Image; } }
+namespace lib
+{
+    namespace graphic
+    {
+        class Image;
+        class Font;
+        class Text;
+    }
+}
 
 namespace game
 {
@@ -22,6 +30,9 @@ private:
     lib::graphic::Image * mImg1 = nullptr;
     lib::graphic::Image * mImg2 = nullptr;
     lib::graphic::Image * mImg3 = nullptr;
+
+    lib::graphic::Font * mFont1 = nullptr;
+    lib::graphic::Text * mTxt1 = nullptr;
 };
 
 } // namespace game

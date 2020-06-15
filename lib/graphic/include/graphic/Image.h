@@ -1,54 +1,22 @@
 #pragma once
 
-struct SDL_Rect;
+#include "graphic/TexturedRenderable.h"
 
 namespace lib
 {
 namespace graphic
 {
 
-class Texture;
-
-class Image
+class Image : public TexturedRenderable
 {
 public:
     Image();
     Image(const char * file);
-    ~Image();
 
     bool Load(const char * file);
-
-    void SetPosition(int x, int y);
-    void SetX(int x);
-    void SetY(int y);
-
-    void Scale(float s);
-    void ScaleW(float s);
-    void ScaleH(float s);
-
-    int GetWidth() const;
-    int GetHeight() const;
-
-    void SetRotation(double degs);
-
-    void SetFlip(int flip);
-
-    void Render();
-
-public:
-    static const int FLIP_NO;
-    static const int FLIP_HORIZ;
-    static const int FLIP_VERT;
-
-private:
-    Texture * mTex = nullptr;
-
-    SDL_Rect * mRect = nullptr;
-    double mRot = 0;
-    int mFlip;
 };
 
-inline void Image::SetRotation(double degs) { mRot = degs; }
+inline Image::Image() { }
 
 } // namespace graphic
 } // namespace lib

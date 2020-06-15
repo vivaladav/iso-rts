@@ -1,7 +1,6 @@
 #pragma once
 
 typedef struct _TTF_Font TTF_Font;
-class Text;
 
 namespace lib
 {
@@ -33,6 +32,9 @@ private:
     bool mItalic = false;
     bool mStrikethrough = false;
     bool mUnderline = false;
+
+    // Text needs to access system data
+    friend class Text;
 };
 
 inline int Font::GetSize() const { return mSize; }

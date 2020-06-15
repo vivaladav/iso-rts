@@ -44,7 +44,7 @@ private:
     int mH = 0;
 
     // classess that need to access the low level system renderer
-    friend class Image;
+    friend class TexturedRenderable;
     friend class Texture;
 };
 

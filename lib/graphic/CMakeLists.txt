@@ -10,6 +10,7 @@ add_library(
     src/Renderer.cpp
     src/Text.cpp
     src/Texture.cpp
+    src/TexturedRenderable.cpp
     src/TextureManager.cpp
     src/Window.cpp
 )
