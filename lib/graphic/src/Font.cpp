@@ -78,7 +78,7 @@ void Font::UpdateStyle()
         style |= TTF_STYLE_ITALIC;
     if(mStrikethrough)
         style |= TTF_STYLE_STRIKETHROUGH;
-    if(mItalic)
+    if(mUnderline)
         style |= TTF_STYLE_UNDERLINE;
 
     TTF_SetFontStyle(mSysFont, style);
