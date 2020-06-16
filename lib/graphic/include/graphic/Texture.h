@@ -22,6 +22,9 @@ public:
     int GetWidth() const;
     int GetHeight() const;
 
+    void SetAlpha(unsigned char a);
+    void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
 private:
     void SetTextureQuality(TextureQuality q);
 

@@ -30,6 +30,9 @@ public:
 
     void SetFlip(int flip);
 
+    void SetAlpha(unsigned char a);
+    void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
     void Render();
 
 public:
@@ -48,9 +51,25 @@ private:
     SDL_Rect * mRect = nullptr;
     double mRot = 0;
     int mFlip = FLIP_NO;
+
+    unsigned char mR = 255;
+    unsigned char mG = 255;
+    unsigned char mB = 255;
+    unsigned char mA = 255;
 };
 
 inline void TexturedRenderable::SetRotation(double degs) { mRot = degs; }
+
+inline void TexturedRenderable::SetAlpha(unsigned char a) { mA = a; }
+
+inline void TexturedRenderable::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    mR = r;
+    mG = g;
+    mB = b;
+    mA = a;
+}
+
 
 } // namespace graphic
 } // namespace lib

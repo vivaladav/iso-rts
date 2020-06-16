@@ -55,6 +55,18 @@ Texture::~Texture()
     SDL_DestroyTexture(mData);
 }
 
+void Texture::SetAlpha(unsigned char a)
+{
+    SDL_SetTextureAlphaMod(mData, a);
+}
+
+void Texture::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    SDL_SetTextureColorMod(mData, r, g, b);
+    SDL_SetTextureAlphaMod(mData, a);
+}
+
+
 void Texture::SetTextureQuality(TextureQuality q)
 {
     if(TextureQuality::BEST == q)

@@ -24,16 +24,20 @@ ScreenTest::ScreenTest(Game * game)
 
     mImg2 = new Image("data/img/tile01.png");
     mImg2->SetPosition(64, 32);
+    mImg2->SetAlpha(128);
 
     mImg3 = new Image("data/img/tile01.png");
     mImg3->SetPosition(256, 128);
     mImg3->ScaleH(2.f);
     mImg3->SetRotation(45.f);
+    mImg3->SetColor(50, 150, 250, 255);
 
     // -- Text testing --
-    mFont1 = new Font("data/fonts/OpenSans.ttf", 20);
+    mFont1 = new Font("data/fonts/OpenSans.ttf", 24);
     mTxt1 = new Text("Test text", mFont1);
     mTxt1->SetPosition(20, 300);
+    mTxt1->SetColor(50, 150, 250, 255);
+
 }
 
 ScreenTest::~ScreenTest()

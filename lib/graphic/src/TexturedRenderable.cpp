@@ -57,6 +57,8 @@ void TexturedRenderable::SetFlip(int flip)
 
 void TexturedRenderable::Render()
 {
+    mTex->SetColor(mR, mG, mB, mA);
+
     SDL_Renderer * r = Renderer::Instance()->mSysRenderer;
     const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(mFlip);
 
