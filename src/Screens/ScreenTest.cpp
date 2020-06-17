@@ -20,34 +20,59 @@ ScreenTest::ScreenTest(Game * game)
     game->SetClearColor(0x22, 0x22, 0x22, 0xFF);
 
     // -- Image testing --
-    mImg1 = new Image("data/img/tile01.png");
+    Image * img = nullptr;
 
-    mImg2 = new Image("data/img/tile01.png");
-    mImg2->SetPosition(64, 32);
-    mImg2->SetAlpha(128);
+    img = new Image("data/img/tile01.png");
+    img->SetPosition(64, 32);
+    mRenderables.emplace_back(img);
 
-    mImg3 = new Image("data/img/tile01.png");
-    mImg3->SetPosition(256, 128);
-    mImg3->ScaleH(2.f);
-    mImg3->SetRotation(45.f);
-    mImg3->SetColor(50, 150, 250, 255);
+    img = new Image("data/img/tile01.png");
+    img->SetPosition(128, 64);
+    img->SetAlpha(128);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/tile01.png");
+    img->SetPosition(300, 32);
+    img->ScaleH(2.f);
+    img->SetRotation(45.f);
+    img->SetColor(50, 150, 250, 255);
+    mRenderables.emplace_back(img);
 
     // -- Text testing --
-    mFont1 = new Font("data/fonts/OpenSans.ttf", 24);
-    mTxt1 = new Text("Test text", mFont1);
-    mTxt1->SetPosition(20, 300);
-    mTxt1->SetColor(50, 150, 250, 255);
+    const int TXT_X0 = 20;
+    Font * font = new Font("data/fonts/OpenSans.ttf", 24);
+    Text * txt = nullptr;
 
+    txt = new Text("Text 1", font);
+    txt->SetPosition(TXT_X0, 250);
+    mRenderables.emplace_back(txt);
+
+    font->SetStyle(Font::BOLD | Font::ITALIC);
+    txt = new Text("Text 2 (bold & italic)", font);
+    txt->SetPosition(TXT_X0, 300);
+    mRenderables.emplace_back(txt);
+
+    font->SetStyle(Font::BOLD);
+    txt = new Text("Text 3 (bold - A=128)", font);
+    txt->SetPosition(TXT_X0, 350);
+    txt->SetAlpha(128);
+    mRenderables.emplace_back(txt);
+
+    txt = new Text("Text 4 (50, 150, 250, 255)", font);
+    txt->SetPosition(TXT_X0, 400);
+    txt->SetColor(50, 150, 250, 255);
+    mRenderables.emplace_back(txt);
+
+    txt = new Text("Text 5 (50, 150, 250, 128)", font);
+    txt->SetPosition(TXT_X0, 450);
+    txt->SetColor(50, 150, 250, 128);
+    mRenderables.emplace_back(txt);
 }
 
 ScreenTest::~ScreenTest()
 {
-    delete mImg1;
-    delete mImg2;
-    delete mImg3;
-
-    delete mFont1;
-    delete mTxt1;
+    for(lib::graphic::TexturedRenderable * r : mRenderables)
+        delete r;
 }
 
 void ScreenTest::Update()
@@ -56,11 +81,8 @@ void ScreenTest::Update()
 
 void ScreenTest::Render()
 {
-    mImg1->Render();
-    mImg2->Render();
-    mImg3->Render();
-
-    mTxt1->Render();
+    for(lib::graphic::TexturedRenderable * r : mRenderables)
+        r->Render();
 }
 
 void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)

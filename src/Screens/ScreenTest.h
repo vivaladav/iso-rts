@@ -2,14 +2,11 @@
 
 #include "Screen.h"
 
+#include <vector>
+
 namespace lib
 {
-    namespace graphic
-    {
-        class Image;
-        class Font;
-        class Text;
-    }
+    namespace graphic { class TexturedRenderable; }
 }
 
 namespace game
@@ -27,12 +24,7 @@ public:
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
-    lib::graphic::Image * mImg1 = nullptr;
-    lib::graphic::Image * mImg2 = nullptr;
-    lib::graphic::Image * mImg3 = nullptr;
-
-    lib::graphic::Font * mFont1 = nullptr;
-    lib::graphic::Text * mTxt1 = nullptr;
+    std::vector<lib::graphic::TexturedRenderable *> mRenderables;
 };
 
 } // namespace game

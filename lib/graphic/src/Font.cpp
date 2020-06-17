@@ -9,8 +9,15 @@ namespace lib
 namespace graphic
 {
 
+const int Font::NORMAL          = TTF_STYLE_NORMAL;
+const int Font::BOLD            = TTF_STYLE_BOLD;
+const int Font::ITALIC          = TTF_STYLE_ITALIC;
+const int Font::STRIKETHROUGH   = TTF_STYLE_STRIKETHROUGH;
+const int Font::UNDERLINE       = TTF_STYLE_UNDERLINE;
+
 Font::Font(const char * file, int size)
     : mSize(size)
+    , mStyle(NORMAL)
 {
     mSysFont = TTF_OpenFont(file, size);
 
@@ -28,60 +35,15 @@ Font::~Font()
         TTF_CloseFont(mSysFont);
 }
 
-void Font::SetBold(bool val)
+void Font::SetStyle(int s)
 {
-    if(val != mBold)
-    {
-        mBold = val;
-        UpdateStyle();
-    }
-}
-
-void Font::SetItalic(bool val)
-{
-    if(val != mItalic)
-    {
-        mItalic = val;
-        UpdateStyle();
-    }
-}
-
-void Font::SetStrikethrough(bool val)
-{
-    if(val != mStrikethrough)
-    {
-        mStrikethrough = val;
-        UpdateStyle();
-    }
-}
-
-void Font::SetUnderline(bool val)
-{
-    if(val != mUnderline)
-    {
-        mUnderline = val;
-        UpdateStyle();
-    }
-}
-
-void Font::UpdateStyle()
-{
-    // do nothing if font is not valid
-    if(!mSysFont)
+    // same style or font not valid -> nothing to do
+    if(s == mStyle || !mSysFont)
         return ;
 
-    int style = TTF_STYLE_NORMAL;
+    mStyle = s;
 
-    if(mBold)
-        style |= TTF_STYLE_BOLD;
-    if(mItalic)
-        style |= TTF_STYLE_ITALIC;
-    if(mStrikethrough)
-        style |= TTF_STYLE_STRIKETHROUGH;
-    if(mUnderline)
-        style |= TTF_STYLE_UNDERLINE;
-
-    TTF_SetFontStyle(mSysFont, style);
+    TTF_SetFontStyle(mSysFont, mStyle);
 }
 
 } // namespace graphic

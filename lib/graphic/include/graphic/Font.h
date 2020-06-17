@@ -10,28 +10,26 @@ namespace graphic
 class Font
 {
 public:
+    static const int NORMAL;
+    static const int BOLD;
+    static const int ITALIC;
+    static const int STRIKETHROUGH;
+    static const int UNDERLINE;
+
+public:
     Font(const char * file, int size);
     ~Font();
 
     int GetSize() const;
 
-    void SetBold(bool val);
-    void SetItalic(bool val);
-    void SetStrikethrough(bool val);
-    void SetUnderline(bool val);
-
-private:
-    void UpdateStyle();
+    void SetStyle(int s);
 
 private:
     TTF_Font * mSysFont = nullptr;
 
     int mSize = 0;
 
-    bool mBold = false;
-    bool mItalic = false;
-    bool mStrikethrough = false;
-    bool mUnderline = false;
+    int mStyle;
 
     // Text needs to access system data
     friend class Text;
