@@ -11,6 +11,7 @@ namespace lib
 
     namespace graphic
     {
+        class Font;
         class Renderer;
         class Window;
     }
@@ -45,6 +46,7 @@ private:
     lib::utilities::StateManager * mStateMan = nullptr;
 
     lib::sgui::Stage * mStage = nullptr;
+    lib::graphic::Font * mFontGui = nullptr;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;

@@ -28,6 +28,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- BUTTON NEW GAME --
     PushButton * button = new PushButton(buttonId++, panel);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
+    button->SetLabel("NEW GAME");
+    button->SetLabelColor(24, 57, 41, 255);
 
     button->SetOnClickFunction([this]
     {
@@ -39,6 +41,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- BUTTON EXIT --
     button = new PushButton(buttonId++, panel);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
+    button->SetLabel("EXIT");
+    button->SetLabelColor(24, 57, 41, 255);
 
     button->SetOnClickFunction([this] { GetGame()->Exit(); });
 

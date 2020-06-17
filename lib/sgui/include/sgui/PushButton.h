@@ -25,11 +25,14 @@ public:
     void SetBackground(const char * file);
 
     void SetLabel(const char * text);
+    void SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
     void SetOnClickFunction(std::function<void()> f);
 
 private:
     void OnPositionChanged() override;
+
+    void PositionLabel();
 
     void HandleMouseButtonUp(const core::MouseButtonEvent & event) override;
 

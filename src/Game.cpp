@@ -5,6 +5,7 @@
 #include "States/StateMainMenu.h"
 #include "States/StateTest.h"
 
+#include <graphic/Font.h>
 #include <graphic/GraphicConstants.h>
 #include <graphic/Image.h>
 #include <graphic/Renderer.h>
@@ -42,11 +43,16 @@ Game::Game(int argc, char * argv[])
     mStage = lib::sgui::Stage::Create();
     AddKeyboardListener(mStage);
     AddMouseListener(mStage);
+
+    mFontGui = new Font("data/fonts/OpenSans.ttf", 32);
+    mFontGui->SetStyle(Font::BOLD);
+    mStage->SetDefaultFont(mFontGui);
 }
 
 Game::~Game()
 {
     lib::sgui::Stage::Destroy();
+    delete mFontGui;
 
     delete mStateMan;
 

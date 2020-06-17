@@ -3,6 +3,7 @@
 #include "core/event/MouseButtonEvent.h"
 #include "graphic/Image.h"
 #include "graphic/Text.h"
+#include "sgui/Stage.h"
 
 #include <cassert>
 
@@ -36,11 +37,36 @@ void PushButton::SetBackground(const char * file)
         SetSize(w, h);
 }
 
+void PushButton::SetLabel(const char * text)
+{
+    graphic::Font * font = Stage::Instance()->GetDefaultFont();
+
+    mLabel = new graphic::Text(text, font);
+
+    PositionLabel();
+}
+
+void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    if(mLabel)
+        mLabel->SetColor(r, g, b, a);
+}
+
 void PushButton::OnPositionChanged()
 {
     mBg->SetPosition(GetScreenX(), GetScreenY());
+
+    if(mLabel)
+        PositionLabel();
 }
 
+void PushButton::PositionLabel()
+{
+    const int x = GetScreenX() + (GetWidth() - mLabel->GetWidth()) * 0.5f;
+    const int y = GetScreenY() + (GetHeight() - mLabel->GetHeight()) * 0.5f;
+
+    mLabel->SetPosition(x, y);
+}
 // -- mouse event --
 void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent &)
 {
