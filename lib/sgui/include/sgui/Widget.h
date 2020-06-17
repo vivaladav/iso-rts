@@ -49,6 +49,10 @@ protected:
     virtual void UpdateSize();
 
 private:
+    void SetScreenPosition(int x, int y);
+
+    virtual void OnPositionChanged();
+
     virtual void HandleMouseButtonDown(const core::MouseButtonEvent & event);
     virtual void HandleMouseButtonUp(const core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(const core::MouseMotionEvent & event);

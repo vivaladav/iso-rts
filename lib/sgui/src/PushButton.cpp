@@ -2,6 +2,7 @@
 
 #include "core/event/MouseButtonEvent.h"
 #include "graphic/Image.h"
+#include "graphic/Text.h"
 
 #include <cassert>
 
@@ -35,6 +36,11 @@ void PushButton::SetBackground(const char * file)
         SetSize(w, h);
 }
 
+void PushButton::OnPositionChanged()
+{
+    mBg->SetPosition(GetScreenX(), GetScreenY());
+}
+
 // -- mouse event --
 void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent &)
 {
@@ -43,8 +49,10 @@ void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent &)
 
 void PushButton::OnRender()
 {
-    mBg->SetPosition(GetScreenX(), GetScreenY());
     mBg->Render();
+
+    if(mLabel)
+        mLabel->Render();
 }
 
 } // namespace sgui

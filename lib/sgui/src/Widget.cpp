@@ -132,8 +132,7 @@ void Widget::SetPosition(int x, int y)
     mRelX = x;
     mRelY = y;
 
-    mScreenX += dx;
-    mScreenY += dy;
+    SetScreenPosition(mScreenX + dx, mScreenY + dy);
 
     PropagateParentPositionChanged(dx, dy);
 
@@ -147,7 +146,7 @@ void Widget::SetX(int x)
 
     mRelX = x;
 
-    mScreenX += dx;
+    SetScreenPosition(mScreenX + dx, mScreenY);
 
     PropagateParentPositionChanged(dx, 0);
 
@@ -161,7 +160,7 @@ void Widget::SetY(int y)
 
     mRelY = y;
 
-    mScreenY += dy;
+    SetScreenPosition(mScreenX, mScreenY + dy);
 
     PropagateParentPositionChanged(0, dy);
 
@@ -173,6 +172,16 @@ bool Widget::IsScreenPointInside(int x, int y)
 {
     return x > mScreenX && x < (mScreenX + mWidth) && y > mScreenY && y < (mScreenY + mHeight);
 }
+
+void Widget::SetScreenPosition(int x, int y)
+{
+    mScreenX = x;
+    mScreenY = y;
+
+    OnPositionChanged();
+}
+
+void Widget::OnPositionChanged() { }
 
 void Widget::HandleMouseButtonDown(const core::MouseButtonEvent &) { }
 void Widget::HandleMouseButtonUp(const core::MouseButtonEvent &) { }
@@ -208,8 +217,7 @@ void Widget::OnRender() { }
 
 void Widget::OnParentPositionChanged(int dx, int dy)
 {
-    mScreenX += dx;
-    mScreenY += dy;
+    SetScreenPosition(mScreenX + dx, mScreenY + dy);
 }
 
 void Widget::PropagateParentPositionChanged(int dx, int dy)

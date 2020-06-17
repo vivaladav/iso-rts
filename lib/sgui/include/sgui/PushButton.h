@@ -7,7 +7,11 @@
 namespace lib
 {
 
-namespace graphic { class Image; }
+namespace graphic
+{
+    class Image;
+    class Text;
+}
 
 namespace sgui
 {
@@ -20,9 +24,13 @@ public:
 
     void SetBackground(const char * file);
 
+    void SetLabel(const char * text);
+
     void SetOnClickFunction(std::function<void()> f);
 
 private:
+    void OnPositionChanged() override;
+
     void HandleMouseButtonUp(const core::MouseButtonEvent & event) override;
 
     void OnRender() override;
@@ -30,7 +38,8 @@ private:
 private:
     std::function<void()> mOnClick;
 
-    graphic::Image * mBg;
+    graphic::Image * mBg = nullptr;
+    graphic::Text * mLabel = nullptr;
 };
 
 inline void PushButton::SetOnClickFunction(std::function<void()> f) { mOnClick = f; }

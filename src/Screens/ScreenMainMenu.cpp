@@ -27,7 +27,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // -- BUTTON NEW GAME --
     PushButton * button = new PushButton(buttonId++, panel);
-    button->SetBackground("data/img/buttons/new_game-01.png");
+    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
 
     button->SetOnClickFunction([this]
     {
@@ -38,7 +38,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // -- BUTTON EXIT --
     button = new PushButton(buttonId++, panel);
-    button->SetBackground("data/img/buttons/exit-01.png");
+    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
 
     button->SetOnClickFunction([this] { GetGame()->Exit(); });
 

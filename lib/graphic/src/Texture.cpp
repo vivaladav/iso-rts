@@ -66,7 +66,6 @@ void Texture::SetColor(unsigned char r, unsigned char g, unsigned char b, unsign
     SDL_SetTextureAlphaMod(mData, a);
 }
 
-
 void Texture::SetTextureQuality(TextureQuality q)
 {
     if(TextureQuality::BEST == q)
