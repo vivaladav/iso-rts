@@ -26,6 +26,9 @@ public:
 
     void SetTiles(const std::vector<std::string> & files);
 
+    void SetCellType(unsigned int r, unsigned int c, unsigned int ind);
+    int GetCellType(unsigned int r, unsigned int c) const;
+
     int GetTileWidth() const;
     int GetTileHeight() const;
 
@@ -60,6 +63,20 @@ private:
     std::vector<lib::graphic::Image *> mTiles;
     std::vector<lib::core::Point2D> mTilePositions;
 };
+
+inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int ind)
+{
+    if(r < mRows && c < mCols && ind < mTiles.size())
+        mMap[r * mCols + c] = ind;
+}
+
+inline int IsoMap::GetCellType(unsigned int r, unsigned int c) const
+{
+    if(r >= mRows || c >= mCols)
+        return -1;
+
+    return mMap[r * mCols + c];
+}
 
 inline int IsoMap::GetTileWidth() const { return mTileW; }
 inline int IsoMap::GetTileHeight() const { return mTileH; }

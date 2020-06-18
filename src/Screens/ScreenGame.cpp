@@ -63,8 +63,10 @@ void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
     const Cell2D c = mMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
+    int cellType = mMap->GetCellType(c.row, c.col);
+
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
-              << "cell " << c.row << "," << c.col << std::endl;
+              << "cell " << c.row << "," << c.col << " - type: " << cellType << std::endl;
 }
 
 } // namespace game
