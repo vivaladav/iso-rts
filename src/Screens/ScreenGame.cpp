@@ -17,16 +17,18 @@ namespace game
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
 {
-    game->SetClearColor(0xAA, 0xAA, 0xAA, 0xFF);
+    game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
     const int SIDE = 15;
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles = {
+                                                "data/img/tile00.png",
                                                 "data/img/tile01.png",
                                                 "data/img/tile02.png",
                                                 "data/img/tile03.png",
-                                                "data/img/tile04.png"
+                                                "data/img/tile04.png",
+                                                "data/img/tile05.png"
                                                };
 
     mMap = new IsoMap(SIDE, SIDE, TILE_W);
