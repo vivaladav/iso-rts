@@ -19,6 +19,9 @@ public:
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
+    void SetHomeCell();
+
+private:
     IsoMap * mMap = nullptr;
 };
 

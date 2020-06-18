@@ -7,6 +7,8 @@
 #include <graphic/Image.h>
 #include <graphic/Renderer.h>
 
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -43,6 +45,11 @@ ScreenGame::ScreenGame(Game * game)
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     mMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
+
+    // -- GAMEPLAY TESTING --
+    srand(time(nullptr));
+
+    SetHomeCell();
 }
 
 ScreenGame::~ScreenGame()
@@ -67,6 +74,16 @@ void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
               << "cell " << c.row << "," << c.col << " - type: " << cellType << std::endl;
+}
+
+void ScreenGame::SetHomeCell()
+{
+    const int NUM_CORNERS = 4;
+    Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 0}, {14, 14} };
+
+    const int pick = rand() % NUM_CORNERS;
+
+    mMap->SetCellType(corners[pick].row, corners[pick].col, 1);
 }
 
 } // namespace game
