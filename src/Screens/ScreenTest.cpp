@@ -120,7 +120,7 @@ void ScreenTest::TestSGui()
     button->SetY(label->GetHeight() + 20);
 
     font->SetStyle(Font::NORMAL);
-    label = new Label("", wid++, font, container);
+    label = new Label(wid++, font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
     button->SetOnClickFunction([label]{ label->SetText("button clicked"); });

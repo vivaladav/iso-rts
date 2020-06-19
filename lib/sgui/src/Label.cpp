@@ -1,5 +1,6 @@
 #include "sgui/Label.h"
 
+#include "graphic/DummyRenderable.h"
 #include "graphic/Font.h"
 #include "graphic/Text.h"
 
@@ -9,6 +10,15 @@ namespace lib
 {
 namespace sgui
 {
+
+Label::Label(int wid, graphic::Font * font, Widget * parent)
+    : Widget(wid, parent)
+    , mFont(font)
+{
+    assert(font);
+
+    CreateText();
+}
 
 Label::Label(const char * txt, int wid, graphic::Font * font, Widget * parent)
     : Widget(wid, parent)
@@ -45,9 +55,10 @@ void Label::SetText(const char * txt)
 void Label::CreateText()
 {
     if(mStr.empty())
-        return ;
+        mTxt = new graphic::DummyRenderable;
+    else
+        mTxt = new graphic::Text(mStr.c_str(), mFont);  // TODO check if Text is valid after creation and fallback on dummy
 
-    mTxt = new graphic::Text(mStr.c_str(), mFont);
     mTxt->SetPosition(GetScreenX(), GetScreenY());
 
     SetSize(mTxt->GetWidth(), mTxt->GetHeight());
@@ -55,14 +66,12 @@ void Label::CreateText()
 
 void Label::OnPositionChanged()
 {
-    if(mTxt)
-        mTxt->SetPosition(GetScreenX(), GetScreenY());
+    mTxt->SetPosition(GetScreenX(), GetScreenY());
 }
 
 void Label::OnRender()
 {
-    if(mTxt)
-        mTxt->Render();
+    mTxt->Render();
 }
 
 } // namespace sgui

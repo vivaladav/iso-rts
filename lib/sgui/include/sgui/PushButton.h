@@ -9,8 +9,7 @@ namespace lib
 
 namespace graphic
 {
-    class Image;
-    class Text;
+    class Renderable;
 }
 
 namespace sgui
@@ -41,8 +40,8 @@ private:
 private:
     std::function<void()> mOnClick;
 
-    graphic::Image * mBg = nullptr;
-    graphic::Text * mLabel = nullptr;
+    graphic::Renderable * mBg = nullptr;
+    graphic::Renderable * mLabel = nullptr;
 };
 
 inline void PushButton::SetOnClickFunction(std::function<void()> f) { mOnClick = f; }

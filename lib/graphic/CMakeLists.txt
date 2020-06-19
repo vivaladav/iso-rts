@@ -5,8 +5,10 @@ find_package(SDL2 REQUIRED)
 
 add_library(
     graphic
+    src/DummyRenderable.cpp
     src/Font.cpp
     src/Image.cpp
+    src/Renderable.cpp
     src/Renderer.cpp
     src/Text.cpp
     src/Texture.cpp

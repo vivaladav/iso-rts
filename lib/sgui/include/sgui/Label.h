@@ -10,7 +10,7 @@ namespace lib
 namespace graphic
 {
     class Font;
-    class Text;
+    class Renderable;
 }
 
 namespace sgui
@@ -19,6 +19,7 @@ namespace sgui
 class Label : public Widget
 {
 public:
+    Label(int wid, graphic::Font * font, Widget * parent = nullptr);
     Label(const char * txt, int wid, graphic::Font * font, Widget * parent = nullptr);
     ~Label();
 
@@ -36,7 +37,7 @@ private:
     std::string mStr;
 
     graphic::Font * mFont = nullptr;
-    graphic::Text * mTxt = nullptr;
+    graphic::Renderable * mTxt = nullptr;
 };
 
 inline const std::string & Label::GetText() const { return mStr; }

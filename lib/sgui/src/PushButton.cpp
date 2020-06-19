@@ -1,6 +1,7 @@
 #include "sgui/PushButton.h"
 
 #include "core/event/MouseButtonEvent.h"
+#include "graphic/DummyRenderable.h"
 #include "graphic/Image.h"
 #include "graphic/Text.h"
 #include "sgui/Stage.h"
@@ -15,6 +16,8 @@ namespace sgui
 PushButton::PushButton(int wid, Widget * parent)
     : Widget(wid, parent)
     , mOnClick([]{})
+    , mBg(new graphic::DummyRenderable)
+    , mLabel(new graphic::DummyRenderable)
 {
 }
 
@@ -27,39 +30,45 @@ void PushButton::SetBackground(const char * file)
 {
     assert(file);
 
-    mBg = new graphic::Image(file);
+    delete mBg;
+
+    mBg = new graphic::Image(file); // TODO check if Image is valid after creation and fallback on dummy
     mBg->SetPosition(GetScreenX(), GetScreenY());
 
-    // update button size if bigger (this shouldn't happen)
     const int w = mBg->GetWidth();
     const int h = mBg->GetHeight();
-
-    if(w > GetWidth() || h > GetHeight())
-        SetSize(w, h);
+    SetSize(w, h);
 }
 
 void PushButton::SetLabel(const char * text)
 {
-    graphic::Font * font = Stage::Instance()->GetDefaultFont();
+    delete mLabel;
 
-    mLabel = new graphic::Text(text, font);
+    std::string t(text);
+
+    if(t.empty())
+        mLabel = new graphic::DummyRenderable;
+    else
+    {
+        // TODO proper font handling
+        graphic::Font * font = Stage::Instance()->GetDefaultFont();
+
+        mLabel = new graphic::Text(text, font);
+    }
 
     PositionLabel();
 }
 
 void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-    if(mLabel)
-        mLabel->SetColor(r, g, b, a);
+    mLabel->SetColor(r, g, b, a);
 }
 
 void PushButton::OnPositionChanged()
 {
-    if(mBg)
-        mBg->SetPosition(GetScreenX(), GetScreenY());
+    mBg->SetPosition(GetScreenX(), GetScreenY());
 
-    if(mLabel)
-        PositionLabel();
+    PositionLabel();
 }
 
 void PushButton::PositionLabel()
@@ -79,8 +88,7 @@ void PushButton::OnRender()
 {
     mBg->Render();
 
-    if(mLabel)
-        mLabel->Render();
+    mLabel->Render();
 }
 
 } // namespace sgui
