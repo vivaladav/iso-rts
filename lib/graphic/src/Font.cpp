@@ -16,34 +16,49 @@ const int Font::STRIKETHROUGH   = TTF_STYLE_STRIKETHROUGH;
 const int Font::UNDERLINE       = TTF_STYLE_UNDERLINE;
 
 Font::Font(const char * file, int size)
-    : mSize(size)
+    : mFile(file)
+    , mSize(size)
     , mStyle(NORMAL)
 {
-    mSysFont = TTF_OpenFont(file, size);
-
-    if(!mSysFont)
-    {
-        mSize = 0;
-
-        std::cout << "TTF_OpenFont ERROR: " << TTF_GetError() << std::endl;
-    }
+    CreateSysFont();
 }
 
 Font::~Font()
 {
-    if(mSysFont)
-        TTF_CloseFont(mSysFont);
+    for(const auto & it : mSysFonts)
+        TTF_CloseFont(it.second);
 }
 
 void Font::SetStyle(int s)
 {
-    // same style or font not valid -> nothing to do
-    if(s == mStyle || !mSysFont)
+    // same style -> nothing to do
+    if(s == mStyle)
         return ;
 
     mStyle = s;
 
-    TTF_SetFontStyle(mSysFont, mStyle);
+    auto res = mSysFonts.find(mStyle);
+
+    if(res == mSysFonts.end())
+        CreateSysFont();
+    else
+        mActiveSysFont = res->second;
+}
+
+void Font::CreateSysFont()
+{
+    mActiveSysFont = TTF_OpenFont(mFile.c_str(), mSize);
+
+    if(!mActiveSysFont)
+    {
+        std::cout << "TTF_OpenFont ERROR: " << TTF_GetError() << std::endl;
+        return ;
+    }
+
+    if(mStyle != NORMAL)
+        TTF_SetFontStyle(mActiveSysFont, mStyle);
+
+    mSysFonts.emplace(mStyle, mActiveSysFont);
 }
 
 } // namespace graphic

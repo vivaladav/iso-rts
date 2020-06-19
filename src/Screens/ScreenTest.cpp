@@ -22,16 +22,16 @@ ScreenTest::ScreenTest(Game * game)
     // -- Image testing --
     Image * img = nullptr;
 
-    img = new Image("data/img/tile01.png");
+    img = new Image("data/img/tile00.png");
     img->SetPosition(64, 32);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/tile01.png");
+    img = new Image("data/img/tile00.png");
     img->SetPosition(128, 64);
     img->SetAlpha(128);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/tile01.png");
+    img = new Image("data/img/tile00.png");
     img->SetPosition(300, 32);
     img->ScaleH(2.f);
     img->SetRotation(45.f);
@@ -58,6 +58,7 @@ ScreenTest::ScreenTest(Game * game)
     txt->SetAlpha(128);
     mRenderables.emplace_back(txt);
 
+    font->SetStyle(Font::NORMAL);
     txt = new Text("Text 4 (50, 150, 250, 255)", font);
     txt->SetPosition(TXT_X0, 400);
     txt->SetColor(50, 150, 250, 255);

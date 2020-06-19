@@ -21,10 +21,11 @@ Text::Text(const char * text, Font * font)
     assert(text);
     assert(font);
 
-    // text is always white as color is set later
-    const SDL_Color c = { 255, 255, 255, 255};
+    // text is always created white as color is set later
+    const SDL_Color white = { 255, 255, 255, 255};
 
-    SDL_Surface * surf = TTF_RenderUTF8_Blended(font->mSysFont, text, c);
+    TTF_Font * f = font->GetSyFont();
+    SDL_Surface * surf = TTF_RenderUTF8_Blended(f, text, white);
 
     if(!surf)
     {
