@@ -17,9 +17,15 @@ namespace sgui
 class Label : public Widget
 {
 public:
-    Label(const char * txt, int wid, Widget * parent = nullptr);
+    Label(const char * txt, int wid, graphic::Font * font, Widget * parent = nullptr);
 
 private:
+    void OnPositionChanged() override;
+
+    void OnRender() override;
+
+private:
+    graphic::Font * mFont = nullptr;
     graphic::Text * mTxt = nullptr;
 };
 

@@ -6,6 +6,8 @@
 #include <graphic/Font.h>
 #include <graphic/Image.h>
 #include <graphic/Text.h>
+#include <sgui/Label.h>
+#include <sgui/PushButton.h>
 
 #include <iostream>
 
@@ -68,6 +70,8 @@ ScreenTest::ScreenTest(Game * game)
     txt->SetPosition(TXT_X0, 450);
     txt->SetColor(50, 150, 250, 128);
     mRenderables.emplace_back(txt);
+
+    TestSGui();
 }
 
 ScreenTest::~ScreenTest()
@@ -90,6 +94,27 @@ void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
 {
     std::cout << "Mouse clicked - button: " << event.GetButton()
               << " - pos: " << event.GetX() << " , " << event.GetY() << std::endl;
+}
+
+void ScreenTest::TestSGui()
+{
+    using namespace lib::graphic;
+    using namespace lib::sgui;
+
+    int wid = 0;
+
+    Widget * container = new Widget(wid++);
+    container->SetPosition(600, 20);
+
+    Font * font = new Font("data/fonts/OpenSans.ttf", 24);
+    font->SetStyle(Font::BOLD);
+    Label * label = new Label("PUSH BUTTON", wid++, font, container);
+
+    PushButton * button = new PushButton(wid++, container);
+    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
+    button->SetLabel("BUTTON 1");
+    button->SetLabelColor(24, 57, 41, 255);
+    button->SetY(label->GetHeight() + 20);
 }
 
 } // namespace game

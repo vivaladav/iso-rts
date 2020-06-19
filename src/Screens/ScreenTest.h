@@ -24,6 +24,9 @@ public:
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
+    void TestSGui();
+
+private:
     std::vector<lib::graphic::TexturedRenderable *> mRenderables;
 };
 

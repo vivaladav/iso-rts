@@ -14,8 +14,8 @@ namespace sgui
 
 PushButton::PushButton(int wid, Widget * parent)
     : Widget(wid, parent)
+    , mOnClick([]{})
 {
-
 }
 
 PushButton::~PushButton()
@@ -28,6 +28,7 @@ void PushButton::SetBackground(const char * file)
     assert(file);
 
     mBg = new graphic::Image(file);
+    mBg->SetPosition(GetScreenX(), GetScreenY());
 
     // update button size if bigger (this shouldn't happen)
     const int w = mBg->GetWidth();
@@ -54,7 +55,8 @@ void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b
 
 void PushButton::OnPositionChanged()
 {
-    mBg->SetPosition(GetScreenX(), GetScreenY());
+    if(mBg)
+        mBg->SetPosition(GetScreenX(), GetScreenY());
 
     if(mLabel)
         PositionLabel();
