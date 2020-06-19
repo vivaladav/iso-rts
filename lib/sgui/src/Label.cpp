@@ -12,12 +12,42 @@ namespace sgui
 
 Label::Label(const char * txt, int wid, graphic::Font * font, Widget * parent)
     : Widget(wid, parent)
+    , mStr(txt)
     , mFont(font)
 {
     assert(txt);
     assert(font);
 
-    mTxt = new graphic::Text(txt, font);
+    CreateText();
+}
+
+Label::~Label()
+{
+    delete mTxt;
+}
+
+void Label::SetText(const char * txt)
+{
+    assert(txt);
+
+    std::string t(txt);
+
+    if(t == mStr)
+        return ;
+
+    delete mTxt;
+
+    mStr = t;
+
+    CreateText();
+}
+
+void Label::CreateText()
+{
+    if(mStr.empty())
+        return ;
+
+    mTxt = new graphic::Text(mStr.c_str(), mFont);
     mTxt->SetPosition(GetScreenX(), GetScreenY());
 
     SetSize(mTxt->GetWidth(), mTxt->GetHeight());
@@ -25,10 +55,15 @@ Label::Label(const char * txt, int wid, graphic::Font * font, Widget * parent)
 
 void Label::OnPositionChanged()
 {
-    mTxt->SetPosition(GetScreenX(), GetScreenY());
+    if(mTxt)
+        mTxt->SetPosition(GetScreenX(), GetScreenY());
 }
 
-void Label::OnRender() { mTxt->Render(); }
+void Label::OnRender()
+{
+    if(mTxt)
+        mTxt->Render();
+}
 
 } // namespace sgui
 } // namespace lib
