@@ -8,6 +8,7 @@
 #include <graphic/Text.h>
 #include <sgui/Label.h>
 #include <sgui/PushButton.h>
+#include <sgui/Stage.h>
 
 #include <iostream>
 
@@ -78,6 +79,8 @@ ScreenTest::~ScreenTest()
 {
     for(lib::graphic::TexturedRenderable * r : mRenderables)
         delete r;
+
+    lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenTest::Update()
