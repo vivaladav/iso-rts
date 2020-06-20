@@ -23,6 +23,8 @@ public:
     Label(const char * txt, int wid, graphic::Font * font, Widget * parent = nullptr);
     ~Label();
 
+    void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+
     const std::string & GetText() const;
     void SetText(const char * txt);
 

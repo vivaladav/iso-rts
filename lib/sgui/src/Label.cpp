@@ -36,6 +36,11 @@ Label::~Label()
     delete mTxt;
 }
 
+void Label::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    mTxt->SetColor(r, g, b, a);
+}
+
 void Label::SetText(const char * txt)
 {
     assert(txt);
