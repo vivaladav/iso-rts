@@ -33,7 +33,11 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     button->SetOnClickFunction([this]
     {
-        GetGame()->RequestNextActiveState(StateId::GAME);
+        Game * game = GetGame();
+
+        game->AddPlayer("Player 1", 0);
+
+        game->RequestNextActiveState(StateId::GAME);
     });
 
     buttonY += button->GetHeight() + VMARGIN;

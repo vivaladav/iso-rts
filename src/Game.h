@@ -2,13 +2,10 @@
 
 #include <core/Application.h>
 
+#include <vector>
+
 namespace lib
 {
-    namespace core
-    {
-        class EventListener;
-    }
-
     namespace graphic
     {
         class Font;
@@ -24,6 +21,8 @@ namespace lib
 namespace game
 {
 
+class Player;
+
 enum StateId : int;
 
 class Game : public lib::core::Application
@@ -36,10 +35,19 @@ public:
 
     void RequestNextActiveState(StateId sid);
 
+    // -- players --
+    void AddPlayer(const char * name, int pid);
+
+    int GetNumPlayers() const;
+
+    Player * GetPlayer(unsigned int index) const;
+
 private:
     void Update() override;
 
 private:
+    std::vector<Player *> mPlayers;
+
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
 
@@ -60,6 +68,16 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
     mClearG = g;
     mClearB = b;
     mClearA = a;
+}
+
+inline int Game::GetNumPlayers() const { return mPlayers.size(); }
+
+inline Player * Game::GetPlayer(unsigned int index) const
+{
+    if(index < mPlayers.size())
+        return mPlayers[index];
+    else
+        return nullptr;
 }
 
 } // namespace game

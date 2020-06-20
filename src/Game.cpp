@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "Player.h"
 #include "States/StatesIds.h"
 #include "States/StateGame.h"
 #include "States/StateMainMenu.h"
@@ -76,6 +77,16 @@ void Game::Update()
     mStage->Render();
 
     mRenderer->Finalize();
+}
+
+void Game::AddPlayer(const char * name, int pid)
+{
+    const int MAX_NUM_PLAYERS = 4;
+
+    if(mPlayers.size() == MAX_NUM_PLAYERS)
+        return;
+
+    mPlayers.emplace_back(new Player(name, pid));
 }
 
 } // namespace game
