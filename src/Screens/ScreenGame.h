@@ -22,8 +22,6 @@ public:
     void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
 
 private:
-    lib::sgui::Widget * CreatePlayerUI(Player * p);
-
     void SetHomeCell();
 
 private:
