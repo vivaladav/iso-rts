@@ -24,6 +24,7 @@ add_executable(
     src/States/StateGame.cpp
     src/States/StateMainMenu.cpp
     src/States/StateTest.cpp
+    src/Widgets/PanelPlayer.cpp
 )
 
 target_include_directories(
