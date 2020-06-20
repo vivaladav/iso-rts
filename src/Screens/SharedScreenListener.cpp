@@ -23,8 +23,6 @@ void SharedScreenListener::OnKeyUp(const lib::core::KeyboardEvent & event)
         mScreen->GetGame()->Exit();
 
     // -- SCREENS NAVIGATION --
-    else if(key == KeyboardEvent::KEY_G)
-        mScreen->GetGame()->RequestNextActiveState(StateId::GAME);
     else if(key == KeyboardEvent::KEY_M)
         mScreen->GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
     else if(key == KeyboardEvent::KEY_T)
