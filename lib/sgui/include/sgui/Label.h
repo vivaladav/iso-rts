@@ -24,6 +24,7 @@ public:
     ~Label();
 
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+    void SetColor(unsigned int color);
 
     const std::string & GetText() const;
     void SetText(const char * txt);

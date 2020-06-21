@@ -26,6 +26,8 @@ public:
 
     void SetAlpha(unsigned char a);
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+    // color as #RRGGBBAA
+    void SetColor(unsigned int color);
 
     virtual void Render() = 0;
 

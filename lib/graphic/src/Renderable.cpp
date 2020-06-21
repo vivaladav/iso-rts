@@ -40,5 +40,13 @@ void Renderable::ScaleH(float s) { mRect->h *= s; }
 int Renderable::GetWidth() const { return mRect->w; }
 int Renderable::GetHeight() const { return mRect->h; }
 
+void Renderable::SetColor(unsigned int color)
+{
+    mR = (color & 0xFF000000) >> 24;
+    mG = (color & 0x00FF0000) >> 16;
+    mB = (color & 0x0000FF00) >> 8;
+    mA = color & 0x000000FF;
+}
+
 } // namespace graphic
 } // namespace lib

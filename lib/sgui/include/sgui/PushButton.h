@@ -25,6 +25,7 @@ public:
 
     void SetLabel(const char * text);
     void SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+    void SetLabelColor(unsigned int color);
 
     void SetOnClickFunction(std::function<void()> f);
 

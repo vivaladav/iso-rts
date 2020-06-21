@@ -39,7 +39,7 @@ ScreenTest::ScreenTest(Game * game)
     img->SetPosition(300, 32);
     img->ScaleH(2.f);
     img->SetRotation(45.f);
-    img->SetColor(50, 150, 250, 255);
+    img->SetColor(0x3366F0FF);
     mRenderables.emplace_back(img);
 
     // -- Text testing --
@@ -121,7 +121,7 @@ void ScreenTest::TestSGui()
     PushButton * button = new PushButton(wid++, container);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
     button->SetLabel("BUTTON 1");
-    button->SetLabelColor(24, 57, 41, 255);
+    button->SetLabelColor(0x183929FF);
     button->SetY(label->GetHeight() + 20);
 
     font->SetStyle(Font::NORMAL);

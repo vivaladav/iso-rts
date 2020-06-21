@@ -30,7 +30,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
 
     Label * labelName = new Label(p->GetName().c_str(), wid++, fontName, this);
-    labelName->SetColor(33, 33, 33, 255);
+    labelName->SetColor(0x212121FF);
 
     const int marginX0 = 80;
     const int marginX1 = 50;
@@ -39,30 +39,30 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     Label * labelHeader1 = new Label("COINS", wid++, fontHeader, this);
     labelHeader1->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
-    labelHeader1->SetColor(33, 33, 33, 255);
+    labelHeader1->SetColor(0x212121FF);
 
     Label * labelData1 = new Label("000", wid++, fontData, this);
     labelData1->SetPosition(labelHeader1->GetX() + (labelHeader1->GetWidth() - labelData1->GetWidth()) * 0.5f,
                             labelHeader1->GetY() + labelHeader1->GetHeight());
-    labelData1->SetColor(33, 33, 33, 255);
+    labelData1->SetColor(0x212121FF);
 
     Label * labelHeader2 = new Label("CELLS", wid++, fontHeader, this);
     labelHeader2->SetPosition(labelHeader1->GetX() + labelHeader1->GetWidth() + marginX1, Y0);
-    labelHeader2->SetColor(33, 33, 33, 255);
+    labelHeader2->SetColor(0x212121FF);
 
     Label * labelData2 = new Label("000", wid++, fontData, this);
     labelData2->SetPosition(labelHeader2->GetX() + (labelHeader2->GetWidth() - labelData2->GetWidth()) * 0.5f,
                             labelHeader2->GetY() + labelHeader2->GetHeight());
-    labelData2->SetColor(33, 33, 33, 255);
+    labelData2->SetColor(0x212121FF);
 
     Label * labelHeader3 = new Label("UNITS", wid++, fontHeader, this);
     labelHeader3->SetPosition(labelHeader2->GetX() + labelHeader2->GetWidth() + marginX1, Y0);
-    labelHeader3->SetColor(33, 33, 33, 255);
+    labelHeader3->SetColor(0x212121FF);
 
     Label * labelData3 = new Label("000", wid++, fontData, this);
     labelData3->SetPosition(labelHeader3->GetX() + (labelHeader3->GetWidth() - labelData3->GetWidth()) * 0.5f,
                             labelHeader3->GetY() + labelHeader3->GetHeight());
-    labelData3->SetColor(33, 33, 33, 255);
+    labelData3->SetColor(0x212121FF);
 
     // -- subpanels --
     const int marginTopRow = 30;
@@ -94,7 +94,7 @@ void PanelPlayer::CreatePanelCell()
     fontHeader->SetStyle(Font::BOLD);
 
     Label * labelHeader = new Label("CELL", wid++, fontHeader, mPanelCell);
-    labelHeader->SetColor(33, 33, 33, 255);
+    labelHeader->SetColor(0x212121FF);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
     int buttonX = 0;
@@ -138,7 +138,7 @@ void PanelPlayer::CreatePanelUnits()
     fontHeader->SetStyle(Font::BOLD);
 
     Label * labelHeader = new Label("UNITS", wid++, fontHeader, mPanelUnits);
-    labelHeader->SetColor(33, 33, 33, 255);
+    labelHeader->SetColor(0x212121FF);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
     int buttonX = 0;

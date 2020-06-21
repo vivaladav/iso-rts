@@ -41,6 +41,8 @@ void Label::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned
     mTxt->SetColor(r, g, b, a);
 }
 
+void Label::SetColor(unsigned int color) { mTxt->SetColor(color); }
+
 void Label::SetText(const char * txt)
 {
     assert(txt);
