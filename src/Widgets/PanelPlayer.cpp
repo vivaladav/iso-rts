@@ -3,6 +3,7 @@
 #include "Player.h"
 
 #include <graphic/Font.h>
+#include <graphic/FontManager.h>
 #include <sgui/Label.h>
 #include <sgui/PushButton.h>
 
@@ -19,14 +20,16 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     int wid = 0;
 
-    Font fontName("data/fonts/OpenSans.ttf", 48);
-    fontName.SetStyle(Font::BOLD);
+    FontManager * fm = FontManager::Instance();
 
-    Font fontHeader("data/fonts/OpenSans.ttf", 28);
+    Font * fontName = fm->GetFont("data/fonts/OpenSans.ttf", 48);
+    fontName->SetStyle(Font::BOLD);
 
-    Font fontData("data/fonts/OpenSans.ttf", 40);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 28);
 
-    Label * labelName = new Label(p->GetName().c_str(), wid++, &fontName, this);
+    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
+
+    Label * labelName = new Label(p->GetName().c_str(), wid++, fontName, this);
     labelName->SetColor(33, 33, 33, 255);
 
     const int marginX0 = 80;
@@ -34,29 +37,29 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     const int Y0 = 10;
 
-    Label * labelHeader1 = new Label("COINS", wid++, &fontHeader, this);
+    Label * labelHeader1 = new Label("COINS", wid++, fontHeader, this);
     labelHeader1->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
     labelHeader1->SetColor(33, 33, 33, 255);
 
-    Label * labelData1 = new Label("000", wid++, &fontData, this);
+    Label * labelData1 = new Label("000", wid++, fontData, this);
     labelData1->SetPosition(labelHeader1->GetX() + (labelHeader1->GetWidth() - labelData1->GetWidth()) * 0.5f,
                             labelHeader1->GetY() + labelHeader1->GetHeight());
     labelData1->SetColor(33, 33, 33, 255);
 
-    Label * labelHeader2 = new Label("CELLS", wid++, &fontHeader, this);
+    Label * labelHeader2 = new Label("CELLS", wid++, fontHeader, this);
     labelHeader2->SetPosition(labelHeader1->GetX() + labelHeader1->GetWidth() + marginX1, Y0);
     labelHeader2->SetColor(33, 33, 33, 255);
 
-    Label * labelData2 = new Label("000", wid++, &fontData, this);
+    Label * labelData2 = new Label("000", wid++, fontData, this);
     labelData2->SetPosition(labelHeader2->GetX() + (labelHeader2->GetWidth() - labelData2->GetWidth()) * 0.5f,
                             labelHeader2->GetY() + labelHeader2->GetHeight());
     labelData2->SetColor(33, 33, 33, 255);
 
-    Label * labelHeader3 = new Label("UNITS", wid++, &fontHeader, this);
+    Label * labelHeader3 = new Label("UNITS", wid++, fontHeader, this);
     labelHeader3->SetPosition(labelHeader2->GetX() + labelHeader2->GetWidth() + marginX1, Y0);
     labelHeader3->SetColor(33, 33, 33, 255);
 
-    Label * labelData3 = new Label("000", wid++, &fontData, this);
+    Label * labelData3 = new Label("000", wid++, fontData, this);
     labelData3->SetPosition(labelHeader3->GetX() + (labelHeader3->GetWidth() - labelData3->GetWidth()) * 0.5f,
                             labelHeader3->GetY() + labelHeader3->GetHeight());
     labelData3->SetColor(33, 33, 33, 255);
@@ -85,10 +88,12 @@ void PanelPlayer::CreatePanelCell()
 
     mPanelCell = new Widget(wid++, this);
 
-    Font fontHeader("data/fonts/OpenSans.ttf", 32);
-    fontHeader.SetStyle(Font::BOLD);
+    FontManager * fm = FontManager::Instance();
 
-    Label * labelHeader = new Label("CELL", wid++, &fontHeader, mPanelCell);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
+    fontHeader->SetStyle(Font::BOLD);
+
+    Label * labelHeader = new Label("CELL", wid++, fontHeader, mPanelCell);
     labelHeader->SetColor(33, 33, 33, 255);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
@@ -127,10 +132,12 @@ void PanelPlayer::CreatePanelUnits()
 
     mPanelUnits = new Widget(wid++, this);
 
-    Font fontHeader("data/fonts/OpenSans.ttf", 32);
-    fontHeader.SetStyle(Font::BOLD);
+    FontManager * fm = FontManager::Instance();
 
-    Label * labelHeader = new Label("UNITS", wid++, &fontHeader, mPanelUnits);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
+    fontHeader->SetStyle(Font::BOLD);
+
+    Label * labelHeader = new Label("UNITS", wid++, fontHeader, mPanelUnits);
     labelHeader->SetColor(33, 33, 33, 255);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
@@ -149,7 +156,6 @@ void PanelPlayer::CreatePanelUnits()
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
     buttonUpgrade->SetLabel("UPGRADE");
     buttonUpgrade->SetPosition(buttonX, buttonsY);
-
 }
 
 } // namespace game

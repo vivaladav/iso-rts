@@ -4,6 +4,7 @@
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
+#include <graphic/FontManager.h>
 #include <graphic/Image.h>
 #include <graphic/Text.h>
 #include <sgui/Label.h>
@@ -42,8 +43,10 @@ ScreenTest::ScreenTest(Game * game)
     mRenderables.emplace_back(img);
 
     // -- Text testing --
+    FontManager * fm = FontManager::Instance();
+
     const int TXT_X0 = 20;
-    Font * font = new Font("data/fonts/OpenSans.ttf", 24);
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
     Text * txt = nullptr;
 
     txt = new Text("Text 1", font);
@@ -109,7 +112,9 @@ void ScreenTest::TestSGui()
     Widget * container = new Widget(wid++);
     container->SetPosition(600, 20);
 
-    Font * font = new Font("data/fonts/OpenSans.ttf", 24);
+    FontManager * fm = FontManager::Instance();
+
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
     font->SetStyle(Font::BOLD);
     Label * label = new Label("PUSH BUTTON", wid++, font, container);
 

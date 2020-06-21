@@ -7,6 +7,7 @@
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Renderer.h>
+#include <sgui/Stage.h>
 
 #include <cstdlib>
 #include <ctime>
@@ -70,6 +71,8 @@ ScreenGame::ScreenGame(Game * game)
 ScreenGame::~ScreenGame()
 {
     delete mMap;
+
+    lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenGame::Update()

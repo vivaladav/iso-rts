@@ -15,20 +15,6 @@ const int Font::ITALIC          = TTF_STYLE_ITALIC;
 const int Font::STRIKETHROUGH   = TTF_STYLE_STRIKETHROUGH;
 const int Font::UNDERLINE       = TTF_STYLE_UNDERLINE;
 
-Font::Font(const char * file, int size)
-    : mFile(file)
-    , mSize(size)
-    , mStyle(NORMAL)
-{
-    CreateSysFont();
-}
-
-Font::~Font()
-{
-    for(const auto & it : mSysFonts)
-        TTF_CloseFont(it.second);
-}
-
 void Font::SetStyle(int s)
 {
     // same style -> nothing to do
@@ -43,6 +29,20 @@ void Font::SetStyle(int s)
         CreateSysFont();
     else
         mActiveSysFont = res->second;
+}
+
+Font::Font(const char * file, int size)
+    : mFile(file)
+    , mSize(size)
+    , mStyle(NORMAL)
+{
+    CreateSysFont();
+}
+
+Font::~Font()
+{
+    for(const auto & it : mSysFonts)
+        TTF_CloseFont(it.second);
 }
 
 void Font::CreateSysFont()

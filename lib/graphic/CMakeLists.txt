@@ -7,6 +7,7 @@ add_library(
     graphic
     src/DummyRenderable.cpp
     src/Font.cpp
+    src/FontManager.cpp
     src/Image.cpp
     src/Renderable.cpp
     src/Renderer.cpp

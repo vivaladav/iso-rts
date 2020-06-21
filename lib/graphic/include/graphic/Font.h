@@ -20,9 +20,6 @@ public:
     static const int UNDERLINE;
 
 public:
-    Font(const char * file, int size);
-    ~Font();
-
     bool IsValid() const;
 
     int GetSize() const;
@@ -30,6 +27,9 @@ public:
     void SetStyle(int s);
 
 private:
+    Font(const char * file, int size);
+    ~Font();
+
     void CreateSysFont();
 
     TTF_Font * GetSyFont() const;
@@ -43,6 +43,8 @@ private:
 
     int mStyle;
 
+    // Only FontManager can create/destroy a Font
+    friend class FontManager;
     // Text needs to access system data
     friend class Text;
 };
