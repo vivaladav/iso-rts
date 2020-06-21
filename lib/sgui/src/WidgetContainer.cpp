@@ -65,10 +65,13 @@ void WidgetContainer::PropagateMouseButtonDown(const core::MouseButtonEvent & ev
 
     for(Widget * w : mWidgets)
     {
-        if(w->IsScreenPointInside(x, y))
+        if(w->IsEnabled() && w->IsVisible()) // TODO remove this when implemented rendering and active lists
         {
-            w->PropagateMouseButtonDown(event);
-            w->HandleMouseButtonDown(event);
+            if(w->IsScreenPointInside(x, y))
+            {
+                w->PropagateMouseButtonDown(event);
+                w->HandleMouseButtonDown(event);
+            }
         }
     }
 }
@@ -80,10 +83,13 @@ void WidgetContainer::PropagateMouseButtonUp(const core::MouseButtonEvent & even
 
     for(Widget * w : mWidgets)
     {
-        if(w->IsScreenPointInside(x, y))
+        if(w->IsEnabled() && w->IsVisible()) // TODO remove this when implemented rendering and active lists
         {
-            w->PropagateMouseButtonUp(event);
-            w->HandleMouseButtonUp(event);
+            if(w->IsScreenPointInside(x, y))
+            {
+                w->PropagateMouseButtonUp(event);
+                w->HandleMouseButtonUp(event);
+            }
         }
     }
 }
@@ -95,16 +101,19 @@ void WidgetContainer::PropagateMouseMotion(const core::MouseMotionEvent & event)
 
     for(Widget * w : mWidgets)
     {
-        if(w->IsScreenPointInside(x, y))
+        if(w->IsEnabled() && w->IsVisible()) // TODO remove this when implemented rendering and active lists
         {
-            w->PropagateMouseMotion(event);
+            if(w->IsScreenPointInside(x, y))
+            {
+                w->PropagateMouseMotion(event);
 
-            w->SetMouseOver();
+                w->SetMouseOver();
 
-            w->HandleMouseMotion(event);
+                w->HandleMouseMotion(event);
+            }
+            else
+                w->SetMouseOut();
         }
-        else
-            w->SetMouseOut();
     }
 }
 
@@ -112,8 +121,11 @@ void WidgetContainer::PropagateRender()
 {
     for(Widget * w : mWidgets)
     {
-        w->OnRender();
-        w->PropagateRender();
+        if(w->IsVisible())  // TODO remove this when implemented rendering lists
+        {
+            w->OnRender();
+            w->PropagateRender();
+        }
     }
 }
 

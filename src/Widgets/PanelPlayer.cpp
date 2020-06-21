@@ -6,6 +6,8 @@
 #include <sgui/Label.h>
 #include <sgui/PushButton.h>
 
+#include <iostream>
+
 namespace game
 {
 
@@ -98,6 +100,7 @@ void PanelPlayer::CreatePanelCell()
     buttonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
     buttonNewUnit->SetLabel("NEW UNIT");
     buttonNewUnit->SetPosition(buttonX, buttonsY);
+    buttonNewUnit->SetOnClickFunction([] { std::cout << "OnClick NEW UNIT" << std::endl; });
 
     buttonX += buttonNewUnit->GetWidth() + marginX;
 

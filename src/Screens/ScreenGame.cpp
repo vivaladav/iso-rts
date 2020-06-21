@@ -56,6 +56,9 @@ ScreenGame::ScreenGame(Game * game)
         const int y = (i < 2) ? 10 : (rendH - panel->GetHeight() - 10);
 
         panel->SetPosition(x, y);
+
+        panel->SetPanelCellVisible(false);
+        panel->SetPanelUnitsVisible(false);
     }
 
     // -- GAMEPLAY TESTING --
