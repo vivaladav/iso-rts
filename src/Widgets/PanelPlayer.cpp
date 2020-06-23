@@ -15,12 +15,10 @@ namespace game
 {
 
 PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
-    : lib::sgui::Widget(0, parent)
+    : lib::sgui::Widget(parent)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
-
-    int wid = 0;
 
     FontManager * fm = FontManager::Instance();
 
@@ -31,7 +29,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
 
-    Label * labelName = new Label(p->GetName().c_str(), wid++, fontName, this);
+    Label * labelName = new Label(p->GetName().c_str(), fontName, this);
     labelName->SetColor(0x212121FF);
 
     const int marginX0 = 80;
@@ -39,29 +37,29 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     const int Y0 = 10;
 
-    Label * labelHeader1 = new Label("COINS", wid++, fontHeader, this);
+    Label * labelHeader1 = new Label("COINS", fontHeader, this);
     labelHeader1->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
     labelHeader1->SetColor(0x212121FF);
 
-    Label * labelData1 = new Label(MakeStrCoins(p).c_str(), wid++, fontData, this);
+    Label * labelData1 = new Label(MakeStrCoins(p).c_str(), fontData, this);
     labelData1->SetPosition(labelHeader1->GetX() + (labelHeader1->GetWidth() - labelData1->GetWidth()) * 0.5f,
                             labelHeader1->GetY() + labelHeader1->GetHeight());
     labelData1->SetColor(0x212121FF);
 
-    Label * labelHeader2 = new Label("CELLS", wid++, fontHeader, this);
+    Label * labelHeader2 = new Label("CELLS", fontHeader, this);
     labelHeader2->SetPosition(labelHeader1->GetX() + labelHeader1->GetWidth() + marginX1, Y0);
     labelHeader2->SetColor(0x212121FF);
 
-    Label * labelData2 = new Label(MakeStrCells(p).c_str(), wid++, fontData, this);
+    Label * labelData2 = new Label(MakeStrCells(p).c_str(), fontData, this);
     labelData2->SetPosition(labelHeader2->GetX() + (labelHeader2->GetWidth() - labelData2->GetWidth()) * 0.5f,
                             labelHeader2->GetY() + labelHeader2->GetHeight());
     labelData2->SetColor(0x212121FF);
 
-    Label * labelHeader3 = new Label("UNITS", wid++, fontHeader, this);
+    Label * labelHeader3 = new Label("UNITS", fontHeader, this);
     labelHeader3->SetPosition(labelHeader2->GetX() + labelHeader2->GetWidth() + marginX1, Y0);
     labelHeader3->SetColor(0x212121FF);
 
-    Label * labelData3 = new Label(MakeStrUnits(p).c_str(), wid++, fontData, this);
+    Label * labelData3 = new Label(MakeStrUnits(p).c_str(), fontData, this);
     labelData3->SetPosition(labelHeader3->GetX() + (labelHeader3->GetWidth() - labelData3->GetWidth()) * 0.5f,
                             labelHeader3->GetY() + labelHeader3->GetHeight());
     labelData3->SetColor(0x212121FF);
@@ -114,16 +112,14 @@ void PanelPlayer::CreatePanelCell()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    int wid = 100;
-
-    mPanelCell = new Widget(wid++, this);
+    mPanelCell = new Widget(this);
 
     FontManager * fm = FontManager::Instance();
 
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
     fontHeader->SetStyle(Font::BOLD);
 
-    Label * labelHeader = new Label("CELL", wid++, fontHeader, mPanelCell);
+    Label * labelHeader = new Label("CELL", fontHeader, mPanelCell);
     labelHeader->SetColor(0x212121FF);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
@@ -131,7 +127,7 @@ void PanelPlayer::CreatePanelCell()
 
     const int marginX = 30;
 
-    PushButton * buttonNewUnit = new PushButton(wid++, mPanelCell);
+    PushButton * buttonNewUnit = new PushButton(mPanelCell);
     buttonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
     buttonNewUnit->SetLabel("NEW UNIT");
     buttonNewUnit->SetPosition(buttonX, buttonsY);
@@ -139,14 +135,14 @@ void PanelPlayer::CreatePanelCell()
 
     buttonX += buttonNewUnit->GetWidth() + marginX;
 
-    PushButton * buttonFortify = new PushButton(wid++, mPanelCell);
+    PushButton * buttonFortify = new PushButton(mPanelCell);
     buttonFortify->SetBackground("data/img/buttons/player_ui-01.png");
     buttonFortify->SetLabel("FORTIFY");
     buttonFortify->SetPosition(buttonX, buttonsY);
 
     buttonX += buttonFortify->GetWidth() + marginX;
 
-    PushButton * buttonUpgrade = new PushButton(wid++, mPanelCell);
+    PushButton * buttonUpgrade = new PushButton(mPanelCell);
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
     buttonUpgrade->SetLabel("UPGRADE");
     buttonUpgrade->SetPosition(buttonX, buttonsY);
@@ -158,16 +154,14 @@ void PanelPlayer::CreatePanelUnits()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    int wid = 200;
-
-    mPanelUnits = new Widget(wid++, this);
+    mPanelUnits = new Widget(this);
 
     FontManager * fm = FontManager::Instance();
 
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
     fontHeader->SetStyle(Font::BOLD);
 
-    Label * labelHeader = new Label("UNITS", wid++, fontHeader, mPanelUnits);
+    Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(0x212121FF);
 
     const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
@@ -175,14 +169,14 @@ void PanelPlayer::CreatePanelUnits()
 
     const int marginX = 30;
 
-    PushButton * buttonMove = new PushButton(wid++, mPanelUnits);
+    PushButton * buttonMove = new PushButton(mPanelUnits);
     buttonMove->SetBackground("data/img/buttons/player_ui-01.png");
     buttonMove->SetLabel("MOVE");
     buttonMove->SetPosition(buttonX, buttonsY);
 
     buttonX += buttonMove->GetWidth() + marginX;
 
-    PushButton * buttonUpgrade = new PushButton(wid++, mPanelUnits);
+    PushButton * buttonUpgrade = new PushButton(mPanelUnits);
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
     buttonUpgrade->SetLabel("UPGRADE");
     buttonUpgrade->SetPosition(buttonX, buttonsY);

@@ -18,7 +18,7 @@ namespace sgui
 class PushButton : public Widget
 {
 public:
-    PushButton(int wid, Widget * parent = nullptr);
+    PushButton(Widget * parent = nullptr);
     ~PushButton();
 
     void SetBackground(const char * file);

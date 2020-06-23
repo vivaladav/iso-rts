@@ -13,8 +13,8 @@ namespace lib
 namespace sgui
 {
 
-PushButton::PushButton(int wid, Widget * parent)
-    : Widget(wid, parent)
+PushButton::PushButton(Widget * parent)
+    : Widget(parent)
     , mOnClick([]{})
     , mBg(new graphic::DummyRenderable)
     , mLabel(new graphic::DummyRenderable)

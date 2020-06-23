@@ -11,8 +11,8 @@ namespace lib
 namespace sgui
 {
 
-Label::Label(int wid, graphic::Font * font, Widget * parent)
-    : Widget(wid, parent)
+Label::Label(graphic::Font * font, Widget * parent)
+    : Widget(parent)
     , mFont(font)
 {
     assert(font);
@@ -20,8 +20,8 @@ Label::Label(int wid, graphic::Font * font, Widget * parent)
     CreateText();
 }
 
-Label::Label(const char * txt, int wid, graphic::Font * font, Widget * parent)
-    : Widget(wid, parent)
+Label::Label(const char * txt, graphic::Font * font, Widget * parent)
+    : Widget(parent)
     , mStr(txt)
     , mFont(font)
 {

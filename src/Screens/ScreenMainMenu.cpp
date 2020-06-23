@@ -18,15 +18,13 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     game->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 
-    int buttonId = 10;
-
     Widget * panel = new Widget(0);
 
     int buttonY = 0;
     const int VMARGIN = 100;
 
     // -- BUTTON NEW GAME --
-    PushButton * button = new PushButton(buttonId++, panel);
+    PushButton * button = new PushButton(panel);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
     button->SetLabel("NEW GAME");
     button->SetLabelColor(0x183929FF);
@@ -43,7 +41,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    button = new PushButton(buttonId++, panel);
+    button = new PushButton(panel);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
     button->SetLabel("EXIT");
     button->SetLabelColor(0x183929FF);

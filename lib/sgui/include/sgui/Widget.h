@@ -12,9 +12,10 @@ class Stage;
 class Widget : public WidgetContainer
 {
 public:
-    Widget(int wid, Widget * parent = nullptr);
+    Widget(Widget * parent = nullptr);
     ~Widget();
 
+    void SetWidgetId(int wid);
     int GetWidgetId() const;
 
     Widget * GetParent() const;
@@ -88,6 +89,10 @@ private:
     friend class WidgetContainer;
 };
 
+
+inline Widget::Widget(Widget * parent) { SetParent(parent); }
+
+inline void Widget::SetWidgetId(int wid) { mId = wid; }
 inline int Widget::GetWidgetId() const { return mId; }
 
 inline Widget * Widget::GetParent() const { return mParent; }

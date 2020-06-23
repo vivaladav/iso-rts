@@ -107,25 +107,23 @@ void ScreenTest::TestSGui()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    int wid = 0;
-
-    Widget * container = new Widget(wid++);
+    Widget * container = new Widget();
     container->SetPosition(600, 20);
 
     FontManager * fm = FontManager::Instance();
 
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
     font->SetStyle(Font::BOLD);
-    Label * label = new Label("PUSH BUTTON", wid++, font, container);
+    Label * label = new Label("PUSH BUTTON", font, container);
 
-    PushButton * button = new PushButton(wid++, container);
+    PushButton * button = new PushButton(container);
     button->SetBackground("data/img/buttons/main_menu-bg-01.png");
     button->SetLabel("BUTTON 1");
     button->SetLabelColor(0x183929FF);
     button->SetY(label->GetHeight() + 20);
 
     font->SetStyle(Font::NORMAL);
-    label = new Label(wid++, font, container);
+    label = new Label(font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
     button->SetOnClickFunction([label]{ label->SetText("button clicked"); });

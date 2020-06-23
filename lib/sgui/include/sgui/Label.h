@@ -19,8 +19,8 @@ namespace sgui
 class Label : public Widget
 {
 public:
-    Label(int wid, graphic::Font * font, Widget * parent = nullptr);
-    Label(const char * txt, int wid, graphic::Font * font, Widget * parent = nullptr);
+    Label(graphic::Font * font, Widget * parent = nullptr);
+    Label(const char * txt, graphic::Font * font, Widget * parent = nullptr);
     ~Label();
 
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);

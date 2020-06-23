@@ -9,12 +9,6 @@ namespace lib
 namespace sgui
 {
 
-Widget::Widget(int wid, Widget * parent)
-    : mId(wid)
-{
-    SetParent(parent);
-}
-
 Widget::~Widget()
 {
     if(mParent)
