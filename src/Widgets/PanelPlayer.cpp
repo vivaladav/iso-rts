@@ -7,7 +7,9 @@
 #include <sgui/Label.h>
 #include <sgui/PushButton.h>
 
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 
 namespace game
 {
@@ -41,7 +43,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeader1->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
     labelHeader1->SetColor(0x212121FF);
 
-    Label * labelData1 = new Label("000", wid++, fontData, this);
+    Label * labelData1 = new Label(MakeStrCoins(p).c_str(), wid++, fontData, this);
     labelData1->SetPosition(labelHeader1->GetX() + (labelHeader1->GetWidth() - labelData1->GetWidth()) * 0.5f,
                             labelHeader1->GetY() + labelHeader1->GetHeight());
     labelData1->SetColor(0x212121FF);
@@ -50,7 +52,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeader2->SetPosition(labelHeader1->GetX() + labelHeader1->GetWidth() + marginX1, Y0);
     labelHeader2->SetColor(0x212121FF);
 
-    Label * labelData2 = new Label("000", wid++, fontData, this);
+    Label * labelData2 = new Label(MakeStrCells(p).c_str(), wid++, fontData, this);
     labelData2->SetPosition(labelHeader2->GetX() + (labelHeader2->GetWidth() - labelData2->GetWidth()) * 0.5f,
                             labelHeader2->GetY() + labelHeader2->GetHeight());
     labelData2->SetColor(0x212121FF);
@@ -59,7 +61,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeader3->SetPosition(labelHeader2->GetX() + labelHeader2->GetWidth() + marginX1, Y0);
     labelHeader3->SetColor(0x212121FF);
 
-    Label * labelData3 = new Label("000", wid++, fontData, this);
+    Label * labelData3 = new Label(MakeStrUnits(p).c_str(), wid++, fontData, this);
     labelData3->SetPosition(labelHeader3->GetX() + (labelHeader3->GetWidth() - labelData3->GetWidth()) * 0.5f,
                             labelHeader3->GetY() + labelHeader3->GetHeight());
     labelData3->SetColor(0x212121FF);
@@ -77,6 +79,34 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     const int panelY2 = mPanelCell->GetY() + mPanelCell->GetHeight() + marginTopPanels;
     mPanelUnits->SetY(panelY2);
+}
+
+std::string PanelPlayer::MakeStrCells(Player * p)
+{
+    return std::to_string(p->GetNumCells());
+}
+
+std::string PanelPlayer::MakeStrCoins(Player * p)
+{
+    const int coins = p->GetMoney();
+
+    // convert 1000 and bigger to 1k
+    if(coins > 1000)
+    {
+        float val = coins / 1000.f;
+
+        std::ostringstream s;
+        s << std::setprecision(2) << val << "k";
+
+        return s.str();
+    }
+    else
+        return std::to_string(coins);
+}
+
+std::string PanelPlayer::MakeStrUnits(Player * p)
+{
+    return std::to_string(p->GetNumUnits());
 }
 
 void PanelPlayer::CreatePanelCell()

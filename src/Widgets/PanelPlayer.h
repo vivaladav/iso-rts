@@ -2,6 +2,8 @@
 
 #include <sgui/Widget.h>
 
+#include <string>
+
 namespace game
 {
 
@@ -16,6 +18,10 @@ public:
     void SetPanelUnitsVisible(bool val);
 
 private:
+    std::string MakeStrCells(Player * p);
+    std::string MakeStrCoins(Player * p);
+    std::string MakeStrUnits(Player * p);
+
     void CreatePanelCell();
 
     void CreatePanelUnits();
