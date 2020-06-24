@@ -72,6 +72,8 @@ ScreenGame::~ScreenGame()
 {
     delete mMap;
 
+    GetGame()->ClearPlayers();
+
     lib::sgui::Stage::Instance()->ClearWidgets();
 }
 

@@ -55,6 +55,8 @@ Game::Game(int argc, char * argv[])
 
 Game::~Game()
 {
+    ClearPlayers();
+
     lib::sgui::Stage::Destroy();
 
     lib::graphic::FontManager::Destroy();
@@ -91,6 +93,14 @@ void Game::AddPlayer(const char * name, int pid)
         return;
 
     mPlayers.emplace_back(new Player(name, pid));
+}
+
+void Game::ClearPlayers()
+{
+    for(Player * p : mPlayers)
+        delete p;
+
+    mPlayers.clear();
 }
 
 } // namespace game

@@ -37,6 +37,7 @@ public:
 
     // -- players --
     void AddPlayer(const char * name, int pid);
+    void ClearPlayers();
 
     int GetNumPlayers() const;
 
