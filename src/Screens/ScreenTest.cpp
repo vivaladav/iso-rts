@@ -96,7 +96,7 @@ void ScreenTest::Render()
         r->Render();
 }
 
-void ScreenTest::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
+void ScreenTest::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     std::cout << "Mouse clicked - button: " << event.GetButton()
               << " - pos: " << event.GetX() << " , " << event.GetY() << std::endl;
@@ -126,7 +126,23 @@ void ScreenTest::TestSGui()
     label = new Label(font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
-    button->SetOnClickFunction([label]{ label->SetText("button clicked"); });
+    button->SetOnClickFunction([label]
+    {
+        label->SetText("button 1 clicked");
+        std::cout << "button 1 clicked" << std::endl;
+    });
+
+    button = new PushButton(container);
+    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
+    button->SetLabel("BUTTON 2");
+    button->SetLabelColor(0x183929FF);
+    button->SetY(label->GetY() + 50);
+
+    button->SetOnClickFunction([label]
+    {
+        label->SetText("button 2 clicked");
+        std::cout << "button 2 clicked" << std::endl;
+    });
 }
 
 } // namespace game

@@ -13,8 +13,8 @@ KeyboardEventListener::~KeyboardEventListener()
         mDispatcher->RemoveKeyboardListener(this);
 }
 
-void KeyboardEventListener::OnKeyDown(const KeyboardEvent &) { }
-void KeyboardEventListener::OnKeyUp(const KeyboardEvent &) { }
+void KeyboardEventListener::OnKeyDown(KeyboardEvent &) { }
+void KeyboardEventListener::OnKeyUp(KeyboardEvent &) { }
 
 } // namespace core
 } // namespace lib

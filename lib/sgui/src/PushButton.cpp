@@ -82,8 +82,10 @@ void PushButton::PositionLabel()
     mLabel->SetPosition(x, y);
 }
 
-void PushButton::HandleMouseButtonUp(const core::MouseButtonEvent &)
+void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
 {
+    event.SetConsumed();
+
     mOnClick();
 }
 

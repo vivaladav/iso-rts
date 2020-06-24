@@ -21,7 +21,7 @@ public:
     void Update() override;
     void Render() override;
 
-    void OnMouseButtonUp(const lib::core::MouseButtonEvent & event) override;
+    void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
 
 private:
     void TestSGui();

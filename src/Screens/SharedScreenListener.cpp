@@ -4,14 +4,20 @@
 #include "Screens/Screen.h"
 #include "States/StatesIds.h"
 
+#include <core/event/ApplicationEvent.h>
 #include <core/event/KeyboardEvent.h>
 #include <graphic/Window.h>
 
 namespace game
 {
-void SharedScreenListener::OnApplicationQuit() { mScreen->GetGame()->Exit(); }
+void SharedScreenListener::OnApplicationQuit(lib::core::ApplicationEvent & event)
+{
+    mScreen->GetGame()->Exit();
 
-void SharedScreenListener::OnKeyUp(const lib::core::KeyboardEvent & event)
+    event.SetConsumed();
+}
+
+void SharedScreenListener::OnKeyUp(lib::core::KeyboardEvent & event)
 {
     using namespace lib::core;
     using namespace lib::graphic;

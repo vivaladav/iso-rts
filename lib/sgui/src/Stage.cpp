@@ -32,17 +32,17 @@ void Stage::Render()
     PropagateRender();
 }
 
-void Stage::OnMouseButtonDown(const core::MouseButtonEvent & event)
+void Stage::OnMouseButtonDown(core::MouseButtonEvent & event)
 {
     PropagateMouseButtonDown(event);
 }
 
-void Stage::OnMouseButtonUp(const core::MouseButtonEvent & event)
+void Stage::OnMouseButtonUp(core::MouseButtonEvent & event)
 {
     PropagateMouseButtonUp(event);
 }
 
-void Stage::OnMouseMotion(const core::MouseMotionEvent & event)
+void Stage::OnMouseMotion(core::MouseMotionEvent & event)
 {
     PropagateMouseMotion(event);
 }

@@ -1,5 +1,6 @@
 #include "EventDispatcher.h"
 
+#include "core/event/ApplicationEvent.h"
 #include "core/event/ApplicationEventListener.h"
 #include "core/event/KeyboardEvent.h"
 #include "core/event/KeyboardEventListener.h"
@@ -107,7 +108,13 @@ void EventDispatcher::Update()
                 MouseMotionEvent e(m.x, m.y, m.xrel, m.yrel, m.state);
 
                 for(MouseEventListener * el : mMouseListeners)
+                {
                     el->OnMouseMotion(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
             }
             break;
 
@@ -118,7 +125,13 @@ void EventDispatcher::Update()
                 MouseButtonEvent e(b.x, b.y, b.button);
 
                 for(MouseEventListener * el : mMouseListeners)
+                {
                     el->OnMouseButtonDown(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
             }
             break;
 
@@ -129,7 +142,13 @@ void EventDispatcher::Update()
                 MouseButtonEvent e(b.x, b.y, b.button);
 
                 for(MouseEventListener * el : mMouseListeners)
+                {
                     el->OnMouseButtonUp(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
             }
             break;
 
@@ -138,7 +157,13 @@ void EventDispatcher::Update()
                 KeyboardEvent e(event.key.keysym.sym);
 
                 for(KeyboardEventListener * el : mKeyboardListeners)
+                {
                     el->OnKeyDown(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
             }
             break;
 
@@ -147,13 +172,29 @@ void EventDispatcher::Update()
                 KeyboardEvent e(event.key.keysym.sym);
 
                 for(KeyboardEventListener * el : mKeyboardListeners)
+                {
                     el->OnKeyUp(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
             }
             break;
 
             case SDL_QUIT:
+            {
+                ApplicationEvent e;
+
                 for(ApplicationEventListener * el : mApplicationListeners)
-                    el->OnApplicationQuit();
+                {
+                    el->OnApplicationQuit(e);
+
+                    // stop propagation if event is consumed
+                    if(e.IsConsumed())
+                        break;
+                }
+            }
             break;
 
             default:

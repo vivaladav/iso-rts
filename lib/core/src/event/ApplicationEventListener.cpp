@@ -13,7 +13,7 @@ ApplicationEventListener::~ApplicationEventListener()
         mDispatcher->RemoveApplicationListener(this);
 }
 
-void ApplicationEventListener::OnApplicationQuit() { }
+void ApplicationEventListener::OnApplicationQuit(ApplicationEvent &) { }
 
 } // namespace core
 } // namespace lib

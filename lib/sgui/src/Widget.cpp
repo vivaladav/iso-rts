@@ -177,9 +177,9 @@ void Widget::SetScreenPosition(int x, int y)
 
 void Widget::OnPositionChanged() { }
 
-void Widget::HandleMouseButtonDown(const core::MouseButtonEvent &) { }
-void Widget::HandleMouseButtonUp(const core::MouseButtonEvent &) { }
-void Widget::HandleMouseMotion(const core::MouseMotionEvent &) { }
+void Widget::HandleMouseButtonDown(core::MouseButtonEvent &) { }
+void Widget::HandleMouseButtonUp(core::MouseButtonEvent &) { }
+void Widget::HandleMouseMotion(core::MouseMotionEvent &) { }
 
 void Widget::SetMouseOver()
 {

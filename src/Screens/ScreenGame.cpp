@@ -86,7 +86,7 @@ void ScreenGame::Render()
     mMap->Render();
 }
 
-void ScreenGame::OnMouseButtonUp(const lib::core::MouseButtonEvent & event)
+void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     const Cell2D c = mMap->CellFromScreenPoint(event.GetX(), event.GetY());
 

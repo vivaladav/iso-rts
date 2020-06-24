@@ -13,8 +13,8 @@ class SharedScreenListener : public lib::core::ApplicationEventListener, public 
 public:
     SharedScreenListener(Screen * parent);
 
-    void OnApplicationQuit() override;
-    void OnKeyUp(const lib::core::KeyboardEvent & event) override;
+    void OnApplicationQuit(lib::core::ApplicationEvent & event) override;
+    void OnKeyUp(lib::core::KeyboardEvent & event) override;
 
 private:
     Screen * mScreen = nullptr;

@@ -15,9 +15,9 @@ public:
     virtual ~MouseEventListener();
 
 private:
-    virtual void OnMouseButtonDown(const MouseButtonEvent & event);
-    virtual void OnMouseButtonUp(const MouseButtonEvent & event);
-    virtual void OnMouseMotion(const MouseMotionEvent & event);
+    virtual void OnMouseButtonDown(MouseButtonEvent & event);
+    virtual void OnMouseButtonUp(MouseButtonEvent & event);
+    virtual void OnMouseMotion(MouseMotionEvent & event);
 
 private:
     EventDispatcher * mDispatcher = nullptr;

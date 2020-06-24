@@ -34,7 +34,7 @@ private:
 
     void PositionLabel();
 
-    void HandleMouseButtonUp(const core::MouseButtonEvent & event) override;
+    void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
 
     void OnRender() override;
 

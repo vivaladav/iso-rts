@@ -54,9 +54,9 @@ private:
 
     virtual void OnPositionChanged();
 
-    virtual void HandleMouseButtonDown(const core::MouseButtonEvent & event);
-    virtual void HandleMouseButtonUp(const core::MouseButtonEvent & event);
-    virtual void HandleMouseMotion(const core::MouseMotionEvent & event);
+    virtual void HandleMouseButtonDown(core::MouseButtonEvent & event);
+    virtual void HandleMouseButtonUp(core::MouseButtonEvent & event);
+    virtual void HandleMouseMotion(core::MouseMotionEvent & event);
 
     void SetMouseOver();
     void SetMouseOut();

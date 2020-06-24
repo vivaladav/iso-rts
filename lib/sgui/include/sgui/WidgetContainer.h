@@ -32,9 +32,9 @@ protected:
     void OnChildEnableChanged(Widget * child);
     void OnChildVisibleChanged(Widget * child);
 
-    void PropagateMouseButtonDown(const core::MouseButtonEvent & event);
-    void PropagateMouseButtonUp(const core::MouseButtonEvent & event);
-    void PropagateMouseMotion(const core::MouseMotionEvent & event);
+    void PropagateMouseButtonDown(core::MouseButtonEvent & event);
+    void PropagateMouseButtonUp(core::MouseButtonEvent & event);
+    void PropagateMouseMotion(core::MouseMotionEvent & event);
 
     void PropagateRender();
 

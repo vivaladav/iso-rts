@@ -14,8 +14,8 @@ public:
     virtual ~KeyboardEventListener();
 
 private:
-    virtual void OnKeyDown(const KeyboardEvent & event);
-    virtual void OnKeyUp(const KeyboardEvent & event);
+    virtual void OnKeyDown(KeyboardEvent & event);
+    virtual void OnKeyUp(KeyboardEvent & event);
 
 private:
     EventDispatcher * mDispatcher = nullptr;

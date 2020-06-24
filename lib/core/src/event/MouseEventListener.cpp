@@ -13,9 +13,9 @@ MouseEventListener::~MouseEventListener()
         mDispatcher->RemoveMouseListener(this);
 }
 
-void MouseEventListener::OnMouseButtonDown(const MouseButtonEvent &) { }
-void MouseEventListener::OnMouseButtonUp(const MouseButtonEvent &) { }
-void MouseEventListener::OnMouseMotion(const MouseMotionEvent &) { }
+void MouseEventListener::OnMouseButtonDown(MouseButtonEvent &) { }
+void MouseEventListener::OnMouseButtonUp(MouseButtonEvent &) { }
+void MouseEventListener::OnMouseMotion(MouseMotionEvent &) { }
 
 } // namespace core
 } // namespace lib

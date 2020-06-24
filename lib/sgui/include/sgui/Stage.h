@@ -31,9 +31,9 @@ private:
     Stage() = default;
     ~Stage() = default;
 
-    void OnMouseButtonDown(const core::MouseButtonEvent & event) override;
-    void OnMouseButtonUp(const core::MouseButtonEvent & event) override;
-    void OnMouseMotion(const core::MouseMotionEvent & event) override;
+    void OnMouseButtonDown(core::MouseButtonEvent & event) override;
+    void OnMouseButtonUp(core::MouseButtonEvent & event) override;
+    void OnMouseMotion(core::MouseMotionEvent & event) override;
 
 private:
     static Stage * mInstance;

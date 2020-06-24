@@ -58,7 +58,7 @@ void WidgetContainer::OnChildVisibleChanged(Widget * /*child*/)
     // TODO - handle visible changed in child
 }
 
-void WidgetContainer::PropagateMouseButtonDown(const core::MouseButtonEvent & event)
+void WidgetContainer::PropagateMouseButtonDown(core::MouseButtonEvent & event)
 {
     const int x = event.GetX();
     const int y = event.GetY();
@@ -71,12 +71,16 @@ void WidgetContainer::PropagateMouseButtonDown(const core::MouseButtonEvent & ev
             {
                 w->PropagateMouseButtonDown(event);
                 w->HandleMouseButtonDown(event);
+
+                // stop propagation if event is consumed
+                if(event.IsConsumed())
+                    break;
             }
         }
     }
 }
 
-void WidgetContainer::PropagateMouseButtonUp(const core::MouseButtonEvent & event)
+void WidgetContainer::PropagateMouseButtonUp(core::MouseButtonEvent & event)
 {
     const int x = event.GetX();
     const int y = event.GetY();
@@ -89,12 +93,16 @@ void WidgetContainer::PropagateMouseButtonUp(const core::MouseButtonEvent & even
             {
                 w->PropagateMouseButtonUp(event);
                 w->HandleMouseButtonUp(event);
+
+                // stop propagation if event is consumed
+                if(event.IsConsumed())
+                    break;
             }
         }
     }
 }
 
-void WidgetContainer::PropagateMouseMotion(const core::MouseMotionEvent & event)
+void WidgetContainer::PropagateMouseMotion(core::MouseMotionEvent & event)
 {
     const int x = event.GetX();
     const int y = event.GetY();
@@ -110,6 +118,10 @@ void WidgetContainer::PropagateMouseMotion(const core::MouseMotionEvent & event)
                 w->SetMouseOver();
 
                 w->HandleMouseMotion(event);
+
+                // stop propagation if event is consumed
+                if(event.IsConsumed())
+                    break;
             }
             else
                 w->SetMouseOut();
