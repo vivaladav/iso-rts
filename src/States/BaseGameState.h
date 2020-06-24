@@ -12,6 +12,7 @@ class BaseGameState : public lib::utilities::State
 {
 public:
     BaseGameState(unsigned int stateId, Game * game);
+    ~BaseGameState();
 
     void Update();
 

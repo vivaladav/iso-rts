@@ -24,6 +24,7 @@ PushButton::PushButton(Widget * parent)
 PushButton::~PushButton()
 {
     delete mBg;
+    delete mLabel;
 }
 
 void PushButton::SetBackground(const char * file)

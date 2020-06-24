@@ -5,6 +5,11 @@
 namespace game
 {
 
+BaseGameState::~BaseGameState()
+{
+    delete mScreen;
+}
+
 void BaseGameState::Update()
 {
     mScreen->Update();

@@ -57,11 +57,11 @@ Game::~Game()
 {
     ClearPlayers();
 
+    delete mStateMan;
+
     lib::sgui::Stage::Destroy();
 
     lib::graphic::FontManager::Destroy();
-
-    delete mStateMan;
 
     lib::graphic::Renderer::Destroy();
     lib::graphic::Window::Destroy();
