@@ -1,6 +1,7 @@
 #include "Screens/ScreenGame.h"
 
 #include "Game.h"
+#include "GameMap.h"
 #include "IsoMap.h"
 #include "Player.h"
 #include "Widgets/PanelPlayer.h"
@@ -23,6 +24,10 @@ ScreenGame::ScreenGame(Game * game)
 {
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
+    // TODO replace with C++11 random generation
+    srand(time(nullptr));
+
+    // -- ISOMETRIC MAP --
     const int SIDE = 15;
     const int TILE_W = 128;
 
@@ -35,18 +40,22 @@ ScreenGame::ScreenGame(Game * game)
                                                 "data/img/tile05.png"
                                                };
 
-    mMap = new IsoMap(SIDE, SIDE, TILE_W);
-    mMap->SetTiles(tileFiles);
-    mMap->Load("data/maps/001.map");
+    mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
+    mIsoMap->SetTiles(tileFiles);
 
     // center map on screen
-    const int mapW = mMap->GetWidth();
-    const int mapH = mMap->GetHeight();
+    const int mapW = mIsoMap->GetWidth();
+    const int mapH = mIsoMap->GetHeight();
 
     const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
-    mMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
+    mIsoMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
+
+    // -- GAME MAP --
+    mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
+    mGameMap->Load("data/maps/001.map");
+    mGameMap->SetHomeCell(game->GetNumPlayers());
 
     // -- UI --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -61,16 +70,12 @@ ScreenGame::ScreenGame(Game * game)
         panel->SetPanelCellVisible(false);
         panel->SetPanelUnitsVisible(false);
     }
-
-    // -- GAMEPLAY TESTING --
-    srand(time(nullptr));
-
-    SetHomeCell();
 }
 
 ScreenGame::~ScreenGame()
 {
-    delete mMap;
+    delete mIsoMap;
+    delete mGameMap;
 
     GetGame()->ClearPlayers();
 
@@ -83,27 +88,17 @@ void ScreenGame::Update()
 
 void ScreenGame::Render()
 {
-    mMap->Render();
+    mIsoMap->Render();
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
-    const Cell2D c = mMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    const Cell2D c = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
-    int cellType = mMap->GetCellType(c.row, c.col);
+    int cellType = mIsoMap->GetCellType(c.row, c.col);
 
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
               << "cell " << c.row << "," << c.col << " - type: " << cellType << std::endl;
-}
-
-void ScreenGame::SetHomeCell()
-{
-    const int NUM_CORNERS = 4;
-    Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 0}, {14, 14} };
-
-    const int pick = rand() % NUM_CORNERS;
-
-    mMap->SetCellType(corners[pick].row, corners[pick].col, 1);
 }
 
 } // namespace game

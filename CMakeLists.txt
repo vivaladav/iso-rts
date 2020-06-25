@@ -13,6 +13,7 @@ add_executable(
     game
     src/main.cpp
     src/Game.cpp
+    src/GameMap.cpp
     src/IsoMap.cpp
     src/Player.cpp
     src/Screens/Screen.cpp

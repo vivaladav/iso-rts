@@ -26,8 +26,10 @@ public:
 
     void SetTiles(const std::vector<std::string> & files);
 
-    void SetCellType(unsigned int r, unsigned int c, unsigned int ind);
+    void SetCellType(unsigned int r, unsigned int c, unsigned int type);
+    void SetCellType(unsigned int index, unsigned int type);
     int GetCellType(unsigned int r, unsigned int c) const;
+    int GetCellType(unsigned int index) const;
 
     int GetTileWidth() const;
     int GetTileHeight() const;
@@ -36,8 +38,6 @@ public:
     int GetHeight() const;
 
     void SetOrigin(int x, int y);
-
-    bool Load(const char * file);
 
     void Render();
 
@@ -64,18 +64,28 @@ private:
     std::vector<lib::core::Point2D> mTilePositions;
 };
 
-inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int ind)
+inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int type)
 {
-    if(r < mRows && c < mCols && ind < mTiles.size())
-        mMap[r * mCols + c] = ind;
+    SetCellType(r * mCols + c, type);
+}
+
+inline void IsoMap::SetCellType(unsigned int index, unsigned int type)
+{
+    if(index < mMap.size() && type < mTiles.size())
+        mMap[index] = type;
 }
 
 inline int IsoMap::GetCellType(unsigned int r, unsigned int c) const
 {
-    if(r >= mRows || c >= mCols)
-        return -1;
+    return GetCellType(r * mCols + c);
+}
 
-    return mMap[r * mCols + c];
+inline int IsoMap::GetCellType(unsigned int index) const
+{
+    if(index < mMap.size())
+        return mMap[index];
+    else
+        return -1;
 }
 
 inline int IsoMap::GetTileWidth() const { return mTileW; }

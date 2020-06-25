@@ -33,7 +33,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     {
         Game * game = GetGame();
 
-        game->AddPlayer("PLAYER 1", 0);
+        game->AddPlayer("PLAYER 1", 1);
 
         game->RequestNextActiveState(StateId::GAME);
     });

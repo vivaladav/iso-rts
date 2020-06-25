@@ -7,6 +7,7 @@ namespace lib { namespace sgui { class Widget; } }
 namespace game
 {
 
+class GameMap;
 class IsoMap;
 class Player;
 
@@ -22,10 +23,8 @@ public:
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
 
 private:
-    void SetHomeCell();
-
-private:
-    IsoMap * mMap = nullptr;
+    GameMap * mGameMap = nullptr;
+    IsoMap * mIsoMap = nullptr;
 };
 
 } // namespace game

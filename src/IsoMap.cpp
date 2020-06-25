@@ -2,10 +2,6 @@
 
 #include <graphic/Image.h>
 
-#include <cassert>
-#include <fstream>
-#include <iostream>
-
 namespace game
 {
 
@@ -40,32 +36,6 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
     }
 
     UpdateTilePositions();
-}
-
-bool IsoMap::Load(const char * file)
-{
-    std::fstream f(file);
-
-    if(!f.is_open())
-        return false;
-
-    std::string line;
-
-    for(unsigned int r = 0; r < mRows; ++r)
-    {
-        const unsigned int indb = r * mCols;
-
-        std::getline(f, line);
-
-        for(unsigned int c = 0; c < mCols; ++c)
-        {
-            const unsigned int ind = indb + c;
-
-            mMap[ind] = line[c] - '0';
-        }
-    }
-
-    return true;
 }
 
 void IsoMap::Render()
