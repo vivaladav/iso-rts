@@ -41,7 +41,7 @@ bool GameMap::Load(const char * file)
 
             const int type = line[c] - '0';
 
-            mCells[ind].mEmpty = (type != CELL_FULL);
+            mCells[ind].empty = (type != CELL_FULL);
 
             mIsoMap->SetCellType(r, c, type);
         }
@@ -65,7 +65,8 @@ void GameMap::SetHomeCell(int numPlayers)
 
         mIsoMap->SetCellType(ind, p + 1);
 
-        mCells[ind].mOwnerId = p + 1;
+        mCells[ind].ownerId = p + 1;
+        mCells[ind].empty = false;
     }
 }
 

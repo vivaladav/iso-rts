@@ -12,6 +12,8 @@ public:
 
     const std::string & GetName() const;
 
+    int GetPlayerId() const;
+
     int GetNumCells() const;
 
     int GetMoney() const;
@@ -29,6 +31,8 @@ private:
 };
 
 inline const std::string & Player::GetName() const { return mName; }
+
+inline int Player::GetPlayerId() const { return mPlayerId; }
 
 inline int Player::GetNumCells() const { return mNumCells; }
 

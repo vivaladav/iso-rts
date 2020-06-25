@@ -69,6 +69,8 @@ ScreenGame::ScreenGame(Game * game)
 
         panel->SetPanelCellVisible(false);
         panel->SetPanelUnitsVisible(false);
+
+        mPanelsPlayer[i] = panel;
     }
 }
 
@@ -95,10 +97,24 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     const Cell2D c = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
-    int cellType = mIsoMap->GetCellType(c.row, c.col);
+    const int cellType = mIsoMap->GetCellType(c.row, c.col);
+
+    const bool insideMap = mIsoMap->IsCellInside(c);
 
     std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
-              << "cell " << c.row << "," << c.col << " - type: " << cellType << std::endl;
+              << "cell " << c.row << "," << c.col << " - type: " << cellType
+              << " - INSIDE: "<< (insideMap ? "YES" : "NO") << std::endl;
+
+    if(insideMap)
+    {
+        const int owner = mGameMap->GetCellOwner(c.row, c.col);
+
+        bool localPlayer = owner == GetGame()->GetPlayer(0)->GetPlayerId();
+
+        mPanelsPlayer[0]->SetPanelCellVisible(localPlayer);
+    }
+    else
+        mPanelsPlayer[0]->SetPanelCellVisible(false);
 }
 
 } // namespace game

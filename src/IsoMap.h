@@ -43,6 +43,8 @@ public:
 
     Cell2D CellFromScreenPoint(int x, int y) const;
 
+    bool IsCellInside(const Cell2D & cell) const;
+
 private:
     void UpdateTilePositions();
 
@@ -66,7 +68,8 @@ private:
 
 inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int type)
 {
-    SetCellType(r * mCols + c, type);
+    if(r < mRows && c < mCols)
+        SetCellType(r * mCols + c, type);
 }
 
 inline void IsoMap::SetCellType(unsigned int index, unsigned int type)
@@ -77,7 +80,10 @@ inline void IsoMap::SetCellType(unsigned int index, unsigned int type)
 
 inline int IsoMap::GetCellType(unsigned int r, unsigned int c) const
 {
-    return GetCellType(r * mCols + c);
+    if(r < mRows && c < mCols)
+        return GetCellType(r * mCols + c);
+    else
+        return -1;
 }
 
 inline int IsoMap::GetCellType(unsigned int index) const
@@ -103,6 +109,13 @@ inline void IsoMap::SetOrigin(int x, int y)
     mRenderX0 = x - mTileH;
 
     UpdateTilePositions();
+}
+
+inline bool IsoMap::IsCellInside(const Cell2D & cell) const
+{
+    const unsigned int cr = static_cast<unsigned int>(cell.row);
+    const unsigned int cc = static_cast<unsigned int>(cell.col);
+    return  cr < mRows && cc < mCols;
 }
 
 } // namespace game

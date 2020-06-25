@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "GameConstants.h"
 #include "Player.h"
 #include "States/StatesIds.h"
 #include "States/StateGame.h"
@@ -87,8 +88,6 @@ void Game::Update()
 
 void Game::AddPlayer(const char * name, int pid)
 {
-    const int MAX_NUM_PLAYERS = 4;
-
     if(mPlayers.size() == MAX_NUM_PLAYERS)
         return;
 
