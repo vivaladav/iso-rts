@@ -43,6 +43,14 @@ void PushButton::SetBackground(const char * file)
 
 void PushButton::SetLabel(const char * text)
 {
+    // TODO proper font handling
+    graphic::Font * font = Stage::Instance()->GetDefaultFont();
+
+    SetLabel(text, font);
+}
+
+void PushButton::SetLabel(const char * text, graphic::Font * font)
+{
     delete mLabel;
 
     std::string t(text);
@@ -50,12 +58,7 @@ void PushButton::SetLabel(const char * text)
     if(t.empty())
         mLabel = new graphic::DummyRenderable;
     else
-    {
-        // TODO proper font handling
-        graphic::Font * font = Stage::Instance()->GetDefaultFont();
-
         mLabel = new graphic::Text(text, font);
-    }
 
     PositionLabel();
 }

@@ -127,9 +127,13 @@ void PanelPlayer::CreatePanelCell()
 
     const int marginX = 30;
 
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 22);
+    fontButton->SetStyle(Font::BOLD);
+
     PushButton * buttonNewUnit = new PushButton(mPanelCell);
     buttonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonNewUnit->SetLabel("NEW UNIT");
+    buttonNewUnit->SetLabel("NEW UNIT", fontButton);
+    buttonNewUnit->SetLabelColor(0xF0F0F0FF);
     buttonNewUnit->SetPosition(buttonX, buttonsY);
     buttonNewUnit->SetOnClickFunction([] { std::cout << "OnClick NEW UNIT" << std::endl; });
 
@@ -137,14 +141,16 @@ void PanelPlayer::CreatePanelCell()
 
     PushButton * buttonFortify = new PushButton(mPanelCell);
     buttonFortify->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonFortify->SetLabel("FORTIFY");
+    buttonFortify->SetLabel("FORTIFY", fontButton);
+    buttonFortify->SetLabelColor(0xF0F0F0FF);
     buttonFortify->SetPosition(buttonX, buttonsY);
 
     buttonX += buttonFortify->GetWidth() + marginX;
 
     PushButton * buttonUpgrade = new PushButton(mPanelCell);
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonUpgrade->SetLabel("UPGRADE");
+    buttonUpgrade->SetLabel("UPGRADE", fontButton);
+    buttonUpgrade->SetLabelColor(0xF0F0F0FF);
     buttonUpgrade->SetPosition(buttonX, buttonsY);
 
 }
@@ -169,16 +175,21 @@ void PanelPlayer::CreatePanelUnits()
 
     const int marginX = 30;
 
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 22);
+    fontButton->SetStyle(Font::BOLD);
+
     PushButton * buttonMove = new PushButton(mPanelUnits);
     buttonMove->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonMove->SetLabel("MOVE");
+    buttonMove->SetLabel("MOVE", fontButton);
+    buttonMove->SetLabelColor(0xF0F0F0FF);
     buttonMove->SetPosition(buttonX, buttonsY);
 
     buttonX += buttonMove->GetWidth() + marginX;
 
     PushButton * buttonUpgrade = new PushButton(mPanelUnits);
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonUpgrade->SetLabel("UPGRADE");
+    buttonUpgrade->SetLabel("UPGRADE", fontButton);
+    buttonUpgrade->SetLabelColor(0xF0F0F0FF);
     buttonUpgrade->SetPosition(buttonX, buttonsY);
 }
 

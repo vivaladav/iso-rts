@@ -9,6 +9,7 @@ namespace lib
 
 namespace graphic
 {
+    class Font;
     class Renderable;
 }
 
@@ -24,6 +25,7 @@ public:
     void SetBackground(const char * file);
 
     void SetLabel(const char * text);
+    void SetLabel(const char * text, graphic::Font * font);
     void SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void SetLabelColor(unsigned int color);
 
