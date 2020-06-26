@@ -57,6 +57,12 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell(game->GetNumPlayers());
 
+    // -- PLAYERS --
+    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+    {
+        game->GetPlayer(i)->SumCells(1);
+    }
+
     // -- UI --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {

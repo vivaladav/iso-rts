@@ -52,11 +52,15 @@ void Label::SetText(const char * txt)
     if(t == mStr)
         return ;
 
+    const unsigned int color = mTxt->GetColor();
+
     delete mTxt;
 
     mStr = t;
 
     CreateText();
+
+    SetColor(color);
 }
 
 void Label::CreateText()

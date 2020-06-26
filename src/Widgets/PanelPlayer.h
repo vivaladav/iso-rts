@@ -4,6 +4,14 @@
 
 #include <string>
 
+namespace lib
+{
+    namespace sgui
+    {
+        class Label;
+    }
+}
+
 namespace game
 {
 
@@ -17,16 +25,26 @@ public:
     void SetPanelCellVisible(bool val);
     void SetPanelUnitsVisible(bool val);
 
+    void UpdateCells();
+    void UpdateCoins();
+    void UpdateUnits();
+
 private:
-    std::string MakeStrCells(Player * p);
-    std::string MakeStrCoins(Player * p);
-    std::string MakeStrUnits(Player * p);
+    std::string MakeStrCells();
+    std::string MakeStrCoins();
+    std::string MakeStrUnits();
 
     void CreatePanelCell();
 
     void CreatePanelUnits();
 
 private:
+    Player * mPlayer = nullptr;
+
+    lib::sgui::Label * mLabelCells = nullptr;
+    lib::sgui::Label * mLabelCoins = nullptr;
+    lib::sgui::Label * mLabelUnits = nullptr;
+
     lib::sgui::Widget * mPanelCell = nullptr;
     lib::sgui::Widget * mPanelUnits = nullptr;
 };

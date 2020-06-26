@@ -25,6 +25,8 @@ public:
     int GetHeight() const;
 
     void SetAlpha(unsigned char a);
+    // get color as #RRGGBBAA
+    unsigned int GetColor();
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     // color as #RRGGBBAA
     void SetColor(unsigned int color);
@@ -41,6 +43,11 @@ protected:
 };
 
 inline void Renderable::SetAlpha(unsigned char a) { mA = a; }
+
+inline unsigned int Renderable::GetColor()
+{
+    return mR << 24 | mG << 16 | mB << 8 | mA;
+}
 
 inline void Renderable::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
