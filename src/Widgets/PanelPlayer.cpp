@@ -33,7 +33,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     Label * labelName = new Label(p->GetName().c_str(), fontName, this);
     labelName->SetColor(0x212121FF);
 
-    const int marginX0 = 80;
+    const int marginX0 = 280;
     const int marginX1 = 50;
 
     const int Y0 = 10;
@@ -57,7 +57,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     mLabelCells->SetColor(0x212121FF);
 
     Label * labelHeaderUnits = new Label("UNITS", fontHeader, this);
-    labelHeaderUnits->SetPosition(mLabelCells->GetX() + mLabelCells->GetWidth() + marginX1, Y0);
+    labelHeaderUnits->SetPosition(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1, Y0);
     labelHeaderUnits->SetColor(0x212121FF);
 
     mLabelUnits = new Label(MakeStrUnits().c_str(), fontData, this);
@@ -66,18 +66,18 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     mLabelUnits->SetColor(0x212121FF);
 
     // -- subpanels --
-    const int marginTopRow = 30;
-    const int marginTopPanels = 20;
+    const int marginTopRow = 10;
+    const int marginRightPanels = 50;
 
     CreatePanelCell();
 
-    const int panelY1 = labelName->GetY() + labelName->GetHeight() + marginTopRow;
-    mPanelCell->SetY(panelY1);
+    const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
+    mPanelCell->SetY(panelY);
 
     CreatePanelUnits();
 
-    const int panelY2 = mPanelCell->GetY() + mPanelCell->GetHeight() + marginTopPanels;
-    mPanelUnits->SetY(panelY2);
+    const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
+    mPanelUnits->SetPosition(panelX, panelY);
 }
 
 void PanelPlayer::UpdateCells()
@@ -158,35 +158,34 @@ void PanelPlayer::CreatePanelCell()
     Label * labelHeader = new Label("CELL", fontHeader, mPanelCell);
     labelHeader->SetColor(0x212121FF);
 
-    const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
-    int buttonX = 0;
+    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
 
-    const int marginX = 30;
+    const int marginY = 30;
 
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 22);
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
     PushButton * buttonNewUnit = new PushButton(mPanelCell);
     buttonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonNewUnit->SetLabel("NEW UNIT", fontButton);
+    buttonNewUnit->SetLabel("NEW UNIT (10)", fontButton);
     buttonNewUnit->SetLabelColor(0xF0F0F0FF);
-    buttonNewUnit->SetPosition(buttonX, buttonsY);
+    buttonNewUnit->SetY(buttonY);
 
-    buttonX += buttonNewUnit->GetWidth() + marginX;
+    buttonY += buttonNewUnit->GetHeight() + marginY;
 
     PushButton * buttonFortify = new PushButton(mPanelCell);
     buttonFortify->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonFortify->SetLabel("FORTIFY", fontButton);
+    buttonFortify->SetLabel("FORTIFY (20)", fontButton);
     buttonFortify->SetLabelColor(0xF0F0F0FF);
-    buttonFortify->SetPosition(buttonX, buttonsY);
+    buttonFortify->SetY(buttonY);
 
-    buttonX += buttonFortify->GetWidth() + marginX;
+    buttonY += buttonFortify->GetHeight() + marginY;
 
     mButtonCellUpgrade = new PushButton(mPanelCell);
     mButtonCellUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonCellUpgrade->SetLabel("UPGRADE", fontButton);
+    mButtonCellUpgrade->SetLabel("UPGRADE (50)", fontButton);
     mButtonCellUpgrade->SetLabelColor(0xF0F0F0FF);
-    mButtonCellUpgrade->SetPosition(buttonX, buttonsY);
+    mButtonCellUpgrade->SetY(buttonY);
 }
 
 void PanelPlayer::CreatePanelUnits()
@@ -204,27 +203,26 @@ void PanelPlayer::CreatePanelUnits()
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(0x212121FF);
 
-    const int buttonsY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
-    int buttonX = 0;
+    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;;
 
-    const int marginX = 30;
+    const int marginY = 30;
 
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 22);
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
     PushButton * buttonMove = new PushButton(mPanelUnits);
     buttonMove->SetBackground("data/img/buttons/player_ui-01.png");
     buttonMove->SetLabel("MOVE", fontButton);
     buttonMove->SetLabelColor(0xF0F0F0FF);
-    buttonMove->SetPosition(buttonX, buttonsY);
+    buttonMove->SetY(buttonY);
 
-    buttonX += buttonMove->GetWidth() + marginX;
+    buttonY += buttonMove->GetHeight() + marginY;
 
     PushButton * buttonUpgrade = new PushButton(mPanelUnits);
     buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonUpgrade->SetLabel("UPGRADE", fontButton);
+    buttonUpgrade->SetLabel("UPGRADE (10)", fontButton);
     buttonUpgrade->SetLabelColor(0xF0F0F0FF);
-    buttonUpgrade->SetPosition(buttonX, buttonsY);
+    buttonUpgrade->SetY(buttonY);
 }
 
 } // namespace game
