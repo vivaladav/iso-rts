@@ -29,7 +29,7 @@ public:
     void SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void SetLabelColor(unsigned int color);
 
-    void SetOnClickFunction(std::function<void()> f);
+    void SetOnClickFunction(const std::function<void()> & f);
 
 private:
     void OnPositionChanged() override;
@@ -47,7 +47,7 @@ private:
     graphic::Renderable * mLabel = nullptr;
 };
 
-inline void PushButton::SetOnClickFunction(std::function<void()> f) { mOnClick = f; }
+inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
 
 } // namespace sgui
 } // namespace lib
