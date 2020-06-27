@@ -65,8 +65,11 @@ void GameMap::SetHomeCell(int numPlayers)
 
         mIsoMap->SetCellType(ind, p + 1);
 
-        mCells[ind].ownerId = p + 1;
-        mCells[ind].empty = false;
+        GameMapCell & cell = mCells[ind];
+
+        cell.ownerId = p + 1;
+        cell.level = 1;
+        cell.empty = false;
     }
 }
 

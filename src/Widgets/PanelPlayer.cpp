@@ -110,6 +110,11 @@ void PanelPlayer::UpdateUnits()
     mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetWidth() * 0.5f);
 }
 
+void PanelPlayer::SetCellUpgradeFunction(const std::function<void()> & f)
+{
+    mButtonCellUpgrade->SetOnClickFunction(f);
+}
+
 std::string PanelPlayer::MakeStrCells()
 {
     return std::to_string(mPlayer->GetNumCells());
@@ -166,7 +171,6 @@ void PanelPlayer::CreatePanelCell()
     buttonNewUnit->SetLabel("NEW UNIT", fontButton);
     buttonNewUnit->SetLabelColor(0xF0F0F0FF);
     buttonNewUnit->SetPosition(buttonX, buttonsY);
-    buttonNewUnit->SetOnClickFunction([] { std::cout << "OnClick NEW UNIT" << std::endl; });
 
     buttonX += buttonNewUnit->GetWidth() + marginX;
 
@@ -178,11 +182,11 @@ void PanelPlayer::CreatePanelCell()
 
     buttonX += buttonFortify->GetWidth() + marginX;
 
-    PushButton * buttonUpgrade = new PushButton(mPanelCell);
-    buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonUpgrade->SetLabel("UPGRADE", fontButton);
-    buttonUpgrade->SetLabelColor(0xF0F0F0FF);
-    buttonUpgrade->SetPosition(buttonX, buttonsY);
+    mButtonCellUpgrade = new PushButton(mPanelCell);
+    mButtonCellUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonCellUpgrade->SetLabel("UPGRADE", fontButton);
+    mButtonCellUpgrade->SetLabelColor(0xF0F0F0FF);
+    mButtonCellUpgrade->SetPosition(buttonX, buttonsY);
 }
 
 void PanelPlayer::CreatePanelUnits()

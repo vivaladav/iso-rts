@@ -1,6 +1,7 @@
 #include "Screens/ScreenGame.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "GameMap.h"
 #include "IsoMap.h"
 #include "Player.h"
@@ -60,7 +61,13 @@ ScreenGame::ScreenGame(Game * game)
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
-        game->GetPlayer(i)->SumCells(1);
+        Player * p = game->GetPlayer(i);
+
+        // add home cell
+        p->SumCells(1);
+
+        // add start money
+        p->SumMoney(START_MONEY);
     }
 
     // -- UI --
@@ -78,6 +85,8 @@ ScreenGame::ScreenGame(Game * game)
 
         mPanelsPlayer[i] = panel;
     }
+
+    mPanelsPlayer[0]->SetCellUpgradeFunction([] { std::cout << "CELL UPGRADE" << std::endl; });
 }
 
 ScreenGame::~ScreenGame()

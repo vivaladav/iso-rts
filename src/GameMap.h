@@ -10,6 +10,7 @@ class IsoMap;
 struct GameMapCell
 {
     int ownerId = -1;
+    int level = 0;
     bool empty = true;
 };
 

@@ -2,6 +2,7 @@
 
 #include <sgui/Widget.h>
 
+#include <functional>
 #include <string>
 
 namespace lib
@@ -9,6 +10,7 @@ namespace lib
     namespace sgui
     {
         class Label;
+        class PushButton;
     }
 }
 
@@ -29,6 +31,8 @@ public:
     void UpdateCoins();
     void UpdateUnits();
 
+    void SetCellUpgradeFunction(const std::function<void()> & f);
+
 private:
     std::string MakeStrCells();
     std::string MakeStrCoins();
@@ -41,12 +45,14 @@ private:
 private:
     Player * mPlayer = nullptr;
 
+    lib::sgui::Widget * mPanelCell = nullptr;
+    lib::sgui::Widget * mPanelUnits = nullptr;
+
     lib::sgui::Label * mLabelCells = nullptr;
     lib::sgui::Label * mLabelCoins = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
-    lib::sgui::Widget * mPanelCell = nullptr;
-    lib::sgui::Widget * mPanelUnits = nullptr;
+    lib::sgui::PushButton * mButtonCellUpgrade = nullptr;
 };
 
 inline void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
