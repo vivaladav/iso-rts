@@ -31,7 +31,9 @@ public:
     void UpdateCoins();
     void UpdateUnits();
 
-    void SetCellUpgradeFunction(const std::function<void()> & f);
+    void SetFunctionCellFortify(const std::function<void()> & f);
+    void SetFunctionCellUpgrade(const std::function<void()> & f);
+    void SetFunctionNewUnit(const std::function<void()> & f);
 
 private:
     std::string MakeStrCells();
@@ -52,7 +54,9 @@ private:
     lib::sgui::Label * mLabelCoins = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
+    lib::sgui::PushButton * mButtonCellFortify = nullptr;
     lib::sgui::PushButton * mButtonCellUpgrade = nullptr;
+    lib::sgui::PushButton * mButtonNewUnit = nullptr;
 };
 
 inline void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }

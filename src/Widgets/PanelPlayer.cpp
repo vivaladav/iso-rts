@@ -110,9 +110,19 @@ void PanelPlayer::UpdateUnits()
     mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetWidth() * 0.5f);
 }
 
-void PanelPlayer::SetCellUpgradeFunction(const std::function<void()> & f)
+void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
+{
+    mButtonCellFortify->SetOnClickFunction(f);
+}
+
+void PanelPlayer::SetFunctionCellUpgrade(const std::function<void()> & f)
 {
     mButtonCellUpgrade->SetOnClickFunction(f);
+}
+
+void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
+{
+    mButtonNewUnit->SetOnClickFunction(f);
 }
 
 std::string PanelPlayer::MakeStrCells()
@@ -165,21 +175,21 @@ void PanelPlayer::CreatePanelCell()
     Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
-    PushButton * buttonNewUnit = new PushButton(mPanelCell);
-    buttonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonNewUnit->SetLabel("NEW UNIT (10)", fontButton);
-    buttonNewUnit->SetLabelColor(0xF0F0F0FF);
-    buttonNewUnit->SetY(buttonY);
+    mButtonNewUnit = new PushButton(mPanelCell);
+    mButtonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonNewUnit->SetLabel("NEW UNIT (10)", fontButton);
+    mButtonNewUnit->SetLabelColor(0xF0F0F0FF);
+    mButtonNewUnit->SetY(buttonY);
 
-    buttonY += buttonNewUnit->GetHeight() + marginY;
+    buttonY += mButtonNewUnit->GetHeight() + marginY;
 
-    PushButton * buttonFortify = new PushButton(mPanelCell);
-    buttonFortify->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonFortify->SetLabel("FORTIFY (20)", fontButton);
-    buttonFortify->SetLabelColor(0xF0F0F0FF);
-    buttonFortify->SetY(buttonY);
+    mButtonCellFortify = new PushButton(mPanelCell);
+    mButtonCellFortify->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonCellFortify->SetLabel("FORTIFY (20)", fontButton);
+    mButtonCellFortify->SetLabelColor(0xF0F0F0FF);
+    mButtonCellFortify->SetY(buttonY);
 
-    buttonY += buttonFortify->GetHeight() + marginY;
+    buttonY += mButtonCellFortify->GetHeight() + marginY;
 
     mButtonCellUpgrade = new PushButton(mPanelCell);
     mButtonCellUpgrade->SetBackground("data/img/buttons/player_ui-01.png");

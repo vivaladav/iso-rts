@@ -86,7 +86,9 @@ ScreenGame::ScreenGame(Game * game)
         mPanelsPlayer[i] = panel;
     }
 
-    mPanelsPlayer[0]->SetCellUpgradeFunction([] { std::cout << "CELL UPGRADE" << std::endl; });
+    mPanelsPlayer[0]->SetFunctionCellFortify([] { std::cout << "CELL FORTIFY" << std::endl; });
+    mPanelsPlayer[0]->SetFunctionCellUpgrade([] { std::cout << "CELL UPGRADE" << std::endl; });
+    mPanelsPlayer[0]->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });
 }
 
 ScreenGame::~ScreenGame()
