@@ -96,9 +96,14 @@ void Application::Run()
         const float frameTime = diff.count();
         const float delayTime = targetFrameTime - frameTime;
 
-        SDL_Delay(static_cast<int>(roundf(delayTime * 1000.f)));
+        if(delayTime > 0.f)
+        {
+            SDL_Delay(static_cast<int>(roundf(delayTime * 1000.f)));
 
-        delta = frameTime + delayTime;
+            delta = frameTime + delayTime;
+        }
+        else
+            delta = frameTime;
     }
 }
 
