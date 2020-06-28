@@ -10,9 +10,9 @@ BaseGameState::~BaseGameState()
     delete mScreen;
 }
 
-void BaseGameState::Update()
+void BaseGameState::Update(float delta)
 {
-    mScreen->Update();
+    mScreen->Update(delta);
 }
 
 void BaseGameState::Render()

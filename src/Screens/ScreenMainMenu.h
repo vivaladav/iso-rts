@@ -11,7 +11,7 @@ public:
     ScreenMainMenu(Game * game);
     ~ScreenMainMenu();
 
-    void Update() override;
+    void Update(float update) override;
     void Render() override;
 };
 

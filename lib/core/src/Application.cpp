@@ -4,6 +4,8 @@
 
 #include <SDL2/SDL.h>
 
+#include <cmath>
+#include <chrono>
 #include <iostream>
 
 namespace lib
@@ -75,13 +77,28 @@ void Application::Run()
 {
     mRunning = true;
 
+    const float targetFrameTime = 1.f / 60.f;
+
+    float delta = targetFrameTime;
+
     while(mRunning)
     {
+        auto t0 = std::chrono::high_resolution_clock::now();
+
         mEventDispatcher->Update();
 
-        Update();
+        Update(delta);
 
-        SDL_Delay(16);
+        auto t1 = std::chrono::high_resolution_clock::now();
+
+        std::chrono::duration<float> diff = t1 - t0;
+
+        const float frameTime = diff.count();
+        const float delayTime = targetFrameTime - frameTime;
+
+        SDL_Delay(static_cast<int>(roundf(delayTime * 1000.f)));
+
+        delta = frameTime + delayTime;
     }
 }
 

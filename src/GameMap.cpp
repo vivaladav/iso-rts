@@ -1,6 +1,8 @@
 #include "GameMap.h"
 
+#include "Game.h"
 #include "IsoMap.h"
+#include "Player.h"
 
 #include <cassert>
 #include <fstream>
@@ -50,12 +52,14 @@ bool GameMap::Load(const char * file)
     return true;
 }
 
-void GameMap::SetHomeCell(int numPlayers)
+void GameMap::SetHomeCell(Game * game)
 {
     const int NUM_CORNERS = 4;
     Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 0}, {14, 14} };
 
     const int pick = rand() % NUM_CORNERS;
+
+    const int numPlayers = game->GetNumPlayers();
 
     for(int p = 0; p < numPlayers; ++p)
     {
@@ -66,10 +70,14 @@ void GameMap::SetHomeCell(int numPlayers)
         mIsoMap->SetCellType(ind, p + 1);
 
         GameMapCell & cell = mCells[ind];
-
         cell.ownerId = p + 1;
         cell.level = 1;
         cell.empty = false;
+
+        Player * player = game->GetPlayer(p);
+
+        player->SumCells(1);
+        player->SumTotalCellsLevel(cell.level);
     }
 }
 

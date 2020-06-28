@@ -18,7 +18,7 @@ public:
     ScreenTest(Game * game);
     ~ScreenTest();
 
-    void Update() override;
+    void Update(float delta) override;
     void Render() override;
 
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;

@@ -38,7 +38,7 @@ public:
     void Exit();
 
 private:
-    virtual void Update() = 0;
+    virtual void Update(float delta) = 0;
 
 private:
     int mArgc = 0;

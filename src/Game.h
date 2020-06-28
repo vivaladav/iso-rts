@@ -44,7 +44,7 @@ public:
     Player * GetPlayer(unsigned int index) const;
 
 private:
-    void Update() override;
+    void Update(float delta) override;
 
 private:
     std::vector<Player *> mPlayers;

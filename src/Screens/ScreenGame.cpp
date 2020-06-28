@@ -56,15 +56,12 @@ ScreenGame::ScreenGame(Game * game)
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
     mGameMap->Load("data/maps/001.map");
-    mGameMap->SetHomeCell(game->GetNumPlayers());
+    mGameMap->SetHomeCell(game);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
         Player * p = game->GetPlayer(i);
-
-        // add home cell
-        p->SumCells(1);
 
         // add start money
         p->SumMoney(START_MONEY);
@@ -101,8 +98,26 @@ ScreenGame::~ScreenGame()
     lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
-void ScreenGame::Update()
+void ScreenGame::Update(float delta)
 {
+    mTimerCoins -= delta;
+
+    if(mTimerCoins < 0.f)
+    {
+        Game * game = GetGame();
+
+        for(int i = 0; i < game->GetNumPlayers(); ++i)
+        {
+            Player * p = game->GetPlayer(i);
+
+            const int coins = p->GetTotalCellsLevel() * COINS_PER_CELL;
+            p->SumMoney(coins);
+
+            mPanelsPlayer[i]->UpdateCoins();
+        }
+
+        mTimerCoins = TIME_COINS_GEN;
+    }
 }
 
 void ScreenGame::Render()

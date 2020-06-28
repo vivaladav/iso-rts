@@ -5,6 +5,7 @@
 namespace game
 {
 
+class Game;
 class IsoMap;
 
 struct GameMapCell
@@ -21,7 +22,7 @@ public:
 
     bool Load(const char * file);
 
-    void SetHomeCell(int numPlayers);
+    void SetHomeCell(Game * game);
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
 

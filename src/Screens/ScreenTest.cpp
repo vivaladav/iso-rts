@@ -86,7 +86,7 @@ ScreenTest::~ScreenTest()
     lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
-void ScreenTest::Update()
+void ScreenTest::Update(float delta)
 {
 }
 

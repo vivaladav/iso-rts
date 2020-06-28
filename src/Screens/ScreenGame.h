@@ -21,7 +21,7 @@ public:
     ScreenGame(Game * game);
     ~ScreenGame();
 
-    void Update() override;
+    void Update(float delta) override;
     void Render() override;
 
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
@@ -31,6 +31,8 @@ private:
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
+
+    float mTimerCoins = TIME_COINS_GEN;
 };
 
 } // namespace game

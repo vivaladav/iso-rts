@@ -61,7 +61,7 @@ ScreenMainMenu::~ScreenMainMenu()
     lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
-void ScreenMainMenu::Update()
+void ScreenMainMenu::Update(float update)
 {
 }
 

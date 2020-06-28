@@ -70,7 +70,7 @@ Game::~Game()
 
 void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }
 
-void Game::Update()
+void Game::Update(float delta)
 {
     mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);
 
@@ -78,7 +78,7 @@ void Game::Update()
 
     auto * state = static_cast<BaseGameState *>(mStateMan->GetActiveState());
 
-    state->Update();
+    state->Update(delta);
 
     state->Render();
     mStage->Render();
