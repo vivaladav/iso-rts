@@ -14,9 +14,8 @@
 namespace game
 {
 
-PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
+PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
-    , mPlayer(p)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -30,7 +29,7 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
 
     Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
 
-    Label * labelName = new Label(p->GetName().c_str(), fontName, this);
+    Label * labelName = new Label(player->GetName().c_str(), fontName, this);
     labelName->SetColor(0x212121FF);
 
     const int marginX0 = 280;
@@ -42,7 +41,8 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeaderCoins->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
     labelHeaderCoins->SetColor(0x212121FF);
 
-    mLabelCoins = new Label(MakeStrCoins().c_str(), fontData, this);
+    const int coins = player->GetMoney();
+    mLabelCoins = new Label(MakeStrCoins(coins).c_str(), fontData, this);
     mLabelCoins->SetPosition(labelHeaderCoins->GetX() + (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
                              labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
     mLabelCoins->SetColor(0x212121FF);
@@ -51,7 +51,8 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeaderCells->SetPosition(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1, Y0);
     labelHeaderCells->SetColor(0x212121FF);
 
-    mLabelCells = new Label(MakeStrCells().c_str(), fontData, this);
+    const int cells = player->GetNumCells();
+    mLabelCells = new Label(MakeStrCells(cells).c_str(), fontData, this);
     mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
                              labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
     mLabelCells->SetColor(0x212121FF);
@@ -60,7 +61,8 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     labelHeaderUnits->SetPosition(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1, Y0);
     labelHeaderUnits->SetColor(0x212121FF);
 
-    mLabelUnits = new Label(MakeStrUnits().c_str(), fontData, this);
+    const int units = player->GetNumUnits();
+    mLabelUnits = new Label(MakeStrUnits(units).c_str(), fontData, this);
     mLabelUnits->SetPosition(labelHeaderUnits->GetX() + (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
                              labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
     mLabelUnits->SetColor(0x212121FF);
@@ -80,32 +82,32 @@ PanelPlayer::PanelPlayer(Player * p, lib::sgui::Widget * parent)
     mPanelUnits->SetPosition(panelX, panelY);
 }
 
-void PanelPlayer::UpdateCells()
+void PanelPlayer::UpdateCells(int cells)
 {
     const float cX = mLabelCells->GetX() + mLabelCells->GetWidth() * 0.5f;
     const float cY = mLabelCells->GetY() + mLabelCells->GetWidth() * 0.5f;
 
-    mLabelCells->SetText(MakeStrCells().c_str());
+    mLabelCells->SetText(MakeStrCells(cells).c_str());
 
     mLabelCells->SetPosition(cX - mLabelCells->GetWidth() * 0.5f, cY - mLabelCells->GetWidth() * 0.5f);
 }
 
-void PanelPlayer::UpdateCoins()
+void PanelPlayer::UpdateCoins(int coins)
 {
     const float cX = mLabelCoins->GetX() + mLabelCoins->GetWidth() * 0.5f;
     const float cY = mLabelCoins->GetY() + mLabelCoins->GetWidth() * 0.5f;
 
-    mLabelCoins->SetText(MakeStrCoins().c_str());
+    mLabelCoins->SetText(MakeStrCoins(coins).c_str());
 
     mLabelCoins->SetPosition(cX - mLabelCoins->GetWidth() * 0.5f, cY - mLabelCoins->GetWidth() * 0.5f);
 }
 
-void PanelPlayer::UpdateUnits()
+void PanelPlayer::UpdateUnits(int units)
 {
     const float cX = mLabelUnits->GetX() + mLabelUnits->GetWidth() * 0.5f;
     const float cY = mLabelUnits->GetY() + mLabelUnits->GetWidth() * 0.5f;
 
-    mLabelUnits->SetText(MakeStrUnits().c_str());
+    mLabelUnits->SetText(MakeStrUnits(units).c_str());
 
     mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetWidth() * 0.5f);
 }
@@ -125,15 +127,13 @@ void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
     mButtonNewUnit->SetOnClickFunction(f);
 }
 
-std::string PanelPlayer::MakeStrCells()
+std::string PanelPlayer::MakeStrCells(int cells)
 {
-    return std::to_string(mPlayer->GetNumCells());
+    return std::to_string(cells);
 }
 
-std::string PanelPlayer::MakeStrCoins()
+std::string PanelPlayer::MakeStrCoins(int coins)
 {
-    const int coins = mPlayer->GetMoney();
-
     // convert 1000 and bigger to 1k
     if(coins > 1000)
     {
@@ -148,9 +148,9 @@ std::string PanelPlayer::MakeStrCoins()
         return std::to_string(coins);
 }
 
-std::string PanelPlayer::MakeStrUnits()
+std::string PanelPlayer::MakeStrUnits(int units)
 {
-    return std::to_string(mPlayer->GetNumUnits());
+    return std::to_string(units);
 }
 
 void PanelPlayer::CreatePanelCell()

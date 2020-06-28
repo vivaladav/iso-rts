@@ -22,31 +22,29 @@ class Player;
 class PanelPlayer : public lib::sgui::Widget
 {
 public:
-    PanelPlayer(Player * p, lib::sgui::Widget * parent = nullptr);
+    PanelPlayer(Player * player, lib::sgui::Widget * parent = nullptr);
 
     void SetPanelCellVisible(bool val);
     void SetPanelUnitsVisible(bool val);
 
-    void UpdateCells();
-    void UpdateCoins();
-    void UpdateUnits();
+    void UpdateCells(int cells);
+    void UpdateCoins(int coins);
+    void UpdateUnits(int units);
 
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
 private:
-    std::string MakeStrCells();
-    std::string MakeStrCoins();
-    std::string MakeStrUnits();
+    std::string MakeStrCells(int cells);
+    std::string MakeStrCoins(int coins);
+    std::string MakeStrUnits(int units);
 
     void CreatePanelCell();
 
     void CreatePanelUnits();
 
 private:
-    Player * mPlayer = nullptr;
-
     lib::sgui::Widget * mPanelCell = nullptr;
     lib::sgui::Widget * mPanelUnits = nullptr;
 

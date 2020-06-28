@@ -70,7 +70,8 @@ ScreenGame::ScreenGame(Game * game)
     // -- UI --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
-        PanelPlayer * panel = new PanelPlayer(GetGame()->GetPlayer(i));
+        Player * player = GetGame()->GetPlayer(i);
+        PanelPlayer * panel = new PanelPlayer(player);
 
         const int x = (i % 2) ? (rendW - panel->GetWidth() - 10) : 10;
         const int y = (i < 2) ? 10 : (rendH - panel->GetHeight() - 10);
@@ -79,6 +80,22 @@ ScreenGame::ScreenGame(Game * game)
 
         panel->SetPanelCellVisible(false);
         panel->SetPanelUnitsVisible(false);
+
+        // setup data update functions
+        player->SetOnMoneyChanged([panel](int money)
+        {
+            panel->UpdateCoins(money);
+        });
+
+        player->SetOnNumCellsChanged([panel](int cells)
+        {
+            panel->UpdateCells(cells);
+        });
+
+        player->SetOnNumUnitsChanged([panel](int units)
+        {
+            panel->UpdateUnits(units);
+        });
 
         mPanelsPlayer[i] = panel;
     }
@@ -112,8 +129,6 @@ void ScreenGame::Update(float delta)
 
             const int coins = p->GetTotalCellsLevel() * COINS_PER_CELL;
             p->SumMoney(coins);
-
-            mPanelsPlayer[i]->UpdateCoins();
         }
 
         mTimerCoins = TIME_COINS_GEN;

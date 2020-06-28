@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 
 namespace game
@@ -16,18 +17,26 @@ public:
 
     int GetNumCells() const;
     void SumCells(int val);
+    void SetOnNumCellsChanged(const std::function<void(int)> & f);
 
     int GetTotalCellsLevel() const;
     void SumTotalCellsLevel(int val);
 
     int GetMoney() const;
     void SumMoney(int val);
+    void SetOnMoneyChanged(const std::function<void(int)> & f);
 
     int GetNumUnits() const;
     void SumUnits(int val);
+    void SetOnNumUnitsChanged(const std::function<void(int)> & f);
+
 
 private:
     std::string mName;
+
+    std::function<void(int)> mOnNumCellsChanged;
+    std::function<void(int)> mOnMoneyChanged;
+    std::function<void(int)> mOnNumUnitsChanged;
 
     int mPlayerId;
 
@@ -42,15 +51,24 @@ inline const std::string & Player::GetName() const { return mName; }
 inline int Player::GetPlayerId() const { return mPlayerId; }
 
 inline int Player::GetNumCells() const { return mNumCells; }
-inline void Player::SumCells(int val) { mNumCells += val; }
+inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
+{
+    mOnNumCellsChanged = f;
+}
 
 inline int Player::GetTotalCellsLevel() const { return mTotCellsLevel; }
 inline void Player::SumTotalCellsLevel(int val) { mTotCellsLevel += val; }
 
 inline int Player::GetMoney() const { return mMoney; }
-inline void Player::SumMoney(int val) { mMoney += val; }
+inline void Player::SetOnMoneyChanged(const std::function<void(int)> & f)
+{
+    mOnMoneyChanged = f;
+}
 
 inline int Player::GetNumUnits() const { return  mNumUnits; }
-inline void Player::SumUnits(int val) { mNumUnits += val; }
+inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
+{
+    mOnNumUnitsChanged = f;
+}
 
 } // namespace game
