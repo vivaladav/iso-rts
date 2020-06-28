@@ -1,6 +1,8 @@
 #include "GameMap.h"
 
+#include "Cell2D.h"
 #include "Game.h"
+#include "GameConstants.h"
 #include "IsoMap.h"
 #include "Player.h"
 
@@ -63,22 +65,50 @@ void GameMap::SetHomeCell(Game * game)
 
     for(int p = 0; p < numPlayers; ++p)
     {
-        const int c = (pick + p) % NUM_CORNERS;
+        Player * player = game->GetPlayer(p);
 
+        const int c = (pick + p) % NUM_CORNERS;
         const int ind = corners[c].row * mCols + corners[c].col;
 
         mIsoMap->SetCellType(ind, p + 1);
 
         GameMapCell & cell = mCells[ind];
-        cell.ownerId = p + 1;
+        cell.ownerId = player->GetPlayerId();
         cell.level = 1;
         cell.empty = false;
-
-        Player * player = game->GetPlayer(p);
 
         player->SumCells(1);
         player->SumTotalCellsLevel(cell.level);
     }
+}
+
+void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return ;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // not own cell or max level cell -> exit
+    if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_LEVEL == gcell.level)
+        return ;
+
+    // check if player has enough money
+    const int cost = COST_CELL_UPGRADE[gcell.level - 1];
+
+    if(cost > player->GetMoney())
+        return ;
+
+    // all good -> upgrade
+    ++(gcell.level);
+
+    player->SumTotalCellsLevel(1);
+    player->SumMoney(-cost);
 }
 
 } // namespace game

@@ -7,6 +7,9 @@ namespace game
 
 class Game;
 class IsoMap;
+class Player;
+
+struct Cell2D;
 
 struct GameMapCell
 {
@@ -25,6 +28,8 @@ public:
     void SetHomeCell(Game * game);
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
+
+    void UpgradeCell(const Cell2D * cell, Player * player);
 
 private:
     std::vector<GameMapCell> mCells;

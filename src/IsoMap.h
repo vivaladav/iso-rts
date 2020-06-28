@@ -10,13 +10,7 @@ namespace lib { namespace graphic { class Image; } }
 namespace game
 {
 
-struct Cell2D
-{
-    Cell2D(int r, int c) : row(r), col(c) {}
-
-    int row = 0;
-    int col = 0;
-};
+struct Cell2D;
 
 class IsoMap
 {
@@ -109,13 +103,6 @@ inline void IsoMap::SetOrigin(int x, int y)
     mRenderX0 = x - mTileH;
 
     UpdateTilePositions();
-}
-
-inline bool IsoMap::IsCellInside(const Cell2D & cell) const
-{
-    const unsigned int cr = static_cast<unsigned int>(cell.row);
-    const unsigned int cc = static_cast<unsigned int>(cell.col);
-    return  cr < mRows && cc < mCols;
 }
 
 } // namespace game

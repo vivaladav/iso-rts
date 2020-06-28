@@ -6,6 +6,8 @@
 namespace game
 {
 
+struct Cell2D;
+
 class Player
 {
 public:
@@ -30,6 +32,9 @@ public:
     void SumUnits(int val);
     void SetOnNumUnitsChanged(const std::function<void(int)> & f);
 
+    void ClearSelectedCell();
+    const Cell2D * GetSelectedCell() const;
+    void SetSelectedCell(const Cell2D & cell);
 
 private:
     std::string mName;
@@ -37,6 +42,9 @@ private:
     std::function<void(int)> mOnNumCellsChanged;
     std::function<void(int)> mOnMoneyChanged;
     std::function<void(int)> mOnNumUnitsChanged;
+
+    Cell2D * mCurrSelectedCell = nullptr;
+    Cell2D * mSelectedCell = nullptr;
 
     int mPlayerId;
 
@@ -70,5 +78,8 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 {
     mOnNumUnitsChanged = f;
 }
+
+inline void Player::ClearSelectedCell() { mCurrSelectedCell = nullptr; }
+inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell; }
 
 } // namespace game

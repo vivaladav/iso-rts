@@ -1,5 +1,6 @@
 #include "Screens/ScreenGame.h"
 
+#include "Cell2D.h"
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameMap.h"
@@ -100,9 +101,21 @@ ScreenGame::ScreenGame(Game * game)
         mPanelsPlayer[i] = panel;
     }
 
-    mPanelsPlayer[0]->SetFunctionCellFortify([] { std::cout << "CELL FORTIFY" << std::endl; });
-    mPanelsPlayer[0]->SetFunctionCellUpgrade([] { std::cout << "CELL UPGRADE" << std::endl; });
-    mPanelsPlayer[0]->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });
+    // UI actions
+    Player * player = game->GetPlayer(0);
+    PanelPlayer * panel = mPanelsPlayer[0];
+    GameMap * gameMap = mGameMap;
+
+    panel->SetFunctionCellFortify([] { std::cout << "CELL FORTIFY" << std::endl; });
+
+    panel->SetFunctionCellUpgrade([gameMap, player]
+    {
+        std::cout << "CELL UPGRADE" << std::endl;
+
+        gameMap->UpgradeCell(player->GetSelectedCell(), player);
+    });
+
+    panel->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });
 }
 
 ScreenGame::~ScreenGame()
@@ -152,16 +165,29 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
               << "cell " << c.row << "," << c.col << " - type: " << cellType
               << " - INSIDE: "<< (insideMap ? "YES" : "NO") << std::endl;
 
+    Player * player = GetGame()->GetPlayer(0);
+
     if(insideMap)
     {
         const int owner = mGameMap->GetCellOwner(c.row, c.col);
 
-        bool localPlayer = owner == GetGame()->GetPlayer(0)->GetPlayerId();
 
-        mPanelsPlayer[0]->SetPanelCellVisible(localPlayer);
+
+        const bool isLocalPlayer = owner == player->GetPlayerId();
+
+        if(isLocalPlayer)
+            player->SetSelectedCell(c);
+        else
+            player->ClearSelectedCell();
+
+        mPanelsPlayer[0]->SetPanelCellVisible(isLocalPlayer);
     }
     else
+    {
         mPanelsPlayer[0]->SetPanelCellVisible(false);
+
+        player->ClearSelectedCell();
+    }
 }
 
 } // namespace game

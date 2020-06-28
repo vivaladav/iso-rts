@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include "Cell2D.h"
+
 namespace game
 {
 
@@ -8,6 +10,7 @@ Player::Player(const char * name, int pid)
     , mOnNumCellsChanged([](int){})
     , mOnMoneyChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
+    , mSelectedCell(new Cell2D(-1, -1))
     , mPlayerId(pid)
 {
 }
@@ -31,6 +34,13 @@ void Player::SumUnits(int val)
     mNumUnits += val;
 
     mOnNumUnitsChanged(mNumUnits);
+}
+
+void Player::SetSelectedCell(const Cell2D & cell)
+{
+    *mSelectedCell = cell;
+
+    mCurrSelectedCell = mSelectedCell;
 }
 
 } // namespace game

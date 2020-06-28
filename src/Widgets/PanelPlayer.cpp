@@ -85,31 +85,31 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
 void PanelPlayer::UpdateCells(int cells)
 {
     const float cX = mLabelCells->GetX() + mLabelCells->GetWidth() * 0.5f;
-    const float cY = mLabelCells->GetY() + mLabelCells->GetWidth() * 0.5f;
+    const float cY = mLabelCells->GetY() + mLabelCells->GetHeight() * 0.5f;
 
     mLabelCells->SetText(MakeStrCells(cells).c_str());
 
-    mLabelCells->SetPosition(cX - mLabelCells->GetWidth() * 0.5f, cY - mLabelCells->GetWidth() * 0.5f);
+    mLabelCells->SetPosition(cX - mLabelCells->GetWidth() * 0.5f, cY - mLabelCells->GetHeight() * 0.5f);
 }
 
 void PanelPlayer::UpdateCoins(int coins)
 {
     const float cX = mLabelCoins->GetX() + mLabelCoins->GetWidth() * 0.5f;
-    const float cY = mLabelCoins->GetY() + mLabelCoins->GetWidth() * 0.5f;
+    const float cY = mLabelCoins->GetY() + mLabelCoins->GetHeight() * 0.5f;
 
     mLabelCoins->SetText(MakeStrCoins(coins).c_str());
 
-    mLabelCoins->SetPosition(cX - mLabelCoins->GetWidth() * 0.5f, cY - mLabelCoins->GetWidth() * 0.5f);
+    mLabelCoins->SetPosition(cX - mLabelCoins->GetWidth() * 0.5f, cY - mLabelCoins->GetHeight() * 0.5f);
 }
 
 void PanelPlayer::UpdateUnits(int units)
 {
     const float cX = mLabelUnits->GetX() + mLabelUnits->GetWidth() * 0.5f;
-    const float cY = mLabelUnits->GetY() + mLabelUnits->GetWidth() * 0.5f;
+    const float cY = mLabelUnits->GetY() + mLabelUnits->GetHeight() * 0.5f;
 
     mLabelUnits->SetText(MakeStrUnits(units).c_str());
 
-    mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetWidth() * 0.5f);
+    mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetHeight() * 0.5f);
 }
 
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)

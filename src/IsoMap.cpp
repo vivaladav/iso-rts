@@ -1,5 +1,7 @@
 #include "IsoMap.h"
 
+#include "Cell2D.h"
+
 #include <graphic/Image.h>
 
 namespace game
@@ -77,6 +79,14 @@ Cell2D IsoMap::CellFromScreenPoint(int x, int y) const
 
     const Cell2D cell(static_cast<int>(row), static_cast<int>(col));
     return cell;
+}
+
+
+bool IsoMap::IsCellInside(const Cell2D & cell) const
+{
+    const unsigned int cr = static_cast<unsigned int>(cell.row);
+    const unsigned int cc = static_cast<unsigned int>(cell.col);
+    return  cr < mRows && cc < mCols;
 }
 
 void IsoMap::UpdateTilePositions()
