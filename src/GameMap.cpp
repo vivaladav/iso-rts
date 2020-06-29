@@ -13,7 +13,38 @@
 namespace game
 {
 
-const int CELL_FULL = 5;
+enum CellTypes : int
+{
+    EMPTY = 0,
+    FULL,
+
+    // PLAYER 1
+    P1L1,
+    P1L2,
+    P1L3,
+    P1L4,
+
+    // PLAYER 2
+    P2L1,
+    P2L2,
+    P2L3,
+    P2L4,
+
+    // PLAYER 3
+    P3L1,
+    P3L2,
+    P3L3,
+    P3L4,
+
+    // PLAYER 4
+    P4L1,
+    P4L2,
+    P4L3,
+    P4L4,
+
+    NUM_CELL_TYPES
+};
+
 
 GameMap::GameMap(IsoMap * isoMap, unsigned int rows, unsigned int cols)
     : mCells(rows * cols)
@@ -45,7 +76,7 @@ bool GameMap::Load(const char * file)
 
             const int type = line[c] - '0';
 
-            mCells[ind].empty = (type != CELL_FULL);
+            mCells[ind].empty = (type != FULL);
 
             mIsoMap->SetCellType(r, c, type);
         }
@@ -70,15 +101,15 @@ void GameMap::SetHomeCell(Game * game)
         const int c = (pick + p) % NUM_CORNERS;
         const int ind = corners[c].row * mCols + corners[c].col;
 
-        mIsoMap->SetCellType(ind, p + 1);
-
         GameMapCell & cell = mCells[ind];
         cell.ownerId = player->GetPlayerId();
-        cell.level = 1;
         cell.empty = false;
 
+        const int cellType = DefineCellType(cell);
+        mIsoMap->SetCellType(ind, cellType);
+
         player->SumCells(1);
-        player->SumTotalCellsLevel(cell.level);
+        player->SumTotalCellsLevel(1);
     }
 }
 
@@ -99,7 +130,7 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
         return ;
 
     // check if player has enough money
-    const int cost = COST_CELL_UPGRADE[gcell.level - 1];
+    const int cost = COST_CELL_UPGRADE[gcell.level];
 
     if(cost > player->GetMoney())
         return ;
@@ -107,8 +138,42 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
     // all good -> upgrade
     ++(gcell.level);
 
+    // update player
     player->SumTotalCellsLevel(1);
     player->SumMoney(-cost);
+
+    // update map
+    const int cellType = DefineCellType(gcell);
+    mIsoMap->SetCellType(ind, cellType);
+}
+
+int GameMap::DefineCellType(const GameMapCell & cell)
+{
+    int type = EMPTY;
+
+    switch(cell.ownerId)
+    {
+        case 0:
+            type = P1L1 + cell.level;
+        break;
+
+        case 1:
+            type = P2L1 + cell.level;
+        break;
+
+        case 2:
+            type = P3L1 + cell.level;
+        break;
+
+        case 3:
+            type = P4L1 + cell.level;
+        break;
+
+        default:
+        break;
+    }
+
+    return type;
 }
 
 } // namespace game

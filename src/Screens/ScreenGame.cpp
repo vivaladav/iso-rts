@@ -34,12 +34,29 @@ ScreenGame::ScreenGame(Game * game)
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles = {
+                                                // scene
                                                 "data/img/tile00.png",
                                                 "data/img/tile01.png",
-                                                "data/img/tile02.png",
-                                                "data/img/tile03.png",
-                                                "data/img/tile04.png",
-                                                "data/img/tile05.png"
+                                                // player 1
+                                                "data/img/tile-p1l1.png",
+                                                "data/img/tile-p1l2.png",
+                                                "data/img/tile-p1l3.png",
+                                                "data/img/tile-p1l4.png",
+                                                // player 2
+                                                "data/img/tile-p2l1.png",
+                                                "data/img/tile-p2l2.png",
+                                                "data/img/tile-p2l3.png",
+                                                "data/img/tile-p2l4.png",
+                                                // player 3
+                                                "data/img/tile-p3l1.png",
+                                                "data/img/tile-p3l2.png",
+                                                "data/img/tile-p3l3.png",
+                                                "data/img/tile-p3l4.png",
+                                                // player 4
+                                                "data/img/tile-p1l1.png",
+                                                "data/img/tile-p1l2.png",
+                                                "data/img/tile-p1l3.png",
+                                                "data/img/tile-p1l4.png"
                                                };
 
     mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
@@ -170,8 +187,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     if(insideMap)
     {
         const int owner = mGameMap->GetCellOwner(c.row, c.col);
-
-
 
         const bool isLocalPlayer = owner == player->GetPlayerId();
 

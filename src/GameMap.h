@@ -32,6 +32,9 @@ public:
     void UpgradeCell(const Cell2D * cell, Player * player);
 
 private:
+    int DefineCellType(const GameMapCell & cell);
+
+private:
     std::vector<GameMapCell> mCells;
 
     IsoMap * mIsoMap = nullptr;
