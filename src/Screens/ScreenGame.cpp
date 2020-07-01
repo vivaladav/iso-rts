@@ -125,11 +125,14 @@ ScreenGame::ScreenGame(Game * game)
 
     panel->SetFunctionCellFortify([] { std::cout << "CELL FORTIFY" << std::endl; });
 
-    panel->SetFunctionCellUpgrade([gameMap, player]
+    panel->SetFunctionCellUpgrade([gameMap, panel, player]
     {
         std::cout << "CELL UPGRADE" << std::endl;
 
         gameMap->UpgradeCell(player->GetSelectedCell(), player);
+
+        const Cell2D * cell = player->GetSelectedCell();
+        panel->SetSelectedCell(gameMap->GetCell(cell->row, cell->col));
     });
 
     panel->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });
@@ -191,7 +194,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         const bool isLocalPlayer = owner == player->GetPlayerId();
 
         if(isLocalPlayer)
+        {
             player->SetSelectedCell(c);
+            mPanelsPlayer[0]->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+        }
         else
             player->ClearSelectedCell();
 

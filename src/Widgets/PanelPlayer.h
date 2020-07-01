@@ -19,6 +19,8 @@ namespace game
 
 class Player;
 
+struct GameMapCell;
+
 class PanelPlayer : public lib::sgui::Widget
 {
 public:
@@ -30,6 +32,8 @@ public:
     void UpdateCells(int cells);
     void UpdateCoins(int coins);
     void UpdateUnits(int units);
+
+    void SetSelectedCell(const GameMapCell & cell);
 
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);

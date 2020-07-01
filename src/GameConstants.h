@@ -13,6 +13,6 @@ constexpr int COINS_PER_CELL = 1;
 
 constexpr int MAX_CELL_LEVEL = 3;
 
-constexpr int COST_CELL_UPGRADE[] = { 10, 20, 30, 40 };
+constexpr int COST_CELL_UPGRADE[] = { 1, 2, 3 };
 
 } // namespace game

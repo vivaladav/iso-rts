@@ -1,5 +1,7 @@
 #include "PanelPlayer.h"
 
+#include "GameConstants.h"
+#include "GameMapCell.h"
 #include "Player.h"
 
 #include <graphic/Font.h>
@@ -112,6 +114,29 @@ void PanelPlayer::UpdateUnits(int units)
     mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetHeight() * 0.5f);
 }
 
+void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
+{
+    using namespace lib::graphic;
+    using namespace lib::sgui;
+
+    FontManager * fm = FontManager::Instance();
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
+    fontButton->SetStyle(Font::BOLD);
+
+    if(cell.level == MAX_CELL_LEVEL)
+    {
+        mButtonCellUpgrade->SetLabel("UPGRADE", fontButton);
+        mButtonCellUpgrade->SetEnabled(false);
+    }
+    else
+    {
+        std::ostringstream s;
+        s << "UPGRADE (" << COST_CELL_UPGRADE[cell.level] << ")";
+
+        mButtonCellUpgrade->SetLabel(s.str().c_str(), fontButton);
+    }
+}
+
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
 {
     mButtonCellFortify->SetOnClickFunction(f);
@@ -193,7 +218,6 @@ void PanelPlayer::CreatePanelCell()
 
     mButtonCellUpgrade = new PushButton(mPanelCell);
     mButtonCellUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonCellUpgrade->SetLabel("UPGRADE (50)", fontButton);
     mButtonCellUpgrade->SetLabelColor(0xF0F0F0FF);
     mButtonCellUpgrade->SetY(buttonY);
 }

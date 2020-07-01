@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameMapCell.h"
+
 #include <vector>
 
 namespace game
@@ -11,12 +13,7 @@ class Player;
 
 struct Cell2D;
 
-struct GameMapCell
-{
-    int ownerId = -1;
-    int level = 0;
-    bool empty = true;
-};
+struct GameMapCell;
 
 class GameMap
 {
@@ -30,6 +27,8 @@ public:
     int GetCellOwner(unsigned int r, unsigned int c) const;
 
     void UpgradeCell(const Cell2D * cell, Player * player);
+
+    const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
 
 private:
     int DefineCellType(const GameMapCell & cell);
@@ -49,6 +48,11 @@ inline int GameMap::GetCellOwner(unsigned int r, unsigned int c) const
         return mCells[r * mCols + c].ownerId;
     else
         return -1;
+}
+
+inline const GameMapCell & GameMap::GetCell(unsigned int r, unsigned int c) const
+{
+    return mCells[r * mCols + c];
 }
 
 } // namespace game
