@@ -15,6 +15,7 @@ add_executable(
     src/Cell2D.h
     src/Game.h
     src/Game.cpp
+    src/GameConstants.h
     src/GameMap.h
     src/GameMap.cpp
     src/GameMapCell.h
