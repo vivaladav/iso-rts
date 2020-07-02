@@ -1,9 +1,11 @@
-#include "PanelPlayer.h"
+#include "Widgets/PanelPlayer.h"
 
 #include "GameConstants.h"
 #include "GameMapCell.h"
 #include "Player.h"
+#include "Widgets/ButtonsPanel.h"
 
+#include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <sgui/Label.h>
@@ -83,6 +85,9 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
     mPanelUnits->SetPosition(panelX, panelY);
 }
+
+void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
+void PanelPlayer::SetPanelUnitsVisible(bool val) { mPanelUnits->SetVisible(val); }
 
 void PanelPlayer::UpdateCells(int cells)
 {
@@ -188,7 +193,7 @@ void PanelPlayer::CreatePanelCell()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    mPanelCell = new Widget(this);
+    mPanelCell = new ButtonsPanel(this);
 
     FontManager * fm = FontManager::Instance();
 
@@ -232,7 +237,7 @@ void PanelPlayer::CreatePanelUnits()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    mPanelUnits = new Widget(this);
+    mPanelUnits = new ButtonsPanel(this);
 
     FontManager * fm = FontManager::Instance();
 

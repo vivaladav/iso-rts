@@ -17,6 +17,7 @@ namespace lib
 namespace game
 {
 
+class ButtonsPanel;
 class Player;
 
 struct GameMapCell;
@@ -51,8 +52,8 @@ private:
     void CreatePanelUnits();
 
 private:
-    lib::sgui::Widget * mPanelCell = nullptr;
-    lib::sgui::Widget * mPanelUnits = nullptr;
+    ButtonsPanel * mPanelCell = nullptr;
+    ButtonsPanel * mPanelUnits = nullptr;
 
     lib::sgui::Label * mLabelCells = nullptr;
     lib::sgui::Label * mLabelCoins = nullptr;
@@ -62,8 +63,5 @@ private:
     lib::sgui::PushButton * mButtonCellUpgrade = nullptr;
     lib::sgui::PushButton * mButtonNewUnit = nullptr;
 };
-
-inline void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
-inline void PanelPlayer::SetPanelUnitsVisible(bool val) { mPanelUnits->SetVisible(val); }
 
 } // namespace game

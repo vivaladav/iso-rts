@@ -41,6 +41,8 @@ add_executable(
     src/States/StateMainMenu.cpp
     src/States/StateTest.h
     src/States/StateTest.cpp
+    src/Widgets/ButtonsPanel.h
+    src/Widgets/ButtonsPanel.cpp
     src/Widgets/PanelPlayer.h
     src/Widgets/PanelPlayer.cpp
 )
