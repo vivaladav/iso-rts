@@ -35,6 +35,8 @@ public:
 
     void SetSelectedCell(const GameMapCell & cell);
 
+    void UpdateButtonCellUpgrade(int cellLevel);
+
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);

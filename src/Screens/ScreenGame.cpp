@@ -132,7 +132,7 @@ ScreenGame::ScreenGame(Game * game)
         gameMap->UpgradeCell(player->GetSelectedCell(), player);
 
         const Cell2D * cell = player->GetSelectedCell();
-        panel->SetSelectedCell(gameMap->GetCell(cell->row, cell->col));
+        panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
     });
 
     panel->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });

@@ -116,6 +116,11 @@ void PanelPlayer::UpdateUnits(int units)
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 {
+    UpdateButtonCellUpgrade(cell.level);
+}
+
+void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
+{
     using namespace lib::graphic;
     using namespace lib::sgui;
 
@@ -123,7 +128,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
-    if(cell.level == MAX_CELL_LEVEL)
+    if(cellLevel >= MAX_CELL_LEVEL)
     {
         mButtonCellUpgrade->SetLabel("UPGRADE", fontButton);
         mButtonCellUpgrade->SetEnabled(false);
@@ -131,7 +136,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     else
     {
         std::ostringstream s;
-        s << "UPGRADE (" << COST_CELL_UPGRADE[cell.level] << ")";
+        s << "UPGRADE (" << COST_CELL_UPGRADE[cellLevel] << ")";
 
         mButtonCellUpgrade->SetLabel(s.str().c_str(), fontButton);
     }
