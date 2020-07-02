@@ -12,19 +12,35 @@ add_subdirectory(lib)
 add_executable(
     game
     src/main.cpp
+    src/Cell2D.h
+    src/Game.h
     src/Game.cpp
+    src/GameMap.h
     src/GameMap.cpp
+    src/GameMapCell.h
+    src/IsoMap.h
     src/IsoMap.cpp
+    src/Player.h
     src/Player.cpp
+    src/Screens/Screen.h
     src/Screens/Screen.cpp
+    src/Screens/ScreenGame.h
     src/Screens/ScreenGame.cpp
+    src/Screens/ScreenMainMenu.h
     src/Screens/ScreenMainMenu.cpp
+    src/Screens/ScreenTest.h
     src/Screens/ScreenTest.cpp
+    src/Screens/SharedScreenListener.h
     src/Screens/SharedScreenListener.cpp
+    src/States/BaseGameState.h
     src/States/BaseGameState.cpp
+    src/States/StateGame.h
     src/States/StateGame.cpp
+    src/States/StateMainMenu.h
     src/States/StateMainMenu.cpp
+    src/States/StateTest.h
     src/States/StateTest.cpp
+    src/Widgets/PanelPlayer.h
     src/Widgets/PanelPlayer.cpp
 )
 
