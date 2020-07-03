@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameMap.h"
+#include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
 #include "Widgets/PanelPlayer.h"
@@ -70,6 +71,18 @@ ScreenGame::ScreenGame(Game * game)
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     mIsoMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
+
+    // -- LAYERS --
+    const std::vector<std::string> imgFiles = {
+                                                "data/img/fort01.png",
+                                                "data/img/fort01.png",
+                                                "data/img/fort01.png"
+                                              };
+
+    mLayerFort = new IsoLayer(mIsoMap, imgFiles);
+
+    // TEST
+    mLayerFort->AddObject(0, 0, 2, ObjectAlignment::NO_ALIGNMENT);
 
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
@@ -171,6 +184,7 @@ void ScreenGame::Update(float delta)
 void ScreenGame::Render()
 {
     mIsoMap->Render();
+    mLayerFort->Render();
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)

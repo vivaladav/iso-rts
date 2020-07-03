@@ -19,6 +19,8 @@ add_executable(
     src/GameMap.h
     src/GameMap.cpp
     src/GameMapCell.h
+    src/IsoLayer.h
+    src/IsoLayer.cpp
     src/IsoMap.h
     src/IsoMap.cpp
     src/Player.h

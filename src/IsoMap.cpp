@@ -17,7 +17,9 @@ IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
     const int size = rows * cols;
 
     mMap.reserve(size);
+
     mTilePositions.reserve(size);
+    mTilePositions.assign(size, lib::core::Point2D(0, 0));
 
     mMap.assign(size, 0);
 }
@@ -26,6 +28,19 @@ IsoMap::~IsoMap()
 {
     for(lib::graphic::Image * img : mTiles)
         delete img;
+}
+
+lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
+{
+    const unsigned int ind = r * mCols + c;
+
+    if(ind < mTilePositions.size())
+        return mTilePositions[ind];
+    else
+    {
+        const lib::core::Point2D p(-1, -1);
+        return p;
+    }
 }
 
 void IsoMap::SetTiles(const std::vector<std::string> & files)

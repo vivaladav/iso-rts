@@ -18,6 +18,11 @@ public:
     IsoMap(unsigned int rows, unsigned int cols, int tileW);
     ~IsoMap();
 
+    int GetNumRows() const;
+    int GetNumCols() const;
+
+    lib::core::Point2D GetCellPosition(unsigned int r, unsigned int c) const;
+
     void SetTiles(const std::vector<std::string> & files);
 
     void SetCellType(unsigned int r, unsigned int c, unsigned int type);
@@ -59,6 +64,9 @@ private:
     std::vector<lib::graphic::Image *> mTiles;
     std::vector<lib::core::Point2D> mTilePositions;
 };
+
+inline int IsoMap::GetNumRows() const { return mRows; }
+inline int IsoMap::GetNumCols() const { return mCols; }
 
 inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int type)
 {
