@@ -79,12 +79,8 @@ ScreenGame::ScreenGame(Game * game)
                                                 "data/img/fort03.png"
                                               };
 
-    mLayerFort = new IsoLayer(mIsoMap, imgFiles);
-
-    // TEST
-    mLayerFort->AddObject(0, 0, 0, ObjectAlignment::NO_ALIGNMENT);
-    mLayerFort->AddObject(0, 1, 1, ObjectAlignment::NO_ALIGNMENT);
-    mLayerFort->ReplaceObject(0, 2, 2, ObjectAlignment::NO_ALIGNMENT);
+    // FORTIFICATIONS
+    mIsoMap->CreateIsoLayer(imgFiles);
 
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
@@ -138,15 +134,25 @@ ScreenGame::ScreenGame(Game * game)
     PanelPlayer * panel = mPanelsPlayer[0];
     GameMap * gameMap = mGameMap;
 
-    panel->SetFunctionCellFortify([] { std::cout << "CELL FORTIFY" << std::endl; });
+    panel->SetFunctionCellFortify([gameMap, panel, player]
+    {
+        std::cout << "CELL FORTIFY" << std::endl;
+
+        const Cell2D * cell = player->GetSelectedCell();
+
+        gameMap->FortifyCell(cell, player);
+
+        panel->UpdateButtonCellFortify(gameMap->GetCell(cell->row, cell->col).fortLevel);
+    });
 
     panel->SetFunctionCellUpgrade([gameMap, panel, player]
     {
         std::cout << "CELL UPGRADE" << std::endl;
 
-        gameMap->UpgradeCell(player->GetSelectedCell(), player);
-
         const Cell2D * cell = player->GetSelectedCell();
+
+        gameMap->UpgradeCell(cell, player);
+
         panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
     });
 
@@ -186,7 +192,6 @@ void ScreenGame::Update(float delta)
 void ScreenGame::Render()
 {
     mIsoMap->Render();
-    mLayerFort->Render();
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)

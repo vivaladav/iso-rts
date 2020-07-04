@@ -10,6 +10,8 @@ namespace lib { namespace graphic { class Image; } }
 namespace game
 {
 
+class IsoLayer;
+
 struct Cell2D;
 
 class IsoMap
@@ -45,6 +47,10 @@ public:
 
     bool IsCellInside(const Cell2D & cell) const;
 
+    // -- IsoLayers --
+    void CreateIsoLayer(const std::vector<std::string> & files);
+    IsoLayer * GetIsoLayer(unsigned int index) const;
+
 private:
     void UpdateTilePositions();
 
@@ -64,6 +70,8 @@ private:
     std::vector<unsigned int> mMap;
     std::vector<lib::graphic::Image *> mTiles;
     std::vector<lib::core::Point2D> mTilePositions;
+
+    std::vector<IsoLayer *> mLayers;
 };
 
 inline lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
@@ -118,6 +126,14 @@ inline void IsoMap::SetOrigin(int x, int y)
     mRenderX0 = x - mTileH;
 
     UpdateTilePositions();
+}
+
+inline IsoLayer * IsoMap::GetIsoLayer(unsigned int index) const
+{
+    if(index < mLayers.size())
+        return mLayers[index];
+    else
+        return nullptr;
 }
 
 } // namespace game

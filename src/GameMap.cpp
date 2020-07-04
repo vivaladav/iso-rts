@@ -3,6 +3,7 @@
 #include "Cell2D.h"
 #include "Game.h"
 #include "GameConstants.h"
+#include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
 
@@ -111,6 +112,38 @@ void GameMap::SetHomeCell(Game * game)
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
     }
+}
+
+void GameMap::FortifyCell(const Cell2D * cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return ;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // not own cell or max level cell -> exit
+    if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_FORT_LEVEL == gcell.fortLevel)
+        return ;
+
+    // check if player has enough money
+    const int cost = COST_CELL_FORT[gcell.fortLevel];
+
+    if(cost > player->GetMoney())
+        return ;
+
+    // all good -> upgrade
+    ++(gcell.fortLevel);
+
+    // update player
+    player->SumMoney(-cost);
+
+    // update map layer
+    mIsoMap->GetIsoLayer(FORTIFICATIONS)->ReplaceObject(r, c, gcell.fortLevel - 1, NO_ALIGNMENT);
 }
 
 void GameMap::UpgradeCell(const Cell2D * cell, Player * player)

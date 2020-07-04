@@ -1,6 +1,7 @@
 #include "IsoMap.h"
 
 #include "Cell2D.h"
+#include "IsoLayer.h"
 
 #include <graphic/Image.h>
 
@@ -28,6 +29,10 @@ IsoMap::~IsoMap()
 {
     for(lib::graphic::Image * img : mTiles)
         delete img;
+
+    // -- IsoLayers --
+    for(IsoLayer * layer : mLayers)
+        delete layer;
 }
 
 lib::core::Point2D IsoMap::GetCellPosition(unsigned int index) const
@@ -71,6 +76,10 @@ void IsoMap::Render()
             img->Render();
         }
     }
+
+    // -- IsoLayers --
+    for(IsoLayer * layer : mLayers)
+        layer->Render();
 }
 
 Cell2D IsoMap::CellFromScreenPoint(int x, int y) const
@@ -100,6 +109,13 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
     const unsigned int cr = static_cast<unsigned int>(cell.row);
     const unsigned int cc = static_cast<unsigned int>(cell.col);
     return  cr < mRows && cc < mCols;
+}
+
+void IsoMap::CreateIsoLayer(const std::vector<std::string> & files)
+{
+    IsoLayer * layer = new IsoLayer(this, files);
+
+    mLayers.emplace_back(layer);
 }
 
 void IsoMap::UpdateTilePositions()

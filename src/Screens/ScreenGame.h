@@ -33,8 +33,6 @@ private:
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
 
-    IsoLayer * mLayerFort = nullptr;
-
     float mTimerCoins = TIME_COINS_GEN;
 };
 

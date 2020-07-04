@@ -15,4 +15,15 @@ constexpr int MAX_CELL_LEVEL = 3;
 
 constexpr int COST_CELL_UPGRADE[] = { 30, 40, 50 };
 
+constexpr int MAX_CELL_FORT_LEVEL = 3;
+
+constexpr int COST_CELL_FORT[] = { 20, 30, 40 };
+
+enum MapLayers
+{
+    FORTIFICATIONS = 0,
+
+    NUM_LAYERS,
+};
+
 } // namespace game

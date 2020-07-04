@@ -121,7 +121,31 @@ void PanelPlayer::UpdateUnits(int units)
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 {
+    UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
+}
+
+void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
+{
+    using namespace lib::graphic;
+    using namespace lib::sgui;
+
+    FontManager * fm = FontManager::Instance();
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
+    fontButton->SetStyle(Font::BOLD);
+
+    if(fortLevel >= MAX_CELL_FORT_LEVEL)
+    {
+        mButtonCellFortify->SetLabel("FORTIFY", fontButton);
+        mButtonCellFortify->SetEnabled(false);
+    }
+    else
+    {
+        std::ostringstream s;
+        s << "FORTIFY (" << COST_CELL_FORT[fortLevel] << ")";
+
+        mButtonCellFortify->SetLabel(s.str().c_str(), fontButton);
+    }
 }
 
 void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
