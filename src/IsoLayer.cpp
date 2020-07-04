@@ -23,6 +23,17 @@ IsoLayer::IsoLayer(const IsoMap * map, const std::vector<std::string> & files)
     SetImages(files);
 }
 
+IsoLayer::~IsoLayer()
+{
+    // images
+    for(lib::graphic::Image * img : mImages)
+        delete img;
+
+    // objects
+    for(IsoObject * obj : mObjectsList)
+        delete obj;
+}
+
 bool IsoLayer::AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment)
 {
     const unsigned int rows = mMap->GetNumRows();
