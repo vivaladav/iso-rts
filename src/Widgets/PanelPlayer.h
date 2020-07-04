@@ -38,6 +38,7 @@ public:
 
     void UpdateButtonCellFortify(int fortLevel);
     void UpdateButtonCellUpgrade(int cellLevel);
+    void UpdateButtonNewUnit(int numUnits, int level);
 
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);

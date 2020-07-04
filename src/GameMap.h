@@ -28,6 +28,7 @@ public:
 
     void FortifyCell(const Cell2D * cell, Player * player);
     void UpgradeCell(const Cell2D * cell, Player * player);
+    void NewUnit(const Cell2D * cell, Player * player);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
 

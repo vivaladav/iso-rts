@@ -9,6 +9,7 @@ struct GameMapCell
     int level = 0;
     int fortLevel = 0;
     int units = 0;
+    int unitsLevel = 0;
     bool empty = true;
 };
 

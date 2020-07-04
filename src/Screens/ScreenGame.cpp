@@ -73,14 +73,21 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
 
     // -- LAYERS --
-    const std::vector<std::string> imgFiles = {
+    // FORTIFICATIONS
+    const std::vector<std::string> fortImgs = {
                                                 "data/img/fort01.png",
                                                 "data/img/fort02.png",
                                                 "data/img/fort03.png"
                                               };
 
-    // FORTIFICATIONS
-    mIsoMap->CreateIsoLayer(imgFiles);
+    mIsoMap->CreateIsoLayer(fortImgs);
+
+    // UNITS
+    const std::vector<std::string> unitsImgs = {
+                                                "data/img/unit1-p1l1.png",
+                                               };
+
+    mIsoMap->CreateIsoLayer(unitsImgs);
 
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
@@ -156,7 +163,18 @@ ScreenGame::ScreenGame(Game * game)
         panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
     });
 
-    panel->SetFunctionNewUnit([] { std::cout << "NEW UNIT" << std::endl; });
+    panel->SetFunctionNewUnit([gameMap, panel, player]
+    {
+        std::cout << "NEW UNIT" << std::endl;
+
+        const Cell2D * cell = player->GetSelectedCell();
+
+        gameMap->NewUnit(cell, player);
+
+        const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
+
+        panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
+    });
 }
 
 ScreenGame::~ScreenGame()

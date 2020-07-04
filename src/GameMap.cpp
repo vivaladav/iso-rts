@@ -46,6 +46,16 @@ enum CellTypes : int
     NUM_CELL_TYPES
 };
 
+enum UnitType : int
+{
+    // PLAYER 1
+    P1_1UL1,
+    P1_2UL1,
+    P1_3UL1,
+    P1_4UL1,
+
+    NUM_UNIT_TYPES
+};
 
 GameMap::GameMap(IsoMap * isoMap, unsigned int rows, unsigned int cols)
     : mCells(rows * cols)
@@ -178,6 +188,40 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
     // update map
     const int cellType = DefineCellType(gcell);
     mIsoMap->SetCellType(ind, cellType);
+}
+
+void GameMap::NewUnit(const Cell2D * cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return ;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // not own cell or max level cell -> exit
+    if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_UNITS == gcell.units)
+        return ;
+
+    // check if player has enough money
+    const int cost = COST_NEW_UNIT[gcell.unitsLevel];
+
+    if(cost > player->GetMoney())
+        return ;
+
+    // all good -> upgrade
+    ++(gcell.units);
+
+    // update player
+    player->SumUnits(1);
+    player->SumMoney(-cost);
+
+    // update map layer
+    const int unitImg = P1_1UL1;    // TOOD
+    mIsoMap->GetIsoLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)
