@@ -75,14 +75,16 @@ ScreenGame::ScreenGame(Game * game)
     // -- LAYERS --
     const std::vector<std::string> imgFiles = {
                                                 "data/img/fort01.png",
-                                                "data/img/fort01.png",
-                                                "data/img/fort01.png"
+                                                "data/img/fort02.png",
+                                                "data/img/fort03.png"
                                               };
 
     mLayerFort = new IsoLayer(mIsoMap, imgFiles);
 
     // TEST
-    mLayerFort->AddObject(0, 0, 2, ObjectAlignment::NO_ALIGNMENT);
+    mLayerFort->AddObject(0, 0, 0, ObjectAlignment::NO_ALIGNMENT);
+    mLayerFort->AddObject(0, 1, 1, ObjectAlignment::NO_ALIGNMENT);
+    mLayerFort->ReplaceObject(0, 2, 2, ObjectAlignment::NO_ALIGNMENT);
 
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);

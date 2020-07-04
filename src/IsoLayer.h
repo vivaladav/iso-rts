@@ -48,10 +48,15 @@ public:
     IsoLayer(const IsoMap * map, const std::vector<std::string> & files);
 
     bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
+    void ClearObject(unsigned int r, unsigned int c);
+    bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
 
     void Render();
 
 private:
+    void AddObject(unsigned int index, int objIndex, ObjectAlignment alignment);
+    void ClearObject(unsigned int index);
+
     void SetImages(const std::vector<std::string> & files);
 
 private:

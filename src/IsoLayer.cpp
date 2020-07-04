@@ -4,6 +4,7 @@
 
 #include <graphic/Image.h>
 
+#include <algorithm>
 #include <cassert>
 
 namespace game
@@ -37,15 +38,44 @@ bool IsoLayer::AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAli
     if(mObjectsMap[index])
         return false;
 
-    lib::core::Point2D posCell = mMap->GetCellPosition(r, c);
+    AddObject(index, objIndex, alignment);
 
-    // TODO alignment
+    return true;
+}
 
-    IsoObject * obj = new IsoObject(objIndex, posCell);
+void IsoLayer::ClearObject(unsigned int r, unsigned int c)
+{
+    const unsigned int rows = mMap->GetNumRows();
+    const unsigned int cols = mMap->GetNumCols();
 
-    mObjectsMap[index] = obj;
+    // ERROR out of bounds
+    if(!(r < rows && c < cols))
+        return;
 
-    mObjectsList.emplace_back(obj);
+    const unsigned int index = r * cols + c;
+
+    // empty cell -> nothing to do
+    if(!mObjectsMap[index])
+        return ;
+
+    ClearObject(index);
+}
+
+bool IsoLayer::ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment)
+{
+    const unsigned int rows = mMap->GetNumRows();
+    const unsigned int cols = mMap->GetNumCols();
+
+    // ERROR out of bounds
+    if(!(r < rows && c < cols))
+        return false;
+
+    const unsigned int index = r * cols + c;
+
+    if(mObjectsMap[index])
+        ClearObject(index);
+
+    AddObject(index, objIndex, alignment);
 
     return true;
 }
@@ -60,6 +90,32 @@ void IsoLayer::Render()
 
         img->Render();
     }
+}
+
+void IsoLayer::AddObject(unsigned int index, int objIndex, ObjectAlignment alignment)
+{
+    lib::core::Point2D posCell = mMap->GetCellPosition(index);
+
+    // TODO alignment
+
+    IsoObject * obj = new IsoObject(objIndex, posCell);
+
+    mObjectsMap[index] = obj;
+
+    mObjectsList.emplace_back(obj);
+}
+
+void IsoLayer::ClearObject(unsigned int index)
+{
+    IsoObject * obj = mObjectsMap[index];
+    mObjectsMap[index] = nullptr;
+
+    auto it = std::find(mObjectsList.begin(), mObjectsList.end(), obj);
+
+    if(it != mObjectsList.end())
+        mObjectsList.erase(it);
+
+    delete obj;
 }
 
 void IsoLayer::SetImages(const std::vector<std::string> & files)

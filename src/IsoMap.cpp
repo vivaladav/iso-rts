@@ -30,12 +30,10 @@ IsoMap::~IsoMap()
         delete img;
 }
 
-lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
+lib::core::Point2D IsoMap::GetCellPosition(unsigned int index) const
 {
-    const unsigned int ind = r * mCols + c;
-
-    if(ind < mTilePositions.size())
-        return mTilePositions[ind];
+    if(index < mTilePositions.size())
+        return mTilePositions[index];
     else
     {
         const lib::core::Point2D p(-1, -1);

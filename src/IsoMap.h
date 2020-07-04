@@ -22,6 +22,7 @@ public:
     int GetNumCols() const;
 
     lib::core::Point2D GetCellPosition(unsigned int r, unsigned int c) const;
+    lib::core::Point2D GetCellPosition(unsigned int index) const;
 
     void SetTiles(const std::vector<std::string> & files);
 
@@ -64,6 +65,12 @@ private:
     std::vector<lib::graphic::Image *> mTiles;
     std::vector<lib::core::Point2D> mTilePositions;
 };
+
+inline lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
+{
+    const unsigned int ind = r * mCols + c;
+    return GetCellPosition(ind);
+}
 
 inline int IsoMap::GetNumRows() const { return mRows; }
 inline int IsoMap::GetNumCols() const { return mCols; }
