@@ -10,7 +10,7 @@ struct GameMapCell
     int fortLevel = 0;
     int units = 0;
     int unitsLevel = 0;
-    bool empty = true;
+    bool walkable = true;
 };
 
 } // namespace game

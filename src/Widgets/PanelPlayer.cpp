@@ -125,6 +125,8 @@ void PanelPlayer::ClearSelectedCell()
 {
     mPanelCell->SetVisible(false);
     mPanelUnits->SetVisible(false);
+
+    ClearNumUnitsToMove();
 }
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
@@ -223,6 +225,16 @@ void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
     mButtonNewUnit->SetOnClickFunction(f);
 }
 
+void PanelPlayer::SetFunctionUnitsMove(const std::function<void()> & f)
+{
+
+}
+
+void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
+{
+
+}
+
 std::string PanelPlayer::MakeStrCells(int cells)
 {
     return std::to_string(cells);
@@ -315,19 +327,27 @@ void PanelPlayer::CreatePanelUnits()
     Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
-    PushButton * buttonMove = new PushButton(mPanelUnits);
-    buttonMove->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonMove->SetLabel("MOVE", fontButton);
-    buttonMove->SetLabelColor(0xF0F0F0FF);
-    buttonMove->SetY(buttonY);
+    mButtonUnitsMove = new PushButton(mPanelUnits);
+    mButtonUnitsMove->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonUnitsMove->SetLabel("MOVE", fontButton);
+    mButtonUnitsMove->SetLabelColor(0xF0F0F0FF);
+    mButtonUnitsMove->SetY(buttonY);
 
-    buttonY += buttonMove->GetHeight() + marginY;
+    mButtonUnitsMove->SetOnClickFunction([this]
+    {
+        std::cout << "MOVE 1 UNIT" << std::endl;
 
-    PushButton * buttonUpgrade = new PushButton(mPanelUnits);
-    buttonUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    buttonUpgrade->SetLabel("UPGRADE (10)", fontButton);
-    buttonUpgrade->SetLabelColor(0xF0F0F0FF);
-    buttonUpgrade->SetY(buttonY);
+        // TODO proper move units
+        mNumUnitToMove = 1;
+    });
+
+    buttonY += mButtonUnitsMove->GetHeight() + marginY;
+
+    mButtonUnitsUpgrade = new PushButton(mPanelUnits);
+    mButtonUnitsUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonUnitsUpgrade->SetLabel("UPGRADE (10)", fontButton);
+    mButtonUnitsUpgrade->SetLabelColor(0xF0F0F0FF);
+    mButtonUnitsUpgrade->SetY(buttonY);
 }
 
 } // namespace game

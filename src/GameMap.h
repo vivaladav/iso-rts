@@ -30,6 +30,8 @@ public:
     void UpgradeCell(const Cell2D * cell, Player * player);
     void NewUnit(const Cell2D * cell, Player * player);
 
+    void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);
+
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
 
 private:

@@ -51,6 +51,8 @@ public:
     bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int r, unsigned int c);
     bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
+    bool MoveObject(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1,
+                    ObjectAlignment alignment);
 
     void Render();
 

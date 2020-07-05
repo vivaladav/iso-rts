@@ -228,15 +228,25 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
         const bool isLocalPlayer = owner == player->GetPlayerId();
 
+        PanelPlayer * panel = mPanelsPlayer[0];
+
         if(isLocalPlayer)
         {
             player->SetSelectedCell(c);
-            mPanelsPlayer[0]->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+            panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
         }
         else
         {
+            const int unitsToMove = panel->GetNumUnitsToMove();
+
+            if(unitsToMove > 0)
+            {
+                mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
+                panel->ClearNumUnitsToMove();
+            }
+
             player->ClearSelectedCell();
-            mPanelsPlayer[0]->ClearSelectedCell();
+            panel->ClearSelectedCell();
         }
     }
     else

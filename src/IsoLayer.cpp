@@ -91,6 +91,40 @@ bool IsoLayer::ReplaceObject(unsigned int r, unsigned int c, int objIndex, Objec
     return true;
 }
 
+bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
+                          unsigned int r1, unsigned int c1,
+                          ObjectAlignment alignment)
+{
+    const unsigned int rows = mMap->GetNumRows();
+    const unsigned int cols = mMap->GetNumCols();
+
+    // ERROR out of bounds
+    if(!(r0 < rows && c0 < cols && r1 < rows && c1 < cols))
+        return false;
+
+    const unsigned int index0 = r0 * cols + c0;
+
+    IsoObject * obj = mObjectsMap[index0];
+
+    // nothing to move
+    if(!obj)
+        return false;
+
+    const unsigned int index1 = r1 * cols + c1;
+
+    // cell is full
+    if(mObjectsMap[index1])
+        return false;
+
+    // TODO alignment
+    obj->pos = mMap->GetCellPosition(index1);
+
+    mObjectsMap[index0] = nullptr;
+    mObjectsMap[index1] = obj;
+
+    return true;
+}
+
 void IsoLayer::Render()
 {
     for(auto * obj : mObjectsList)

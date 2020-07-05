@@ -8,6 +8,7 @@
 #include "Player.h"
 
 #include <cassert>
+#include <cmath>
 #include <fstream>
 #include <string>
 
@@ -87,7 +88,7 @@ bool GameMap::Load(const char * file)
 
             const int type = line[c] - '0';
 
-            mCells[ind].empty = (type != FULL);
+            mCells[ind].walkable = type != FULL;
 
             mIsoMap->SetCellType(r, c, type);
         }
@@ -114,7 +115,6 @@ void GameMap::SetHomeCell(Game * game)
 
         GameMapCell & cell = mCells[ind];
         cell.ownerId = player->GetPlayerId();
-        cell.empty = false;
 
         const int cellType = DefineCellType(cell);
         mIsoMap->SetCellType(ind, cellType);
@@ -222,6 +222,65 @@ void GameMap::NewUnit(const Cell2D * cell, Player * player)
     // update map layer
     const int unitImg = P1_1UL1;    // TOOD
     mIsoMap->GetIsoLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+}
+
+void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
+{
+    const unsigned int r0 = static_cast<unsigned int>(start->row);
+    const unsigned int c0 = static_cast<unsigned int>(start->col);
+
+    // out of bounds
+    if(!(r0 < mRows && c0 < mCols))
+        return ;
+
+    const unsigned int r1 = static_cast<unsigned int>(end->row);
+    const unsigned int c1 = static_cast<unsigned int>(end->col);
+
+    // out of bounds
+    if(!(r1 < mRows && c1 < mCols))
+        return ;
+
+    const int diffR = abs(end->row - start->row);
+    const int diffC = abs(end->col - start->col);
+
+    // units can only move to next cell
+    if(diffR > 1 || diffC > 1)
+        return ;
+
+    const int ind0 = r0 * mCols + c0;
+    GameMapCell & gcell0 = mCells[ind0];
+
+    // not enough units to move
+    if(0 == gcell0.units || gcell0.units < numUnits)
+        return ;
+
+    const int ind1 = r1 * mCols + c1;
+    GameMapCell & gcell1 = mCells[ind1];
+
+    // not a walkable cell
+    if(!gcell1.walkable)
+        return ;
+
+    // not owned cell
+    if(-1 == gcell1.ownerId)
+    {
+        gcell0.units -= numUnits;
+        gcell1.units += numUnits;
+
+        gcell1.ownerId = gcell0.ownerId;
+
+        player->SumCells(1);
+        player->SumTotalCellsLevel(1);
+
+        mIsoMap->GetIsoLayer(UNITS)->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+
+        const int cellType = DefineCellType(gcell1);
+        mIsoMap->SetCellType(ind1, cellType);
+    }
+    else
+    {
+        // TODO move to owned cell
+    }
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)

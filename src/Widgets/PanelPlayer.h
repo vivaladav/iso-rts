@@ -45,6 +45,12 @@ public:
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
+    void SetFunctionUnitsMove(const std::function<void()> & f);
+    void SetFunctionUnitsUpgrade(const std::function<void()> & f);
+
+    int GetNumUnitsToMove() const;
+    void ClearNumUnitsToMove();
+
 private:
     std::string MakeStrCells(int cells);
     std::string MakeStrCoins(int coins);
@@ -65,6 +71,14 @@ private:
     lib::sgui::PushButton * mButtonCellFortify = nullptr;
     lib::sgui::PushButton * mButtonCellUpgrade = nullptr;
     lib::sgui::PushButton * mButtonNewUnit = nullptr;
+
+    lib::sgui::PushButton * mButtonUnitsMove = nullptr;
+    lib::sgui::PushButton * mButtonUnitsUpgrade = nullptr;
+
+    int mNumUnitToMove = 0;
 };
+
+inline int PanelPlayer::GetNumUnitsToMove() const { return mNumUnitToMove; }
+inline void PanelPlayer::ClearNumUnitsToMove() { mNumUnitToMove = 0; }
 
 } // namespace game
