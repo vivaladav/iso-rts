@@ -79,11 +79,13 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
 
     const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
     mPanelCell->SetY(panelY);
+    mPanelCell->SetVisible(false);
 
     CreatePanelUnits();
 
     const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
     mPanelUnits->SetPosition(panelX, panelY);
+    mPanelUnits->SetVisible(false);
 }
 
 void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
@@ -119,11 +121,19 @@ void PanelPlayer::UpdateUnits(int units)
     mLabelUnits->SetPosition(cX - mLabelUnits->GetWidth() * 0.5f, cY - mLabelUnits->GetHeight() * 0.5f);
 }
 
+void PanelPlayer::ClearSelectedCell()
+{
+    mPanelCell->SetVisible(false);
+    mPanelUnits->SetVisible(false);
+}
+
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 {
     UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
+
+    mPanelCell->SetVisible(true);
 }
 
 void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
@@ -193,6 +203,9 @@ void PanelPlayer::UpdateButtonNewUnit(int numUnits, int level)
 
         mButtonNewUnit->SetLabel(s.str().c_str(), fontButton);
     }
+
+    if(numUnits > 0)
+        mPanelUnits->SetVisible(true);
 }
 
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)

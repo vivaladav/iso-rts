@@ -14,7 +14,6 @@
 #include <sgui/Stage.h>
 
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -113,9 +112,6 @@ ScreenGame::ScreenGame(Game * game)
         const int y = (i < 2) ? 10 : (rendH - panel->GetHeight() - 10);
 
         panel->SetPosition(x, y);
-
-        panel->SetPanelCellVisible(false);
-        panel->SetPanelUnitsVisible(false);
 
         // setup data update functions
         player->SetOnMoneyChanged([panel](int money)
@@ -238,15 +234,15 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             mPanelsPlayer[0]->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
         }
         else
+        {
             player->ClearSelectedCell();
-
-        mPanelsPlayer[0]->SetPanelCellVisible(isLocalPlayer);
+            mPanelsPlayer[0]->ClearSelectedCell();
+        }
     }
     else
     {
-        mPanelsPlayer[0]->SetPanelCellVisible(false);
-
         player->ClearSelectedCell();
+        mPanelsPlayer[0]->ClearSelectedCell();
     }
 }
 

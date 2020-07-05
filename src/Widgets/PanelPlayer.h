@@ -34,6 +34,7 @@ public:
     void UpdateCoins(int coins);
     void UpdateUnits(int units);
 
+    void ClearSelectedCell();
     void SetSelectedCell(const GameMapCell & cell);
 
     void UpdateButtonCellFortify(int fortLevel);
