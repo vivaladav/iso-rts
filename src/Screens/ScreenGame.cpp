@@ -79,24 +79,24 @@ ScreenGame::ScreenGame(Game * game)
                                                 "data/img/fort03.png"
                                               };
 
-    mIsoMap->CreateIsoLayer(fortImgs);
+    mIsoMap->CreateLayer(fortImgs);
 
     // SELECTION
     mPrevSel = new Cell2D(0, 0);
 
     const std::vector<std::string> selImgs = { "data/img/selection.png" };
 
-    IsoLayer * layer = mIsoMap->CreateIsoLayer(selImgs);
+    IsoLayer * layer = mIsoMap->CreateLayer(selImgs);
     layer->AddObject(mPrevSel->row, mPrevSel->col, 0, NO_ALIGNMENT);
 
-    mIsoMap->SetIsoLayerVisible(SELECTION, false);
+    mIsoMap->SetLayerVisible(SELECTION, false);
 
     // UNITS
     const std::vector<std::string> unitsImgs = {
                                                 "data/img/unit1-p1l1.png",
                                                };
 
-    mIsoMap->CreateIsoLayer(unitsImgs);
+    mIsoMap->CreateLayer(unitsImgs);
 
     // -- GAME MAP --
     mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
@@ -247,9 +247,9 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             player->SetSelectedCell(c);
             panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
 
-            IsoLayer * layerSel = mIsoMap->GetIsoLayer(SELECTION);
+            IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
             layerSel->MoveObject(mPrevSel->row, mPrevSel->col, c.row, c.col, NO_ALIGNMENT);
-            mIsoMap->SetIsoLayerVisible(SELECTION, true);
+            mIsoMap->SetLayerVisible(SELECTION, true);
 
             // store selection cell
             *mPrevSel = c;
@@ -267,7 +267,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             player->ClearSelectedCell();
             panel->ClearSelectedCell();
 
-            mIsoMap->SetIsoLayerVisible(SELECTION, false);
+            mIsoMap->SetLayerVisible(SELECTION, false);
         }
     }
     else
@@ -275,7 +275,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         player->ClearSelectedCell();
         mPanelsPlayer[0]->ClearSelectedCell();
 
-        mIsoMap->SetIsoLayerVisible(SELECTION, false);
+        mIsoMap->SetLayerVisible(SELECTION, false);
     }
 }
 

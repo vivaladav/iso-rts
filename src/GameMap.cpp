@@ -153,7 +153,7 @@ void GameMap::FortifyCell(const Cell2D * cell, Player * player)
     player->SumMoney(-cost);
 
     // update map layer
-    mIsoMap->GetIsoLayer(FORTIFICATIONS)->ReplaceObject(r, c, gcell.fortLevel - 1, NO_ALIGNMENT);
+    mIsoMap->GetLayer(FORTIFICATIONS)->ReplaceObject(r, c, gcell.fortLevel - 1, NO_ALIGNMENT);
 }
 
 void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
@@ -221,7 +221,7 @@ void GameMap::NewUnit(const Cell2D * cell, Player * player)
 
     // update map layer
     const int unitImg = P1_1UL1;    // TOOD
-    mIsoMap->GetIsoLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+    mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
 }
 
 void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
@@ -272,7 +272,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
 
-        mIsoMap->GetIsoLayer(UNITS)->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+        mIsoMap->GetLayer(UNITS)->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
 
         const int cellType = DefineCellType(gcell1);
         mIsoMap->SetCellType(ind1, cellType);

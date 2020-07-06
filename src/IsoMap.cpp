@@ -113,7 +113,7 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
     return  cr < mRows && cc < mCols;
 }
 
-IsoLayer * IsoMap::CreateIsoLayer(const std::vector<std::string> & files)
+IsoLayer * IsoMap::CreateLayer(const std::vector<std::string> & files)
 {
     IsoLayer * layer = new IsoLayer(this, files);
 
@@ -123,7 +123,7 @@ IsoLayer * IsoMap::CreateIsoLayer(const std::vector<std::string> & files)
     return layer;
 }
 
-void IsoMap::SetIsoLayerVisible(unsigned int index, bool visible)
+void IsoMap::SetLayerVisible(unsigned int index, bool visible)
 {
     IsoLayer * layer = nullptr;
 

@@ -48,9 +48,9 @@ public:
     bool IsCellInside(const Cell2D & cell) const;
 
     // -- IsoLayers --
-    IsoLayer * CreateIsoLayer(const std::vector<std::string> & files);
-    IsoLayer * GetIsoLayer(unsigned int index) const;
-    void SetIsoLayerVisible(unsigned int index, bool visible);
+    IsoLayer * CreateLayer(const std::vector<std::string> & files);
+    IsoLayer * GetLayer(unsigned int index) const;
+    void SetLayerVisible(unsigned int index, bool visible);
 
 private:
     void UpdateTilePositions();
@@ -130,7 +130,7 @@ inline void IsoMap::SetOrigin(int x, int y)
     UpdateTilePositions();
 }
 
-inline IsoLayer * IsoMap::GetIsoLayer(unsigned int index) const
+inline IsoLayer * IsoMap::GetLayer(unsigned int index) const
 {
     if(index < mLayers.size())
         return mLayers[index];
