@@ -158,6 +158,8 @@ void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
         s << "FORTIFY (" << COST_CELL_FORT[fortLevel] << ")";
 
         mButtonCellFortify->SetLabel(s.str().c_str(), fontButton);
+        mButtonCellFortify->SetEnabled(true);
+
     }
 }
 
@@ -181,6 +183,7 @@ void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
         s << "UPGRADE (" << COST_CELL_UPGRADE[cellLevel] << ")";
 
         mButtonCellUpgrade->SetLabel(s.str().c_str(), fontButton);
+        mButtonCellUpgrade->SetEnabled(true);
     }
 }
 
@@ -204,6 +207,7 @@ void PanelPlayer::UpdateButtonNewUnit(int numUnits, int level)
         s << "NEW UNIT (" << COST_NEW_UNIT[level] << ")";
 
         mButtonNewUnit->SetLabel(s.str().c_str(), fontButton);
+        mButtonNewUnit->SetEnabled(true);
     }
 
     if(numUnits > 0)
@@ -280,12 +284,8 @@ void PanelPlayer::CreatePanelCell()
 
     const int marginY = 30;
 
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
-
     mButtonNewUnit = new PushButton(mPanelCell);
     mButtonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonNewUnit->SetLabel("NEW UNIT (10)", fontButton);
     mButtonNewUnit->SetLabelColor(0xF0F0F0FF);
     mButtonNewUnit->SetY(buttonY);
 
@@ -293,7 +293,6 @@ void PanelPlayer::CreatePanelCell()
 
     mButtonCellFortify = new PushButton(mPanelCell);
     mButtonCellFortify->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonCellFortify->SetLabel("FORTIFY (20)", fontButton);
     mButtonCellFortify->SetLabelColor(0xF0F0F0FF);
     mButtonCellFortify->SetY(buttonY);
 
