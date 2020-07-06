@@ -5,6 +5,8 @@
 
 #include <graphic/Image.h>
 
+#include <algorithm>
+
 namespace game
 {
 
@@ -78,7 +80,7 @@ void IsoMap::Render()
     }
 
     // -- IsoLayers --
-    for(IsoLayer * layer : mLayers)
+    for(IsoLayer * layer : mLayersRenderList)
         layer->Render();
 }
 
@@ -111,11 +113,60 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
     return  cr < mRows && cc < mCols;
 }
 
-void IsoMap::CreateIsoLayer(const std::vector<std::string> & files)
+IsoLayer * IsoMap::CreateIsoLayer(const std::vector<std::string> & files)
 {
     IsoLayer * layer = new IsoLayer(this, files);
 
     mLayers.emplace_back(layer);
+    mLayersRenderList.emplace_back(layer);
+
+    return layer;
+}
+
+void IsoMap::SetIsoLayerVisible(unsigned int index, bool visible)
+{
+    IsoLayer * layer = nullptr;
+
+    // out of bounds
+    if(index < mLayers.size())
+        layer = mLayers[index];
+    else
+        return ;
+
+    // nothing to do
+    if(layer->mVisible == visible)
+        return ;
+
+    layer->mVisible = visible;
+
+    if(!visible)
+    {
+        auto it = std::find(mLayersRenderList.begin(), mLayersRenderList.end(), layer);
+
+        if(it != mLayersRenderList.end())
+            mLayersRenderList.erase(it);
+    }
+    else
+    {
+        // layer should be first
+        if(layer == mLayers.front())
+            mLayersRenderList.insert(mLayersRenderList.begin(), layer);
+        // layer should be last
+        else if(layer == mLayers.back())
+            mLayersRenderList.emplace_back(layer);
+        // layer should be in the middle
+        else
+        {
+            for(unsigned int i = 1; i < (mLayers.size() - 1); ++i)
+            {
+                if(mLayers[i] == layer)
+                {
+                    mLayersRenderList.insert(mLayersRenderList.begin() + i, layer);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void IsoMap::UpdateTilePositions()

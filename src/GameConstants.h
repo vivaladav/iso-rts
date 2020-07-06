@@ -27,6 +27,7 @@ constexpr int COST_UNIT_UPGRADE[] = { 10, 20 };
 enum MapLayers
 {
     FORTIFICATIONS = 0,
+    SELECTION,
     UNITS,
 
     NUM_LAYERS,

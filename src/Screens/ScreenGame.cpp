@@ -81,6 +81,16 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->CreateIsoLayer(fortImgs);
 
+    // SELECTION
+    mPrevSel = new Cell2D(0, 0);
+
+    const std::vector<std::string> selImgs = { "data/img/selection.png" };
+
+    IsoLayer * layer = mIsoMap->CreateIsoLayer(selImgs);
+    layer->AddObject(mPrevSel->row, mPrevSel->col, 0, NO_ALIGNMENT);
+
+    mIsoMap->SetIsoLayerVisible(SELECTION, false);
+
     // UNITS
     const std::vector<std::string> unitsImgs = {
                                                 "data/img/unit1-p1l1.png",
@@ -175,6 +185,8 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
+    delete mPrevSel;
+
     delete mIsoMap;
     delete mGameMap;
 
@@ -234,6 +246,13 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             player->SetSelectedCell(c);
             panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+
+            IsoLayer * layerSel = mIsoMap->GetIsoLayer(SELECTION);
+            layerSel->MoveObject(mPrevSel->row, mPrevSel->col, c.row, c.col, NO_ALIGNMENT);
+            mIsoMap->SetIsoLayerVisible(SELECTION, true);
+
+            // store selection cell
+            *mPrevSel = c;
         }
         else
         {
@@ -247,12 +266,16 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
             player->ClearSelectedCell();
             panel->ClearSelectedCell();
+
+            mIsoMap->SetIsoLayerVisible(SELECTION, false);
         }
     }
     else
     {
         player->ClearSelectedCell();
         mPanelsPlayer[0]->ClearSelectedCell();
+
+        mIsoMap->SetIsoLayerVisible(SELECTION, false);
     }
 }
 

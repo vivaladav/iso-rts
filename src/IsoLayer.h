@@ -69,6 +69,10 @@ private:
     std::vector<IsoObject *> mObjectsMap;
 
     const IsoMap * mMap = nullptr;
+
+    bool mVisible = true;
+
+    friend class IsoMap;
 };
 
 } // namespace game

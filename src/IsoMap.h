@@ -48,8 +48,9 @@ public:
     bool IsCellInside(const Cell2D & cell) const;
 
     // -- IsoLayers --
-    void CreateIsoLayer(const std::vector<std::string> & files);
+    IsoLayer * CreateIsoLayer(const std::vector<std::string> & files);
     IsoLayer * GetIsoLayer(unsigned int index) const;
+    void SetIsoLayerVisible(unsigned int index, bool visible);
 
 private:
     void UpdateTilePositions();
@@ -72,6 +73,7 @@ private:
     std::vector<lib::core::Point2D> mTilePositions;
 
     std::vector<IsoLayer *> mLayers;
+    std::vector<IsoLayer *> mLayersRenderList;
 };
 
 inline lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const

@@ -16,6 +16,8 @@ class IsoMap;
 class PanelPlayer;
 class Player;
 
+struct Cell2D;
+
 class ScreenGame : public Screen
 {
 public:
@@ -32,6 +34,8 @@ private:
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
+
+    struct Cell2D * mPrevSel = nullptr;
 
     float mTimerCoins = TIME_COINS_GEN;
 };
