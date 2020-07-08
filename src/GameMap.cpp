@@ -55,7 +55,27 @@ enum UnitType : int
     P1_3UL1,
     P1_4UL1,
 
-    NUM_UNIT_TYPES
+    // PLAYER 2
+    P2_1UL1,
+    P2_2UL1,
+    P2_3UL1,
+    P2_4UL1,
+
+    // PLAYER 3
+    P3_1UL1,
+    P3_2UL1,
+    P3_3UL1,
+    P3_4UL1,
+
+    // PLAYER 4
+    P4_1UL1,
+    P4_2UL1,
+    P4_3UL1,
+    P4_4UL1,
+
+    NUM_UNIT_TYPES,
+
+    UNIT_NULL
 };
 
 GameMap::GameMap(IsoMap * isoMap, unsigned int rows, unsigned int cols)
@@ -220,8 +240,10 @@ void GameMap::NewUnit(const Cell2D * cell, Player * player)
     player->SumMoney(-cost);
 
     // update map layer
-    const int unitImg = P1_1UL1;    // TOOD
-    mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+    const int unitImg = DefineUnitType(gcell);
+
+    if(unitImg != UNIT_NULL)
+        mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
 }
 
 void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
@@ -303,6 +325,35 @@ int GameMap::DefineCellType(const GameMapCell & cell)
 
         case 3:
             type = P4L1 + cell.level;
+        break;
+
+        default:
+        break;
+    }
+
+    return type;
+}
+
+int GameMap::DefineUnitType(const GameMapCell & cell)
+{
+    int type = UNIT_NULL;
+
+    switch (cell.ownerId)
+    {
+        case 0:
+            type = P1_1UL1 + cell.units - 1;
+        break;
+
+        case 1:
+            type = P2_1UL1 + cell.units - 1;
+        break;
+
+        case 2:
+            type = P3_1UL1 + cell.units - 1;
+        break;
+
+        case 3:
+            type = P4_1UL1 + cell.units - 1;
         break;
 
         default:

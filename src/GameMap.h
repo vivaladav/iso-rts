@@ -36,6 +36,7 @@ public:
 
 private:
     int DefineCellType(const GameMapCell & cell);
+    int DefineUnitType(const GameMapCell & cell);
 
 private:
     std::vector<GameMapCell> mCells;

@@ -94,6 +94,9 @@ ScreenGame::ScreenGame(Game * game)
     // UNITS
     const std::vector<std::string> unitsImgs = {
                                                 "data/img/unit1-p1l1.png",
+                                                "data/img/unit2-p1l1.png",
+                                                "data/img/unit3-p1l1.png",
+                                                "data/img/unit4-p1l1.png",
                                                };
 
     mIsoMap->CreateLayer(unitsImgs);
