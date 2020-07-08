@@ -236,6 +236,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
               << " - INSIDE: "<< (insideMap ? "YES" : "NO") << std::endl;
 
     Player * player = GetGame()->GetPlayer(0);
+    PanelPlayer * panel = mPanelsPlayer[0];
 
     if(insideMap)
     {
@@ -243,41 +244,44 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
         const bool isLocalPlayer = owner == player->GetPlayerId();
 
-        PanelPlayer * panel = mPanelsPlayer[0];
+        const int unitsToMove = panel->GetNumUnitsToMove();
 
-        if(isLocalPlayer)
+        if(unitsToMove > 0)
         {
-            player->SetSelectedCell(c);
-            panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+            mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
 
-            IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
-            layerSel->MoveObject(mPrevSel->row, mPrevSel->col, c.row, c.col, NO_ALIGNMENT);
-            mIsoMap->SetLayerVisible(SELECTION, true);
-
-            // store selection cell
-            *mPrevSel = c;
+            panel->ClearNumUnitsToMove();
+            panel->ClearSelectedCell();
+            player->ClearSelectedCell();
+            mIsoMap->SetLayerVisible(SELECTION, false);
         }
         else
         {
-            const int unitsToMove = panel->GetNumUnitsToMove();
-
-            if(unitsToMove > 0)
+            if(isLocalPlayer)
             {
-                mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
-                panel->ClearNumUnitsToMove();
+                player->SetSelectedCell(c);
+                panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+
+                IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
+                layerSel->MoveObject(mPrevSel->row, mPrevSel->col, c.row, c.col, NO_ALIGNMENT);
+                mIsoMap->SetLayerVisible(SELECTION, true);
+
+                // store selection cell
+                *mPrevSel = c;
             }
-
-            player->ClearSelectedCell();
-            panel->ClearSelectedCell();
-
-            mIsoMap->SetLayerVisible(SELECTION, false);
+            else
+            {
+                player->ClearSelectedCell();
+                panel->ClearSelectedCell();
+                mIsoMap->SetLayerVisible(SELECTION, false);
+            }
         }
     }
     else
     {
         player->ClearSelectedCell();
-        mPanelsPlayer[0]->ClearSelectedCell();
-
+        panel->ClearNumUnitsToMove();
+        panel->ClearSelectedCell();
         mIsoMap->SetLayerVisible(SELECTION, false);
     }
 }

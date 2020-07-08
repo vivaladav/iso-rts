@@ -283,7 +283,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     if(!gcell1.walkable)
         return ;
 
-    // not owned cell
+    // free cell
     if(-1 == gcell1.ownerId)
     {
         gcell0.units -= numUnits;
@@ -299,6 +299,15 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         const int cellType = DefineCellType(gcell1);
         mIsoMap->SetCellType(ind1, cellType);
     }
+    // own cell
+    else if(gcell1.ownerId == player->GetPlayerId())
+    {
+        gcell0.units -= numUnits;
+        gcell1.units += numUnits;
+
+        mIsoMap->GetLayer(UNITS)->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+    }
+    // enemy cell
     else
     {
         // TODO move to owned cell
