@@ -35,7 +35,10 @@ Font * FontManager::GetFont(const char * file, int size)
     Font * font = new Font(file, size);
 
     if(!font->IsValid())
+    {
+        delete font;
         return nullptr;
+    }
 
     mFonts.emplace(key, font);
 
@@ -44,7 +47,7 @@ Font * FontManager::GetFont(const char * file, int size)
 
 void FontManager::ClearFonts()
 {
-    for(auto it : mFonts)
+    for(auto & it : mFonts)
         delete it.second;
 
     mFonts.clear();

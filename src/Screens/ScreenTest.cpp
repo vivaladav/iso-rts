@@ -107,7 +107,7 @@ void ScreenTest::TestSGui()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    Widget * container = new Widget();
+    Widget * container = new Widget;
     container->SetPosition(600, 20);
 
     FontManager * fm = FontManager::Instance();
