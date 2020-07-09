@@ -287,7 +287,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
     bool moved = false;
 
-    // free cell
+    // free (not owned by any player) cell
     if(-1 == gcell1.ownerId)
     {
         gcell0.units -= numUnits;
@@ -300,11 +300,9 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
         moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
 
+        // conquest cell
         if(moved)
         {
-            const int unitType = DefineUnitType(gcell1);
-            layer->ChangeObject(r1, c1, unitType);
-
             const int cellType = DefineCellType(gcell1);
             mIsoMap->SetCellType(ind1, cellType);
         }
@@ -312,14 +310,14 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     // own cell
     else if(gcell1.ownerId == player->GetPlayerId())
     {
+        // destination is not empty
+        if(gcell1.units)
+            return ;
+
         gcell0.units -= numUnits;
         gcell1.units += numUnits;
 
         moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
-
-        if(moved)
-        {
-        }
     }
     // enemy cell
     else
@@ -329,12 +327,14 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
     if(moved)
     {
+        // create image in src cell if any unit left
         if(gcell0.units)
         {
             const int unitImg0 = DefineUnitType(gcell0);
             layer->AddObject(r0, c0, unitImg0, NO_ALIGNMENT);
         }
 
+        // update image in dest cell
         const int unitType1 = DefineUnitType(gcell1);
         layer->ChangeObject(r1, c1, unitType1);
     }
