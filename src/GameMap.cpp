@@ -49,25 +49,37 @@ enum CellTypes : int
 
 enum UnitType : int
 {
-    // PLAYER 1
+    // PLAYER 1 - LEVEL 1
     P1_1UL1,
     P1_2UL1,
     P1_3UL1,
     P1_4UL1,
 
-    // PLAYER 2
+    // PLAYER 1 - LEVEL 2
+    P1_1UL2,
+    P1_2UL2,
+    P1_3UL2,
+    P1_4UL2,
+
+    // PLAYER 1 - LEVEL 3
+    P1_1UL3,
+    P1_2UL3,
+    P1_3UL3,
+    P1_4UL3,
+
+    // PLAYER 2 - LEVEL 1
     P2_1UL1,
     P2_2UL1,
     P2_3UL1,
     P2_4UL1,
 
-    // PLAYER 3
+    // PLAYER 3 - LEVEL 1
     P3_1UL1,
     P3_2UL1,
     P3_3UL1,
     P3_4UL1,
 
-    // PLAYER 4
+    // PLAYER 4 - LEVEL 1
     P4_1UL1,
     P4_2UL1,
     P4_3UL1,

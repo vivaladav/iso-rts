@@ -93,10 +93,21 @@ ScreenGame::ScreenGame(Game * game)
 
     // UNITS
     const std::vector<std::string> unitsImgs = {
+                                                // PLAYER - LEVEL 1
                                                 "data/img/unit1-p1l1.png",
                                                 "data/img/unit2-p1l1.png",
                                                 "data/img/unit3-p1l1.png",
                                                 "data/img/unit4-p1l1.png",
+                                                // PLAYER - LEVEL 2
+                                                "data/img/unit1-p1l2.png",
+                                                "data/img/unit2-p1l2.png",
+                                                "data/img/unit3-p1l2.png",
+                                                "data/img/unit4-p1l2.png",
+                                                // PLAYER - LEVEL 3
+                                                "data/img/unit1-p1l3.png",
+                                                "data/img/unit2-p1l3.png",
+                                                "data/img/unit3-p1l3.png",
+                                                "data/img/unit4-p1l3.png",
                                                };
 
     mIsoMap->CreateLayer(unitsImgs);
