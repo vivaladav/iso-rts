@@ -53,6 +53,7 @@ public:
     bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     bool MoveObject(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1,
                     ObjectAlignment alignment);
+    bool ChangeObject(unsigned int r, unsigned int c, int objIndex);
 
     void Render();
 

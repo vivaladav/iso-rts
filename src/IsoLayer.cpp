@@ -125,6 +125,26 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
     return true;
 }
 
+bool IsoLayer::ChangeObject(unsigned int r, unsigned int c, int objIndex)
+{
+    const unsigned int rows = mMap->GetNumRows();
+    const unsigned int cols = mMap->GetNumCols();
+
+    // ERROR out of bounds
+    if(!(r < rows && c < cols))
+        return false;
+
+    const unsigned int index = r * cols + c;
+
+    // ERROR cell empty
+    if(!mObjectsMap[index])
+        return false;
+
+    mObjectsMap[index]->imgIndex = objIndex;
+
+    return true;
+}
+
 void IsoLayer::Render()
 {
     for(auto * obj : mObjectsList)
