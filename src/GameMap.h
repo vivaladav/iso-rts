@@ -26,10 +26,10 @@ public:
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
 
-    void FortifyCell(const Cell2D * cell, Player * player);
-    void UpgradeCell(const Cell2D * cell, Player * player);
-    void NewUnit(const Cell2D * cell, Player * player);
-    void UpgradeUnit(const Cell2D * cell, Player * player);
+    bool FortifyCell(const Cell2D * cell, Player * player);
+    bool UpgradeCell(const Cell2D * cell, Player * player);
+    bool NewUnit(const Cell2D * cell, Player * player);
+    bool UpgradeUnit(const Cell2D * cell, Player * player);
 
     void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);
 

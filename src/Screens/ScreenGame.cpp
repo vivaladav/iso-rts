@@ -167,9 +167,10 @@ ScreenGame::ScreenGame(Game * game)
 
         const Cell2D * cell = player->GetSelectedCell();
 
-        gameMap->FortifyCell(cell, player);
+        const bool res = gameMap->FortifyCell(cell, player);
 
-        panel->UpdateButtonCellFortify(gameMap->GetCell(cell->row, cell->col).fortLevel);
+        if(res)
+            panel->UpdateButtonCellFortify(gameMap->GetCell(cell->row, cell->col).fortLevel);
     });
 
     panel->SetFunctionCellUpgrade([gameMap, panel, player]
@@ -178,9 +179,10 @@ ScreenGame::ScreenGame(Game * game)
 
         const Cell2D * cell = player->GetSelectedCell();
 
-        gameMap->UpgradeCell(cell, player);
+        const bool res = gameMap->UpgradeCell(cell, player);
 
-        panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
+        if(res)
+            panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
     });
 
     panel->SetFunctionNewUnit([gameMap, panel, player]
@@ -189,12 +191,15 @@ ScreenGame::ScreenGame(Game * game)
 
         const Cell2D * cell = player->GetSelectedCell();
 
-        gameMap->NewUnit(cell, player);
+        const bool res = gameMap->NewUnit(cell, player);
 
-        const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
+        if(res)
+        {
+            const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
 
-        panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
-        panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
+            panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
+            panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
+        }
     });
 
     panel->SetFunctionUnitsUpgrade([gameMap, panel, player]
@@ -203,12 +208,15 @@ ScreenGame::ScreenGame(Game * game)
 
         const Cell2D * cell = player->GetSelectedCell();
 
-        gameMap->UpgradeUnit(cell, player);
+        bool res = gameMap->UpgradeUnit(cell, player);
 
-        const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
+        if(res)
+        {
+            const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
 
-        panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
-        panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
+            panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
+            panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
+        }
     });
 }
 

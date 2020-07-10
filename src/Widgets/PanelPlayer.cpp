@@ -211,8 +211,8 @@ void PanelPlayer::UpdateButtonNewUnit(int num, int level)
         mButtonNewUnit->SetEnabled(true);
     }
 
-    if(num > 0)
-        mPanelUnits->SetVisible(true);
+    const bool hasUnits = num > 0;
+    mPanelUnits->SetVisible(hasUnits);
 }
 
 void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)

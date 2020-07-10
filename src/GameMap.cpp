@@ -156,27 +156,27 @@ void GameMap::SetHomeCell(Game * game)
     }
 }
 
-void GameMap::FortifyCell(const Cell2D * cell, Player * player)
+bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
     const unsigned int c = static_cast<unsigned int>(cell->col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
-        return ;
+        return false;
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or max level cell -> exit
     if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_FORT_LEVEL == gcell.fortLevel)
-        return ;
+        return false;
 
     // check if player has enough money
     const int cost = COST_CELL_FORT[gcell.fortLevel];
 
     if(cost > player->GetMoney())
-        return ;
+        return false;
 
     // all good -> upgrade
     ++(gcell.fortLevel);
@@ -186,29 +186,31 @@ void GameMap::FortifyCell(const Cell2D * cell, Player * player)
 
     // update map layer
     mIsoMap->GetLayer(FORTIFICATIONS)->ReplaceObject(r, c, gcell.fortLevel - 1, NO_ALIGNMENT);
+
+    return true;
 }
 
-void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
+bool GameMap::UpgradeCell(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
     const unsigned int c = static_cast<unsigned int>(cell->col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
-        return ;
+        return false;
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or max level cell -> exit
     if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_LEVEL == gcell.level)
-        return ;
+        return false;
 
     // check if player has enough money
     const int cost = COST_CELL_UPGRADE[gcell.level];
 
     if(cost > player->GetMoney())
-        return ;
+        return false;
 
     // all good -> upgrade
     ++(gcell.level);
@@ -220,29 +222,31 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
     // update map
     const int cellType = DefineCellType(gcell);
     mIsoMap->SetCellType(ind, cellType);
+
+    return true;
 }
 
-void GameMap::NewUnit(const Cell2D * cell, Player * player)
+bool GameMap::NewUnit(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
     const unsigned int c = static_cast<unsigned int>(cell->col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
-        return ;
+        return false;
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or max level cell -> exit
     if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_UNITS == gcell.units)
-        return ;
+        return false;
 
     // check if player has enough money
     const int cost = COST_NEW_UNIT[gcell.unitsLevel];
 
     if(cost > player->GetMoney())
-        return ;
+        return false;
 
     // all good -> upgrade
     ++(gcell.units);
@@ -256,29 +260,31 @@ void GameMap::NewUnit(const Cell2D * cell, Player * player)
 
     if(unitImg != UNIT_NULL)
         mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+
+    return true;
 }
 
-void GameMap::UpgradeUnit(const Cell2D * cell, Player * player)
+bool GameMap::UpgradeUnit(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
     const unsigned int c = static_cast<unsigned int>(cell->col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
-        return ;
+        return false;
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or max level units or no units -> exit
     if(gcell.ownerId != player->GetPlayerId() || MAX_UNITS_LEVEL == gcell.unitsLevel || !gcell.units)
-        return ;
+        return false;
 
     // check if player has enough money
     const int cost = COST_UNIT_UPGRADE[gcell.unitsLevel] * gcell.units;
 
     if(cost > player->GetMoney())
-        return ;
+        return false;
 
     // all good -> upgrade
     ++(gcell.unitsLevel);
@@ -291,6 +297,8 @@ void GameMap::UpgradeUnit(const Cell2D * cell, Player * player)
 
     if(unitImg != UNIT_NULL)
         mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+
+    return true;
 }
 
 void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
