@@ -134,6 +134,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
+    UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
 
     mPanelCell->SetVisible(true);
 }
@@ -187,7 +188,7 @@ void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
     }
 }
 
-void PanelPlayer::UpdateButtonNewUnit(int numUnits, int level)
+void PanelPlayer::UpdateButtonNewUnit(int num, int level)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -196,7 +197,7 @@ void PanelPlayer::UpdateButtonNewUnit(int numUnits, int level)
     Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
-    if(numUnits >= MAX_CELL_UNITS)
+    if(num >= MAX_CELL_UNITS)
     {
         mButtonNewUnit->SetLabel("NEW UNIT", fontButton);
         mButtonNewUnit->SetEnabled(false);
@@ -210,8 +211,32 @@ void PanelPlayer::UpdateButtonNewUnit(int numUnits, int level)
         mButtonNewUnit->SetEnabled(true);
     }
 
-    if(numUnits > 0)
+    if(num > 0)
         mPanelUnits->SetVisible(true);
+}
+
+void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
+{
+    using namespace lib::graphic;
+    using namespace lib::sgui;
+
+    FontManager * fm = FontManager::Instance();
+    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
+    fontButton->SetStyle(Font::BOLD);
+
+    if(level >= MAX_UNITS_LEVEL)
+    {
+        mButtonUnitsUpgrade->SetLabel("UPGRADE", fontButton);
+        mButtonUnitsUpgrade->SetEnabled(false);
+    }
+    else
+    {
+        std::ostringstream s;
+        s << "UPGRADE (" << COST_UNIT_UPGRADE[level] * num << ")";
+
+        mButtonUnitsUpgrade->SetLabel(s.str().c_str(), fontButton);
+        mButtonUnitsUpgrade->SetEnabled(true);
+    }
 }
 
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
@@ -236,7 +261,7 @@ void PanelPlayer::SetFunctionUnitsMove(const std::function<void()> & f)
 
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
 {
-
+    mButtonUnitsUpgrade->SetOnClickFunction(f);
 }
 
 std::string PanelPlayer::MakeStrCells(int cells)

@@ -258,6 +258,41 @@ void GameMap::NewUnit(const Cell2D * cell, Player * player)
         mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
 }
 
+void GameMap::UpgradeUnit(const Cell2D * cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return ;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // not own cell or max level units or no units -> exit
+    if(gcell.ownerId != player->GetPlayerId() || MAX_UNITS_LEVEL == gcell.unitsLevel || !gcell.units)
+        return ;
+
+    // check if player has enough money
+    const int cost = COST_UNIT_UPGRADE[gcell.unitsLevel] * gcell.units;
+
+    if(cost > player->GetMoney())
+        return ;
+
+    // all good -> upgrade
+    ++(gcell.unitsLevel);
+
+    // update player
+    player->SumMoney(-cost);
+
+    // update map layer
+    const int unitImg = DefineUnitType(gcell);
+
+    if(unitImg != UNIT_NULL)
+        mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+}
+
 void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
 {
     const unsigned int r0 = static_cast<unsigned int>(start->row);
@@ -306,6 +341,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         gcell1.units += numUnits;
 
         gcell1.ownerId = gcell0.ownerId;
+        gcell1.unitsLevel = gcell0.unitsLevel;
 
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
@@ -329,6 +365,8 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         gcell0.units -= numUnits;
         gcell1.units += numUnits;
 
+        gcell1.unitsLevel = gcell0.unitsLevel;
+
         moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
     }
     // enemy cell
@@ -345,6 +383,9 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             const int unitImg0 = DefineUnitType(gcell0);
             layer->AddObject(r0, c0, unitImg0, NO_ALIGNMENT);
         }
+        // reset unit level of empty cells
+        else
+            gcell0.unitsLevel = 0;
 
         // update image in dest cell
         const int unitType1 = DefineUnitType(gcell1);
@@ -388,7 +429,7 @@ int GameMap::DefineUnitType(const GameMapCell & cell)
     switch (cell.ownerId)
     {
         case 0:
-            type = P1_1UL1 + cell.units - 1;
+            type = P1_1UL1 + (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
         break;
 
         case 1:
