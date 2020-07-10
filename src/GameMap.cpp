@@ -366,9 +366,13 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     // own cell
     else if(gcell1.ownerId == player->GetPlayerId())
     {
-        // destination is not empty
-        if(gcell1.units)
+        /*
+
+        if(gcell1.units && )
             return ;
+
+        if(gcell1.units + numUnits > MAX_CELL_UNITS)
+            numUnits = MAX_CELL_UNITS - gcell1.units;
 
         gcell0.units -= numUnits;
         gcell1.units += numUnits;
@@ -376,6 +380,51 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         gcell1.unitsLevel = gcell0.unitsLevel;
 
         moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+        */
+
+        // target cell has already units
+        if(gcell1.units)
+        {
+            // destination is full or has different level units
+            if(gcell1.units == MAX_CELL_UNITS || (gcell0.unitsLevel != gcell1.unitsLevel))
+                return ;
+
+            // cap units moved to max allowed per cell
+            if(gcell1.units + numUnits > MAX_CELL_UNITS)
+                numUnits = MAX_CELL_UNITS - gcell1.units;
+
+            gcell0.units -= numUnits;
+            gcell1.units += numUnits;
+
+            // update dest object
+            const int unitType1 = DefineUnitType(gcell1);
+            layer->ChangeObject(r1, c1, unitType1);
+
+            // update src object if any unit left
+            if(gcell0.units)
+            {
+                const int unitType0 = DefineUnitType(gcell0);
+                layer->ChangeObject(r0, c0, unitType0);
+            }
+            // otherwise, clear src object
+            else
+            {
+                gcell0.unitsLevel = 0;
+                layer->ClearObject(r0, c0);
+            }
+
+            // done here
+            return ;
+        }
+        else
+        {
+            gcell0.units -= numUnits;
+            gcell1.units += numUnits;
+
+            gcell1.unitsLevel = gcell0.unitsLevel;
+
+            moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+        }
     }
     // enemy cell
     else
