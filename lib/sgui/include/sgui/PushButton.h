@@ -32,7 +32,7 @@ public:
     void SetOnClickFunction(const std::function<void()> & f);
 
 private:
-    void OnPositionChanged() override;
+    void HandlePositionChanged() override;
 
     void PositionLabel();
 

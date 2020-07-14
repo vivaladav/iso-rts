@@ -75,7 +75,7 @@ void Label::CreateText()
     SetSize(mTxt->GetWidth(), mTxt->GetHeight());
 }
 
-void Label::OnPositionChanged()
+void Label::HandlePositionChanged()
 {
     mTxt->SetPosition(GetScreenX(), GetScreenY());
 }

@@ -52,7 +52,7 @@ protected:
 private:
     void SetScreenPosition(int x, int y);
 
-    virtual void OnPositionChanged();
+    virtual void HandlePositionChanged();
 
     virtual void HandleStateEnabled();
     virtual void HandleStateDisabled();
@@ -66,7 +66,7 @@ private:
 
     virtual void OnRender();
 
-    void OnParentPositionChanged(int dx, int dy);
+    void HandleParentPositionChanged(int dx, int dy);
     void PropagateParentPositionChanged(int dx, int dy);
 
 private:

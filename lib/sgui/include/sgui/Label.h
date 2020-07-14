@@ -32,7 +32,7 @@ public:
 private:
     void CreateText();
 
-    void OnPositionChanged() override;
+    void HandlePositionChanged() override;
 
     void OnRender() override;
 

@@ -48,12 +48,12 @@ void WidgetContainer::RemoveChild(Widget * w)
     mWidgets.erase(res);
 }
 
-void WidgetContainer::OnChildEnableChanged(Widget * /*child*/)
+void WidgetContainer::HandleChildEnableChanged(Widget * /*child*/)
 {
     // TODO - handle enable changed in child
 }
 
-void WidgetContainer::OnChildVisibleChanged(Widget * /*child*/)
+void WidgetContainer::HandleChildVisibleChanged(Widget * /*child*/)
 {
     // TODO - handle visible changed in child
 }

@@ -70,7 +70,7 @@ void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b
 
 void PushButton::SetLabelColor(unsigned int color) { mLabel->SetColor(color); }
 
-void PushButton::OnPositionChanged()
+void PushButton::HandlePositionChanged()
 {
     mBg->SetPosition(GetScreenX(), GetScreenY());
 

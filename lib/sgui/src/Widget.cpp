@@ -65,9 +65,9 @@ void Widget::SetEnabled(bool val)
         HandleStateDisabled();
 
     if(mParent)
-        mParent->OnChildEnableChanged(this);
+        mParent->HandleChildEnableChanged(this);
     else
-        mStage->OnChildEnableChanged(this);
+        mStage->HandleChildEnableChanged(this);
 }
 
 void Widget::SetVisible(bool val)
@@ -78,9 +78,9 @@ void Widget::SetVisible(bool val)
     mVisible = val;
 
     if(mParent)
-        mParent->OnChildVisibleChanged(this);
+        mParent->HandleChildVisibleChanged(this);
     else
-        mStage->OnChildVisibleChanged(this);
+        mStage->HandleChildVisibleChanged(this);
 }
 
 void Widget::SetSize(int w, int h)
@@ -92,13 +92,9 @@ void Widget::SetSize(int w, int h)
         mParent->UpdateSize();
 }
 
-void Widget::HandleMouseOver()
-{
-}
+void Widget::HandleMouseOver() { }
 
-void Widget::HandleMouseOut()
-{
-}
+void Widget::HandleMouseOut() { }
 
 // current behavior for Widgets is to grow according to children position and size
 void Widget::UpdateSize()
@@ -177,10 +173,10 @@ void Widget::SetScreenPosition(int x, int y)
     mScreenX = x;
     mScreenY = y;
 
-    OnPositionChanged();
+    HandlePositionChanged();
 }
 
-void Widget::OnPositionChanged() { }
+void Widget::HandlePositionChanged() { }
 
 void Widget::HandleStateEnabled() { }
 void Widget::HandleStateDisabled() { }
@@ -217,7 +213,7 @@ void Widget::SetMouseOut()
 
 void Widget::OnRender() { }
 
-void Widget::OnParentPositionChanged(int dx, int dy)
+void Widget::HandleParentPositionChanged(int dx, int dy)
 {
     SetScreenPosition(mScreenX + dx, mScreenY + dy);
 }
@@ -226,7 +222,7 @@ void Widget::PropagateParentPositionChanged(int dx, int dy)
 {
     for(Widget * w : mWidgets)
     {
-        w->OnParentPositionChanged(dx, dy);
+        w->HandleParentPositionChanged(dx, dy);
         w->PropagateParentPositionChanged(dx, dy);
     }
 }

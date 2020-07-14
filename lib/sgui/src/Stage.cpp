@@ -27,11 +27,6 @@ void Stage::Destroy()
     mInstance = nullptr;
 }
 
-void Stage::Render()
-{
-    PropagateRender();
-}
-
 void Stage::OnMouseButtonDown(core::MouseButtonEvent & event)
 {
     PropagateMouseButtonDown(event);

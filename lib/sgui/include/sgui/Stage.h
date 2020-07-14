@@ -49,5 +49,7 @@ inline Stage * Stage::Instance() { return mInstance; }
 inline graphic::Font * Stage::GetDefaultFont() { return mDefaultFont; }
 inline void Stage::SetDefaultFont(graphic::Font * font) { mDefaultFont = font; }
 
+inline void Stage::Render() { PropagateRender(); }
+
 } // namespace sgui
 } // namespace lib
