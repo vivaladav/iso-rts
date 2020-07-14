@@ -54,6 +54,9 @@ private:
 
     virtual void OnPositionChanged();
 
+    virtual void HandleStateEnabled();
+    virtual void HandleStateDisabled();
+
     virtual void HandleMouseButtonDown(core::MouseButtonEvent & event);
     virtual void HandleMouseButtonUp(core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(core::MouseMotionEvent & event);

@@ -59,6 +59,11 @@ void Widget::SetEnabled(bool val)
 
     mEnabled = val;
 
+    if(val)
+        HandleStateEnabled();
+    else
+        HandleStateDisabled();
+
     if(mParent)
         mParent->OnChildEnableChanged(this);
     else
@@ -176,6 +181,9 @@ void Widget::SetScreenPosition(int x, int y)
 }
 
 void Widget::OnPositionChanged() { }
+
+void Widget::HandleStateEnabled() { }
+void Widget::HandleStateDisabled() { }
 
 void Widget::HandleMouseButtonDown(core::MouseButtonEvent &) { }
 void Widget::HandleMouseButtonUp(core::MouseButtonEvent &) { }
