@@ -18,6 +18,8 @@ PushButton::PushButton(Widget * parent)
     , mOnClick([]{})
     , mBg(new graphic::DummyRenderable)
     , mLabel(new graphic::DummyRenderable)
+    , mCurrBg(mBg)
+    , mCurrLabel(mLabel)
 {
 }
 
@@ -34,11 +36,8 @@ void PushButton::SetBackground(const char * file)
     delete mBg;
 
     mBg = new graphic::Image(file); // TODO check if Image is valid after creation and fallback on dummy
-    mBg->SetPosition(GetScreenX(), GetScreenY());
 
-    const int w = mBg->GetWidth();
-    const int h = mBg->GetHeight();
-    SetSize(w, h);
+    SetCurrBg(mBg);
 }
 
 void PushButton::SetLabel(const char * text)
@@ -60,29 +59,48 @@ void PushButton::SetLabel(const char * text, graphic::Font * font)
     else
         mLabel = new graphic::Text(text, font);
 
-    PositionLabel();
+    SetCurrLabel(mLabel);
 }
 
 void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-    mLabel->SetColor(r, g, b, a);
+    mCurrLabel->SetColor(r, g, b, a);
 }
 
-void PushButton::SetLabelColor(unsigned int color) { mLabel->SetColor(color); }
+void PushButton::SetLabelColor(unsigned int color) { mCurrLabel->SetColor(color); }
+
+
+void PushButton::SetCurrBg(graphic::Renderable * bg)
+{
+    mCurrBg = bg;
+
+    mCurrBg->SetPosition(GetScreenX(), GetScreenY());
+
+    const int w = mCurrBg->GetWidth();
+    const int h = mCurrBg->GetHeight();
+    SetSize(w, h);
+}
+
+void PushButton::SetCurrLabel(graphic::Renderable * label)
+{
+    mCurrLabel = label;
+
+    PositionLabel();
+}
 
 void PushButton::HandlePositionChanged()
 {
-    mBg->SetPosition(GetScreenX(), GetScreenY());
+    mCurrBg->SetPosition(GetScreenX(), GetScreenY());
 
     PositionLabel();
 }
 
 void PushButton::PositionLabel()
 {
-    const int x = GetScreenX() + (GetWidth() - mLabel->GetWidth()) * 0.5f;
-    const int y = GetScreenY() + (GetHeight() - mLabel->GetHeight()) * 0.5f;
+    const int x = GetScreenX() + (GetWidth() - mCurrLabel->GetWidth()) * 0.5f;
+    const int y = GetScreenY() + (GetHeight() - mCurrLabel->GetHeight()) * 0.5f;
 
-    mLabel->SetPosition(x, y);
+    mCurrLabel->SetPosition(x, y);
 }
 
 void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
@@ -94,9 +112,9 @@ void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
 
 void PushButton::OnRender()
 {
-    mBg->Render();
+    mCurrBg->Render();
 
-    mLabel->Render();
+    mCurrLabel->Render();
 }
 
 } // namespace sgui

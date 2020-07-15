@@ -31,6 +31,10 @@ public:
 
     void SetOnClickFunction(const std::function<void()> & f);
 
+protected:
+    void SetCurrBg(graphic::Renderable * bg);
+    void SetCurrLabel(graphic::Renderable * label);
+
 private:
     void HandlePositionChanged() override;
 
@@ -43,8 +47,13 @@ private:
 private:
     std::function<void()> mOnClick;
 
+    // actual objects created by SetBackground and SetLabel
     graphic::Renderable * mBg = nullptr;
     graphic::Renderable * mLabel = nullptr;
+
+    // pointers to the current active objects
+    graphic::Renderable * mCurrBg = nullptr;
+    graphic::Renderable * mCurrLabel = nullptr;
 };
 
 inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
