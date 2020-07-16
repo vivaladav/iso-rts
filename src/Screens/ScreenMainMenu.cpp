@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "States/StatesIds.h"
+#include "Widgets/ButtonMainMenu.h"
 
 #include <graphic/Renderer.h>
 #include <sgui/PushButton.h>
@@ -24,10 +25,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const int VMARGIN = 100;
 
     // -- BUTTON NEW GAME --
-    PushButton * button = new PushButton(panel);
-    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
-    button->SetLabel("NEW GAME");
-    button->SetLabelColor(0x183929FF);
+    ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panel);
 
     button->SetOnClickFunction([this]
     {
@@ -41,10 +39,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    button = new PushButton(panel);
-    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
-    button->SetLabel("EXIT");
-    button->SetLabelColor(0x183929FF);
+    button = new ButtonMainMenu("EXIT", panel);
 
     button->SetOnClickFunction([this] { GetGame()->Exit(); });
 

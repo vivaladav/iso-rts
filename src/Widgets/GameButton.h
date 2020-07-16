@@ -6,11 +6,9 @@
 
 namespace lib
 {
-    namespace graphic
-    {
-        class Image;
-    }
+    namespace graphic { class Image; }
 }
+
 namespace game
 {
 
@@ -28,12 +26,18 @@ public:
     };
 
 public:
+    GameButton(const char * text, lib::sgui::Widget * parent);
+
     GameButton(const char * text,
                const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
                lib::sgui::Widget * parent);
 
     ~GameButton();
+
+    void SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
+                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
+                 int state);
 
 protected:
     void HandleStateEnabled() override;
@@ -45,7 +49,6 @@ protected:
     void HandleMouseOver() override;
     void HandleMouseOut() override;
 
-private:
     void SetElements(int index);
 
 private:
