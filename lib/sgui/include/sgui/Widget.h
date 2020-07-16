@@ -44,15 +44,7 @@ public:
 protected:
     void SetSize(int w, int h);
 
-    virtual void HandleMouseOver();
-    virtual void HandleMouseOut();
-
     virtual void UpdateSize();
-
-private:
-    void SetScreenPosition(int x, int y);
-
-    virtual void HandlePositionChanged();
 
     virtual void HandleStateEnabled();
     virtual void HandleStateDisabled();
@@ -60,6 +52,15 @@ private:
     virtual void HandleMouseButtonDown(core::MouseButtonEvent & event);
     virtual void HandleMouseButtonUp(core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(core::MouseMotionEvent & event);
+
+    virtual void HandleMouseOver();
+    virtual void HandleMouseOut();
+
+private:
+    void SetScreenPosition(int x, int y);
+
+    virtual void HandlePositionChanged();
+
 
     void SetMouseOver();
     void SetMouseOut();

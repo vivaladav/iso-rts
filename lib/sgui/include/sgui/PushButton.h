@@ -35,12 +35,12 @@ protected:
     void SetCurrBg(graphic::Renderable * bg);
     void SetCurrLabel(graphic::Renderable * label);
 
+    void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
+
 private:
     void HandlePositionChanged() override;
 
     void PositionLabel();
-
-    void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
 
     void OnRender() override;
 
