@@ -3,6 +3,7 @@
 #include "sgui/Widget.h"
 
 #include <functional>
+#include <string>
 
 namespace lib
 {
@@ -31,6 +32,8 @@ public:
 
     void SetOnClickFunction(const std::function<void()> & f);
 
+    const std::string & GetText() const;
+
 protected:
     void SetCurrBg(graphic::Renderable * bg);
     void SetCurrLabel(graphic::Renderable * label);
@@ -45,6 +48,8 @@ private:
     void OnRender() override;
 
 private:
+    std::string mText;
+
     std::function<void()> mOnClick;
 
     graphic::Font * mFontLabel = nullptr;
@@ -58,9 +63,9 @@ private:
     graphic::Renderable * mCurrLabel = nullptr;
 };
 
-inline void PushButton::SetLabelFont(graphic::Font * font) { mFontLabel = font; }
-
 inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
+
+inline const std::string & PushButton::GetText() const { return mText; }
 
 } // namespace sgui
 } // namespace lib

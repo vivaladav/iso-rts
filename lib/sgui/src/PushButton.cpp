@@ -43,13 +43,19 @@ void PushButton::SetBackground(const char * file)
 
 void PushButton::SetLabel(const char * text)
 {
+    const std::string txt = text;
+
+    // same text -> nothing to do
+    if(txt == mText)
+        return ;
+
+    mText = text;
+
     const unsigned int col = mCurrLabel->GetColor();
 
     delete mLabel;
 
-    std::string t(text);
-
-    if(t.empty())
+    if(mText.empty())
         mLabel = new graphic::DummyRenderable;
     else
         mLabel = new graphic::Text(text, mFontLabel);
@@ -66,6 +72,31 @@ void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b
 
 void PushButton::SetLabelColor(unsigned int color) { mCurrLabel->SetColor(color); }
 
+void PushButton::SetLabelFont(graphic::Font * font)
+{
+    if(!font)
+        return ;
+
+    // same font -> nothing to do
+    if(font == mFontLabel)
+        return ;
+
+    mFontLabel = font;
+
+    // when changing font, update the label if already set
+    if(!mText.empty())
+    {
+        const unsigned int col = mCurrLabel->GetColor();
+
+        delete mLabel;
+
+        mLabel = new graphic::Text(mText.c_str(), mFontLabel);
+
+        mLabel->SetColor(col);
+
+        SetCurrLabel(mLabel);
+    }
+}
 
 void PushButton::SetCurrBg(graphic::Renderable * bg)
 {
