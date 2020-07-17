@@ -15,6 +15,11 @@ Player::Player(const char * name, int pid)
 {
 }
 
+Player::~Player()
+{
+    delete mSelectedCell;
+}
+
 void Player::SumCells(int val)
 {
     mNumCells += val;

@@ -12,6 +12,7 @@ class Player
 {
 public:
     Player(const char * name, int pid);
+    ~Player();
 
     const std::string & GetName() const;
 
