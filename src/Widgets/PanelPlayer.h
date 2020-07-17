@@ -7,16 +7,13 @@
 
 namespace lib
 {
-    namespace sgui
-    {
-        class Label;
-        class PushButton;
-    }
+    namespace sgui { class Label; }
 }
 
 namespace game
 {
 
+class ButtonPanelPlayer;
 class ButtonsPanel;
 class Player;
 
@@ -69,12 +66,12 @@ private:
     lib::sgui::Label * mLabelCoins = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
-    lib::sgui::PushButton * mButtonCellFortify = nullptr;
-    lib::sgui::PushButton * mButtonCellUpgrade = nullptr;
-    lib::sgui::PushButton * mButtonNewUnit = nullptr;
+    ButtonPanelPlayer * mButtonCellFortify = nullptr;
+    ButtonPanelPlayer * mButtonCellUpgrade = nullptr;
+    ButtonPanelPlayer * mButtonNewUnit = nullptr;
 
-    lib::sgui::PushButton * mButtonUnitsMove = nullptr;
-    lib::sgui::PushButton * mButtonUnitsUpgrade = nullptr;
+    ButtonPanelPlayer * mButtonUnitsMove = nullptr;
+    ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
 
     int mNumUnitToMove = 0;
 };

@@ -3,13 +3,13 @@
 #include "GameConstants.h"
 #include "GameMapCell.h"
 #include "Player.h"
+#include "Widgets/ButtonPanelPlayer.h"
 #include "Widgets/ButtonsPanel.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <sgui/Label.h>
-#include <sgui/PushButton.h>
 
 #include <iomanip>
 #include <iostream>
@@ -309,23 +309,17 @@ void PanelPlayer::CreatePanelCell()
 
     const int marginY = 30;
 
-    mButtonNewUnit = new PushButton(mPanelCell);
-    mButtonNewUnit->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonNewUnit->SetLabelColor(0xF0F0F0FF);
+    mButtonNewUnit = new ButtonPanelPlayer(mPanelCell);
     mButtonNewUnit->SetY(buttonY);
 
     buttonY += mButtonNewUnit->GetHeight() + marginY;
 
-    mButtonCellFortify = new PushButton(mPanelCell);
-    mButtonCellFortify->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonCellFortify->SetLabelColor(0xF0F0F0FF);
+    mButtonCellFortify = new ButtonPanelPlayer(mPanelCell);
     mButtonCellFortify->SetY(buttonY);
 
     buttonY += mButtonCellFortify->GetHeight() + marginY;
 
-    mButtonCellUpgrade = new PushButton(mPanelCell);
-    mButtonCellUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
-    mButtonCellUpgrade->SetLabelColor(0xF0F0F0FF);
+    mButtonCellUpgrade = new ButtonPanelPlayer(mPanelCell);
     mButtonCellUpgrade->SetY(buttonY);
 }
 
@@ -351,10 +345,8 @@ void PanelPlayer::CreatePanelUnits()
     Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
     fontButton->SetStyle(Font::BOLD);
 
-    mButtonUnitsMove = new PushButton(mPanelUnits);
-    mButtonUnitsMove->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonUnitsMove = new ButtonPanelPlayer(mPanelUnits);
     mButtonUnitsMove->SetLabel("MOVE", fontButton);
-    mButtonUnitsMove->SetLabelColor(0xF0F0F0FF);
     mButtonUnitsMove->SetY(buttonY);
 
     mButtonUnitsMove->SetOnClickFunction([this]
@@ -367,10 +359,8 @@ void PanelPlayer::CreatePanelUnits()
 
     buttonY += mButtonUnitsMove->GetHeight() + marginY;
 
-    mButtonUnitsUpgrade = new PushButton(mPanelUnits);
-    mButtonUnitsUpgrade->SetBackground("data/img/buttons/player_ui-01.png");
+    mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
     mButtonUnitsUpgrade->SetLabel("UPGRADE (10)", fontButton);
-    mButtonUnitsUpgrade->SetLabelColor(0xF0F0F0FF);
     mButtonUnitsUpgrade->SetY(buttonY);
 }
 

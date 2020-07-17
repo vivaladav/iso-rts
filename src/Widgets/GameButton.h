@@ -26,6 +26,8 @@ public:
     };
 
 public:
+    GameButton(lib::sgui::Widget * parent);
+
     GameButton(const char * text, lib::sgui::Widget * parent);
 
     GameButton(const char * text,

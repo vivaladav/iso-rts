@@ -6,6 +6,11 @@
 namespace game
 {
 
+GameButton::GameButton(lib::sgui::Widget * parent)
+    : lib::sgui::PushButton(parent)
+{
+}
+
 GameButton::GameButton(const char * text, lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
 {
@@ -74,11 +79,17 @@ void GameButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
 
 void GameButton::HandleMouseOver()
 {
+    if(!IsEnabled())
+        return ;
+
     SetElements(MOUSE_OVER);
 }
 
 void GameButton::HandleMouseOut()
 {
+    if(!IsEnabled())
+        return ;
+
     SetElements(NORMAL);
 }
 
