@@ -1,6 +1,7 @@
 #include "Screens/ScreenTest.h"
 
 #include "Game.h"
+#include "Widgets/ButtonMainMenu.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
@@ -8,7 +9,6 @@
 #include <graphic/Image.h>
 #include <graphic/Text.h>
 #include <sgui/Label.h>
-#include <sgui/PushButton.h>
 #include <sgui/Stage.h>
 
 #include <iostream>
@@ -116,10 +116,7 @@ void ScreenTest::TestSGui()
     font->SetStyle(Font::BOLD);
     Label * label = new Label("PUSH BUTTON", font, container);
 
-    PushButton * button = new PushButton(container);
-    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
-    button->SetLabel("BUTTON 1");
-    button->SetLabelColor(0x183929FF);
+    ButtonMainMenu * button = new ButtonMainMenu("BUTTON 1", container);
     button->SetY(label->GetHeight() + 20);
 
     font->SetStyle(Font::NORMAL);
@@ -132,10 +129,7 @@ void ScreenTest::TestSGui()
         std::cout << "button 1 clicked" << std::endl;
     });
 
-    button = new PushButton(container);
-    button->SetBackground("data/img/buttons/main_menu-bg-01.png");
-    button->SetLabel("BUTTON 2");
-    button->SetLabelColor(0x183929FF);
+    button = new ButtonMainMenu("BUTTON 2", container);
     button->SetY(label->GetY() + 50);
 
     button->SetOnClickFunction([label]
@@ -143,6 +137,12 @@ void ScreenTest::TestSGui()
         label->SetText("button 2 clicked");
         std::cout << "button 2 clicked" << std::endl;
     });
+
+    const int buttonY = button->GetY() + button->GetHeight() + 50;
+
+    button = new ButtonMainMenu("BUTTON 3", container);
+    button->SetEnabled(false);
+    button->SetY(buttonY);
 }
 
 } // namespace game

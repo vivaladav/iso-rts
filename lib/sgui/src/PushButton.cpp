@@ -43,11 +43,6 @@ void PushButton::SetBackground(const char * file)
 
 void PushButton::SetLabel(const char * text)
 {
-    SetLabel(text, mFontLabel);
-}
-
-void PushButton::SetLabel(const char * text, graphic::Font * font)
-{
     const unsigned int col = mCurrLabel->GetColor();
 
     delete mLabel;
@@ -57,7 +52,7 @@ void PushButton::SetLabel(const char * text, graphic::Font * font)
     if(t.empty())
         mLabel = new graphic::DummyRenderable;
     else
-        mLabel = new graphic::Text(text, font);
+        mLabel = new graphic::Text(text, mFontLabel);
 
     mLabel->SetColor(col);
 
