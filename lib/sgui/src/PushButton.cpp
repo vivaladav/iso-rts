@@ -16,6 +16,7 @@ namespace sgui
 PushButton::PushButton(Widget * parent)
     : Widget(parent)
     , mOnClick([]{})
+    , mFontLabel(Stage::Instance()->GetDefaultFont())
     , mBg(new graphic::DummyRenderable)
     , mLabel(new graphic::DummyRenderable)
     , mCurrBg(mBg)
@@ -42,14 +43,13 @@ void PushButton::SetBackground(const char * file)
 
 void PushButton::SetLabel(const char * text)
 {
-    // TODO proper font handling
-    graphic::Font * font = Stage::Instance()->GetDefaultFont();
-
-    SetLabel(text, font);
+    SetLabel(text, mFontLabel);
 }
 
 void PushButton::SetLabel(const char * text, graphic::Font * font)
 {
+    const unsigned int col = mCurrLabel->GetColor();
+
     delete mLabel;
 
     std::string t(text);
@@ -58,6 +58,8 @@ void PushButton::SetLabel(const char * text, graphic::Font * font)
         mLabel = new graphic::DummyRenderable;
     else
         mLabel = new graphic::Text(text, font);
+
+    mLabel->SetColor(col);
 
     SetCurrLabel(mLabel);
 }

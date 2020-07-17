@@ -11,20 +11,11 @@ GameButton::GameButton(lib::sgui::Widget * parent)
 {
 }
 
-GameButton::GameButton(const char * text, lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
-{
-    SetLabel(text);
-}
-
-GameButton::GameButton(const char * text,
-                       const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
+GameButton::GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                        const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
                        lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
 {
-    SetLabel(text);
-
     SetData(bgFiles, labelsColor, NORMAL);
 }
 

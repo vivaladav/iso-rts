@@ -141,16 +141,9 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 
 void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
-
-    FontManager * fm = FontManager::Instance();
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
-
     if(fortLevel >= MAX_CELL_FORT_LEVEL)
     {
-        mButtonCellFortify->SetLabel("FORTIFY", fontButton);
+        mButtonCellFortify->SetLabel("FORTIFY");
         mButtonCellFortify->SetEnabled(false);
     }
     else
@@ -158,24 +151,16 @@ void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
         std::ostringstream s;
         s << "FORTIFY (" << COST_CELL_FORT[fortLevel] << ")";
 
-        mButtonCellFortify->SetLabel(s.str().c_str(), fontButton);
+        mButtonCellFortify->SetLabel(s.str().c_str());
         mButtonCellFortify->SetEnabled(true);
-
     }
 }
 
 void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
-
-    FontManager * fm = FontManager::Instance();
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
-
     if(cellLevel >= MAX_CELL_LEVEL)
     {
-        mButtonCellUpgrade->SetLabel("UPGRADE", fontButton);
+        mButtonCellUpgrade->SetLabel("UPGRADE");
         mButtonCellUpgrade->SetEnabled(false);
     }
     else
@@ -183,23 +168,17 @@ void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
         std::ostringstream s;
         s << "UPGRADE (" << COST_CELL_UPGRADE[cellLevel] << ")";
 
-        mButtonCellUpgrade->SetLabel(s.str().c_str(), fontButton);
+        mButtonCellUpgrade->SetLabel(s.str().c_str());
         mButtonCellUpgrade->SetEnabled(true);
     }
 }
 
 void PanelPlayer::UpdateButtonNewUnit(int num, int level)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
-
-    FontManager * fm = FontManager::Instance();
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
 
     if(num >= MAX_CELL_UNITS)
     {
-        mButtonNewUnit->SetLabel("NEW UNIT", fontButton);
+        mButtonNewUnit->SetLabel("NEW UNIT");
         mButtonNewUnit->SetEnabled(false);
     }
     else
@@ -207,7 +186,7 @@ void PanelPlayer::UpdateButtonNewUnit(int num, int level)
         std::ostringstream s;
         s << "NEW UNIT (" << COST_NEW_UNIT[level] << ")";
 
-        mButtonNewUnit->SetLabel(s.str().c_str(), fontButton);
+        mButtonNewUnit->SetLabel(s.str().c_str());
         mButtonNewUnit->SetEnabled(true);
     }
 
@@ -217,16 +196,9 @@ void PanelPlayer::UpdateButtonNewUnit(int num, int level)
 
 void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
-
-    FontManager * fm = FontManager::Instance();
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
-
     if(level >= MAX_UNITS_LEVEL)
     {
-        mButtonUnitsUpgrade->SetLabel("UPGRADE", fontButton);
+        mButtonUnitsUpgrade->SetLabel("UPGRADE");
         mButtonUnitsUpgrade->SetEnabled(false);
     }
     else
@@ -234,7 +206,7 @@ void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
         std::ostringstream s;
         s << "UPGRADE (" << COST_UNIT_UPGRADE[level] * num << ")";
 
-        mButtonUnitsUpgrade->SetLabel(s.str().c_str(), fontButton);
+        mButtonUnitsUpgrade->SetLabel(s.str().c_str());
         mButtonUnitsUpgrade->SetEnabled(true);
     }
 }
@@ -342,11 +314,7 @@ void PanelPlayer::CreatePanelUnits()
 
     const int marginY = 30;
 
-    Font * fontButton = fm->GetFont("data/fonts/OpenSans.ttf", 18);
-    fontButton->SetStyle(Font::BOLD);
-
-    mButtonUnitsMove = new ButtonPanelPlayer(mPanelUnits);
-    mButtonUnitsMove->SetLabel("MOVE", fontButton);
+    mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
     mButtonUnitsMove->SetY(buttonY);
 
     mButtonUnitsMove->SetOnClickFunction([this]
@@ -360,7 +328,6 @@ void PanelPlayer::CreatePanelUnits()
     buttonY += mButtonUnitsMove->GetHeight() + marginY;
 
     mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
-    mButtonUnitsUpgrade->SetLabel("UPGRADE (10)", fontButton);
     mButtonUnitsUpgrade->SetY(buttonY);
 }
 
