@@ -21,8 +21,11 @@ public:
         DISABLED,
         MOUSE_OVER,
         PUSHED,
+        CHECKED,
 
-        NUM_VISUAL_STATES
+        NUM_VISUAL_STATES,
+
+        NULL_STATE
     };
 
 public:
@@ -53,6 +56,8 @@ protected:
 private:
     std::array<lib::graphic::Image *, NUM_VISUAL_STATES> mBackgrounds;
     std::array<unsigned int, NUM_VISUAL_STATES> mLabelsColor;
+
+    int mState = NULL_STATE;
 };
 
 } // namespace game

@@ -107,6 +107,8 @@ void ScreenTest::TestSGui()
     using namespace lib::graphic;
     using namespace lib::sgui;
 
+    const int marginV = 50;
+
     Widget * container = new Widget;
     container->SetPosition(600, 20);
 
@@ -130,7 +132,7 @@ void ScreenTest::TestSGui()
     });
 
     button = new ButtonMainMenu("BUTTON 2", container);
-    button->SetY(label->GetY() + 50);
+    button->SetY(label->GetY() + marginV);
 
     button->SetOnClickFunction([label]
     {
@@ -138,10 +140,16 @@ void ScreenTest::TestSGui()
         std::cout << "button 2 clicked" << std::endl;
     });
 
-    const int buttonY = button->GetY() + button->GetHeight() + 50;
+    int buttonY = button->GetY() + button->GetHeight() + marginV;
 
     button = new ButtonMainMenu("BUTTON 3", container);
     button->SetEnabled(false);
+    button->SetY(buttonY);
+
+    buttonY += button->GetHeight() + marginV;
+
+    button = new ButtonMainMenu("TOGGLE 1", container);
+    button->SetCheckable(true);
     button->SetY(buttonY);
 }
 

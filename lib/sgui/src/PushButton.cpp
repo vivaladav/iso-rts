@@ -16,6 +16,7 @@ namespace sgui
 PushButton::PushButton(Widget * parent)
     : Widget(parent)
     , mOnClick([]{})
+    , mOnToggle([](bool){})
     , mFontLabel(Stage::Instance()->GetDefaultFont())
     , mBg(new graphic::DummyRenderable)
     , mLabel(new graphic::DummyRenderable)
@@ -135,7 +136,16 @@ void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
 {
     event.SetConsumed();
 
-    mOnClick();
+    // checkable button
+    if(mCheckable)
+    {
+        mChecked = !mChecked;
+
+        mOnToggle(mChecked);
+    }
+    // standard button
+    else
+        mOnClick();
 }
 
 void PushButton::OnRender()

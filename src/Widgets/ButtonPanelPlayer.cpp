@@ -15,13 +15,15 @@ ButtonPanelPlayer::ButtonPanelPlayer(lib::sgui::Widget * parent)
                 "data/img/buttons/player_ui-01.png",
                 "data/img/buttons/player_ui-02.png",
                 "data/img/buttons/player_ui-03.png",
-                "data/img/buttons/player_ui-04.png"
+                "data/img/buttons/player_ui-04.png",
+                "data/img/buttons/player_ui-05.png"
             },
             {
                 0xFFFFFFFF,
                 0xb2b2b2ff,
                 0xFFFFFFFF,
                 0xFFFFFFFF,
+                0xFFFFFFFF
             },
             GameButton::NORMAL);
 

@@ -30,7 +30,12 @@ public:
     void SetLabelColor(unsigned int color);
     void SetLabelFont(graphic::Font * font);
 
+    bool IsCheckable() const;
+    void SetCheckable(bool val);
+    bool IsChecked() const;
+
     void SetOnClickFunction(const std::function<void()> & f);
+    void SetOnToggleFunction(const std::function<void(bool)> & f);
 
     const std::string & GetText() const;
 
@@ -51,6 +56,7 @@ private:
     std::string mText;
 
     std::function<void()> mOnClick;
+    std::function<void(bool)> mOnToggle;
 
     graphic::Font * mFontLabel = nullptr;
 
@@ -61,7 +67,18 @@ private:
     // pointers to the current active objects
     graphic::Renderable * mCurrBg = nullptr;
     graphic::Renderable * mCurrLabel = nullptr;
+
+    bool mCheckable = false;
+    bool mChecked = false;
 };
+
+inline bool PushButton::IsCheckable() const { return mCheckable; }
+inline void PushButton::SetCheckable(bool val)
+{
+    mCheckable = val;
+    mChecked = false;
+}
+inline bool PushButton::IsChecked() const { return mChecked; }
 
 inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
 

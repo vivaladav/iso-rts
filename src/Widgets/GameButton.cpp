@@ -41,7 +41,10 @@ void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgF
 
 void GameButton::HandleStateEnabled()
 {
-    SetElements(NORMAL);
+    if(IsChecked())
+        SetElements(CHECKED);
+    else
+        SetElements(NORMAL);
 }
 void GameButton::HandleStateDisabled()
 {
@@ -55,7 +58,10 @@ void GameButton::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
     if(!IsEnabled())
         return ;
 
-    SetElements(PUSHED);
+    if(IsCheckable())
+        SetElements(CHECKED);
+    else
+        SetElements(PUSHED);
 }
 
 void GameButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
@@ -65,12 +71,15 @@ void GameButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
     if(!IsEnabled())
         return ;
 
-    SetElements(NORMAL);
+    if(IsCheckable())
+        SetElements(IsChecked() ? CHECKED : NORMAL);
+    else
+        SetElements(NORMAL);
 }
 
 void GameButton::HandleMouseOver()
 {
-    if(!IsEnabled())
+    if(!IsEnabled() || IsChecked())
         return ;
 
     SetElements(MOUSE_OVER);
@@ -78,7 +87,7 @@ void GameButton::HandleMouseOver()
 
 void GameButton::HandleMouseOut()
 {
-    if(!IsEnabled())
+    if(!IsEnabled() || IsChecked())
         return ;
 
     SetElements(NORMAL);
@@ -86,6 +95,11 @@ void GameButton::HandleMouseOut()
 
 void GameButton::SetElements(int index)
 {
+    if(mState == index)
+        return ;
+
+    mState = index;
+
     SetCurrBg(mBackgrounds[index]);
 
     SetLabelColor(mLabelsColor[index]);
