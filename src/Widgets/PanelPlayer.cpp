@@ -312,10 +312,17 @@ void PanelPlayer::CreatePanelUnits()
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(0x212121FF);
 
-    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;;
-
     const int marginY = 30;
 
+    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
+
+    // button UPGRADE
+    mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
+    mButtonUnitsUpgrade->SetY(buttonY);
+
+    buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
+
+    // button MOVE
     mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
     mButtonUnitsMove->SetCheckable(true);
     mButtonUnitsMove->SetY(buttonY);
@@ -332,11 +339,6 @@ void PanelPlayer::CreatePanelUnits()
         else
             mNumUnitsToMove = 0;
     });
-
-    buttonY += mButtonUnitsMove->GetHeight() + marginY;
-
-    mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
-    mButtonUnitsUpgrade->SetY(buttonY);
 }
 
 } // namespace game
