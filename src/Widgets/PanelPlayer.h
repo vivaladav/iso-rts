@@ -73,10 +73,10 @@ private:
     ButtonPanelPlayer * mButtonUnitsMove = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
 
-    int mNumUnitToMove = 0;
+    int mNumUnitsToMove = 0;
 };
 
-inline int PanelPlayer::GetNumUnitsToMove() const { return mNumUnitToMove; }
-inline void PanelPlayer::ClearNumUnitsToMove() { mNumUnitToMove = 0; }
+inline int PanelPlayer::GetNumUnitsToMove() const { return mNumUnitsToMove; }
+inline void PanelPlayer::ClearNumUnitsToMove() { mNumUnitsToMove = 0; }
 
 } // namespace game

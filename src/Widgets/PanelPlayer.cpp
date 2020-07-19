@@ -136,6 +136,8 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
     UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
 
+    mButtonUnitsMove->SetChecked(false);
+
     mPanelCell->SetVisible(true);
 }
 
@@ -315,14 +317,20 @@ void PanelPlayer::CreatePanelUnits()
     const int marginY = 30;
 
     mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
+    mButtonUnitsMove->SetCheckable(true);
     mButtonUnitsMove->SetY(buttonY);
 
-    mButtonUnitsMove->SetOnClickFunction([this]
+    mButtonUnitsMove->SetOnToggleFunction([this](bool checked)
     {
-        std::cout << "MOVE 1 UNIT" << std::endl;
+        if(checked)
+        {
+            std::cout << "MOVE 1 UNIT" << std::endl;
 
-        // TODO proper move units
-        mNumUnitToMove = 1;
+            // TODO proper move units
+            mNumUnitsToMove = 1;
+        }
+        else
+            mNumUnitsToMove = 0;
     });
 
     buttonY += mButtonUnitsMove->GetHeight() + marginY;

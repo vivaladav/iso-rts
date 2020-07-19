@@ -93,6 +93,11 @@ void GameButton::HandleMouseOut()
     SetElements(NORMAL);
 }
 
+void GameButton::HandleCheckedChanged(bool checked)
+{
+    SetElements(checked ? CHECKED : NORMAL);
+}
+
 void GameButton::SetElements(int index)
 {
     if(mState == index)

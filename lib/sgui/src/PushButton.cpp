@@ -99,6 +99,15 @@ void PushButton::SetLabelFont(graphic::Font * font)
     }
 }
 
+void PushButton::SetChecked(bool val)
+{
+    if(val != mChecked)
+    {
+        mChecked = val;
+        HandleCheckedChanged(mChecked);
+    }
+}
+
 void PushButton::SetCurrBg(graphic::Renderable * bg)
 {
     mCurrBg = bg;
@@ -141,12 +150,16 @@ void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
     {
         mChecked = !mChecked;
 
+        HandleCheckedChanged(mChecked);
+
         mOnToggle(mChecked);
     }
     // standard button
     else
         mOnClick();
 }
+
+void PushButton::HandleCheckedChanged(bool) { }
 
 void PushButton::OnRender()
 {

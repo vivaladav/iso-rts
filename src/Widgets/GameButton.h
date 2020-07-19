@@ -51,6 +51,8 @@ protected:
     void HandleMouseOver() override;
     void HandleMouseOut() override;
 
+    void HandleCheckedChanged(bool checked) override;
+
     void SetElements(int index);
 
 private:

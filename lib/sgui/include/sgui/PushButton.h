@@ -33,6 +33,7 @@ public:
     bool IsCheckable() const;
     void SetCheckable(bool val);
     bool IsChecked() const;
+    void SetChecked(bool val);
 
     void SetOnClickFunction(const std::function<void()> & f);
     void SetOnToggleFunction(const std::function<void(bool)> & f);
@@ -44,6 +45,8 @@ protected:
     void SetCurrLabel(graphic::Renderable * label);
 
     void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
+
+    virtual void HandleCheckedChanged(bool checked);
 
 private:
     void HandlePositionChanged() override;
@@ -81,6 +84,7 @@ inline void PushButton::SetCheckable(bool val)
 inline bool PushButton::IsChecked() const { return mChecked; }
 
 inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
+inline void PushButton::SetOnToggleFunction(const std::function<void(bool)> & f) { mOnToggle = f; }
 
 inline const std::string & PushButton::GetText() const { return mText; }
 
