@@ -2,12 +2,14 @@
 
 #include "Game.h"
 #include "Widgets/ButtonMainMenu.h"
+#include "Widgets/ButtonUnitsSelector.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
 #include <graphic/Text.h>
+#include <sgui/ButtonsGroup.h>
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
 
@@ -114,6 +116,7 @@ void ScreenTest::TestSGui()
 
     FontManager * fm = FontManager::Instance();
 
+    // -- PUSHBUTTON --
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
     font->SetStyle(Font::BOLD);
     Label * label = new Label("PUSH BUTTON", font, container);
@@ -151,6 +154,22 @@ void ScreenTest::TestSGui()
     button = new ButtonMainMenu("TOGGLE 1", container);
     button->SetCheckable(true);
     button->SetY(buttonY);
+
+    // -- BUTTONS GROUP --
+    font->SetStyle(Font::BOLD);
+
+    label = new Label("BUTTONS GROUP", font, container);
+    label->SetX(400);
+
+    ButtonsGroup * bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL, container);
+    bg->SetPosition(label->GetX(), label->GetHeight() + 50);
+
+    bg->AddButton(new ButtonUnitsSelector("1"));
+    bg->AddButton(new ButtonUnitsSelector("2"));
+    bg->AddButton(new ButtonUnitsSelector("3"));
+    bg->AddButton(new ButtonUnitsSelector("4"));
+
+    bg->SetChecked(0);
 }
 
 } // namespace game
