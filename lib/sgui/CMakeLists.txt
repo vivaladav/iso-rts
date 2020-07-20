@@ -5,11 +5,13 @@ find_package(SDL2 REQUIRED)
 
 add_library(
     sgui
+    include/sgui/ButtonsGroup.h
     include/sgui/Label.h
     include/sgui/PushButton.h
     include/sgui/Stage.h
     include/sgui/WidgetContainer.h
     include/sgui/Widget.h
+    src/ButtonsGroup.cpp
     src/Label.cpp
     src/PushButton.cpp
     src/Stage.cpp
