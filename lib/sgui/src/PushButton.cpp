@@ -105,6 +105,8 @@ void PushButton::SetChecked(bool val)
     {
         mChecked = val;
         HandleCheckedChanged(mChecked);
+
+        mOnToggle(mChecked);
     }
 }
 
