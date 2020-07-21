@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Widgets/ButtonPanelPlayer.h"
 #include "Widgets/ButtonsPanel.h"
+#include "Widgets/UnitsSelector.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
@@ -126,7 +127,7 @@ void PanelPlayer::ClearSelectedCell()
     mPanelCell->SetVisible(false);
     mPanelUnits->SetVisible(false);
 
-    ClearNumUnitsToMove();
+    mButtonUnitsMove->SetChecked(false);
 }
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
@@ -135,8 +136,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
     UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
-
-    mButtonUnitsMove->SetChecked(false);
+    UpdateButtonUnitsMove(cell.units);
 
     mPanelCell->SetVisible(true);
 }
@@ -213,6 +213,22 @@ void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
     }
 }
 
+void PanelPlayer::UpdateButtonUnitsMove(int num)
+{
+    mButtonUnitsMove->SetChecked(false);
+
+    if(num < 1)
+        return ;
+
+    for(int i = 0; i < num; ++i)
+        mUnitsSelector->GetButton(i)->SetEnabled(true);
+
+    for(int i = num; i < MAX_CELL_UNITS; ++i)
+        mUnitsSelector->GetButton(i)->SetEnabled(false);
+
+    mUnitsSelector->GetButton(num - 1)->SetChecked(true);
+}
+
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
 {
     mButtonCellFortify->SetOnClickFunction(f);
@@ -230,12 +246,19 @@ void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
 
 void PanelPlayer::SetFunctionUnitsMove(const std::function<void()> & f)
 {
-
 }
 
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
 {
     mButtonUnitsUpgrade->SetOnClickFunction(f);
+}
+
+int PanelPlayer::GetNumUnitsToMove() const
+{
+    if(mButtonUnitsMove->IsChecked())
+        return mUnitsSelector->GetIndexChecked() + 1;
+    else
+        return 0;
 }
 
 std::string PanelPlayer::MakeStrCells(int cells)
@@ -329,16 +352,15 @@ void PanelPlayer::CreatePanelUnits()
 
     mButtonUnitsMove->SetOnToggleFunction([this](bool checked)
     {
-        if(checked)
-        {
-            std::cout << "MOVE 1 UNIT" << std::endl;
-
-            // TODO proper move units
-            mNumUnitsToMove = 1;
-        }
-        else
-            mNumUnitsToMove = 0;
+        mUnitsSelector->SetVisible(checked);
     });
+
+    // units selector
+    mUnitsSelector = new UnitsSelector(mPanelUnits);
+    mUnitsSelector->SetPosition((mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f,
+                                mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + 10);
+
+    mUnitsSelector->SetVisible(false);
 }
 
 } // namespace game

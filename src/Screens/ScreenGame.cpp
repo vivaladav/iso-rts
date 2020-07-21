@@ -199,6 +199,7 @@ ScreenGame::ScreenGame(Game * game)
 
             panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
             panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
+            panel->UpdateButtonUnitsMove(gameCell.units);
         }
     });
 
@@ -284,7 +285,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
 
-            panel->ClearNumUnitsToMove();
             panel->ClearSelectedCell();
             player->ClearSelectedCell();
             mIsoMap->SetLayerVisible(SELECTION, false);
@@ -314,7 +314,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     else
     {
         player->ClearSelectedCell();
-        panel->ClearNumUnitsToMove();
         panel->ClearSelectedCell();
         mIsoMap->SetLayerVisible(SELECTION, false);
     }

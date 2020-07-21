@@ -16,6 +16,7 @@ namespace game
 class ButtonPanelPlayer;
 class ButtonsPanel;
 class Player;
+class UnitsSelector;
 
 struct GameMapCell;
 
@@ -38,6 +39,7 @@ public:
     void UpdateButtonCellUpgrade(int cellLevel);
     void UpdateButtonNewUnit(int num, int level);
     void UpdateButtonUnitUpgrade(int num, int level);
+    void UpdateButtonUnitsMove(int num);
 
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
@@ -47,7 +49,6 @@ public:
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
 
     int GetNumUnitsToMove() const;
-    void ClearNumUnitsToMove();
 
 private:
     std::string MakeStrCells(int cells);
@@ -73,10 +74,7 @@ private:
     ButtonPanelPlayer * mButtonUnitsMove = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
 
-    int mNumUnitsToMove = 0;
+    UnitsSelector * mUnitsSelector = nullptr;
 };
-
-inline int PanelPlayer::GetNumUnitsToMove() const { return mNumUnitsToMove; }
-inline void PanelPlayer::ClearNumUnitsToMove() { mNumUnitsToMove = 0; }
 
 } // namespace game
