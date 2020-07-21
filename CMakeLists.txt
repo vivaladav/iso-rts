@@ -47,6 +47,8 @@ add_executable(
     src/Widgets/ButtonMainMenu.cpp
     src/Widgets/ButtonPanelPlayer.h
     src/Widgets/ButtonPanelPlayer.cpp
+    src/Widgets/ButtonUnitsSelector.h
+    src/Widgets/ButtonUnitsSelector.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/GameButton.h

@@ -170,6 +170,8 @@ void ScreenTest::TestSGui()
     bg->AddButton(new ButtonUnitsSelector("4"));
 
     bg->SetChecked(0);
+
+    bg->GetButton(3)->SetEnabled(false);
 }
 
 } // namespace game
