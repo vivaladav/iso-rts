@@ -17,16 +17,30 @@ ButtonsGroup::ButtonsGroup(Orientation orient, Widget * parent)
 
 }
 
-void ButtonsGroup::SetChecked(unsigned int index)
+void ButtonsGroup::SetButtonChecked(unsigned int index, bool val)
 {
     const int ind = static_cast<int>(index);
 
     if(index >= mButtons.size() || ind == mIndChecked)
         return ;
 
-    mIndChecked = ind;
+    PushButton * button = mButtons[index];
 
-    mButtons[index]->SetChecked(true);
+    if(button->IsEnabled())
+        button->SetChecked(val);
+}
+
+void ButtonsGroup::SetButtonEnabled(unsigned int index, bool val)
+{
+    if(index < mButtons.size())
+    {
+        PushButton * button = mButtons[index];
+
+        if(!val && button->IsChecked())
+            button->SetChecked(false);
+
+        button->SetEnabled(val);
+    }
 }
 
 void ButtonsGroup::AddButton(PushButton * button)
@@ -63,10 +77,6 @@ void ButtonsGroup::AddButton(PushButton * button)
 
             mOnToggle(buttonIndex, checked);
         });
-    }
-    else
-    {
-
     }
 
     // this will update the size of the group

@@ -169,9 +169,12 @@ void ScreenTest::TestSGui()
     bg->AddButton(new ButtonUnitsSelector("3"));
     bg->AddButton(new ButtonUnitsSelector("4"));
 
-    bg->SetChecked(0);
+    // set initial checked
+    bg->SetButtonChecked(0, true);
 
-    bg->GetButton(3)->SetEnabled(false);
+    // test set checked on disabled
+    bg->SetButtonEnabled(3, false);
+    bg->SetButtonChecked(3, true);
 }
 
 } // namespace game

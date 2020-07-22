@@ -221,12 +221,12 @@ void PanelPlayer::UpdateButtonUnitsMove(int num)
         return ;
 
     for(int i = 0; i < num; ++i)
-        mUnitsSelector->GetButton(i)->SetEnabled(true);
+        mUnitsSelector->SetButtonEnabled(i, true);
 
     for(int i = num; i < MAX_CELL_UNITS; ++i)
-        mUnitsSelector->GetButton(i)->SetEnabled(false);
+        mUnitsSelector->SetButtonEnabled(i, false);
 
-    mUnitsSelector->GetButton(num - 1)->SetChecked(true);
+    mUnitsSelector->SetButtonChecked(num - 1, true);
 }
 
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)

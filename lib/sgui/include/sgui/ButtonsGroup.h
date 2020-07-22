@@ -30,9 +30,9 @@ public:
     void SetExclusive(bool val);
 
     int GetIndexChecked() const;
-    void SetChecked(unsigned int index);
+    void SetButtonChecked(unsigned int index, bool val);
 
-    PushButton * GetButton(unsigned int index);
+    void SetButtonEnabled(unsigned int index, bool val);
 
     void AddButton(PushButton * button);
 
@@ -53,11 +53,6 @@ private:
 };
 
 inline int ButtonsGroup::GetIndexChecked() const{ return mIndChecked; }
-
-inline PushButton * ButtonsGroup::GetButton(unsigned int index)
-{
-    return index < mButtons.size() ? mButtons[index] : nullptr;
-}
 
 inline unsigned int ButtonsGroup::GetNumButtons() const { return mButtons.size(); }
 
