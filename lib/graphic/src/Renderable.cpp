@@ -37,8 +37,16 @@ void Renderable::ScaleW(float s) { mRect->w *= s; }
 
 void Renderable::ScaleH(float s) { mRect->h *= s; }
 
+void Renderable::RestoreOriginalSize()
+{
+    mRect->w = mOrigW;
+    mRect->h = mOrigH;
+}
+
 int Renderable::GetWidth() const { return mRect->w; }
+void Renderable::SetWidth(int w) { mRect->w = w; }
 int Renderable::GetHeight() const { return mRect->h; }
+void Renderable::SetHeight(int h) { mRect->h = h; }
 
 void Renderable::SetColor(unsigned int color)
 {

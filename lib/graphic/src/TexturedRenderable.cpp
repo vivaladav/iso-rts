@@ -30,6 +30,9 @@ void TexturedRenderable::SetTexture(Texture * tex)
 
     mRect->w = tex->GetWidth();
     mRect->h = tex->GetHeight();
+
+    mOrigW = mRect->w;
+    mOrigH = mRect->h;
 }
 
 void TexturedRenderable::DeleteTexture()

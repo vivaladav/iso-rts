@@ -21,8 +21,12 @@ public:
     void ScaleW(float s);
     void ScaleH(float s);
 
+    void RestoreOriginalSize();
+
     int GetWidth() const;
+    void SetWidth(int w);
     int GetHeight() const;
+    void SetHeight(int h);
 
     void SetAlpha(unsigned char a);
     // get color as #RRGGBBAA
@@ -35,6 +39,9 @@ public:
 
 protected:
     SDL_Rect * mRect = nullptr;
+
+    int mOrigW = 0;
+    int mOrigH = 0;
 
     unsigned char mR = 255;
     unsigned char mG = 255;

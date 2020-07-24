@@ -44,6 +44,12 @@ ScreenTest::ScreenTest(Game * game)
     img->SetColor(0x3366F0FF);
     mRenderables.emplace_back(img);
 
+    img = new Image("data/img/tile00.png");
+    img->SetPosition(32, 64);
+    img->SetWidth(64);
+    img->SetHeight(32);
+    mRenderables.emplace_back(img);
+
     // -- Text testing --
     FontManager * fm = FontManager::Instance();
 
