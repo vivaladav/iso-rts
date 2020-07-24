@@ -19,7 +19,7 @@ public:
     void SetValuePerc(float perc);
 
 protected:
-    virtual void HandleProgressUpdate();
+    virtual void HandleProgressUpdate() = 0;
 
 private:
     float mValue = 0;

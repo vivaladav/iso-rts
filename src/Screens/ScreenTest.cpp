@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
+#include "Widgets/CellProgressBar.h"
 
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
@@ -94,7 +95,7 @@ ScreenTest::~ScreenTest()
     lib::sgui::Stage::Instance()->ClearWidgets();
 }
 
-void ScreenTest::Update(float delta)
+void ScreenTest::Update(float)
 {
 }
 
@@ -181,6 +182,19 @@ void ScreenTest::TestSGui()
     // test set checked on disabled
     bg->SetButtonEnabled(3, false);
     bg->SetButtonChecked(3, true);
+
+    // -- PROGRESS BAR --
+    font->SetStyle(Font::BOLD);
+
+    label = new Label("PROGRESS BAR", font, container);
+    label->SetX(700);
+
+    const int pbX = label->GetX();
+    const int pbY = label->GetY() + label->GetHeight() + 50;
+
+    CellProgressBar * pb = new CellProgressBar(container);
+    pb->SetPosition(pbX, pbY);
+    pb->SetValuePerc(50.f);
 }
 
 } // namespace game

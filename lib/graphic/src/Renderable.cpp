@@ -23,8 +23,10 @@ void Renderable::SetPosition(int x, int y)
     mRect->y = y;
 }
 
+int Renderable::GetX() const { return mRect->x; }
 void Renderable::SetX(int x) { mRect->x = x; }
 
+int Renderable::GetY() const { return mRect->y; }
 void Renderable::SetY(int y) { mRect->y = y; }
 
 void Renderable::Scale(float s)

@@ -14,7 +14,9 @@ public:
     virtual ~Renderable();
 
     void SetPosition(int x, int y);
+    int GetX() const;
     void SetX(int x);
+    int GetY() const;
     void SetY(int y);
 
     void Scale(float s);

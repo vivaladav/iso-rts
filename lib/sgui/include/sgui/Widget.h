@@ -61,7 +61,6 @@ private:
 
     virtual void HandlePositionChanged();
 
-
     void SetMouseOver();
     void SetMouseOut();
 

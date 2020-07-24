@@ -51,6 +51,8 @@ add_executable(
     src/Widgets/ButtonUnitsSelector.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
+    src/Widgets/CellProgressBar.h
+    src/Widgets/CellProgressBar.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
     src/Widgets/PanelPlayer.h
