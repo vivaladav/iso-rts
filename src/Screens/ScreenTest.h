@@ -12,6 +12,8 @@ namespace lib
 namespace game
 {
 
+class CellProgressBar;
+
 class ScreenTest : public Screen
 {
 public:
@@ -28,6 +30,9 @@ private:
 
 private:
     std::vector<lib::graphic::TexturedRenderable *> mRenderables;
+
+    CellProgressBar * mPb = nullptr;
+    float mTimerPb = 0.f;
 };
 
 } // namespace game
