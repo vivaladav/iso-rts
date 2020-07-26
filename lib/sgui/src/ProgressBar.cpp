@@ -23,17 +23,27 @@ void ProgressBar::SetValue(float progress)
     if(progress < mMin)
         mValue = mMin;
     else if(progress > mMax)
-        mValue = mMax;
+    {
+        Complete();
+        return ;
+    }
     else
         mValue = progress;
 
-    HandleProgressUpdate();
+    if((mMax - mValue) < delta)
+        Complete();
+    else
+        HandleProgressUpdate();
+}
+
+void ProgressBar::IncValue(float val)
+{
+    mValue += val;
 
     if((mMax - mValue) < delta)
-    {
-        mCompleted = true;
-        mFunOnCompleted();
-    }
+        Complete();
+    else
+        HandleProgressUpdate();
 }
 
 void ProgressBar::SetValuePerc(float perc)
@@ -44,17 +54,27 @@ void ProgressBar::SetValuePerc(float perc)
     if(perc < 0.f)
         perc = 0.f;
     else if(perc > 100.f)
-        perc = 100.f;
+    {
+        Complete();
+        return ;
+    }
 
     mValue = perc * (mMax - mMin) / 100.f;
 
+    if((100.f - perc) < delta)
+        Complete();
+    else
+        HandleProgressUpdate();
+}
+
+void ProgressBar::Complete()
+{
+    mCompleted = true;
+    mValue = mMax;
+
     HandleProgressUpdate();
 
-    if((100.f - perc) < delta)
-    {
-        mCompleted = true;
-        mFunOnCompleted();
-    }
+    mFunOnCompleted();
 }
 
 } // namespace sgui

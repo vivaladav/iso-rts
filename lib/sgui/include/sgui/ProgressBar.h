@@ -16,13 +16,18 @@ public:
 
     float GetValue() const;
     void SetValue(float progress);
+    void IncValue(float val);
     float GetValuePerc() const;
     void SetValuePerc(float perc);
+
 
     void SetFunctionOnCompleted(const std::function<void()> & f);
 
 protected:
     virtual void HandleProgressUpdate() = 0;
+
+private:
+    void Complete();
 
 private:
     std::function<void()> mFunOnCompleted;
