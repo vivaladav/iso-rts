@@ -14,13 +14,12 @@
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
 
-#include <cmath>
 #include <iostream>
 
 namespace game
 {
 
-const float TIME_PB = 5.f;
+const float TIME_PB = 4.f;
 
 ScreenTest::ScreenTest(Game * game)
     : Screen(game)
@@ -104,10 +103,7 @@ void ScreenTest::Update(float delta)
     {
         mTimerPb += delta;
 
-        if(mTimerPb > TIME_PB)
-            mTimerPb = TIME_PB;
-
-        mPb->SetValuePerc(std::ceil(mTimerPb * 100.f / TIME_PB));
+        mPb->SetValuePerc(mTimerPb * 100.f / TIME_PB);
     }
 }
 
@@ -207,6 +203,7 @@ void ScreenTest::TestSGui()
     mPb = new CellProgressBar(container);
     mPb->SetPosition(pbX, pbY);
     mPb->SetValue(0);
+    mPb->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 100%" << std::endl; });
 }
 
 } // namespace game

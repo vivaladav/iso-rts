@@ -2,9 +2,10 @@
 
 #include "sgui/Widget.h"
 
+#include <functional>
+
 namespace lib
 {
-
 namespace sgui
 {
 
@@ -18,22 +19,20 @@ public:
     float GetValuePerc() const;
     void SetValuePerc(float perc);
 
+    void SetFunctionOnCompleted(const std::function<void()> & f);
+
 protected:
     virtual void HandleProgressUpdate() = 0;
 
 private:
+    std::function<void()> mFunOnCompleted;
+
     float mValue = 0;
     float mMin = 0;
     float mMax = 100;
+
+    bool mCompleted = false;
 };
-
-
-inline ProgressBar::ProgressBar(float min, float max, Widget * parent)
-    : Widget(parent)
-    , mMin(min)
-    , mMax(max)
-{
-}
 
 inline float ProgressBar::GetValue() const { return mValue; }
 
@@ -42,6 +41,10 @@ inline float ProgressBar::GetValuePerc() const
     return mValue * 100.f / (mMax - mMin);
 }
 
+inline void ProgressBar::SetFunctionOnCompleted(const std::function<void()> & f)
+{
+    mFunOnCompleted = f;
+}
 
 } // namespace sgui
 } // namespace lib
