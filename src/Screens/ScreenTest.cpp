@@ -204,6 +204,13 @@ void ScreenTest::TestSGui()
     mPb->SetPosition(pbX, pbY);
     mPb->SetValue(0);
     mPb->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 100%" << std::endl; });
+
+    button = new ButtonMainMenu("RESET", container);
+    button->SetPosition(mPb->GetX(), mPb->GetY() + mPb->GetHeight() + 20);
+    button->SetOnClickFunction([this]{
+        mTimerPb = 0;
+        mPb->Reset();
+    });
 }
 
 } // namespace game

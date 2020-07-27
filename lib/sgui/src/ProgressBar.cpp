@@ -67,6 +67,14 @@ void ProgressBar::SetValuePerc(float perc)
         HandleProgressUpdate();
 }
 
+void ProgressBar::Reset()
+{
+    mCompleted = false;
+    mValue = mMin;
+
+    HandleProgressUpdate();
+}
+
 void ProgressBar::Complete()
 {
     mCompleted = true;

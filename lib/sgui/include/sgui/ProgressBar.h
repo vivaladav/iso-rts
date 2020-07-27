@@ -20,6 +20,9 @@ public:
     float GetValuePerc() const;
     void SetValuePerc(float perc);
 
+    bool IsCompleted() const;
+
+    void Reset();
 
     void SetFunctionOnCompleted(const std::function<void()> & f);
 
@@ -50,6 +53,8 @@ inline void ProgressBar::SetFunctionOnCompleted(const std::function<void()> & f)
 {
     mFunOnCompleted = f;
 }
+
+inline bool ProgressBar::IsCompleted() const { return mCompleted; }
 
 } // namespace sgui
 } // namespace lib
