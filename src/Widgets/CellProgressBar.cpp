@@ -5,7 +5,7 @@
 namespace game
 {
 
-CellProgressBar::CellProgressBar(lib::sgui::Widget * parent)
+CellProgressBar::CellProgressBar(int player, lib::sgui::Widget * parent)
     : lib::sgui::ProgressBar(0, 100, parent)
 {
     using namespace  lib::graphic;
@@ -14,7 +14,15 @@ CellProgressBar::CellProgressBar(lib::sgui::Widget * parent)
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
-    mBar = new Image("data/img/cell_bar.png");
+    if(0 == player)
+        mBar = new Image("data/img/cell_bar-p1.png");
+    else if(1 == player)
+        mBar = new Image("data/img/cell_bar-p2.png");
+    else if(2 == player)
+        mBar = new Image("data/img/cell_bar-p3.png");
+    else if(3 == player)
+        mBar = new Image("data/img/cell_bar-p4.png");
+
     mBarW = mBar->GetWidth();
     mBarH = mBar->GetHeight();
 }

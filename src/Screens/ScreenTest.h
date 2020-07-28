@@ -31,7 +31,10 @@ private:
 private:
     std::vector<lib::graphic::TexturedRenderable *> mRenderables;
 
-    CellProgressBar * mPb = nullptr;
+    CellProgressBar * mPb0 = nullptr;
+    CellProgressBar * mPb1 = nullptr;
+    CellProgressBar * mPb2 = nullptr;
+    CellProgressBar * mPb3 = nullptr;
     float mTimerPb = 0.f;
 };
 

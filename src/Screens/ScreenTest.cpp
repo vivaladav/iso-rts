@@ -103,7 +103,12 @@ void ScreenTest::Update(float delta)
     {
         mTimerPb += delta;
 
-        mPb->SetValuePerc(mTimerPb * 100.f / TIME_PB);
+        const float perc = mTimerPb * 100.f / TIME_PB;
+
+        mPb0->SetValuePerc(perc);
+        mPb1->SetValuePerc(perc);
+        mPb2->SetValuePerc(perc);
+        mPb3->SetValuePerc(perc);
     }
 }
 
@@ -199,17 +204,36 @@ void ScreenTest::TestSGui()
 
     const int pbX = label->GetX();
     const int pbY = label->GetY() + label->GetHeight() + 50;
+    const int marginbBars = 25;
 
-    mPb = new CellProgressBar(container);
-    mPb->SetPosition(pbX, pbY);
-    mPb->SetValue(0);
-    mPb->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 100%" << std::endl; });
+    mPb0 = new CellProgressBar(0, container);
+    mPb0->SetPosition(pbX, pbY);
+    mPb0->SetValue(0);
+    mPb0->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 0 100%" << std::endl; });
+
+    mPb1 = new CellProgressBar(1, container);
+    mPb1->SetPosition(pbX, pbY + mPb0->GetHeight() + marginbBars);
+    mPb1->SetValue(0);
+    mPb1->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 1 100%" << std::endl; });
+
+    mPb2 = new CellProgressBar(2, container);
+    mPb2->SetPosition(pbX, mPb1->GetY() + mPb1->GetHeight() + marginbBars);
+    mPb2->SetValue(0);
+    mPb2->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 2 100%" << std::endl; });
+
+    mPb3 = new CellProgressBar(3, container);
+    mPb3->SetPosition(pbX, mPb2->GetY() + mPb2->GetHeight() + marginbBars);
+    mPb3->SetValue(0);
+    mPb3->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 3 100%" << std::endl; });
 
     button = new ButtonMainMenu("RESET", container);
-    button->SetPosition(mPb->GetX(), mPb->GetY() + mPb->GetHeight() + 20);
+    button->SetPosition(mPb0->GetX(), mPb3->GetY() + mPb3->GetHeight() + marginbBars);
     button->SetOnClickFunction([this]{
         mTimerPb = 0;
-        mPb->Reset();
+        mPb0->Reset();
+        mPb1->Reset();
+        mPb2->Reset();
+        mPb3->Reset();
     });
 }
 

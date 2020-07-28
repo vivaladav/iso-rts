@@ -10,7 +10,7 @@ namespace game
 class CellProgressBar : public lib::sgui::ProgressBar
 {
 public:
-    CellProgressBar(lib::sgui::Widget * parent);
+    CellProgressBar(int player, lib::sgui::Widget * parent);
 
 private:
     void HandlePositionChanged() override;
