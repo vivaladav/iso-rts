@@ -30,9 +30,13 @@ public:
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
 
 private:
+    void UpdateProgressBars(float delta);
+
+private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
 
     std::vector<CellProgressBar *> mProgressBars;
+    std::vector<int> mProgressBarsToDelete;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
