@@ -156,6 +156,66 @@ void GameMap::SetHomeCell(Game * game)
     }
 }
 
+bool GameMap::CanUpgradeCell(const Cell2D * cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return false;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // already changing, not own cell or already max level
+    if(gcell.changing ||
+       gcell.ownerId != player->GetPlayerId() ||
+       MAX_CELL_LEVEL == gcell.level)
+        return false;
+
+    // check if player has enough money
+    const int cost = COST_CELL_UPGRADE[gcell.level];
+
+    if(cost > player->GetMoney())
+        return false;
+
+    return true;
+}
+
+void GameMap::StartUpgradeCell(const Cell2D * cell, Player * player)
+{
+    const int ind = cell->row * mCols + cell->col;
+    GameMapCell & gcell = mCells[ind];
+
+    // take player's money
+    const int cost = COST_CELL_UPGRADE[gcell.level];
+
+    player->SumMoney(-cost);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
+{
+    const int ind = cell->row * mCols + cell->col;
+    GameMapCell & gcell = mCells[ind];
+
+    // all good -> upgrade
+    ++(gcell.level);
+
+    // update player
+    player->SumTotalCellsLevel(1);
+
+    // update map
+    const int cellType = DefineCellType(gcell);
+    mIsoMap->SetCellType(ind, cellType);
+
+    // reset cell's changing flag
+    gcell.changing = false;
+}
+
 bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
@@ -190,41 +250,6 @@ bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
     return true;
 }
 
-bool GameMap::UpgradeCell(const Cell2D * cell, Player * player)
-{
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
-
-    // out of bounds
-    if(!(r < mRows && c < mCols))
-        return false;
-
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    // not own cell or max level cell -> exit
-    if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_LEVEL == gcell.level)
-        return false;
-
-    // check if player has enough money
-    const int cost = COST_CELL_UPGRADE[gcell.level];
-
-    if(cost > player->GetMoney())
-        return false;
-
-    // all good -> upgrade
-    ++(gcell.level);
-
-    // update player
-    player->SumTotalCellsLevel(1);
-    player->SumMoney(-cost);
-
-    // update map
-    const int cellType = DefineCellType(gcell);
-    mIsoMap->SetCellType(ind, cellType);
-
-    return true;
-}
 
 bool GameMap::NewUnit(const Cell2D * cell, Player * player)
 {

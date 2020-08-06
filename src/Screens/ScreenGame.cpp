@@ -7,6 +7,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelPlayer.h"
 
 #include <core/event/MouseButtonEvent.h>
@@ -173,16 +174,36 @@ ScreenGame::ScreenGame(Game * game)
             panel->UpdateButtonCellFortify(gameMap->GetCell(cell->row, cell->col).fortLevel);
     });
 
-    panel->SetFunctionCellUpgrade([gameMap, panel, player]
+    panel->SetFunctionCellUpgrade([this, player]
     {
-        std::cout << "CELL UPGRADE" << std::endl;
-
         const Cell2D * cell = player->GetSelectedCell();
 
-        const bool res = gameMap->UpgradeCell(cell, player);
+        // check if upgrade is possible
+        if(!mGameMap->CanUpgradeCell(cell, player))
+            return ;
 
-        if(res)
-            panel->UpdateButtonCellUpgrade(gameMap->GetCell(cell->row, cell->col).level);
+        // start upgrade
+        mGameMap->StartUpgradeCell(cell, player);
+
+        auto pb = new CellProgressBar(player->GetPlayerId(), 0.f, TIME_UPG_CELL);
+        pb->SetValue(0.f);
+        auto posCell = mIsoMap->GetCellPosition(cell->row, cell->col);
+        const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
+        const int pbY = posCell.y + (mIsoMap->GetTileHeight() - pb->GetHeight()) * 0.5f;
+        pb->SetPosition(pbX, pbY);
+
+        mProgressBars.emplace_back(pb);
+
+        pb->SetFunctionOnCompleted([this, cell, player]
+        {
+            mGameMap->UpgradeCell(cell, player);
+        });
+
+        // clear selection
+        player->ClearSelectedCell();
+        PanelPlayer * panel = mPanelsPlayer[player->GetPlayerId()];
+        panel->ClearSelectedCell();
+        mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
     panel->SetFunctionNewUnit([gameMap, panel, player]
@@ -235,6 +256,7 @@ ScreenGame::~ScreenGame()
 
 void ScreenGame::Update(float delta)
 {
+    // -- UPDATE COINS --
     mTimerCoins -= delta;
 
     if(mTimerCoins < 0.f)
@@ -250,6 +272,24 @@ void ScreenGame::Update(float delta)
         }
 
         mTimerCoins = TIME_COINS_GEN;
+    }
+
+    // -- UPDATE PROGRESS BARS --
+    auto it = mProgressBars.begin();
+
+    while(it != mProgressBars.end())
+    {
+        CellProgressBar * pb = *it;
+
+        pb->IncValue(delta);
+
+        if(pb->IsCompleted())
+        {
+            delete pb;
+            it = mProgressBars.erase(it);
+        }
+        else
+            ++it;
     }
 }
 
@@ -275,10 +315,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
     if(insideMap)
     {
-        const int owner = mGameMap->GetCellOwner(c.row, c.col);
-
-        const bool isLocalPlayer = owner == player->GetPlayerId();
-
         const int unitsToMove = panel->GetNumUnitsToMove();
 
         if(unitsToMove > 0)
@@ -291,7 +327,11 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         }
         else
         {
-            if(isLocalPlayer)
+            const int owner = mGameMap->GetCellOwner(c.row, c.col);
+            const bool isLocalPlayer = owner == player->GetPlayerId();
+
+            // own cell and not already changing
+            if(isLocalPlayer && !mGameMap->IsCellChanging(c.row, c.col))
             {
                 player->SetSelectedCell(c);
                 panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));

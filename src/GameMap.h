@@ -26,8 +26,13 @@ public:
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
 
+    bool IsCellChanging(unsigned int r, unsigned int c) const;
+
+    bool CanUpgradeCell(const Cell2D * cell, Player * player);
+    void StartUpgradeCell(const Cell2D * cell, Player * player);
+    void UpgradeCell(const Cell2D * cell, Player * player);
+
     bool FortifyCell(const Cell2D * cell, Player * player);
-    bool UpgradeCell(const Cell2D * cell, Player * player);
     bool NewUnit(const Cell2D * cell, Player * player);
     bool UpgradeUnit(const Cell2D * cell, Player * player);
 
@@ -54,6 +59,14 @@ inline int GameMap::GetCellOwner(unsigned int r, unsigned int c) const
         return mCells[r * mCols + c].ownerId;
     else
         return -1;
+}
+
+inline bool GameMap::IsCellChanging(unsigned int r, unsigned int c) const
+{
+    if(r < mRows && c < mCols)
+        return mCells[r * mCols + c].changing;
+    else
+        return false;
 }
 
 inline const GameMapCell & GameMap::GetCell(unsigned int r, unsigned int c) const

@@ -11,6 +11,7 @@ struct GameMapCell
     int units = 0;
     int unitsLevel = 0;
     bool walkable = true;
+    bool changing = false;
 };
 
 } // namespace game

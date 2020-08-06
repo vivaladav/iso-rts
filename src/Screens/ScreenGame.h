@@ -4,12 +4,12 @@
 #include "Screen.h"
 
 #include <array>
-
-namespace lib { namespace sgui { class Widget; } }
+#include <vector>
 
 namespace game
 {
 
+class CellProgressBar;
 class GameMap;
 class IsoLayer;
 class IsoMap;
@@ -31,6 +31,8 @@ public:
 
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
+
+    std::vector<CellProgressBar *> mProgressBars;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

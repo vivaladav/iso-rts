@@ -10,7 +10,8 @@ namespace game
 class CellProgressBar : public lib::sgui::ProgressBar
 {
 public:
-    CellProgressBar(int player, lib::sgui::Widget * parent);
+    CellProgressBar(int player, lib::sgui::Widget * parent = nullptr);
+    CellProgressBar(int player, float min, float max, lib::sgui::Widget * parent = nullptr);
 
 private:
     void HandlePositionChanged() override;

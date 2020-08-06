@@ -6,7 +6,13 @@ namespace game
 {
 
 CellProgressBar::CellProgressBar(int player, lib::sgui::Widget * parent)
-    : lib::sgui::ProgressBar(0, 100, parent)
+    : CellProgressBar(player, 0, 100.f, parent)
+{
+    HandleProgressUpdate();
+}
+
+CellProgressBar::CellProgressBar(int player, float min, float max, lib::sgui::Widget * parent)
+    : lib::sgui::ProgressBar(min, max, parent)
 {
     using namespace  lib::graphic;
 

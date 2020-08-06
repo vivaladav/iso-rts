@@ -10,6 +10,7 @@ const float delta = 0.001f;
 ProgressBar::ProgressBar(float min, float max, Widget * parent)
     : Widget(parent)
     , mFunOnCompleted([]{})
+    , mValue(min)
     , mMin(min)
     , mMax(max)
 {
