@@ -12,6 +12,7 @@ class CellProgressBar : public lib::sgui::ProgressBar
 public:
     CellProgressBar(int player, lib::sgui::Widget * parent = nullptr);
     CellProgressBar(int player, float min, float max, lib::sgui::Widget * parent = nullptr);
+    ~CellProgressBar();
 
 private:
     void HandlePositionChanged() override;

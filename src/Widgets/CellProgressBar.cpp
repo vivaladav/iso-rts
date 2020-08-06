@@ -33,6 +33,12 @@ CellProgressBar::CellProgressBar(int player, float min, float max, lib::sgui::Wi
     mBarH = mBar->GetHeight();
 }
 
+CellProgressBar::~CellProgressBar()
+{
+    delete mBg;
+    delete mBar;
+}
+
 void CellProgressBar::HandlePositionChanged()
 {
     const int x = GetScreenX();
