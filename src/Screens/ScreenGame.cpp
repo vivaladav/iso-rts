@@ -186,22 +186,13 @@ ScreenGame::ScreenGame(Game * game)
         mGameMap->StartUpgradeCell(cell, player);
 
         // create and init progress bar
-        const int barId = mProgressBars.size() + 1;
-        auto pb = new CellProgressBar(player->GetPlayerId(), 0.f, TIME_UPG_CELL);
-        pb->SetValue(0.f);
-        pb->SetWidgetId(barId);
-        auto posCell = mIsoMap->GetCellPosition(cell->row, cell->col);
-        const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
-        const int pbY = posCell.y + (mIsoMap->GetTileHeight() - pb->GetHeight()) * 0.5f;
-        pb->SetPosition(pbX, pbY);
+        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
 
-        mProgressBars.emplace_back(pb);
-
-        pb->SetFunctionOnCompleted([this, cell, player, barId]
+        pb->SetFunctionOnCompleted([this, cell, player, pb]
         {
             mGameMap->UpgradeCell(cell, player);
 
-            mProgressBarsToDelete.push_back(barId);
+            mProgressBarsToDelete.push_back(pb->GetWidgetId());
         });
 
         // clear selection
@@ -346,6 +337,22 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         panel->ClearSelectedCell();
         mIsoMap->SetLayerVisible(SELECTION, false);
     }
+}
+
+CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D * cell, float time, int playerId)
+{
+    const int barId = mProgressBars.size() + 1;
+    auto pb = new CellProgressBar(playerId, 0.f, time);
+    pb->SetValue(0.f);
+    pb->SetWidgetId(barId);
+    auto posCell = mIsoMap->GetCellPosition(cell->row, cell->col);
+    const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
+    const int pbY = posCell.y + (mIsoMap->GetTileHeight() - pb->GetHeight()) * 0.5f;
+    pb->SetPosition(pbX, pbY);
+
+    mProgressBars.emplace_back(pb);
+
+    return pb;
 }
 
 void ScreenGame::UpdateProgressBars(float delta)
