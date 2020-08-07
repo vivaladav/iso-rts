@@ -32,7 +32,10 @@ public:
     void StartUpgradeCell(const Cell2D * cell, Player * player);
     void UpgradeCell(const Cell2D * cell, Player * player);
 
-    bool FortifyCell(const Cell2D * cell, Player * player);
+    bool CanFortifyCell(const Cell2D * cell, Player * player);
+    void StartFortifyCell(const Cell2D * cell, Player * player);
+    void FortifyCell(const Cell2D * cell);
+
     bool NewUnit(const Cell2D * cell, Player * player);
     bool UpgradeUnit(const Cell2D * cell, Player * player);
 

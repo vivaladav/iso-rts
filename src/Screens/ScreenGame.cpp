@@ -162,16 +162,31 @@ ScreenGame::ScreenGame(Game * game)
     PanelPlayer * panel = mPanelsPlayer[0];
     GameMap * gameMap = mGameMap;
 
-    panel->SetFunctionCellFortify([gameMap, panel, player]
+    panel->SetFunctionCellFortify([this, panel, player]
     {
-        std::cout << "CELL FORTIFY" << std::endl;
-
         const Cell2D * cell = player->GetSelectedCell();
 
-        const bool res = gameMap->FortifyCell(cell, player);
+        // check if upgrade is possible
+        if(!mGameMap->CanFortifyCell(cell, player))
+            return ;
 
-        if(res)
-            panel->UpdateButtonCellFortify(gameMap->GetCell(cell->row, cell->col).fortLevel);
+        // start upgrade
+        mGameMap->StartFortifyCell(cell, player);
+
+        // create and init progress bar
+        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
+
+        pb->SetFunctionOnCompleted([this, cell, pb]
+        {
+            mGameMap->FortifyCell(cell);
+
+            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+        });
+
+        // clear selection
+        player->ClearSelectedCell();
+        panel->ClearSelectedCell();
+        mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
     panel->SetFunctionCellUpgrade([this, player, panel]
@@ -347,7 +362,7 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D * cell, float time,
     pb->SetWidgetId(barId);
     auto posCell = mIsoMap->GetCellPosition(cell->row, cell->col);
     const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
-    const int pbY = posCell.y + (mIsoMap->GetTileHeight() - pb->GetHeight()) * 0.5f;
+    const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
     pb->SetPosition(pbX, pbY);
 
     mProgressBars.emplace_back(pb);

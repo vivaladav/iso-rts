@@ -216,7 +216,7 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
     gcell.changing = false;
 }
 
-bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
+bool GameMap::CanFortifyCell(const Cell2D * cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell->row);
     const unsigned int c = static_cast<unsigned int>(cell->col);
@@ -228,8 +228,10 @@ bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    // not own cell or max level cell -> exit
-    if(gcell.ownerId != player->GetPlayerId() || MAX_CELL_FORT_LEVEL == gcell.fortLevel)
+    // already changing, not own cell or max level cell -> exit
+    if(gcell.changing ||
+       gcell.ownerId != player->GetPlayerId() ||
+       MAX_CELL_FORT_LEVEL == gcell.fortLevel)
         return false;
 
     // check if player has enough money
@@ -238,18 +240,39 @@ bool GameMap::FortifyCell(const Cell2D * cell, Player * player)
     if(cost > player->GetMoney())
         return false;
 
+    return true;
+}
+
+void GameMap::StartFortifyCell(const Cell2D * cell, Player * player)
+{
+    const int ind = cell->row * mCols + cell->col;
+    GameMapCell & gcell = mCells[ind];
+
+    // take player's money
+    const int cost = COST_CELL_FORT[gcell.fortLevel];
+
+    player->SumMoney(-cost);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::FortifyCell(const Cell2D * cell)
+{
+    const unsigned int r = static_cast<unsigned int>(cell->row);
+    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
     // all good -> upgrade
     ++(gcell.fortLevel);
-
-    // update player
-    player->SumMoney(-cost);
 
     // update map layer
     mIsoMap->GetLayer(FORTIFICATIONS)->ReplaceObject(r, c, gcell.fortLevel - 1, NO_ALIGNMENT);
 
-    return true;
+    // reset cell's changing flag
+    gcell.changing = false;
 }
-
 
 bool GameMap::NewUnit(const Cell2D * cell, Player * player)
 {
