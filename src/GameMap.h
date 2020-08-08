@@ -28,15 +28,22 @@ public:
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
+    // cell upgrade
     bool CanUpgradeCell(const Cell2D * cell, Player * player);
     void StartUpgradeCell(const Cell2D * cell, Player * player);
     void UpgradeCell(const Cell2D * cell, Player * player);
 
+    // cell fortify
     bool CanFortifyCell(const Cell2D * cell, Player * player);
     void StartFortifyCell(const Cell2D * cell, Player * player);
     void FortifyCell(const Cell2D * cell);
 
-    bool NewUnit(const Cell2D * cell, Player * player);
+    // unit create
+    bool CanCreateUnit(const Cell2D * cell, Player * player);
+    void StartCreateUnit(const Cell2D * cell, Player * player);
+    void CreateUnit(const Cell2D * cell, Player * player);
+
+    // unit upgrade
     bool UpgradeUnit(const Cell2D * cell, Player * player);
 
     void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);

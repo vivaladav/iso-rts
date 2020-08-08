@@ -162,6 +162,7 @@ ScreenGame::ScreenGame(Game * game)
     PanelPlayer * panel = mPanelsPlayer[0];
     GameMap * gameMap = mGameMap;
 
+    // FORTIFY CELL
     panel->SetFunctionCellFortify([this, panel, player]
     {
         const Cell2D * cell = player->GetSelectedCell();
@@ -189,6 +190,7 @@ ScreenGame::ScreenGame(Game * game)
         mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
+    // UPGRADE CELL
     panel->SetFunctionCellUpgrade([this, player, panel]
     {
         const Cell2D * cell = player->GetSelectedCell();
@@ -216,22 +218,32 @@ ScreenGame::ScreenGame(Game * game)
         mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
-    panel->SetFunctionNewUnit([gameMap, panel, player]
+    // CREATE NEW UNIT
+    panel->SetFunctionNewUnit([this, panel, player]
     {
-        std::cout << "NEW UNIT" << std::endl;
-
         const Cell2D * cell = player->GetSelectedCell();
 
-        const bool res = gameMap->NewUnit(cell, player);
+        // check if create is possible
+        if(!mGameMap->CanCreateUnit(cell, player))
+            return ;
 
-        if(res)
+        // start create
+        mGameMap->StartCreateUnit(cell, player);
+
+        // create and init progress bar
+        CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
+
+        pb->SetFunctionOnCompleted([this, cell, player, pb]
         {
-            const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
+            mGameMap->CreateUnit(cell, player);
 
-            panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
-            panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
-            panel->UpdateButtonUnitsMove(gameCell.units);
-        }
+            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+        });
+
+        // clear selection
+        player->ClearSelectedCell();
+        panel->ClearSelectedCell();
+        mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
     panel->SetFunctionUnitsUpgrade([gameMap, panel, player]
