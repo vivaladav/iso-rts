@@ -44,7 +44,9 @@ public:
     void CreateUnit(const Cell2D * cell, Player * player);
 
     // unit upgrade
-    bool UpgradeUnit(const Cell2D * cell, Player * player);
+    bool CanUpgradeUnit(const Cell2D * cell, Player * player);
+    void StartUpgradeUnit(const Cell2D * cell, Player * player);
+    void UpgradeUnit(const Cell2D * cell);
 
     void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);
 

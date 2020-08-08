@@ -27,6 +27,7 @@ constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 constexpr float TIME_FORT_CELL = 1.f;
 constexpr float TIME_NEW_UNIT = 1.f;
 constexpr float TIME_UPG_CELL = 1.f;
+constexpr float TIME_UPG_UNIT = 1.f;
 
 enum MapLayers
 {

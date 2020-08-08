@@ -246,21 +246,31 @@ ScreenGame::ScreenGame(Game * game)
         mIsoMap->SetLayerVisible(SELECTION, false);
     });
 
-    panel->SetFunctionUnitsUpgrade([gameMap, panel, player]
+    panel->SetFunctionUnitsUpgrade([this, panel, player]
     {
-        std::cout << "UNIT UPGRADE" << std::endl;
-
         const Cell2D * cell = player->GetSelectedCell();
 
-        bool res = gameMap->UpgradeUnit(cell, player);
+        // check if create is possible
+        if(!mGameMap->CanUpgradeUnit(cell, player))
+            return ;
 
-        if(res)
+        // start create
+        mGameMap->StartUpgradeUnit(cell, player);
+
+        // create and init progress bar
+        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
+
+        pb->SetFunctionOnCompleted([this, cell, pb]
         {
-            const GameMapCell & gameCell = gameMap->GetCell(cell->row, cell->col);
+            mGameMap->UpgradeUnit(cell);
 
-            panel->UpdateButtonNewUnit(gameCell.units, gameCell.unitsLevel);
-            panel->UpdateButtonUnitUpgrade(gameCell.units, gameCell.unitsLevel);
-        }
+            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+        });
+
+        // clear selection
+        player->ClearSelectedCell();
+        panel->ClearSelectedCell();
+        mIsoMap->SetLayerVisible(SELECTION, false);
     });
 }
 
