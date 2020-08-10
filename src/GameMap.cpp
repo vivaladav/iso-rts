@@ -156,10 +156,10 @@ void GameMap::SetHomeCell(Game * game)
     }
 }
 
-bool GameMap::CanUpgradeCell(const Cell2D * cell, Player * player)
+bool GameMap::CanUpgradeCell(const Cell2D & cell, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
@@ -183,9 +183,9 @@ bool GameMap::CanUpgradeCell(const Cell2D * cell, Player * player)
     return true;
 }
 
-void GameMap::StartUpgradeCell(const Cell2D * cell, Player * player)
+void GameMap::StartUpgradeCell(const Cell2D & cell, Player * player)
 {
-    const int ind = cell->row * mCols + cell->col;
+    const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     // take player's money
@@ -197,9 +197,9 @@ void GameMap::StartUpgradeCell(const Cell2D * cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
+void GameMap::UpgradeCell(const Cell2D & cell, Player * player)
 {
-    const int ind = cell->row * mCols + cell->col;
+    const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     ++(gcell.level);
@@ -215,10 +215,10 @@ void GameMap::UpgradeCell(const Cell2D * cell, Player * player)
     gcell.changing = false;
 }
 
-bool GameMap::CanFortifyCell(const Cell2D * cell, Player * player)
+bool GameMap::CanFortifyCell(const Cell2D & cell, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
@@ -242,9 +242,9 @@ bool GameMap::CanFortifyCell(const Cell2D * cell, Player * player)
     return true;
 }
 
-void GameMap::StartFortifyCell(const Cell2D * cell, Player * player)
+void GameMap::StartFortifyCell(const Cell2D & cell, Player * player)
 {
-    const int ind = cell->row * mCols + cell->col;
+    const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     // take player's money
@@ -256,10 +256,10 @@ void GameMap::StartFortifyCell(const Cell2D * cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::FortifyCell(const Cell2D * cell)
+void GameMap::FortifyCell(const Cell2D & cell)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
@@ -272,10 +272,10 @@ void GameMap::FortifyCell(const Cell2D * cell)
     gcell.changing = false;
 }
 
-bool GameMap::CanCreateUnit(const Cell2D * cell, Player * player)
+bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
@@ -299,9 +299,9 @@ bool GameMap::CanCreateUnit(const Cell2D * cell, Player * player)
     return true;
 }
 
-void GameMap::StartCreateUnit(const Cell2D * cell, Player * player)
+void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
 {
-    const int ind = cell->row * mCols + cell->col;
+    const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
@@ -312,10 +312,10 @@ void GameMap::StartCreateUnit(const Cell2D * cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::CreateUnit(const Cell2D * cell, Player * player)
+void GameMap::CreateUnit(const Cell2D & cell, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
@@ -335,10 +335,10 @@ void GameMap::CreateUnit(const Cell2D * cell, Player * player)
     gcell.changing = false;
 }
 
-bool GameMap::CanUpgradeUnit(const Cell2D * cell, Player * player)
+bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
 
     // out of bounds
     if(!(r < mRows && c < mCols))
@@ -362,9 +362,9 @@ bool GameMap::CanUpgradeUnit(const Cell2D * cell, Player * player)
     return true;
 }
 
-void GameMap::StartUpgradeUnit(const Cell2D * cell, Player * player)
+void GameMap::StartUpgradeUnit(const Cell2D & cell, Player * player)
 {
-    const int ind = cell->row * mCols + cell->col;
+    const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
@@ -375,11 +375,11 @@ void GameMap::StartUpgradeUnit(const Cell2D * cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::UpgradeUnit(const Cell2D * cell)
+void GameMap::UpgradeUnit(const Cell2D & cell)
 {
-    const unsigned int r = static_cast<unsigned int>(cell->row);
-    const unsigned int c = static_cast<unsigned int>(cell->col);
-    const int ind = cell->row * mCols + cell->col;
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+    const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
     // all good -> upgrade
@@ -460,22 +460,6 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     // own cell
     else if(gcell1.ownerId == player->GetPlayerId())
     {
-        /*
-
-        if(gcell1.units && )
-            return ;
-
-        if(gcell1.units + numUnits > MAX_CELL_UNITS)
-            numUnits = MAX_CELL_UNITS - gcell1.units;
-
-        gcell0.units -= numUnits;
-        gcell1.units += numUnits;
-
-        gcell1.unitsLevel = gcell0.unitsLevel;
-
-        moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
-        */
-
         // target cell has already units
         if(gcell1.units)
         {

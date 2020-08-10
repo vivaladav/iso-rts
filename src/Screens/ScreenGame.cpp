@@ -160,12 +160,11 @@ ScreenGame::ScreenGame(Game * game)
     // UI actions
     Player * player = game->GetPlayer(0);
     PanelPlayer * panel = mPanelsPlayer[0];
-    GameMap * gameMap = mGameMap;
 
     // FORTIFY CELL
-    panel->SetFunctionCellFortify([this, panel, player]
+    panel->SetFunctionCellFortify([this, player]
     {
-        const Cell2D * cell = player->GetSelectedCell();
+        const Cell2D cell = *(player->GetSelectedCell());
 
         // check if upgrade is possible
         if(!mGameMap->CanFortifyCell(cell, player))
@@ -185,15 +184,13 @@ ScreenGame::ScreenGame(Game * game)
         });
 
         // clear selection
-        player->ClearSelectedCell();
-        panel->ClearSelectedCell();
-        mIsoMap->SetLayerVisible(SELECTION, false);
+        ClearSelection(player);
     });
 
     // UPGRADE CELL
-    panel->SetFunctionCellUpgrade([this, player, panel]
+    panel->SetFunctionCellUpgrade([this, player]
     {
-        const Cell2D * cell = player->GetSelectedCell();
+        const Cell2D cell = *(player->GetSelectedCell());
 
         // check if upgrade is possible
         if(!mGameMap->CanUpgradeCell(cell, player))
@@ -213,15 +210,13 @@ ScreenGame::ScreenGame(Game * game)
         });
 
         // clear selection
-        player->ClearSelectedCell();
-        panel->ClearSelectedCell();
-        mIsoMap->SetLayerVisible(SELECTION, false);
+        ClearSelection(player);
     });
 
     // CREATE NEW UNIT
-    panel->SetFunctionNewUnit([this, panel, player]
+    panel->SetFunctionNewUnit([this, player]
     {
-        const Cell2D * cell = player->GetSelectedCell();
+        const Cell2D cell = *(player->GetSelectedCell());
 
         // check if create is possible
         if(!mGameMap->CanCreateUnit(cell, player))
@@ -241,14 +236,12 @@ ScreenGame::ScreenGame(Game * game)
         });
 
         // clear selection
-        player->ClearSelectedCell();
-        panel->ClearSelectedCell();
-        mIsoMap->SetLayerVisible(SELECTION, false);
+        ClearSelection(player);
     });
 
     panel->SetFunctionUnitsUpgrade([this, panel, player]
     {
-        const Cell2D * cell = player->GetSelectedCell();
+        const Cell2D cell = *(player->GetSelectedCell());
 
         // check if create is possible
         if(!mGameMap->CanUpgradeUnit(cell, player))
@@ -338,9 +331,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
 
-            panel->ClearSelectedCell();
-            player->ClearSelectedCell();
-            mIsoMap->SetLayerVisible(SELECTION, false);
+            ClearSelection(player);
         }
         else
         {
@@ -361,28 +352,20 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 *mPrevSel = c;
             }
             else
-            {
-                player->ClearSelectedCell();
-                panel->ClearSelectedCell();
-                mIsoMap->SetLayerVisible(SELECTION, false);
-            }
+                ClearSelection(player);
         }
     }
     else
-    {
-        player->ClearSelectedCell();
-        panel->ClearSelectedCell();
-        mIsoMap->SetLayerVisible(SELECTION, false);
-    }
+        ClearSelection(player);
 }
 
-CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D * cell, float time, int playerId)
+CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
 {
     const int barId = mProgressBars.size() + 1;
     auto pb = new CellProgressBar(playerId, 0.f, time);
     pb->SetValue(0.f);
     pb->SetWidgetId(barId);
-    auto posCell = mIsoMap->GetCellPosition(cell->row, cell->col);
+    auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
     const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
     const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
     pb->SetPosition(pbX, pbY);
@@ -418,6 +401,16 @@ void ScreenGame::UpdateProgressBars(float delta)
                 ++it;
         }
     }
+}
+
+void ScreenGame::ClearSelection(Player * player)
+{
+    player->ClearSelectedCell();
+
+    PanelPlayer * panel = mPanelsPlayer[player->GetPlayerId()];
+    panel->ClearSelectedCell();
+
+    mIsoMap->SetLayerVisible(SELECTION, false);
 }
 
 } // namespace game

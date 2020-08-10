@@ -24,10 +24,10 @@ constexpr int MAX_UNITS_LEVEL = 2;
 constexpr int COST_NEW_UNIT[] = { 1, 2, 4 };
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
-constexpr float TIME_FORT_CELL = 1.f;
-constexpr float TIME_NEW_UNIT = 1.f;
-constexpr float TIME_UPG_CELL = 1.f;
-constexpr float TIME_UPG_UNIT = 1.f;
+constexpr float TIME_FORT_CELL = 2.f;
+constexpr float TIME_NEW_UNIT = 2.f;
+constexpr float TIME_UPG_CELL = 2.f;
+constexpr float TIME_UPG_UNIT = 2.f;
 
 enum MapLayers
 {

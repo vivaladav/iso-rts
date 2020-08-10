@@ -30,8 +30,10 @@ public:
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
 
 private:
-    CellProgressBar * CreateProgressBar(const Cell2D * cell, float time, int playerId);
+    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, int playerId);
     void UpdateProgressBars(float delta);
+
+    void ClearSelection(Player * player);
 
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
