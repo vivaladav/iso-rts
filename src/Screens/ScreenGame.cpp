@@ -118,6 +118,12 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell(game);
 
+    // testing
+    mGameMap->AssignCell(Cell2D(1, 1), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(13, 13), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(13, 1), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(1, 13), game->GetPlayer(1));
+
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {

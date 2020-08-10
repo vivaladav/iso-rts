@@ -23,6 +23,7 @@ public:
     bool Load(const char * file);
 
     void SetHomeCell(Game * game);
+    void AssignCell(const Cell2D & cell, Player * player);
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
 

@@ -156,6 +156,20 @@ void GameMap::SetHomeCell(Game * game)
     }
 }
 
+void GameMap::AssignCell(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    gcell.ownerId = player->GetPlayerId();
+
+    const int cellType = DefineCellType(gcell);
+    mIsoMap->SetCellType(ind, cellType);
+
+    player->SumCells(1);
+    player->SumTotalCellsLevel(1);
+}
+
 bool GameMap::CanUpgradeCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
