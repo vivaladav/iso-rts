@@ -6,11 +6,13 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "utilities/UniformDistribution.h"
 
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <string>
+#include <vector>
 
 namespace game
 {
@@ -521,7 +523,52 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     // enemy cell
     else
     {
-        // TODO move to owned cell
+        lib::utilities::UniformDistribution rgen(POINTS_CELL_MIN, POINTS_CELL_MAX);
+
+        // points of cell
+        const int cellPoints = rgen.GetNextValue() * (gcell1.fortLevel + POINTS_CELL_INC);
+
+        // points of attacking units
+        rgen.SetParameters(POINTS_UNIT_MIN, POINTS_UNIT_MAX);
+        std::vector<int> pointsAtt(gcell0.units);
+
+        for(int i = 0; i < gcell0.units; ++i)
+            pointsAtt[i] = rgen.GetNextValue() * (gcell0.unitsLevel + POINTS_UNIT_INC);
+
+        // cell with units
+        if(gcell1.units)
+        {
+
+        }
+        // cell with no units
+        else
+        {
+            // fight
+            for(int points : pointsAtt)
+            {
+                if(points <= cellPoints)
+                    --gcell0.units;
+            }
+
+            // some unit left -> attacker won
+            if(gcell0.units)
+            {
+
+            }
+            // no units left -> defender won
+            else
+            {
+                /*
+                int ownerId = -1;
+                int level = 0;
+                int fortLevel = 0;
+                int units = 0;
+                int unitsLevel = 0;
+                bool walkable = true;
+                bool changing = false;
+                */
+            }
+        }
     }
 
     if(moved)
