@@ -448,7 +448,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     if(!gcell1.walkable)
         return ;
 
-    IsoLayer * layer = mIsoMap->GetLayer(UNITS);
+    IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
 
     bool moved = false;
 
@@ -464,7 +464,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
 
-        moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+        moved = layerUnits->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
 
         // conquest cell
         if(moved)
@@ -492,19 +492,19 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
             // update dest object
             const int unitType1 = DefineUnitType(gcell1);
-            layer->ChangeObject(r1, c1, unitType1);
+            layerUnits->ChangeObject(r1, c1, unitType1);
 
             // update src object if any unit left
             if(gcell0.units)
             {
                 const int unitType0 = DefineUnitType(gcell0);
-                layer->ChangeObject(r0, c0, unitType0);
+                layerUnits->ChangeObject(r0, c0, unitType0);
             }
             // otherwise, clear src object
             else
             {
                 gcell0.unitsLevel = 0;
-                layer->ClearObject(r0, c0);
+                layerUnits->ClearObject(r0, c0);
             }
 
             // done here
@@ -517,7 +517,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
             gcell1.unitsLevel = gcell0.unitsLevel;
 
-            moved = layer->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+            moved = layerUnits->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
         }
     }
     // enemy cell
@@ -530,9 +530,9 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
         // points of attacking units
         rgen.SetParameters(POINTS_UNIT_MIN, POINTS_UNIT_MAX);
-        std::vector<int> pointsAtt(gcell0.units);
+        std::vector<int> pointsAtt(numUnits);
 
-        for(int i = 0; i < gcell0.units; ++i)
+        for(int i = 0; i < numUnits; ++i)
             pointsAtt[i] = rgen.GetNextValue() * (gcell0.unitsLevel + POINTS_UNIT_INC);
 
         // cell with units
@@ -543,30 +543,79 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         // cell with no units
         else
         {
+            int losses = 0;
+
             // fight
             for(int points : pointsAtt)
             {
                 if(points <= cellPoints)
+                {
                     --gcell0.units;
+                    ++losses;
+                }
             }
 
-            // some unit left -> attacker won
+            // update player
+            player->SumUnits(-losses);
+
+            // some unit left
             if(gcell0.units)
             {
+                // remove alive attacking units from cell0
+                const int attackingLeft = numUnits - losses;
+                gcell0.units -= attackingLeft;
 
+                // update attacking units
+                if(gcell0.units)
+                {
+                    const int unitType0 = DefineUnitType(gcell0);
+                    layerUnits->ChangeObject(r0, c0, unitType0);
+                }
+                else
+                    layerUnits->ClearObject(r0, c0);
+
+                // some attacking unit left -> cell conquered
+                if(attackingLeft)
+                {
+                    // update conquered cell
+                    gcell1.ownerId = gcell0.ownerId;
+                    gcell1.level = 0;
+                    gcell1.fortLevel = 0;
+                    gcell1.unitsLevel = gcell1.unitsLevel;
+                    gcell1.units = attackingLeft;
+
+                    // update source attackingcell
+                    const int cellType = DefineCellType(gcell1);
+                    mIsoMap->SetCellType(ind1, cellType);
+
+                    // create new units in conquered cell
+                    const int unitImg1 = DefineUnitType(gcell1);
+                    layerUnits->AddObject(r1, c1, unitImg1, NO_ALIGNMENT);
+
+                    // update player
+                    player->SumCells(1);
+                    player->SumTotalCellsLevel(1);
+                }
             }
-            // no units left -> defender won
+            // no attacking units left -> defender won
             else
             {
-                /*
-                int ownerId = -1;
-                int level = 0;
-                int fortLevel = 0;
-                int units = 0;
-                int unitsLevel = 0;
-                bool walkable = true;
-                bool changing = false;
-                */
+                // clear fortification, if any
+                if(gcell0.fortLevel)
+                    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
+
+                // clear attacker cell
+                gcell0.ownerId = -1;
+                gcell0.level = 0;
+                gcell0.fortLevel = 0;
+                gcell0.unitsLevel = 0;
+
+                // update cell
+                const int cellType = DefineCellType(gcell0);
+                mIsoMap->SetCellType(ind0, cellType);
+
+                // delete units in attacker cell
+                layerUnits->ClearObject(r0, c0);
             }
         }
     }
@@ -577,7 +626,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         if(gcell0.units)
         {
             const int unitImg0 = DefineUnitType(gcell0);
-            layer->AddObject(r0, c0, unitImg0, NO_ALIGNMENT);
+            layerUnits->AddObject(r0, c0, unitImg0, NO_ALIGNMENT);
         }
         // reset unit level of empty cells
         else
@@ -585,7 +634,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
         // update image in dest cell
         const int unitType1 = DefineUnitType(gcell1);
-        layer->ChangeObject(r1, c1, unitType1);
+        layerUnits->ChangeObject(r1, c1, unitType1);
     }
 }
 
