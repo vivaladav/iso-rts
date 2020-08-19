@@ -94,21 +94,24 @@ ScreenGame::ScreenGame(Game * game)
 
     // UNITS
     const std::vector<std::string> unitsImgs = {
-                                                // PLAYER - LEVEL 1
+                                                // PLAYER 1 - LEVEL 1
                                                 "data/img/unit1-p1l1.png",
                                                 "data/img/unit2-p1l1.png",
                                                 "data/img/unit3-p1l1.png",
                                                 "data/img/unit4-p1l1.png",
-                                                // PLAYER - LEVEL 2
+                                                // PLAYER 1 - LEVEL 2
                                                 "data/img/unit1-p1l2.png",
                                                 "data/img/unit2-p1l2.png",
                                                 "data/img/unit3-p1l2.png",
                                                 "data/img/unit4-p1l2.png",
-                                                // PLAYER - LEVEL 3
+                                                // PLAYER 1 - LEVEL 3
                                                 "data/img/unit1-p1l3.png",
                                                 "data/img/unit2-p1l3.png",
                                                 "data/img/unit3-p1l3.png",
                                                 "data/img/unit4-p1l3.png",
+
+                                                // PLAYER 2 - LEVEL 1
+                                                "data/img/unit1-p2l1.png",
                                                };
 
     mIsoMap->CreateLayer(unitsImgs);
@@ -119,10 +122,20 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->SetHomeCell(game);
 
     // testing
-    mGameMap->AssignCell(Cell2D(1, 1), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(13, 13), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(13, 1), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(1, 13), game->GetPlayer(1));
+    Player * p1 = game->GetPlayer(1);
+    mGameMap->AssignCell(Cell2D(1, 1), p1);
+    mGameMap->AssignCell(Cell2D(13, 13), p1);
+    mGameMap->AssignCell(Cell2D(13, 1), p1);
+    mGameMap->AssignCell(Cell2D(1, 13), p1);
+
+    mGameMap->AssignCell(Cell2D(1, 0), p1);
+    mGameMap->CreateUnit(Cell2D(1, 0), p1);
+    mGameMap->AssignCell(Cell2D(0, 13), p1);
+    mGameMap->CreateUnit(Cell2D(0, 13), p1);
+    mGameMap->AssignCell(Cell2D(13, 14), p1);
+    mGameMap->CreateUnit(Cell2D(13, 14), p1);
+    mGameMap->AssignCell(Cell2D(13, 0), p1);
+    mGameMap->CreateUnit(Cell2D(13, 0), p1);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
