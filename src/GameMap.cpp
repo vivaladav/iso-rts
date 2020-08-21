@@ -8,11 +8,14 @@
 #include "Player.h"
 #include "utilities/UniformDistribution.h"
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <string>
 #include <vector>
+
+#include <iostream>
 
 namespace game
 {
@@ -535,34 +538,60 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         for(int i = 0; i < numUnits; ++i)
             pointsAtt[i] = rgen.GetNextValue() * (gcell0.unitsLevel + POINTS_UNIT_INC);
 
+        int lossesAtt = 0;
+
         // cell with units
         if(gcell1.units)
         {
+            // points of defending units
+            rgen.SetParameters(POINTS_CELL_UNIT_MIN, POINTS_CELL_UNIT_MAX);
+            std::vector<int> pointsDef(gcell1.units);
 
+            for(int i = 0; i < gcell1.units; ++i)
+                pointsDef[i] = rgen.GetNextValue() * (gcell1.unitsLevel + POINTS_CELL_UNIT_INC) + cellPoints;
+
+            std::vector<bool> unitsDef(gcell1.units, false);
+            std::vector<bool> unitsAtt(numUnits, false);
+
+            int lossesDef = 0;
+
+            for(int d = 0; d < gcell1.units; ++d)
+            {
+                for(int a = 0; a < numUnits; ++a)
+                {
+                    if(pointsDef[d] < pointsAtt[a])
+                        unitsDef[d] = true;
+                    else
+                        unitsAtt[a] = true;
+                }
+            }
+
+            lossesDef = std::count_if(unitsDef.begin(), unitsDef.end(), [](bool v) { return v; });
+            lossesAtt = std::count_if(unitsAtt.begin(), unitsAtt.end(), [](bool v) { return v; });
+
+            std::cout << "losses DEF: " << lossesDef << " - losses ATT: "  << lossesAtt << std::endl;
         }
         // cell with no units
         else
         {
-            int losses = 0;
-
             // fight
             for(int points : pointsAtt)
             {
                 if(points <= cellPoints)
                 {
                     --gcell0.units;
-                    ++losses;
+                    ++lossesAtt;
                 }
             }
 
             // update player
-            player->SumUnits(-losses);
+            player->SumUnits(-lossesAtt);
 
-            // some unit left
+            // some attacking unit left
             if(gcell0.units)
             {
                 // remove alive attacking units from cell0
-                const int attackingLeft = numUnits - losses;
+                const int attackingLeft = numUnits - lossesAtt;
                 gcell0.units -= attackingLeft;
 
                 // update attacking units
