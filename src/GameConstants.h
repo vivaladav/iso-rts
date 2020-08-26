@@ -24,14 +24,14 @@ constexpr int MAX_UNITS_LEVEL = 2;
 constexpr int COST_NEW_UNIT[] = { 1, 2, 4 };
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
-constexpr float TIME_FORT_CELL = 2.f;
-constexpr float TIME_NEW_UNIT = 2.f;
-constexpr float TIME_UPG_CELL = 2.f;
-constexpr float TIME_UPG_UNIT = 2.f;
+constexpr float TIME_FORT_CELL = 1.f;
+constexpr float TIME_NEW_UNIT = 1.f;
+constexpr float TIME_UPG_CELL = 1.f;
+constexpr float TIME_UPG_UNIT = 1.f;
 
 // values used to calculate attack/defense power of cell
 constexpr int POINTS_CELL_MIN = 1;
-constexpr int POINTS_CELL_MAX = 5;
+constexpr int POINTS_CELL_MAX = 2;
 constexpr int POINTS_CELL_INC = 1;
 
 // values used to calculate attack/defense power of unit
@@ -41,8 +41,8 @@ constexpr int POINTS_UNIT_INC = 1;
 
 // values used to calculate attack/defense power of unit in cell
 constexpr int POINTS_CELL_UNIT_MIN = 1;
-constexpr int POINTS_CELL_UNIT_MAX = 5;
-constexpr int POINTS_CELL_UNIT_INC = 2;
+constexpr int POINTS_CELL_UNIT_MAX = 8;
+constexpr int POINTS_CELL_UNIT_INC = 1;
 
 enum MapLayers
 {

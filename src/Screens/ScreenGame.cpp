@@ -117,9 +117,9 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->CreateLayer(unitsImgs);
 
     // -- GAME MAP --
-    mGameMap = new GameMap(mIsoMap, SIDE, SIDE);
+    mGameMap = new GameMap(game, mIsoMap, SIDE, SIDE);
     mGameMap->Load("data/maps/001.map");
-    mGameMap->SetHomeCell(game);
+    mGameMap->SetHomeCell();
 
     // testing
     Player * p1 = game->GetPlayer(1);

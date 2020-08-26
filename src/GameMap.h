@@ -18,11 +18,11 @@ struct GameMapCell;
 class GameMap
 {
 public:
-    GameMap(IsoMap * isoMap, unsigned int rows, unsigned int cols);
+    GameMap(Game * game, IsoMap * isoMap, unsigned int rows, unsigned int cols);
 
     bool Load(const char * file);
 
-    void SetHomeCell(Game * game);
+    void SetHomeCell();
     void AssignCell(const Cell2D & cell, Player * player);
 
     int GetCellOwner(unsigned int r, unsigned int c) const;
@@ -59,6 +59,8 @@ private:
 
 private:
     std::vector<GameMapCell> mCells;
+
+    Game * mGame = nullptr;
 
     IsoMap * mIsoMap = nullptr;
 
