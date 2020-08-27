@@ -541,11 +541,11 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
         int lossesAtt = 0;
 
+        Player * playerDef = mGame->GetPlayer(gcell1.ownerId);
+
         // cell with units
         if(gcell1.units)
         {
-            Player * playerDef = mGame->GetPlayer(gcell1.ownerId);
-
             // points of defending units
             rgen.SetParameters(POINTS_CELL_UNIT_MIN, POINTS_CELL_UNIT_MAX);
             std::vector<int> pointsDef(gcell1.units);
@@ -591,51 +591,74 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             {
                 const int attackingLeft = numUnits - lossesAtt;
 
-                // some attackers left -> cell conquered
-                if(attackingLeft > 0)
+                // clear def fortification, if any
+                mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r1, c1);
+
+                // update att cell
+                gcell0.units -= numUnits;
+
+                if(gcell0.units)
                 {
-                    // clear fortification, if any
-                    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r1, c1);
-
-                    // update att cell
-                    gcell0.units -= numUnits;
-
-                    if(gcell0.units)
-                    {
-                        const int unitImg0 = DefineUnitType(gcell0);
-                        layerUnits->ReplaceObject(r0, c0, unitImg0, NO_ALIGNMENT);
-                    }
-                    else
-                        layerUnits->ClearObject(r0, c0);
-
-                    // update conquered cell
-                    gcell1.ownerId = gcell0.ownerId;
-                    gcell1.level = 0;
-                    gcell1.fortLevel = 0;
-                    gcell1.unitsLevel = gcell0.unitsLevel;
-                    gcell1.units = attackingLeft;
-
-                    // update conquered cell look
-                    const int cellType = DefineCellType(gcell1);
-                    mIsoMap->SetCellType(ind1, cellType);
-
-                    // replace units in conquered cell
-                    const int unitImg1 = DefineUnitType(gcell1);
-                    layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
-
-                    // update att player
-                    player->SumCells(1);
-                    player->SumTotalCellsLevel(1);
-
-                    // update def player
-                    playerDef->SumCells(-1);
-                    playerDef->SumTotalCellsLevel(-1);
+                    const int unitImg0 = DefineUnitType(gcell0);
+                    layerUnits->ReplaceObject(r0, c0, unitImg0, NO_ALIGNMENT);
                 }
+                else
+                    layerUnits->ClearObject(r0, c0);
+
+                // update conquered cell
+                gcell1.ownerId = gcell0.ownerId;
+                gcell1.level = 0;
+                gcell1.fortLevel = 0;
+                gcell1.unitsLevel = gcell0.unitsLevel;
+                gcell1.units = attackingLeft;
+
+                // update conquered cell look
+                const int cellType = DefineCellType(gcell1);
+                mIsoMap->SetCellType(ind1, cellType);
+
+                // replace units in conquered cell
+                const int unitImg1 = DefineUnitType(gcell1);
+                layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
+
+                // update att player
+                player->SumCells(1);
+                player->SumTotalCellsLevel(1);
+
+                // update def player
+                playerDef->SumCells(-1);
+                playerDef->SumTotalCellsLevel(-1);
             }
             // defenders won
             else
             {
+                const int defLeft = gcell1.units - lossesDef;
 
+                // clear att fortification, if any
+                mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
+
+                // update def cell
+                gcell1.units = defLeft;
+
+                const int unitImg1 = DefineUnitType(gcell1);
+                layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
+
+                // update att player
+                player->SumCells(-1);
+                player->SumTotalCellsLevel(-1);
+
+                // clear attacker cell
+                gcell0.ownerId = -1;
+                gcell0.level = 0;
+                gcell0.fortLevel = 0;
+                gcell0.unitsLevel = 0;
+                gcell0.units = 0;
+
+                // update cell
+                const int cellType = DefineCellType(gcell0);
+                mIsoMap->SetCellType(ind0, cellType);
+
+                // delete units in attacker cell
+                layerUnits->ClearObject(r0, c0);
             }
         }
         // cell with no units
@@ -650,6 +673,13 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                     ++lossesAtt;
                 }
             }
+
+            std::cout << "\nDEF: "  << cellPoints;
+            std::cout << "\nATT: ";
+            for(int a : pointsAtt)
+                std::cout << a << " ";
+
+            std::cout << "\nlosses ATT: "  << lossesAtt << std::endl;
 
             // update player
             player->SumUnits(-lossesAtt);
@@ -691,9 +721,13 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                     const int unitImg1 = DefineUnitType(gcell1);
                     layerUnits->AddObject(r1, c1, unitImg1, NO_ALIGNMENT);
 
-                    // update player
+                    // update att player
                     player->SumCells(1);
                     player->SumTotalCellsLevel(1);
+
+                    // update def player
+                    playerDef->SumCells(-1);
+                    playerDef->SumTotalCellsLevel(-1);
                 }
             }
             // no attacking units left -> defender won
@@ -707,6 +741,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 gcell0.level = 0;
                 gcell0.fortLevel = 0;
                 gcell0.unitsLevel = 0;
+                gcell0.units = 0;
 
                 // update cell
                 const int cellType = DefineCellType(gcell0);
