@@ -647,11 +647,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 player->SumTotalCellsLevel(-1);
 
                 // clear attacker cell
-                gcell0.ownerId = -1;
-                gcell0.level = 0;
-                gcell0.fortLevel = 0;
-                gcell0.unitsLevel = 0;
-                gcell0.units = 0;
+                gcell0.Clear();
 
                 // update cell
                 const int cellType = DefineCellType(gcell0);
@@ -737,11 +733,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
 
                 // clear attacker cell
-                gcell0.ownerId = -1;
-                gcell0.level = 0;
-                gcell0.fortLevel = 0;
-                gcell0.unitsLevel = 0;
-                gcell0.units = 0;
+                gcell0.Clear();
 
                 // update cell
                 const int cellType = DefineCellType(gcell0);
