@@ -10,15 +10,15 @@ namespace game
 class Game;
 class IsoMap;
 class Player;
+class ScreenGame;
 
 struct Cell2D;
-
 struct GameMapCell;
 
 class GameMap
 {
 public:
-    GameMap(Game * game, IsoMap * isoMap, unsigned int rows, unsigned int cols);
+    GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
 
     bool Load(const char * file);
 
@@ -61,6 +61,7 @@ private:
     std::vector<GameMapCell> mCells;
 
     Game * mGame = nullptr;
+    ScreenGame * mScreenGame = nullptr;
 
     IsoMap * mIsoMap = nullptr;
 

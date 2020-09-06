@@ -6,7 +6,9 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
-#include "utilities/UniformDistribution.h"
+#include "Screens/ScreenGame.h"
+
+#include <utilities/UniformDistribution.h>
 
 #include <algorithm>
 #include <cassert>
@@ -95,14 +97,14 @@ enum UnitType : int
     UNIT_NULL
 };
 
-GameMap::GameMap(Game * game, IsoMap * isoMap, unsigned int rows, unsigned int cols)
-    : mCells(rows * cols)
+GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
+    : mCells(isoMap->GetNumRows() * isoMap->GetNumCols())
     , mGame(game)
+    , mScreenGame(sg)
     , mIsoMap(isoMap)
-    , mRows(rows)
-    , mCols(cols)
+    , mRows(isoMap->GetNumRows())
+    , mCols(isoMap->GetNumCols())
 {
-    assert(isoMap);
 }
 
 bool GameMap::Load(const char * file)
@@ -754,6 +756,9 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 layerUnits->ClearObject(r0, c0);
             }
         }
+
+        if(player->GetNumUnits() == 0)
+            mScreenGame->GameOver();
     }
 
     if(moved)

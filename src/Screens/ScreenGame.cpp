@@ -8,6 +8,7 @@
 #include "IsoMap.h"
 #include "Player.h"
 #include "Widgets/CellProgressBar.h"
+#include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelPlayer.h"
 
 #include <core/event/MouseButtonEvent.h>
@@ -117,7 +118,7 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->CreateLayer(unitsImgs);
 
     // -- GAME MAP --
-    mGameMap = new GameMap(game, mIsoMap, SIDE, SIDE);
+    mGameMap = new GameMap(game, this, mIsoMap);
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell();
 
@@ -262,11 +263,11 @@ ScreenGame::ScreenGame(Game * game)
     {
         const Cell2D cell = *(player->GetSelectedCell());
 
-        // check if create is possible
+        // check if upgrade is possible
         if(!mGameMap->CanUpgradeUnit(cell, player))
             return ;
 
-        // start create
+        // start upgrade
         mGameMap->StartUpgradeUnit(cell, player);
 
         // create and init progress bar
@@ -325,6 +326,19 @@ void ScreenGame::Update(float delta)
 void ScreenGame::Render()
 {
     mIsoMap->Render();
+}
+
+void ScreenGame::GameOver()
+{
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    auto panel = new PanelGameOver(GetGame());
+
+    const int x = (rendW - panel->GetWidth()) * 0.5f;
+    const int y = rendH * 0.25f;
+
+    panel->SetPosition(x, y);
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
