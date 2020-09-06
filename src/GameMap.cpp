@@ -633,28 +633,39 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             {
                 const int defLeft = gcell1.units - lossesDef;
 
-                // clear att fortification, if any
-                mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
-
                 // update def cell
                 gcell1.units = defLeft;
 
                 const int unitImg1 = DefineUnitType(gcell1);
                 layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
 
-                // update att player
-                player->SumCells(-1);
-                player->SumTotalCellsLevel(-1);
+                // destroyed all unit in attacking cell
+                if(lossesAtt == gcell0.units)
+                {
+                    // clear att fortification, if any
+                    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
 
-                // clear attacker cell
-                gcell0.Clear();
+                    player->SumCells(-1);
+                    player->SumTotalCellsLevel(-1);
+
+                    gcell0.Clear();
+
+                    // delete units in attacker cell
+                    layerUnits->ClearObject(r0, c0);
+                }
+                // some units left
+                else
+                {
+                    // update units in attacking cell
+                    gcell0.units -= lossesAtt;
+
+                    const int unitImg0 = DefineUnitType(gcell0);
+                    layerUnits->ReplaceObject(r0, c0, unitImg0, NO_ALIGNMENT);
+                }
 
                 // update cell
                 const int cellType = DefineCellType(gcell0);
                 mIsoMap->SetCellType(ind0, cellType);
-
-                // delete units in attacker cell
-                layerUnits->ClearObject(r0, c0);
             }
         }
         // cell with no units
