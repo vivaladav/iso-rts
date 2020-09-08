@@ -140,17 +140,17 @@ bool GameMap::Load(const char * file)
 void GameMap::SetHomeCell()
 {
     const int NUM_CORNERS = 4;
-    Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 0}, {14, 14} };
-
-    const int pick = rand() % NUM_CORNERS;
+    Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 14}, {14, 0} };
 
     const int numPlayers = mGame->GetNumPlayers();
+
+    int pick = rand() % NUM_CORNERS;
 
     for(int p = 0; p < numPlayers; ++p)
     {
         Player * player = mGame->GetPlayer(p);
 
-        const int c = (pick + p) % NUM_CORNERS;
+        const int c = pick % NUM_CORNERS;
         const int ind = corners[c].row * mCols + corners[c].col;
 
         GameMapCell & cell = mCells[ind];
@@ -161,6 +161,9 @@ void GameMap::SetHomeCell()
 
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
+
+        // inc by 2, 1, 2
+        pick += 2 - (p % 2);
     }
 }
 

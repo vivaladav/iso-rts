@@ -55,10 +55,10 @@ ScreenGame::ScreenGame(Game * game)
                                                 "data/img/tile-p3l3.png",
                                                 "data/img/tile-p3l4.png",
                                                 // player 4
-                                                "data/img/tile-p1l1.png",
-                                                "data/img/tile-p1l2.png",
-                                                "data/img/tile-p1l3.png",
-                                                "data/img/tile-p1l4.png"
+                                                "data/img/tile-p4l1.png",
+                                                "data/img/tile-p4l2.png",
+                                                "data/img/tile-p4l3.png",
+                                                "data/img/tile-p4l4.png"
                                                };
 
     mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
@@ -121,22 +121,6 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap = new GameMap(game, this, mIsoMap);
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell();
-
-    // testing
-    Player * p1 = game->GetPlayer(1);
-    mGameMap->AssignCell(Cell2D(1, 1), p1);
-    mGameMap->AssignCell(Cell2D(13, 13), p1);
-    mGameMap->AssignCell(Cell2D(13, 1), p1);
-    mGameMap->AssignCell(Cell2D(1, 13), p1);
-
-    mGameMap->AssignCell(Cell2D(1, 0), p1);
-    mGameMap->CreateUnit(Cell2D(1, 0), p1);
-    mGameMap->AssignCell(Cell2D(0, 13), p1);
-    mGameMap->CreateUnit(Cell2D(0, 13), p1);
-    mGameMap->AssignCell(Cell2D(13, 14), p1);
-    mGameMap->CreateUnit(Cell2D(13, 14), p1);
-    mGameMap->AssignCell(Cell2D(13, 0), p1);
-    mGameMap->CreateUnit(Cell2D(13, 0), p1);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -259,6 +243,7 @@ ScreenGame::ScreenGame(Game * game)
         ClearSelection(player);
     });
 
+    // UNIT UPGRADE
     panel->SetFunctionUnitsUpgrade([this, panel, player]
     {
         const Cell2D cell = *(player->GetSelectedCell());
