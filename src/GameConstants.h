@@ -44,6 +44,14 @@ constexpr int POINTS_CELL_UNIT_MIN = 1;
 constexpr int POINTS_CELL_UNIT_MAX = 8;
 constexpr int POINTS_CELL_UNIT_INC = 1;
 
+constexpr unsigned int PLAYER_COLOR[] =
+{
+    0xb81414ff,
+    0x46b715ff,
+    0x1480b8ff,
+    0xb814b8ff
+};
+
 enum MapLayers
 {
     FORTIFICATIONS = 0,

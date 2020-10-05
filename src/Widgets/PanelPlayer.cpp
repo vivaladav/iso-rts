@@ -35,7 +35,7 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
 
     Label * labelName = new Label(player->GetName().c_str(), fontName, this);
-    labelName->SetColor(0x212121FF);
+    labelName->SetColor(PLAYER_COLOR[player->GetPlayerId()]);
 
     const int marginX0 = 280;
     const int marginX1 = 50;
