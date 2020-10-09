@@ -1,6 +1,8 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
+#include "Player.h"
+#include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 
@@ -32,7 +34,9 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
         Game * game = GetGame();
 
         game->AddPlayer("PLAYER 1", 0);
+
         game->AddPlayer("PLAYER 2", 1);
+        game->GetPlayer(1)->SetAI(new PlayerAI);
 
         game->RequestNextActiveState(StateId::GAME);
     });

@@ -28,9 +28,6 @@ ScreenGame::ScreenGame(Game * game)
 {
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
-    // TODO replace with C++11 random generation
-    srand(time(nullptr));
-
     // -- ISOMETRIC MAP --
     const int SIDE = 15;
     const int TILE_W = 128;
@@ -129,6 +126,9 @@ ScreenGame::ScreenGame(Game * game)
 
         // add start money
         p->SumMoney(START_MONEY);
+
+        if(p->IsAI())
+            mAiPlayers.push_back(p);
     }
 
     // -- UI --

@@ -6,6 +6,8 @@
 namespace game
 {
 
+class PlayerAI;
+
 struct Cell2D;
 
 class Player
@@ -37,12 +39,18 @@ public:
     const Cell2D * GetSelectedCell() const;
     void SetSelectedCell(const Cell2D & cell);
 
+    // -- AI --
+    bool IsAI() const;
+    void SetAI(PlayerAI * ai);
+
 private:
     std::string mName;
 
     std::function<void(int)> mOnNumCellsChanged;
     std::function<void(int)> mOnMoneyChanged;
     std::function<void(int)> mOnNumUnitsChanged;
+
+    PlayerAI * mAI = nullptr;
 
     Cell2D * mCurrSelectedCell = nullptr;
     Cell2D * mSelectedCell = nullptr;
@@ -82,5 +90,8 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 
 inline void Player::ClearSelectedCell() { mCurrSelectedCell = nullptr; }
 inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell; }
+
+inline bool Player::IsAI() const { return mAI != nullptr; }
+inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
 
 } // namespace game

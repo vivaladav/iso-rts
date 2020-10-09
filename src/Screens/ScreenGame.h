@@ -40,6 +40,8 @@ private:
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
 
+    std::vector<Player *> mAiPlayers;
+
     std::vector<CellProgressBar *> mProgressBars;
     std::vector<int> mProgressBarsToDelete;
 
