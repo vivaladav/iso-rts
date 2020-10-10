@@ -35,8 +35,11 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
         game->AddPlayer("PLAYER 1", 0);
 
+        // AI player
         game->AddPlayer("PLAYER 2", 1);
-        game->GetPlayer(1)->SetAI(new PlayerAI);
+        Player * p = game->GetPlayer(1);
+        auto * ai = new PlayerAI(p);
+        p->SetAI(ai);
 
         game->RequestNextActiveState(StateId::GAME);
     });

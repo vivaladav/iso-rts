@@ -37,6 +37,8 @@ private:
 
     void ClearSelection(Player * player);
 
+    void UpdateAI(float delta);
+
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
 
@@ -51,6 +53,9 @@ private:
     struct Cell2D * mPrevSel = nullptr;
 
     float mTimerCoins = TIME_COINS_GEN;
+    float mTimerAI = TIME_AI_MOVE;
+
+    unsigned int mCurrPlayerAI = 0;
 };
 
 } // namespace game

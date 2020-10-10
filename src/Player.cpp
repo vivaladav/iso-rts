@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "Cell2D.h"
+#include "AI/PlayerAI.h"
 
 namespace game
 {
@@ -18,6 +19,7 @@ Player::Player(const char * name, int pid)
 Player::~Player()
 {
     delete mSelectedCell;
+    delete mAI;
 }
 
 void Player::SumCells(int val)

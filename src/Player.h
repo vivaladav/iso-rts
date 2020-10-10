@@ -41,6 +41,7 @@ public:
 
     // -- AI --
     bool IsAI() const;
+    PlayerAI * GetAI();
     void SetAI(PlayerAI * ai);
 
 private:
@@ -92,6 +93,7 @@ inline void Player::ClearSelectedCell() { mCurrSelectedCell = nullptr; }
 inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell; }
 
 inline bool Player::IsAI() const { return mAI != nullptr; }
+inline PlayerAI * Player::GetAI() { return mAI; }
 inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
 
 } // namespace game

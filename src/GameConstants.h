@@ -52,6 +52,8 @@ constexpr unsigned int PLAYER_COLOR[] =
     0xb814b8ff
 };
 
+constexpr float TIME_AI_MOVE = 0.5f;
+
 enum MapLayers
 {
     FORTIFICATIONS = 0,

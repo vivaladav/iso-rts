@@ -7,6 +7,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "AI/PlayerAI.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelPlayer.h"
@@ -306,6 +307,10 @@ void ScreenGame::Update(float delta)
 
     // -- PROGRESS BARS --
     UpdateProgressBars(delta);
+
+    // -- AI --
+    if(!mAiPlayers.empty())
+        UpdateAI(delta);
 }
 
 void ScreenGame::Render()
@@ -429,6 +434,47 @@ void ScreenGame::ClearSelection(Player * player)
     panel->ClearSelectedCell();
 
     mIsoMap->SetLayerVisible(SELECTION, false);
+}
+
+void ScreenGame::UpdateAI(float delta)
+{
+    mTimerAI -= delta;
+
+    if(mTimerAI < 0.f)
+    {
+        // reset current player if needed
+        if(mCurrPlayerAI >= MAX_NUM_PLAYERS)
+            mCurrPlayerAI = 0;
+
+        // current index pooints to an actual AI player
+        if(mCurrPlayerAI < mAiPlayers.size())
+        {
+            PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
+            ai->DecideActions(mGameMap);
+            const ActionAI action = ai->GetNextAction();
+
+            switch(action.aid)
+            {
+                case ACT_NEW_UNIT:
+                {
+
+                }
+                break;
+
+                case ACT_NOP:
+                    std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
+                break;
+
+                default:
+                break;
+            }
+        }
+
+        // move to next player and update timer
+        ++mCurrPlayerAI;
+        mTimerAI = TIME_AI_MOVE;
+    }
+
 }
 
 } // namespace game

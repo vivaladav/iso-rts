@@ -25,6 +25,7 @@ add_executable(
     src/IsoMap.cpp
     src/Player.h
     src/Player.cpp
+    src/AI/ActionAI.h
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp
     src/Screens/Screen.h
