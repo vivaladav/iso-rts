@@ -20,10 +20,14 @@ public:
 
     ActionAI GetNextAction();
 
+    Player * GetPlayer();
+
 private:
     std::priority_queue<ActionAI, std::vector<ActionAI>, ActionAiComp> mActions;
 
     Player * mPlayer = nullptr;
 };
+
+inline Player * PlayerAI::GetPlayer() { return mPlayer; }
 
 } // namespace game

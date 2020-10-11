@@ -450,6 +450,7 @@ void ScreenGame::UpdateAI(float delta)
         if(mCurrPlayerAI < mAiPlayers.size())
         {
             PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
+            Player * player = ai->GetPlayer();
             ai->DecideActions(mGameMap);
             const ActionAI action = ai->GetNextAction();
 
@@ -457,7 +458,26 @@ void ScreenGame::UpdateAI(float delta)
             {
                 case ACT_NEW_UNIT:
                 {
+                    std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
 
+                    const Cell2D cell = action.src;
+
+                    // check if create is possible
+                    if(!mGameMap->CanCreateUnit(cell, player))
+                        return ;
+
+                    // start create
+                    mGameMap->StartCreateUnit(cell, player);
+
+                    // create and init progress bar
+                    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
+
+                    pb->SetFunctionOnCompleted([this, cell, player, pb]
+                    {
+                        mGameMap->CreateUnit(cell, player);
+
+                        mProgressBarsToDelete.push_back(pb->GetWidgetId());
+                    });
                 }
                 break;
 

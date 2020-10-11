@@ -52,6 +52,8 @@ public:
     void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
+    unsigned int GetNumRows() const;
+    unsigned int GetNumCols() const;
 
 private:
     int DefineCellType(const GameMapCell & cell);
@@ -89,5 +91,9 @@ inline const GameMapCell & GameMap::GetCell(unsigned int r, unsigned int c) cons
 {
     return mCells[r * mCols + c];
 }
+
+inline unsigned int GameMap::GetNumRows() const { return mRows; }
+inline unsigned int GameMap::GetNumCols() const { return mCols; }
+
 
 } // namespace game

@@ -21,7 +21,7 @@ constexpr int COST_CELL_FORT[] = { 2, 3, 4 };
 
 constexpr int MAX_CELL_UNITS = 4;
 constexpr int MAX_UNITS_LEVEL = 2;
-constexpr int COST_NEW_UNIT[] = { 1, 2, 4 };
+constexpr int COST_NEW_UNIT[] = { 10, 20, 40 };
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
 constexpr float TIME_FORT_CELL = 1.f;
