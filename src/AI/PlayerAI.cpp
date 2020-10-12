@@ -3,6 +3,7 @@
 #include "GameMap.h"
 #include "Player.h"
 
+#include <algorithm>
 #include <iostream>
 
 namespace game
@@ -53,18 +54,37 @@ void PlayerAI::DecideActions(GameMap * gm)
     for(unsigned int c = 0; c < numOwnCells; ++c)
     {
         // TEST
-       if(mActions.empty() && 0 == ownCells[c].units && gm->CanCreateUnit(ownCellsPos[c], mPlayer))
-       {
-           const ActionAI action =
-           {
-               ACT_NEW_UNIT,
-               1,
-               ownCellsPos[c],
-               ownCellsPos[c]
-           };
+        if(mActions.empty() && 0 == ownCells[c].units && gm->CanCreateUnit(ownCellsPos[c], mPlayer))
+        {
+            const ActionAI action =
+            {
+                ACT_NEW_UNIT,
+                1,
+                ownCellsPos[c],
+                ownCellsPos[c]
+            };
 
-           mActions.push(action);
-       }
+
+            // insert action if not already in the queue
+            bool found = false;
+
+            for(ActionAI & a : mActions)
+            {
+                if(a == action)
+                {
+                    found = true;
+
+                    // update queue
+                    a.priority = action.priority;
+                    std::make_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+
+                    break;
+                }
+            }
+
+            if(!found)
+                PushAction(action);
+        }
     }
 
     std::cout << "actions:" << mActions.size() << std::endl;
@@ -76,11 +96,24 @@ ActionAI PlayerAI::GetNextAction()
     if(mActions.empty())
         return { ACT_NOP, 0, {0,0}, {0,0} };
 
-    // return top action after removing it from the queue
-    ActionAI action = mActions.top();
-    mActions.pop();
+    // return top action
+    return PopAction();
+}
 
-    return action;
+void PlayerAI::PushAction(const ActionAI & action)
+{
+    mActions.emplace_back(action);
+    std::push_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+}
+
+ActionAI PlayerAI::PopAction()
+{
+    std::pop_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+
+    const ActionAI elem = mActions.back();
+    mActions.pop_back();
+
+    return elem;
 }
 
 } // namespace game

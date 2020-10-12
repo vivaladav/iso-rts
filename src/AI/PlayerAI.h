@@ -2,7 +2,6 @@
 
 #include "ActionAI.h"
 
-#include <queue>
 #include <vector>
 
 namespace game
@@ -23,7 +22,11 @@ public:
     Player * GetPlayer();
 
 private:
-    std::priority_queue<ActionAI, std::vector<ActionAI>, ActionAiComp> mActions;
+    void PushAction(const ActionAI & action);
+    ActionAI PopAction();
+
+private:
+    std::vector<ActionAI> mActions;
 
     Player * mPlayer = nullptr;
 };

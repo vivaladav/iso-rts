@@ -20,7 +20,14 @@ struct ActionAI
     int priority;
     Cell2D src;
     Cell2D dst;
+
+    friend bool operator==(const ActionAI & a1, const ActionAI & a2);
 };
+
+inline bool operator==(const ActionAI & a1, const ActionAI & a2)
+{
+    return a1.aid == a2.aid && a1.src == a2.src && a1.dst == a2.dst;
+}
 
 struct ActionAiComp
 {
