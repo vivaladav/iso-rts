@@ -92,26 +92,30 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->SetLayerVisible(SELECTION, false);
 
     // UNITS
-    const std::vector<std::string> unitsImgs = {
-                                                // PLAYER 1 - LEVEL 1
-                                                "data/img/unit1-p1l1.png",
-                                                "data/img/unit2-p1l1.png",
-                                                "data/img/unit3-p1l1.png",
-                                                "data/img/unit4-p1l1.png",
-                                                // PLAYER 1 - LEVEL 2
-                                                "data/img/unit1-p1l2.png",
-                                                "data/img/unit2-p1l2.png",
-                                                "data/img/unit3-p1l2.png",
-                                                "data/img/unit4-p1l2.png",
-                                                // PLAYER 1 - LEVEL 3
-                                                "data/img/unit1-p1l3.png",
-                                                "data/img/unit2-p1l3.png",
-                                                "data/img/unit3-p1l3.png",
-                                                "data/img/unit4-p1l3.png",
+    const std::vector<std::string> unitsImgs =
+    {
+        // PLAYER 1 - LEVEL 1
+        "data/img/unit1-p1l1.png",
+        "data/img/unit2-p1l1.png",
+        "data/img/unit3-p1l1.png",
+        "data/img/unit4-p1l1.png",
+        // PLAYER 1 - LEVEL 2
+        "data/img/unit1-p1l2.png",
+        "data/img/unit2-p1l2.png",
+        "data/img/unit3-p1l2.png",
+        "data/img/unit4-p1l2.png",
+        // PLAYER 1 - LEVEL 3
+        "data/img/unit1-p1l3.png",
+        "data/img/unit2-p1l3.png",
+        "data/img/unit3-p1l3.png",
+        "data/img/unit4-p1l3.png",
 
-                                                // PLAYER 2 - LEVEL 1
-                                                "data/img/unit1-p2l1.png",
-                                               };
+        // PLAYER 2 - LEVEL 1
+        "data/img/unit1-p2l1.png",
+        "data/img/unit2-p2l1.png",
+        "data/img/unit3-p2l1.png",
+        "data/img/unit4-p2l1.png"
+    };
 
     mIsoMap->CreateLayer(unitsImgs);
 

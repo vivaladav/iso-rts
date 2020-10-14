@@ -54,7 +54,7 @@ void PlayerAI::DecideActions(GameMap * gm)
     for(unsigned int c = 0; c < numOwnCells; ++c)
     {
         // TEST
-        if(mActions.empty() && 0 == ownCells[c].units && gm->CanCreateUnit(ownCellsPos[c], mPlayer))
+        if(gm->CanCreateUnit(ownCellsPos[c], mPlayer))
         {
             const ActionAI action =
             {
