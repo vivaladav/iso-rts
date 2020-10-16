@@ -1,5 +1,6 @@
 #include "PlayerAI.h"
 
+#include "GameConstants.h"
 #include "GameMap.h"
 #include "Player.h"
 
@@ -34,7 +35,6 @@ void PlayerAI::DecideActions(GameMap * gm)
                 ownCells.push_back(cell);
             else if(cell.ownerId != -1)
                 enemyCells.push_back(cell);
-
         }
     }
 
@@ -51,7 +51,7 @@ void PlayerAI::DecideActions(GameMap * gm)
         // TEST
         if(gm->CanCreateUnit(pos, mPlayer))
         {
-            const int actPriority = MakeCellPriority(ownCells[c], enemyCells);
+            const int actPriority = MakeCellPriority(ownCells[c], enemyCells, gm);
 
             const ActionAI action =
             {
@@ -79,7 +79,11 @@ void PlayerAI::DecideActions(GameMap * gm)
             }
 
             if(!found)
+            {
+                std::cout << "NEW ACTION " << action.aid
+                          << " - priority: " << action.priority << std::endl;
                 PushAction(action);
+            }
         }
     }
 
@@ -112,16 +116,51 @@ ActionAI PlayerAI::PopAction()
     return elem;
 }
 
-int PlayerAI::MakeCellPriority(const GameMapCell & cell, const std::vector<GameMapCell> & enemyCells) const
+int PlayerAI::MakeCellPriority(const GameMapCell & cell,
+                               const std::vector<GameMapCell> & enemyCells,
+                               const GameMap * gm) const
 {
+    int priority = 0;
+
+    // distance from enemy
     const unsigned int numEnemyCells = enemyCells.size();
+
+    const unsigned int rows = gm->GetNumRows();
+    const unsigned int cols = gm->GetNumCols();
+    const int maxDist = (rows - 1) + (cols - 1);
+
+    int minDist = rows * cols;
 
     for(unsigned e = 0; e < numEnemyCells; ++e)
     {
-        // TODO find min Manhattan distance to enemy
+        const int dist = abs(enemyCells[e].row - cell.row) +
+                         abs(enemyCells[e].col - cell.col);
+
+        if(dist < minDist)
+            minDist = dist;
     }
 
-    return 0;
+    priority += 100 * (maxDist - minDist) / maxDist;
+
+    // add units val
+    const int maxPriorityUnits = 10;
+    const int incPriorityUnits = maxPriorityUnits / MAX_CELL_UNITS;
+
+    priority += maxPriorityUnits - (incPriorityUnits * cell.units);
+
+    // add fortification val
+    const int maxPriorityFort = 8;
+    const int incPriorityFort = maxPriorityFort / MAX_CELL_FORT_LEVEL;
+
+    priority += maxPriorityFort - (incPriorityFort * cell.fortLevel);
+
+    // add cell level val
+    const int maxPriorityLevel = 8;
+    const int incPriorityLevel = maxPriorityLevel / MAX_CELL_LEVEL;
+
+    priority += maxPriorityLevel - (incPriorityLevel * cell.fortLevel);
+
+    return priority;
 }
 
 } // namespace game
