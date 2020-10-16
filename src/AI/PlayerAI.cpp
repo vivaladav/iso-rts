@@ -22,9 +22,7 @@ void PlayerAI::DecideActions(GameMap * gm)
 
     // -- populate own and enemy cells --
     std::vector<GameMapCell> ownCells;
-    std::vector<Cell2D> ownCellsPos;
     std::vector<GameMapCell> enemyCells;
-    std::vector<Cell2D> enemyCellsPos;
 
     for(unsigned int r = 0; r < rows; ++r)
     {
@@ -33,15 +31,10 @@ void PlayerAI::DecideActions(GameMap * gm)
             const GameMapCell & cell = gm->GetCell(r, c);
 
             if(cell.ownerId == mPlayer->GetPlayerId())
-            {
                 ownCells.push_back(cell);
-                ownCellsPos.emplace_back(r, c);
-            }
             else if(cell.ownerId != -1)
-            {
                 enemyCells.push_back(cell);
-                enemyCellsPos.emplace_back(r, c);
-            }
+
         }
     }
 
@@ -53,17 +46,20 @@ void PlayerAI::DecideActions(GameMap * gm)
 
     for(unsigned int c = 0; c < numOwnCells; ++c)
     {
+        Cell2D pos {ownCells[c].row, ownCells[c].col};
+
         // TEST
-        if(gm->CanCreateUnit(ownCellsPos[c], mPlayer))
+        if(gm->CanCreateUnit(pos, mPlayer))
         {
+            const int actPriority = MakeCellPriority(ownCells[c], enemyCells);
+
             const ActionAI action =
             {
                 ACT_NEW_UNIT,
-                1,
-                ownCellsPos[c],
-                ownCellsPos[c]
+                actPriority,
+                pos,
+                pos
             };
-
 
             // insert action if not already in the queue
             bool found = false;
@@ -114,6 +110,18 @@ ActionAI PlayerAI::PopAction()
     mActions.pop_back();
 
     return elem;
+}
+
+int PlayerAI::MakeCellPriority(const GameMapCell & cell, const std::vector<GameMapCell> & enemyCells) const
+{
+    const unsigned int numEnemyCells = enemyCells.size();
+
+    for(unsigned e = 0; e < numEnemyCells; ++e)
+    {
+        // TODO find min Manhattan distance to enemy
+    }
+
+    return 0;
 }
 
 } // namespace game

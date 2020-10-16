@@ -105,6 +105,18 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     , mRows(isoMap->GetNumRows())
     , mCols(isoMap->GetNumCols())
 {
+    int index = 0;
+
+    for(int r = 0; r < isoMap->GetNumRows(); ++r)
+    {
+        for(int c = 0; c < isoMap->GetNumCols(); ++c)
+        {
+            mCells[index].row = r;
+            mCells[index].col = c;
+
+            ++index;
+        }
+    }
 }
 
 bool GameMap::Load(const char * file)

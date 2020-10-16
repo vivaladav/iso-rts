@@ -5,6 +5,8 @@ namespace game
 
 struct GameMapCell
 {
+    int row = 0;
+    int col = 0;
     int ownerId = -1;
     int level = 0;
     int fortLevel = 0;

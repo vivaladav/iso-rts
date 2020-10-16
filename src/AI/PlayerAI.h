@@ -10,6 +10,8 @@ namespace game
 class GameMap;
 class Player;
 
+struct GameMapCell;
+
 class PlayerAI
 {
 public:
@@ -24,6 +26,8 @@ public:
 private:
     void PushAction(const ActionAI & action);
     ActionAI PopAction();
+
+    int MakeCellPriority(const GameMapCell & cell, const std::vector<GameMapCell> & enemyCells) const;
 
 private:
     std::vector<ActionAI> mActions;
