@@ -12,8 +12,11 @@ namespace utilities
 class UniformDistribution
 {
 public:
+    static const int SEED_RANDOM = 0;
+
+public:
 	// values will be generated in the range [min, max]
-	UniformDistribution(int min, int max, int seed = 0);
+    UniformDistribution(int min, int max, int seed = SEED_RANDOM);
 
 	void SetParameters(int min, int max);
 
