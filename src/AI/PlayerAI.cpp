@@ -46,45 +46,39 @@ void PlayerAI::DecideActions(GameMap * gm)
 
     for(unsigned int c = 0; c < numOwnCells; ++c)
     {
-        Cell2D pos {ownCells[c].row, ownCells[c].col};
+        const Cell2D pos {ownCells[c].row, ownCells[c].col};
 
-        // TEST
+        std::vector<AIActionId> actions;
+
+        // init possible actions
+        if(gm->CanFortifyCell(pos, mPlayer))
+            actions.emplace_back(ACT_CELL_FORTIFY);
+        if(gm->CanUpgradeCell(pos, mPlayer))
+            actions.emplace_back(ACT_CELL_UPGRADE);
         if(gm->CanCreateUnit(pos, mPlayer))
+            actions.emplace_back(ACT_NEW_UNIT);
+        if(gm->CanUpgradeUnit(pos, mPlayer))
+            actions.emplace_back(ACT_UNIT_UPGRADE);
+        // TODO handle unit move
+//        if(ownCells[c].units > 0)
+//            actions.emplace_back(ACT_UNIT_MOVE);
+
+        // no action available for now -> skip this cell
+        if(actions.empty())
+            continue;
+
+        const AIActionId actId = DecideCellAction(actions);
+        const int actPriority = MakeCellPriority(ownCells[c], enemyCells, gm);
+
+        ActionAI action =
         {
-            const int actPriority = MakeCellPriority(ownCells[c], enemyCells, gm);
+            actId,
+            actPriority,
+            pos,
+            pos
+        };
 
-            const ActionAI action =
-            {
-                ACT_NEW_UNIT,
-                actPriority,
-                pos,
-                pos
-            };
-
-            // insert action if not already in the queue
-            bool found = false;
-
-            for(ActionAI & a : mActions)
-            {
-                if(a == action)
-                {
-                    found = true;
-
-                    // update queue
-                    a.priority = action.priority;
-                    std::make_heap(mActions.begin(), mActions.end(), ActionAiComp{});
-
-                    break;
-                }
-            }
-
-            if(!found)
-            {
-                std::cout << "NEW ACTION " << action.aid
-                          << " - priority: " << action.priority << std::endl;
-                PushAction(action);
-            }
-        }
+        AddNewAction(action);
     }
 
     std::cout << "actions:" << mActions.size() << std::endl;
@@ -116,6 +110,17 @@ ActionAI PlayerAI::PopAction()
     return elem;
 }
 
+AIActionId PlayerAI::DecideCellAction(const std::vector<AIActionId> & actions)
+{
+    // test logic, to replace with proper code
+    auto it = std::find(actions.begin(), actions.end(), ACT_NEW_UNIT);
+
+    if(it != actions.end())
+        return ACT_NEW_UNIT;
+    else
+        return ACT_NOP;
+}
+
 int PlayerAI::MakeCellPriority(const GameMapCell & cell,
                                const std::vector<GameMapCell> & enemyCells,
                                const GameMap * gm) const
@@ -143,24 +148,53 @@ int PlayerAI::MakeCellPriority(const GameMapCell & cell,
     priority += 100 * (maxDist - minDist) / maxDist;
 
     // add units val
-    const int maxPriorityUnits = 10;
+    const int maxPriorityUnits = 52;
     const int incPriorityUnits = maxPriorityUnits / MAX_CELL_UNITS;
 
     priority += maxPriorityUnits - (incPriorityUnits * cell.units);
 
     // add fortification val
-    const int maxPriorityFort = 8;
+    const int maxPriorityFort = 24;
     const int incPriorityFort = maxPriorityFort / MAX_CELL_FORT_LEVEL;
 
     priority += maxPriorityFort - (incPriorityFort * cell.fortLevel);
 
     // add cell level val
-    const int maxPriorityLevel = 8;
+    const int maxPriorityLevel = 24;
     const int incPriorityLevel = maxPriorityLevel / MAX_CELL_LEVEL;
 
     priority += maxPriorityLevel - (incPriorityLevel * cell.fortLevel);
 
     return priority;
+}
+
+void PlayerAI::AddNewAction(const ActionAI & action)
+{
+    // insert action if not already in the queue
+    bool found = false;
+
+    for(ActionAI & a : mActions)
+    {
+        // action already in queue -> update its priority
+        if(a == action)
+        {
+            found = true;
+
+            // update queue
+            a.priority = action.priority;
+            std::make_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+
+            break;
+        }
+    }
+
+    // add new action
+    if(!found)
+    {
+        std::cout << "NEW ACTION " << action.aid
+                  << " - priority: " << action.priority << std::endl;
+        PushAction(action);
+    }
 }
 
 } // namespace game

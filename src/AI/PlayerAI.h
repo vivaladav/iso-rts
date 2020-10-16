@@ -27,9 +27,13 @@ private:
     void PushAction(const ActionAI & action);
     ActionAI PopAction();
 
+    AIActionId DecideCellAction(const std::vector<AIActionId> & actions);
+
     int MakeCellPriority(const GameMapCell & cell,
                          const std::vector<GameMapCell> & enemyCells,
                          const GameMap * gm) const;
+
+    void AddNewAction(const ActionAI & action);
 
 private:
     std::vector<ActionAI> mActions;
