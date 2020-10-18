@@ -114,7 +114,17 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/unit1-p2l1.png",
         "data/img/unit2-p2l1.png",
         "data/img/unit3-p2l1.png",
-        "data/img/unit4-p2l1.png"
+        "data/img/unit4-p2l1.png",
+        // PLAYER 2 - LEVEL 2
+        "data/img/unit1-p2l2.png",
+        "data/img/unit2-p2l2.png",
+        "data/img/unit3-p2l2.png",
+        "data/img/unit4-p2l2.png"
+        // PLAYER 2 - LEVEL 3
+        "data/img/unit1-p2l3.png",
+        "data/img/unit2-p2l3.png",
+        "data/img/unit3-p2l3.png",
+        "data/img/unit4-p2l3.png"
     };
 
     mIsoMap->CreateLayer(unitsImgs);
