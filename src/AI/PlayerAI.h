@@ -17,7 +17,9 @@ class PlayerAI
 public:
     PlayerAI(Player * player);
 
-    void DecideActions(GameMap * gm);
+    void SetGameMap(GameMap * gm);
+
+    void DecideActions();
 
     ActionAI GetNextAction();
 
@@ -28,15 +30,13 @@ private:
     ActionAI PopAction();
 
     std::vector<int> FindCellDistances(const std::vector<GameMapCell> & ownCells,
-                                       const std::vector<GameMapCell> & enemyCells,
-                                       const GameMap * gm);
+                                       const std::vector<GameMapCell> & enemyCells);
 
     AIActionId DecideCellAction(const GameMapCell & cell,
                                 const std::vector<AIActionId> & actions,
                                 int enemyDist);
 
     int MakeCellPriority(const GameMapCell & cell,
-                         const GameMap * gm,
                          int enemyDist) const;
 
     void AddNewAction(const ActionAI & action);
@@ -45,7 +45,11 @@ private:
     std::vector<ActionAI> mActions;
 
     Player * mPlayer = nullptr;
+
+    GameMap * mGm = nullptr;
 };
+
+inline void PlayerAI::SetGameMap(GameMap * gm) { mGm = gm; }
 
 inline Player * PlayerAI::GetPlayer() { return mPlayer; }
 

@@ -4,6 +4,8 @@
 #include "GameMap.h"
 #include "Player.h"
 
+#include <utilities/LoadedDie.h>
+
 #include <algorithm>
 #include <iostream>
 
@@ -16,10 +18,10 @@ PlayerAI::PlayerAI(Player * player)
 
 }
 
-void PlayerAI::DecideActions(GameMap * gm)
+void PlayerAI::DecideActions()
 {
-    const unsigned int rows = gm->GetNumRows();
-    const unsigned int cols = gm->GetNumCols();
+    const unsigned int rows = mGm->GetNumRows();
+    const unsigned int cols = mGm->GetNumCols();
 
     // -- populate own and enemy cells --
     std::vector<GameMapCell> ownCells;
@@ -29,7 +31,7 @@ void PlayerAI::DecideActions(GameMap * gm)
     {
         for(unsigned int c = 0; c < cols; ++c)
         {
-            const GameMapCell & cell = gm->GetCell(r, c);
+            const GameMapCell & cell = mGm->GetCell(r, c);
 
             if(cell.ownerId == mPlayer->GetPlayerId())
                 ownCells.push_back(cell);
@@ -41,7 +43,7 @@ void PlayerAI::DecideActions(GameMap * gm)
     std::cout << "own cells:" << ownCells.size() << std::endl;
     std::cout << "enemy cells:" << enemyCells.size() << std::endl;
 
-    std::vector<int> enemyDist = FindCellDistances(ownCells, enemyCells, gm);
+    std::vector<int> enemyDist = FindCellDistances(ownCells, enemyCells);
 
     // -- visit own cells --
     const unsigned int numOwnCells = ownCells.size();
@@ -53,13 +55,13 @@ void PlayerAI::DecideActions(GameMap * gm)
         std::vector<AIActionId> actions;
 
         // init possible actions
-        if(gm->CanFortifyCell(pos, mPlayer))
+        if(mGm->CanFortifyCell(pos, mPlayer))
             actions.emplace_back(ACT_CELL_FORTIFY);
-        if(gm->CanUpgradeCell(pos, mPlayer))
+        if(mGm->CanUpgradeCell(pos, mPlayer))
             actions.emplace_back(ACT_CELL_UPGRADE);
-        if(gm->CanCreateUnit(pos, mPlayer))
+        if(mGm->CanCreateUnit(pos, mPlayer))
             actions.emplace_back(ACT_NEW_UNIT);
-        if(gm->CanUpgradeUnit(pos, mPlayer))
+        if(mGm->CanUpgradeUnit(pos, mPlayer))
             actions.emplace_back(ACT_UNIT_UPGRADE);
         // TODO handle unit move
 //        if(ownCells[c].units > 0)
@@ -70,7 +72,8 @@ void PlayerAI::DecideActions(GameMap * gm)
             continue;
 
         const AIActionId actId = DecideCellAction(ownCells[c], actions, enemyDist[c]);
-        const int actPriority = MakeCellPriority(ownCells[c], gm, enemyDist[c]);
+        std::cout << "ACTION " << actId << std::endl;
+        const int actPriority = MakeCellPriority(ownCells[c], enemyDist[c]);
 
         ActionAI action =
         {
@@ -113,13 +116,12 @@ ActionAI PlayerAI::PopAction()
 }
 
 std::vector<int> PlayerAI::FindCellDistances(const std::vector<GameMapCell> & ownCells,
-                                             const std::vector<GameMapCell> & enemyCells,
-                                             const GameMap * gm)
+                                             const std::vector<GameMapCell> & enemyCells)
 {
     std::vector<int> dist;
     dist.reserve(ownCells.size());
 
-    const unsigned int min = gm->GetNumRows() * gm->GetNumCols();
+    const unsigned int min = mGm->GetNumRows() * mGm->GetNumCols();
 
     for(const GameMapCell & oCell : ownCells)
     {
@@ -143,21 +145,13 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
                                       const std::vector<AIActionId> & actions,
                                       int enemyDist)
 {
-    // test logic, to replace with proper code
-    auto it = std::find(actions.begin(), actions.end(), ACT_NEW_UNIT);
-
-    if(it != actions.end())
-        return ACT_NEW_UNIT;
-    else
-        return ACT_NOP;
-
-    // actual logic - WIP
+    const unsigned int numActions = actions.size();
 
     // -- find consts and most expensive action --
     int maxCost = 0;
 
     std::vector<int> costs;
-    costs.reserve(actions.size());
+    costs.reserve(numActions);
 
     for(AIActionId aid : actions)
     {
@@ -190,17 +184,84 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
 
         costs.emplace_back(cost);
     }
+
+    //  -- distance from enemy --
+    const unsigned int rows = mGm->GetNumRows();
+    const unsigned int cols = mGm->GetNumCols();
+    const int maxDist = (rows - 1) + (cols - 1);
+
+    const float distScore = 100.f * (maxDist - enemyDist) / maxDist;
+
+    // -- define probability for each action --
+    std::vector<float> probs;
+    probs.reserve(numActions);
+
+    for(unsigned int i = 0; i < numActions; ++i)
+    {
+        const AIActionId aid = actions[i];
+
+        float prob = 0.f;
+
+        // add cost factor
+        prob += 100.f * (maxCost - costs[i]) / maxCost;
+
+        // add action dependent factors
+        switch(aid)
+        {
+            case ACT_NEW_UNIT:
+            {
+                prob += distScore;
+
+                prob += 100.f * (MAX_CELL_UNITS - cell.units) / MAX_CELL_UNITS;
+            }
+            break;
+
+            case ACT_UNIT_UPGRADE:
+            {
+                prob += distScore * 0.75f;
+
+                prob += 100.f * (MAX_UNITS_LEVEL - cell.unitsLevel) / MAX_UNITS_LEVEL;
+            }
+            break;
+
+            case ACT_CELL_FORTIFY:
+            {
+                prob += distScore * 0.75f;
+
+                prob += 100.f * (MAX_CELL_FORT_LEVEL - cell.fortLevel) / MAX_CELL_FORT_LEVEL;
+            }
+            break;
+
+            case ACT_CELL_UPGRADE:
+            {
+                // cell upgrade should be more likely when far from enemiesb
+                prob += 100.f - distScore;
+
+                prob += 100.f * (MAX_CELL_LEVEL - cell.level) / MAX_CELL_LEVEL;
+            }
+            break;
+
+            default:
+            break;
+        }
+
+        probs.emplace_back(prob);
+
+        std::cout << "ACTION " << aid << " - prob: " << prob << std::endl;
+    }
+
+    lib::utilities::LoadedDie die(probs);
+
+    return actions[die.GetNextValue()];
 }
 
-int PlayerAI::MakeCellPriority(const GameMapCell & cell,
-                               const GameMap * gm,
-                               int enemyDist) const
+int PlayerAI::MakeCellPriority(const GameMapCell & cell, int enemyDist) const
 {
     int priority = 0;
 
     // distance from enemy
-    const unsigned int rows = gm->GetNumRows();
-    const unsigned int cols = gm->GetNumCols();
+    const unsigned int rows = mGm->GetNumRows();
+    const unsigned int cols = mGm->GetNumCols();
     const int maxDist = (rows - 1) + (cols - 1);
 
     priority += 100 * (maxDist - enemyDist) / maxDist;

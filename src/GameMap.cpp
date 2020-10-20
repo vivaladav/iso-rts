@@ -834,7 +834,7 @@ int GameMap::DefineUnitType(const GameMapCell & cell)
         break;
 
         case 1:
-            type = P2_1UL1 + cell.units - 1;
+            type = P2_1UL1 + (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
         break;
 
         case 2:
