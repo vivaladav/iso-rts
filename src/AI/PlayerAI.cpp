@@ -41,6 +41,8 @@ void PlayerAI::DecideActions(GameMap * gm)
     std::cout << "own cells:" << ownCells.size() << std::endl;
     std::cout << "enemy cells:" << enemyCells.size() << std::endl;
 
+    std::vector<int> enemyDist = FindCellDistances(ownCells, enemyCells, gm);
+
     // -- visit own cells --
     const unsigned int numOwnCells = ownCells.size();
 
@@ -67,8 +69,8 @@ void PlayerAI::DecideActions(GameMap * gm)
         if(actions.empty())
             continue;
 
-        const AIActionId actId = DecideCellAction(actions);
-        const int actPriority = MakeCellPriority(ownCells[c], enemyCells, gm);
+        const AIActionId actId = DecideCellAction(ownCells[c], actions, enemyDist[c]);
+        const int actPriority = MakeCellPriority(ownCells[c], gm, enemyDist[c]);
 
         ActionAI action =
         {
@@ -110,7 +112,36 @@ ActionAI PlayerAI::PopAction()
     return elem;
 }
 
-AIActionId PlayerAI::DecideCellAction(const std::vector<AIActionId> & actions)
+std::vector<int> PlayerAI::FindCellDistances(const std::vector<GameMapCell> & ownCells,
+                                             const std::vector<GameMapCell> & enemyCells,
+                                             const GameMap * gm)
+{
+    std::vector<int> dist;
+    dist.reserve(ownCells.size());
+
+    const unsigned int min = gm->GetNumRows() * gm->GetNumCols();
+
+    for(const GameMapCell & oCell : ownCells)
+    {
+        int minDist = min;
+
+        for(const GameMapCell & eCell : enemyCells)
+        {
+            const int dist = abs(eCell.row - oCell.row) + abs(eCell.col - oCell.col);
+
+            if(dist < minDist)
+                minDist = dist;
+        }
+
+        dist.emplace_back(minDist);
+    }
+
+    return dist;
+}
+
+AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
+                                      const std::vector<AIActionId> & actions,
+                                      int enemyDist)
 {
     // test logic, to replace with proper code
     auto it = std::find(actions.begin(), actions.end(), ACT_NEW_UNIT);
@@ -119,33 +150,60 @@ AIActionId PlayerAI::DecideCellAction(const std::vector<AIActionId> & actions)
         return ACT_NEW_UNIT;
     else
         return ACT_NOP;
+
+    // actual logic - WIP
+
+    // -- find consts and most expensive action --
+    int maxCost = 0;
+
+    std::vector<int> costs;
+    costs.reserve(actions.size());
+
+    for(AIActionId aid : actions)
+    {
+        int cost = 0;
+
+        switch(aid)
+        {
+            case ACT_NEW_UNIT:
+                cost = COST_NEW_UNIT[cell.units];
+            break;
+
+            case ACT_UNIT_UPGRADE:
+                cost = COST_UNIT_UPGRADE[cell.unitsLevel];
+            break;
+
+            case ACT_CELL_FORTIFY:
+                cost = COST_CELL_FORT[cell.fortLevel];
+            break;
+
+            case ACT_CELL_UPGRADE:
+                cost = COST_CELL_UPGRADE[cell.level];
+            break;
+
+            default:
+            break;
+        }
+
+        if(cost > maxCost)
+            maxCost = cost;
+
+        costs.emplace_back(cost);
+    }
 }
 
 int PlayerAI::MakeCellPriority(const GameMapCell & cell,
-                               const std::vector<GameMapCell> & enemyCells,
-                               const GameMap * gm) const
+                               const GameMap * gm,
+                               int enemyDist) const
 {
     int priority = 0;
 
     // distance from enemy
-    const unsigned int numEnemyCells = enemyCells.size();
-
     const unsigned int rows = gm->GetNumRows();
     const unsigned int cols = gm->GetNumCols();
     const int maxDist = (rows - 1) + (cols - 1);
 
-    int minDist = rows * cols;
-
-    for(unsigned e = 0; e < numEnemyCells; ++e)
-    {
-        const int dist = abs(enemyCells[e].row - cell.row) +
-                         abs(enemyCells[e].col - cell.col);
-
-        if(dist < minDist)
-            minDist = dist;
-    }
-
-    priority += 100 * (maxDist - minDist) / maxDist;
+    priority += 100 * (maxDist - enemyDist) / maxDist;
 
     // add units val
     const int maxPriorityUnits = 52;

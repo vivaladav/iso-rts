@@ -27,11 +27,17 @@ private:
     void PushAction(const ActionAI & action);
     ActionAI PopAction();
 
-    AIActionId DecideCellAction(const std::vector<AIActionId> & actions);
+    std::vector<int> FindCellDistances(const std::vector<GameMapCell> & ownCells,
+                                       const std::vector<GameMapCell> & enemyCells,
+                                       const GameMap * gm);
+
+    AIActionId DecideCellAction(const GameMapCell & cell,
+                                const std::vector<AIActionId> & actions,
+                                int enemyDist);
 
     int MakeCellPriority(const GameMapCell & cell,
-                         const std::vector<GameMapCell> & enemyCells,
-                         const GameMap * gm) const;
+                         const GameMap * gm,
+                         int enemyDist) const;
 
     void AddNewAction(const ActionAI & action);
 
