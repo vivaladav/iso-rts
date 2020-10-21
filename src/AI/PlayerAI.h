@@ -41,6 +41,10 @@ private:
 
     void AddNewAction(const ActionAI & action);
 
+    bool CanCellMove(const GameMapCell & cell) const;
+    Cell2D DecideMoveDestination(const GameMapCell & cell) const;
+    int DecideNumUnitsToMove(const GameMapCell & cell) const;
+
 private:
     std::vector<ActionAI> mActions;
 

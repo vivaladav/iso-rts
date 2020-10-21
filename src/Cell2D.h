@@ -5,10 +5,11 @@ namespace game
 
 struct Cell2D
 {
+    Cell2D() : row(0), col(0) {}
     Cell2D(int r, int c) : row(r), col(c) {}
 
-    int row = 0;
-    int col = 0;
+    int row;
+    int col;
 
     friend bool operator==(const Cell2D & c1, const Cell2D & c2);
 };

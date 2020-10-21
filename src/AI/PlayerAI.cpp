@@ -63,24 +63,33 @@ void PlayerAI::DecideActions()
             actions.emplace_back(ACT_NEW_UNIT);
         if(mGm->CanUpgradeUnit(pos, mPlayer))
             actions.emplace_back(ACT_UNIT_UPGRADE);
-        // TODO handle unit move
-//        if(ownCells[c].units > 0)
-//            actions.emplace_back(ACT_UNIT_MOVE);
+        if(CanCellMove(ownCells[c]))
+            actions.emplace_back(ACT_UNIT_MOVE);
 
         // no action available for now -> skip this cell
         if(actions.empty())
             continue;
 
         const AIActionId actId = DecideCellAction(ownCells[c], actions, enemyDist[c]);
-        std::cout << "ACTION " << actId << std::endl;
-        const int actPriority = MakeCellPriority(ownCells[c], enemyDist[c]);
+        const int cellPriority = MakeCellPriority(ownCells[c], enemyDist[c]);
+        std::cout << "ACTION " << actId << " - cell priority:" << cellPriority << std::endl;
+
+        Cell2D dest = pos;
+        int units = 0;
+
+        if(actId == ACT_UNIT_MOVE)
+        {
+            dest = DecideMoveDestination(ownCells[c]);
+            units = DecideNumUnitsToMove(ownCells[c]);
+        }
 
         ActionAI action =
         {
-            actId,
-            actPriority,
             pos,
-            pos
+            dest,
+            actId,
+            cellPriority,
+            units
         };
 
         AddNewAction(action);
@@ -93,7 +102,7 @@ ActionAI PlayerAI::GetNextAction()
 {
     // return NOP action if queue is empty
     if(mActions.empty())
-        return { ACT_NOP, 0, {0,0}, {0,0} };
+        return { {0,0}, {0,0}, ACT_NOP, 0, 0 };
 
     // return top action
     return PopAction();
@@ -241,6 +250,12 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             }
             break;
 
+            case ACT_UNIT_MOVE:
+            {
+                prob += distScore * 0.5f;
+            }
+            break;
+
             default:
             break;
         }
@@ -314,6 +329,124 @@ void PlayerAI::AddNewAction(const ActionAI & action)
                   << " - priority: " << action.priority << std::endl;
         PushAction(action);
     }
+}
+
+bool PlayerAI::CanCellMove(const GameMapCell & cell) const
+{
+    // no units to move
+    if(0 == cell.units)
+        return false;
+
+    const int r0 = cell.row;
+    const int c0 = cell.col;
+
+    const int rows = mGm->GetNumRows();
+    const int cols = mGm->GetNumCols();
+
+    // check prev row
+    if(r0 > 0)
+    {
+        const int r1 = r0 - 1;
+
+        // TOP LEFT
+        if(c0 > 0 && mGm->GetCell(r1, c0 - 1).walkable)
+            return true;
+        // TOP
+        if(mGm->GetCell(r1, c0).walkable)
+            return true;
+        // TOP RIGHT
+        if(c0 < cols && mGm->GetCell(r1, c0 + 1).walkable)
+            return true;
+    }
+
+    // check cell row
+    // LEFT
+    if(c0 > 0 && mGm->GetCell(r0, c0 - 1).walkable)
+        return true;
+    // RIGHT
+    if(c0 < cols && mGm->GetCell(r0, c0 + 1).walkable)
+        return true;
+
+    // check next row
+    if(r0 < rows)
+    {
+        const int r2 = r0 + 1;
+
+        // BOTTOM LEFT
+        if(c0 > 0 && mGm->GetCell(r2, c0 - 1).walkable)
+            return true;
+        // BOTTOM
+        if(mGm->GetCell(r2, c0).walkable)
+            return true;
+        // BOTTOM RIGHT
+        if(c0 < cols && mGm->GetCell(r2, c0 + 1).walkable)
+            return true;
+    }
+
+    // no walkable cell found
+    return false;
+}
+
+Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
+{
+    const int r0 = cell.row;
+    const int c0 = cell.col;
+
+    const int rows = mGm->GetNumRows();
+    const int cols = mGm->GetNumCols();
+
+    std::vector<Cell2D> dest;
+
+    // check prev row
+    if(r0 > 0)
+    {
+        const int r1 = r0 - 1;
+
+        // TOP LEFT
+        if(c0 > 0 && mGm->GetCell(r1, c0 - 1).walkable)
+            dest.emplace_back(r1, c0 - 1);
+        // TOP
+        if(mGm->GetCell(r1, c0).walkable)
+            dest.emplace_back(r1, c0);
+        // TOP RIGHT
+        if(c0 < cols && mGm->GetCell(r1, c0 + 1).walkable)
+            dest.emplace_back(r1, c0 + 1);
+    }
+
+    // check cell row
+    // LEFT
+    if(c0 > 0 && mGm->GetCell(r0, c0 - 1).walkable)
+        dest.emplace_back(r0, c0 - 1);
+    // RIGHT
+    if(c0 < cols && mGm->GetCell(r0, c0 + 1).walkable)
+        dest.emplace_back(r0, c0 + 1);
+
+    // check next row
+    if(r0 < rows)
+    {
+        const int r2 = r0 + 1;
+
+        // BOTTOM LEFT
+        if(c0 > 0 && mGm->GetCell(r2, c0 - 1).walkable)
+            dest.emplace_back(r2, c0 - 1);
+        // BOTTOM
+        if(mGm->GetCell(r2, c0).walkable)
+            dest.emplace_back(r2, c0);
+        // BOTTOM RIGHT
+        if(c0 < cols && mGm->GetCell(r2, c0 + 1).walkable)
+            dest.emplace_back(r2, c0 + 1);
+    }
+
+    std::vector<float> probs(dest.size(), 1.f);
+
+    lib::utilities::LoadedDie die(probs);
+
+    return dest[die.GetNextValue()];
+}
+
+int PlayerAI::DecideNumUnitsToMove(const GameMapCell & cell) const
+{
+    return cell.units;
 }
 
 } // namespace game
