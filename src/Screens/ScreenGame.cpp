@@ -574,7 +574,12 @@ void ScreenGame::UpdateAI(float delta)
 
                 case ACT_UNIT_MOVE:
                 {
-                    std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT" << std::endl;
+                    std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: "
+                              << action.units << " from "
+                              << action.src.row << "," << action.src.col
+                              << " -> "
+                              << action.dst.row << "," << action.dst.col
+                              << std::endl;
 
                     mGameMap->MoveUnits(&(action.src), &(action.dst), action.units, player);
                 }

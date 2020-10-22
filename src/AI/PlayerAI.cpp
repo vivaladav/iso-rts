@@ -252,7 +252,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
 
             case ACT_UNIT_MOVE:
             {
-                prob += distScore * 0.5f;
+                prob += distScore;
             }
             break;
 
@@ -355,7 +355,7 @@ bool PlayerAI::CanCellMove(const GameMapCell & cell) const
         if(mGm->GetCell(r1, c0).walkable)
             return true;
         // TOP RIGHT
-        if(c0 < cols && mGm->GetCell(r1, c0 + 1).walkable)
+        if(c0 < (cols - 1) && mGm->GetCell(r1, c0 + 1).walkable)
             return true;
     }
 
@@ -364,11 +364,11 @@ bool PlayerAI::CanCellMove(const GameMapCell & cell) const
     if(c0 > 0 && mGm->GetCell(r0, c0 - 1).walkable)
         return true;
     // RIGHT
-    if(c0 < cols && mGm->GetCell(r0, c0 + 1).walkable)
+    if(c0 < (cols - 1) && mGm->GetCell(r0, c0 + 1).walkable)
         return true;
 
     // check next row
-    if(r0 < rows)
+    if(r0 < (rows - 1))
     {
         const int r2 = r0 + 1;
 
@@ -379,7 +379,7 @@ bool PlayerAI::CanCellMove(const GameMapCell & cell) const
         if(mGm->GetCell(r2, c0).walkable)
             return true;
         // BOTTOM RIGHT
-        if(c0 < cols && mGm->GetCell(r2, c0 + 1).walkable)
+        if(c0 < (cols - 1) && mGm->GetCell(r2, c0 + 1).walkable)
             return true;
     }
 
@@ -396,6 +396,10 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
     const int cols = mGm->GetNumCols();
 
     std::vector<Cell2D> dest;
+    std::vector<float> probs;
+
+    const float weightUnits = 100.f;
+    const float weightFree = 100.f;
 
     // check prev row
     if(r0 > 0)
@@ -403,41 +407,127 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
         const int r1 = r0 - 1;
 
         // TOP LEFT
-        if(c0 > 0 && mGm->GetCell(r1, c0 - 1).walkable)
-            dest.emplace_back(r1, c0 - 1);
+        if(c0 > 0)
+        {
+            const GameMapCell & tl = mGm->GetCell(r1, c0 - 1);
+
+            if(tl.walkable)
+            {
+                dest.emplace_back(r1, c0 - 1);
+
+                const float prob = weightUnits * (MAX_CELL_UNITS - tl.units) / MAX_CELL_UNITS;
+                const float prob2 = tl.ownerId == -1 ? weightFree : 0.f;
+                probs.emplace_back(prob + prob2);
+            }
+        }
+
         // TOP
-        if(mGm->GetCell(r1, c0).walkable)
+        const GameMapCell & tc = mGm->GetCell(r1, c0);
+
+        if(tc.walkable)
+        {
             dest.emplace_back(r1, c0);
+
+            const float prob = weightUnits * (MAX_CELL_UNITS - tc.units) / MAX_CELL_UNITS;
+            const float prob2 = tc.ownerId == -1 ? weightFree : 0.f;
+            probs.emplace_back(prob + prob2);
+        }
+
         // TOP RIGHT
-        if(c0 < cols && mGm->GetCell(r1, c0 + 1).walkable)
-            dest.emplace_back(r1, c0 + 1);
+        if(c0 < (cols - 1))
+        {
+            const GameMapCell & tr = mGm->GetCell(r1, c0 + 1);
+
+            if(tr.walkable)
+            {
+                dest.emplace_back(r1, c0 + 1);
+
+                const float prob = weightUnits * (MAX_CELL_UNITS - tr.units) / MAX_CELL_UNITS;
+                const float prob2 = tr.ownerId == -1 ? weightFree : 0.f;
+                probs.emplace_back(prob + prob2);
+
+            }
+        }
     }
 
     // check cell row
     // LEFT
-    if(c0 > 0 && mGm->GetCell(r0, c0 - 1).walkable)
-        dest.emplace_back(r0, c0 - 1);
+    if(c0 > 0)
+    {
+        const GameMapCell & l = mGm->GetCell(r0, c0 - 1);
+
+        if(l.walkable)
+        {
+            dest.emplace_back(r0, c0 - 1);
+
+            const float prob = weightUnits * (MAX_CELL_UNITS - l.units) / MAX_CELL_UNITS;
+            const float prob2 = l.ownerId == -1 ? weightFree : 0.f;
+            probs.emplace_back(prob + prob2);
+        }
+    }
+
     // RIGHT
-    if(c0 < cols && mGm->GetCell(r0, c0 + 1).walkable)
-        dest.emplace_back(r0, c0 + 1);
+    if(c0 < (cols - 1))
+    {
+        const GameMapCell & r = mGm->GetCell(r0, c0 + 1);
+
+        if(r.walkable)
+        {
+            dest.emplace_back(r0, c0 + 1);
+
+            const float prob = weightUnits * (MAX_CELL_UNITS - r.units) / MAX_CELL_UNITS;
+            const float prob2 = r.ownerId == -1 ? weightFree : 0.f;
+            probs.emplace_back(prob + prob2);
+        }
+    }
 
     // check next row
-    if(r0 < rows)
+    if(r0 < (rows - 1))
     {
         const int r2 = r0 + 1;
 
         // BOTTOM LEFT
-        if(c0 > 0 && mGm->GetCell(r2, c0 - 1).walkable)
-            dest.emplace_back(r2, c0 - 1);
-        // BOTTOM
-        if(mGm->GetCell(r2, c0).walkable)
-            dest.emplace_back(r2, c0);
-        // BOTTOM RIGHT
-        if(c0 < cols && mGm->GetCell(r2, c0 + 1).walkable)
-            dest.emplace_back(r2, c0 + 1);
-    }
+        if(c0 > 0)
+        {
+            const GameMapCell & bl = mGm->GetCell(r2, c0 - 1);
 
-    std::vector<float> probs(dest.size(), 1.f);
+            if(bl.walkable)
+            {
+                dest.emplace_back(r2, c0 - 1);
+
+                const float prob = weightUnits * (MAX_CELL_UNITS - bl.units) / MAX_CELL_UNITS;
+                const float prob2 = bl.ownerId == -1 ? weightFree : 0.f;
+                probs.emplace_back(prob + prob2);
+            }
+        }
+
+        // BOTTOM
+        const GameMapCell & bc = mGm->GetCell(r2, c0);
+
+        if(bc.walkable)
+        {
+            dest.emplace_back(r2, c0);
+
+            const float prob = weightUnits * (MAX_CELL_UNITS - bc.units) / MAX_CELL_UNITS;
+            const float prob2 = bc.ownerId == -1 ? weightFree : 0.f;
+            probs.emplace_back(prob + prob2);
+        }
+
+        // BOTTOM RIGHT
+        if(c0 < (cols - 1))
+        {
+            const GameMapCell & br = mGm->GetCell(r2, c0 + 1);
+
+            if(br.walkable)
+            {
+                dest.emplace_back(r2, c0 + 1);
+
+                const float prob = weightUnits * (MAX_CELL_UNITS - br.units) / MAX_CELL_UNITS;
+                const float prob2 = br.ownerId == -1 ? weightFree : 0.f;
+                probs.emplace_back(prob + prob2);
+            }
+        }
+    }
 
     lib::utilities::LoadedDie die(probs);
 
