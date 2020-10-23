@@ -201,7 +201,7 @@ ScreenGame::ScreenGame(Game * game)
         {
             mGameMap->FortifyCell(cell);
 
-            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+            mProgressBarsToDelete.push_back(pb);
         });
 
         // clear selection
@@ -227,7 +227,7 @@ ScreenGame::ScreenGame(Game * game)
         {
             mGameMap->UpgradeCell(cell, player);
 
-            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+            mProgressBarsToDelete.push_back(pb);
         });
 
         // clear selection
@@ -253,7 +253,7 @@ ScreenGame::ScreenGame(Game * game)
         {
             mGameMap->CreateUnit(cell, player);
 
-            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+            mProgressBarsToDelete.push_back(pb);
         });
 
         // clear selection
@@ -279,7 +279,7 @@ ScreenGame::ScreenGame(Game * game)
         {
             mGameMap->UpgradeUnit(cell);
 
-            mProgressBarsToDelete.push_back(pb->GetWidgetId());
+            mProgressBarsToDelete.push_back(pb);
         });
 
         // clear selection
@@ -400,10 +400,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
 {
-    const int barId = mProgressBars.size() + 1;
     auto pb = new CellProgressBar(playerId, 0.f, time);
     pb->SetValue(0.f);
-    pb->SetWidgetId(barId);
     auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
     const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
     const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
@@ -422,7 +420,7 @@ void ScreenGame::UpdateProgressBars(float delta)
     // delete progress bars when they finish
     while(!mProgressBarsToDelete.empty())
     {
-        const int barId = mProgressBarsToDelete.back();
+        CellProgressBar * del = mProgressBarsToDelete.back();
         mProgressBarsToDelete.pop_back();
 
         auto it = mProgressBars.begin();
@@ -431,7 +429,7 @@ void ScreenGame::UpdateProgressBars(float delta)
         {
             CellProgressBar * pb = *it;
 
-            if(pb->GetWidgetId() == barId)
+            if(pb == del)
             {
                 delete pb;
                 it = mProgressBars.erase(it);
@@ -491,7 +489,7 @@ void ScreenGame::UpdateAI(float delta)
                     pb->SetFunctionOnCompleted([this, cell, pb]
                     {
                         mGameMap->FortifyCell(cell);
-                        mProgressBarsToDelete.push_back(pb->GetWidgetId());
+                        mProgressBarsToDelete.push_back(pb);
                     });
                 }
                 break;
@@ -516,7 +514,7 @@ void ScreenGame::UpdateAI(float delta)
                     {
                         mGameMap->UpgradeCell(cell, player);
 
-                        mProgressBarsToDelete.push_back(pb->GetWidgetId());
+                        mProgressBarsToDelete.push_back(pb);
                     });
                 }
                 break;
@@ -541,7 +539,7 @@ void ScreenGame::UpdateAI(float delta)
                     {
                         mGameMap->CreateUnit(cell, player);
 
-                        mProgressBarsToDelete.push_back(pb->GetWidgetId());
+                        mProgressBarsToDelete.push_back(pb);
                     });
                 }
                 break;
@@ -566,7 +564,7 @@ void ScreenGame::UpdateAI(float delta)
                     {
                         mGameMap->UpgradeUnit(cell);
 
-                        mProgressBarsToDelete.push_back(pb->GetWidgetId());
+                        mProgressBarsToDelete.push_back(pb);
                     });
                 }
                 break;

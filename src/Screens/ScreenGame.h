@@ -45,7 +45,7 @@ private:
     std::vector<Player *> mAiPlayers;
 
     std::vector<CellProgressBar *> mProgressBars;
-    std::vector<int> mProgressBarsToDelete;
+    std::vector<CellProgressBar *> mProgressBarsToDelete;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
