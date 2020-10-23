@@ -151,8 +151,17 @@ bool GameMap::Load(const char * file)
 
 void GameMap::SetHomeCell()
 {
+    const int limitRow = mIsoMap->GetNumRows() - 1;
+    const int limitCol = mIsoMap->GetNumCols() - 1;
+
     const int NUM_CORNERS = 4;
-    Cell2D corners[NUM_CORNERS] = { {0, 0}, {0, 14}, {14, 14}, {14, 0} };
+    const Cell2D corners[NUM_CORNERS] =
+    {
+        { 0, 0 },
+        { 0, limitCol },
+        { limitRow, limitCol  },
+        { limitRow, 0}
+    };
 
     const int numPlayers = mGame->GetNumPlayers();
 

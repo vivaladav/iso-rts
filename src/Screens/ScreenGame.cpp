@@ -30,7 +30,7 @@ ScreenGame::ScreenGame(Game * game)
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
     // -- ISOMETRIC MAP --
-    const int SIDE = 15;
+    const int SIDE = 6;
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles = {
@@ -63,13 +63,12 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->SetTiles(tileFiles);
 
     // center map on screen
-    const int mapW = mIsoMap->GetWidth();
     const int mapH = mIsoMap->GetHeight();
 
     const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
-    mIsoMap->SetOrigin(rendW - (mapW * 0.5), (rendH - mapH) * 0.5);
+    mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
 
     // -- LAYERS --
     // FORTIFICATIONS
