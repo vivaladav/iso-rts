@@ -34,10 +34,12 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
         Game * game = GetGame();
 
         game->AddPlayer("PLAYER 1", 0);
+        Player * p = game->GetPlayer(0);
+        p->SetLocal(true);
 
         // AI player
         game->AddPlayer("PLAYER 2", 1);
-        Player * p = game->GetPlayer(1);
+        p = game->GetPlayer(1);
         auto * ai = new PlayerAI(p);
         p->SetAI(ai);
 

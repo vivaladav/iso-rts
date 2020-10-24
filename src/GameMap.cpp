@@ -780,9 +780,6 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 layerUnits->ClearObject(r0, c0);
             }
         }
-
-        if(player->GetNumUnits() == 0)
-            mScreenGame->GameOver();
     }
 
     if(moved)
@@ -801,6 +798,34 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         const int unitType1 = DefineUnitType(gcell1);
         layerUnits->ChangeObject(r1, c1, unitType1);
     }
+
+    // check for game over
+    if(player->IsLocal() && player->GetNumCells() == 0)
+        mScreenGame->GameOver();
+
+    // check for victory or game over
+    const int players = mGame->GetNumPlayers();
+    int defeated = 0;
+
+    for(int i = 0; i < players; ++i)
+    {
+        Player * p = mGame->GetPlayer(i);
+
+        if(p->GetNumCells() == 0)
+        {
+            if(p->IsLocal())
+            {
+                mScreenGame->GameOver();
+                return;
+            }
+            else
+                ++defeated;
+        }
+    }
+
+    // assuming players is always > 1
+    if(defeated == (players - 1))
+        mScreenGame->GameWon();
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)

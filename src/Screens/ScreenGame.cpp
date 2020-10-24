@@ -10,6 +10,7 @@
 #include "AI/PlayerAI.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
+#include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
 
 #include <core/event/MouseButtonEvent.h>
@@ -340,6 +341,19 @@ void ScreenGame::GameOver()
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     auto panel = new PanelGameOver(GetGame());
+
+    const int x = (rendW - panel->GetWidth()) * 0.5f;
+    const int y = rendH * 0.25f;
+
+    panel->SetPosition(x, y);
+}
+
+void ScreenGame::GameWon()
+{
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    auto panel = new PanelGameWon(GetGame());
 
     const int x = (rendW - panel->GetWidth()) * 0.5f;
     const int y = rendH * 0.25f;

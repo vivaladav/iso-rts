@@ -60,6 +60,8 @@ add_executable(
     src/Widgets/GameButton.cpp
     src/Widgets/PanelGameOver.h
     src/Widgets/PanelGameOver.cpp
+    src/Widgets/PanelGameWon.h
+    src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlayer.h
     src/Widgets/PanelPlayer.cpp
     src/Widgets/UnitsSelector.h

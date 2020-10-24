@@ -44,6 +44,9 @@ public:
     PlayerAI * GetAI();
     void SetAI(PlayerAI * ai);
 
+    bool IsLocal() const;
+    void SetLocal(bool val);
+
 private:
     std::string mName;
 
@@ -62,6 +65,8 @@ private:
     int mTotCellsLevel = 0;
     int mMoney = 0;
     int mNumUnits = 0;
+
+    bool mLocal = false;
 };
 
 inline const std::string & Player::GetName() const { return mName; }
@@ -95,5 +100,8 @@ inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell
 inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }
 inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
+
+inline bool Player::IsLocal() const { return mLocal; }
+inline void Player::SetLocal(bool val) { mLocal = val; }
 
 } // namespace game
