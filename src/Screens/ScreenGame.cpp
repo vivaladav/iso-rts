@@ -186,24 +186,7 @@ ScreenGame::ScreenGame(Game * game)
     // FORTIFY CELL
     panel->SetFunctionCellFortify([this, player]
     {
-        const Cell2D cell = *(player->GetSelectedCell());
-
-        // check if fortify is possible
-        if(!mGameMap->CanFortifyCell(cell, player))
-            return ;
-
-        // start fortify
-        mGameMap->StartFortifyCell(cell, player);
-
-        // create and init progress bar
-        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
-
-        pb->SetFunctionOnCompleted([this, cell, pb]
-        {
-            mGameMap->FortifyCell(cell);
-
-            mProgressBarsToDelete.push_back(pb);
-        });
+        SetupCellFortify(*(player->GetSelectedCell()), player);
 
         // clear selection
         ClearSelection(player);
@@ -212,24 +195,7 @@ ScreenGame::ScreenGame(Game * game)
     // UPGRADE CELL
     panel->SetFunctionCellUpgrade([this, player]
     {
-        const Cell2D cell = *(player->GetSelectedCell());
-
-        // check if upgrade is possible
-        if(!mGameMap->CanUpgradeCell(cell, player))
-            return ;
-
-        // start upgrade
-        mGameMap->StartUpgradeCell(cell, player);
-
-        // create and init progress bar
-        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
-
-        pb->SetFunctionOnCompleted([this, cell, player, pb]
-        {
-            mGameMap->UpgradeCell(cell, player);
-
-            mProgressBarsToDelete.push_back(pb);
-        });
+        SetupCellUpgrade(*(player->GetSelectedCell()), player);
 
         // clear selection
         ClearSelection(player);
@@ -238,55 +204,19 @@ ScreenGame::ScreenGame(Game * game)
     // CREATE NEW UNIT
     panel->SetFunctionNewUnit([this, player]
     {
-        const Cell2D cell = *(player->GetSelectedCell());
-
-        // check if create is possible
-        if(!mGameMap->CanCreateUnit(cell, player))
-            return ;
-
-        // start create
-        mGameMap->StartCreateUnit(cell, player);
-
-        // create and init progress bar
-        CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
-
-        pb->SetFunctionOnCompleted([this, cell, player, pb]
-        {
-            mGameMap->CreateUnit(cell, player);
-
-            mProgressBarsToDelete.push_back(pb);
-        });
+        SetupNewUnit(*(player->GetSelectedCell()), player);
 
         // clear selection
         ClearSelection(player);
     });
 
     // UNIT UPGRADE
-    panel->SetFunctionUnitsUpgrade([this, panel, player]
+    panel->SetFunctionUnitsUpgrade([this, player]
     {
-        const Cell2D cell = *(player->GetSelectedCell());
-
-        // check if upgrade is possible
-        if(!mGameMap->CanUpgradeUnit(cell, player))
-            return ;
-
-        // start upgrade
-        mGameMap->StartUpgradeUnit(cell, player);
-
-        // create and init progress bar
-        CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
-
-        pb->SetFunctionOnCompleted([this, cell, pb]
-        {
-            mGameMap->UpgradeUnit(cell);
-
-            mProgressBarsToDelete.push_back(pb);
-        });
+        SetupUnitUpgrade(*(player->GetSelectedCell()), player);
 
         // clear selection
-        player->ClearSelectedCell();
-        panel->ClearSelectedCell();
-        mIsoMap->SetLayerVisible(SELECTION, false);
+        ClearSelection(player);
     });
 }
 
@@ -487,99 +417,28 @@ void ScreenGame::UpdateAI(float delta)
                 case ACT_CELL_FORTIFY:
                 {
                     std::cout << "AI " << mCurrPlayerAI << " - FORTIFY CELL" << std::endl;
-
-                    const Cell2D cell = action.src;
-
-                    // check if fortify is possible
-                    if(!mGameMap->CanFortifyCell(cell, player))
-                        return ;
-
-                    // start fortify
-                    mGameMap->StartFortifyCell(cell, player);
-
-                    // create and init progress bar
-                    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
-
-                    pb->SetFunctionOnCompleted([this, cell, pb]
-                    {
-                        mGameMap->FortifyCell(cell);
-                        mProgressBarsToDelete.push_back(pb);
-                    });
+                    SetupCellFortify(action.src, player);
                 }
                 break;
 
                 case ACT_CELL_UPGRADE:
                 {
                     std::cout << "AI " << mCurrPlayerAI << " - UPGRADE CELL" << std::endl;
-
-                    const Cell2D cell = action.src;
-
-                    // check if upgrade is possible
-                    if(!mGameMap->CanUpgradeCell(cell, player))
-                        return ;
-
-                    // start upgrade
-                    mGameMap->StartUpgradeCell(cell, player);
-
-                    // create and init progress bar
-                    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
-
-                    pb->SetFunctionOnCompleted([this, cell, player, pb]
-                    {
-                        mGameMap->UpgradeCell(cell, player);
-
-                        mProgressBarsToDelete.push_back(pb);
-                    });
+                    SetupCellUpgrade(action.src, player);
                 }
                 break;
 
                 case ACT_NEW_UNIT:
                 {
                     std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-
-                    const Cell2D cell = action.src;
-
-                    // check if create is possible
-                    if(!mGameMap->CanCreateUnit(cell, player))
-                        return ;
-
-                    // start create
-                    mGameMap->StartCreateUnit(cell, player);
-
-                    // create and init progress bar
-                    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
-
-                    pb->SetFunctionOnCompleted([this, cell, player, pb]
-                    {
-                        mGameMap->CreateUnit(cell, player);
-
-                        mProgressBarsToDelete.push_back(pb);
-                    });
+                    SetupNewUnit(action.src, player);
                 }
                 break;
 
                 case ACT_UNIT_UPGRADE:
                 {
                     std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
-
-                    const Cell2D cell = action.src;
-
-                    // check if upgrade is possible
-                    if(!mGameMap->CanUpgradeUnit(cell, player))
-                        return ;
-
-                    // start upgrade
-                    mGameMap->StartUpgradeUnit(cell, player);
-
-                    // create and init progress bar
-                    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
-
-                    pb->SetFunctionOnCompleted([this, cell, pb]
-                    {
-                        mGameMap->UpgradeUnit(cell);
-
-                        mProgressBarsToDelete.push_back(pb);
-                    });
+                    SetupUnitUpgrade(action.src, player);
                 }
                 break;
 
@@ -609,6 +468,82 @@ void ScreenGame::UpdateAI(float delta)
         ++mCurrPlayerAI;
         mTimerAI = TIME_AI_MOVE;
     }
+}
+
+void ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
+{
+    // check if fortify is possible
+    if(!mGameMap->CanFortifyCell(cell, player))
+        return ;
+
+    // start fortify
+    mGameMap->StartFortifyCell(cell, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, cell, pb]
+    {
+        mGameMap->FortifyCell(cell);
+        mProgressBarsToDelete.push_back(pb);
+    });
+}
+
+void ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
+{
+    // check if upgrade is possible
+    if(!mGameMap->CanUpgradeCell(cell, player))
+        return ;
+
+    // start upgrade
+    mGameMap->StartUpgradeCell(cell, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, cell, player, pb]
+    {
+        mGameMap->UpgradeCell(cell, player);
+        mProgressBarsToDelete.push_back(pb);
+    });
+}
+
+void ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
+{
+    // check if create is possible
+    if(!mGameMap->CanCreateUnit(cell, player))
+        return ;
+
+    // start create
+    mGameMap->StartCreateUnit(cell, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, cell, player, pb]
+    {
+        mGameMap->CreateUnit(cell, player);
+        mProgressBarsToDelete.push_back(pb);
+    });
+}
+
+void ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
+{
+    // check if upgrade is possible
+    if(!mGameMap->CanUpgradeUnit(cell, player))
+        return ;
+
+    // start upgrade
+    mGameMap->StartUpgradeUnit(cell, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, cell, pb]
+    {
+        mGameMap->UpgradeUnit(cell);
+        mProgressBarsToDelete.push_back(pb);
+    });
 }
 
 } // namespace game

@@ -40,6 +40,11 @@ private:
 
     void UpdateAI(float delta);
 
+    void SetupCellFortify(const Cell2D & cell, Player * player);
+    void SetupCellUpgrade(const Cell2D & cell, Player * player);
+    void SetupNewUnit(const Cell2D & cell, Player * player);
+    void SetupUnitUpgrade(const Cell2D & cell, Player * player);
+
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
 
