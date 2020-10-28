@@ -17,6 +17,7 @@
 #include <graphic/Renderer.h>
 #include <sgui/Stage.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -289,6 +290,26 @@ void ScreenGame::GameWon()
     const int y = rendH * 0.25f;
 
     panel->SetPosition(x, y);
+}
+
+void ScreenGame::CancelProgressBar(const Cell2D & cell)
+{
+    const int cellInd = CellToIndex(cell);
+
+    // delete progress bar
+    auto it = mProgressBars.find(cellInd);
+
+    if(it != mProgressBars.end())
+    {
+        delete it->second;
+        mProgressBars.erase(it);
+    }
+
+    // remove index from bars to delete (unlikely, but just in case)
+    auto it2 = std::find(mProgressBarsToDelete.begin(), mProgressBarsToDelete.end(), cellInd);
+
+    if(it2 != mProgressBarsToDelete.end())
+        mProgressBarsToDelete.erase(it2);
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)

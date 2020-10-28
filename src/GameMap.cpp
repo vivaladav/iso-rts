@@ -638,6 +638,13 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 gcell1.unitsLevel = gcell0.unitsLevel;
                 gcell1.units = attackingLeft;
 
+                // clear any current activity in the cell
+                if(gcell1.changing)
+                {
+                    mScreenGame->CancelProgressBar(*end);
+                    gcell1.changing = false;
+                }
+
                 // update conquered cell look
                 const int cellType = DefineCellType(gcell1);
                 mIsoMap->SetCellType(ind1, cellType);
@@ -745,6 +752,13 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                     gcell1.fortLevel = 0;
                     gcell1.unitsLevel = gcell0.unitsLevel;
                     gcell1.units = attackingLeft;
+
+                    // clear any current activity in the cell
+                    if(gcell1.changing)
+                    {
+                        mScreenGame->CancelProgressBar(*end);
+                        gcell1.changing = false;
+                    }
 
                     // update source attacking cell
                     const int cellType = DefineCellType(gcell1);

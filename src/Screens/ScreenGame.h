@@ -33,6 +33,8 @@ public:
     void GameOver();
     void GameWon();
 
+    void CancelProgressBar(const Cell2D & cell);
+
 private:
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, int playerId);
     void UpdateProgressBars(float delta);
