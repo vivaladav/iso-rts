@@ -4,6 +4,7 @@
 #include "Screen.h"
 
 #include <array>
+#include <unordered_map>
 #include <vector>
 
 namespace game
@@ -40,6 +41,8 @@ private:
 
     void UpdateAI(float delta);
 
+    int CellToIndex(const Cell2D & cell) const;
+
     void SetupCellFortify(const Cell2D & cell, Player * player);
     void SetupCellUpgrade(const Cell2D & cell, Player * player);
     void SetupNewUnit(const Cell2D & cell, Player * player);
@@ -50,8 +53,8 @@ private:
 
     std::vector<Player *> mAiPlayers;
 
-    std::vector<CellProgressBar *> mProgressBars;
-    std::vector<CellProgressBar *> mProgressBarsToDelete;
+    std::unordered_map<int, CellProgressBar *> mProgressBars;
+    std::vector<int> mProgressBarsToDelete;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

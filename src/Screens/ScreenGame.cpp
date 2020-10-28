@@ -351,7 +351,8 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time,
     const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
     pb->SetPosition(pbX, pbY);
 
-    mProgressBars.emplace_back(pb);
+    const int cellInd = CellToIndex(cell);
+    mProgressBars.emplace(cellInd, pb);
 
     return pb;
 }
@@ -359,27 +360,20 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time,
 void ScreenGame::UpdateProgressBars(float delta)
 {
     for(auto pb : mProgressBars)
-        pb->IncValue(delta);
+        pb.second->IncValue(delta);
 
     // delete progress bars when they finish
     while(!mProgressBarsToDelete.empty())
     {
-        CellProgressBar * del = mProgressBarsToDelete.back();
+        const int cellInd = mProgressBarsToDelete.back();
         mProgressBarsToDelete.pop_back();
 
-        auto it = mProgressBars.begin();
+        auto it = mProgressBars.find(cellInd);
 
-        while(it != mProgressBars.end())
+        if(it != mProgressBars.end())
         {
-            CellProgressBar * pb = *it;
-
-            if(pb == del)
-            {
-                delete pb;
-                it = mProgressBars.erase(it);
-            }
-            else
-                ++it;
+            delete it->second;
+            mProgressBars.erase(it);
         }
     }
 }
@@ -470,6 +464,11 @@ void ScreenGame::UpdateAI(float delta)
     }
 }
 
+int ScreenGame::CellToIndex(const Cell2D & cell) const
+{
+    return cell.row * mIsoMap->GetNumCols() + cell.col;
+}
+
 void ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
 {
     // check if fortify is possible
@@ -482,10 +481,10 @@ void ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
 
-    pb->SetFunctionOnCompleted([this, cell, pb]
+    pb->SetFunctionOnCompleted([this, cell]
     {
         mGameMap->FortifyCell(cell);
-        mProgressBarsToDelete.push_back(pb);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 }
 
@@ -501,10 +500,10 @@ void ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
 
-    pb->SetFunctionOnCompleted([this, cell, player, pb]
+    pb->SetFunctionOnCompleted([this, cell, player]
     {
         mGameMap->UpgradeCell(cell, player);
-        mProgressBarsToDelete.push_back(pb);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 }
 
@@ -520,10 +519,10 @@ void ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
 
-    pb->SetFunctionOnCompleted([this, cell, player, pb]
+    pb->SetFunctionOnCompleted([this, cell, player]
     {
         mGameMap->CreateUnit(cell, player);
-        mProgressBarsToDelete.push_back(pb);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 }
 
@@ -539,10 +538,10 @@ void ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
 
-    pb->SetFunctionOnCompleted([this, cell, pb]
+    pb->SetFunctionOnCompleted([this, cell]
     {
         mGameMap->UpgradeUnit(cell);
-        mProgressBarsToDelete.push_back(pb);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 }
 
