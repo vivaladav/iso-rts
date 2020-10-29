@@ -35,31 +35,32 @@ ScreenGame::ScreenGame(Game * game)
     const int SIDE = 6;
     const int TILE_W = 128;
 
-    const std::vector<std::string> tileFiles = {
-                                                // scene
-                                                "data/img/tile00.png",
-                                                "data/img/tile01.png",
-                                                // player 1
-                                                "data/img/tile-p1l1.png",
-                                                "data/img/tile-p1l2.png",
-                                                "data/img/tile-p1l3.png",
-                                                "data/img/tile-p1l4.png",
-                                                // player 2
-                                                "data/img/tile-p2l1.png",
-                                                "data/img/tile-p2l2.png",
-                                                "data/img/tile-p2l3.png",
-                                                "data/img/tile-p2l4.png",
-                                                // player 3
-                                                "data/img/tile-p3l1.png",
-                                                "data/img/tile-p3l2.png",
-                                                "data/img/tile-p3l3.png",
-                                                "data/img/tile-p3l4.png",
-                                                // player 4
-                                                "data/img/tile-p4l1.png",
-                                                "data/img/tile-p4l2.png",
-                                                "data/img/tile-p4l3.png",
-                                                "data/img/tile-p4l4.png"
-                                               };
+    const std::vector<std::string> tileFiles =
+    {
+        // scene
+        "data/img/tile00.png",
+        "data/img/tile01.png",
+        // player 1
+        "data/img/tile-p1l1.png",
+        "data/img/tile-p1l2.png",
+        "data/img/tile-p1l3.png",
+        "data/img/tile-p1l4.png",
+        // player 2
+        "data/img/tile-p2l1.png",
+        "data/img/tile-p2l2.png",
+        "data/img/tile-p2l3.png",
+        "data/img/tile-p2l4.png",
+        // player 3
+        "data/img/tile-p3l1.png",
+        "data/img/tile-p3l2.png",
+        "data/img/tile-p3l3.png",
+        "data/img/tile-p3l4.png",
+        // player 4
+        "data/img/tile-p4l1.png",
+        "data/img/tile-p4l2.png",
+        "data/img/tile-p4l3.png",
+        "data/img/tile-p4l4.png"
+    };
 
     mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
     mIsoMap->SetTiles(tileFiles);
@@ -74,11 +75,12 @@ ScreenGame::ScreenGame(Game * game)
 
     // -- LAYERS --
     // FORTIFICATIONS
-    const std::vector<std::string> fortImgs = {
-                                                "data/img/fort01.png",
-                                                "data/img/fort02.png",
-                                                "data/img/fort03.png"
-                                              };
+    const std::vector<std::string> fortImgs =
+    {
+        "data/img/fort01.png",
+        "data/img/fort02.png",
+        "data/img/fort03.png"
+    };
 
     mIsoMap->CreateLayer(fortImgs);
 
@@ -514,7 +516,7 @@ bool ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
     mGameMap->StartFortifyCell(cell, player);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_FORT_CELL, player->GetPlayerId());
 
     pb->SetFunctionOnCompleted([this, cell]
     {
