@@ -49,7 +49,8 @@ public:
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
     void UpgradeUnit(const Cell2D & cell);
 
-    void MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player);
+    bool MoveUnits(const Cell2D * start, const Cell2D * end,
+                   int numUnits, Player * player);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
     unsigned int GetNumRows() const;

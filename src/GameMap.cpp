@@ -441,42 +441,46 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     gcell.changing = false;
 }
 
-void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
+bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
 {
     const unsigned int r0 = static_cast<unsigned int>(start->row);
     const unsigned int c0 = static_cast<unsigned int>(start->col);
 
-    // out of bounds
+    // start out of bounds
     if(!(r0 < mRows && c0 < mCols))
-        return ;
+        return false;
 
     const unsigned int r1 = static_cast<unsigned int>(end->row);
     const unsigned int c1 = static_cast<unsigned int>(end->col);
 
-    // out of bounds
+    // end out of bounds
     if(!(r1 < mRows && c1 < mCols))
-        return ;
+        return false;
 
     const int diffR = abs(end->row - start->row);
     const int diffC = abs(end->col - start->col);
 
-    // units can only move to next cell
+    // end too far - units can only move to next cell
     if(diffR > 1 || diffC > 1)
-        return ;
+        return false;
 
     const int ind0 = r0 * mCols + c0;
     GameMapCell & gcell0 = mCells[ind0];
 
+    // not own cell
+    if(player->GetPlayerId() != gcell0.ownerId)
+        return false;
+
     // not enough units to move
     if(0 == gcell0.units || gcell0.units < numUnits)
-        return ;
+        return false;
 
     const int ind1 = r1 * mCols + c1;
     GameMapCell & gcell1 = mCells[ind1];
 
     // not a walkable cell
     if(!gcell1.walkable)
-        return ;
+        return false;
 
     IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
 
@@ -511,7 +515,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
         {
             // destination is full or has different level units
             if(gcell1.units == MAX_CELL_UNITS || (gcell0.unitsLevel != gcell1.unitsLevel))
-                return ;
+                return false;
 
             // cap units moved to max allowed per cell
             if(gcell1.units + numUnits > MAX_CELL_UNITS)
@@ -538,7 +542,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             }
 
             // done here
-            return ;
+            return true;
         }
         else
         {
@@ -830,7 +834,7 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             if(p->IsLocal())
             {
                 mScreenGame->GameOver();
-                return;
+                return true;
             }
             else
                 ++defeated;
@@ -840,6 +844,8 @@ void GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     // assuming players is always > 1
     if(defeated == (players - 1))
         mScreenGame->GameWon();
+
+    return true;
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)
