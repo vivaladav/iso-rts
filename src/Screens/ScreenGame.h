@@ -16,6 +16,7 @@ class IsoLayer;
 class IsoMap;
 class PanelPlayer;
 class Player;
+class PlayerAI;
 
 struct Cell2D;
 
@@ -42,13 +43,14 @@ private:
     void ClearSelection(Player * player);
 
     void UpdateAI(float delta);
+    void ExecuteAIAction(PlayerAI * ai);
 
     int CellToIndex(const Cell2D & cell) const;
 
-    void SetupCellFortify(const Cell2D & cell, Player * player);
-    void SetupCellUpgrade(const Cell2D & cell, Player * player);
-    void SetupNewUnit(const Cell2D & cell, Player * player);
-    void SetupUnitUpgrade(const Cell2D & cell, Player * player);
+    bool SetupCellFortify(const Cell2D & cell, Player * player);
+    bool SetupCellUpgrade(const Cell2D & cell, Player * player);
+    bool SetupNewUnit(const Cell2D & cell, Player * player);
+    bool SetupUnitUpgrade(const Cell2D & cell, Player * player);
 
 private:
     std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;

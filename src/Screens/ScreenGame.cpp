@@ -423,60 +423,7 @@ void ScreenGame::UpdateAI(float delta)
         if(mCurrPlayerAI < mAiPlayers.size())
         {
             PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
-            Player * player = ai->GetPlayer();
-            ai->DecideActions();
-            const ActionAI action = ai->GetNextAction();
-
-            switch(action.aid)
-            {
-                case ACT_CELL_FORTIFY:
-                {
-                    std::cout << "AI " << mCurrPlayerAI << " - FORTIFY CELL" << std::endl;
-                    SetupCellFortify(action.src, player);
-                }
-                break;
-
-                case ACT_CELL_UPGRADE:
-                {
-                    std::cout << "AI " << mCurrPlayerAI << " - UPGRADE CELL" << std::endl;
-                    SetupCellUpgrade(action.src, player);
-                }
-                break;
-
-                case ACT_NEW_UNIT:
-                {
-                    std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-                    SetupNewUnit(action.src, player);
-                }
-                break;
-
-                case ACT_UNIT_UPGRADE:
-                {
-                    std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
-                    SetupUnitUpgrade(action.src, player);
-                }
-                break;
-
-                case ACT_UNIT_MOVE:
-                {
-                    std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: "
-                              << action.units << " from "
-                              << action.src.row << "," << action.src.col
-                              << " -> "
-                              << action.dst.row << "," << action.dst.col
-                              << std::endl;
-
-                    mGameMap->MoveUnits(&(action.src), &(action.dst), action.units, player);
-                }
-                break;
-
-                case ACT_NOP:
-                    std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
-                break;
-
-                default:
-                break;
-            }
+            ExecuteAIAction(ai);
         }
 
         // move to next player and update timer
@@ -485,16 +432,83 @@ void ScreenGame::UpdateAI(float delta)
     }
 }
 
+void ScreenGame::ExecuteAIAction(PlayerAI * ai)
+{
+    Player * player = ai->GetPlayer();
+    ai->DecideActions();
+
+    bool done = false;
+
+    // execute planned action until one is successful or there's no more actions to do (NOP)
+    while(!done)
+    {
+        const ActionAI action = ai->GetNextAction();
+
+        switch(action.aid)
+        {
+            case ACT_CELL_FORTIFY:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - FORTIFY CELL" << std::endl;
+                done = SetupCellFortify(action.src, player);
+            }
+            break;
+
+            case ACT_CELL_UPGRADE:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - UPGRADE CELL" << std::endl;
+                done = SetupCellUpgrade(action.src, player);
+            }
+            break;
+
+            case ACT_NEW_UNIT:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
+                done = SetupNewUnit(action.src, player);
+            }
+            break;
+
+            case ACT_UNIT_UPGRADE:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
+                done = SetupUnitUpgrade(action.src, player);
+            }
+            break;
+
+            case ACT_UNIT_MOVE:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: "
+                          << action.units << " from "
+                          << action.src.row << "," << action.src.col
+                          << " -> "
+                          << action.dst.row << "," << action.dst.col
+                          << std::endl;
+
+                done = mGameMap->MoveUnits(&(action.src), &(action.dst), action.units, player);
+            }
+            break;
+
+            case ACT_NOP:
+                std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
+                done = true;
+            break;
+
+            default:
+                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action.aid << std::endl;
+            break;
+        }
+    }
+}
+
 int ScreenGame::CellToIndex(const Cell2D & cell) const
 {
     return cell.row * mIsoMap->GetNumCols() + cell.col;
 }
 
-void ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
 {
     // check if fortify is possible
     if(!mGameMap->CanFortifyCell(cell, player))
-        return ;
+        return false;
 
     // start fortify
     mGameMap->StartFortifyCell(cell, player);
@@ -507,13 +521,15 @@ void ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
         mGameMap->FortifyCell(cell);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return true;
 }
 
-void ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
 {
     // check if upgrade is possible
     if(!mGameMap->CanUpgradeCell(cell, player))
-        return ;
+        return false;
 
     // start upgrade
     mGameMap->StartUpgradeCell(cell, player);
@@ -526,13 +542,15 @@ void ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
         mGameMap->UpgradeCell(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return true;
 }
 
-void ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
 {
     // check if create is possible
     if(!mGameMap->CanCreateUnit(cell, player))
-        return ;
+        return false;
 
     // start create
     mGameMap->StartCreateUnit(cell, player);
@@ -545,13 +563,15 @@ void ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return true;
 }
 
-void ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
 {
     // check if upgrade is possible
     if(!mGameMap->CanUpgradeUnit(cell, player))
-        return ;
+        return false;
 
     // start upgrade
     mGameMap->StartUpgradeUnit(cell, player);
@@ -564,6 +584,8 @@ void ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
         mGameMap->UpgradeUnit(cell);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return true;
 }
 
 } // namespace game
