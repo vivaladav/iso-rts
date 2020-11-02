@@ -248,7 +248,7 @@ void ScreenGame::Update(float delta)
         {
             Player * p = game->GetPlayer(i);
 
-            const int coins = p->GetTotalCellsLevel() * COINS_PER_CELL;
+            const int coins = p->GetTotalCellsLevel() * COINS_PER_CELL - p->GetTotalUnitsLevel() * COST_PER_UNIT;
             p->SumMoney(coins);
         }
 

@@ -9,7 +9,9 @@ constexpr int START_MONEY = 10;
 
 constexpr float TIME_COINS_GEN = 5.f;
 
-constexpr int COINS_PER_CELL = 1;
+constexpr int COINS_PER_CELL = 2;
+
+constexpr int COST_PER_UNIT = 1;
 
 constexpr int MAX_CELL_LEVEL = 3;
 

@@ -35,6 +35,9 @@ public:
     void SumUnits(int val);
     void SetOnNumUnitsChanged(const std::function<void(int)> & f);
 
+    int GetTotalUnitsLevel() const;
+    void SumTotalUnitsLevel(int val);
+
     void ClearSelectedCell();
     const Cell2D * GetSelectedCell() const;
     void SetSelectedCell(const Cell2D & cell);
@@ -65,6 +68,7 @@ private:
     int mTotCellsLevel = 0;
     int mMoney = 0;
     int mNumUnits = 0;
+    int mTotUnitsLevel = 0;
 
     bool mLocal = false;
 };
@@ -93,6 +97,9 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 {
     mOnNumUnitsChanged = f;
 }
+
+inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
+inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
 inline void Player::ClearSelectedCell() { mCurrSelectedCell = nullptr; }
 inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell; }

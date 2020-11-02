@@ -370,6 +370,7 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
 
     // update player
     player->SumUnits(1);
+    player->SumTotalUnitsLevel(gcell.unitsLevel + 1);
 
     // update map layer
     const int unitImg = DefineUnitType(gcell);
@@ -430,6 +431,10 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
 
     // all good -> upgrade
     ++(gcell.unitsLevel);
+
+    // update player
+    Player * player = mGame->GetPlayer(gcell.ownerId);
+    player->SumTotalUnitsLevel(gcell.units);
 
     // update map layer
     const int unitImg = DefineUnitType(gcell);
@@ -614,7 +619,10 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
             // update players
             player->SumUnits(-lossesAtt);
+            player->SumTotalUnitsLevel(-lossesAtt * (gcell0.unitsLevel + 1));
+
             playerDef->SumUnits(-lossesDef);
+            playerDef->SumTotalUnitsLevel(-lossesDef * (gcell1.unitsLevel + 1));
 
             // destroyed all defenders
             if(lossesDef == gcell1.units)
@@ -727,6 +735,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
             // update player
             player->SumUnits(-lossesAtt);
+            player->SumTotalUnitsLevel(-lossesAtt * (gcell0.unitsLevel + 1));
 
             // some attacking unit left
             if(gcell0.units)
