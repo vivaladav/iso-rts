@@ -549,6 +549,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
             // done here
             return true;
         }
+        // empty own cell
         else
         {
             gcell0.units -= numUnits;
@@ -645,7 +646,6 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
                 // update conquered cell
                 gcell1.ownerId = gcell0.ownerId;
-                gcell1.level = 0;
                 gcell1.fortLevel = 0;
                 gcell1.unitsLevel = gcell0.unitsLevel;
                 gcell1.units = attackingLeft;
@@ -693,6 +693,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                     player->SumCells(-1);
                     player->SumTotalCellsLevel(-1);
 
+                    // clear attacker cell
                     gcell0.Clear();
 
                     // delete units in attacker cell
@@ -761,7 +762,6 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
 
                     // update conquered cell
                     gcell1.ownerId = gcell0.ownerId;
-                    gcell1.level = 0;
                     gcell1.fortLevel = 0;
                     gcell1.unitsLevel = gcell0.unitsLevel;
                     gcell1.units = attackingLeft;
@@ -796,7 +796,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 // clear fortification, if any
                 mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
 
-                // clear attacker cell
+                // clear attacker cell, but keep level
                 gcell0.Clear();
 
                 // update cell
