@@ -382,6 +382,44 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     gcell.changing = false;
 }
 
+bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return false;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // not own cell or no units -> exit
+    if(gcell.ownerId != player->GetPlayerId() || !gcell.units)
+        return false;
+
+    return true;
+}
+
+void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // update player
+    player->SumUnits(-gcell.units);
+    player->SumTotalUnitsLevel(-gcell.units * (gcell.unitsLevel + 1));
+
+    // remove units from cell
+    gcell.units = 0;
+    gcell.unitsLevel = 0;
+
+    // destroy object
+    mIsoMap->GetLayer(UNITS)->ClearObject(r, c);
+}
+
 bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);

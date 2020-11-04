@@ -135,6 +135,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
+    UpdateButtonUnitDestroy();
     UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
     UpdateButtonUnitsMove(cell.units);
 
@@ -196,6 +197,12 @@ void PanelPlayer::UpdateButtonNewUnit(int num, int level)
     mPanelUnits->SetVisible(hasUnits);
 }
 
+void PanelPlayer::UpdateButtonUnitDestroy()
+{
+    mButtonUnitsDestroy->SetVisible(true);
+    mButtonUnitsDestroyConf->SetVisible(false);
+}
+
 void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
 {
     if(level >= MAX_UNITS_LEVEL)
@@ -244,8 +251,9 @@ void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
     mButtonNewUnit->SetOnClickFunction(f);
 }
 
-void PanelPlayer::SetFunctionUnitsMove(const std::function<void()> & f)
+void PanelPlayer::SetFunctionUnitsDestroy(const std::function<void()> & f)
 {
+    mButtonUnitsDestroyConf->SetOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
@@ -335,6 +343,7 @@ void PanelPlayer::CreatePanelUnits()
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(0x212121FF);
 
+    const int marginX = 30;
     const int marginY = 30;
 
     int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
@@ -343,7 +352,23 @@ void PanelPlayer::CreatePanelUnits()
     mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
     mButtonUnitsUpgrade->SetY(buttonY);
 
-    buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
+    // button DESTROY
+    mButtonUnitsDestroy = new ButtonPanelPlayer("DESTROY", mPanelUnits);
+    mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
+    mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
+
+    mButtonUnitsDestroy->SetOnClickFunction([this]
+    {
+        mButtonUnitsDestroy->SetVisible(false);
+        mButtonUnitsDestroyConf->SetVisible(true);
+    });
+
+    buttonY += mButtonUnitsDestroy->GetHeight() + marginY;
+
+    // button DESTROY CONFIRM
+    mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
+    mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
+    mButtonUnitsDestroyConf->SetVisible(false);
 
     // button MOVE
     mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);

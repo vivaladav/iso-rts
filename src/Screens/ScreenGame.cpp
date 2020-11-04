@@ -213,6 +213,14 @@ ScreenGame::ScreenGame(Game * game)
         ClearSelection(player);
     });
 
+    // UNIT DESTROY
+    panel->SetFunctionUnitsDestroy([this, player]
+    {
+       SetupUnitDestroy(*(player->GetSelectedCell()), player);
+
+       ClearSelection(player);
+    });
+
     // UNIT UPGRADE
     panel->SetFunctionUnitsUpgrade([this, player]
     {
@@ -565,6 +573,16 @@ bool ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return true;
+}
+
+bool ScreenGame::SetupUnitDestroy(const Cell2D & cell, Player * player)
+{
+    if(!mGameMap->CanDestroyUnit(cell, player))
+        return false;
+
+    mGameMap->DestroyUnit(cell, player);
 
     return true;
 }

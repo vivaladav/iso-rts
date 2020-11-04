@@ -38,6 +38,7 @@ public:
     void UpdateButtonCellFortify(int fortLevel);
     void UpdateButtonCellUpgrade(int cellLevel);
     void UpdateButtonNewUnit(int num, int level);
+    void UpdateButtonUnitDestroy();
     void UpdateButtonUnitUpgrade(int num, int level);
     void UpdateButtonUnitsMove(int num);
 
@@ -45,7 +46,7 @@ public:
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
-    void SetFunctionUnitsMove(const std::function<void()> & f);
+    void SetFunctionUnitsDestroy(const std::function<void()> & f);
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
 
     int GetNumUnitsToMove() const;
@@ -71,6 +72,8 @@ private:
     ButtonPanelPlayer * mButtonCellUpgrade = nullptr;
     ButtonPanelPlayer * mButtonNewUnit = nullptr;
 
+    ButtonPanelPlayer * mButtonUnitsDestroy = nullptr;
+    ButtonPanelPlayer * mButtonUnitsDestroyConf = nullptr;
     ButtonPanelPlayer * mButtonUnitsMove = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
 

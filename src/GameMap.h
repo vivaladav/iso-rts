@@ -44,6 +44,10 @@ public:
     void StartCreateUnit(const Cell2D & cell, Player * player);
     void CreateUnit(const Cell2D & cell, Player * player);
 
+    // unit destroy
+    bool CanDestroyUnit(const Cell2D & cell, Player * player);
+    void DestroyUnit(const Cell2D & cell, Player * player);
+
     // unit upgrade
     bool CanUpgradeUnit(const Cell2D & cell, Player * player);
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
