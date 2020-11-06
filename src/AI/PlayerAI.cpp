@@ -63,8 +63,10 @@ void PlayerAI::DecideActions()
             actions.emplace_back(ACT_NEW_UNIT);
         if(mGm->CanUpgradeUnit(pos, mPlayer))
             actions.emplace_back(ACT_UNIT_UPGRADE);
-        if(CanCellMove(ownCells[c]))
+        if(CanMoveUnit(ownCells[c]))
             actions.emplace_back(ACT_UNIT_MOVE);
+        if(CanDestroyUnit(ownCells[c]))
+            actions.emplace_back(ACT_UNIT_DESTROY);
 
         // no action available for now -> skip this cell
         if(actions.empty())
@@ -243,12 +245,21 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
 
             case ACT_CELL_UPGRADE:
             {
-                // cell upgrade should be more likely when far from enemiesb
+                // cell upgrade should be more likely when far from enemies
                 prob += 100.f - distScore;
 
                 prob += 100.f * (MAX_CELL_LEVEL - cell.level) / MAX_CELL_LEVEL;
             }
             break;
+
+            case ACT_UNIT_DESTROY:
+            {
+                // unit destroy should be more likely when far from enemies
+                prob += 100.f - distScore;
+
+                // more units means higher probability
+                prob += 100.f * mPlayer->GetNumUnits() / (mPlayer->GetNumCells() * MAX_CELL_UNITS);
+            }
 
             case ACT_UNIT_MOVE:
             {
@@ -331,7 +342,7 @@ void PlayerAI::AddNewAction(const ActionAI & action)
     }
 }
 
-bool PlayerAI::CanCellMove(const GameMapCell & cell) const
+bool PlayerAI::CanMoveUnit(const GameMapCell & cell) const
 {
     // no units to move
     if(0 == cell.units)
@@ -385,6 +396,12 @@ bool PlayerAI::CanCellMove(const GameMapCell & cell) const
 
     // no walkable cell found
     return false;
+}
+
+bool PlayerAI::CanDestroyUnit(const GameMapCell & cell) const
+{
+    // true if cell has units and player has no money
+    return cell.units > 0 && mPlayer->GetMoney() < 0;
 }
 
 Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const

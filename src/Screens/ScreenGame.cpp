@@ -484,6 +484,13 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             }
             break;
 
+            case ACT_UNIT_DESTROY:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - UNIT DESTROY" << std::endl;
+                done = SetupUnitDestroy(action.src, player);
+            }
+            break;
+
             case ACT_UNIT_MOVE:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: "
