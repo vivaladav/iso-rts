@@ -43,6 +43,18 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
         auto * ai = new PlayerAI(p);
         p->SetAI(ai);
 
+        // AI player
+        game->AddPlayer("PLAYER 3", 2);
+        p = game->GetPlayer(2);
+        ai = new PlayerAI(p);
+        p->SetAI(ai);
+
+        // AI player
+        game->AddPlayer("PLAYER 4", 3);
+        p = game->GetPlayer(3);
+        ai = new PlayerAI(p);
+        p->SetAI(ai);
+
         game->RequestNextActiveState(StateId::GAME);
     });
 

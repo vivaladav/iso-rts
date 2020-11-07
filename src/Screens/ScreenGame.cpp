@@ -32,7 +32,7 @@ ScreenGame::ScreenGame(Game * game)
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
     // -- ISOMETRIC MAP --
-    const int SIDE = 6;
+    const int SIDE = 15;
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles =
@@ -127,7 +127,39 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/unit1-p2l3.png",
         "data/img/unit2-p2l3.png",
         "data/img/unit3-p2l3.png",
-        "data/img/unit4-p2l3.png"
+        "data/img/unit4-p2l3.png",
+
+        // PLAYER 3 - LEVEL 1
+        "data/img/unit1-p3l1.png",
+        "data/img/unit2-p3l1.png",
+        "data/img/unit3-p3l1.png",
+        "data/img/unit4-p3l1.png",
+        // PLAYER 3 - LEVEL 2
+        "data/img/unit1-p3l2.png",
+        "data/img/unit2-p3l2.png",
+        "data/img/unit3-p3l2.png",
+        "data/img/unit4-p3l2.png",
+        // PLAYER 3 - LEVEL 3
+        "data/img/unit1-p3l3.png",
+        "data/img/unit2-p3l3.png",
+        "data/img/unit3-p3l3.png",
+        "data/img/unit4-p3l3.png",
+
+        // PLAYER 4 - LEVEL 1
+        "data/img/unit1-p4l1.png",
+        "data/img/unit2-p4l1.png",
+        "data/img/unit3-p4l1.png",
+        "data/img/unit4-p4l1.png",
+        // PLAYER 4 - LEVEL 2
+        "data/img/unit1-p4l2.png",
+        "data/img/unit2-p4l2.png",
+        "data/img/unit3-p4l2.png",
+        "data/img/unit4-p4l2.png",
+        // PLAYER 4 - LEVEL 3
+        "data/img/unit1-p4l3.png",
+        "data/img/unit2-p4l3.png",
+        "data/img/unit3-p4l3.png",
+        "data/img/unit4-p4l3.png"
     };
 
     mIsoMap->CreateLayer(unitsImgs);

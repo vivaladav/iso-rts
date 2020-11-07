@@ -80,17 +80,53 @@ enum UnitType : int
     P2_3UL1,
     P2_4UL1,
 
+    // PLAYER 2 - LEVEL 2
+    P2_1UL2,
+    P2_2UL2,
+    P2_3UL2,
+    P2_4UL2,
+
+    // PLAYER 2 - LEVEL 3
+    P2_1UL3,
+    P2_2UL3,
+    P2_3UL3,
+    P2_4UL3,
+
     // PLAYER 3 - LEVEL 1
     P3_1UL1,
     P3_2UL1,
     P3_3UL1,
     P3_4UL1,
 
+    // PLAYER 3 - LEVEL 2
+    P3_1UL2,
+    P3_2UL2,
+    P3_3UL2,
+    P3_4UL2,
+
+    // PLAYER 3 - LEVEL 3
+    P3_1UL3,
+    P3_2UL3,
+    P3_3UL3,
+    P3_4UL3,
+
     // PLAYER 4 - LEVEL 1
     P4_1UL1,
     P4_2UL1,
     P4_3UL1,
     P4_4UL1,
+
+    // PLAYER 4 - LEVEL 2
+    P4_1UL2,
+    P4_2UL2,
+    P4_3UL2,
+    P4_4UL2,
+
+    // PLAYER 4 - LEVEL 3
+    P4_1UL3,
+    P4_2UL3,
+    P4_3UL3,
+    P4_4UL3,
 
     NUM_UNIT_TYPES,
 
@@ -926,27 +962,28 @@ int GameMap::DefineCellType(const GameMapCell & cell)
 
 int GameMap::DefineUnitType(const GameMapCell & cell)
 {
-    int type = UNIT_NULL;
+    int type = (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
 
     switch (cell.ownerId)
     {
         case 0:
-            type = P1_1UL1 + (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
+            type += P1_1UL1;
         break;
 
         case 1:
-            type = P2_1UL1 + (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
+            type += P2_1UL1;
         break;
 
         case 2:
-            type = P3_1UL1 + cell.units - 1;
+            type += P3_1UL1;
         break;
 
         case 3:
-            type = P4_1UL1 + cell.units - 1;
+            type += P4_1UL1;
         break;
 
         default:
+            type = UNIT_NULL;
         break;
     }
 
