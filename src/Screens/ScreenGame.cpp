@@ -185,13 +185,21 @@ ScreenGame::ScreenGame(Game * game)
     }
 
     // -- UI --
+    const PanelPlayer::PanelPosition panelPos[] =
+    {
+        PanelPlayer::PPOS_TL,
+        PanelPlayer::PPOS_TR,
+        PanelPlayer::PPOS_BL,
+        PanelPlayer::PPOS_BR,
+    };
+
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
         Player * player = GetGame()->GetPlayer(i);
-        PanelPlayer * panel = new PanelPlayer(player);
+        PanelPlayer * panel = new PanelPlayer(player, panelPos[i]);
 
-        const int x = (i % 2) ? (rendW - panel->GetWidth() - 10) : 10;
-        const int y = (i < 2) ? 10 : (rendH - panel->GetHeight() - 10);
+        const int x = (i % 2) ? (rendW - panel->GetWidth()) : 0;
+        const int y = (i < 2) ? 0 : (rendH - panel->GetHeight());
 
         panel->SetPosition(x, y);
 

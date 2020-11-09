@@ -19,7 +19,7 @@
 namespace game
 {
 
-PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
+PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
     using namespace lib::graphic;
@@ -37,39 +37,25 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     Label * labelName = new Label(player->GetName().c_str(), fontName, this);
     labelName->SetColor(PLAYER_COLOR[player->GetPlayerId()]);
 
-    const int marginX0 = 280;
-    const int marginX1 = 50;
-
-    const int Y0 = 10;
-
     Label * labelHeaderCoins = new Label("COINS", fontHeader, this);
-    labelHeaderCoins->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0, Y0);
     labelHeaderCoins->SetColor(0x212121FF);
 
     const int coins = player->GetMoney();
     mLabelCoins = new Label(MakeStrCoins(coins).c_str(), fontData, this);
-    mLabelCoins->SetPosition(labelHeaderCoins->GetX() + (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
-                             labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
     mLabelCoins->SetColor(0x212121FF);
 
     Label * labelHeaderCells = new Label("CELLS", fontHeader, this);
-    labelHeaderCells->SetPosition(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1, Y0);
     labelHeaderCells->SetColor(0x212121FF);
 
     const int cells = player->GetNumCells();
     mLabelCells = new Label(MakeStrCells(cells).c_str(), fontData, this);
-    mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
-                             labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
     mLabelCells->SetColor(0x212121FF);
 
     Label * labelHeaderUnits = new Label("UNITS", fontHeader, this);
-    labelHeaderUnits->SetPosition(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1, Y0);
     labelHeaderUnits->SetColor(0x212121FF);
 
     const int units = player->GetNumUnits();
     mLabelUnits = new Label(MakeStrUnits(units).c_str(), fontData, this);
-    mLabelUnits->SetPosition(labelHeaderUnits->GetX() + (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
-                             labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
     mLabelUnits->SetColor(0x212121FF);
 
     // -- subpanels --
@@ -77,16 +63,69 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     const int marginRightPanels = 50;
 
     CreatePanelCell();
-
-    const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
-    mPanelCell->SetY(panelY);
     mPanelCell->SetVisible(false);
 
     CreatePanelUnits();
-
-    const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
-    mPanelUnits->SetPosition(panelX, panelY);
     mPanelUnits->SetVisible(false);
+
+    // -- position elements --
+    const int marginH = 10;
+
+    const int marginX0 = 280;
+    const int marginX1 = 50;
+
+    const int panelW = labelName->GetWidth() +
+                       labelHeaderCoins->GetWidth() +
+                       labelHeaderCells->GetWidth() +
+                       labelHeaderUnits->GetWidth() +
+                       marginH + marginX0 + (marginX1 * 2);
+
+    switch(pos)
+    {
+        case PPOS_TL:
+        {
+            labelName->SetX(marginH);
+
+            labelHeaderCoins->SetX(labelName->GetX() + labelName->GetWidth() + marginX0);
+
+            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
+                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
+                                     labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
+
+            labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
+
+            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
+                                     labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
+
+            labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
+
+            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
+                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
+                                     labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
+
+            const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
+            mPanelCell->SetY(panelY);
+
+            const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
+            mPanelUnits->SetPosition(panelX, panelY);
+        }
+        break;
+
+        case PPOS_TR:
+        {
+
+        }
+        break;
+
+        case PPOS_BL:
+        break;
+
+        case PPOS_BR:
+        break;
+
+        default:
+        break;
+    }
 }
 
 void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }

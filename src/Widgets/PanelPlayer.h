@@ -23,7 +23,18 @@ struct GameMapCell;
 class PanelPlayer : public lib::sgui::Widget
 {
 public:
-    PanelPlayer(Player * player, lib::sgui::Widget * parent = nullptr);
+    enum PanelPosition : int
+    {
+        PPOS_TL,
+        PPOS_TR,
+        PPOS_BL,
+        PPOS_BR,
+
+        NUM_PANEL_POSITIONS
+    };
+
+public:
+    PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget * parent = nullptr);
 
     void SetPanelCellVisible(bool val);
     void SetPanelUnitsVisible(bool val);
