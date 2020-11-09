@@ -69,7 +69,7 @@ private:
 
     void CreatePanelCell();
 
-    void CreatePanelUnits();
+    void CreatePanelUnits(PanelPosition pos);
 
 private:
     ButtonsPanel * mPanelCell = nullptr;

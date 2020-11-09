@@ -63,10 +63,10 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     const int marginRightPanels = 50;
 
     CreatePanelCell();
-    mPanelCell->SetVisible(false);
+    //mPanelCell->SetVisible(false);
 
-    CreatePanelUnits();
-    mPanelUnits->SetVisible(false);
+    CreatePanelUnits(pos);
+    //mPanelUnits->SetVisible(false);
 
     // -- position elements --
     const int marginH = 10;
@@ -84,28 +84,34 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     {
         case PPOS_TL:
         {
+            // player name
             labelName->SetX(marginH);
 
+            // coins
             labelHeaderCoins->SetX(labelName->GetX() + labelName->GetWidth() + marginX0);
 
             mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
                                      (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
                                      labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
 
+            // cells
             labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
 
             mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
                                      labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
 
+            // units
             labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
 
             mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
                                      (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
                                      labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
 
+            // sub-panel cell buttons
             const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
-            mPanelCell->SetY(panelY);
+            mPanelCell->SetPosition(labelName->GetX(), panelY);
 
+            // sub-panel unit buttons
             const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
             mPanelUnits->SetPosition(panelX, panelY);
         }
@@ -113,7 +119,40 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
 
         case PPOS_TR:
         {
+            // player name
+            labelName->SetX(panelW - marginH - labelName->GetWidth());
 
+            // coins
+            //labelHeaderCoins->SetX(labelName->GetX() + labelName->GetWidth() + marginX0);
+
+            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
+                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
+                                     labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
+
+            // cells
+            labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
+
+            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
+                                     labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
+
+            // units
+            labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
+
+            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
+                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
+                                     labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
+
+            // sub-panel cell buttons
+            const int panelX = panelW - marginH - mPanelCell->GetWidth();
+            const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
+            mPanelCell->SetPosition(panelX, panelY);
+
+            // sub-panel unit buttons
+            const int panelX2 = panelX - mPanelUnits->GetWidth() - marginRightPanels;
+            mPanelUnits->SetPosition(panelX2, panelY);
+
+            // resize panel to include right margin in its size
+            SetSize(GetWidth() + marginH, GetHeight());
         }
         break;
 
@@ -367,7 +406,7 @@ void PanelPlayer::CreatePanelCell()
     mButtonCellUpgrade->SetY(buttonY);
 }
 
-void PanelPlayer::CreatePanelUnits()
+void PanelPlayer::CreatePanelUnits(PanelPosition pos)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -425,6 +464,8 @@ void PanelPlayer::CreatePanelUnits()
                                 mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + 10);
 
     mUnitsSelector->SetVisible(false);
+
+    // -- position elements --
 }
 
 } // namespace game
