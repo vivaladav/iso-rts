@@ -62,7 +62,7 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     const int marginTopRow = 10;
     const int marginRightPanels = 50;
 
-    CreatePanelCell();
+    CreatePanelCell(pos);
     //mPanelCell->SetVisible(false);
 
     CreatePanelUnits(pos);
@@ -373,7 +373,7 @@ std::string PanelPlayer::MakeStrUnits(int units)
     return std::to_string(units);
 }
 
-void PanelPlayer::CreatePanelCell()
+void PanelPlayer::CreatePanelCell(PanelPosition pos)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -404,6 +404,9 @@ void PanelPlayer::CreatePanelCell()
 
     mButtonCellUpgrade = new ButtonPanelPlayer(mPanelCell);
     mButtonCellUpgrade->SetY(buttonY);
+
+    if(PPOS_TR == pos || PPOS_BR == pos)
+        labelHeader->SetX(mPanelCell->GetWidth() - labelHeader->GetWidth());
 }
 
 void PanelPlayer::CreatePanelUnits(PanelPosition pos)
@@ -432,7 +435,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
 
     // button DESTROY
     mButtonUnitsDestroy = new ButtonPanelPlayer("DESTROY", mPanelUnits);
-    mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
     mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
 
     mButtonUnitsDestroy->SetOnClickFunction([this]
@@ -445,7 +447,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
 
     // button DESTROY CONFIRM
     mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
-    mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
     mButtonUnitsDestroyConf->SetVisible(false);
 
     // button MOVE
@@ -460,12 +461,28 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
 
     // units selector
     mUnitsSelector = new UnitsSelector(mPanelUnits);
-    mUnitsSelector->SetPosition((mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f,
-                                mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + 10);
 
     mUnitsSelector->SetVisible(false);
 
     // -- position elements --
+    if(PPOS_TL == pos)
+    {
+        mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
+    }
+    else if(PPOS_TR == pos)
+    {
+        mButtonUnitsUpgrade->SetX(mButtonUnitsDestroy->GetX() + marginX + mButtonUnitsDestroy->GetWidth());
+    }
+
+    mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
+    mButtonUnitsMove->SetX(mButtonUnitsUpgrade->GetX());
+
+    mUnitsSelector->SetPosition(mButtonUnitsMove->GetX() +
+                                (mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f,
+                                mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + 10);
+
+    if(PPOS_TR == pos || PPOS_BR == pos)
+        labelHeader->SetX(mPanelUnits->GetWidth() - labelHeader->GetWidth());
 }
 
 } // namespace game

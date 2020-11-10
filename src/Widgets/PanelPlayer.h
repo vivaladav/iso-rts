@@ -67,7 +67,7 @@ private:
     std::string MakeStrCoins(int coins);
     std::string MakeStrUnits(int units);
 
-    void CreatePanelCell();
+    void CreatePanelCell(PanelPosition pos);
 
     void CreatePanelUnits(PanelPosition pos);
 
