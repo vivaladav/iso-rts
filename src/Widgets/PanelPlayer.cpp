@@ -63,7 +63,7 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     const int marginRightPanels = 50;
 
     CreatePanelCell(pos);
-    //mPanelCell->SetVisible(false);
+    mPanelCell->SetVisible(false);
 
     CreatePanelUnits(pos);
     mPanelUnits->SetVisible(false);
@@ -186,6 +186,10 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
             const int panelY = labelName->GetY() - marginTopRow - mPanelCell->GetHeight();
             mPanelCell->SetPosition(labelName->GetX(), panelY);
 
+            // sub-panel unit buttons
+            const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
+            const int panelY2 = labelName->GetY() - marginTopRow - mPanelUnits->GetHeight();
+            mPanelUnits->SetPosition(panelX, panelY2);
         }
         break;
 
@@ -221,6 +225,11 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
             const int panelX = panelW - marginH - mPanelCell->GetWidth();
             const int panelY = labelName->GetY() - marginTopRow - mPanelCell->GetHeight();
             mPanelCell->SetPosition(panelX, panelY);
+
+            // sub-panel unit buttons
+            const int panelX2 = panelX - mPanelUnits->GetWidth() - marginRightPanels;
+            const int panelY2 = labelName->GetY() - marginTopRow - mPanelUnits->GetHeight();
+            mPanelUnits->SetPosition(panelX2, panelY2);
 
             // resize panel to include right margin in its size
             SetSize(GetWidth() + marginH, GetHeight());
@@ -515,25 +524,20 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     labelHeader->SetColor(0x212121FF);
 
     const int marginX = 30;
+    const int marginY0 = 10;
     const int marginY = 30;
-
-    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + 10;
 
     // button UPGRADE
     mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
-    mButtonUnitsUpgrade->SetY(buttonY);
 
     // button DESTROY
     mButtonUnitsDestroy = new ButtonPanelPlayer("DESTROY", mPanelUnits);
-    mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
 
     mButtonUnitsDestroy->SetOnClickFunction([this]
     {
         mButtonUnitsDestroy->SetVisible(false);
         mButtonUnitsDestroyConf->SetVisible(true);
     });
-
-    buttonY += mButtonUnitsDestroy->GetHeight() + marginY;
 
     // button DESTROY CONFIRM
     mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
@@ -542,7 +546,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     // button MOVE
     mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
     mButtonUnitsMove->SetCheckable(true);
-    mButtonUnitsMove->SetY(buttonY);
 
     mButtonUnitsMove->SetOnToggleFunction([this](bool checked)
     {
@@ -555,21 +558,52 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     mUnitsSelector->SetVisible(false);
 
     // -- position elements --
-    if(PPOS_TL == pos)
-    {
+    if(PPOS_TL == pos || PPOS_BL == pos)
         mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
-    }
-    else if(PPOS_TR == pos)
-    {
+    else
         mButtonUnitsUpgrade->SetX(mButtonUnitsDestroy->GetX() + marginX + mButtonUnitsDestroy->GetWidth());
+
+    if(PPOS_BL == pos || PPOS_BR == pos)
+    {
+        const int panelH = labelHeader->GetHeight() + marginY0 +
+                           mButtonUnitsUpgrade->GetHeight() +
+                           mButtonUnitsMove->GetHeight() +
+                           marginY;
+
+        int buttonY = panelH - labelHeader->GetHeight();
+
+        labelHeader->SetY(buttonY);
+
+        buttonY -= marginY0 + mButtonUnitsUpgrade->GetHeight();
+
+        mButtonUnitsUpgrade->SetY(buttonY);
+
+        buttonY -= marginY + mButtonUnitsMove->GetHeight();
+
+        mButtonUnitsMove->SetY(buttonY);
+
+        mUnitsSelector->SetY(mButtonUnitsMove->GetY() - marginY0 - mUnitsSelector->GetHeight());
+    }
+    else
+    {
+        int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
+
+        mButtonUnitsUpgrade->SetY(buttonY);
+
+        buttonY += mButtonUnitsDestroy->GetHeight() + marginY;
+
+        mButtonUnitsMove->SetY(buttonY);
+
+        mUnitsSelector->SetY(mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + marginY0);
     }
 
+    mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
     mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
+
     mButtonUnitsMove->SetX(mButtonUnitsUpgrade->GetX());
 
-    mUnitsSelector->SetPosition(mButtonUnitsMove->GetX() +
-                                (mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f,
-                                mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + 10);
+    mUnitsSelector->SetX(mButtonUnitsMove->GetX() +
+                         (mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f);
 
     if(PPOS_TR == pos || PPOS_BR == pos)
         labelHeader->SetX(mPanelUnits->GetWidth() - labelHeader->GetWidth());
