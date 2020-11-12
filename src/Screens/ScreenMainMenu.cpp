@@ -1,8 +1,6 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
-#include "Player.h"
-#include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 
@@ -29,33 +27,9 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panel);
 
-    button->SetOnClickFunction([this]
+    button->SetOnClickFunction([game]
     {
-        Game * game = GetGame();
-
-        game->AddPlayer("PLAYER 1", 0);
-        Player * p = game->GetPlayer(0);
-        p->SetLocal(true);
-
-        // AI player
-        game->AddPlayer("PLAYER 2", 1);
-        p = game->GetPlayer(1);
-        auto * ai = new PlayerAI(p);
-        p->SetAI(ai);
-
-        // AI player
-        game->AddPlayer("PLAYER 3", 2);
-        p = game->GetPlayer(2);
-        ai = new PlayerAI(p);
-        p->SetAI(ai);
-
-        // AI player
-        game->AddPlayer("PLAYER 4", 3);
-        p = game->GetPlayer(3);
-        ai = new PlayerAI(p);
-        p->SetAI(ai);
-
-        game->RequestNextActiveState(StateId::GAME);
+        game->RequestNextActiveState(StateId::NEW_GAME);
     });
 
     buttonY += button->GetHeight() + VMARGIN;
@@ -63,7 +37,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- BUTTON EXIT --
     button = new ButtonMainMenu("EXIT", panel);
 
-    button->SetOnClickFunction([this] { GetGame()->Exit(); });
+    button->SetOnClickFunction([game] { game->Exit(); });
 
     button->SetY(buttonY);
 
