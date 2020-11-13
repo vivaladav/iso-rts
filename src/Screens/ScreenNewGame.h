@@ -5,6 +5,8 @@
 namespace game
 {
 
+enum Difficulty : unsigned int;
+
 class ScreenNewGame : public Screen
 {
 public:
@@ -13,6 +15,10 @@ public:
 
     void Update(float update) override;
     void Render() override;
+
+private:
+    int mCpuPlayers = 1;
+    Difficulty mDiff;
 };
 
 } // namespace game

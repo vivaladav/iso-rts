@@ -22,6 +22,7 @@ namespace game
 
 ScreenNewGame::ScreenNewGame(Game * game)
     : Screen(game)
+    , mDiff(Difficulty::EASY)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -68,7 +69,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     bg->SetFunctionOnToggle([this](unsigned int ind, bool checked)
     {
-        std::cout << "ButtonsGroup button " << ind << " " << (checked ? " CHECKED" : "UNCHECKED") << std::endl;
+        if(checked)
+            mCpuPlayers = ind + 1;
     });
 
     widgetY += header->GetHeight() + marginWidgetsV;
@@ -77,6 +79,22 @@ ScreenNewGame::ScreenNewGame(Game * game)
     header = new Label("DIFFICULTY", fontHeader);
     header->SetColor(colorHeader);
     header->SetPosition(marginL, widgetY);
+
+    // buttons
+    bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
+    bg->SetPosition(header->GetX() + header->GetWidth() + marginWidgetsH, widgetY);
+
+    bg->AddButton(new ButtonUnitsSelector("1"));
+    bg->AddButton(new ButtonUnitsSelector("2"));
+    bg->AddButton(new ButtonUnitsSelector("3"));
+
+    bg->SetButtonChecked(0, true);
+
+    bg->SetFunctionOnToggle([this](unsigned int ind, bool checked)
+    {
+        if(checked)
+            mDiff = static_cast<Difficulty>(ind);
+    });
 
     widgetY += header->GetHeight() + marginWidgetsV;
 
@@ -107,33 +125,37 @@ ScreenNewGame::ScreenNewGame(Game * game)
     button = new ButtonMainMenu("START", panel);
     button->SetX(buttonBackW + marginButtonsH);
 
-    button->SetOnClickFunction([game]
+    button->SetOnClickFunction([this, game]
     {
+        // create human player
         game->AddPlayer("PLAYER 1", 0);
         Player * p = game->GetPlayer(0);
         p->SetLocal(true);
 
-        // AI player
-        game->AddPlayer("PLAYER 2", 1);
-        p = game->GetPlayer(1);
-        auto * ai = new PlayerAI(p);
-        p->SetAI(ai);
+        // create AI players
+        const char * strPlayers[] =
+        {
+            "PLAYER 2",
+            "PLAYER 3",
+            "PLAYER 4"
+        };
 
-        // AI player
-        game->AddPlayer("PLAYER 3", 2);
-        p = game->GetPlayer(2);
-        ai = new PlayerAI(p);
-        p->SetAI(ai);
+        for(int i = 0; i < mCpuPlayers; ++i)
+        {
+            const int playerId = i + 1;
 
-        // AI player
-        game->AddPlayer("PLAYER 4", 3);
-        p = game->GetPlayer(3);
-        ai = new PlayerAI(p);
-        p->SetAI(ai);
+            game->AddPlayer(strPlayers[i], playerId);
+            p = game->GetPlayer(playerId);
+            auto * ai = new PlayerAI(p);
+            p->SetAI(ai);
+        }
 
+        // set game difficulty
+        game->SetDifficulty(mDiff);
+
+        // move to game
         game->RequestNextActiveState(StateId::GAME);
     });
-
 
     // position buttons panel
     const int containerX = (Renderer::Instance()->GetWidth() - panel->GetWidth()) * 0.5f;

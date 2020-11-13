@@ -25,6 +25,15 @@ class Player;
 
 enum StateId : int;
 
+enum Difficulty : unsigned int
+{
+    EASY,
+    MEDIUM,
+    HARD,
+
+    NUM_DIFFICULTIES
+};
+
 class Game : public lib::core::Application
 {
 public:
@@ -34,6 +43,9 @@ public:
     void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
     void RequestNextActiveState(StateId sid);
+
+    Difficulty GetDifficulty() const;
+    void SetDifficulty(Difficulty level);
 
     // -- players --
     void AddPlayer(const char * name, int pid);
@@ -57,6 +69,8 @@ private:
     lib::sgui::Stage * mStage = nullptr;
     lib::graphic::Font * mFontGui = nullptr;
 
+    Difficulty mDiff = EASY;
+
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
     unsigned char mClearB = 0;
@@ -70,6 +84,9 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
     mClearB = b;
     mClearA = a;
 }
+
+inline Difficulty Game::GetDifficulty() const { return mDiff; }
+inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }
 
