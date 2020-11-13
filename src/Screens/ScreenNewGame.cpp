@@ -68,7 +68,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     bg->SetFunctionOnToggle([this](unsigned int ind, bool checked)
     {
-        std::cout << "ButtonsGroup button " << ind << " " << (checked ? " \CHECKED" : "UNCHECKED") << std::endl;
+        std::cout << "ButtonsGroup button " << ind << " " << (checked ? " CHECKED" : "UNCHECKED") << std::endl;
     });
 
     widgetY += header->GetHeight() + marginWidgetsV;
