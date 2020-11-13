@@ -19,7 +19,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     game->SetClearColor(0x11, 0x11, 0x11, 0xFF);
 
-    Widget * panel = new Widget(0);
+    Widget * panel = new Widget();
 
     int buttonY = 0;
     const int VMARGIN = 100;
