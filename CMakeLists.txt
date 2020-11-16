@@ -48,6 +48,7 @@ add_executable(
     src/States/StateMainMenu.cpp
     src/States/StateNewGame.h
     src/States/StateNewGame.cpp
+    src/States/StatesIds.h
     src/States/StateTest.h
     src/States/StateTest.cpp
     src/Widgets/ButtonMainMenu.h
