@@ -134,10 +134,10 @@ void IsoMap::SetLayerVisible(unsigned int index, bool visible)
         return ;
 
     // nothing to do
-    if(layer->mVisible == visible)
+    if(layer->IsVisible() == visible)
         return ;
 
-    layer->mVisible = visible;
+    layer->SetVisible(visible);
 
     if(!visible)
     {

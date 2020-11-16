@@ -15,6 +15,7 @@ namespace game
 
 class IsoMap;
 
+/// An object of an IsoLayer.
 struct IsoObject
 {
     IsoObject(int ind, const lib::core::Point2D & p)
@@ -42,6 +43,7 @@ enum ObjectAlignment
     RIGHT           = 0x40
 };
 
+/// A layer of an IsoMap.  Basically It's a container of IsoObjects.
 class IsoLayer
 {
 public:
@@ -55,6 +57,8 @@ public:
                     ObjectAlignment alignment);
     bool ChangeObject(unsigned int r, unsigned int c, int objIndex);
 
+    bool IsVisible() const;
+    void SetVisible(bool val);
     void Render();
 
 private:
@@ -72,8 +76,20 @@ private:
     const IsoMap * mMap = nullptr;
 
     bool mVisible = true;
-
-    friend class IsoMap;
 };
+
+// ==================== INLINE METHODS ====================
+
+/**
+ * @brief Tells if a layer is visible or not.
+ * @return TRUE if layer is visible, FALSE otherwise
+ */
+inline bool IsoLayer::IsVisible() const { return mVisible; }
+
+/**
+ * @brief Sets the visibility status of a layer.
+ * @param val Visibility status (TRUE or FALSE)
+ */
+inline void IsoLayer::SetVisible(bool val) { mVisible = val; }
 
 } // namespace game
