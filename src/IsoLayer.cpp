@@ -44,6 +44,16 @@ IsoLayer::~IsoLayer()
 
 // ==================== PUBLIC METHODS ====================
 
+/**
+ * @brief IsoLayer::AddObject
+ * @brief Creates a new IsoObject and adds it to the layer.
+ * @param r Row index, starting from 0
+ * @param c Col index, starting from 0
+ * @param index Position index in the layer. Identifies the cell
+ * @param objIndex Object index ID. Identifies the associated image
+ * @param alignment Visual alignment of the object in the cell
+ * @return TRUE on success, FALSE on error
+ */
 bool IsoLayer::AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment)
 {
     const unsigned int rows = mMap->GetNumRows();

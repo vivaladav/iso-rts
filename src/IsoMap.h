@@ -14,6 +14,7 @@ class IsoLayer;
 
 struct Cell2D;
 
+/// Isometric map made of isometric cells. It might contain IsoLayers that are rendered on top of the map.
 class IsoMap
 {
 public:
@@ -76,27 +77,61 @@ private:
     std::vector<IsoLayer *> mLayersRenderList;
 };
 
+// ==================== INLINE METHODS ====================
+
+/**
+ * @brief Gives the top-left corner position of a cell.
+ * @param r Row index of the cell
+ * @param c Column index of the cell
+ * @return A Point2D struct containing the (x,y) coordinates of the cell
+ */
 inline lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
     return GetCellPosition(ind);
 }
 
+/**
+ * @brief Gives the number of rows in the map.
+ * @return Number of rows in the map
+ */
 inline int IsoMap::GetNumRows() const { return mRows; }
+
+/**
+ * @brief Gives the number of columns in the map.
+ * @return Number of colums in the map
+ */
 inline int IsoMap::GetNumCols() const { return mCols; }
 
+/**
+ * @brief Set the type of a cell, which basically defines what image is used to represent it.
+ * @param r Row coordinate of the cell
+ * @param c Column coordinate of the cell
+ * @param type Type ID that defines what image to use for the cell
+ */
 inline void IsoMap::SetCellType(unsigned int r, unsigned int c, unsigned int type)
 {
     if(r < mRows && c < mCols)
         SetCellType(r * mCols + c, type);
 }
 
+/**
+ * @brief Set the type of a cell, which basically defines what image is used to represent it.
+ * @param index Cell index inside the map
+ * @param type Type ID that defines what image to use for the cell
+ */
 inline void IsoMap::SetCellType(unsigned int index, unsigned int type)
 {
     if(index < mMap.size() && type < mTiles.size())
         mMap[index] = type;
 }
 
+/**
+ * @brief Gets the type of a cell. Basically an ID that defines what image is used to represent it.
+ * @param r Row coordinate of the cell
+ * @param c Column coordinate of the cell
+ * @return Type ID that defines what image to use for the cell
+ */
 inline int IsoMap::GetCellType(unsigned int r, unsigned int c) const
 {
     if(r < mRows && c < mCols)
@@ -105,6 +140,11 @@ inline int IsoMap::GetCellType(unsigned int r, unsigned int c) const
         return -1;
 }
 
+/**
+ * @brief Gets the type of a cell. Basically an ID that defines what image is used to represent it.
+ * @param index Cell index inside the map
+ * @return Type ID that defines what image to use for the cell
+ */
 inline int IsoMap::GetCellType(unsigned int index) const
 {
     if(index < mMap.size())
@@ -113,12 +153,35 @@ inline int IsoMap::GetCellType(unsigned int index) const
         return -1;
 }
 
+/**
+ * @brief Gets the width of a tile.
+ * @return Tile width, in pixels
+ */
 inline int IsoMap::GetTileWidth() const { return mTileW; }
+
+/**
+ * @brief Gets the height of a tile.
+ * @return Tile height, in pixels
+ */
 inline int IsoMap::GetTileHeight() const { return mTileH; }
 
+/**
+ * @brief Gets the width of the whole map.
+ * @return Width of the map, in pixels
+ */
 inline int IsoMap::GetWidth() const { return mTileW * mCols; }
+
+/**
+ * @brief Gets the height of the whole map.
+ * @return Height of the map, in pixels
+ */
 inline int IsoMap::GetHeight() const { return mTileH * mRows; }
 
+/**
+ * @brief Sets the origin point of the map. This is the point where the top corner of the 0,0 iso cell will be placed.
+ * @param x X coordinate in pixels
+ * @param y Y coordinate in pixels
+ */
 inline void IsoMap::SetOrigin(int x, int y)
 {
     mX0 = x;
@@ -130,6 +193,11 @@ inline void IsoMap::SetOrigin(int x, int y)
     UpdateTilePositions();
 }
 
+/**
+ * @brief Gets an IsoLayer stored at a given position in the stack of layers.
+ * @param index Index that identifies a specific layer in the map. Starting from 0
+ * @return
+ */
 inline IsoLayer * IsoMap::GetLayer(unsigned int index) const
 {
     if(index < mLayers.size())

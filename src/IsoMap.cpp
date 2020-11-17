@@ -10,6 +10,14 @@
 namespace game
 {
 
+// ==================== CONSTRUCTORS AND DESTRUCTOR ====================
+
+/**
+ * @brief Creates an isometric map made by rows x cols cells.
+ * @param rows Number of rows in the map
+ * @param cols Number of columns in the map
+ * @param tileW Width of a cell (height is half of that)
+ */
 IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
     : mRows(rows)
     , mCols(cols)
@@ -27,6 +35,7 @@ IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
     mMap.assign(size, 0);
 }
 
+/// Destructor, deletes Images used for the tiles and IsoLayers.
 IsoMap::~IsoMap()
 {
     for(lib::graphic::Image * img : mTiles)
@@ -37,6 +46,13 @@ IsoMap::~IsoMap()
         delete layer;
 }
 
+// ==================== PUBLIC METHODS ====================
+
+/**
+ * @brief Gives the top-left corner position of a cell.
+ * @param index Position index in the map. Identifies the cell
+ * @return A Point2D struct containing the (x,y) coordinates of the cell
+ */
 lib::core::Point2D IsoMap::GetCellPosition(unsigned int index) const
 {
     if(index < mTilePositions.size())
@@ -48,6 +64,10 @@ lib::core::Point2D IsoMap::GetCellPosition(unsigned int index) const
     }
 }
 
+/**
+ * @brief Creates the Images used to represent the tiles in the map.
+ * @param files Files to create images. Paths are relative to binary
+ */
 void IsoMap::SetTiles(const std::vector<std::string> & files)
 {
     for(const std::string & file : files)
@@ -60,6 +80,7 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
     UpdateTilePositions();
 }
 
+/// Renders all the cells in the map and on top of that all the IsoLayers.
 void IsoMap::Render()
 {
     for(unsigned int r = 0; r < mRows; ++r)
@@ -84,6 +105,12 @@ void IsoMap::Render()
         layer->Render();
 }
 
+/**
+ * @brief Identifies the cell corresponding to a (x,y) screen position.
+ * @param x X coordinate of the position
+ * @param y Y coordinate of the position
+ * @return A Cell2D struct containing a (row,col) pair that identifies the correspongind cell
+ */
 Cell2D IsoMap::CellFromScreenPoint(int x, int y) const
 {
     const float xf = x - mX0;
@@ -105,7 +132,11 @@ Cell2D IsoMap::CellFromScreenPoint(int x, int y) const
     return cell;
 }
 
-
+/**
+ * @brief Checks if a cell is inside the map borders.
+ * @param cell Struct containing the row,col coordinates of the cell
+ * @return TRUE if the cell is inside the map, FALSE otherwise
+ */
 bool IsoMap::IsCellInside(const Cell2D & cell) const
 {
     const unsigned int cr = static_cast<unsigned int>(cell.row);
@@ -113,6 +144,11 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
     return  cr < mRows && cc < mCols;
 }
 
+/**
+ * @brief Creates and stores an IsoLayer.
+ * @param files Files to create images. Paths are relative to binary
+ * @return A pointer to the new IsoLayer
+ */
 IsoLayer * IsoMap::CreateLayer(const std::vector<std::string> & files)
 {
     IsoLayer * layer = new IsoLayer(this, files);
@@ -123,6 +159,11 @@ IsoLayer * IsoMap::CreateLayer(const std::vector<std::string> & files)
     return layer;
 }
 
+/**
+ * @brief Makes an IsoLayer visible or invisible.
+ * @param index Layer ID
+ * @param visible TRUE if you want to make the layer visible, FALSE otherwise
+ */
 void IsoMap::SetLayerVisible(unsigned int index, bool visible)
 {
     IsoLayer * layer = nullptr;
@@ -169,6 +210,9 @@ void IsoMap::SetLayerVisible(unsigned int index, bool visible)
     }
 }
 
+// ==================== PRIVATE METHODS ====================
+
+/// Updates the position of all the tiles. Based on tile size and map origin.
 void IsoMap::UpdateTilePositions()
 {
     // TODO consider image size of the different tiles
