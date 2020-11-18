@@ -15,6 +15,7 @@ class ScreenGame;
 struct Cell2D;
 struct GameMapCell;
 
+/// Class that handles most of the logic of what happens on the game map.
 class GameMap
 {
 public:
@@ -76,6 +77,14 @@ private:
     unsigned int mCols = 0;
 };
 
+// ==================== INLINE METHODS ====================
+
+/**
+ * @brief Returns the player ID of the Player that currently controls the cell.
+ * @param r Row index, starting from 0
+ * @param c Column index, starting from 0
+ * @return A player ID, or -1 if the cell is not controlled by any player
+ */
 inline int GameMap::GetCellOwner(unsigned int r, unsigned int c) const
 {
     if(r < mRows && c < mCols)
@@ -84,6 +93,12 @@ inline int GameMap::GetCellOwner(unsigned int r, unsigned int c) const
         return -1;
 }
 
+/**
+ * @brief Checks if a cell is in the process of changing (upgrade, fortification in progress).
+ * @param r Row index, starting from 0
+ * @param c Column index, starting from 0
+ * @return TRUE if the cell is changing, FALSE otherwise
+ */
 inline bool GameMap::IsCellChanging(unsigned int r, unsigned int c) const
 {
     if(r < mRows && c < mCols)
@@ -92,13 +107,27 @@ inline bool GameMap::IsCellChanging(unsigned int r, unsigned int c) const
         return false;
 }
 
+/**
+ * @brief Gets a GameMapCell object from the map. No boundaries check is done.
+ * @param r Row index, starting from 0
+ * @param c Column index, starting from 0
+ * @return Const reference to a cell of the map
+ */
 inline const GameMapCell & GameMap::GetCell(unsigned int r, unsigned int c) const
 {
     return mCells[r * mCols + c];
 }
 
+/**
+ * @brief Gets the number of rows of the map.
+ * @return Number of map rows
+ */
 inline unsigned int GameMap::GetNumRows() const { return mRows; }
-inline unsigned int GameMap::GetNumCols() const { return mCols; }
 
+/**
+ * @brief Gets the number of cells of the map.
+ * @return Number of map cells
+ */
+inline unsigned int GameMap::GetNumCols() const { return mCols; }
 
 } // namespace game
