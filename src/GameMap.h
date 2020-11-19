@@ -26,7 +26,7 @@ public:
     void SetHomeCell();
     void AssignCell(const Cell2D & cell, Player * player);
 
-    int GetCellOwner(unsigned int r, unsigned int c) const;
+    Player * GetCellOwner(unsigned int r, unsigned int c) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
@@ -85,12 +85,12 @@ private:
  * @param c Column index, starting from 0
  * @return A player ID, or -1 if the cell is not controlled by any player
  */
-inline int GameMap::GetCellOwner(unsigned int r, unsigned int c) const
+inline Player * GameMap::GetCellOwner(unsigned int r, unsigned int c) const
 {
     if(r < mRows && c < mCols)
-        return mCells[r * mCols + c].ownerId;
+        return mCells[r * mCols + c].owner;
     else
-        return -1;
+        return nullptr;
 }
 
 /**

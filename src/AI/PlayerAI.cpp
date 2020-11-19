@@ -33,9 +33,9 @@ void PlayerAI::DecideActions()
         {
             const GameMapCell & cell = mGm->GetCell(r, c);
 
-            if(cell.ownerId == mPlayer->GetPlayerId())
+            if(cell.owner == mPlayer)
                 ownCells.push_back(cell);
-            else if(cell.ownerId != -1)
+            else if(cell.owner != nullptr)
                 enemyCells.push_back(cell);
         }
     }
@@ -433,7 +433,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r1, c0 - 1);
 
                 const float prob = weightUnits * (MAX_CELL_UNITS - tl.units) / MAX_CELL_UNITS;
-                const float prob2 = tl.ownerId == -1 ? weightFree : 0.f;
+                const float prob2 = tl.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
         }
@@ -446,7 +446,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r1, c0);
 
             const float prob = weightUnits * (MAX_CELL_UNITS - tc.units) / MAX_CELL_UNITS;
-            const float prob2 = tc.ownerId == -1 ? weightFree : 0.f;
+            const float prob2 = tc.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
 
@@ -460,7 +460,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r1, c0 + 1);
 
                 const float prob = weightUnits * (MAX_CELL_UNITS - tr.units) / MAX_CELL_UNITS;
-                const float prob2 = tr.ownerId == -1 ? weightFree : 0.f;
+                const float prob2 = tr.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
 
             }
@@ -478,7 +478,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r0, c0 - 1);
 
             const float prob = weightUnits * (MAX_CELL_UNITS - l.units) / MAX_CELL_UNITS;
-            const float prob2 = l.ownerId == -1 ? weightFree : 0.f;
+            const float prob2 = l.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
     }
@@ -493,7 +493,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r0, c0 + 1);
 
             const float prob = weightUnits * (MAX_CELL_UNITS - r.units) / MAX_CELL_UNITS;
-            const float prob2 = r.ownerId == -1 ? weightFree : 0.f;
+            const float prob2 = r.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
     }
@@ -513,7 +513,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r2, c0 - 1);
 
                 const float prob = weightUnits * (MAX_CELL_UNITS - bl.units) / MAX_CELL_UNITS;
-                const float prob2 = bl.ownerId == -1 ? weightFree : 0.f;
+                const float prob2 = bl.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
         }
@@ -526,7 +526,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r2, c0);
 
             const float prob = weightUnits * (MAX_CELL_UNITS - bc.units) / MAX_CELL_UNITS;
-            const float prob2 = bc.ownerId == -1 ? weightFree : 0.f;
+            const float prob2 = bc.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
 
@@ -540,7 +540,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r2, c0 + 1);
 
                 const float prob = weightUnits * (MAX_CELL_UNITS - br.units) / MAX_CELL_UNITS;
-                const float prob2 = br.ownerId == -1 ? weightFree : 0.f;
+                const float prob2 = br.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
         }

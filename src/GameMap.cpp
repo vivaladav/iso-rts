@@ -211,7 +211,7 @@ void GameMap::SetHomeCell()
         const int ind = corners[c].row * mCols + corners[c].col;
 
         GameMapCell & cell = mCells[ind];
-        cell.ownerId = player->GetPlayerId();
+        cell.owner = player;
 
         const int cellType = DefineCellType(cell);
         mIsoMap->SetCellType(ind, cellType);
@@ -229,7 +229,7 @@ void GameMap::AssignCell(const Cell2D & cell, Player * player)
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
-    gcell.ownerId = player->GetPlayerId();
+    gcell.owner = player;
 
     const int cellType = DefineCellType(gcell);
     mIsoMap->SetCellType(ind, cellType);
@@ -252,7 +252,7 @@ bool GameMap::CanUpgradeCell(const Cell2D & cell, Player * player)
 
     // already changing, not own cell or already max level
     if(gcell.changing ||
-       gcell.ownerId != player->GetPlayerId() ||
+       gcell.owner != player ||
        MAX_CELL_LEVEL == gcell.level)
         return false;
 
@@ -311,7 +311,7 @@ bool GameMap::CanFortifyCell(const Cell2D & cell, Player * player)
 
     // already changing, not own cell or max level cell -> exit
     if(gcell.changing ||
-       gcell.ownerId != player->GetPlayerId() ||
+       gcell.owner != player ||
        MAX_CELL_FORT_LEVEL == gcell.fortLevel)
         return false;
 
@@ -368,7 +368,7 @@ bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
 
     // already changing, not own cell or max level cell -> exit
     if(gcell.changing ||
-       gcell.ownerId != player->GetPlayerId() ||
+       gcell.owner != player ||
        MAX_CELL_UNITS == gcell.units)
         return false;
 
@@ -431,7 +431,7 @@ bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or no units -> exit
-    if(gcell.ownerId != player->GetPlayerId() || !gcell.units)
+    if(gcell.owner != player || !gcell.units)
         return false;
 
     return true;
@@ -470,7 +470,7 @@ bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
 
     // cell already changing, not own cell or max level units or no units -> exit
     if(gcell.changing ||
-       gcell.ownerId != player->GetPlayerId() ||
+       gcell.owner != player ||
        MAX_UNITS_LEVEL == gcell.unitsLevel || !gcell.units)
         return false;
 
@@ -507,8 +507,7 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     ++(gcell.unitsLevel);
 
     // update player
-    Player * player = mGame->GetPlayer(gcell.ownerId);
-    player->SumTotalUnitsLevel(gcell.units);
+    gcell.owner->SumTotalUnitsLevel(gcell.units);
 
     // update map layer
     const int unitImg = DefineUnitType(gcell);
@@ -547,7 +546,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     GameMapCell & gcell0 = mCells[ind0];
 
     // start cell is not own cell
-    if(player->GetPlayerId() != gcell0.ownerId)
+    if(player != gcell0.owner)
         return false;
 
     // not enough units to move
@@ -570,6 +569,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     // - add basic logic to GameCell
     // - rewrite logic code
 
+    /*
     // free (not owned by any player) cell
     if(-1 == gcell1.ownerId)
     {
@@ -904,10 +904,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         const int unitType1 = DefineUnitType(gcell1);
         layerUnits->ChangeObject(r1, c1, unitType1);
     }
-
-    // check for game over
-    if(player->IsLocal() && player->GetNumCells() == 0)
-        mScreenGame->GameOver();
+    */
 
     // check for victory or game over
     const int players = mGame->GetNumPlayers();
@@ -940,7 +937,7 @@ int GameMap::DefineCellType(const GameMapCell & cell)
 {
     int type = EMPTY;
 
-    switch(cell.ownerId)
+    switch(cell.owner->GetPlayerId())
     {
         case 0:
             type = P1L1 + cell.level;
@@ -969,7 +966,7 @@ int GameMap::DefineUnitType(const GameMapCell & cell)
 {
     int type = (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
 
-    switch (cell.ownerId)
+    switch(cell.owner->GetPlayerId())
     {
         case 0:
             type += P1_1UL1;

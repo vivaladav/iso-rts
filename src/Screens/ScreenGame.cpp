@@ -394,8 +394,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         }
         else
         {
-            const int owner = mGameMap->GetCellOwner(c.row, c.col);
-            const bool isLocalPlayer = owner == player->GetPlayerId();
+            const Player * owner = mGameMap->GetCellOwner(c.row, c.col);
+            const bool isLocalPlayer = owner == player;
 
             // own cell and not already changing
             if(isLocalPlayer && !mGameMap->IsCellChanging(c.row, c.col))

@@ -3,11 +3,13 @@
 namespace game
 {
 
+class Player;
+
 struct GameMapCell
 {
+    Player * owner = nullptr;
     int row = 0;
     int col = 0;
-    int ownerId = -1;
     int level = 0;
     int fortLevel = 0;
     int units = 0;
@@ -20,7 +22,7 @@ struct GameMapCell
 
 inline void GameMapCell::Clear()
 {
-    ownerId = -1;
+    owner = nullptr;
     level = 0;
     fortLevel = 0;
     units = 0;
