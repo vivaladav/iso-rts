@@ -54,7 +54,7 @@ public:
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
     void UpgradeUnit(const Cell2D & cell);
 
-    bool MoveUnits(const Cell2D * start, const Cell2D * end,
+    bool MoveUnits(const Cell2D & start, const Cell2D & end,
                    int numUnits, Player * player);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;

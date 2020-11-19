@@ -169,6 +169,15 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell();
 
+    mGameMap->AssignCell(Cell2D(1, 1), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(2, 2), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(13, 1), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(12, 2), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(13, 13), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(12, 12), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(1, 13), game->GetPlayer(1));
+    mGameMap->AssignCell(Cell2D(2, 12), game->GetPlayer(1));
+
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
@@ -177,11 +186,13 @@ ScreenGame::ScreenGame(Game * game)
         // add start money
         p->SumMoney(START_MONEY);
 
+        /*
         if(p->IsAI())
         {
             p->GetAI()->SetGameMap(mGameMap);
             mAiPlayers.push_back(p);
         }
+        */
     }
 
     // -- UI --
@@ -366,13 +377,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     const Cell2D c = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
-    const int cellType = mIsoMap->GetCellType(c.row, c.col);
-
     const bool insideMap = mIsoMap->IsCellInside(c);
-
-    std::cout << "Point " << event.GetX() << "," << event.GetY() << " = "
-              << "cell " << c.row << "," << c.col << " - type: " << cellType
-              << " - INSIDE: "<< (insideMap ? "YES" : "NO") << std::endl;
 
     Player * player = GetGame()->GetPlayer(0);
     PanelPlayer * panel = mPanelsPlayer[0];
@@ -383,7 +388,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
         if(unitsToMove > 0)
         {
-            mGameMap->MoveUnits(player->GetSelectedCell(), &c, unitsToMove, player);
+            mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player);
 
             ClearSelection(player);
         }
@@ -540,7 +545,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                           << action.dst.row << "," << action.dst.col
                           << std::endl;
 
-                done = mGameMap->MoveUnits(&(action.src), &(action.dst), action.units, player);
+                done = mGameMap->MoveUnits(action.src, action.dst, action.units, player);
             }
             break;
 

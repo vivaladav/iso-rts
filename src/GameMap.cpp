@@ -520,24 +520,24 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     gcell.changing = false;
 }
 
-bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, Player * player)
+bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
 {
-    const unsigned int r0 = static_cast<unsigned int>(start->row);
-    const unsigned int c0 = static_cast<unsigned int>(start->col);
+    const unsigned int r0 = static_cast<unsigned int>(start.row);
+    const unsigned int c0 = static_cast<unsigned int>(start.col);
 
     // start out of bounds
     if(!(r0 < mRows && c0 < mCols))
         return false;
 
-    const unsigned int r1 = static_cast<unsigned int>(end->row);
-    const unsigned int c1 = static_cast<unsigned int>(end->col);
+    const unsigned int r1 = static_cast<unsigned int>(end.row);
+    const unsigned int c1 = static_cast<unsigned int>(end.col);
 
     // end out of bounds
     if(!(r1 < mRows && c1 < mCols))
         return false;
 
-    const int diffR = abs(end->row - start->row);
-    const int diffC = abs(end->col - start->col);
+    const int diffR = abs(end.row - start.row);
+    const int diffC = abs(end.col - start.col);
 
     // end too far - units can only move to next cell
     if(diffR > 1 || diffC > 1)
@@ -546,12 +546,12 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     const int ind0 = r0 * mCols + c0;
     GameMapCell & gcell0 = mCells[ind0];
 
-    // not own cell
+    // start cell is not own cell
     if(player->GetPlayerId() != gcell0.ownerId)
         return false;
 
     // not enough units to move
-    if(0 == gcell0.units || gcell0.units < numUnits)
+    if(0 == numUnits || gcell0.units < numUnits)
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -564,6 +564,11 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
     IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
 
     bool moved = false;
+
+    // TODO
+    // - replace ownerID with Player *
+    // - add basic logic to GameCell
+    // - rewrite logic code
 
     // free (not owned by any player) cell
     if(-1 == gcell1.ownerId)
@@ -727,7 +732,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                 // clear any current activity in the cell
                 if(gcell1.changing)
                 {
-                    mScreenGame->CancelProgressBar(*end);
+                    mScreenGame->CancelProgressBar(end);
                     gcell1.changing = false;
                 }
 
@@ -843,7 +848,7 @@ bool GameMap::MoveUnits(const Cell2D * start, const Cell2D * end, int numUnits, 
                     // clear any current activity in the cell
                     if(gcell1.changing)
                     {
-                        mScreenGame->CancelProgressBar(*end);
+                        mScreenGame->CancelProgressBar(end);
                         gcell1.changing = false;
                     }
 
