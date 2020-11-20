@@ -572,18 +572,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     if(nullptr == playerDest)
     {
         // move units between cells
-        gcell0.units -= numUnits;
-        gcell1.units += numUnits;
-
-        // propagate unit level to end
-        gcell1.unitsLevel = gcell0.unitsLevel;
-
-        // update owner of end
-        gcell1.owner = player;
-
-        // update player stats after conquering a new cell
-        player->SumCells(1);
-        player->SumTotalCellsLevel(1);
+        MoveUnitsData(gcell0, gcell1, numUnits);
 
         // update unit objects and cells
         UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
@@ -595,11 +584,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         if(emptyDest)
         {
             // move units between cells
-            gcell0.units -= numUnits;
-            gcell1.units += numUnits;
-
-            // propagate unit level to end
-            gcell1.unitsLevel = gcell0.unitsLevel;
+            MoveUnitsData(gcell0, gcell1, numUnits);
 
             // update unit objects and cells
             UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
@@ -616,8 +601,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
                 numUnits = MAX_CELL_UNITS - gcell1.units;
 
             // move units between cells
-            gcell0.units -= numUnits;
-            gcell1.units += numUnits;
+            MoveUnitsData(gcell0, gcell1, numUnits);
 
             // update unit objects and cells
             UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
@@ -910,6 +894,38 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
 }
 
 // ==================== PRIVATE METHODS ====================
+
+void GameMap::MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits)
+{
+    // move units between cells
+    gcell0.units -= numUnits;
+    gcell1.units += numUnits;
+
+    // propagate unit level to end
+    gcell1.unitsLevel = gcell0.unitsLevel;
+
+    Player * player0 = gcell0.owner;
+    Player * player1 = gcell1.owner;
+
+    // update owner of end
+    if(player0 != player1)
+    {
+        gcell1.owner = player0;
+
+        // update start player stats after conquering a new cell
+        const int cellLevel = gcell1.level + 1;
+
+        player0->SumCells(1);
+        player0->SumTotalCellsLevel(cellLevel);
+
+        // update end player stat after losing a cell
+        if(player1)
+        {
+            player1->SumCells(-1);
+            player1->SumTotalCellsLevel(cellLevel);
+        }
+    }
+}
 
 void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest)
 {
