@@ -133,6 +133,8 @@ enum UnitType : int
     UNIT_NULL
 };
 
+// ==================== CONSTRUCTORS AND DESTRUCTOR ====================
+
 GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     : mCells(isoMap->GetNumRows() * isoMap->GetNumCols())
     , mGame(game)
@@ -154,6 +156,8 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
         }
     }
 }
+
+// ==================== PUBLIC METHODS ====================
 
 bool GameMap::Load(const char * file)
 {
@@ -560,85 +564,74 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     if(!gcell1.walkable)
         return false;
 
-    IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
+    Player * playerDest = gcell1.owner;
 
-    bool moved = false;
+    const bool emptyDest = 0 ==gcell1.units;
 
-    // TODO
-    // - replace ownerID with Player *
-    // - add basic logic to GameCell
-    // - rewrite logic code
-
-    /*
-    // free (not owned by any player) cell
-    if(-1 == gcell1.ownerId)
+    // move to empty cell
+    if(nullptr == playerDest)
     {
+        // move units between cells
         gcell0.units -= numUnits;
         gcell1.units += numUnits;
 
-        gcell1.ownerId = gcell0.ownerId;
+        // propagate unit level to end
         gcell1.unitsLevel = gcell0.unitsLevel;
 
+        // update owner of end
+        gcell1.owner = player;
+
+        // update player stats after conquering a new cell
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
 
-        moved = layerUnits->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
-
-        // conquest cell
-        if(moved)
-        {
-            const int cellType = DefineCellType(gcell1);
-            mIsoMap->SetCellType(ind1, cellType);
-        }
+        // update unit objects and cells
+        UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
     }
-    // own cell
-    else if(gcell1.ownerId == player->GetPlayerId())
+    // move to own cell
+    else if(player == playerDest)
     {
-        // target cell has already units
-        if(gcell1.units)
+        // end cell is empty
+        if(emptyDest)
         {
-            // destination is full or has different level units
-            if(gcell1.units == MAX_CELL_UNITS || (gcell0.unitsLevel != gcell1.unitsLevel))
+            // move units between cells
+            gcell0.units -= numUnits;
+            gcell1.units += numUnits;
+
+            // propagate unit level to end
+            gcell1.unitsLevel = gcell0.unitsLevel;
+
+            // update unit objects and cells
+            UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
+        }
+        // end cell has units
+        else
+        {
+            // fail if destination is full or has different level units
+            if(gcell1.units == MAX_CELL_UNITS || gcell0.unitsLevel != gcell1.unitsLevel)
                 return false;
 
             // cap units moved to max allowed per cell
             if(gcell1.units + numUnits > MAX_CELL_UNITS)
                 numUnits = MAX_CELL_UNITS - gcell1.units;
 
+            // move units between cells
             gcell0.units -= numUnits;
             gcell1.units += numUnits;
 
-            // update dest object
-            const int unitType1 = DefineUnitType(gcell1);
-            layerUnits->ChangeObject(r1, c1, unitType1);
-
-            // update src object if any unit left
-            if(gcell0.units)
-            {
-                const int unitType0 = DefineUnitType(gcell0);
-                layerUnits->ChangeObject(r0, c0, unitType0);
-            }
-            // otherwise, clear src object
-            else
-            {
-                gcell0.unitsLevel = 0;
-                layerUnits->ClearObject(r0, c0);
-            }
-
-            // done here
-            return true;
-        }
-        // empty own cell
-        else
-        {
-            gcell0.units -= numUnits;
-            gcell1.units += numUnits;
-
-            gcell1.unitsLevel = gcell0.unitsLevel;
-
-            moved = layerUnits->MoveObject(r0, c0, r1, c1, NO_ALIGNMENT);
+            // update unit objects and cells
+            UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
         }
     }
+    // move to enemy cell (attack)
+    else
+    {
+        return false;
+    }
+
+    // TODO
+    /*
+
     // enemy cell
     else
     {
@@ -887,23 +880,6 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
             }
         }
     }
-
-    if(moved)
-    {
-        // create image in src cell if any unit left
-        if(gcell0.units)
-        {
-            const int unitImg0 = DefineUnitType(gcell0);
-            layerUnits->AddObject(r0, c0, unitImg0, NO_ALIGNMENT);
-        }
-        // reset unit level of empty cells
-        else
-            gcell0.unitsLevel = 0;
-
-        // update image in dest cell
-        const int unitType1 = DefineUnitType(gcell1);
-        layerUnits->ChangeObject(r1, c1, unitType1);
-    }
     */
 
     // check for victory or game over
@@ -933,8 +909,68 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     return true;
 }
 
+// ==================== PRIVATE METHODS ====================
+
+void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest)
+{
+    IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
+
+    // moved all units
+    if(0 == gcell0.units)
+    {
+        // reset unit level in start
+        gcell0.unitsLevel = 0;
+
+        // move unit object from start to end
+        if(emptyDest)
+            layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, NO_ALIGNMENT);
+        else
+        {
+            // delete unit object in start
+            layerUnits->ClearObject(gcell0.row, gcell0.col);
+
+            // update unit object in end
+            const int unitType1 = DefineUnitType(gcell1);
+            layerUnits->ChangeObject(gcell1.row, gcell1.col, unitType1);
+        }
+    }
+    // moved part of units
+    else
+    {
+        // update unit object in start
+        const int unitType0 = DefineUnitType(gcell0);
+        layerUnits->ChangeObject(gcell0.row, gcell0.col, unitType0);
+
+        // add new unit object in end
+        if(emptyDest)
+        {
+            const int unitType1 = DefineUnitType(gcell1);
+            layerUnits->AddObject(gcell1.row, gcell1.col, unitType1, NO_ALIGNMENT);
+        }
+        // update existing object in end
+        else
+        {
+            // update unit object in end
+            const int unitType1 = DefineUnitType(gcell1);
+            layerUnits->ChangeObject(gcell1.row, gcell1.col, unitType1);
+        }
+    }
+
+    // update cell type of start
+    const int cellType0 = DefineCellType(gcell0);
+    mIsoMap->SetCellType(gcell0.row, gcell0.col, cellType0);
+
+    // update cell type of end
+    const int cellType1 = DefineCellType(gcell1);
+    mIsoMap->SetCellType(gcell1.row, gcell1.col, cellType1);
+}
+
 int GameMap::DefineCellType(const GameMapCell & cell)
 {
+    // cell is not owned
+    if(nullptr == cell.owner)
+        return EMPTY;
+
     int type = EMPTY;
 
     switch(cell.owner->GetPlayerId())
@@ -964,6 +1000,10 @@ int GameMap::DefineCellType(const GameMapCell & cell)
 
 int GameMap::DefineUnitType(const GameMapCell & cell)
 {
+    // cell is not owned
+    if(nullptr == cell.owner)
+        return UNIT_NULL;
+
     int type = (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
 
     switch(cell.owner->GetPlayerId())

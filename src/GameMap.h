@@ -62,6 +62,8 @@ public:
     unsigned int GetNumCols() const;
 
 private:
+    void UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest);
+
     int DefineCellType(const GameMapCell & cell);
     int DefineUnitType(const GameMapCell & cell);
 
