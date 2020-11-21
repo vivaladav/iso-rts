@@ -31,21 +31,6 @@ constexpr float TIME_NEW_UNIT = 1.f;
 constexpr float TIME_UPG_CELL = 2.f;
 constexpr float TIME_UPG_UNIT = 2.f;
 
-// values used to calculate attack/defense power of cell
-constexpr int POINTS_CELL_MIN = 1;
-constexpr int POINTS_CELL_MAX = 2;
-constexpr int POINTS_CELL_INC = 1;
-
-// values used to calculate attack/defense power of unit
-constexpr int POINTS_UNIT_MIN = 1;
-constexpr int POINTS_UNIT_MAX = 10;
-constexpr int POINTS_UNIT_INC = 1;
-
-// values used to calculate attack/defense power of unit in cell
-constexpr int POINTS_CELL_UNIT_MIN = 1;
-constexpr int POINTS_CELL_UNIT_MAX = 8;
-constexpr int POINTS_CELL_UNIT_INC = 1;
-
 constexpr unsigned int PLAYER_COLOR[] =
 {
     0xb81414ff,

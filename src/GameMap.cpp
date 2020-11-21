@@ -828,14 +828,59 @@ void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, b
 
 int GameMap::DefineCellAttPoints(const GameMapCell & cell, int numUnits) const
 {
-    // TODO
-    return (numUnits + 1) * 10;
+    // cell attack points range
+    const int cellMinPoints = 1;
+    const int cellMaxPoints = 2;
+
+    // unit attack points range
+    const int unitMinPoints = 2;
+    const int unitMaxPoints = 10;
+
+    int score = 0;
+
+    // add cell score
+    lib::utilities::UniformDistribution diceCell(cellMinPoints, cellMaxPoints);
+    score += diceCell.GetNextValue();
+
+    // add units score
+    lib::utilities::UniformDistribution diceUnit(unitMinPoints, unitMaxPoints);
+
+    const float unitMult[MAX_UNITS_LEVEL + 1] = { 1.f, 1.5f, 2.f };
+
+    for(int i = 0; i < numUnits; ++i)
+        score += std::roundf(diceUnit.GetNextValue() * unitMult[cell.unitsLevel]);
+
+    return score;
 }
 
 int GameMap::DefineCellDefPoints(const GameMapCell & cell, int numUnits) const
 {
-    // TODO
-    return (numUnits + 1) * 10;
+    // cell defense points range
+    const int cellMinPoints = 1;
+    const int cellMaxPoints = 5;
+
+    // unit defense points range
+    const int unitMinPoints = 2;
+    const int unitMaxPoints = 10;
+
+    int score = 0;
+
+    // add cell score
+    lib::utilities::UniformDistribution diceCell(cellMinPoints, cellMaxPoints);
+
+    const float cellMult[MAX_CELL_FORT_LEVEL + 1] = { 1.f, 2.f, 3.f, 4.f };
+
+    score += std::roundf(diceCell.GetNextValue() * cellMult[cell.fortLevel]);
+
+    // add units score
+    lib::utilities::UniformDistribution diceUnit(unitMinPoints, unitMaxPoints);
+
+    const float unitMult[MAX_UNITS_LEVEL + 1] = { 1.f, 1.5f, 2.f };
+
+    for(int i = 0; i < numUnits; ++i)
+        score += std::roundf(diceUnit.GetNextValue() * unitMult[cell.unitsLevel]);
+
+    return score;
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)
