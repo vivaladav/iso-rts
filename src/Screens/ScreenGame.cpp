@@ -169,14 +169,27 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell();
 
-    mGameMap->AssignCell(Cell2D(1, 1), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(2, 2), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(13, 1), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(12, 2), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(13, 13), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(12, 12), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(1, 13), game->GetPlayer(1));
-    mGameMap->AssignCell(Cell2D(2, 12), game->GetPlayer(1));
+    // test
+//    Player * enemy = game->GetPlayer(1);
+//    mGameMap->AssignCell(Cell2D(1, 1), enemy);
+//    mGameMap->AssignCell(Cell2D(2, 2), enemy);
+//    mGameMap->CreateUnit(Cell2D(2, 2), enemy);
+//    mGameMap->FortifyCell(Cell2D(2, 2));
+
+//    mGameMap->AssignCell(Cell2D(13, 1), enemy);
+//    mGameMap->AssignCell(Cell2D(12, 2), enemy);
+//    mGameMap->CreateUnit(Cell2D(12, 2), enemy);
+//    mGameMap->FortifyCell(Cell2D(12, 2));
+
+//    mGameMap->AssignCell(Cell2D(13, 13), enemy);
+//    mGameMap->AssignCell(Cell2D(12, 12), enemy);
+//    mGameMap->CreateUnit(Cell2D(12, 12), enemy);
+//    mGameMap->FortifyCell(Cell2D(12, 12));
+
+//    mGameMap->AssignCell(Cell2D(1, 13), enemy);
+//    mGameMap->AssignCell(Cell2D(2, 12), enemy);
+//    mGameMap->CreateUnit(Cell2D(2, 12), enemy);
+//    mGameMap->FortifyCell(Cell2D(2, 12));
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -186,13 +199,11 @@ ScreenGame::ScreenGame(Game * game)
         // add start money
         p->SumMoney(START_MONEY);
 
-        /*
         if(p->IsAI())
         {
             p->GetAI()->SetGameMap(mGameMap);
             mAiPlayers.push_back(p);
         }
-        */
     }
 
     // -- UI --

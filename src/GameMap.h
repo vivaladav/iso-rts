@@ -61,7 +61,12 @@ public:
     unsigned int GetNumRows() const;
     unsigned int GetNumCols() const;
 
+    void CheckGameEnd();
+
 private:
+    void DestroyFortification(GameMapCell & gcell);
+    void StopCellChange(GameMapCell & gcell);
+
     void MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits);
     void UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest);
 

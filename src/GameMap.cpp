@@ -566,7 +566,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
 
     Player * playerDest = gcell1.owner;
 
-    const bool emptyDest = 0 ==gcell1.units;
+    const bool emptyDest = 0 == gcell1.units;
 
     // move to empty cell
     if(nullptr == playerDest)
@@ -610,290 +610,135 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     // move to enemy cell (attack)
     else
     {
-        return false;
-    }
+        const int att0 = DefineCellAttPoints(gcell0, numUnits);
+        const int def0 = DefineCellDefPoints(gcell0, numUnits);
 
-    // TODO
-    /*
+        const int att1 = DefineCellAttPoints(gcell1, gcell1.units);
+        const int def1 = DefineCellDefPoints(gcell1, gcell1.units);
 
-    // enemy cell
-    else
-    {
-        lib::utilities::UniformDistribution rgen(POINTS_CELL_MIN, POINTS_CELL_MAX);
+        const int attKillPower = att0 / def1;
+        const int defKillPower = att1 / def0;
 
-        // points of cell
-        const int cellPoints = rgen.GetNextValue() * (gcell1.fortLevel + POINTS_CELL_INC);
+        // define how many attackers are left alive
+        const int attLeft = numUnits > defKillPower ? numUnits - defKillPower : 0;
 
-        // points of attacking units
-        rgen.SetParameters(POINTS_UNIT_MIN, POINTS_UNIT_MAX);
-        std::vector<int> pointsAtt(numUnits);
+        // define how many defenders are left alive
+        const int defLeft = gcell1.units > attKillPower ? gcell1.units - attKillPower : 0;
 
-        for(int i = 0; i < numUnits; ++i)
-            pointsAtt[i] = rgen.GetNextValue() * (gcell0.unitsLevel + POINTS_UNIT_INC);
+        // update attacking player units stats
+        const int attKilled = numUnits - attLeft;
+        gcell0.units -= attKilled;
+        player->SumUnits(-attKilled);
+        player->SumTotalUnitsLevel(-attKilled * (gcell0.unitsLevel + 1));
 
-        int lossesAtt = 0;
+        // update defending player units stats
+        const int defKilled = gcell1.units - defLeft;
+        gcell1.units -= defKilled;
+        playerDest->SumUnits(-defKilled);
+        playerDest->SumTotalUnitsLevel(-defKilled * (gcell1.unitsLevel + 1));
 
-        Player * playerDef = mGame->GetPlayer(gcell1.ownerId);
-
-        // cell with units
-        if(gcell1.units)
+        // cell conquered if:
+        // - there's at least 1 attacker left
+        // - no defenders left
+        // - attack kill power is > 0 or it means an empty cell has not been destroyed
+        if(attLeft > 0 && 0 == defLeft && attKillPower > 0)
         {
-            // points of defending units
-            rgen.SetParameters(POINTS_CELL_UNIT_MIN, POINTS_CELL_UNIT_MAX);
-            std::vector<int> pointsDef(gcell1.units);
+            // fortification of dest cell is destroyed
+            if(gcell1.fortLevel > 0)
+                DestroyFortification(gcell1);
 
-            for(int i = 0; i < gcell1.units; ++i)
-                pointsDef[i] = rgen.GetNextValue() * (gcell1.unitsLevel + POINTS_CELL_UNIT_INC) + cellPoints;
+            // stop any progress
+            if(gcell1.changing)
+                StopCellChange(gcell1);
 
-            std::vector<bool> unitsDef(gcell1.units, false);
-            std::vector<bool> unitsAtt(numUnits, false);
+            // update number units to move to reflect ones still alive
+            numUnits = attLeft;
+            // move units between cells
+            MoveUnitsData(gcell0, gcell1, numUnits);
 
-            int lossesDef = 0;
-
-            for(int d = 0; d < gcell1.units; ++d)
-            {
-                for(int a = 0; a < numUnits; ++a)
-                {
-                    if(pointsDef[d] < pointsAtt[a])
-                        unitsDef[d] = true;
-                    else
-                        unitsAtt[a] = true;
-                }
-            }
-
-            lossesDef = std::count_if(unitsDef.begin(), unitsDef.end(), [](bool v) { return v; });
-            lossesAtt = std::count_if(unitsAtt.begin(), unitsAtt.end(), [](bool v) { return v; });
-
-            std::cout << "\nDEF: ";
-            for(int d : pointsDef)
-                std::cout << d << " ";
-
-            std::cout << "\nATT: ";
-            for(int a : pointsAtt)
-                std::cout << a << " ";
-
-            std::cout << "\nlosses DEF: " << lossesDef << " - losses ATT: "  << lossesAtt << std::endl;
-
-            // update players
-            player->SumUnits(-lossesAtt);
-            player->SumTotalUnitsLevel(-lossesAtt * (gcell0.unitsLevel + 1));
-
-            playerDef->SumUnits(-lossesDef);
-            playerDef->SumTotalUnitsLevel(-lossesDef * (gcell1.unitsLevel + 1));
-
-            // destroyed all defenders
-            if(lossesDef == gcell1.units)
-            {
-                const int attackingLeft = numUnits - lossesAtt;
-
-                // clear def fortification, if any
-                mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r1, c1);
-
-                // update att cell
-                gcell0.units -= numUnits;
-
-                if(gcell0.units)
-                {
-                    const int unitImg0 = DefineUnitType(gcell0);
-                    layerUnits->ReplaceObject(r0, c0, unitImg0, NO_ALIGNMENT);
-                }
-                else
-                    layerUnits->ClearObject(r0, c0);
-
-                // update conquered cell
-                gcell1.ownerId = gcell0.ownerId;
-                gcell1.fortLevel = 0;
-                gcell1.unitsLevel = gcell0.unitsLevel;
-                gcell1.units = attackingLeft;
-
-                // clear any current activity in the cell
-                if(gcell1.changing)
-                {
-                    mScreenGame->CancelProgressBar(end);
-                    gcell1.changing = false;
-                }
-
-                // update conquered cell look
-                const int cellType = DefineCellType(gcell1);
-                mIsoMap->SetCellType(ind1, cellType);
-
-                // replace units in conquered cell
-                const int unitImg1 = DefineUnitType(gcell1);
-                layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
-
-                // update att player
-                player->SumCells(1);
-                player->SumTotalCellsLevel(1);
-
-                // update def player
-                playerDef->SumCells(-1);
-                playerDef->SumTotalCellsLevel(-1);
-            }
-            // defenders won
-            else
-            {
-                const int defLeft = gcell1.units - lossesDef;
-
-                // update def cell
-                gcell1.units = defLeft;
-
-                const int unitImg1 = DefineUnitType(gcell1);
-                layerUnits->ReplaceObject(r1, c1, unitImg1, NO_ALIGNMENT);
-
-                // destroyed all unit in attacking cell
-                if(lossesAtt == gcell0.units)
-                {
-                    // clear att fortification, if any
-                    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
-
-                    player->SumCells(-1);
-                    player->SumTotalCellsLevel(-1);
-
-                    // clear attacker cell
-                    gcell0.Clear();
-
-                    // delete units in attacker cell
-                    layerUnits->ClearObject(r0, c0);
-                }
-                // some units left
-                else
-                {
-                    // update units in attacking cell
-                    gcell0.units -= lossesAtt;
-
-                    const int unitImg0 = DefineUnitType(gcell0);
-                    layerUnits->ReplaceObject(r0, c0, unitImg0, NO_ALIGNMENT);
-                }
-
-                // update cell
-                const int cellType = DefineCellType(gcell0);
-                mIsoMap->SetCellType(ind0, cellType);
-            }
+            // update unit objects and cells
+            UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
         }
-        // cell with no units
+        // attack failed, cell defended
         else
         {
-            // fight
-            for(int points : pointsAtt)
+            IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
+
+            // update unit object in start
+            if(0 == gcell0.units)
             {
-                if(points <= cellPoints)
-                {
-                    --gcell0.units;
-                    ++lossesAtt;
-                }
+                gcell0.unitsLevel = 0;
+                layerUnits->ClearObject(r0, c0);
             }
-
-            std::cout << "\nDEF: "  << cellPoints;
-            std::cout << "\nATT: ";
-            for(int a : pointsAtt)
-                std::cout << a << " ";
-
-            std::cout << "\nlosses ATT: "  << lossesAtt << std::endl;
-
-            // update player
-            player->SumUnits(-lossesAtt);
-            player->SumTotalUnitsLevel(-lossesAtt * (gcell0.unitsLevel + 1));
-
-            // some attacking unit left
-            if(gcell0.units)
-            {
-                // remove alive attacking units from cell0
-                const int attackingLeft = numUnits - lossesAtt;
-                gcell0.units -= attackingLeft;
-
-                // update attacking units
-                if(gcell0.units)
-                {
-                    const int unitType0 = DefineUnitType(gcell0);
-                    layerUnits->ChangeObject(r0, c0, unitType0);
-                }
-                else
-                    layerUnits->ClearObject(r0, c0);
-
-                // some attacking unit left -> cell conquered
-                if(attackingLeft)
-                {
-                    // clear fortification, if any
-                    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r1, c1);
-
-                    // update conquered cell
-                    gcell1.ownerId = gcell0.ownerId;
-                    gcell1.fortLevel = 0;
-                    gcell1.unitsLevel = gcell0.unitsLevel;
-                    gcell1.units = attackingLeft;
-
-                    // clear any current activity in the cell
-                    if(gcell1.changing)
-                    {
-                        mScreenGame->CancelProgressBar(end);
-                        gcell1.changing = false;
-                    }
-
-                    // update source attacking cell
-                    const int cellType = DefineCellType(gcell1);
-                    mIsoMap->SetCellType(ind1, cellType);
-
-                    // create new units in conquered cell
-                    const int unitImg1 = DefineUnitType(gcell1);
-                    layerUnits->AddObject(r1, c1, unitImg1, NO_ALIGNMENT);
-
-                    // update att player
-                    player->SumCells(1);
-                    player->SumTotalCellsLevel(1);
-
-                    // update def player
-                    playerDef->SumCells(-1);
-                    playerDef->SumTotalCellsLevel(-1);
-                }
-            }
-            // no attacking units left -> defender won
             else
             {
-                // clear fortification, if any
-                mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(r0, c0);
+                const int unitType0 = DefineUnitType(gcell0);
+                layerUnits->ChangeObject(r0, c0, unitType0);
+            }
 
-                // clear attacker cell, but keep level
-                gcell0.Clear();
-
-                // update cell
-                const int cellType = DefineCellType(gcell0);
-                mIsoMap->SetCellType(ind0, cellType);
-
-                // delete units in attacker cell
-                layerUnits->ClearObject(r0, c0);
+            // update unit object in end
+            if(0 == gcell1.units)
+            {
+                gcell1.unitsLevel = 0;
+                layerUnits->ClearObject(r1, c1);
+            }
+            else
+            {
+                const int unitType1 = DefineUnitType(gcell1);
+                layerUnits->ChangeObject(r1, c1, unitType1);
             }
         }
     }
-    */
 
     // check for victory or game over
-    const int players = mGame->GetNumPlayers();
+    CheckGameEnd();
+
+    return true;
+}
+
+void GameMap::CheckGameEnd()
+{
+    const int numPlayers = mGame->GetNumPlayers();
     int defeated = 0;
 
-    for(int i = 0; i < players; ++i)
+    // check for game over and defeated opponents
+    for(int i = 0; i < numPlayers; ++i)
     {
-        Player * p = mGame->GetPlayer(i);
+        const Player * p = mGame->GetPlayer(i);
 
         if(p->GetNumCells() == 0)
         {
             if(p->IsLocal())
             {
                 mScreenGame->GameOver();
-                return true;
+                return;
             }
             else
                 ++defeated;
         }
     }
 
-    // assuming players is always > 1
-    if(defeated == (players - 1))
+    // check for victory - assuming players is always > 1
+    if(defeated == (numPlayers - 1))
         mScreenGame->GameWon();
-
-    return true;
 }
 
 // ==================== PRIVATE METHODS ====================
+
+void GameMap::DestroyFortification(GameMapCell & gcell)
+{
+    gcell.fortLevel = 0;
+
+    mIsoMap->GetLayer(FORTIFICATIONS)->ClearObject(gcell.row, gcell.col);
+}
+
+void GameMap::StopCellChange(GameMapCell & gcell)
+{
+    gcell.changing = false;
+
+    const Cell2D cell(gcell.row, gcell.col);
+    mScreenGame->CancelProgressBar(cell);
+}
 
 void GameMap::MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits)
 {
@@ -922,7 +767,7 @@ void GameMap::MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numU
         if(player1)
         {
             player1->SumCells(-1);
-            player1->SumTotalCellsLevel(cellLevel);
+            player1->SumTotalCellsLevel(-cellLevel);
         }
     }
 }
@@ -979,6 +824,18 @@ void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, b
     // update cell type of end
     const int cellType1 = DefineCellType(gcell1);
     mIsoMap->SetCellType(gcell1.row, gcell1.col, cellType1);
+}
+
+int GameMap::DefineCellAttPoints(const GameMapCell & cell, int numUnits) const
+{
+    // TODO
+    return (numUnits + 1) * 10;
+}
+
+int GameMap::DefineCellDefPoints(const GameMapCell & cell, int numUnits) const
+{
+    // TODO
+    return (numUnits + 1) * 10;
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)
