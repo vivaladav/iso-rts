@@ -65,6 +65,9 @@ private:
     void MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits);
     void UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest);
 
+    int DefineCellAttPoints(const GameMapCell & cell, int numUnits) const;
+    int DefineCellDefPoints(const GameMapCell & cell, int numUnits) const;
+
     int DefineCellType(const GameMapCell & cell);
     int DefineUnitType(const GameMapCell & cell);
 
