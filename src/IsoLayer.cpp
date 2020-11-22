@@ -158,8 +158,8 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
     if(mObjectsMap[index1])
         return false;
 
-    // TODO alignment
-    obj->pos = mMap->GetCellPosition(index1);
+    // position object
+    AlignObject(obj, index1, alignment);
 
     mObjectsMap[index0] = nullptr;
     mObjectsMap[index1] = obj;
@@ -223,6 +223,30 @@ void IsoLayer::Render()
 // ==================== PRIVATE METHODS ====================
 
 /**
+ * @brief Align an IsoObject inside a cell.
+ * @param obj Pointer to IsoObject
+ * @param cellIndex Index of the target cell in the layer
+ * @param alignment Flags that define the alignment
+ */
+void IsoLayer::AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment)
+{
+    // initial position is cell's TL corner
+    obj->pos = mMap->GetCellPosition(cellIndex);
+
+    // horizontal alignment
+    if(alignment & HCENTER)
+        obj->pos.x += (mMap->GetTileWidth() - mImages[obj->imgIndex]->GetWidth()) * 0.5f;
+    else if(alignment & RIGHT)
+        obj->pos.x += mMap->GetTileWidth() - mImages[obj->imgIndex]->GetWidth();
+
+    // vertical alignment
+    if(alignment & VCENTER)
+        obj->pos.y += (mMap->GetTileHeight() - mImages[obj->imgIndex]->GetHeight()) * 0.5f;
+    else if(alignment & BOTTOM)
+        obj->pos.y += mMap->GetTileHeight() - mImages[obj->imgIndex]->GetHeight();
+}
+
+/**
  * @brief Creates a new IsoObject and adds it to the layer.
  * @param index Position index in the layer. Identifies the cell
  * @param objIndex Object index ID. Identifies the associated image
@@ -230,23 +254,14 @@ void IsoLayer::Render()
  */
 void IsoLayer::AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment)
 {
-    const lib::core::Point2D posCell = mMap->GetCellPosition(cellIndex);
-    lib::core::Point2D posObj = posCell;
+    // create new IsoObject
+    IsoObject * obj = new IsoObject(objIndex, {0, 0});
 
-    if(alignment & HCENTER)
-        posObj.x += (mMap->GetTileWidth() - mImages[objIndex]->GetWidth()) * 0.5f;
-    else if(alignment & RIGHT)
-        posObj.x += mMap->GetTileWidth() - mImages[objIndex]->GetWidth();
+    // position it in a cell
+    AlignObject(obj, cellIndex, alignment);
 
-    if(alignment & VCENTER)
-        posObj.y += (mMap->GetTileHeight() - mImages[objIndex]->GetHeight()) * 0.5f;
-    else if(alignment & BOTTOM)
-         posObj.y += mMap->GetTileHeight() - mImages[objIndex]->GetHeight();
-
-    IsoObject * obj = new IsoObject(objIndex, posObj);
-
+    // store object
     mObjectsMap[cellIndex] = obj;
-
     mObjectsList.emplace_back(obj);
 }
 

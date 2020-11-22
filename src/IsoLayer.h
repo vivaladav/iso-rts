@@ -67,6 +67,8 @@ public:
     void Render();
 
 private:
+    void AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment);
+
     void AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int index);
 
