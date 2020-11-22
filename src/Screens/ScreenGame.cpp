@@ -87,9 +87,13 @@ ScreenGame::ScreenGame(Game * game)
     const std::vector<std::string> selImgs = { "data/img/selection.png" };
 
     IsoLayer * layer = mIsoMap->CreateLayer(selImgs);
-    layer->AddObject(mPrevSel.row, mPrevSel.col, 0, NO_ALIGNMENT);
+    layer->AddObject(mPrevSel.row, mPrevSel.col, 0, ObjectAlignment::NO_ALIGNMENT);
 
     mIsoMap->SetLayerVisible(SELECTION, false);
+
+    // MOVE TARGETS
+    const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
+    layer = mIsoMap->CreateLayer(mtImgs);
 
     // UNITS
     const std::vector<std::string> unitsImgs =
@@ -394,6 +398,34 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 layerSel->MoveObject(mPrevSel.row, mPrevSel.col, c.row, c.col, NO_ALIGNMENT);
                 mIsoMap->SetLayerVisible(SELECTION, true);
 
+                // show move targets
+                if(mGameMap->GetCell(c.row, c.col).units > 0)
+                {
+                    IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
+
+                    const int numTargets = 8;
+                    const Cell2D targets[numTargets] =
+                    {
+                        {c.row - 1, c.col - 1},     // TL
+                        {c.row - 1, c.col},         // T
+                        {c.row - 1, c.col + 1},     // TR
+
+                        {c.row, c.col - 1},         // L
+                        {c.row, c.col + 1},         // R
+
+                        {c.row + 1, c.col - 1},     // BL
+                        {c.row + 1, c.col},         // B
+                        {c.row + 1, c.col + 1}      // BR
+                    };
+
+                    // add targets where unit can move
+                    for(int i = 0; i < numTargets; ++i)
+                    {
+                        if(mGameMap->CanUnitMove(c, targets[i], player))
+                            layerTargets->AddObject(targets[i].row, targets[i].col, 0, ObjectAlignment::CENTER);
+                    }
+                }
+
                 // store selection cell
                 mPrevSel = c;
             }
@@ -449,6 +481,8 @@ void ScreenGame::ClearSelection(Player * player)
     panel->ClearSelectedCell();
 
     mIsoMap->SetLayerVisible(SELECTION, false);
+
+    mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
 }
 
 void ScreenGame::UpdateAI(float delta)

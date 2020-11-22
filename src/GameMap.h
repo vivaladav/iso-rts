@@ -54,6 +54,8 @@ public:
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
     void UpgradeUnit(const Cell2D & cell);
 
+    // move units
+    bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
     bool MoveUnits(const Cell2D & start, const Cell2D & end,
                    int numUnits, Player * player);
 

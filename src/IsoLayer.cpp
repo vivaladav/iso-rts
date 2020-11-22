@@ -38,8 +38,7 @@ IsoLayer::~IsoLayer()
         delete img;
 
     // objects
-    for(IsoObject * obj : mObjectsList)
-        delete obj;
+    ClearObjects();
 }
 
 // ==================== PUBLIC METHODS ====================
@@ -195,6 +194,20 @@ bool IsoLayer::ChangeObject(unsigned int r, unsigned int c, int objIndex)
     return true;
 }
 
+/// Destroy all the objects
+void IsoLayer::ClearObjects()
+{
+    // delete objects
+    for(IsoObject * obj : mObjectsList)
+        delete obj;
+
+    // clear lists
+    mObjectsList.clear();
+
+    const unsigned int mapsSize = mMap->GetNumRows() * mMap->GetNumCols();
+    mObjectsMap.assign(mapsSize, nullptr);
+}
+
 /// Renders all the objects in the layer.
 void IsoLayer::Render()
 {
@@ -215,15 +228,24 @@ void IsoLayer::Render()
  * @param objIndex Object index ID. Identifies the associated image
  * @param alignment Visual alignment of the object in the cell
  */
-void IsoLayer::AddObject(unsigned int index, int objIndex, ObjectAlignment alignment)
+void IsoLayer::AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment)
 {
-    lib::core::Point2D posCell = mMap->GetCellPosition(index);
+    const lib::core::Point2D posCell = mMap->GetCellPosition(cellIndex);
+    lib::core::Point2D posObj = posCell;
 
-    // TODO alignment
+    if(alignment & HCENTER)
+        posObj.x += (mMap->GetTileWidth() - mImages[objIndex]->GetWidth()) * 0.5f;
+    else if(alignment & RIGHT)
+        posObj.x += mMap->GetTileWidth() - mImages[objIndex]->GetWidth();
 
-    IsoObject * obj = new IsoObject(objIndex, posCell);
+    if(alignment & VCENTER)
+        posObj.y += (mMap->GetTileHeight() - mImages[objIndex]->GetHeight()) * 0.5f;
+    else if(alignment & BOTTOM)
+         posObj.y += mMap->GetTileHeight() - mImages[objIndex]->GetHeight();
 
-    mObjectsMap[index] = obj;
+    IsoObject * obj = new IsoObject(objIndex, posObj);
+
+    mObjectsMap[cellIndex] = obj;
 
     mObjectsList.emplace_back(obj);
 }

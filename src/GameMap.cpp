@@ -523,7 +523,7 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     gcell.changing = false;
 }
 
-bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
+bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
@@ -547,22 +547,38 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         return false;
 
     const int ind0 = r0 * mCols + c0;
-    GameMapCell & gcell0 = mCells[ind0];
+    const GameMapCell & gcell0 = mCells[ind0];
 
     // start cell is not own cell
     if(player != gcell0.owner)
         return false;
 
-    // not enough units to move
-    if(0 == numUnits || gcell0.units < numUnits)
-        return false;
-
     const int ind1 = r1 * mCols + c1;
-    GameMapCell & gcell1 = mCells[ind1];
+    const GameMapCell & gcell1 = mCells[ind1];
 
     // not a walkable cell
     if(!gcell1.walkable)
         return false;
+
+    // fail if destination is full or has different level units
+    if(gcell1.units == MAX_CELL_UNITS ||
+       (gcell1.units > 0 && gcell0.owner == gcell1.owner && gcell0.unitsLevel != gcell1.unitsLevel))
+        return false;
+
+    // all good
+    return true;
+}
+
+bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
+{
+    if(!CanUnitMove(start, end, player))
+        return false;
+
+    const int ind0 = start.row * mCols + start.col;
+    GameMapCell & gcell0 = mCells[ind0];
+
+    const int ind1 = end.row * mCols + end.col;
+    GameMapCell & gcell1 = mCells[ind1];
 
     Player * playerDest = gcell1.owner;
 
@@ -592,10 +608,6 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         // end cell has units
         else
         {
-            // fail if destination is full or has different level units
-            if(gcell1.units == MAX_CELL_UNITS || gcell0.unitsLevel != gcell1.unitsLevel)
-                return false;
-
             // cap units moved to max allowed per cell
             if(gcell1.units + numUnits > MAX_CELL_UNITS)
                 numUnits = MAX_CELL_UNITS - gcell1.units;
@@ -668,24 +680,24 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
             if(0 == gcell0.units)
             {
                 gcell0.unitsLevel = 0;
-                layerUnits->ClearObject(r0, c0);
+                layerUnits->ClearObject(start.row, start.col);
             }
             else
             {
                 const int unitType0 = DefineUnitType(gcell0);
-                layerUnits->ChangeObject(r0, c0, unitType0);
+                layerUnits->ChangeObject(start.row, start.col, unitType0);
             }
 
             // update unit object in end
             if(0 == gcell1.units)
             {
                 gcell1.unitsLevel = 0;
-                layerUnits->ClearObject(r1, c1);
+                layerUnits->ClearObject(end.row, end.col);
             }
             else
             {
                 const int unitType1 = DefineUnitType(gcell1);
-                layerUnits->ChangeObject(r1, c1, unitType1);
+                layerUnits->ChangeObject(end.row, end.col, unitType1);
             }
         }
     }

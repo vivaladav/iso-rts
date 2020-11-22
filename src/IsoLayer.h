@@ -40,7 +40,10 @@ enum ObjectAlignment
     // horizontal alignment
     LEFT            = 0x10,
     HCENTER         = 0x20,
-    RIGHT           = 0x40
+    RIGHT           = 0x40,
+
+    // combos
+    CENTER          = HCENTER + VCENTER
 };
 
 /// A layer of an IsoMap.  Basically It's a container of IsoObjects.
@@ -57,12 +60,14 @@ public:
                     ObjectAlignment alignment);
     bool ChangeObject(unsigned int r, unsigned int c, int objIndex);
 
+    void ClearObjects();
+
     bool IsVisible() const;
     void SetVisible(bool val);
     void Render();
 
 private:
-    void AddObject(unsigned int index, int objIndex, ObjectAlignment alignment);
+    void AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int index);
 
     void SetImages(const std::vector<std::string> & files);
