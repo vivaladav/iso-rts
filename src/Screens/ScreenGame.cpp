@@ -1,6 +1,5 @@
-#include "Screens/ScreenGame.h"
+﻿#include "Screens/ScreenGame.h"
 
-#include "Cell2D.h"
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameMap.h"
@@ -85,12 +84,10 @@ ScreenGame::ScreenGame(Game * game)
     mIsoMap->CreateLayer(fortImgs);
 
     // SELECTION
-    mPrevSel = new Cell2D(0, 0);
-
     const std::vector<std::string> selImgs = { "data/img/selection.png" };
 
     IsoLayer * layer = mIsoMap->CreateLayer(selImgs);
-    layer->AddObject(mPrevSel->row, mPrevSel->col, 0, NO_ALIGNMENT);
+    layer->AddObject(mPrevSel.row, mPrevSel.col, 0, NO_ALIGNMENT);
 
     mIsoMap->SetLayerVisible(SELECTION, false);
 
@@ -273,8 +270,6 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
-    delete mPrevSel;
-
     delete mIsoMap;
     delete mGameMap;
 
@@ -373,11 +368,14 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
     if(insideMap)
     {
-        const int unitsToMove = panel->GetNumUnitsToMove();
+        const Cell2D * selCell = player->GetSelectedCell();
 
-        if(unitsToMove > 0)
+        if(selCell)
         {
-            mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player);
+            const int unitsToMove = mGameMap->GetCell(selCell->row, selCell->col).units;
+
+            if(unitsToMove > 0)
+                mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player);
 
             ClearSelection(player);
         }
@@ -393,11 +391,11 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
 
                 IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
-                layerSel->MoveObject(mPrevSel->row, mPrevSel->col, c.row, c.col, NO_ALIGNMENT);
+                layerSel->MoveObject(mPrevSel.row, mPrevSel.col, c.row, c.col, NO_ALIGNMENT);
                 mIsoMap->SetLayerVisible(SELECTION, true);
 
                 // store selection cell
-                *mPrevSel = c;
+                mPrevSel = c;
             }
             else
                 ClearSelection(player);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Cell2D.h"
 #include "GameConstants.h"
 #include "Screen.h"
 
@@ -17,8 +18,6 @@ class IsoMap;
 class PanelPlayer;
 class Player;
 class PlayerAI;
-
-struct Cell2D;
 
 class ScreenGame : public Screen
 {
@@ -64,7 +63,7 @@ private:
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
 
-    struct Cell2D * mPrevSel = nullptr;
+    struct Cell2D mPrevSel;
 
     float mTimerCoins = TIME_COINS_GEN;
     float mTimerAI = TIME_AI_MOVE;
