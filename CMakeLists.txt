@@ -63,6 +63,8 @@ add_executable(
     src/Widgets/CellProgressBar.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
+    src/Widgets/MapPreview.h
+    src/Widgets/MapPreview.cpp
     src/Widgets/PanelGameOver.h
     src/Widgets/PanelGameOver.cpp
     src/Widgets/PanelGameWon.h

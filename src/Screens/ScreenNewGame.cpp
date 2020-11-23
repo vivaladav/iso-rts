@@ -6,6 +6,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
+#include "Widgets/MapPreview.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -29,6 +30,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     game->SetClearColor(0xEE, 0xEE, 0xEE, 0xFF);
 
+    const int contentX0 = 400;
     const int marginL = 50;
     const int marginT = 50;
     const int marginTitleB = 50;
@@ -59,7 +61,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     // buttons
     auto * bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
-    bg->SetPosition(header->GetX() + header->GetWidth() + marginWidgetsH, widgetY);
+    bg->SetPosition(contentX0, widgetY);
 
     bg->AddButton(new ButtonUnitsSelector("1"));
     bg->AddButton(new ButtonUnitsSelector("2"));
@@ -82,7 +84,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     // buttons
     bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
-    bg->SetPosition(header->GetX() + header->GetWidth() + marginWidgetsH, widgetY);
+    bg->SetPosition(contentX0, widgetY);
 
     bg->AddButton(new ButtonUnitsSelector("1"));
     bg->AddButton(new ButtonUnitsSelector("2"));
@@ -104,6 +106,13 @@ ScreenNewGame::ScreenNewGame(Game * game)
     header->SetPosition(marginL, widgetY);
 
     widgetY += header->GetHeight() + marginWidgetsV;
+
+    // MAP PREVIEW
+    MapPreview * preview = new MapPreview;
+    preview->Load("data/maps/001.map");
+    mMapPreviews.emplace_back(preview);
+
+    preview->SetPosition(contentX0, header->GetY());
 
     // -- NAVIGATION PANEL --
     const int marginButtonsH = 100;

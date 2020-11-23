@@ -2,8 +2,12 @@
 
 #include "Screen.h"
 
+#include <vector>
+
 namespace game
 {
+
+class MapPreview;
 
 enum Difficulty : unsigned int;
 
@@ -17,6 +21,8 @@ public:
     void Render() override;
 
 private:
+    std::vector<MapPreview *> mMapPreviews;
+
     int mCpuPlayers = 1;
     Difficulty mDiff;
 };
