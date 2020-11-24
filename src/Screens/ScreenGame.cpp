@@ -31,7 +31,6 @@ ScreenGame::ScreenGame(Game * game)
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
     // -- ISOMETRIC MAP --
-    const int SIDE = 15;
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles =
@@ -61,7 +60,7 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/tile-p4l4.png"
     };
 
-    mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
+    mIsoMap = new IsoMap("data/maps/001.map", TILE_W);
     mIsoMap->SetTiles(tileFiles);
 
     // center map on screen
@@ -167,7 +166,6 @@ ScreenGame::ScreenGame(Game * game)
 
     // -- GAME MAP --
     mGameMap = new GameMap(game, this, mIsoMap);
-    mGameMap->Load("data/maps/001.map");
     mGameMap->SetHomeCell();
 
     // -- PLAYERS --

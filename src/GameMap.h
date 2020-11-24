@@ -21,8 +21,6 @@ class GameMap
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
 
-    bool Load(const char * file);
-
     void SetHomeCell();
     void AssignCell(const Cell2D & cell, Player * player);
 

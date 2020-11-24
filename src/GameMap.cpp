@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <fstream>
 #include <string>
 #include <vector>
 
@@ -149,8 +148,11 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     {
         for(int c = 0; c < isoMap->GetNumCols(); ++c)
         {
-            mCells[index].row = r;
-            mCells[index].col = c;
+            GameMapCell & cell = mCells[index];
+
+            cell.row = r;
+            cell.col = c;
+            cell.walkable = isoMap->GetCellType(r, c) == EMPTY;
 
             ++index;
         }
@@ -158,36 +160,6 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
 }
 
 // ==================== PUBLIC METHODS ====================
-
-bool GameMap::Load(const char * file)
-{
-    std::fstream f(file);
-
-    if(!f.is_open())
-        return false;
-
-    std::string line;
-
-    for(unsigned int r = 0; r < mRows; ++r)
-    {
-        const unsigned int indb = r * mCols;
-
-        std::getline(f, line);
-
-        for(unsigned int c = 0; c < mCols; ++c)
-        {
-            const unsigned int ind = indb + c;
-
-            const int type = line[c] - '0';
-
-            mCells[ind].walkable = type != FULL;
-
-            mIsoMap->SetCellType(r, c, type);
-        }
-    }
-
-    return true;
-}
 
 void GameMap::SetHomeCell()
 {

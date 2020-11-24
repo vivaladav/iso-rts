@@ -6,33 +6,25 @@
 #include <graphic/Image.h>
 
 #include <algorithm>
+#include <fstream>
 
 namespace game
 {
 
 // ==================== CONSTRUCTORS AND DESTRUCTOR ====================
 
+constexpr unsigned int MAX_SIZE = 256;
+
 /**
- * @brief Creates an isometric map made by rows x cols cells.
- * @param rows Number of rows in the map
- * @param cols Number of columns in the map
+ * @brief Creates an isometric map loading a file.
+ * @param file Map file to load. Path relative to application binary
  * @param tileW Width of a cell (height is half of that)
  */
-IsoMap::IsoMap(unsigned int rows, unsigned int cols, int tileW)
-    : mRows(rows)
-    , mCols(cols)
-    , mTileW(tileW)
+IsoMap::IsoMap(const char * file, int tileW)
+    : mTileW(tileW)
     , mTileH(tileW * 0.5f)
-    , mTileHalfH(tileW * 0.25f)
 {
-    const int size = rows * cols;
-
-    mMap.reserve(size);
-
-    mTilePositions.reserve(size);
-    mTilePositions.assign(size, lib::core::Point2D(0, 0));
-
-    mMap.assign(size, 0);
+    Load(file);
 }
 
 /// Destructor, deletes Images used for the tiles and IsoLayers.
@@ -47,6 +39,51 @@ IsoMap::~IsoMap()
 }
 
 // ==================== PUBLIC METHODS ====================
+
+/**
+ * @brief Loads a map file.
+ * @param file Map file to load. Path relative to application binary
+ * @return TRUE on success, FALSE otherwise
+ */
+bool IsoMap::Load(const char * file)
+{
+    // open map file
+    std::fstream f(file);
+
+    if(!f.is_open())
+        return false;
+
+    // clear internal data
+    mMap.clear();
+    mTilePositions.clear();
+
+    // read map file
+    mMap.reserve(MAX_SIZE);
+
+    std::string line;
+
+    mRows = 0;
+
+    while (std::getline(f, line))
+    {
+        mCols = line.length();
+
+        for(unsigned int c = 0; c < mCols; ++c)
+           mMap.push_back(line[c] - '0');
+
+        ++mRows;
+    }
+
+    // update tile positions data
+    const unsigned int mapSize = mRows * mCols;
+
+    mTilePositions.reserve(mapSize);
+    mTilePositions.assign(mapSize, lib::core::Point2D(0, 0));
+
+    UpdateTilePositions();
+
+    return true;
+}
 
 /**
  * @brief Gives the top-left corner position of a cell.
@@ -215,7 +252,13 @@ void IsoMap::SetLayerVisible(unsigned int index, bool visible)
 /// Updates the position of all the tiles. Based on tile size and map origin.
 void IsoMap::UpdateTilePositions()
 {
-    // TODO consider image size of the different tiles
+    // no positions to update yet
+    if(mTilePositions.empty())
+        return ;
+
+     const int tileHalfH = mTileH * 0.5f;
+
+     // TODO consider image size of the different tiles
     for(unsigned int r = 0; r < mRows; ++r)
     {
         const unsigned int indb = r * mCols;
@@ -229,7 +272,7 @@ void IsoMap::UpdateTilePositions()
             // x =  (h * c)   -   (h * r)   = h * (c - r)
             // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)
             p.x = mRenderX0 + mTileH * (c - r);
-            p.y = mY0 + mTileHalfH * (c + r);
+            p.y = mY0 + tileHalfH * (c + r);
         }
     }
 }

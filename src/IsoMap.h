@@ -18,8 +18,10 @@ struct Cell2D;
 class IsoMap
 {
 public:
-    IsoMap(unsigned int rows, unsigned int cols, int tileW);
+    IsoMap(const char * file, int tileW);
     ~IsoMap();
+
+    bool Load(const char * file);
 
     int GetNumRows() const;
     int GetNumCols() const;
@@ -66,7 +68,6 @@ private:
 
     int mTileW = 0;
     int mTileH = 0;
-    int mTileHalfH = 0;
     int mOrthoTileSize = 0;
 
     std::vector<unsigned int> mMap;

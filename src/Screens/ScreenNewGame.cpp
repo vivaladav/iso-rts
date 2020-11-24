@@ -108,8 +108,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     widgetY += header->GetHeight() + marginWidgetsV;
 
     // MAP PREVIEW
-    MapPreview * preview = new MapPreview;
-    preview->Load("data/maps/001.map");
+    MapPreview * preview = new MapPreview("data/maps/001.map");
     mMapPreviews.emplace_back(preview);
 
     preview->SetPosition(contentX0, header->GetY());

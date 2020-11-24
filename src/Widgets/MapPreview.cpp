@@ -4,14 +4,13 @@
 
 #include "graphic/Image.h"
 
-#include <fstream>
 #include <string>
 #include <vector>
 
 namespace game
 {
 
-MapPreview::MapPreview(lib::sgui::Widget * parent)
+MapPreview::MapPreview(const char * file, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
     // -- BACKGROUND --
@@ -20,43 +19,27 @@ MapPreview::MapPreview(lib::sgui::Widget * parent)
 
 
     // -- ISOMETRIC MAP --
-    const int SIDE = 15;
     const int TILE_W = 28;
 
-    const std::vector<std::string> tileFiles =
+    const std::vector<std::string> tiles =
     {
         // scene
         "data/img/tile_prev-00.png",
         "data/img/tile_prev-01.png"
     };
 
-    mIsoMap = new IsoMap(SIDE, SIDE, TILE_W);
-    mIsoMap->SetTiles(tileFiles);
+    mIsoMap = new IsoMap(file, TILE_W);
+    mIsoMap->SetTiles(tiles);
 }
 
 bool MapPreview::Load(const char * file)
 {
-    std::fstream f(file);
-
-    if(!f.is_open())
+    // load file
+    if(!mIsoMap->Load(file))
         return false;
 
-    std::string line;
-
-    const unsigned int rows = mIsoMap->GetNumRows();
-    const unsigned int cols = mIsoMap->GetNumCols();
-
-    for(unsigned int r = 0; r < rows; ++r)
-    {
-        std::getline(f, line);
-
-        for(unsigned int c = 0; c < cols; ++c)
-        {
-            const int type = line[c] - '0';
-
-            mIsoMap->SetCellType(r, c, type);
-        }
-    }
+    // reposition map
+    HandlePositionChanged();
 
     return true;
 }

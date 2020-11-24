@@ -12,7 +12,7 @@ class IsoMap;
 class MapPreview : public lib::sgui::Widget
 {
 public:
-    MapPreview(lib::sgui::Widget * parent = nullptr);
+    MapPreview(const char * file, lib::sgui::Widget * parent = nullptr);
 
     bool Load(const char * file);
 
