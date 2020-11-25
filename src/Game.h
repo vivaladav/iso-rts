@@ -2,6 +2,7 @@
 
 #include <core/Application.h>
 
+#include <string>
 #include <vector>
 
 namespace lib
@@ -40,6 +41,10 @@ public:
     Game(int argc, char * argv[]);
     ~Game();
 
+    const std::vector<std::string> & GetMapFiles() const;
+    const std::string & GetCurrentMapFile() const;
+    void SetCurrentMap(unsigned int index);
+
     void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
     void RequestNextActiveState(StateId sid);
@@ -59,7 +64,9 @@ private:
     void Update(float delta) override;
 
 private:
+    std::vector<std::string> mMapFiles;
     std::vector<Player *> mPlayers;
+    unsigned int mCurrMap = 0;
 
     lib::graphic::Renderer * mRenderer = nullptr;
     lib::graphic::Window * mWin = nullptr;
@@ -76,6 +83,14 @@ private:
     unsigned char mClearB = 0;
     unsigned char mClearA = 255;
 };
+
+inline const std::vector<std::string> & Game::GetMapFiles() const { return mMapFiles; }
+inline const std::string & Game::GetCurrentMapFile() const { return mMapFiles[mCurrMap]; }
+inline void Game::SetCurrentMap(unsigned int index)
+{
+    if(index < mMapFiles.size())
+        mCurrMap = index;
+}
 
 inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {

@@ -2,27 +2,28 @@
 
 #include "IsoMap.h"
 
+#include "core/event/MouseButtonEvent.h"
 #include "graphic/Font.h"
 #include "graphic/FontManager.h"
 #include "graphic/Image.h"
 #include "graphic/Text.h"
 
 #include <sstream>
-#include <string>
-#include <vector>
 
 namespace game
 {
 
 MapPreview::MapPreview(const char * file, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
+    , mOnClick([]{})
 {
     using namespace lib::graphic;
 
     // -- BACKGROUND --
-    mBg = new Image("data/img/map_preview_bg.png");
+    mBgUnsel = new Image("data/img/map_preview_bg.png");
+    mBgSel = new Image("data/img/map_preview_sel_bg.png");
+    mBg = mBgUnsel;
     SetSize(mBg->GetWidth(), mBg->GetHeight());
-
 
     // -- ISOMETRIC MAP --
     const int TILE_W = 28;
@@ -47,13 +48,29 @@ MapPreview::MapPreview(const char * file, lib::sgui::Widget * parent)
     mLabelSize->SetColor(0x888888FF);
 }
 
+void MapPreview::SetSelected(bool val)
+{
+    if(val)
+        mBg = mBgSel;
+    else
+        mBg = mBgUnsel;
+}
+
+void MapPreview::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
+{
+    event.SetConsumed();
+
+    mOnClick();
+}
+
 void MapPreview::HandlePositionChanged()
 {
     // background
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();
 
-    mBg->SetPosition(x0, y0);
+    mBgUnsel->SetPosition(x0, y0);
+    mBgSel->SetPosition(x0, y0);
 
     // map
     const int x = x0 + mBg->GetWidth() * 0.5f;

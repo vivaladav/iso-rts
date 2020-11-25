@@ -17,6 +17,7 @@
 #include <sgui/Stage.h>
 
 #include <iostream>
+#include <string>
 
 namespace game
 {
@@ -108,39 +109,50 @@ ScreenNewGame::ScreenNewGame(Game * game)
     widgetY += headerMap->GetHeight() + marginHeaderB;
 
     // MAP PREVIEW
+    const std::vector<std::string> & mapFiles = game->GetMapFiles();
+
     const int marginMapH = 174; // change later when adding navigation button
     const int marginMapV = 60; // change later when adding navigation button
     const int mapX0 = 125;      // change later when adding navigation button
     int mapX = mapX0;
 
-    MapPreview * preview = new MapPreview("data/maps/5x5-01.map");
-    preview->SetPosition(mapX, widgetY);
-    mMapPreviews.emplace_back(preview);
+    const int rows = 2;
+    const int cols = 3;
+    const int lastCol = cols - 1;
+    const int mapsPerScreen = rows * cols;
+    const unsigned int end = mStartMap + mapsPerScreen;
+    const unsigned int mapEnd = mapFiles.size() < end ? mapFiles.size() : end;
 
-    mapX += preview->GetWidth() + marginMapH;
+    for(unsigned int m = mStartMap; m < mapEnd; ++m)
+    {
+        MapPreview * preview = new MapPreview(mapFiles[m].c_str());
+        preview->SetPosition(mapX, widgetY);
+        preview->SetOnClickFunction([this, game, m]
+        {
+            if(mMapPreviews[m] != mMapPreviews[mMapSelInd])
+            {
+                mMapPreviews[m]->SetSelected(true);
 
-    preview = new MapPreview("data/maps/6x6-01.map");
-    preview->SetPosition(mapX, widgetY);
-    mMapPreviews.emplace_back(preview);
+                if(mMapSelInd != -1)
+                    mMapPreviews[mMapSelInd]->SetSelected(false);
 
-    mapX += preview->GetWidth() + marginMapH;
+                mMapSelInd = m;
+                game->SetCurrentMap(m);
+            }
+        });
 
-    preview = new MapPreview("data/maps/7x7-01.map");
-    preview->SetPosition(mapX, widgetY);
-    mMapPreviews.emplace_back(preview);
+        const int c = m % cols;
 
-    mapX = mapX0;
-    widgetY += preview->GetHeight() + marginMapV;
+        if(c < lastCol)
+            mapX += preview->GetWidth() + marginMapH;
+        else
+        {
+            mapX = mapX0;
+            widgetY += preview->GetHeight() + marginMapV;
+        }
 
-    preview = new MapPreview("data/maps/10x10-01.map");
-    preview->SetPosition(mapX, widgetY);
-    mMapPreviews.emplace_back(preview);
-
-    mapX += preview->GetWidth() + marginMapH;
-
-    preview = new MapPreview("data/maps/001.map");
-    preview->SetPosition(mapX, widgetY);
-    mMapPreviews.emplace_back(preview);
+        mMapPreviews.emplace_back(preview);
+    }
 
     // -- NAVIGATION PANEL --
     const int marginButtonsH = 100;

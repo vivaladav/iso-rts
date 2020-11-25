@@ -60,7 +60,8 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/tile-p4l4.png"
     };
 
-    mIsoMap = new IsoMap("data/maps/001.map", TILE_W);
+    const std::string & mapFile = game->GetCurrentMapFile();
+    mIsoMap = new IsoMap(mapFile.c_str(), TILE_W);
     mIsoMap->SetTiles(tileFiles);
 
     // center map on screen
