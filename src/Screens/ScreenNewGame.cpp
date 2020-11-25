@@ -28,14 +28,14 @@ ScreenNewGame::ScreenNewGame(Game * game)
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    game->SetClearColor(0xEE, 0xEE, 0xEE, 0xFF);
+    game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
 
-    const int contentX0 = 400;
-    const int marginL = 50;
-    const int marginT = 50;
+    const int marginL = 25;
+    const int marginT = 10;
     const int marginTitleB = 50;
-    const int marginWidgetsV = 100;
+    const int marginHeaderB = 20;
     const int marginWidgetsH = 100;
+    const int marginWidgetsV = 50;
     int widgetY = marginT;
 
     // -- TITLE --
@@ -44,7 +44,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 48);
     fontTitle->SetStyle(Font::BOLD);
 
-    Label * title = new Label("SINGLE PLAYER GAME", fontTitle);
+    auto * title = new Label("SINGLE PLAYER GAME", fontTitle);
     title->SetColor(0x111111FF);
     title->SetPosition(marginL, widgetY);
 
@@ -55,67 +55,96 @@ ScreenNewGame::ScreenNewGame(Game * game)
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
     fontTitle->SetStyle(Font::BOLD);
 
-    Label * header = new Label("CPU PLAYERS", fontHeader);
-    header->SetColor(colorHeader);
-    header->SetPosition(marginL, widgetY);
+    Label * headerPlayers = new Label("CPU PLAYERS", fontHeader);
+    headerPlayers->SetColor(colorHeader);
+    headerPlayers->SetPosition(marginL, widgetY);
+
+    widgetY += headerPlayers->GetHeight() + marginHeaderB;
 
     // buttons
-    auto * bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
-    bg->SetPosition(contentX0, widgetY);
+    auto * bgPlayers = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
+    bgPlayers->SetPosition(headerPlayers->GetX(), widgetY);
 
-    bg->AddButton(new ButtonUnitsSelector("1"));
-    bg->AddButton(new ButtonUnitsSelector("2"));
-    bg->AddButton(new ButtonUnitsSelector("3"));
+    bgPlayers->AddButton(new ButtonUnitsSelector("1"));
+    bgPlayers->AddButton(new ButtonUnitsSelector("2"));
+    bgPlayers->AddButton(new ButtonUnitsSelector("3"));
 
-    bg->SetButtonChecked(0, true);
+    bgPlayers->SetButtonChecked(0, true);
 
-    bg->SetFunctionOnToggle([this](unsigned int ind, bool checked)
+    bgPlayers->SetFunctionOnToggle([this](unsigned int ind, bool checked)
     {
         if(checked)
             mCpuPlayers = ind + 1;
     });
 
-    widgetY += header->GetHeight() + marginWidgetsV;
-
     // -- DIFFICULTY --
-    header = new Label("DIFFICULTY", fontHeader);
-    header->SetColor(colorHeader);
-    header->SetPosition(marginL, widgetY);
+    auto * headerDiff = new Label("DIFFICULTY", fontHeader);
+    headerDiff->SetColor(colorHeader);
+    headerDiff->SetPosition(headerPlayers->GetX() + headerPlayers->GetWidth() + marginWidgetsH, headerPlayers->GetY());
 
     // buttons
-    bg = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
-    bg->SetPosition(contentX0, widgetY);
+    auto * bgDiff = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
+    bgDiff->SetPosition(headerDiff->GetX(), widgetY);
 
-    bg->AddButton(new ButtonUnitsSelector("1"));
-    bg->AddButton(new ButtonUnitsSelector("2"));
-    bg->AddButton(new ButtonUnitsSelector("3"));
+    bgDiff->AddButton(new ButtonUnitsSelector("1"));
+    bgDiff->AddButton(new ButtonUnitsSelector("2"));
+    bgDiff->AddButton(new ButtonUnitsSelector("3"));
 
-    bg->SetButtonChecked(0, true);
+    bgDiff->SetButtonChecked(0, true);
 
-    bg->SetFunctionOnToggle([this](unsigned int ind, bool checked)
+    bgDiff->SetFunctionOnToggle([this](unsigned int ind, bool checked)
     {
         if(checked)
             mDiff = static_cast<Difficulty>(ind);
     });
 
-    widgetY += header->GetHeight() + marginWidgetsV;
+    widgetY += bgDiff->GetHeight() + marginWidgetsV;
 
     // -- MAP --
-    header = new Label("MAP", fontHeader);
-    header->SetColor(colorHeader);
-    header->SetPosition(marginL, widgetY);
+    auto * headerMap = new Label("MAP", fontHeader);
+    headerMap->SetColor(colorHeader);
+    headerMap->SetPosition(marginL, widgetY);
 
-    widgetY += header->GetHeight() + marginWidgetsV;
+    widgetY += headerMap->GetHeight() + marginHeaderB;
 
     // MAP PREVIEW
-    MapPreview * preview = new MapPreview("data/maps/001.map");
+    const int marginMapH = 174; // change later when adding navigation button
+    const int marginMapV = 60; // change later when adding navigation button
+    const int mapX0 = 125;      // change later when adding navigation button
+    int mapX = mapX0;
+
+    MapPreview * preview = new MapPreview("data/maps/5x5-01.map");
+    preview->SetPosition(mapX, widgetY);
     mMapPreviews.emplace_back(preview);
 
-    preview->SetPosition(contentX0, header->GetY());
+    mapX += preview->GetWidth() + marginMapH;
+
+    preview = new MapPreview("data/maps/6x6-01.map");
+    preview->SetPosition(mapX, widgetY);
+    mMapPreviews.emplace_back(preview);
+
+    mapX += preview->GetWidth() + marginMapH;
+
+    preview = new MapPreview("data/maps/7x7-01.map");
+    preview->SetPosition(mapX, widgetY);
+    mMapPreviews.emplace_back(preview);
+
+    mapX = mapX0;
+    widgetY += preview->GetHeight() + marginMapV;
+
+    preview = new MapPreview("data/maps/10x10-01.map");
+    preview->SetPosition(mapX, widgetY);
+    mMapPreviews.emplace_back(preview);
+
+    mapX += preview->GetWidth() + marginMapH;
+
+    preview = new MapPreview("data/maps/001.map");
+    preview->SetPosition(mapX, widgetY);
+    mMapPreviews.emplace_back(preview);
 
     // -- NAVIGATION PANEL --
     const int marginButtonsH = 100;
-    const int marginButtonsB = 100;
+    const int marginButtonsB = 25;
 
     Widget * panel = new Widget;
 
