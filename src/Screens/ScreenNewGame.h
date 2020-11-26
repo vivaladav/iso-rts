@@ -4,6 +4,8 @@
 
 #include <vector>
 
+namespace lib { namespace sgui { class PushButton; } }
+
 namespace game
 {
 
@@ -24,6 +26,8 @@ private:
     std::vector<MapPreview *> mMapPreviews;
     int mMapSelInd = -1;
     unsigned int mStartMap = 0;
+
+    lib::sgui::PushButton * mButtonStart = nullptr;
 
     int mCpuPlayers = 1;
     Difficulty mDiff;

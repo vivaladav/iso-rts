@@ -138,6 +138,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
                 mMapSelInd = m;
                 game->SetCurrentMap(m);
+
+                mButtonStart->SetEnabled(true);
             }
         });
 
@@ -171,10 +173,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
     const int buttonBackW = button->GetWidth();
 
     // -- BUTTON NEW GAME --
-    button = new ButtonMainMenu("START", panel);
-    button->SetX(buttonBackW + marginButtonsH);
+    mButtonStart = new ButtonMainMenu("START", panel);
+    mButtonStart->SetEnabled(false);
+    mButtonStart->SetX(buttonBackW + marginButtonsH);
 
-    button->SetOnClickFunction([this, game]
+    mButtonStart->SetOnClickFunction([this, game]
     {
         // create human player
         game->AddPlayer("PLAYER 1", 0);
