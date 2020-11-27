@@ -30,8 +30,12 @@ Game::Game(int argc, char * argv[])
         "data/maps/5x5-01.map",
         "data/maps/6x6-01.map",
         "data/maps/7x7-01.map",
+        "data/maps/8x8-01.map",
+        "data/maps/9x9-01.map",
         "data/maps/10x10-01.map",
-        "data/maps/001.map"
+        "data/maps/11x11-01.map",
+        "data/maps/12x12-01.map",
+        "data/maps/15x15-01.map"
     }
 {
     using namespace lib::graphic;

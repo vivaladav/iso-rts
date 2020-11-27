@@ -5,6 +5,7 @@
 #include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
+#include "Widgets/ButtonNavigation.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/MapPreview.h"
 
@@ -22,8 +23,20 @@
 namespace game
 {
 
+// margins
+const int marginHeaderB = 20;
+const int marginMapH = 174;
+const int marginMapV = 60;
+
+// maps
+const int mapX0 = 125;
+const int rows = 2;
+const int cols = 3;
+const int mapsPerScreen = rows * cols;
+
 ScreenNewGame::ScreenNewGame(Game * game)
     : Screen(game)
+    , mGame(game)
     , mDiff(Difficulty::EASY)
 {
     using namespace lib::graphic;
@@ -34,7 +47,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     const int marginL = 25;
     const int marginT = 10;
     const int marginTitleB = 50;
-    const int marginHeaderB = 20;
     const int marginWidgetsH = 100;
     const int marginWidgetsV = 50;
     int widgetY = marginT;
@@ -102,58 +114,42 @@ ScreenNewGame::ScreenNewGame(Game * game)
     widgetY += bgDiff->GetHeight() + marginWidgetsV;
 
     // -- MAP --
-    auto * headerMap = new Label("MAP", fontHeader);
-    headerMap->SetColor(colorHeader);
-    headerMap->SetPosition(marginL, widgetY);
-
-    widgetY += headerMap->GetHeight() + marginHeaderB;
+    mLabelMaps = new Label("MAP", fontHeader);
+    mLabelMaps->SetColor(colorHeader);
+    mLabelMaps->SetPosition(marginL, widgetY);
 
     // MAP PREVIEW
-    const std::vector<std::string> & mapFiles = game->GetMapFiles();
+    const unsigned int numMaps = mGame->GetMapFiles().size();
+    mMapPreviews.assign(numMaps, nullptr);
 
-    const int marginMapH = 174; // change later when adding navigation button
-    const int marginMapV = 60; // change later when adding navigation button
-    const int mapX0 = 125;      // change later when adding navigation button
-    int mapX = mapX0;
+    ShowMapPreviews(mStartMap);
 
-    const int rows = 2;
-    const int cols = 3;
-    const int lastCol = cols - 1;
-    const int mapsPerScreen = rows * cols;
-    const unsigned int end = mStartMap + mapsPerScreen;
-    const unsigned int mapEnd = mapFiles.size() < end ? mapFiles.size() : end;
-
-    for(unsigned int m = mStartMap; m < mapEnd; ++m)
+    // MAP NAVIGATION BUTTONS
+    if(numMaps > mapsPerScreen)
     {
-        MapPreview * preview = new MapPreview(mapFiles[m].c_str());
-        preview->SetPosition(mapX, widgetY);
-        preview->SetOnClickFunction([this, game, m]
+        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int yc = mMapPreviews[0]->GetY() + mMapPreviews[0]->GetHeight() + marginMapV * 0.5f;
+
+        mButtonNavL = new ButtonNavigation("<");
+        mButtonNavL->SetOnClickFunction([this]
         {
-            if(mMapPreviews[m] != mMapPreviews[mMapSelInd])
-            {
-                mMapPreviews[m]->SetSelected(true);
-
-                if(mMapSelInd != -1)
-                    mMapPreviews[mMapSelInd]->SetSelected(false);
-
-                mMapSelInd = m;
-                game->SetCurrentMap(m);
-
-                mButtonStart->SetEnabled(true);
-            }
+            mStartMap -= mapsPerScreen;
+            UpdateNavButtonsState();
+            ShowMapPreviews(mStartMap);
         });
+        mButtonNavL->SetPosition(marginL, yc - mButtonNavL->GetHeight() * 0.5f);
 
-        const int c = m % cols;
-
-        if(c < lastCol)
-            mapX += preview->GetWidth() + marginMapH;
-        else
+        mButtonNavR = new ButtonNavigation(">");
+        mButtonNavR->SetOnClickFunction([this]
         {
-            mapX = mapX0;
-            widgetY += preview->GetHeight() + marginMapV;
-        }
+            mStartMap += mapsPerScreen;
+            UpdateNavButtonsState();
+            ShowMapPreviews(mStartMap);
+        });
+        mButtonNavR->SetPosition(rendW - marginL - mButtonNavR->GetWidth(),
+                                 yc - mButtonNavR->GetHeight() * 0.5f);
 
-        mMapPreviews.emplace_back(preview);
+        UpdateNavButtonsState();
     }
 
     // -- NAVIGATION PANEL --
@@ -226,6 +222,103 @@ void ScreenNewGame::Update(float update)
 
 void ScreenNewGame::Render()
 {
+}
+
+MapPreview * ScreenNewGame::GetMapPreview(unsigned int index)
+{
+    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
+
+    if(index >= mapFiles.size())
+        return nullptr;
+
+    if(nullptr == mMapPreviews[index])
+        mMapPreviews[index] = new MapPreview(mapFiles[index].c_str());
+
+    return mMapPreviews[index];
+}
+
+void ScreenNewGame::ShowMapPreviews(unsigned int mapStart)
+{
+    // hide maps between 0 and start, if already created
+    for(unsigned int m = 0; m < mapStart; ++m)
+    {
+        MapPreview * mp = mMapPreviews[m];
+
+        if(mp)
+            mp->SetVisible(false);
+    }
+
+    // show maps between start and start + mps
+    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
+    const unsigned int numMaps = mapFiles.size();
+
+    int mapX = mapX0;
+    int mapY = mLabelMaps->GetY() + mLabelMaps->GetHeight() + marginHeaderB;
+
+    const int lastCol = cols - 1;
+    const unsigned int end = mapStart + mapsPerScreen;
+    const unsigned int mapEnd = numMaps < end ? numMaps : end;
+
+    for(unsigned int m = mapStart; m < mapEnd; ++m)
+    {
+        MapPreview * preview = mMapPreviews[m];
+
+        // create preview widget if not created yet
+        if(nullptr == preview)
+        {
+            preview = new MapPreview(mapFiles[m].c_str());
+            mMapPreviews[m] = preview;
+
+            preview->SetPosition(mapX, mapY);
+            preview->SetOnClickFunction([this, m]
+            {
+                if(mMapPreviews[m] != mMapPreviews[mMapSelInd])
+                {
+                    mMapPreviews[m]->SetSelected(true);
+
+                    if(mMapSelInd != -1)
+                        mMapPreviews[mMapSelInd]->SetSelected(false);
+
+                    mMapSelInd = m;
+                    mGame->SetCurrentMap(m);
+
+                    mButtonStart->SetEnabled(true);
+                }
+            });
+        }
+
+        preview->SetVisible(true);
+
+        const int c = m % cols;
+
+        if(c < lastCol)
+            mapX += preview->GetWidth() + marginMapH;
+        else
+        {
+            mapX = mapX0;
+            mapY += preview->GetHeight() + marginMapV;
+        }
+    }
+
+    // hide maps between start + mps and end, if already created
+    for(unsigned int m = mapEnd; m < numMaps; ++m)
+    {
+        MapPreview * mp = mMapPreviews[m];
+
+        if(mp)
+            mp->SetVisible(false);
+    }
+}
+
+void ScreenNewGame::UpdateNavButtonsState()
+{
+    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
+    const unsigned int numMaps = mapFiles.size();
+
+    // disable LEFT if start is < mapsPerScreen
+    mButtonNavL->SetEnabled(mStartMap >= mapsPerScreen);
+    // disable RIGHT if start + maps per screen > total maps
+    mButtonNavR->SetEnabled(mStartMap + mapsPerScreen < numMaps);
 }
 
 } // namespace game
