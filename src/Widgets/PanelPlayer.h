@@ -51,7 +51,6 @@ public:
     void UpdateButtonNewUnit(int num, int level);
     void UpdateButtonUnitDestroy();
     void UpdateButtonUnitUpgrade(int num, int level);
-    void UpdateButtonUnitsMove(int num);
 
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
@@ -59,8 +58,6 @@ public:
 
     void SetFunctionUnitsDestroy(const std::function<void()> & f);
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
-
-    int GetNumUnitsToMove() const;
 
 private:
     std::string MakeStrCells(int cells);
@@ -85,10 +82,7 @@ private:
 
     ButtonPanelPlayer * mButtonUnitsDestroy = nullptr;
     ButtonPanelPlayer * mButtonUnitsDestroyConf = nullptr;
-    ButtonPanelPlayer * mButtonUnitsMove = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
-
-    UnitsSelector * mUnitsSelector = nullptr;
 };
 
 } // namespace game

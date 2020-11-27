@@ -278,8 +278,6 @@ void PanelPlayer::ClearSelectedCell()
 {
     mPanelCell->SetVisible(false);
     mPanelUnits->SetVisible(false);
-
-    mButtonUnitsMove->SetChecked(false);
 }
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
@@ -289,7 +287,6 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonNewUnit(cell.units, cell.unitsLevel);
     UpdateButtonUnitDestroy();
     UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
-    UpdateButtonUnitsMove(cell.units);
 
     mPanelCell->SetVisible(true);
 }
@@ -372,22 +369,6 @@ void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
     }
 }
 
-void PanelPlayer::UpdateButtonUnitsMove(int num)
-{
-    mButtonUnitsMove->SetChecked(false);
-
-    if(num < 1)
-        return ;
-
-    for(int i = 0; i < num; ++i)
-        mUnitsSelector->SetButtonEnabled(i, true);
-
-    for(int i = num; i < MAX_CELL_UNITS; ++i)
-        mUnitsSelector->SetButtonEnabled(i, false);
-
-    mUnitsSelector->SetButtonChecked(num - 1, true);
-}
-
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
 {
     mButtonCellFortify->SetOnClickFunction(f);
@@ -411,14 +392,6 @@ void PanelPlayer::SetFunctionUnitsDestroy(const std::function<void()> & f)
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
 {
     mButtonUnitsUpgrade->SetOnClickFunction(f);
-}
-
-int PanelPlayer::GetNumUnitsToMove() const
-{
-    if(mButtonUnitsMove->IsChecked())
-        return mUnitsSelector->GetIndexChecked() + 1;
-    else
-        return 0;
 }
 
 std::string PanelPlayer::MakeStrCells(int cells)
@@ -543,20 +516,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
     mButtonUnitsDestroyConf->SetVisible(false);
 
-    // button MOVE
-    mButtonUnitsMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
-    mButtonUnitsMove->SetCheckable(true);
-
-    mButtonUnitsMove->SetOnToggleFunction([this](bool checked)
-    {
-        mUnitsSelector->SetVisible(checked);
-    });
-
-    // units selector
-    mUnitsSelector = new UnitsSelector(mPanelUnits);
-
-    mUnitsSelector->SetVisible(false);
-
     // -- position elements --
     if(PPOS_TL == pos || PPOS_BL == pos)
         mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
@@ -567,7 +526,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     {
         const int panelH = labelHeader->GetHeight() + marginY0 +
                            mButtonUnitsUpgrade->GetHeight() +
-                           mButtonUnitsMove->GetHeight() +
                            marginY;
 
         int buttonY = panelH - labelHeader->GetHeight();
@@ -577,12 +535,6 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
         buttonY -= marginY0 + mButtonUnitsUpgrade->GetHeight();
 
         mButtonUnitsUpgrade->SetY(buttonY);
-
-        buttonY -= marginY + mButtonUnitsMove->GetHeight();
-
-        mButtonUnitsMove->SetY(buttonY);
-
-        mUnitsSelector->SetY(mButtonUnitsMove->GetY() - marginY0 - mUnitsSelector->GetHeight());
     }
     else
     {
@@ -590,20 +542,10 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
 
         mButtonUnitsUpgrade->SetY(buttonY);
 
-        buttonY += mButtonUnitsDestroy->GetHeight() + marginY;
-
-        mButtonUnitsMove->SetY(buttonY);
-
-        mUnitsSelector->SetY(mButtonUnitsMove->GetY() + mButtonUnitsMove->GetHeight() + marginY0);
     }
 
     mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
     mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
-
-    mButtonUnitsMove->SetX(mButtonUnitsUpgrade->GetX());
-
-    mUnitsSelector->SetX(mButtonUnitsMove->GetX() +
-                         (mButtonUnitsMove->GetWidth() - mUnitsSelector->GetWidth()) * 0.5f);
 
     if(PPOS_TR == pos || PPOS_BR == pos)
         labelHeader->SetX(mPanelUnits->GetWidth() - labelHeader->GetWidth());
