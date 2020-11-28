@@ -26,10 +26,10 @@ constexpr int MAX_UNITS_LEVEL = 2;
 constexpr int COST_NEW_UNIT[] = { 1, 2, 3 };
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
-constexpr float TIME_FORT_CELL = 2.f;
+constexpr float TIME_FORT_CELL = 1.f;
 constexpr float TIME_NEW_UNIT = 1.f;
-constexpr float TIME_UPG_CELL = 2.f;
-constexpr float TIME_UPG_UNIT = 2.f;
+constexpr float TIME_UPG_CELL = 1.f;
+constexpr float TIME_UPG_UNIT = 1.f;
 
 constexpr unsigned int PLAYER_COLOR[] =
 {
@@ -39,7 +39,7 @@ constexpr unsigned int PLAYER_COLOR[] =
     0xb814b8ff
 };
 
-constexpr float TIME_AI_MOVE = 1.f;
+constexpr float TIME_AI_MOVE = 0.5f;
 
 enum MapLayers
 {

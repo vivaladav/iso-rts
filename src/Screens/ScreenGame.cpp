@@ -12,6 +12,7 @@
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Renderer.h>
 #include <sgui/Stage.h>
@@ -29,6 +30,8 @@ ScreenGame::ScreenGame(Game * game)
     : Screen(game)
 {
     game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
+
+    game->AddKeyboardListener(this);
 
     // -- ISOMETRIC MAP --
     const int TILE_W = 128;
@@ -283,6 +286,10 @@ ScreenGame::~ScreenGame()
 
 void ScreenGame::Update(float delta)
 {
+    // do nothing when paused
+    if(mPaused)
+        return ;
+
     // -- UPDATE COINS --
     mTimerCoins -= delta;
 
@@ -360,8 +367,28 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
         mProgressBarsToDelete.erase(it2);
 }
 
+void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
+{
+    using namespace lib::core;
+
+    const int key = event.GetKey();
+
+    // P -> PAUSE
+    if(key == KeyboardEvent::KEY_P)
+    {
+        mPaused = !mPaused;
+
+        // disable player panels when paused
+        for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+            mPanelsPlayer[i]->SetEnabled(!mPaused);
+    }
+}
+
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
+    if(mPaused)
+        return ;
+
     const Cell2D c = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
 
     const bool insideMap = mIsoMap->IsCellInside(c);

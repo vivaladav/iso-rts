@@ -28,6 +28,7 @@ public:
     void Update(float delta) override;
     void Render() override;
 
+    void OnKeyUp(lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
 
     void GameOver();
@@ -69,6 +70,8 @@ private:
     float mTimerAI = TIME_AI_MOVE;
 
     unsigned int mCurrPlayerAI = 0;
+
+    bool mPaused = false;
 };
 
 } // namespace game
