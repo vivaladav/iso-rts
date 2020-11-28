@@ -192,6 +192,7 @@ void GameMap::SetHomeCell()
         const int cellType = DefineCellType(cell);
         mIsoMap->SetCellType(ind, cellType);
 
+        player->SetHomeCell(corners[c]);
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
 

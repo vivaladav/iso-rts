@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Cell2D.h"
+
 #include <functional>
 #include <string>
 
@@ -7,8 +9,6 @@ namespace game
 {
 
 class PlayerAI;
-
-struct Cell2D;
 
 class Player
 {
@@ -19,6 +19,9 @@ public:
     const std::string & GetName() const;
 
     int GetPlayerId() const;
+
+    const Cell2D & GetHomeCell() const;
+    void SetHomeCell(const Cell2D & cell);
 
     int GetNumCells() const;
     void SumCells(int val);
@@ -59,6 +62,8 @@ private:
 
     PlayerAI * mAI = nullptr;
 
+    Cell2D mHomeCell;
+
     Cell2D * mCurrSelectedCell = nullptr;
     Cell2D * mSelectedCell = nullptr;
 
@@ -76,6 +81,9 @@ private:
 inline const std::string & Player::GetName() const { return mName; }
 
 inline int Player::GetPlayerId() const { return mPlayerId; }
+
+inline const Cell2D & Player::GetHomeCell() const { return mHomeCell; }
+inline void Player::SetHomeCell(const Cell2D & cell) { mHomeCell = cell; }
 
 inline int Player::GetNumCells() const { return mNumCells; }
 inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
