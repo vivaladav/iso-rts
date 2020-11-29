@@ -522,6 +522,10 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
     const int ind0 = r0 * mCols + c0;
     const GameMapCell & gcell0 = mCells[ind0];
 
+    // start has no units
+    if(0 == gcell0.units)
+        return false;
+
     // start cell is not own cell
     if(player != gcell0.owner)
         return false;
@@ -529,7 +533,7 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
     const int ind1 = r1 * mCols + c1;
     const GameMapCell & gcell1 = mCells[ind1];
 
-    // not a walkable cell
+    // end not a walkable cell
     if(!gcell1.walkable)
         return false;
 
@@ -549,6 +553,10 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
 
     const int ind0 = start.row * mCols + start.col;
     GameMapCell & gcell0 = mCells[ind0];
+
+    // cap units to move to ones in start, just in case
+    if(gcell0.units < numUnits)
+        numUnits = gcell0.units;
 
     const int ind1 = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind1];
@@ -903,8 +911,8 @@ int GameMap::DefineCellType(const GameMapCell & cell)
 
 int GameMap::DefineUnitType(const GameMapCell & cell)
 {
-    // cell is not owned
-    if(nullptr == cell.owner)
+    // cell is not owned or empty
+    if(nullptr == cell.owner || 0 == cell.units)
         return UNIT_NULL;
 
     int type = (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);

@@ -44,6 +44,26 @@ IsoLayer::~IsoLayer()
 // ==================== PUBLIC METHODS ====================
 
 /**
+ * @brief Checks if a cell contains an object.
+ * @param r Row index, starting from 0
+ * @param c Col index, starting from 0
+ * @return TRUE if cell contains an object, FALSE otherwise
+ */
+bool IsoLayer::ContainsObject(unsigned int r, unsigned int c) const
+{
+    const unsigned int rows = mMap->GetNumRows();
+    const unsigned int cols = mMap->GetNumCols();
+
+    // ERROR out of bounds
+    if(!(r < rows && c < cols))
+        return false;
+
+    const unsigned int index = r * cols + c;
+
+    return mObjectsMap[index] != nullptr;
+}
+
+/**
  * @brief IsoLayer::AddObject
  * @brief Creates a new IsoObject and adds it to the layer.
  * @param r Row index, starting from 0
