@@ -4,7 +4,10 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 
+#include <graphic/Font.h>
+#include <graphic/FontManager.h>
 #include <graphic/Renderer.h>
+#include <sgui/Label.h>
 #include <sgui/PushButton.h>
 #include <sgui/Stage.h>
 
@@ -24,8 +27,19 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     int buttonY = 0;
     const int VMARGIN = 100;
 
+    // -- TITLE --
+    FontManager * fm = FontManager::Instance();
+
+    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 128);
+    fontTitle->SetStyle(Font::BOLD);
+
+    auto * labelTitle = new Label("Iso RTS", fontTitle);
+    const int titleX = (Renderer::Instance()->GetWidth() - labelTitle->GetWidth()) * 0.5f;
+    labelTitle->SetPosition(titleX, VMARGIN);
+
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panel);
+    button->SetY(buttonY);
 
     button->SetOnClickFunction([game]
     {
@@ -43,7 +57,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // position buttons panel
     const int containerX = (Renderer::Instance()->GetWidth() - panel->GetWidth()) * 0.5f;
-    const int containerY = 300;
+    const int containerY = 350;
     panel->SetPosition(containerX, containerY);
 }
 
