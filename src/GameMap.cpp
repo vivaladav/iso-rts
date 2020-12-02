@@ -161,7 +161,7 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
 
 // ==================== PUBLIC METHODS ====================
 
-void GameMap::SetHomeCell()
+void GameMap::SetHomeCells()
 {
     const int limitRow = mIsoMap->GetNumRows() - 1;
     const int limitCol = mIsoMap->GetNumCols() - 1;
@@ -179,6 +179,8 @@ void GameMap::SetHomeCell()
 
     int pick = rand() % NUM_CORNERS;
 
+    IsoLayer * layerHomes = mIsoMap->GetLayer(HOME_CELLS);
+
     for(int p = 0; p < numPlayers; ++p)
     {
         Player * player = mGame->GetPlayer(p);
@@ -195,6 +197,9 @@ void GameMap::SetHomeCell()
         player->SetHomeCell(corners[c]);
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
+
+        // add home visual
+        layerHomes->AddObject(corners[c].row, corners[c].col, p, ObjectAlignment::CENTER);
 
         // inc by 2, 1, 2
         pick += 2 - (p % 2);

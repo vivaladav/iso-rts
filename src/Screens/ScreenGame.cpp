@@ -94,6 +94,17 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->SetLayerVisible(SELECTION, false);
 
+    // HOME CELLS
+    const std::vector<std::string> homeImgs =
+    {
+        "data/img/home-p1.png",
+        "data/img/home-p2.png",
+        "data/img/home-p3.png",
+        "data/img/home-p4.png",
+    };
+
+    mIsoMap->CreateLayer(homeImgs);
+
     // MOVE TARGETS
     const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
     layer = mIsoMap->CreateLayer(mtImgs);
@@ -170,7 +181,7 @@ ScreenGame::ScreenGame(Game * game)
 
     // -- GAME MAP --
     mGameMap = new GameMap(game, this, mIsoMap);
-    mGameMap->SetHomeCell();
+    mGameMap->SetHomeCells();
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)

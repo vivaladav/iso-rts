@@ -45,6 +45,7 @@ enum MapLayers
 {
     FORTIFICATIONS = 0,
     SELECTION,
+    HOME_CELLS,
     MOVE_TARGETS,
     UNITS,
 

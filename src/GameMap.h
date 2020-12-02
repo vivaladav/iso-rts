@@ -21,7 +21,7 @@ class GameMap
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
 
-    void SetHomeCell();
+    void SetHomeCells();
     void AssignCell(const Cell2D & cell, Player * player);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
