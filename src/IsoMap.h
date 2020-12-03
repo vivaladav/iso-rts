@@ -3,6 +3,7 @@
 #include <core/Point.h>
 
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace lib { namespace graphic { class Image; } }
@@ -51,9 +52,9 @@ public:
     bool IsCellInside(const Cell2D & cell) const;
 
     // -- IsoLayers --
-    IsoLayer * CreateLayer(const std::vector<std::string> & files);
-    IsoLayer * GetLayer(unsigned int index) const;
-    void SetLayerVisible(unsigned int index, bool visible);
+    IsoLayer * CreateLayer(unsigned int layerId, const std::vector<std::string> & files);
+    IsoLayer * GetLayer(unsigned int layerId) const;
+    void SetLayerVisible(unsigned int layerId, bool visible);
 
 private:
     void UpdateTilePositions();
@@ -75,6 +76,7 @@ private:
     std::vector<lib::core::Point2D> mTilePositions;
 
     std::vector<IsoLayer *> mLayers;
+    std::unordered_map<unsigned int, IsoLayer *> mLayersMap;
     std::vector<IsoLayer *> mLayersRenderList;
 };
 
@@ -199,10 +201,12 @@ inline void IsoMap::SetOrigin(int x, int y)
  * @param index Index that identifies a specific layer in the map. Starting from 0
  * @return
  */
-inline IsoLayer * IsoMap::GetLayer(unsigned int index) const
+inline IsoLayer * IsoMap::GetLayer(unsigned int layerId) const
 {
-    if(index < mLayers.size())
-        return mLayers[index];
+    auto res = mLayersMap.find(layerId);
+
+    if(res != mLayersMap.end())
+        return res->second;
     else
         return nullptr;
 }

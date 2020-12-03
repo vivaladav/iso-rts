@@ -84,12 +84,12 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/fort03.png"
     };
 
-    mIsoMap->CreateLayer(fortImgs);
+    mIsoMap->CreateLayer(MapLayers::FORTIFICATIONS, fortImgs);
 
     // SELECTION
     const std::vector<std::string> selImgs = { "data/img/selection.png" };
 
-    IsoLayer * layer = mIsoMap->CreateLayer(selImgs);
+    IsoLayer * layer = mIsoMap->CreateLayer(MapLayers::SELECTION, selImgs);
     layer->AddObject(mPrevSel.row, mPrevSel.col, 0, ObjectAlignment::NO_ALIGNMENT);
 
     mIsoMap->SetLayerVisible(SELECTION, false);
@@ -101,13 +101,15 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/home-p2.png",
         "data/img/home-p3.png",
         "data/img/home-p4.png",
+        "data/img/source.png"
     };
 
-    mIsoMap->CreateLayer(homeImgs);
+    layer = mIsoMap->CreateLayer(MapLayers::HOME_CELLS, homeImgs);
+    layer->AddObject(2, 2, 4, static_cast<ObjectAlignment>(ObjectAlignment::HCENTER | ObjectAlignment::BOTTOM));
 
     // MOVE TARGETS
     const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
-    layer = mIsoMap->CreateLayer(mtImgs);
+    layer = mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
 
     // UNITS
     const std::vector<std::string> unitsImgs =
@@ -177,7 +179,7 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/unit4-p4l3.png"
     };
 
-    mIsoMap->CreateLayer(unitsImgs);
+    mIsoMap->CreateLayer(MapLayers::UNITS, unitsImgs);
 
     // -- GAME MAP --
     mGameMap = new GameMap(game, this, mIsoMap);

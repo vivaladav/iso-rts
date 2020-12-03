@@ -183,14 +183,23 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
 
 /**
  * @brief Creates and stores an IsoLayer.
+ * @param layerId Layer ID
  * @param files Files to create images. Paths are relative to binary
  * @return A pointer to the new IsoLayer
  */
-IsoLayer * IsoMap::CreateLayer(const std::vector<std::string> & files)
+IsoLayer * IsoMap::CreateLayer(unsigned int layerId, const std::vector<std::string> & files)
 {
-    IsoLayer * layer = new IsoLayer(this, files);
+    // check layer has not been created yet
+    IsoLayer * layer = GetLayer(layerId);
+
+    if(layer != nullptr)
+        return layer;
+
+    // create and store new layer
+    layer = new IsoLayer(this, files);
 
     mLayers.emplace_back(layer);
+    mLayersMap.insert({layerId, layer});
     mLayersRenderList.emplace_back(layer);
 
     return layer;
@@ -198,17 +207,15 @@ IsoLayer * IsoMap::CreateLayer(const std::vector<std::string> & files)
 
 /**
  * @brief Makes an IsoLayer visible or invisible.
- * @param index Layer ID
+ * @param layerId Layer ID
  * @param visible TRUE if you want to make the layer visible, FALSE otherwise
  */
-void IsoMap::SetLayerVisible(unsigned int index, bool visible)
+void IsoMap::SetLayerVisible(unsigned int layerId, bool visible)
 {
-    IsoLayer * layer = nullptr;
+    IsoLayer * layer = GetLayer(layerId);
 
-    // out of bounds
-    if(index < mLayers.size())
-        layer = mLayers[index];
-    else
+    // layer not found
+    if(nullptr == layer)
         return ;
 
     // nothing to do
