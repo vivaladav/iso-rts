@@ -100,12 +100,8 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/home-p1.png",
         "data/img/home-p2.png",
         "data/img/home-p3.png",
-        "data/img/home-p4.png",
-        "data/img/source.png"
+        "data/img/home-p4.png"
     };
-
-    layer = mIsoMap->CreateLayer(MapLayers::HOME_CELLS, homeImgs);
-    layer->AddObject(2, 2, 4, static_cast<ObjectAlignment>(ObjectAlignment::HCENTER | ObjectAlignment::BOTTOM));
 
     // MOVE TARGETS
     const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
