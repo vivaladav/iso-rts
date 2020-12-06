@@ -47,7 +47,7 @@ enum MapLayers
     SELECTION,
     HOME_CELLS,
     MOVE_TARGETS,
-    UNITS,
+    OBJECTS,
 
     NUM_LAYERS,
 };

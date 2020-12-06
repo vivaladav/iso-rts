@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "Unit.h"
 #include "Screens/ScreenGame.h"
 
 #include <utilities/UniformDistribution.h>
@@ -51,85 +52,6 @@ enum CellTypes : int
     P4L4,
 
     NUM_CELL_TYPES
-};
-
-enum UnitType : int
-{
-    // PLAYER 1 - LEVEL 1
-    P1_1UL1,
-    P1_2UL1,
-    P1_3UL1,
-    P1_4UL1,
-
-    // PLAYER 1 - LEVEL 2
-    P1_1UL2,
-    P1_2UL2,
-    P1_3UL2,
-    P1_4UL2,
-
-    // PLAYER 1 - LEVEL 3
-    P1_1UL3,
-    P1_2UL3,
-    P1_3UL3,
-    P1_4UL3,
-
-    // PLAYER 2 - LEVEL 1
-    P2_1UL1,
-    P2_2UL1,
-    P2_3UL1,
-    P2_4UL1,
-
-    // PLAYER 2 - LEVEL 2
-    P2_1UL2,
-    P2_2UL2,
-    P2_3UL2,
-    P2_4UL2,
-
-    // PLAYER 2 - LEVEL 3
-    P2_1UL3,
-    P2_2UL3,
-    P2_3UL3,
-    P2_4UL3,
-
-    // PLAYER 3 - LEVEL 1
-    P3_1UL1,
-    P3_2UL1,
-    P3_3UL1,
-    P3_4UL1,
-
-    // PLAYER 3 - LEVEL 2
-    P3_1UL2,
-    P3_2UL2,
-    P3_3UL2,
-    P3_4UL2,
-
-    // PLAYER 3 - LEVEL 3
-    P3_1UL3,
-    P3_2UL3,
-    P3_3UL3,
-    P3_4UL3,
-
-    // PLAYER 4 - LEVEL 1
-    P4_1UL1,
-    P4_2UL1,
-    P4_3UL1,
-    P4_4UL1,
-
-    // PLAYER 4 - LEVEL 2
-    P4_1UL2,
-    P4_2UL2,
-    P4_3UL2,
-    P4_4UL2,
-
-    // PLAYER 4 - LEVEL 3
-    P4_1UL3,
-    P4_2UL3,
-    P4_3UL3,
-    P4_4UL3,
-
-    NUM_UNIT_TYPES,
-
-    UNIT_NULL
 };
 
 // ==================== CONSTRUCTORS AND DESTRUCTOR ====================
@@ -348,18 +270,36 @@ bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    // already changing, not own cell or max level cell -> exit
+    // already changing, not own cell -> exit
     if(gcell.changing ||
-       gcell.owner != player ||
-       MAX_CELL_UNITS == gcell.units)
+       gcell.owner != player)
         return false;
 
+    // check if cell has already a unit
+    int unitLevel = 0;
+
+    if(gcell.obj)
+    {
+        // cell already contains an object which is not a unit -> exit
+        if(gcell.obj->GetObjectType() != GameObjectType::OBJ_UNIT)
+            return false;
+
+        const Unit * unit = static_cast<Unit *>(gcell.obj);
+
+        // no room for more elements in cell -> exit
+        if(unit->GetNumElements() >= MAX_CELL_UNITS)
+            return false;
+
+        unitLevel = unit->GetUnitLevel();
+    }
+
     // check if player has enough money
-    const int cost = COST_NEW_UNIT[gcell.unitsLevel];
+    const int cost = COST_NEW_UNIT[unitLevel];
 
     if(cost > player->GetMoney())
         return false;
 
+    // all checks passed
     return true;
 }
 
@@ -369,7 +309,15 @@ void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    const int cost = COST_NEW_UNIT[gcell.unitsLevel];
+    int unitLevel = 0;
+
+    if(gcell.obj)
+    {
+        const Unit * unit = static_cast<Unit *>(gcell.obj);
+        unitLevel = unit->GetUnitLevel();
+    }
+
+    const int cost = COST_NEW_UNIT[unitLevel];
     player->SumMoney(-cost);
 
     // mark cell as changing
@@ -384,17 +332,28 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    ++(gcell.units);
+    Unit * unit = nullptr;
+
+    // existing unit -> add element
+    if(gcell.obj)
+    {
+        unit = static_cast<Unit *>(gcell.obj);
+        unit->AddElement();
+
+        mIsoMap->GetLayer(OBJECTS)->ChangeObject(r, c, unit->GetImageId());
+    }
+    // create new unit
+    else
+    {
+        unit = new Unit(player->GetPlayerId());
+        gcell.obj = unit;
+
+        mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
+    }
 
     // update player
     player->SumUnits(1);
-    player->SumTotalUnitsLevel(gcell.unitsLevel + 1);
-
-    // update map layer
-    const int unitImg = DefineUnitType(gcell);
-
-    if(unitImg != UNIT_NULL)
-        mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+    player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
 
     // reset cell's changing flag
     gcell.changing = false;
@@ -402,6 +361,9 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
 {
+    return false;
+
+    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
 
@@ -417,10 +379,12 @@ bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
         return false;
 
     return true;
+    */
 }
 
 void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
 {
+    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
     const int ind = r * mCols + c;
@@ -435,11 +399,15 @@ void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
     gcell.unitsLevel = 0;
 
     // destroy object
-    mIsoMap->GetLayer(UNITS)->ClearObject(r, c);
+    mIsoMap->GetLayer(OBJECTS)->ClearObject(r, c);
+    */
 }
 
 bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
 {
+    return false;
+
+    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
 
@@ -463,10 +431,12 @@ bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
         return false;
 
     return true;
+    */
 }
 
 void GameMap::StartUpgradeUnit(const Cell2D & cell, Player * player)
 {
+    /*
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
@@ -476,10 +446,12 @@ void GameMap::StartUpgradeUnit(const Cell2D & cell, Player * player)
 
     // mark cell as changing
     gcell.changing = true;
+    */
 }
 
 void GameMap::UpgradeUnit(const Cell2D & cell)
 {
+    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
     const int ind = r * mCols + c;
@@ -495,14 +467,18 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     const int unitImg = DefineUnitType(gcell);
 
     if(unitImg != UNIT_NULL)
-        mIsoMap->GetLayer(UNITS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
+        mIsoMap->GetLayer(OBJECTS)->ReplaceObject(r, c, unitImg, NO_ALIGNMENT);
 
     // reset cell's changing flag
     gcell.changing = false;
+    */
 }
 
 bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const
 {
+    return false;
+
+    /*
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
 
@@ -549,10 +525,14 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
 
     // all good
     return true;
+    */
 }
 
 bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
 {
+
+    return false;
+    /*
     if(!CanUnitMove(start, end, player))
         return false;
 
@@ -660,7 +640,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         // attack failed, cell defended
         else
         {
-            IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
+            IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
 
             // update unit object in start
             if(0 == gcell0.units)
@@ -692,6 +672,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     CheckGameEnd();
 
     return true;
+    */
 }
 
 void GameMap::CheckGameEnd()
@@ -740,6 +721,7 @@ void GameMap::StopCellChange(GameMapCell & gcell)
 
 void GameMap::MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits)
 {
+    /*
     // move units between cells
     gcell0.units -= numUnits;
     gcell1.units += numUnits;
@@ -768,11 +750,13 @@ void GameMap::MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numU
             player1->SumTotalCellsLevel(-cellLevel);
         }
     }
+    */
 }
 
 void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, bool emptyDest)
 {
-    IsoLayer * layerUnits = mIsoMap->GetLayer(UNITS);
+    /*
+    IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
 
     // moved all units
     if(0 == gcell0.units)
@@ -822,10 +806,13 @@ void GameMap::UpdateCellsAfterMove(GameMapCell & gcell0, GameMapCell & gcell1, b
     // update cell type of end
     const int cellType1 = DefineCellType(gcell1);
     mIsoMap->SetCellType(gcell1.row, gcell1.col, cellType1);
+    */
 }
 
 int GameMap::DefineCellAttPoints(const GameMapCell & cell, int numUnits) const
 {
+    return 0;
+    /*
     // cell attack points range
     const int cellMinPoints = 1;
     const int cellMaxPoints = 2;
@@ -849,10 +836,13 @@ int GameMap::DefineCellAttPoints(const GameMapCell & cell, int numUnits) const
         score += std::roundf(diceUnit.GetNextValue() * unitMult[cell.unitsLevel]);
 
     return score;
+    */
 }
 
 int GameMap::DefineCellDefPoints(const GameMapCell & cell, int numUnits) const
 {
+    return 0;
+    /*
     // cell defense points range
     const int cellMinPoints = 1;
     const int cellMaxPoints = 5;
@@ -879,6 +869,7 @@ int GameMap::DefineCellDefPoints(const GameMapCell & cell, int numUnits) const
         score += std::roundf(diceUnit.GetNextValue() * unitMult[cell.unitsLevel]);
 
     return score;
+    */
 }
 
 int GameMap::DefineCellType(const GameMapCell & cell)
@@ -908,40 +899,6 @@ int GameMap::DefineCellType(const GameMapCell & cell)
         break;
 
         default:
-        break;
-    }
-
-    return type;
-}
-
-int GameMap::DefineUnitType(const GameMapCell & cell)
-{
-    // cell is not owned or empty
-    if(nullptr == cell.owner || 0 == cell.units)
-        return UNIT_NULL;
-
-    int type = (cell.units - 1) + (cell.unitsLevel * MAX_CELL_UNITS);
-
-    switch(cell.owner->GetPlayerId())
-    {
-        case 0:
-            type += P1_1UL1;
-        break;
-
-        case 1:
-            type += P2_1UL1;
-        break;
-
-        case 2:
-            type += P3_1UL1;
-        break;
-
-        case 3:
-            type += P4_1UL1;
-        break;
-
-        default:
-            type = UNIT_NULL;
         break;
     }
 

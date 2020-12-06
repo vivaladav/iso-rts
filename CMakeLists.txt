@@ -18,13 +18,19 @@ add_executable(
     src/GameConstants.h
     src/GameMap.h
     src/GameMap.cpp
+    src/GameMapCell.cpp
     src/GameMapCell.h
+    src/GameObject.h
+    src/GameObject.cpp
+    src/GameObjectEnums.h
     src/IsoLayer.h
     src/IsoLayer.cpp
     src/IsoMap.h
     src/IsoMap.cpp
     src/Player.h
     src/Player.cpp
+    src/Unit.h
+    src/Unit.cpp
     src/AI/ActionAI.h
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp

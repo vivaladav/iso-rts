@@ -74,7 +74,6 @@ private:
     int DefineCellDefPoints(const GameMapCell & cell, int numUnits) const;
 
     int DefineCellType(const GameMapCell & cell);
-    int DefineUnitType(const GameMapCell & cell);
 
 private:
     std::vector<GameMapCell> mCells;

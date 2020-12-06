@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include "GameMapCell.h"
 #include "Player.h"
+#include "Unit.h"
 #include "Widgets/ButtonPanelPlayer.h"
 #include "Widgets/ButtonsPanel.h"
 #include "Widgets/UnitsSelector.h"
@@ -282,11 +283,21 @@ void PanelPlayer::ClearSelectedCell()
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 {
+    const Unit * unit = cell.GetUnit();
+    int unitElements = 0;
+    int unitLevel = 0;
+
+    if(unit != nullptr)
+    {
+        unitElements = unit->GetNumElements();
+        unitLevel = unit->GetUnitLevel();
+    }
+
     UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
-    UpdateButtonNewUnit(cell.units, cell.unitsLevel);
+    UpdateButtonNewUnit(unitElements, unitLevel);
     UpdateButtonUnitDestroy();
-    UpdateButtonUnitUpgrade(cell.units, cell.unitsLevel);
+    UpdateButtonUnitUpgrade(unitElements, unitLevel);
 
     mPanelCell->SetVisible(true);
 }

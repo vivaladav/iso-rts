@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "Unit.h"
 #include "AI/PlayerAI.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
@@ -108,9 +109,11 @@ ScreenGame::ScreenGame(Game * game)
     const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
     layer = mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
 
-    // UNITS
-    const std::vector<std::string> unitsImgs =
+    // OBJECTS
+    const std::vector<std::string> objImgs =
     {
+        "data/img/obj_null.png",
+
         // PLAYER 1 - LEVEL 1
         "data/img/unit1-p1l1.png",
         "data/img/unit2-p1l1.png",
@@ -176,7 +179,7 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/unit4-p4l3.png"
     };
 
-    mIsoMap->CreateLayer(MapLayers::UNITS, unitsImgs);
+    mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
 
     // -- GAME MAP --
     mGameMap = new GameMap(game, this, mIsoMap);
@@ -190,11 +193,12 @@ ScreenGame::ScreenGame(Game * game)
         // add start money
         p->SumMoney(START_MONEY);
 
-        if(p->IsAI())
-        {
-            p->GetAI()->SetGameMap(mGameMap);
-            mAiPlayers.push_back(p);
-        }
+        // temporary disable AI for development
+//        if(p->IsAI())
+//        {
+//            p->GetAI()->SetGameMap(mGameMap);
+//            mAiPlayers.push_back(p);
+//        }
     }
 
     // -- UI --
@@ -412,7 +416,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
         if(selCell)
         {
-            const int unitsToMove = mGameMap->GetCell(selCell->row, selCell->col).units;
+            const Unit * unit = mGameMap->GetCell(selCell->row, selCell->col).GetUnit();
+            const int unitsToMove = unit ? unit->GetNumElements() : 0;
 
             if(unitsToMove > 0)
                 mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player);
@@ -435,7 +440,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 mIsoMap->SetLayerVisible(SELECTION, true);
 
                 // show move targets
-                if(mGameMap->GetCell(c.row, c.col).units > 0)
+                if(mGameMap->GetCell(c.row, c.col).HasUnit())
                 {
                     IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
 
