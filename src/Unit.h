@@ -11,6 +11,7 @@ public:
     Unit(int owner);
 
     int GetUnitLevel() const;
+    void IncreaseUnitLevel();
 
     int GetNumElements() const;
     void AddElement();

@@ -14,6 +14,15 @@ Unit::Unit(int owner)
     SetImageId();
 }
 
+void Unit::IncreaseUnitLevel()
+{
+    if(mLevel >= MAX_UNITS_LEVEL)
+        return ;
+
+    ++mLevel;
+    SetImageId();
+}
+
 void Unit::AddElement()
 {
     if(mElements >= MAX_CELL_UNITS)
