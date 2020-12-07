@@ -361,9 +361,6 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
 {
-    return false;
-
-    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
 
@@ -375,32 +372,33 @@ bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // not own cell or no units -> exit
-    if(gcell.owner != player || !gcell.units)
+    if(gcell.owner != player || !gcell.HasUnit())
         return false;
 
     return true;
-    */
 }
 
 void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
 {
-    /*
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
+    const Unit * unit = gcell.GetUnit();
+    const int unitElements = unit->GetNumElements();
+    const int unitLevel = unit->GetUnitLevel();
+
     // update player
-    player->SumUnits(-gcell.units);
-    player->SumTotalUnitsLevel(-gcell.units * (gcell.unitsLevel + 1));
+    player->SumUnits(-unitElements);
+    player->SumTotalUnitsLevel(-unitElements * (unitLevel + 1));
 
     // remove units from cell
-    gcell.units = 0;
-    gcell.unitsLevel = 0;
+    delete gcell.obj;
+    gcell.obj = nullptr;
 
     // destroy object
     mIsoMap->GetLayer(OBJECTS)->ClearObject(r, c);
-    */
 }
 
 bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
