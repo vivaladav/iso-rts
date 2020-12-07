@@ -18,6 +18,7 @@ class GameObject
 {
 public:
     GameObject(GameObjectType type, int owner);
+    virtual ~GameObject();
 
     int GetOwner() const;
     void SetOwner(int owner);

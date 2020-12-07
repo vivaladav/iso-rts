@@ -3,6 +3,8 @@
 namespace game
 {
 
+GameObject::~GameObject() { }
+
 GameObject::GameObject(GameObjectType type, int owner)
     : mOwner(owner)
     , mType(type)

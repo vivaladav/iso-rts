@@ -9,6 +9,8 @@ class Unit;
 
 struct GameMapCell
 {
+    ~GameMapCell();
+
     Unit * GetUnit() const;
     bool HasUnit() const;
 
