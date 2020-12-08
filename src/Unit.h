@@ -14,7 +14,7 @@ public:
     void IncreaseUnitLevel();
 
     int GetNumElements() const;
-    void AddElement();
+    void SumElements(int num);
 
 protected:
     void UpdateImageId() override;

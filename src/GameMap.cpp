@@ -338,7 +338,7 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     if(gcell.obj)
     {
         unit = static_cast<Unit *>(gcell.obj);
-        unit->AddElement();
+        unit->SumElements(1);
 
         mIsoMap->GetLayer(OBJECTS)->ChangeObject(r, c, unit->GetImageId());
     }
@@ -476,9 +476,6 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
 
 bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const
 {
-    return false;
-
-    /*
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
 
@@ -503,12 +500,14 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
     const int ind0 = r0 * mCols + c0;
     const GameMapCell & gcell0 = mCells[ind0];
 
-    // start has no units
-    if(0 == gcell0.units)
-        return false;
-
     // start cell is not own cell
     if(player != gcell0.owner)
+        return false;
+
+    const Unit * unit0 = gcell0.GetUnit();
+
+    // start has no units
+    if(nullptr == unit0)
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -518,21 +517,25 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
     if(!gcell1.walkable)
         return false;
 
+    const Unit * unit1 = gcell1.GetUnit();
+
     // fail if destination is full or has different level units
-    if(gcell1.units == MAX_CELL_UNITS ||
-       (gcell1.units > 0 && gcell0.owner == gcell1.owner && gcell0.unitsLevel != gcell1.unitsLevel))
+    if(unit1 != nullptr)
+    {
+       const int unitElements1 = unit1->GetNumElements();
+
+       if(unitElements1 == MAX_CELL_UNITS ||
+          (unitElements1 > 0 && gcell0.owner == gcell1.owner && unit0->GetUnitLevel() != unit1->GetUnitLevel()))
+
         return false;
+    }
 
     // all good
     return true;
-    */
 }
 
 bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
 {
-
-    return false;
-    /*
     if(!CanUnitMove(start, end, player))
         return false;
 
@@ -540,25 +543,36 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     GameMapCell & gcell0 = mCells[ind0];
 
     // cap units to move to ones in start, just in case
-    if(gcell0.units < numUnits)
-        numUnits = gcell0.units;
+    Unit * unit0 = gcell0.GetUnit();
+    const int unitElements0 = unit0->GetNumElements();
+
+    if(unitElements0 < numUnits)
+        numUnits = unitElements0;
 
     const int ind1 = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind1];
 
     Player * playerDest = gcell1.owner;
 
-    const bool emptyDest = 0 == gcell1.units;
+    Unit * unit1 = gcell1.GetUnit();
+    const int unitElements1 = unit1 ? unit1->GetNumElements() : 0;
+
+    const bool emptyDest = unitElements1 == 0;
 
     // move to empty cell
     if(nullptr == playerDest)
     {
+        /*
         // move units between cells
         MoveUnitsData(gcell0, gcell1, numUnits);
 
         // update unit objects and cells
         UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
+        */
     }
+    else
+        return false;
+    /*
     // move to own cell
     else if(player == playerDest)
     {
@@ -666,13 +680,12 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
                 layerUnits->ChangeObject(end.row, end.col, unitType1);
             }
         }
-    }
+    }*/
 
     // check for victory or game over
     CheckGameEnd();
 
     return true;
-    */
 }
 
 void GameMap::CheckGameEnd()

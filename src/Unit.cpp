@@ -23,12 +23,21 @@ void Unit::IncreaseUnitLevel()
     SetImageId();
 }
 
-void Unit::AddElement()
+void Unit::SumElements(int num)
 {
-    if(mElements >= MAX_CELL_UNITS)
+    // cap up to MAX_CELL_UNITS
+    if(mElements + num >= MAX_CELL_UNITS)
+        num = MAX_CELL_UNITS + mElements;
+    // cap down to 1
+    else if(mElements + num < 1)
+        num = 1 - mElements;
+
+    // do something only if num is not 0
+    if(0 == num)
         return ;
 
-    ++mElements;
+    mElements += num;
+
     SetImageId();
 }
 
