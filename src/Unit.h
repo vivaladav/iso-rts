@@ -8,7 +8,7 @@ namespace game
 class Unit : public GameObject
 {
 public:
-    Unit(int owner);
+    Unit(int owner, unsigned int elements = 1);
 
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
@@ -24,7 +24,7 @@ private:
 
 private:
     int mLevel = 0;
-    int mElements = 1;
+    unsigned int mElements;
 };
 
 inline int Unit::GetUnitLevel() const { return mLevel; }

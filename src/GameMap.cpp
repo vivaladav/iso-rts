@@ -499,15 +499,14 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
 
     const int ind0 = r0 * mCols + c0;
     const GameMapCell & gcell0 = mCells[ind0];
-
-    // start cell is not own cell
-    if(player != gcell0.owner)
-        return false;
-
     const Unit * unit0 = gcell0.GetUnit();
 
     // start has no units
     if(nullptr == unit0)
+        return false;
+
+    // trying to move an enemy unit
+    if(unit0->GetOwner() != player->GetPlayerId())
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -544,10 +543,10 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
 
     // cap units to move to ones in start, just in case
     Unit * unit0 = gcell0.GetUnit();
-    const int unitElements0 = unit0->GetNumElements();
+    const int unit0Elements = unit0->GetNumElements();
 
-    if(unitElements0 < numUnits)
-        numUnits = unitElements0;
+    if(unit0Elements < numUnits)
+        numUnits = unit0Elements;
 
     const int ind1 = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind1];
@@ -555,20 +554,35 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     Player * playerDest = gcell1.owner;
 
     Unit * unit1 = gcell1.GetUnit();
-    const int unitElements1 = unit1 ? unit1->GetNumElements() : 0;
+    const int unit1Elements = unit1 ? unit1->GetNumElements() : 0;
 
-    const bool emptyDest = unitElements1 == 0;
+    const bool emptyDest = unit1Elements == 0;
+
+    IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
 
     // move to empty cell
     if(nullptr == playerDest)
     {
-        /*
-        // move units between cells
-        MoveUnitsData(gcell0, gcell1, numUnits);
+        // moving whole unit
+        if(unit0Elements == numUnits)
+        {
+            gcell1.obj = gcell0.obj;
+            gcell0.obj = nullptr;
 
-        // update unit objects and cells
-        UpdateCellsAfterMove(gcell0, gcell1, emptyDest);
-        */
+            layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, NO_ALIGNMENT);
+        }
+        // moving only some elements
+        else
+        {
+            // subtract elements from unit 0 and update map image in start
+            unit0->SumElements(-numUnits);
+            layerUnits->ChangeObject(gcell0.row, gcell0.col, unit0->GetImageId());
+
+            // create new object in end
+            gcell1.obj = new Unit(player->GetPlayerId(), numUnits);
+
+            layerUnits->AddObject(gcell1.row, gcell1.col, gcell1.obj->GetImageId(), NO_ALIGNMENT);
+        }
     }
     else
         return false;

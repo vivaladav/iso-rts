@@ -426,21 +426,24 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         }
         else
         {
-            const Player * owner = mGameMap->GetCellOwner(c.row, c.col);
+            const GameMapCell & gameCell = mGameMap->GetCell(c.row, c.col);
+            const Player * owner = gameCell.owner;
             const bool isLocalPlayer = owner == player;
+            const Unit * cellUnit = gameCell.GetUnit();
+            const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
 
             // own cell and not already changing
-            if(isLocalPlayer && !mGameMap->IsCellChanging(c.row, c.col))
+            if((isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(c.row, c.col))
             {
                 player->SetSelectedCell(c);
-                panel->SetSelectedCell(mGameMap->GetCell(c.row, c.col));
+                panel->SetSelectedCell(gameCell);
 
                 IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
                 layerSel->MoveObject(mPrevSel.row, mPrevSel.col, c.row, c.col, NO_ALIGNMENT);
                 mIsoMap->SetLayerVisible(SELECTION, true);
 
                 // show move targets
-                if(mGameMap->GetCell(c.row, c.col).HasUnit())
+                if(isPlayerUnit)
                 {
                     IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
 

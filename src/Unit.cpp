@@ -8,10 +8,15 @@
 namespace game
 {
 
-Unit::Unit(int owner)
+Unit::Unit(int owner, unsigned int elements)
     : GameObject(GameObjectType::OBJ_UNIT, owner)
+    , mElements(elements)
 {
     SetImageId();
+
+    // cap number of elements
+    if(mElements > MAX_CELL_UNITS)
+        mElements = MAX_CELL_UNITS;
 }
 
 void Unit::IncreaseUnitLevel()
