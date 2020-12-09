@@ -561,7 +561,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
 
     // move to empty cell
-    if(nullptr == playerDest)
+    if(emptyDest)
     {
         // moving whole unit
         if(unit0Elements == numUnits)
