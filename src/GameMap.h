@@ -38,6 +38,11 @@ public:
     void StartFortifyCell(const Cell2D & cell, Player * player);
     void FortifyCell(const Cell2D & cell);
 
+    // cell conquest
+    bool CanConquestCell(const Cell2D & cell, Player * player);
+    void StartConquestCell(const Cell2D & cell, Player * player);
+    void ConquestCell(const Cell2D & cell, Player * player);
+
     // unit create
     bool CanCreateUnit(const Cell2D & cell, Player * player);
     void StartCreateUnit(const Cell2D & cell, Player * player);
@@ -51,6 +56,7 @@ public:
     bool CanUpgradeUnit(const Cell2D & cell, Player * player);
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
     void UpgradeUnit(const Cell2D & cell);
+
 
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;

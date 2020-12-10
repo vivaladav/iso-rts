@@ -380,6 +380,11 @@ void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
     }
 }
 
+void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
+{
+    mButtonCellConquest->SetOnClickFunction(f);
+}
+
 void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
 {
     mButtonCellFortify->SetOnClickFunction(f);
@@ -527,6 +532,9 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
     mButtonUnitsDestroyConf->SetVisible(false);
 
+    // button CONQUEST
+    mButtonCellConquest = new ButtonPanelPlayer("CONQUEST", mPanelUnits);
+
     // -- position elements --
     if(PPOS_TL == pos || PPOS_BL == pos)
         mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
@@ -540,23 +548,27 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
                            marginY;
 
         int buttonY = panelH - labelHeader->GetHeight();
-
         labelHeader->SetY(buttonY);
 
         buttonY -= marginY0 + mButtonUnitsUpgrade->GetHeight();
-
         mButtonUnitsUpgrade->SetY(buttonY);
+
+        buttonY -= mButtonUnitsUpgrade->GetHeight() + marginY;
+        mButtonCellConquest->SetY(buttonY);
     }
     else
     {
         int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
-
         mButtonUnitsUpgrade->SetY(buttonY);
 
+        buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
+        mButtonCellConquest->SetY(buttonY);
     }
 
     mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
     mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
+
+    mButtonCellConquest->SetX(mButtonUnitsUpgrade->GetX());
 
     if(PPOS_TR == pos || PPOS_BR == pos)
         labelHeader->SetX(mPanelUnits->GetWidth() - labelHeader->GetWidth());

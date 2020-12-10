@@ -233,6 +233,15 @@ ScreenGame::ScreenGame(Game * game)
     Player * player = game->GetPlayer(0);
     PanelPlayer * panel = mPanelsPlayer[0];
 
+    // CONQUEST CELL
+    panel->SetFunctionCellConquest([this, player]
+    {
+       SetupCellConquest(*(player->GetSelectedCell()), player);
+
+       // clear selection
+       ClearSelection(player);
+    });
+
     // FORTIFY CELL
     panel->SetFunctionCellFortify([this, player]
     {
@@ -619,6 +628,27 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 int ScreenGame::CellToIndex(const Cell2D & cell) const
 {
     return cell.row * mIsoMap->GetNumCols() + cell.col;
+}
+
+bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
+{
+    // check if fortify is possible
+    if(!mGameMap->CanConquestCell(cell, player))
+        return false;
+
+    // start fortify
+    mGameMap->StartConquestCell(cell, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_CONQ_CELL, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, cell, player]
+    {
+        mGameMap->ConquestCell(cell, player);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+    });
+
+    return true;
 }
 
 bool ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)

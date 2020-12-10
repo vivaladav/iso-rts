@@ -253,6 +253,62 @@ void GameMap::FortifyCell(const Cell2D & cell)
     gcell.changing = false;
 }
 
+bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return false;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // already changing or already has an owner
+    if(gcell.changing ||
+       gcell.owner != nullptr)
+        return false;
+
+    // check if player has enough money
+    if(COST_CELL_CONQUEST > player->GetMoney())
+        return false;
+
+    return true;
+}
+
+void GameMap::StartConquestCell(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // take player's money
+    player->SumMoney(-COST_CELL_CONQUEST);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::ConquestCell(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // assign owner
+    gcell.owner = player;
+
+    // update player
+    player->SumCells(1);
+    player->SumTotalCellsLevel(1);
+
+    // update map
+    const int cellType = DefineCellType(gcell);
+    mIsoMap->SetCellType(ind, cellType);
+
+    // reset cell's changing flag
+    gcell.changing = false;
+}
+
 bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);

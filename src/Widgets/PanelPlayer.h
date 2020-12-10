@@ -52,6 +52,7 @@ public:
     void UpdateButtonUnitDestroy();
     void UpdateButtonUnitUpgrade(int num, int level);
 
+    void SetFunctionCellConquest(const std::function<void()> & f);
     void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
@@ -83,6 +84,7 @@ private:
     ButtonPanelPlayer * mButtonUnitsDestroy = nullptr;
     ButtonPanelPlayer * mButtonUnitsDestroyConf = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
+    ButtonPanelPlayer * mButtonCellConquest = nullptr;
 };
 
 } // namespace game
