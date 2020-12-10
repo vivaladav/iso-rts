@@ -101,8 +101,6 @@ void GameMap::SetHomeCells()
 
     int pick = rand() % NUM_CORNERS;
 
-    IsoLayer * layerHomes = mIsoMap->GetLayer(HOME_CELLS);
-
     for(int p = 0; p < numPlayers; ++p)
     {
         Player * player = mGame->GetPlayer(p);
@@ -119,9 +117,6 @@ void GameMap::SetHomeCells()
         player->SetHomeCell(corners[c]);
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
-
-        // add home visual
-        layerHomes->AddObject(corners[c].row, corners[c].col, p, ObjectAlignment::CENTER);
 
         // inc by 2, 1, 2
         pick += 2 - (p % 2);

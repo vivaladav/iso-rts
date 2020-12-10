@@ -95,16 +95,6 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->SetLayerVisible(SELECTION, false);
 
-    // HOME CELLS
-    const std::vector<std::string> homeImgs =
-    {
-        "data/img/home-p1.png",
-        "data/img/home-p2.png",
-        "data/img/home-p3.png",
-        "data/img/home-p4.png"
-    };
-    layer = mIsoMap->CreateLayer(MapLayers::HOME_CELLS, homeImgs);
-
     // MOVE TARGETS
     const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
     layer = mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
