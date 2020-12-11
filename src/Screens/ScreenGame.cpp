@@ -407,71 +407,48 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     const bool insideMap = mIsoMap->IsCellInside(c);
 
     Player * player = GetGame()->GetPlayer(0);
-    PanelPlayer * panel = mPanelsPlayer[0];
 
     if(insideMap)
     {
         const Cell2D * selCell = player->GetSelectedCell();
 
+        const GameMapCell & gameCell = mGameMap->GetCell(c.row, c.col);
+        const Player * owner = gameCell.owner;
+        const bool isLocalPlayer = owner == player;
+        const Unit * cellUnit = gameCell.GetUnit();
+        const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
+        const bool canSelect = (isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(c.row, c.col);
+
+        // 1 cell already selected
         if(selCell)
         {
             const Unit * unit = mGameMap->GetCell(selCell->row, selCell->col).GetUnit();
             const int unitsToMove = unit ? unit->GetNumElements() : 0;
 
+            // has units to move
             if(unitsToMove > 0)
-                mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player);
-
-            ClearSelection(player);
+            {
+                // move successful -> select new cell
+                if(mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player))
+                    SelectCell(c, player);
+                // move failed
+                else
+                {
+                    if(canSelect)
+                        SelectCell(c, player);
+                    else
+                        ClearSelection(player);
+                }
+            }
+            else
+                ClearSelection(player);
         }
+        // no cell previously selected
         else
         {
-            const GameMapCell & gameCell = mGameMap->GetCell(c.row, c.col);
-            const Player * owner = gameCell.owner;
-            const bool isLocalPlayer = owner == player;
-            const Unit * cellUnit = gameCell.GetUnit();
-            const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
-
-            // own cell and not already changing
-            if((isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(c.row, c.col))
-            {
-                player->SetSelectedCell(c);
-                panel->SetSelectedCell(gameCell);
-
-                IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
-                layerSel->MoveObject(mPrevSel.row, mPrevSel.col, c.row, c.col, NO_ALIGNMENT);
-                mIsoMap->SetLayerVisible(SELECTION, true);
-
-                // show move targets
-                if(isPlayerUnit)
-                {
-                    IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
-
-                    const int numTargets = 8;
-                    const Cell2D targets[numTargets] =
-                    {
-                        {c.row - 1, c.col - 1},     // TL
-                        {c.row - 1, c.col},         // T
-                        {c.row - 1, c.col + 1},     // TR
-
-                        {c.row, c.col - 1},         // L
-                        {c.row, c.col + 1},         // R
-
-                        {c.row + 1, c.col - 1},     // BL
-                        {c.row + 1, c.col},         // B
-                        {c.row + 1, c.col + 1}      // BR
-                    };
-
-                    // add targets where unit can move
-                    for(int i = 0; i < numTargets; ++i)
-                    {
-                        if(mGameMap->CanUnitMove(c, targets[i], player))
-                            layerTargets->AddObject(targets[i].row, targets[i].col, 0, ObjectAlignment::CENTER);
-                    }
-                }
-
-                // store selection cell
-                mPrevSel = c;
-            }
+            // can select
+            if(canSelect)
+                SelectCell(c, player);
             else
                 ClearSelection(player);
         }
@@ -526,6 +503,58 @@ void ScreenGame::ClearSelection(Player * player)
     mIsoMap->SetLayerVisible(SELECTION, false);
 
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
+}
+
+void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
+{
+    player->SetSelectedCell(cell);
+    const GameMapCell & gameCell = mGameMap->GetCell(cell.row, cell.col);
+
+    PanelPlayer * panel = mPanelsPlayer[0];
+    panel->SetSelectedCell(gameCell);
+
+    IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
+    layerSel->MoveObject(mPrevSel.row, mPrevSel.col, cell.row, cell.col, NO_ALIGNMENT);
+    mIsoMap->SetLayerVisible(SELECTION, true);
+
+    // show move targets if it's player's unit
+    const Unit * cellUnit = gameCell.GetUnit();
+
+    if(cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId())
+    {
+        mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
+        ShowMoveTargets(cell, player);
+    }
+
+    // store selection cell
+    mPrevSel = cell;
+}
+
+void ScreenGame::ShowMoveTargets(const Cell2D & cell, Player * player)
+{
+    IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
+
+    const int numTargets = 8;
+    const Cell2D targets[numTargets] =
+    {
+        {cell.row - 1, cell.col - 1},     // TL
+        {cell.row - 1, cell.col},         // T
+        {cell.row - 1, cell.col + 1},     // TR
+
+        {cell.row, cell.col - 1},         // L
+        {cell.row, cell.col + 1},         // R
+
+        {cell.row + 1, cell.col - 1},     // BL
+        {cell.row + 1, cell.col},         // B
+        {cell.row + 1, cell.col + 1}      // BR
+    };
+
+    // add targets where unit can move
+    for(int i = 0; i < numTargets; ++i)
+    {
+        if(mGameMap->CanUnitMove(cell, targets[i], player))
+            layerTargets->AddObject(targets[i].row, targets[i].col, 0, ObjectAlignment::CENTER);
+    }
 }
 
 void ScreenGame::UpdateAI(float delta)

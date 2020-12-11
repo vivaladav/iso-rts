@@ -41,6 +41,9 @@ private:
     void UpdateProgressBars(float delta);
 
     void ClearSelection(Player * player);
+    void SelectCell(const Cell2D & cell, Player * player);
+
+    void ShowMoveTargets(const Cell2D & cell, Player * player);
 
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
