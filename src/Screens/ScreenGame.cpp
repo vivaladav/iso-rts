@@ -441,7 +441,12 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 }
             }
             else
-                ClearSelection(player);
+            {
+                if(canSelect)
+                    SelectCell(c, player);
+                else
+                    ClearSelection(player);
+            }
         }
         // no cell previously selected
         else
