@@ -393,40 +393,46 @@ bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & 
     return true;
 }
 
-void GameMap::StartConquestResourceGenerator(const Cell2D & cell, Player * player)
+void GameMap::StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
     // take player's money
     player->SumMoney(-COST_CONQUEST_RES_GEN);
 
-    // mark cell as changing
-    gcell.changing = true;
+    // mark start as changing
+    const int ind0 = start.row * mCols + start.col;
+    mCells[ind0].changing = true;
+
+    // mark end as changing
+    const int ind1 = end.row * mCols + end.col;
+    mCells[ind1].changing = true;
 }
 
-void GameMap::ConquestResourceGenerator(const Cell2D & cell, Player * player)
+void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
+    const int ind = end.row * mCols + end.col;
+    GameMapCell & gcell1 = mCells[ind];
 
     // assign owner
-    gcell.owner = player;
-    gcell.obj->SetOwner(player->GetPlayerId());
+    gcell1.owner = player;
+    gcell1.obj->SetOwner(player->GetPlayerId());
 
     // update player
     player->SumCells(1);
     player->SumTotalCellsLevel(1);
 
     // update map
-    const int cellType = DefineCellType(gcell);
+    const int cellType = DefineCellType(gcell1);
     mIsoMap->SetCellType(ind, cellType);
 
     // update iso map
-    mIsoMap->GetLayer(OBJECTS)->ChangeObject(cell.row, cell.col, gcell.obj->GetImageId());
+    mIsoMap->GetLayer(OBJECTS)->ChangeObject(end.row, end.col, gcell1.obj->GetImageId());
 
-    // reset cell's changing flag
-    gcell.changing = false;
+    // reset end changing flag
+    gcell1.changing = false;
+
+    // reset start changing flag
+    const int ind0 = start.row * mCols + start.col;
+    mCells[ind0].changing = false;
 }
 
 bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)

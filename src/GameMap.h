@@ -47,8 +47,8 @@ public:
     void CreateResourceGenerator(const Cell2D & cell);
     // resource generator conquest
     bool CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
-    void StartConquestResourceGenerator(const Cell2D & cell, Player * player);
-    void ConquestResourceGenerator(const Cell2D & cell, Player * player);
+    void StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    void ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
     bool CanCreateUnit(const Cell2D & cell, Player * player);

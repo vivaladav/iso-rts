@@ -773,15 +773,15 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
         return false;
 
     // start conquest
-    mGameMap->StartConquestResourceGenerator(end, player);
+    mGameMap->StartConquestResourceGenerator(start, end, player);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(end, TIME_CONQ_RES_GEN, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetPlayerId());
 
-    pb->SetFunctionOnCompleted([this, end, player]
+    pb->SetFunctionOnCompleted([this, start, end, player]
     {
-        mGameMap->ConquestResourceGenerator(end, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(end));
+        mGameMap->ConquestResourceGenerator(start, end, player);
+        mProgressBarsToDelete.emplace_back(CellToIndex(start));
     });
 
     return true;
