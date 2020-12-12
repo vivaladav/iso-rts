@@ -213,7 +213,11 @@ ScreenGame::ScreenGame(Game * game)
         PanelPlayer::PPOS_BR,
     };
 
-    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+    // for now keeping existing code, but limiting UI only to human player
+    // TODO change this when working on new UI
+    const int humanPlayers = 1;
+
+    for(int i = 0; i < humanPlayers; ++i)
     {
         Player * player = GetGame()->GetPlayer(i);
         PanelPlayer * panel = new PanelPlayer(player, panelPos[i]);
