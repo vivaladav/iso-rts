@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "ResourceGenerator.h"
 #include "Unit.h"
 #include "Screens/ScreenGame.h"
 
@@ -271,7 +272,7 @@ bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
         return false;
 
     // check if player has enough money
-    if(COST_CELL_CONQUEST > player->GetMoney())
+    if(COST_CONQUEST_CELL > player->GetMoney())
         return false;
 
     return true;
@@ -283,7 +284,7 @@ void GameMap::StartConquestCell(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // take player's money
-    player->SumMoney(-COST_CELL_CONQUEST);
+    player->SumMoney(-COST_CONQUEST_CELL);
 
     // mark cell as changing
     gcell.changing = true;
@@ -304,6 +305,125 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
     // update map
     const int cellType = DefineCellType(gcell);
     mIsoMap->SetCellType(ind, cellType);
+
+    // reset cell's changing flag
+    gcell.changing = false;
+}
+
+void GameMap::CreateResourceGenerator(const Cell2D & cell)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // cell is already full or not walkable
+    if(gcell.obj || !gcell.walkable)
+        return;
+
+    // create resource generator with no owner
+    ResourceGenerator * rg = new ResourceGenerator(-1, ResourceType::ENERGY);
+
+    // update cell
+    gcell.obj = rg;
+    gcell.walkable = false;
+
+    // create object in iso map
+    mIsoMap->GetLayer(OBJECTS)->AddObject(cell.row, cell.col, gcell.obj->GetImageId(), ObjectAlignment::BOTTOM);
+}
+
+bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+{
+    const unsigned int r0 = static_cast<unsigned int>(start.row);
+    const unsigned int c0 = static_cast<unsigned int>(start.col);
+
+    // start out of bounds
+    if(r0 >= mRows || c0 >= mCols)
+        return false;
+
+    const unsigned int r1 = static_cast<unsigned int>(end.row);
+    const unsigned int c1 = static_cast<unsigned int>(end.col);
+
+    // end out of bounds
+    if(r1 >= mRows || c1 >= mCols)
+        return false;
+
+    // check if player has enough money
+    if(COST_CONQUEST_RES_GEN > player->GetMoney())
+        return false;
+
+    const int diffR = abs(end.row - start.row);
+
+    // end too far - units can only conquest to next cell
+    if(diffR > 1)
+        return false;
+
+    const int diffC = abs(end.col - start.col);
+
+    // end too far - units can only conquest to next cell
+    if(diffC > 1)
+         return false;
+
+    const int ind0 = r0 * mCols + c0;
+    GameMapCell & gcell0 = mCells[ind0];
+
+    const Unit * unit = gcell0.GetUnit();
+
+    // start has no unit
+    if(nullptr == unit)
+        return false;
+
+    // not player's unit
+    if(unit->GetOwner() != player->GetPlayerId())
+        return false;
+
+    const int ind1 = r1 * mCols + c1;
+    GameMapCell & gcell1 = mCells[ind1];
+
+    // end has no resource generator
+    if(!gcell1.HasResourceGenerator())
+        return false;
+
+    // player already owns the res gen
+    if(gcell1.owner == player)
+        return false;
+
+    // TEMP - no conquest while another is in progress
+    if(gcell1.changing)
+        return false;
+
+    return true;
+}
+
+void GameMap::StartConquestResourceGenerator(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // take player's money
+    player->SumMoney(-COST_CONQUEST_RES_GEN);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::ConquestResourceGenerator(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // assign owner
+    gcell.owner = player;
+    gcell.obj->SetOwner(player->GetPlayerId());
+
+    // update player
+    player->SumCells(1);
+    player->SumTotalCellsLevel(1);
+
+    // update map
+    const int cellType = DefineCellType(gcell);
+    mIsoMap->SetCellType(ind, cellType);
+
+    // update iso map
+    mIsoMap->GetLayer(OBJECTS)->ChangeObject(cell.row, cell.col, gcell.obj->GetImageId());
 
     // reset cell's changing flag
     gcell.changing = false;

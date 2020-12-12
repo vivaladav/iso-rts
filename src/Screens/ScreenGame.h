@@ -54,6 +54,7 @@ private:
     bool SetupCellFortify(const Cell2D & cell, Player * player);
     bool SetupCellUpgrade(const Cell2D & cell, Player * player);
     bool SetupNewUnit(const Cell2D & cell, Player * player);
+    bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupUnitDestroy(const Cell2D & cell, Player * player);
     bool SetupUnitUpgrade(const Cell2D & cell, Player * player);
 

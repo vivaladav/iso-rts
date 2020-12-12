@@ -43,6 +43,13 @@ public:
     void StartConquestCell(const Cell2D & cell, Player * player);
     void ConquestCell(const Cell2D & cell, Player * player);
 
+    // resource generator
+    void CreateResourceGenerator(const Cell2D & cell);
+    // resource generator conquest
+    bool CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    void StartConquestResourceGenerator(const Cell2D & cell, Player * player);
+    void ConquestResourceGenerator(const Cell2D & cell, Player * player);
+
     // unit create
     bool CanCreateUnit(const Cell2D & cell, Player * player);
     void StartCreateUnit(const Cell2D & cell, Player * player);
@@ -56,7 +63,6 @@ public:
     bool CanUpgradeUnit(const Cell2D & cell, Player * player);
     void StartUpgradeUnit(const Cell2D & cell, Player * player);
     void UpgradeUnit(const Cell2D & cell);
-
 
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;

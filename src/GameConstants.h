@@ -21,7 +21,9 @@ constexpr int MAX_CELL_FORT_LEVEL = 3;
 
 constexpr int COST_CELL_FORT[] = { 2, 3, 4 };
 
-constexpr int COST_CELL_CONQUEST = 2;
+constexpr int COST_CONQUEST_CELL = 2;
+
+constexpr int COST_CONQUEST_RES_GEN = 4;
 
 constexpr int MAX_CELL_UNITS = 4;
 constexpr int MAX_UNITS_LEVEL = 2;
@@ -31,6 +33,7 @@ constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 constexpr float TIME_CONQ_CELL = 1.f;
 constexpr float TIME_FORT_CELL = 1.f;
 constexpr float TIME_NEW_UNIT = 1.f;
+constexpr float TIME_CONQ_RES_GEN = 1.f;
 constexpr float TIME_UPG_CELL = 1.f;
 constexpr float TIME_UPG_UNIT = 1.f;
 

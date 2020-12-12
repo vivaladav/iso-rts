@@ -79,6 +79,13 @@ enum GameObjectImageId : unsigned int
     P4_3UL3,
     P4_4UL3,
 
+    // ENERGY SOURCE
+    ENERGY_SOURCE,
+    ENERGY_SOURCE_P1,
+    ENERGY_SOURCE_P2,
+    ENERGY_SOURCE_P3,
+    ENERGY_SOURCE_P4,
+
     NUM_GO_IMAGE_IDS,
 };
 

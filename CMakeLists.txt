@@ -29,6 +29,8 @@ add_executable(
     src/IsoMap.cpp
     src/Player.h
     src/Player.cpp
+    src/ResourceGenerator.h
+    src/ResourceGenerator.cpp
     src/Unit.h
     src/Unit.cpp
     src/AI/ActionAI.h

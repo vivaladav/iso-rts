@@ -166,7 +166,14 @@ ScreenGame::ScreenGame(Game * game)
         "data/img/unit1-p4l3.png",
         "data/img/unit2-p4l3.png",
         "data/img/unit3-p4l3.png",
-        "data/img/unit4-p4l3.png"
+        "data/img/unit4-p4l3.png",
+
+        // ENERGY SOURCE
+        "data/img/energy_source.png",
+        "data/img/energy_source-p1.png",
+        "data/img/energy_source-p2.png",
+        "data/img/energy_source-p3.png",
+        "data/img/energy_source-p4.png"
     };
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
@@ -174,6 +181,12 @@ ScreenGame::ScreenGame(Game * game)
     // -- GAME MAP --
     mGameMap = new GameMap(game, this, mIsoMap);
     mGameMap->SetHomeCells();
+
+    // TEST
+    const int halfR = mGameMap->GetNumRows() / 2;
+    const int lastC = mGameMap->GetNumCols() - 1;
+    mGameMap->CreateResourceGenerator({halfR, 0});
+    mGameMap->CreateResourceGenerator({halfR, lastC});
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -434,8 +447,13 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 // move failed
                 else
                 {
-                    if(canSelect)
+                    // try to conquest a resource generator
+                    if(SetupResourceGeneratorConquest(*player->GetSelectedCell(), c, player))
+                        ClearSelection(player);
+                    // try to select the cell
+                    else if(canSelect)
                         SelectCell(c, player);
+                    // all failed, clear the selection
                     else
                         ClearSelection(player);
                 }
@@ -666,11 +684,11 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
 
 bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
 {
-    // check if fortify is possible
+    // check if conquest is possible
     if(!mGameMap->CanConquestCell(cell, player))
         return false;
 
-    // start fortify
+    // start conquest
     mGameMap->StartConquestCell(cell, player);
 
     // create and init progress bar
@@ -743,6 +761,27 @@ bool ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
     {
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+    });
+
+    return true;
+}
+
+bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player)
+{
+    // check if conquest is possible
+    if(!mGameMap->CanConquestResourceGenerator(start, end, player))
+        return false;
+
+    // start conquest
+    mGameMap->StartConquestResourceGenerator(end, player);
+
+    // create and init progress bar
+    CellProgressBar * pb = CreateProgressBar(end, TIME_CONQ_RES_GEN, player->GetPlayerId());
+
+    pb->SetFunctionOnCompleted([this, end, player]
+    {
+        mGameMap->ConquestResourceGenerator(end, player);
+        mProgressBarsToDelete.emplace_back(CellToIndex(end));
     });
 
     return true;

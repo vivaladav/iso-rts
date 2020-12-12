@@ -5,6 +5,7 @@ namespace game
 
 class GameObject;
 class Player;
+class ResourceGenerator;
 class Unit;
 
 struct GameMapCell
@@ -13,6 +14,9 @@ struct GameMapCell
 
     Unit * GetUnit() const;
     bool HasUnit() const;
+
+    ResourceGenerator * GetResourceGenerator() const;
+    bool HasResourceGenerator() const;
 
     Player * owner = nullptr;
     GameObject * obj = nullptr;
