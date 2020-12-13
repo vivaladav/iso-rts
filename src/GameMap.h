@@ -87,6 +87,8 @@ private:
 
     int DefineCellType(const GameMapCell & cell);
 
+    void UpdateLinkedCells(Player * player);
+
 private:
     std::vector<GameMapCell> mCells;
 

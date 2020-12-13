@@ -16,6 +16,7 @@
 #include <cassert>
 #include <cmath>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 #include <iostream>
@@ -111,6 +112,7 @@ void GameMap::SetHomeCells()
 
         GameMapCell & cell = mCells[ind];
         cell.owner = player;
+        cell.linked = true;
 
         const int cellType = DefineCellType(cell);
         mIsoMap->SetCellType(ind, cellType);
@@ -302,12 +304,11 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
     player->SumCells(1);
     player->SumTotalCellsLevel(1);
 
-    // update map
-    const int cellType = DefineCellType(gcell);
-    mIsoMap->SetCellType(ind, cellType);
-
     // reset cell's changing flag
     gcell.changing = false;
+
+    // update map
+    UpdateLinkedCells(player);
 }
 
 void GameMap::CreateResourceGenerator(const Cell2D & cell)
@@ -420,10 +421,6 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     player->SumCells(1);
     player->SumTotalCellsLevel(1);
 
-    // update map
-    const int cellType = DefineCellType(gcell1);
-    mIsoMap->SetCellType(ind, cellType);
-
     // update iso map
     mIsoMap->GetLayer(OBJECTS)->ChangeObject(end.row, end.col, gcell1.obj->GetImageId());
 
@@ -433,6 +430,9 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
     mCells[ind0].changing = false;
+
+    // update map
+    UpdateLinkedCells(player);
 }
 
 bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
@@ -1087,19 +1087,31 @@ int GameMap::DefineCellType(const GameMapCell & cell)
     switch(cell.owner->GetPlayerId())
     {
         case 0:
-            type = P1L1 + cell.level;
+            if(cell.linked)
+                type = P1L3;
+            else
+                type = P1L1;
         break;
 
         case 1:
-            type = P2L1 + cell.level;
+            if(cell.linked)
+                type = P2L3;
+            else
+                type = P2L1;
         break;
 
         case 2:
-            type = P3L1 + cell.level;
+            if(cell.linked)
+                type = P3L3;
+            else
+                type = P3L1;
         break;
 
         case 3:
-            type = P4L1 + cell.level;
+            if(cell.linked)
+                type = P4L3;
+            else
+                type = P4L1;
         break;
 
         default:
@@ -1107,6 +1119,93 @@ int GameMap::DefineCellType(const GameMapCell & cell)
     }
 
     return type;
+}
+
+void GameMap::UpdateLinkedCells(Player * player)
+{
+    // CLEAR ALL LINKED STATUS
+    for(GameMapCell & cell : mCells)
+    {
+        if(cell.owner == player)
+            cell.linked = false;
+    }
+
+    // FIND LINKED CELLS
+    std::vector<unsigned int> todo;
+    std::unordered_set<unsigned int> done;
+
+    const Cell2D & home = player->GetHomeCell();
+    const unsigned int indHome = home.row * mCols + home.col;
+    todo.push_back(indHome);
+
+    const unsigned int totCells = mRows * mCols;
+
+    while(!todo.empty())
+    {
+        unsigned int currInd = todo.back();
+        todo.pop_back();
+        GameMapCell & currCell = mCells[currInd];
+        currCell.linked = true;
+
+        // add TOP
+        unsigned int r = currCell.row - 1;
+
+        if(r < mRows)
+        {
+            const unsigned int ind = currInd - mCols;
+
+            if(mCells[ind].owner == player && done.find(ind) == done.end())
+                todo.push_back(ind);
+        }
+
+        // add BOTTOM
+        r = currCell.row + 1;
+
+        if(r < mRows)
+        {
+            unsigned int ind = currInd + mCols;
+
+            if(mCells[ind].owner == player && done.find(ind) == done.end())
+                todo.push_back(ind);
+        }
+
+        // add LEFT
+        unsigned int c = currCell.col - 1;
+
+        if(c < mCols)
+        {
+            const unsigned int ind = currInd - 1;
+
+            if(mCells[ind].owner == player && done.find(ind) == done.end())
+                todo.push_back(ind);
+        }
+
+        // add RIGHT
+        c = currCell.col + 1;
+
+        if(c < mCols)
+        {
+            const unsigned int ind = currInd + 1;
+
+            if(mCells[ind].owner == player && done.find(ind) == done.end())
+                todo.push_back(ind);
+        }
+
+        // add current to done
+        done.insert(currInd);
+    }
+
+    // UPDATE ALL CELLS IMAGE
+    for(unsigned int c = 0; c < totCells; ++c)
+    {
+        const GameMapCell & cell = mCells[c];
+
+        if(cell.owner == player)
+        {
+            const int cellType = DefineCellType(cell);
+            mIsoMap->SetCellType(c, cellType);
+        }
+    }
 }
 
 } // namespace game

@@ -27,6 +27,7 @@ struct GameMapCell
     int fortLevel = 0;
     bool walkable = true;
     bool changing = false;
+    bool linked = false;
 };
 
 } // namespace game
