@@ -27,18 +27,10 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     using namespace lib::sgui;
 
     FontManager * fm = FontManager::Instance();
-
-    Font * fontName = fm->GetFont("data/fonts/OpenSans.ttf", 48);
-    fontName->SetStyle(Font::BOLD);
-
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 28);
+    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 34);
 
-    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 40);
-
-    Label * labelName = new Label(player->GetName().c_str(), fontName, this);
-    labelName->SetColor(PLAYER_COLOR[player->GetPlayerId()]);
-
-    Label * labelHeaderCoins = new Label("COINS", fontHeader, this);
+    Label * labelHeaderCoins = new Label("ENERGY", fontHeader, this);
     labelHeaderCoins->SetColor(0x212121FF);
 
     const int coins = player->GetMoney();
@@ -70,26 +62,21 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     mPanelUnits->SetVisible(false);
 
     // -- position elements --
-    const int marginH = 10;
-
-    const int marginX0 = 280;
+    const int marginX0 = 10;
     const int marginX1 = 50;
 
-    const int panelW = labelName->GetWidth() +
-                       labelHeaderCoins->GetWidth() +
+    const int panelW = labelHeaderCoins->GetWidth() +
                        labelHeaderCells->GetWidth() +
                        labelHeaderUnits->GetWidth() +
-                       marginH + marginX0 + (marginX1 * 2);
+                       marginX0 + (marginX1 * 2);
 
     switch(pos)
     {
         case PPOS_TL:
         {
-            // player name
-            labelName->SetX(marginH);
 
             // coins
-            labelHeaderCoins->SetX(labelName->GetX() + labelName->GetWidth() + marginX0);
+            labelHeaderCoins->SetX(marginX0);
 
             mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
                                      (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
@@ -109,8 +96,8 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
                                      labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
 
             // sub-panel cell buttons
-            const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
-            mPanelCell->SetPosition(labelName->GetX(), panelY);
+            const int panelY = mLabelCoins->GetY() + mLabelCoins->GetHeight() + marginTopRow;
+            mPanelCell->SetPosition(marginX0, panelY);
 
             // sub-panel unit buttons
             const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
@@ -120,6 +107,7 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
 
         case PPOS_TR:
         {
+        /*
             // player name
             labelName->SetX(panelW - marginH - labelName->GetWidth());
 
@@ -152,11 +140,13 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
 
             // resize panel to include right margin in its size
             SetSize(GetWidth() + marginH, GetHeight());
+            */
         }
         break;
 
         case PPOS_BL:
         {
+        /*
             // player name
             labelName->SetPosition(marginH, GetHeight() - labelName->GetHeight());
 
@@ -191,11 +181,13 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
             const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
             const int panelY2 = labelName->GetY() - marginTopRow - mPanelUnits->GetHeight();
             mPanelUnits->SetPosition(panelX, panelY2);
+            */
         }
         break;
 
         case PPOS_BR:
         {
+        /*
             // player name
             labelName->SetPosition(panelW - marginH - labelName->GetWidth(),
                                    GetHeight() - labelName->GetHeight());
@@ -234,6 +226,7 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
 
             // resize panel to include right margin in its size
             SetSize(GetWidth() + marginH, GetHeight());
+            */
         }
         break;
 
