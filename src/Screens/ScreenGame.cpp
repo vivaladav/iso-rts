@@ -253,7 +253,7 @@ ScreenGame::ScreenGame(Game * game)
     // CONQUEST CELL
     panel->SetFunctionCellConquest([this, player]
     {
-       SetupCellConquest(*(player->GetSelectedCell()), player);
+       SetupCellConquest(player->GetSelectedCell(), player);
 
        // clear selection
        ClearSelection(player);
@@ -262,7 +262,7 @@ ScreenGame::ScreenGame(Game * game)
     // FORTIFY CELL
     panel->SetFunctionCellFortify([this, player]
     {
-        SetupCellFortify(*(player->GetSelectedCell()), player);
+        SetupCellFortify(player->GetSelectedCell(), player);
 
         // clear selection
         ClearSelection(player);
@@ -271,7 +271,7 @@ ScreenGame::ScreenGame(Game * game)
     // UPGRADE CELL
     panel->SetFunctionCellUpgrade([this, player]
     {
-        SetupCellUpgrade(*(player->GetSelectedCell()), player);
+        SetupCellUpgrade(player->GetSelectedCell(), player);
 
         // clear selection
         ClearSelection(player);
@@ -280,7 +280,7 @@ ScreenGame::ScreenGame(Game * game)
     // CREATE NEW UNIT
     panel->SetFunctionNewUnit([this, player]
     {
-        SetupNewUnit(*(player->GetSelectedCell()), player);
+        SetupNewUnit(player->GetSelectedCell(), player);
 
         // clear selection
         ClearSelection(player);
@@ -289,7 +289,7 @@ ScreenGame::ScreenGame(Game * game)
     // UNIT DESTROY
     panel->SetFunctionUnitsDestroy([this, player]
     {
-       SetupUnitDestroy(*(player->GetSelectedCell()), player);
+       SetupUnitDestroy(player->GetSelectedCell(), player);
 
        ClearSelection(player);
     });
@@ -297,7 +297,7 @@ ScreenGame::ScreenGame(Game * game)
     // UNIT UPGRADE
     panel->SetFunctionUnitsUpgrade([this, player]
     {
-        SetupUnitUpgrade(*(player->GetSelectedCell()), player);
+        SetupUnitUpgrade(player->GetSelectedCell(), player);
 
         // clear selection
         ClearSelection(player);
@@ -419,44 +419,50 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     if(mPaused)
         return ;
 
-    const Cell2D c = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    // handle only LEFT click
+    if(event.GetButton() != lib::core::MouseEvent::BUTTON_LEFT)
+        return ;
 
-    const bool insideMap = mIsoMap->IsCellInside(c);
+    const Cell2D currSel = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+
+    const bool insideMap = mIsoMap->IsCellInside(currSel);
 
     Player * player = GetGame()->GetPlayer(0);
 
     if(insideMap)
     {
-        const Cell2D * selCell = player->GetSelectedCell();
-
-        const GameMapCell & gameCell = mGameMap->GetCell(c.row, c.col);
+        const GameMapCell & gameCell = mGameMap->GetCell(currSel.row, currSel.col);
         const Player * owner = gameCell.owner;
         const bool isLocalPlayer = owner == player;
         const Unit * cellUnit = gameCell.GetUnit();
         const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
-        const bool canSelect = (isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(c.row, c.col);
+        const bool canSelect = (isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(currSel.row, currSel.col);
 
-        // 1 cell already selected
-        if(selCell)
+        // 1 cell previously selected
+        if(player->HasSelectedCell())
         {
-            const Unit * unit = mGameMap->GetCell(selCell->row, selCell->col).GetUnit();
+            const Cell2D & prevSel = player->GetSelectedCell();
+
+            const Unit * unit = mGameMap->GetCell(prevSel.row, prevSel.col).GetUnit();
             const int unitsToMove = unit ? unit->GetNumElements() : 0;
 
-            // has units to move
-            if(unitsToMove > 0)
+            const bool diffSel = prevSel.row != currSel.row || prevSel.col != currSel.col;
+
+            // has units to move and it's selecting a different cell
+            if(unitsToMove > 0 && diffSel)
             {
                 // move successful -> select new cell
-                if(mGameMap->MoveUnits(*player->GetSelectedCell(), c, unitsToMove, player))
-                    SelectCell(c, player);
+                if(mGameMap->MoveUnits(prevSel, currSel, unitsToMove, player))
+                    SelectCell(currSel, player);
                 // move failed
                 else
                 {
                     // try to conquest a resource generator
-                    if(SetupResourceGeneratorConquest(*player->GetSelectedCell(), c, player))
+                    if(SetupResourceGeneratorConquest(prevSel, currSel, player))
                         ClearSelection(player);
                     // try to select the cell
                     else if(canSelect)
-                        SelectCell(c, player);
+                        SelectCell(currSel, player);
                     // all failed, clear the selection
                     else
                         ClearSelection(player);
@@ -465,7 +471,12 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             else
             {
                 if(canSelect)
-                    SelectCell(c, player);
+                {
+                    if(diffSel)
+                        SelectCell(currSel, player);
+                    else
+                        ClearSelection(player);
+                }
                 else
                     ClearSelection(player);
             }
@@ -473,15 +484,17 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         // no cell previously selected
         else
         {
-            // can select
             if(canSelect)
-                SelectCell(c, player);
-            else
-                ClearSelection(player);
+                SelectCell(currSel, player);
         }
     }
+    // click outside the map
     else
-        ClearSelection(player);
+    {
+        // clear the previous selection, if any
+        if(player->HasSelectedCell())
+            ClearSelection(player);
+    }
 }
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)

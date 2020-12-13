@@ -11,14 +11,13 @@ Player::Player(const char * name, int pid)
     , mOnNumCellsChanged([](int){})
     , mOnMoneyChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
-    , mSelectedCell(new Cell2D(-1, -1))
+    , mSelectedCell({-1, -1})
     , mPlayerId(pid)
 {
 }
 
 Player::~Player()
 {
-    delete mSelectedCell;
     delete mAI;
 }
 
@@ -45,9 +44,7 @@ void Player::SumUnits(int val)
 
 void Player::SetSelectedCell(const Cell2D & cell)
 {
-    *mSelectedCell = cell;
-
-    mCurrSelectedCell = mSelectedCell;
+    mSelectedCell = cell;
 }
 
 } // namespace game

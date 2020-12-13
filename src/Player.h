@@ -41,8 +41,9 @@ public:
     int GetTotalUnitsLevel() const;
     void SumTotalUnitsLevel(int val);
 
+    bool HasSelectedCell() const;
     void ClearSelectedCell();
-    const Cell2D * GetSelectedCell() const;
+    const Cell2D & GetSelectedCell() const;
     void SetSelectedCell(const Cell2D & cell);
 
     // -- AI --
@@ -64,8 +65,7 @@ private:
 
     Cell2D mHomeCell;
 
-    Cell2D * mCurrSelectedCell = nullptr;
-    Cell2D * mSelectedCell = nullptr;
+    Cell2D mSelectedCell;
 
     int mPlayerId;
 
@@ -109,8 +109,16 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
-inline void Player::ClearSelectedCell() { mCurrSelectedCell = nullptr; }
-inline const Cell2D * Player::GetSelectedCell() const { return mCurrSelectedCell; }
+inline bool Player::HasSelectedCell() const
+{
+    return mSelectedCell.row >= 0 && mSelectedCell.col >= 0;
+}
+inline void Player::ClearSelectedCell()
+{
+    mSelectedCell.row = -1;
+    mSelectedCell.col = -1;
+}
+inline const Cell2D & Player::GetSelectedCell() const { return mSelectedCell; }
 
 inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }
