@@ -322,6 +322,7 @@ void GameMap::CreateResourceGenerator(const Cell2D & cell)
 
     // create resource generator with no owner
     ResourceGenerator * rg = new ResourceGenerator(-1, ResourceType::ENERGY);
+    rg->SetCell(&mCells[ind]);
 
     // update cell
     gcell.obj = rg;
@@ -420,6 +421,7 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     // update player
     player->SumCells(1);
     player->SumTotalCellsLevel(1);
+    player->AddResourceGenerator(ind, static_cast<ResourceGenerator *>(gcell1.obj));
 
     // update iso map
     mIsoMap->GetLayer(OBJECTS)->ChangeObject(end.row, end.col, gcell1.obj->GetImageId());
@@ -523,6 +525,7 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     else
     {
         unit = new Unit(player->GetPlayerId());
+        unit->SetCell(&mCells[ind]);
         gcell.obj = unit;
 
         mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
@@ -760,6 +763,8 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
 
             layerUnits->AddObject(gcell1.row, gcell1.col, gcell1.obj->GetImageId(), NO_ALIGNMENT);
         }
+
+        gcell1.obj->SetCell(&mCells[ind1]);
     }
     else
         return false;

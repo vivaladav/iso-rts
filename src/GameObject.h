@@ -15,11 +15,16 @@ enum GameObjectType : unsigned int
 
 enum GameObjectImageId : unsigned int;
 
+class GameMapCell;
+
 class GameObject
 {
 public:
     GameObject(GameObjectType type, int owner);
     virtual ~GameObject();
+
+    const GameMapCell * GetCell() const;
+    void SetCell(GameMapCell * cell);
 
     int GetOwner() const;
     void SetOwner(int owner);
@@ -35,9 +40,13 @@ protected:
     GameObjectImageId mImageId;
 
 private:
+    GameMapCell * mCell = nullptr;
+
     int mOwner = -1;
     GameObjectType mType = OBJ_NULL;
 };
+
+inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
 inline int GameObject::GetOwner() const { return mOwner; }
 

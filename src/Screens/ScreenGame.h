@@ -71,7 +71,7 @@ private:
 
     struct Cell2D mPrevSel;
 
-    float mTimerCoins = TIME_COINS_GEN;
+    float mTimerEnergy = TIME_ENERGY_USE;
     float mTimerAI = TIME_AI_MOVE;
 
     unsigned int mCurrPlayerAI = 0;

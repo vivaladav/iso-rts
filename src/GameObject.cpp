@@ -12,6 +12,13 @@ GameObject::GameObject(GameObjectType type, int owner)
 
 }
 
+void GameObject::SetCell(GameMapCell * cell)
+{
+    mCell = cell;
+
+    UpdateImageId();
+}
+
 void GameObject::SetOwner(int owner)
 {
     mOwner = owner;

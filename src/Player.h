@@ -4,10 +4,12 @@
 
 #include <functional>
 #include <string>
+#include <unordered_map>
 
 namespace game
 {
 
+class ResourceGenerator;
 class PlayerAI;
 
 class Player
@@ -46,6 +48,12 @@ public:
     const Cell2D & GetSelectedCell() const;
     void SetSelectedCell(const Cell2D & cell);
 
+    void AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen);
+    void RemoveResourceGenerator(unsigned int cellId);
+
+    int GetEnergyProduction() const;
+    int GetEnergyUse() const;
+
     // -- AI --
     bool IsAI() const;
     PlayerAI * GetAI();
@@ -60,6 +68,8 @@ private:
     std::function<void(int)> mOnNumCellsChanged;
     std::function<void(int)> mOnMoneyChanged;
     std::function<void(int)> mOnNumUnitsChanged;
+
+    std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
 
     PlayerAI * mAI = nullptr;
 

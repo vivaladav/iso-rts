@@ -194,7 +194,7 @@ ScreenGame::ScreenGame(Game * game)
         Player * p = game->GetPlayer(i);
 
         // add start money
-        p->SumMoney(START_MONEY);
+        p->SumMoney(START_ENERGY);
 
         // temporary disable AI for development
 //        if(p->IsAI())
@@ -321,9 +321,9 @@ void ScreenGame::Update(float delta)
         return ;
 
     // -- UPDATE COINS --
-    mTimerCoins -= delta;
+    mTimerEnergy -= delta;
 
-    if(mTimerCoins < 0.f)
+    if(mTimerEnergy < 0.f)
     {
         Game * game = GetGame();
 
@@ -331,11 +331,13 @@ void ScreenGame::Update(float delta)
         {
             Player * p = game->GetPlayer(i);
 
-            const int coins = p->GetTotalCellsLevel() * COINS_PER_CELL - p->GetTotalUnitsLevel() * COST_PER_UNIT;
-            p->SumMoney(coins);
+            const int energyProd = p->GetEnergyProduction();
+            const int energyUsed = p->GetEnergyUse();
+            const int energyDiff = energyProd - energyUsed;
+            p->SumMoney(energyDiff);
         }
 
-        mTimerCoins = TIME_COINS_GEN;
+        mTimerEnergy = TIME_ENERGY_USE;
     }
 
     // -- PROGRESS BARS --

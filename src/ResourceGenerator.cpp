@@ -5,10 +5,13 @@
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(int owner, ResourceType)
+ResourceGenerator::ResourceGenerator(int owner, ResourceType type)
     : GameObject(OBJ_RES_GEN, owner)
+    , mResType(type)
 {
     SetImageId();
+
+    UpdateOutput();
 }
 
 void ResourceGenerator::UpdateImageId()
@@ -24,6 +27,14 @@ void ResourceGenerator::SetImageId()
         mImageId = static_cast<GameObjectImageId>(GameObjectImageId::ENERGY_SOURCE_P1 + owner);
     else
         mImageId = GameObjectImageId::ENERGY_SOURCE;
+}
+
+void ResourceGenerator::UpdateOutput()
+{
+    if(ENERGY == mResType)
+    {
+        mOutput = 20;
+    }
 }
 
 } // namespace game
