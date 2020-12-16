@@ -205,53 +205,28 @@ ScreenGame::ScreenGame(Game * game)
     }
 
     // -- UI --
-    const PanelPlayer::PanelPosition panelPos[] =
-    {
-        PanelPlayer::PPOS_TL,
-        PanelPlayer::PPOS_TR,
-        PanelPlayer::PPOS_BL,
-        PanelPlayer::PPOS_BR,
-    };
-
-    // for now keeping existing code, but limiting UI only to human player
-    // TODO change this when working on new UI
-    const int humanPlayers = 1;
-
-    for(int i = 0; i < humanPlayers; ++i)
-    {
-        Player * player = GetGame()->GetPlayer(i);
-        PanelPlayer * panel = new PanelPlayer(player, panelPos[i]);
-
-        const int x = (i % 2) ? (rendW - panel->GetWidth()) : 0;
-        const int y = (i < 2) ? 0 : (rendH - panel->GetHeight());
-
-        panel->SetPosition(x, y);
-
-        // setup data update functions
-        player->SetOnMoneyChanged([panel](int money)
-        {
-            panel->UpdateCoins(money);
-        });
-
-        player->SetOnNumCellsChanged([panel](int cells)
-        {
-            panel->UpdateCells(cells);
-        });
-
-        player->SetOnNumUnitsChanged([panel](int units)
-        {
-            panel->UpdateUnits(units);
-        });
-
-        mPanelsPlayer[i] = panel;
-    }
-
-    // UI actions
     Player * player = game->GetPlayer(0);
-    PanelPlayer * panel = mPanelsPlayer[0];
+    mPanelPlayer = new PanelPlayer(player);
 
+    // setup data update functions
+    player->SetOnMoneyChanged([this](int money)
+    {
+        mPanelPlayer->UpdateCoins(money);
+    });
+
+    player->SetOnNumCellsChanged([this](int cells)
+    {
+        mPanelPlayer->UpdateCells(cells);
+    });
+
+    player->SetOnNumUnitsChanged([this](int units)
+    {
+        mPanelPlayer->UpdateUnits(units);
+    });
+
+    // -- UI actions --
     // CONQUEST CELL
-    panel->SetFunctionCellConquest([this, player]
+    mPanelPlayer->SetFunctionCellConquest([this, player]
     {
        SetupCellConquest(player->GetSelectedCell(), player);
 
@@ -260,7 +235,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // FORTIFY CELL
-    panel->SetFunctionCellFortify([this, player]
+    mPanelPlayer->SetFunctionCellFortify([this, player]
     {
         SetupCellFortify(player->GetSelectedCell(), player);
 
@@ -269,7 +244,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // UPGRADE CELL
-    panel->SetFunctionCellUpgrade([this, player]
+    mPanelPlayer->SetFunctionCellUpgrade([this, player]
     {
         SetupCellUpgrade(player->GetSelectedCell(), player);
 
@@ -278,7 +253,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // CREATE NEW UNIT
-    panel->SetFunctionNewUnit([this, player]
+    mPanelPlayer->SetFunctionNewUnit([this, player]
     {
         SetupNewUnit(player->GetSelectedCell(), player);
 
@@ -287,7 +262,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // UNIT DESTROY
-    panel->SetFunctionUnitsDestroy([this, player]
+    mPanelPlayer->SetFunctionUnitsDestroy([this, player]
     {
        SetupUnitDestroy(player->GetSelectedCell(), player);
 
@@ -295,7 +270,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // UNIT UPGRADE
-    panel->SetFunctionUnitsUpgrade([this, player]
+    mPanelPlayer->SetFunctionUnitsUpgrade([this, player]
     {
         SetupUnitUpgrade(player->GetSelectedCell(), player);
 
@@ -410,9 +385,8 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     {
         mPaused = !mPaused;
 
-        // disable player panels when paused
-        for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
-            mPanelsPlayer[i]->SetEnabled(!mPaused);
+        // disable player panel when paused
+        mPanelPlayer->SetEnabled(!mPaused);
     }
 }
 
@@ -539,8 +513,7 @@ void ScreenGame::ClearSelection(Player * player)
 {
     player->ClearSelectedCell();
 
-    PanelPlayer * panel = mPanelsPlayer[player->GetPlayerId()];
-    panel->ClearSelectedCell();
+    mPanelPlayer->ClearSelectedCell();
 
     mIsoMap->SetLayerVisible(SELECTION, false);
 
@@ -552,8 +525,7 @@ void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
     player->SetSelectedCell(cell);
     const GameMapCell & gameCell = mGameMap->GetCell(cell.row, cell.col);
 
-    PanelPlayer * panel = mPanelsPlayer[0];
-    panel->SetSelectedCell(gameCell);
+    mPanelPlayer->SetSelectedCell(gameCell);
 
     IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
     layerSel->MoveObject(mPrevSel.row, mPrevSel.col, cell.row, cell.col, NO_ALIGNMENT);

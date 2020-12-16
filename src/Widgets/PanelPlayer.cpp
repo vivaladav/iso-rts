@@ -20,7 +20,7 @@
 namespace game
 {
 
-PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget * parent)
+PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
     using namespace lib::graphic;
@@ -55,184 +55,43 @@ PanelPlayer::PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget *
     const int marginTopRow = 10;
     const int marginRightPanels = 50;
 
-    CreatePanelCell(pos);
+    CreatePanelCell();
     mPanelCell->SetVisible(false);
 
-    CreatePanelUnits(pos);
+    CreatePanelUnits();
     mPanelUnits->SetVisible(false);
 
     // -- position elements --
     const int marginX0 = 10;
     const int marginX1 = 50;
 
-    const int panelW = labelHeaderCoins->GetWidth() +
-                       labelHeaderCells->GetWidth() +
-                       labelHeaderUnits->GetWidth() +
-                       marginX0 + (marginX1 * 2);
+    // coins
+    labelHeaderCoins->SetX(marginX0);
 
-    switch(pos)
-    {
-        case PPOS_TL:
-        {
+    mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
+                             (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
+                             labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
 
-            // coins
-            labelHeaderCoins->SetX(marginX0);
+    // cells
+    labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
 
-            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
-                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
-                                     labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
+    mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
+                             labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
 
-            // cells
-            labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
+    // units
+    labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
 
-            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
-                                     labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
+    mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
+                             (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
+                             labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
 
-            // units
-            labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
+    // sub-panel cell buttons
+    const int panelY = mLabelCoins->GetY() + mLabelCoins->GetHeight() + marginTopRow;
+    mPanelCell->SetPosition(marginX0, panelY);
 
-            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
-                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
-                                     labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
-
-            // sub-panel cell buttons
-            const int panelY = mLabelCoins->GetY() + mLabelCoins->GetHeight() + marginTopRow;
-            mPanelCell->SetPosition(marginX0, panelY);
-
-            // sub-panel unit buttons
-            const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
-            mPanelUnits->SetPosition(panelX, panelY);
-        }
-        break;
-
-        case PPOS_TR:
-        {
-        /*
-            // player name
-            labelName->SetX(panelW - marginH - labelName->GetWidth());
-
-            // coins
-            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
-                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
-                                     labelHeaderCoins->GetY() + labelHeaderCoins->GetHeight());
-
-            // cells
-            labelHeaderCells->SetX(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1);
-
-            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
-                                     labelHeaderCells->GetY() + labelHeaderCells->GetHeight());
-
-            // units
-            labelHeaderUnits->SetX(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1);
-
-            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
-                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
-                                     labelHeaderUnits->GetY() + labelHeaderUnits->GetHeight());
-
-            // sub-panel cell buttons
-            const int panelX = panelW - marginH - mPanelCell->GetWidth();
-            const int panelY = labelName->GetY() + labelName->GetHeight() + marginTopRow;
-            mPanelCell->SetPosition(panelX, panelY);
-
-            // sub-panel unit buttons
-            const int panelX2 = panelX - mPanelUnits->GetWidth() - marginRightPanels;
-            mPanelUnits->SetPosition(panelX2, panelY);
-
-            // resize panel to include right margin in its size
-            SetSize(GetWidth() + marginH, GetHeight());
-            */
-        }
-        break;
-
-        case PPOS_BL:
-        {
-        /*
-            // player name
-            labelName->SetPosition(marginH, GetHeight() - labelName->GetHeight());
-
-            // coins
-            labelHeaderCoins->SetPosition(labelName->GetX() + labelName->GetWidth() + marginX0,
-                                          labelName->GetY() + labelName->GetHeight() - labelHeaderCoins->GetHeight());
-
-            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
-                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
-                                     labelHeaderCoins->GetY() - mLabelCoins->GetHeight());
-
-            // cells
-            labelHeaderCells->SetPosition(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1,
-                                          labelName->GetY() + labelName->GetHeight() - labelHeaderCells->GetHeight());
-
-            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
-                                     labelHeaderCells->GetY() - mLabelCells->GetHeight());
-
-            // units
-            labelHeaderUnits->SetPosition(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1,
-                                          labelName->GetY() + labelName->GetHeight() - labelHeaderUnits->GetHeight());
-
-            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
-                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
-                                     labelHeaderUnits->GetY() - mLabelUnits->GetHeight());
-
-            // sub-panel cell buttons
-            const int panelY = labelName->GetY() - marginTopRow - mPanelCell->GetHeight();
-            mPanelCell->SetPosition(labelName->GetX(), panelY);
-
-            // sub-panel unit buttons
-            const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
-            const int panelY2 = labelName->GetY() - marginTopRow - mPanelUnits->GetHeight();
-            mPanelUnits->SetPosition(panelX, panelY2);
-            */
-        }
-        break;
-
-        case PPOS_BR:
-        {
-        /*
-            // player name
-            labelName->SetPosition(panelW - marginH - labelName->GetWidth(),
-                                   GetHeight() - labelName->GetHeight());
-
-            // coins
-            labelHeaderCoins->SetY(labelName->GetY() + labelName->GetHeight() - labelHeaderCoins->GetHeight());
-
-            mLabelCoins->SetPosition(labelHeaderCoins->GetX() +
-                                     (labelHeaderCoins->GetWidth() - mLabelCoins->GetWidth()) * 0.5f,
-                                     labelHeaderCoins->GetY() - mLabelCoins->GetHeight());
-
-            // cells
-            labelHeaderCells->SetPosition(labelHeaderCoins->GetX() + labelHeaderCoins->GetWidth() + marginX1,
-                                          labelName->GetY() + labelName->GetHeight() - labelHeaderCells->GetHeight());
-
-            mLabelCells->SetPosition(labelHeaderCells->GetX() + (labelHeaderCells->GetWidth() - mLabelCells->GetWidth()) * 0.5f,
-                                     labelHeaderCells->GetY() - mLabelCells->GetHeight());
-
-            // units
-            labelHeaderUnits->SetPosition(labelHeaderCells->GetX() + labelHeaderCells->GetWidth() + marginX1,
-                                          labelName->GetY() + labelName->GetHeight() - labelHeaderUnits->GetHeight());
-
-            mLabelUnits->SetPosition(labelHeaderUnits->GetX() +
-                                     (labelHeaderUnits->GetWidth() - mLabelUnits->GetWidth()) * 0.5f,
-                                     labelHeaderUnits->GetY() - mLabelUnits->GetHeight());
-
-            // sub-panel cell buttons
-            const int panelX = panelW - marginH - mPanelCell->GetWidth();
-            const int panelY = labelName->GetY() - marginTopRow - mPanelCell->GetHeight();
-            mPanelCell->SetPosition(panelX, panelY);
-
-            // sub-panel unit buttons
-            const int panelX2 = panelX - mPanelUnits->GetWidth() - marginRightPanels;
-            const int panelY2 = labelName->GetY() - marginTopRow - mPanelUnits->GetHeight();
-            mPanelUnits->SetPosition(panelX2, panelY2);
-
-            // resize panel to include right margin in its size
-            SetSize(GetWidth() + marginH, GetHeight());
-            */
-        }
-        break;
-
-        default:
-        break;
-    }
+    // sub-panel unit buttons
+    const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
+    mPanelUnits->SetPosition(panelX, panelY);
 }
 
 void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
@@ -429,7 +288,7 @@ std::string PanelPlayer::MakeStrUnits(int units)
     return std::to_string(units);
 }
 
-void PanelPlayer::CreatePanelCell(PanelPosition pos)
+void PanelPlayer::CreatePanelCell()
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -448,49 +307,21 @@ void PanelPlayer::CreatePanelCell(PanelPosition pos)
     mButtonCellFortify = new ButtonPanelPlayer(mPanelCell);
     mButtonCellUpgrade = new ButtonPanelPlayer(mPanelCell);
 
-    if(PPOS_TR == pos || PPOS_BR == pos)
-        labelHeader->SetX(mPanelCell->GetWidth() - labelHeader->GetWidth());
-
     const int marginY0 = 10;
     const int marginY = 30;
 
-    if(PPOS_BL == pos || PPOS_BR == pos)
-    {
-        const int panelH = labelHeader->GetHeight() + marginY0 +
-                           mButtonNewUnit->GetHeight() +
-                           mButtonCellFortify->GetHeight() +
-                           mButtonCellUpgrade->GetHeight() +
-                           (marginY * 2);
+    int buttonY = labelHeader->GetHeight() + marginY0;
 
-        int buttonY = panelH - labelHeader->GetHeight();
+    mButtonNewUnit->SetY(buttonY);
+    buttonY += mButtonNewUnit->GetHeight() + marginY;
 
-        labelHeader->SetY(buttonY);
+    mButtonCellFortify->SetY(buttonY);
+    buttonY += mButtonCellFortify->GetHeight() + marginY;
 
-        buttonY -= marginY0 + mButtonCellUpgrade->GetHeight();
-
-        mButtonCellUpgrade->SetY(buttonY);
-        buttonY -= marginY + mButtonCellFortify->GetHeight();
-
-        mButtonCellFortify->SetY(buttonY);
-        buttonY -= marginY + mButtonNewUnit->GetHeight();
-
-        mButtonNewUnit->SetY(buttonY);
-    }
-    else
-    {
-        int buttonY = labelHeader->GetHeight() + marginY0;
-
-        mButtonNewUnit->SetY(buttonY);
-        buttonY += mButtonNewUnit->GetHeight() + marginY;
-
-        mButtonCellFortify->SetY(buttonY);
-        buttonY += mButtonCellFortify->GetHeight() + marginY;
-
-        mButtonCellUpgrade->SetY(buttonY);
-    }
+    mButtonCellUpgrade->SetY(buttonY);
 }
 
-void PanelPlayer::CreatePanelUnits(PanelPosition pos)
+void PanelPlayer::CreatePanelUnits()
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -529,42 +360,18 @@ void PanelPlayer::CreatePanelUnits(PanelPosition pos)
     mButtonCellConquest = new ButtonPanelPlayer("CONQUEST", mPanelUnits);
 
     // -- position elements --
-    if(PPOS_TL == pos || PPOS_BL == pos)
-        mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
-    else
-        mButtonUnitsUpgrade->SetX(mButtonUnitsDestroy->GetX() + marginX + mButtonUnitsDestroy->GetWidth());
+    mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
 
-    if(PPOS_BL == pos || PPOS_BR == pos)
-    {
-        const int panelH = labelHeader->GetHeight() + marginY0 +
-                           mButtonUnitsUpgrade->GetHeight() +
-                           marginY;
+    int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
+    mButtonUnitsUpgrade->SetY(buttonY);
 
-        int buttonY = panelH - labelHeader->GetHeight();
-        labelHeader->SetY(buttonY);
-
-        buttonY -= marginY0 + mButtonUnitsUpgrade->GetHeight();
-        mButtonUnitsUpgrade->SetY(buttonY);
-
-        buttonY -= mButtonUnitsUpgrade->GetHeight() + marginY;
-        mButtonCellConquest->SetY(buttonY);
-    }
-    else
-    {
-        int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
-        mButtonUnitsUpgrade->SetY(buttonY);
-
-        buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
-        mButtonCellConquest->SetY(buttonY);
-    }
+    buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
+    mButtonCellConquest->SetY(buttonY);
 
     mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
     mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
 
     mButtonCellConquest->SetX(mButtonUnitsUpgrade->GetX());
-
-    if(PPOS_TR == pos || PPOS_BR == pos)
-        labelHeader->SetX(mPanelUnits->GetWidth() - labelHeader->GetWidth());
 }
 
 } // namespace game

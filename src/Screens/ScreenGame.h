@@ -4,7 +4,6 @@
 #include "GameConstants.h"
 #include "Screen.h"
 
-#include <array>
 #include <unordered_map>
 #include <vector>
 
@@ -59,12 +58,12 @@ private:
     bool SetupUnitUpgrade(const Cell2D & cell, Player * player);
 
 private:
-    std::array<PanelPlayer *, MAX_NUM_PLAYERS> mPanelsPlayer;
-
     std::vector<Player *> mAiPlayers;
 
     std::unordered_map<int, CellProgressBar *> mProgressBars;
     std::vector<int> mProgressBarsToDelete;
+
+    PanelPlayer * mPanelPlayer = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

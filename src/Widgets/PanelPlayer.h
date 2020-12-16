@@ -23,18 +23,7 @@ struct GameMapCell;
 class PanelPlayer : public lib::sgui::Widget
 {
 public:
-    enum PanelPosition : int
-    {
-        PPOS_TL,
-        PPOS_TR,
-        PPOS_BL,
-        PPOS_BR,
-
-        NUM_PANEL_POSITIONS
-    };
-
-public:
-    PanelPlayer(Player * player, PanelPosition pos, lib::sgui::Widget * parent = nullptr);
+    PanelPlayer(Player * player, lib::sgui::Widget * parent = nullptr);
 
     void SetPanelCellVisible(bool val);
     void SetPanelUnitsVisible(bool val);
@@ -65,9 +54,9 @@ private:
     std::string MakeStrCoins(int coins);
     std::string MakeStrUnits(int units);
 
-    void CreatePanelCell(PanelPosition pos);
+    void CreatePanelCell();
 
-    void CreatePanelUnits(PanelPosition pos);
+    void CreatePanelUnits();
 
 private:
     ButtonsPanel * mPanelCell = nullptr;
