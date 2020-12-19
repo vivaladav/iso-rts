@@ -329,7 +329,8 @@ void GameMap::CreateResourceGenerator(const Cell2D & cell)
     gcell.walkable = false;
 
     // create object in iso map
-    mIsoMap->GetLayer(OBJECTS)->AddObject(cell.row, cell.col, gcell.obj->GetImageId(), ObjectAlignment::BOTTOM);
+    const GameObjectImageId imgId = gcell.obj->GetImageId();
+    mIsoMap->GetLayer(OBJECTS)->AddObject(cell.row, cell.col, imgId, ObjectAlignment::BOTTOM);
 }
 
 bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
