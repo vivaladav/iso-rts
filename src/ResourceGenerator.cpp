@@ -5,8 +5,8 @@
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(int owner, ResourceType type)
-    : GameObject(OBJ_RES_GEN, owner)
+ResourceGenerator::ResourceGenerator(ResourceType type)
+    : GameObject(OBJ_RES_GEN, -1)
     , mResType(type)
 {
     SetImageId();

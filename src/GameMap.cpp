@@ -154,7 +154,7 @@ void GameMap::CreateObject(unsigned int r, unsigned int c,
     {
         case OBJ_RES_GEN:
         {
-            gcell.obj = new ResourceGenerator(-1, ResourceType::ENERGY);
+            gcell.obj = new ResourceGenerator(ResourceType::ENERGY);
             gcell.obj->SetCell(&mCells[ind]);
         }
         break;

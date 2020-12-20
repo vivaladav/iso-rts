@@ -17,7 +17,7 @@ enum ResourceType
 class ResourceGenerator : public GameObject
 {
 public:
-    ResourceGenerator(int owner, ResourceType type);
+    ResourceGenerator(ResourceType type);
 
     int GetOutput() const;
 
