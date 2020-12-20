@@ -6,25 +6,33 @@
 #include <graphic/Image.h>
 
 #include <algorithm>
-#include <fstream>
 
 namespace game
 {
 
 // ==================== CONSTRUCTORS AND DESTRUCTOR ====================
 
-constexpr unsigned int MAX_SIZE = 256;
-
 /**
  * @brief Creates an isometric map loading a file.
- * @param file Map file to load. Path relative to application binary
+ * @param rows Number of rows in the map
+ * @param cold Number of columns in the map
  * @param tileW Width of a cell (height is half of that)
  */
-IsoMap::IsoMap(const char * file, int tileW)
-    : mTileW(tileW)
+IsoMap::IsoMap(int rows, int cols, int tileW)
+    : mRows(rows)
+    , mCols(cols)
+    , mTileW(tileW)
     , mTileH(tileW * 0.5f)
 {
-    Load(file);
+    const int mapSize = rows * cols;
+
+    mMap.reserve(mapSize);
+    mMap.assign(mapSize, 0);
+
+    mTilePositions.reserve(mapSize);
+    mTilePositions.assign(mapSize, lib::core::Point2D(0, 0));
+
+    UpdateTilePositions();
 }
 
 /// Destructor, deletes Images used for the tiles and IsoLayers.
@@ -39,51 +47,6 @@ IsoMap::~IsoMap()
 }
 
 // ==================== PUBLIC METHODS ====================
-
-/**
- * @brief Loads a map file.
- * @param file Map file to load. Path relative to application binary
- * @return TRUE on success, FALSE otherwise
- */
-bool IsoMap::Load(const char * file)
-{
-    // open map file
-    std::fstream f(file);
-
-    if(!f.is_open())
-        return false;
-
-    // clear internal data
-    mMap.clear();
-    mTilePositions.clear();
-
-    // read map file
-    mMap.reserve(MAX_SIZE);
-
-    std::string line;
-
-    mRows = 0;
-
-    while (std::getline(f, line))
-    {
-        mCols = line.length();
-
-        for(unsigned int c = 0; c < mCols; ++c)
-           mMap.push_back(line[c] - '0');
-
-        ++mRows;
-    }
-
-    // update tile positions data
-    const unsigned int mapSize = mRows * mCols;
-
-    mTilePositions.reserve(mapSize);
-    mTilePositions.assign(mapSize, lib::core::Point2D(0, 0));
-
-    UpdateTilePositions();
-
-    return true;
-}
 
 /**
  * @brief Gives the top-left corner position of a cell.

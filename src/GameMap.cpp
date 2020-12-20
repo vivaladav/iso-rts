@@ -140,6 +140,39 @@ void GameMap::AssignCell(const Cell2D & cell, Player * player)
     player->SumTotalCellsLevel(1);
 }
 
+void GameMap::CreateObject(unsigned int r, unsigned int c,
+                           unsigned int layerId, unsigned int objId)
+{
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // cell is already full
+    if(gcell.obj)
+        return;
+
+    switch (objId)
+    {
+        case OBJ_RES_GEN:
+        {
+            gcell.obj = new ResourceGenerator(-1, ResourceType::ENERGY);
+            gcell.obj->SetCell(&mCells[ind]);
+        }
+        break;
+
+        default:
+            // this should never happens
+            return ;
+        break;
+    }
+
+    // update cell
+    gcell.walkable = false;
+
+    // create object in iso map
+    const GameObjectImageId imgId = gcell.obj->GetImageId();
+    mIsoMap->GetLayer(layerId)->AddObject(r, c, imgId, ObjectAlignment::BOTTOM);
+}
+
 bool GameMap::CanUpgradeCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
@@ -309,28 +342,6 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
 
     // update map
     UpdateLinkedCells(player);
-}
-
-void GameMap::CreateResourceGenerator(const Cell2D & cell)
-{
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
-    // cell is already full or not walkable
-    if(gcell.obj || !gcell.walkable)
-        return;
-
-    // create resource generator with no owner
-    ResourceGenerator * rg = new ResourceGenerator(-1, ResourceType::ENERGY);
-    rg->SetCell(&mCells[ind]);
-
-    // update cell
-    gcell.obj = rg;
-    gcell.walkable = false;
-
-    // create object in iso map
-    const GameObjectImageId imgId = gcell.obj->GetImageId();
-    mIsoMap->GetLayer(OBJECTS)->AddObject(cell.row, cell.col, imgId, ObjectAlignment::BOTTOM);
 }
 
 bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)

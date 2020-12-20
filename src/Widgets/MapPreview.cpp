@@ -35,12 +35,12 @@ MapPreview::MapPreview(const char * file, lib::sgui::Widget * parent)
         "data/img/tile_prev-01.png"
     };
 
-    mIsoMap = new IsoMap(file, TILE_W);
-    mIsoMap->SetTiles(tiles);
+    //mIsoMap = new IsoMap(file, TILE_W);
+    //mIsoMap->SetTiles(tiles);
 
     // -- LABEL SIZE --
     std::ostringstream os;
-    os << mIsoMap->GetNumRows() << "x" << mIsoMap->GetNumCols() << std::ends;;
+    //os << mIsoMap->GetNumRows() << "x" << mIsoMap->GetNumCols() << std::ends;;
 
     Font * font = FontManager::Instance()->GetFont("data/fonts/OpenSans.ttf", 24);
 
@@ -73,10 +73,10 @@ void MapPreview::HandlePositionChanged()
     mBgSel->SetPosition(x0, y0);
 
     // map
-    const int x = x0 + mBg->GetWidth() * 0.5f;
-    const int y = y0 + (mBg->GetHeight() - mIsoMap->GetHeight()) * 0.5f;
+//    const int x = x0 + mBg->GetWidth() * 0.5f;
+//    const int y = y0 + (mBg->GetHeight() - mIsoMap->GetHeight()) * 0.5f;
 
-    mIsoMap->SetOrigin(x, y);
+//    mIsoMap->SetOrigin(x, y);
 
     // label
     const int marginLabelT = 0;
@@ -92,9 +92,9 @@ void MapPreview::OnRender()
 {
     mBg->Render();
 
-    mIsoMap->Render();
+    //mIsoMap->Render();
 
-    mLabelSize->Render();
+    //mLabelSize->Render();
 }
 
 } // namespace game

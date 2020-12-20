@@ -20,7 +20,9 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -35,158 +37,8 @@ ScreenGame::ScreenGame(Game * game)
     game->AddKeyboardListener(this);
 
     // -- ISOMETRIC MAP --
-    const int TILE_W = 128;
-
-    const std::vector<std::string> tileFiles =
-    {
-        // scene
-        "data/img/tile00.png",
-        "data/img/tile01.png",
-        // player 1
-        "data/img/tile-p1l1.png",
-        "data/img/tile-p1l2.png",
-        "data/img/tile-p1l3.png",
-        "data/img/tile-p1l4.png",
-        // player 2
-        "data/img/tile-p2l1.png",
-        "data/img/tile-p2l2.png",
-        "data/img/tile-p2l3.png",
-        "data/img/tile-p2l4.png",
-        // player 3
-        "data/img/tile-p3l1.png",
-        "data/img/tile-p3l2.png",
-        "data/img/tile-p3l3.png",
-        "data/img/tile-p3l4.png",
-        // player 4
-        "data/img/tile-p4l1.png",
-        "data/img/tile-p4l2.png",
-        "data/img/tile-p4l3.png",
-        "data/img/tile-p4l4.png"
-    };
-
     const std::string & mapFile = game->GetCurrentMapFile();
-    mIsoMap = new IsoMap(mapFile.c_str(), TILE_W);
-    mIsoMap->SetTiles(tileFiles);
-
-    // center map on screen
-    const int mapH = mIsoMap->GetHeight();
-
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
-
-    mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
-
-    // -- LAYERS --
-    // FORTIFICATIONS
-    const std::vector<std::string> fortImgs =
-    {
-        "data/img/fort01.png",
-        "data/img/fort02.png",
-        "data/img/fort03.png"
-    };
-
-    mIsoMap->CreateLayer(MapLayers::FORTIFICATIONS, fortImgs);
-
-    // SELECTION
-    const std::vector<std::string> selImgs = { "data/img/selection.png" };
-
-    IsoLayer * layer = mIsoMap->CreateLayer(MapLayers::SELECTION, selImgs);
-    layer->AddObject(mPrevSel.row, mPrevSel.col, 0, ObjectAlignment::NO_ALIGNMENT);
-
-    mIsoMap->SetLayerVisible(SELECTION, false);
-
-    // MOVE TARGETS
-    const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
-    layer = mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
-
-    // OBJECTS
-    const std::vector<std::string> objImgs =
-    {
-        "data/img/obj_null.png",
-
-        // PLAYER 1 - LEVEL 1
-        "data/img/unit1-p1l1.png",
-        "data/img/unit2-p1l1.png",
-        "data/img/unit3-p1l1.png",
-        "data/img/unit4-p1l1.png",
-        // PLAYER 1 - LEVEL 2
-        "data/img/unit1-p1l2.png",
-        "data/img/unit2-p1l2.png",
-        "data/img/unit3-p1l2.png",
-        "data/img/unit4-p1l2.png",
-        // PLAYER 1 - LEVEL 3
-        "data/img/unit1-p1l3.png",
-        "data/img/unit2-p1l3.png",
-        "data/img/unit3-p1l3.png",
-        "data/img/unit4-p1l3.png",
-
-        // PLAYER 2 - LEVEL 1
-        "data/img/unit1-p2l1.png",
-        "data/img/unit2-p2l1.png",
-        "data/img/unit3-p2l1.png",
-        "data/img/unit4-p2l1.png",
-        // PLAYER 2 - LEVEL 2
-        "data/img/unit1-p2l2.png",
-        "data/img/unit2-p2l2.png",
-        "data/img/unit3-p2l2.png",
-        "data/img/unit4-p2l2.png",
-        // PLAYER 2 - LEVEL 3
-        "data/img/unit1-p2l3.png",
-        "data/img/unit2-p2l3.png",
-        "data/img/unit3-p2l3.png",
-        "data/img/unit4-p2l3.png",
-
-        // PLAYER 3 - LEVEL 1
-        "data/img/unit1-p3l1.png",
-        "data/img/unit2-p3l1.png",
-        "data/img/unit3-p3l1.png",
-        "data/img/unit4-p3l1.png",
-        // PLAYER 3 - LEVEL 2
-        "data/img/unit1-p3l2.png",
-        "data/img/unit2-p3l2.png",
-        "data/img/unit3-p3l2.png",
-        "data/img/unit4-p3l2.png",
-        // PLAYER 3 - LEVEL 3
-        "data/img/unit1-p3l3.png",
-        "data/img/unit2-p3l3.png",
-        "data/img/unit3-p3l3.png",
-        "data/img/unit4-p3l3.png",
-
-        // PLAYER 4 - LEVEL 1
-        "data/img/unit1-p4l1.png",
-        "data/img/unit2-p4l1.png",
-        "data/img/unit3-p4l1.png",
-        "data/img/unit4-p4l1.png",
-        // PLAYER 4 - LEVEL 2
-        "data/img/unit1-p4l2.png",
-        "data/img/unit2-p4l2.png",
-        "data/img/unit3-p4l2.png",
-        "data/img/unit4-p4l2.png",
-        // PLAYER 4 - LEVEL 3
-        "data/img/unit1-p4l3.png",
-        "data/img/unit2-p4l3.png",
-        "data/img/unit3-p4l3.png",
-        "data/img/unit4-p4l3.png",
-
-        // ENERGY SOURCE
-        "data/img/energy_source.png",
-        "data/img/energy_source-p1.png",
-        "data/img/energy_source-p2.png",
-        "data/img/energy_source-p3.png",
-        "data/img/energy_source-p4.png"
-    };
-
-    mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
-
-    // -- GAME MAP --
-    mGameMap = new GameMap(game, this, mIsoMap);
-    mGameMap->SetHomeCells();
-
-    // TEST
-    const int halfR = mGameMap->GetNumRows() / 2;
-    const int lastC = mGameMap->GetNumCols() - 1;
-    mGameMap->CreateResourceGenerator({halfR, 0});
-    mGameMap->CreateResourceGenerator({halfR, lastC});
+    Load(mapFile);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -372,6 +224,222 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
 
     if(it2 != mProgressBarsToDelete.end())
         mProgressBarsToDelete.erase(it2);
+}
+
+bool ScreenGame::Load(const std::string & filename)
+{
+    // open map file
+    std::fstream f(filename);
+
+    if(!f.is_open())
+        return false;
+
+    std::string line;
+    std::stringstream ss;
+
+    // reading map size
+    std::getline(f, line);
+    ss.str(line);
+
+    int rows = 0;
+    int cols = 0;
+
+    ss >> rows >> cols;
+
+    const int TILE_W = 128;
+
+    const std::vector<std::string> tileFiles =
+    {
+        // scene
+        "data/img/tile00.png",
+        "data/img/tile01.png",
+        // player 1
+        "data/img/tile-p1l1.png",
+        "data/img/tile-p1l2.png",
+        "data/img/tile-p1l3.png",
+        "data/img/tile-p1l4.png",
+        // player 2
+        "data/img/tile-p2l1.png",
+        "data/img/tile-p2l2.png",
+        "data/img/tile-p2l3.png",
+        "data/img/tile-p2l4.png",
+        // player 3
+        "data/img/tile-p3l1.png",
+        "data/img/tile-p3l2.png",
+        "data/img/tile-p3l3.png",
+        "data/img/tile-p3l4.png",
+        // player 4
+        "data/img/tile-p4l1.png",
+        "data/img/tile-p4l2.png",
+        "data/img/tile-p4l3.png",
+        "data/img/tile-p4l4.png"
+    };
+
+    // iso map
+    mIsoMap = new IsoMap(rows, cols, TILE_W);
+    mIsoMap->SetTiles(tileFiles);
+
+    // center map on screen
+    const int mapH = mIsoMap->GetHeight();
+
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
+
+    // layers
+    CreateLayers();
+
+    // create game map
+    mGameMap = new GameMap(GetGame(), this, mIsoMap);
+
+    // READ BASE MAP
+    for(int r = 0; r < rows; ++r)
+    {
+        std::getline(f, line);
+        ss.clear();
+        ss.str(line);
+
+        const unsigned int ind0 = r * cols;
+
+        for(int c = 0; c < cols; ++c)
+        {
+            unsigned int type;
+
+            ss >> type;
+
+            const unsigned int ind = ind0 + c;
+
+            mIsoMap->SetCellType(ind, type);
+        }
+    }
+
+    // set homes
+    mGameMap->SetHomeCells();
+
+    // READ OBJECTS
+    while(std::getline(f, line))
+    {
+        ss.clear();
+        ss.str(line);
+
+        unsigned int r;
+        unsigned int c;
+        unsigned int layerId;
+        unsigned int objId;
+
+        ss >> layerId >> r >> c >> objId;
+
+        mGameMap->CreateObject(r, c, layerId, objId);
+    }
+
+    return true;
+}
+
+void ScreenGame::CreateLayers()
+{
+    // -- LAYERS --
+    // FORTIFICATIONS
+    const std::vector<std::string> fortImgs =
+    {
+        "data/img/fort01.png",
+        "data/img/fort02.png",
+        "data/img/fort03.png"
+    };
+
+    mIsoMap->CreateLayer(MapLayers::FORTIFICATIONS, fortImgs);
+
+    // SELECTION
+    const std::vector<std::string> selImgs = { "data/img/selection.png" };
+
+    IsoLayer * layer = mIsoMap->CreateLayer(MapLayers::SELECTION, selImgs);
+    layer->AddObject(mPrevSel.row, mPrevSel.col, 0, ObjectAlignment::NO_ALIGNMENT);
+
+    mIsoMap->SetLayerVisible(SELECTION, false);
+
+    // MOVE TARGETS
+    const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
+    layer = mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
+
+    // OBJECTS
+    const std::vector<std::string> objImgs =
+    {
+        "data/img/obj_null.png",
+
+        // PLAYER 1 - LEVEL 1
+        "data/img/unit1-p1l1.png",
+        "data/img/unit2-p1l1.png",
+        "data/img/unit3-p1l1.png",
+        "data/img/unit4-p1l1.png",
+        // PLAYER 1 - LEVEL 2
+        "data/img/unit1-p1l2.png",
+        "data/img/unit2-p1l2.png",
+        "data/img/unit3-p1l2.png",
+        "data/img/unit4-p1l2.png",
+        // PLAYER 1 - LEVEL 3
+        "data/img/unit1-p1l3.png",
+        "data/img/unit2-p1l3.png",
+        "data/img/unit3-p1l3.png",
+        "data/img/unit4-p1l3.png",
+
+        // PLAYER 2 - LEVEL 1
+        "data/img/unit1-p2l1.png",
+        "data/img/unit2-p2l1.png",
+        "data/img/unit3-p2l1.png",
+        "data/img/unit4-p2l1.png",
+        // PLAYER 2 - LEVEL 2
+        "data/img/unit1-p2l2.png",
+        "data/img/unit2-p2l2.png",
+        "data/img/unit3-p2l2.png",
+        "data/img/unit4-p2l2.png",
+        // PLAYER 2 - LEVEL 3
+        "data/img/unit1-p2l3.png",
+        "data/img/unit2-p2l3.png",
+        "data/img/unit3-p2l3.png",
+        "data/img/unit4-p2l3.png",
+
+        // PLAYER 3 - LEVEL 1
+        "data/img/unit1-p3l1.png",
+        "data/img/unit2-p3l1.png",
+        "data/img/unit3-p3l1.png",
+        "data/img/unit4-p3l1.png",
+        // PLAYER 3 - LEVEL 2
+        "data/img/unit1-p3l2.png",
+        "data/img/unit2-p3l2.png",
+        "data/img/unit3-p3l2.png",
+        "data/img/unit4-p3l2.png",
+        // PLAYER 3 - LEVEL 3
+        "data/img/unit1-p3l3.png",
+        "data/img/unit2-p3l3.png",
+        "data/img/unit3-p3l3.png",
+        "data/img/unit4-p3l3.png",
+
+        // PLAYER 4 - LEVEL 1
+        "data/img/unit1-p4l1.png",
+        "data/img/unit2-p4l1.png",
+        "data/img/unit3-p4l1.png",
+        "data/img/unit4-p4l1.png",
+        // PLAYER 4 - LEVEL 2
+        "data/img/unit1-p4l2.png",
+        "data/img/unit2-p4l2.png",
+        "data/img/unit3-p4l2.png",
+        "data/img/unit4-p4l2.png",
+        // PLAYER 4 - LEVEL 3
+        "data/img/unit1-p4l3.png",
+        "data/img/unit2-p4l3.png",
+        "data/img/unit3-p4l3.png",
+        "data/img/unit4-p4l3.png",
+
+        // ENERGY SOURCE
+        "data/img/energy_source.png",
+        "data/img/energy_source-p1.png",
+        "data/img/energy_source-p2.png",
+        "data/img/energy_source-p3.png",
+        "data/img/energy_source-p4.png"
+    };
+
+    mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
+
 }
 
 void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)

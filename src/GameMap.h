@@ -28,6 +28,9 @@ public:
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
+    void CreateObject(unsigned int r, unsigned int c,
+                      unsigned int layerId, unsigned int objId);
+
     // cell upgrade
     bool CanUpgradeCell(const Cell2D & cell, Player * player);
     void StartUpgradeCell(const Cell2D & cell, Player * player);
@@ -43,8 +46,6 @@ public:
     void StartConquestCell(const Cell2D & cell, Player * player);
     void ConquestCell(const Cell2D & cell, Player * player);
 
-    // resource generator
-    void CreateResourceGenerator(const Cell2D & cell);
     // resource generator conquest
     bool CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
     void StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);

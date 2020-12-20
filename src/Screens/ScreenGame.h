@@ -4,6 +4,7 @@
 #include "GameConstants.h"
 #include "Screen.h"
 
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -36,6 +37,10 @@ public:
     void CancelProgressBar(const Cell2D & cell);
 
 private:
+    bool Load(const std::string & filename);
+
+    void CreateLayers();
+
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, int playerId);
     void UpdateProgressBars(float delta);
 
