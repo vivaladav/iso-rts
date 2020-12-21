@@ -266,7 +266,7 @@ void ScreenNewGame::ShowMapPreviews(unsigned int mapStart)
         // create preview widget if not created yet
         if(nullptr == preview)
         {
-            preview = new MapPreview(mapFiles[m].c_str());
+            preview = new MapPreview(mapFiles[m]);
             mMapPreviews[m] = preview;
 
             preview->SetPosition(mapX, mapY);

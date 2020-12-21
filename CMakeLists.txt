@@ -27,6 +27,8 @@ add_executable(
     src/IsoLayer.cpp
     src/IsoMap.h
     src/IsoMap.cpp
+    src/MapLoader.h
+    src/MapLoader.cpp
     src/Player.h
     src/Player.cpp
     src/ResourceGenerator.h

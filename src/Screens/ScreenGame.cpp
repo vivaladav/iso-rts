@@ -5,6 +5,7 @@
 #include "GameMap.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
+#include "MapLoader.h"
 #include "Player.h"
 #include "Unit.h"
 #include "AI/PlayerAI.h"
@@ -20,9 +21,7 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -45,7 +44,8 @@ ScreenGame::ScreenGame(Game * game)
 
     // load map file
     const std::string & mapFile = game->GetCurrentMapFile();
-    Load(mapFile);
+    MapLoader ml(mGameMap, mIsoMap);
+    ml.Load(mapFile);
 
     // center map on screen
     const int mapH = mIsoMap->GetHeight();
@@ -242,71 +242,6 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
 
     if(it2 != mProgressBarsToDelete.end())
         mProgressBarsToDelete.erase(it2);
-}
-
-bool ScreenGame::Load(const std::string & filename)
-{
-    // open map file
-    std::fstream f(filename);
-
-    if(!f.is_open())
-        return false;
-
-    std::string line;
-    std::stringstream ss;
-
-    // reading map size
-    std::getline(f, line);
-    ss.str(line);
-
-    unsigned int rows = 0;
-    unsigned int cols = 0;
-    ss >> rows >> cols;
-
-    mIsoMap->SetSize(rows, cols);
-
-    // READ BASE MAP
-    for(unsigned int r = 0; r < rows; ++r)
-    {
-        std::getline(f, line);
-        ss.clear();
-        ss.str(line);
-
-        const unsigned int ind0 = r * cols;
-
-        for(unsigned int c = 0; c < cols; ++c)
-        {
-            unsigned int type;
-
-            ss >> type;
-
-            const unsigned int ind = ind0 + c;
-
-            mIsoMap->SetCellType(ind, type);
-        }
-    }
-
-    // update game map
-    mGameMap->SetSize(rows, cols);
-    mGameMap->SyncWalkableCells();
-
-    // READ OBJECTS
-    while(std::getline(f, line))
-    {
-        ss.clear();
-        ss.str(line);
-
-        unsigned int r;
-        unsigned int c;
-        unsigned int layerId;
-        unsigned int objId;
-
-        ss >> layerId >> r >> c >> objId;
-
-        mGameMap->CreateObject(r, c, layerId, objId);
-    }
-
-    return true;
 }
 
 void ScreenGame::CreateIsoMap()

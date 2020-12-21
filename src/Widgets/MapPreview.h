@@ -3,6 +3,7 @@
 #include <sgui/Widget.h>
 
 #include <functional>
+#include <string>
 
 namespace lib
 {
@@ -21,7 +22,7 @@ class IsoMap;
 class MapPreview : public lib::sgui::Widget
 {
 public:
-    MapPreview(const char * file, lib::sgui::Widget * parent = nullptr);
+    MapPreview(const std::string & file, lib::sgui::Widget * parent = nullptr);
 
     void SetSelected(bool val);
 

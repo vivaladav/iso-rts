@@ -199,4 +199,3 @@ inline IsoLayer * IsoMap::GetLayer(unsigned int layerId) const
 }
 
 } // namespace game
-

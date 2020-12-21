@@ -37,8 +37,6 @@ public:
     void CancelProgressBar(const Cell2D & cell);
 
 private:
-    bool Load(const std::string & filename);
-
     void CreateIsoMap();
     void CreateLayers();
 
