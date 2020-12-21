@@ -21,6 +21,10 @@ class GameMap
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
 
+    void SetSize(unsigned int rows, unsigned int cols);
+
+    void SyncWalkableCells();
+
     void SetHomeCells();
     void AssignCell(const Cell2D & cell, Player * player);
 

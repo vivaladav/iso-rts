@@ -59,31 +59,49 @@ enum CellTypes : int
 // ==================== CONSTRUCTORS AND DESTRUCTOR ====================
 
 GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
-    : mCells(isoMap->GetNumRows() * isoMap->GetNumCols())
-    , mGame(game)
+    : mGame(game)
     , mScreenGame(sg)
     , mIsoMap(isoMap)
-    , mRows(isoMap->GetNumRows())
-    , mCols(isoMap->GetNumCols())
 {
+    SetSize(isoMap->GetNumRows(), isoMap->GetNumCols());
+}
+
+// ==================== PUBLIC METHODS ====================
+
+void GameMap::SetSize(unsigned int rows, unsigned int cols)
+{
+    const unsigned int size = rows * cols;
+
+    if(size == mCells.size())
+        return ;
+
+    mRows = rows;
+    mCols = cols;
+
+    mCells.resize(size);
+
+    // set cell coordinates
     int index = 0;
 
-    for(int r = 0; r < isoMap->GetNumRows(); ++r)
+    for(unsigned int r = 0; r < rows; ++r)
     {
-        for(int c = 0; c < isoMap->GetNumCols(); ++c)
+        for(unsigned int c = 0; c < cols; ++c)
         {
-            GameMapCell & cell = mCells[index];
+            GameMapCell & cell = mCells[index++];
 
             cell.row = r;
             cell.col = c;
-            cell.walkable = isoMap->GetCellType(r, c) == EMPTY;
-
-            ++index;
         }
     }
 }
 
-// ==================== PUBLIC METHODS ====================
+void GameMap::SyncWalkableCells()
+{
+    const unsigned int size = mRows * mCols;
+
+    for(unsigned int i = 0; i < size; ++i)
+        mCells[i].walkable = mIsoMap->GetCellType(i) == EMPTY;
+}
 
 void GameMap::SetHomeCells()
 {

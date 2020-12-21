@@ -13,26 +13,25 @@ namespace game
 // ==================== CONSTRUCTORS AND DESTRUCTOR ====================
 
 /**
- * @brief Creates an isometric map loading a file.
+ * @brief Creates an empty map with no dimension.
+ * @param tileW Width of a cell (height is half of that)
+ */
+IsoMap::IsoMap(int tileW)
+    : mTileW(tileW)
+    , mTileH(tileW * 0.5f)
+{
+}
+
+/**
+ * @brief Creates an isometric map with a fixed dimension.
  * @param rows Number of rows in the map
  * @param cold Number of columns in the map
  * @param tileW Width of a cell (height is half of that)
  */
 IsoMap::IsoMap(int rows, int cols, int tileW)
-    : mRows(rows)
-    , mCols(cols)
-    , mTileW(tileW)
-    , mTileH(tileW * 0.5f)
+    : IsoMap(tileW)
 {
-    const int mapSize = rows * cols;
-
-    mMap.reserve(mapSize);
-    mMap.assign(mapSize, 0);
-
-    mTilePositions.reserve(mapSize);
-    mTilePositions.assign(mapSize, lib::core::Point2D(0, 0));
-
-    UpdateTilePositions();
+    SetSize(rows, cols);
 }
 
 /// Destructor, deletes Images used for the tiles and IsoLayers.
@@ -47,6 +46,30 @@ IsoMap::~IsoMap()
 }
 
 // ==================== PUBLIC METHODS ====================
+
+void IsoMap::SetSize(unsigned int rows, unsigned int cols)
+{
+    if(rows == mRows && cols == mCols)
+        return ;
+
+    mRows = rows;
+    mCols = cols;
+
+    const int mapSize = rows * cols;
+
+    mMap.reserve(mapSize);
+    mMap.assign(mapSize, 0);
+
+    mTilePositions.reserve(mapSize);
+    mTilePositions.assign(mapSize, lib::core::Point2D());
+
+    // update layers
+    for(IsoLayer * layer : mLayers)
+        layer->UpdateSize();
+
+    // update tiles
+    UpdateTilePositions();
+}
 
 /**
  * @brief Gives the top-left corner position of a cell.

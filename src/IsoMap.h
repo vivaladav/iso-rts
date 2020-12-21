@@ -19,8 +19,11 @@ struct Cell2D;
 class IsoMap
 {
 public:
+    IsoMap(int tileW);
     IsoMap(int rows, int cols, int tileW);
     ~IsoMap();
+
+    void SetSize(unsigned int rows, unsigned int cols);
 
     int GetNumRows() const;
     int GetNumCols() const;

@@ -53,6 +53,8 @@ public:
     IsoLayer(const IsoMap * map, const std::vector<std::string> & files);
     ~IsoLayer();
 
+    void UpdateSize();
+
     bool ContainsObject(unsigned int r, unsigned int c) const;
     bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int r, unsigned int c);

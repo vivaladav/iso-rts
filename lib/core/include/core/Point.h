@@ -8,6 +8,7 @@ namespace core
 template<typename T>
 struct Point
 {
+    Point() : x(0), y(0) { }
     Point(T xi, T yi) : x(xi), y(yi) { }
 
     T x = 0;

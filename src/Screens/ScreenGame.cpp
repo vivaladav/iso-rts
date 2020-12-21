@@ -37,8 +37,26 @@ ScreenGame::ScreenGame(Game * game)
     game->AddKeyboardListener(this);
 
     // -- ISOMETRIC MAP --
+    CreateIsoMap();
+    CreateLayers();
+
+    // create game map
+    mGameMap = new GameMap(GetGame(), this, mIsoMap);
+
+    // load map file
     const std::string & mapFile = game->GetCurrentMapFile();
     Load(mapFile);
+
+    // center map on screen
+    const int mapH = mIsoMap->GetHeight();
+
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
+
+    // set homes
+    mGameMap->SetHomeCells();
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -241,11 +259,58 @@ bool ScreenGame::Load(const std::string & filename)
     std::getline(f, line);
     ss.str(line);
 
-    int rows = 0;
-    int cols = 0;
-
+    unsigned int rows = 0;
+    unsigned int cols = 0;
     ss >> rows >> cols;
 
+    mIsoMap->SetSize(rows, cols);
+
+    // READ BASE MAP
+    for(unsigned int r = 0; r < rows; ++r)
+    {
+        std::getline(f, line);
+        ss.clear();
+        ss.str(line);
+
+        const unsigned int ind0 = r * cols;
+
+        for(unsigned int c = 0; c < cols; ++c)
+        {
+            unsigned int type;
+
+            ss >> type;
+
+            const unsigned int ind = ind0 + c;
+
+            mIsoMap->SetCellType(ind, type);
+        }
+    }
+
+    // update game map
+    mGameMap->SetSize(rows, cols);
+    mGameMap->SyncWalkableCells();
+
+    // READ OBJECTS
+    while(std::getline(f, line))
+    {
+        ss.clear();
+        ss.str(line);
+
+        unsigned int r;
+        unsigned int c;
+        unsigned int layerId;
+        unsigned int objId;
+
+        ss >> layerId >> r >> c >> objId;
+
+        mGameMap->CreateObject(r, c, layerId, objId);
+    }
+
+    return true;
+}
+
+void ScreenGame::CreateIsoMap()
+{
     const int TILE_W = 128;
 
     const std::vector<std::string> tileFiles =
@@ -276,64 +341,8 @@ bool ScreenGame::Load(const std::string & filename)
     };
 
     // iso map
-    mIsoMap = new IsoMap(rows, cols, TILE_W);
+    mIsoMap = new IsoMap(TILE_W);
     mIsoMap->SetTiles(tileFiles);
-
-    // center map on screen
-    const int mapH = mIsoMap->GetHeight();
-
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
-
-    mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
-
-    // layers
-    CreateLayers();
-
-    // create game map
-    mGameMap = new GameMap(GetGame(), this, mIsoMap);
-
-    // READ BASE MAP
-    for(int r = 0; r < rows; ++r)
-    {
-        std::getline(f, line);
-        ss.clear();
-        ss.str(line);
-
-        const unsigned int ind0 = r * cols;
-
-        for(int c = 0; c < cols; ++c)
-        {
-            unsigned int type;
-
-            ss >> type;
-
-            const unsigned int ind = ind0 + c;
-
-            mIsoMap->SetCellType(ind, type);
-        }
-    }
-
-    // set homes
-    mGameMap->SetHomeCells();
-
-    // READ OBJECTS
-    while(std::getline(f, line))
-    {
-        ss.clear();
-        ss.str(line);
-
-        unsigned int r;
-        unsigned int c;
-        unsigned int layerId;
-        unsigned int objId;
-
-        ss >> layerId >> r >> c >> objId;
-
-        mGameMap->CreateObject(r, c, layerId, objId);
-    }
-
-    return true;
 }
 
 void ScreenGame::CreateLayers()
@@ -439,7 +448,6 @@ void ScreenGame::CreateLayers()
     };
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
-
 }
 
 void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)

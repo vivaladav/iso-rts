@@ -39,6 +39,7 @@ public:
 private:
     bool Load(const std::string & filename);
 
+    void CreateIsoMap();
     void CreateLayers();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, int playerId);

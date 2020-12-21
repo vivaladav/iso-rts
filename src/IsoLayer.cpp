@@ -43,6 +43,25 @@ IsoLayer::~IsoLayer()
 
 // ==================== PUBLIC METHODS ====================
 
+void IsoLayer::UpdateSize()
+{
+    const unsigned int size = mMap->GetNumRows() * mMap->GetNumCols();
+
+    if(size == mObjectsMap.size())
+        return ;
+
+    mObjectsMap.resize(size);
+
+    // update objects list
+    mObjectsList.clear();
+
+    for(unsigned int ind = 0; ind < size; ++ind)
+    {
+        if(mObjectsMap[ind] != nullptr)
+            mObjectsList.emplace_back(mObjectsMap[ind]);
+    }
+}
+
 /**
  * @brief Checks if a cell contains an object.
  * @param r Row index, starting from 0
