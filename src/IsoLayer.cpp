@@ -240,6 +240,15 @@ void IsoLayer::Render()
     }
 }
 
+void IsoLayer::MoveObjects(int deltaX, int deltaY)
+{
+    for(auto * obj : mObjectsList)
+    {
+        obj->pos.x += deltaX;
+        obj->pos.y += deltaY;
+    }
+}
+
 // ==================== PRIVATE METHODS ====================
 
 /**

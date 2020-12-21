@@ -67,6 +67,8 @@ public:
     void SetVisible(bool val);
     void Render();
 
+    void MoveObjects(int deltaX, int deltaY);
+
 private:
     void AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment);
 

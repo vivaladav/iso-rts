@@ -181,22 +181,6 @@ inline int IsoMap::GetWidth() const { return mTileW * mCols; }
 inline int IsoMap::GetHeight() const { return mTileH * mRows; }
 
 /**
- * @brief Sets the origin point of the map. This is the point where the top corner of the 0,0 iso cell will be placed.
- * @param x X coordinate in pixels
- * @param y Y coordinate in pixels
- */
-inline void IsoMap::SetOrigin(int x, int y)
-{
-    mX0 = x;
-    mY0 = y;
-
-    // rendering x is shifted of -w/2 because image origin is TL corner
-    mRenderX0 = x - mTileH;
-
-    UpdateTilePositions();
-}
-
-/**
  * @brief Gets an IsoLayer stored at a given position in the stack of layers.
  * @param index Index that identifies a specific layer in the map. Starting from 0
  * @return

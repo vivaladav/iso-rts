@@ -160,7 +160,7 @@ void GameMap::CreateObject(unsigned int r, unsigned int c,
         break;
 
         default:
-            // this should never happens
+            // this should never happen
             return ;
         break;
     }
