@@ -23,16 +23,20 @@ void FontManager::Destroy()
     mInstance = nullptr;
 }
 
-Font * FontManager::GetFont(const char * file, int size)
+Font * FontManager::GetFont(const char * file, int size, int style)
 {
-    const std::string key = std::string(file) + std::to_string(size);
+    // search if fonts already exists
+    const std::string key = std::string(file) +
+                            "sz" + std::to_string(size) +
+                            "st" + std::to_string(style);
 
     auto res = mFonts.find(key);
 
     if(res != mFonts.end())
         return res->second;
 
-    Font * font = new Font(file, size);
+    // font not found -> create it
+    Font * font = new Font(file, size, style);
 
     if(!font->IsValid())
     {

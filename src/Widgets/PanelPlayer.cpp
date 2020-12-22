@@ -27,8 +27,8 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     using namespace lib::sgui;
 
     FontManager * fm = FontManager::Instance();
-    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 28);
-    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 34);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 28, Font::BOLD);
+    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::NORMAL);
 
     Label * labelHeaderCoins = new Label("ENERGY", fontHeader, this);
     labelHeaderCoins->SetColor(0x212121FF);
@@ -297,8 +297,7 @@ void PanelPlayer::CreatePanelCell()
 
     FontManager * fm = FontManager::Instance();
 
-    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
-    fontHeader->SetStyle(Font::BOLD);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * labelHeader = new Label("CELL", fontHeader, mPanelCell);
     labelHeader->SetColor(0x212121FF);
@@ -330,8 +329,7 @@ void PanelPlayer::CreatePanelUnits()
 
     FontManager * fm = FontManager::Instance();
 
-    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
-    fontHeader->SetStyle(Font::BOLD);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(0x212121FF);

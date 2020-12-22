@@ -27,8 +27,7 @@ ButtonUnitsSelector::ButtonUnitsSelector(const char * text)
 
     // set label font
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
-    font->SetStyle(Font::BOLD);
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
 
     SetLabelFont(font);
 

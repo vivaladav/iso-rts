@@ -54,8 +54,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // -- TITLE --
     FontManager * fm = FontManager::Instance();
 
-    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 48);
-    fontTitle->SetStyle(Font::BOLD);
+    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 48, Font::BOLD);
 
     auto * title = new Label("SINGLE PLAYER GAME", fontTitle);
     title->SetColor(0x111111FF);
@@ -65,8 +64,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     // -- CPU PLAYERS --
     const unsigned int colorHeader = 0x333333FF;
-    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32);
-    fontTitle->SetStyle(Font::BOLD);
+    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * headerPlayers = new Label("CPU PLAYERS", fontHeader);
     headerPlayers->SetColor(colorHeader);

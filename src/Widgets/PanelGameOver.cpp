@@ -19,8 +19,7 @@ PanelGameOver::PanelGameOver(Game * game, lib::sgui::Widget * parent)
 
     FontManager * fm = FontManager::Instance();
 
-    Font * fontName = fm->GetFont("data/fonts/OpenSans.ttf", 128);
-    fontName->SetStyle(Font::BOLD);
+    Font * fontName = fm->GetFont("data/fonts/OpenSans.ttf", 128, Font::BOLD);
 
     Label * labelName = new Label("GAME OVER", fontName, this);
     labelName->SetColor(0x060606FF);

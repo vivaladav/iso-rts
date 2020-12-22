@@ -17,7 +17,7 @@ public:
     static FontManager * Instance();
     static void Destroy();
 
-    Font * GetFont(const char * file, int size);
+    Font * GetFont(const char * file, int size, int style);
 
     void ClearFonts();
 

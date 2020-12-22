@@ -57,25 +57,25 @@ ScreenTest::ScreenTest(Game * game)
     FontManager * fm = FontManager::Instance();
 
     const int TXT_X0 = 20;
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
     Text * txt = nullptr;
 
     txt = new Text("Text 1", font);
     txt->SetPosition(TXT_X0, 250);
     mRenderables.emplace_back(txt);
 
-    font->SetStyle(Font::BOLD | Font::ITALIC);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD | Font::ITALIC);
     txt = new Text("Text 2 (bold & italic)", font);
     txt->SetPosition(TXT_X0, 300);
     mRenderables.emplace_back(txt);
 
-    font->SetStyle(Font::BOLD);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
     txt = new Text("Text 3 (bold - A=128)", font);
     txt->SetPosition(TXT_X0, 350);
     txt->SetAlpha(128);
     mRenderables.emplace_back(txt);
 
-    font->SetStyle(Font::NORMAL);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
     txt = new Text("Text 4 (50, 150, 250, 255)", font);
     txt->SetPosition(TXT_X0, 400);
     txt->SetColor(50, 150, 250, 255);
@@ -137,14 +137,13 @@ void ScreenTest::TestSGui()
     FontManager * fm = FontManager::Instance();
 
     // -- PUSHBUTTON --
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24);
-    font->SetStyle(Font::BOLD);
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
     Label * label = new Label("PUSH BUTTON", font, container);
 
     ButtonMainMenu * button = new ButtonMainMenu("BUTTON 1", container);
     button->SetY(label->GetHeight() + 20);
 
-    font->SetStyle(Font::NORMAL);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
     label = new Label(font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
@@ -176,7 +175,7 @@ void ScreenTest::TestSGui()
     button->SetY(buttonY);
 
     // -- BUTTONS GROUP --
-    font->SetStyle(Font::BOLD);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
 
     label = new Label("BUTTONS GROUP", font, container);
     label->SetX(400);
@@ -197,7 +196,7 @@ void ScreenTest::TestSGui()
     bg->SetButtonChecked(3, true);
 
     // -- PROGRESS BAR --
-    font->SetStyle(Font::BOLD);
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
 
     label = new Label("PROGRESS BAR", font, container);
     label->SetX(700);

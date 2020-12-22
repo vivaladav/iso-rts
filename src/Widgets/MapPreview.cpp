@@ -46,7 +46,7 @@ MapPreview::MapPreview(const std::string & file, lib::sgui::Widget * parent)
     std::ostringstream os;
     os << mIsoMap->GetNumRows() << "x" << mIsoMap->GetNumCols() << std::ends;;
 
-    Font * font = FontManager::Instance()->GetFont("data/fonts/OpenSans.ttf", 24);
+    Font * font = FontManager::Instance()->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
 
     mLabelSize = new Text(os.str().c_str(), font);
     mLabelSize->SetColor(0x888888FF);

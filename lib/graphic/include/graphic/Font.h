@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
-
 typedef struct _TTF_Font TTF_Font;
 
 namespace lib
@@ -23,25 +20,18 @@ public:
     bool IsValid() const;
 
     int GetSize() const;
-
-    void SetStyle(int s);
+    int GetStyle() const;
 
 private:
-    Font(const char * file, int size);
+    Font(const char * file, int size, int style);
     ~Font();
 
-    void CreateSysFont();
-
-    TTF_Font * GetSyFont() const;
+    TTF_Font * GetSysFont() const;
 
 private:
-    std::string mFile;
-    std::unordered_map<int, TTF_Font *> mSysFonts;
-    TTF_Font * mActiveSysFont = nullptr;
+    TTF_Font * mSysFont = nullptr;
 
     int mSize = 0;
-
-    int mStyle;
 
     // Only FontManager can create/destroy a Font
     friend class FontManager;
@@ -49,11 +39,11 @@ private:
     friend class Text;
 };
 
-inline bool Font::IsValid() const { return mActiveSysFont != nullptr; }
+inline bool Font::IsValid() const { return mSysFont != nullptr; }
 
 inline int Font::GetSize() const { return mSize; }
 
-inline TTF_Font * Font::GetSyFont() const { return mActiveSysFont; }
+inline TTF_Font * Font::GetSysFont() const { return mSysFont; }
 
 } // namespace graphic
 } // namespace lib

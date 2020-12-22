@@ -63,8 +63,7 @@ Game::Game(int argc, char * argv[])
     AddKeyboardListener(mStage);
     AddMouseListener(mStage);
 
-    mFontGui = fm->GetFont("data/fonts/OpenSans.ttf", 32);
-    mFontGui->SetStyle(Font::BOLD);
+    mFontGui = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
     mStage->SetDefaultFont(mFontGui);
 }
 

@@ -30,8 +30,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- TITLE --
     FontManager * fm = FontManager::Instance();
 
-    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 128);
-    fontTitle->SetStyle(Font::BOLD);
+    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 128, Font::BOLD);
 
     auto * labelTitle = new Label("Iso RTS", fontTitle);
     const int titleX = (Renderer::Instance()->GetWidth() - labelTitle->GetWidth()) * 0.5f;

@@ -27,8 +27,7 @@ ButtonMainMenu::ButtonMainMenu(const char * text, lib::sgui::Widget * parent)
 
     // set label font
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 32);
-    font->SetStyle(Font::BOLD);
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     SetLabelFont(font);
 
