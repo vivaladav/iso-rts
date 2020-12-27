@@ -35,14 +35,12 @@ public:
     void ClearSelectedCell();
     void SetSelectedCell(const GameMapCell & cell);
 
-    void UpdateButtonCellFortify(int fortLevel);
     void UpdateButtonCellUpgrade(int cellLevel);
     void UpdateButtonNewUnit(int num, int level);
     void UpdateButtonUnitDestroy();
     void UpdateButtonUnitUpgrade(int num, int level);
 
     void SetFunctionCellConquest(const std::function<void()> & f);
-    void SetFunctionCellFortify(const std::function<void()> & f);
     void SetFunctionCellUpgrade(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
@@ -66,7 +64,6 @@ private:
     lib::sgui::Label * mLabelCoins = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
-    ButtonPanelPlayer * mButtonCellFortify = nullptr;
     ButtonPanelPlayer * mButtonCellUpgrade = nullptr;
     ButtonPanelPlayer * mButtonNewUnit = nullptr;
 

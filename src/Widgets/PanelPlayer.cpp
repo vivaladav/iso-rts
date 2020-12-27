@@ -145,30 +145,12 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
         unitLevel = unit->GetUnitLevel();
     }
 
-    UpdateButtonCellFortify(cell.fortLevel);
     UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(unitElements, unitLevel);
     UpdateButtonUnitDestroy();
     UpdateButtonUnitUpgrade(unitElements, unitLevel);
 
     mPanelCell->SetVisible(true);
-}
-
-void PanelPlayer::UpdateButtonCellFortify(int fortLevel)
-{
-    if(fortLevel >= MAX_CELL_FORT_LEVEL)
-    {
-        mButtonCellFortify->SetLabel("FORTIFY");
-        mButtonCellFortify->SetEnabled(false);
-    }
-    else
-    {
-        std::ostringstream s;
-        s << "FORTIFY (" << COST_CELL_FORT[fortLevel] << ")";
-
-        mButtonCellFortify->SetLabel(s.str().c_str());
-        mButtonCellFortify->SetEnabled(true);
-    }
 }
 
 void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
@@ -237,11 +219,6 @@ void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
     mButtonCellConquest->SetOnClickFunction(f);
 }
 
-void PanelPlayer::SetFunctionCellFortify(const std::function<void()> & f)
-{
-    mButtonCellFortify->SetOnClickFunction(f);
-}
-
 void PanelPlayer::SetFunctionCellUpgrade(const std::function<void()> & f)
 {
     mButtonCellUpgrade->SetOnClickFunction(f);
@@ -303,7 +280,6 @@ void PanelPlayer::CreatePanelCell()
     labelHeader->SetColor(0x212121FF);
 
     mButtonNewUnit = new ButtonPanelPlayer(mPanelCell);
-    mButtonCellFortify = new ButtonPanelPlayer(mPanelCell);
     mButtonCellUpgrade = new ButtonPanelPlayer(mPanelCell);
 
     const int marginY0 = 10;
@@ -313,9 +289,6 @@ void PanelPlayer::CreatePanelCell()
 
     mButtonNewUnit->SetY(buttonY);
     buttonY += mButtonNewUnit->GetHeight() + marginY;
-
-    mButtonCellFortify->SetY(buttonY);
-    buttonY += mButtonCellFortify->GetHeight() + marginY;
 
     mButtonCellUpgrade->SetY(buttonY);
 }

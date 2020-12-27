@@ -104,15 +104,6 @@ ScreenGame::ScreenGame(Game * game)
        ClearSelection(player);
     });
 
-    // FORTIFY CELL
-    mPanelPlayer->SetFunctionCellFortify([this, player]
-    {
-        SetupCellFortify(player->GetSelectedCell(), player);
-
-        // clear selection
-        ClearSelection(player);
-    });
-
     // UPGRADE CELL
     mPanelPlayer->SetFunctionCellUpgrade([this, player]
     {
@@ -283,16 +274,6 @@ void ScreenGame::CreateIsoMap()
 void ScreenGame::CreateLayers()
 {
     // -- LAYERS --
-    // FORTIFICATIONS
-    const std::vector<std::string> fortImgs =
-    {
-        "data/img/fort01.png",
-        "data/img/fort02.png",
-        "data/img/fort03.png"
-    };
-
-    mIsoMap->CreateLayer(MapLayers::FORTIFICATIONS, fortImgs);
-
     // SELECTION
     const std::vector<std::string> selImgs = { "data/img/selection.png" };
 
@@ -619,13 +600,6 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         switch(action.aid)
         {
-            case ACT_CELL_FORTIFY:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - FORTIFY CELL" << std::endl;
-                done = SetupCellFortify(action.src, player);
-            }
-            break;
-
             case ACT_CELL_UPGRADE:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - UPGRADE CELL" << std::endl;
@@ -699,27 +673,6 @@ bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
     pb->SetFunctionOnCompleted([this, cell, player]
     {
         mGameMap->ConquestCell(cell, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
-    });
-
-    return true;
-}
-
-bool ScreenGame::SetupCellFortify(const Cell2D & cell, Player * player)
-{
-    // check if fortify is possible
-    if(!mGameMap->CanFortifyCell(cell, player))
-        return false;
-
-    // start fortify
-    mGameMap->StartFortifyCell(cell, player);
-
-    // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_FORT_CELL, player->GetPlayerId());
-
-    pb->SetFunctionOnCompleted([this, cell]
-    {
-        mGameMap->FortifyCell(cell);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 

@@ -56,8 +56,6 @@ void PlayerAI::DecideActions()
         std::vector<AIActionId> actions;
 
         // init possible actions
-        if(mGm->CanFortifyCell(pos, mPlayer))
-            actions.emplace_back(ACT_CELL_FORTIFY);
         if(mGm->CanUpgradeCell(pos, mPlayer))
             actions.emplace_back(ACT_CELL_UPGRADE);
         if(mGm->CanCreateUnit(pos, mPlayer))
@@ -185,10 +183,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             }
             break;
 
-            case ACT_CELL_FORTIFY:
-                cost = COST_CELL_FORT[cell.fortLevel];
-            break;
-
             case ACT_CELL_UPGRADE:
                 cost = COST_CELL_UPGRADE[cell.level];
             break;
@@ -243,14 +237,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
                 const Unit * unit = cell.GetUnit();
                 const int unitLevel = unit ? unit->GetUnitLevel() : 0;
                 prob += 100.f * (MAX_UNITS_LEVEL - unitLevel) / MAX_UNITS_LEVEL;
-            }
-            break;
-
-            case ACT_CELL_FORTIFY:
-            {
-                prob += distScore * 0.75f;
-
-                prob += 100.f * (MAX_CELL_FORT_LEVEL - cell.fortLevel) / MAX_CELL_FORT_LEVEL;
             }
             break;
 
@@ -311,17 +297,11 @@ int PlayerAI::MakeCellPriority(const GameMapCell & cell, int enemyDist) const
     const int numElems = unit ? unit->GetNumElements() : 0;
     priority += maxPriorityUnits - (incPriorityUnits * numElems);
 
-    // add fortification val
-    const int maxPriorityFort = 24;
-    const int incPriorityFort = maxPriorityFort / MAX_CELL_FORT_LEVEL;
-
-    priority += maxPriorityFort - (incPriorityFort * cell.fortLevel);
-
     // add cell level val
     const int maxPriorityLevel = 24;
     const int incPriorityLevel = maxPriorityLevel / MAX_CELL_LEVEL;
 
-    priority += maxPriorityLevel - (incPriorityLevel * cell.fortLevel);
+    priority += maxPriorityLevel - (incPriorityLevel * cell.level);
 
     return priority;
 }

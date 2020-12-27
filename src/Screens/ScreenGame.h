@@ -54,7 +54,6 @@ private:
     int CellToIndex(const Cell2D & cell) const;
 
     bool SetupCellConquest(const Cell2D & cell, Player * player);
-    bool SetupCellFortify(const Cell2D & cell, Player * player);
     bool SetupCellUpgrade(const Cell2D & cell, Player * player);
     bool SetupNewUnit(const Cell2D & cell, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);

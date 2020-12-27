@@ -40,11 +40,6 @@ public:
     void StartUpgradeCell(const Cell2D & cell, Player * player);
     void UpgradeCell(const Cell2D & cell, Player * player);
 
-    // cell fortify
-    bool CanFortifyCell(const Cell2D & cell, Player * player);
-    void StartFortifyCell(const Cell2D & cell, Player * player);
-    void FortifyCell(const Cell2D & cell);
-
     // cell conquest
     bool CanConquestCell(const Cell2D & cell, Player * player);
     void StartConquestCell(const Cell2D & cell, Player * player);
@@ -81,7 +76,6 @@ public:
     void CheckGameEnd();
 
 private:
-    void DestroyFortification(GameMapCell & gcell);
     void StopCellChange(GameMapCell & gcell);
 
     void MoveUnitsData(GameMapCell & gcell0, GameMapCell & gcell1, int numUnits);
@@ -123,7 +117,7 @@ inline Player * GameMap::GetCellOwner(unsigned int r, unsigned int c) const
 }
 
 /**
- * @brief Checks if a cell is in the process of changing (upgrade, fortification in progress).
+ * @brief Checks if a cell is in the process of changing (upgrade in progress).
  * @param r Row index, starting from 0
  * @param c Column index, starting from 0
  * @return TRUE if the cell is changing, FALSE otherwise

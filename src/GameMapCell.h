@@ -24,7 +24,6 @@ struct GameMapCell
     int row = 0;
     int col = 0;
     int level = 0;
-    int fortLevel = 0;
     bool walkable = true;
     bool changing = false;
     bool linked = false;
