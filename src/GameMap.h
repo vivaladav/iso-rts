@@ -35,11 +35,6 @@ public:
     void CreateObject(unsigned int r, unsigned int c,
                       unsigned int layerId, unsigned int objId);
 
-    // cell upgrade
-    bool CanUpgradeCell(const Cell2D & cell, Player * player);
-    void StartUpgradeCell(const Cell2D & cell, Player * player);
-    void UpgradeCell(const Cell2D & cell, Player * player);
-
     // cell conquest
     bool CanConquestCell(const Cell2D & cell, Player * player);
     void StartConquestCell(const Cell2D & cell, Player * player);

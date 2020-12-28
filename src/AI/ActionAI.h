@@ -9,7 +9,6 @@ enum AIActionId : unsigned int
 {
     ACT_NOP,
 
-    ACT_CELL_UPGRADE,
     ACT_NEW_UNIT,
     ACT_UNIT_DESTROY,
     ACT_UNIT_MOVE,

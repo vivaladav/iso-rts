@@ -145,29 +145,11 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
         unitLevel = unit->GetUnitLevel();
     }
 
-    UpdateButtonCellUpgrade(cell.level);
     UpdateButtonNewUnit(unitElements, unitLevel);
     UpdateButtonUnitDestroy();
     UpdateButtonUnitUpgrade(unitElements, unitLevel);
 
     mPanelCell->SetVisible(true);
-}
-
-void PanelPlayer::UpdateButtonCellUpgrade(int cellLevel)
-{
-    if(cellLevel >= MAX_CELL_LEVEL)
-    {
-        mButtonCellUpgrade->SetLabel("UPGRADE");
-        mButtonCellUpgrade->SetEnabled(false);
-    }
-    else
-    {
-        std::ostringstream s;
-        s << "UPGRADE (" << COST_CELL_UPGRADE[cellLevel] << ")";
-
-        mButtonCellUpgrade->SetLabel(s.str().c_str());
-        mButtonCellUpgrade->SetEnabled(true);
-    }
 }
 
 void PanelPlayer::UpdateButtonNewUnit(int num, int level)
@@ -217,11 +199,6 @@ void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
 void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
 {
     mButtonCellConquest->SetOnClickFunction(f);
-}
-
-void PanelPlayer::SetFunctionCellUpgrade(const std::function<void()> & f)
-{
-    mButtonCellUpgrade->SetOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
@@ -280,7 +257,6 @@ void PanelPlayer::CreatePanelCell()
     labelHeader->SetColor(0x212121FF);
 
     mButtonNewUnit = new ButtonPanelPlayer(mPanelCell);
-    mButtonCellUpgrade = new ButtonPanelPlayer(mPanelCell);
 
     const int marginY0 = 10;
     const int marginY = 30;
@@ -289,8 +265,6 @@ void PanelPlayer::CreatePanelCell()
 
     mButtonNewUnit->SetY(buttonY);
     buttonY += mButtonNewUnit->GetHeight() + marginY;
-
-    mButtonCellUpgrade->SetY(buttonY);
 }
 
 void PanelPlayer::CreatePanelUnits()

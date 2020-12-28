@@ -191,65 +191,6 @@ void GameMap::CreateObject(unsigned int r, unsigned int c,
     mIsoMap->GetLayer(layerId)->AddObject(r, c, imgId, ObjectAlignment::BOTTOM);
 }
 
-bool GameMap::CanUpgradeCell(const Cell2D & cell, Player * player)
-{
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-
-    // out of bounds
-    if(!(r < mRows && c < mCols))
-        return false;
-
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    // already changing, not own cell or already max level
-    if(gcell.changing ||
-       gcell.owner != player ||
-       MAX_CELL_LEVEL == gcell.level)
-        return false;
-
-    // check if player has enough money
-    const int cost = COST_CELL_UPGRADE[gcell.level];
-
-    if(cost > player->GetMoney())
-        return false;
-
-    return true;
-}
-
-void GameMap::StartUpgradeCell(const Cell2D & cell, Player * player)
-{
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
-    // take player's money
-    const int cost = COST_CELL_UPGRADE[gcell.level];
-
-    player->SumMoney(-cost);
-
-    // mark cell as changing
-    gcell.changing = true;
-}
-
-void GameMap::UpgradeCell(const Cell2D & cell, Player * player)
-{
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
-    ++(gcell.level);
-
-    // update player
-    player->SumTotalCellsLevel(1);
-
-    // update map
-    const int cellType = DefineCellType(gcell);
-    mIsoMap->SetCellType(ind, cellType);
-
-    // reset cell's changing flag
-    gcell.changing = false;
-}
-
 bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);

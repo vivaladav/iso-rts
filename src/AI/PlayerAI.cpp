@@ -56,8 +56,6 @@ void PlayerAI::DecideActions()
         std::vector<AIActionId> actions;
 
         // init possible actions
-        if(mGm->CanUpgradeCell(pos, mPlayer))
-            actions.emplace_back(ACT_CELL_UPGRADE);
         if(mGm->CanCreateUnit(pos, mPlayer))
             actions.emplace_back(ACT_NEW_UNIT);
         if(mGm->CanUpgradeUnit(pos, mPlayer))
@@ -183,10 +181,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             }
             break;
 
-            case ACT_CELL_UPGRADE:
-                cost = COST_CELL_UPGRADE[cell.level];
-            break;
-
             default:
             break;
         }
@@ -240,15 +234,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             }
             break;
 
-            case ACT_CELL_UPGRADE:
-            {
-                // cell upgrade should be more likely when far from enemies
-                prob += 100.f - distScore;
-
-                prob += 100.f * (MAX_CELL_LEVEL - cell.level) / MAX_CELL_LEVEL;
-            }
-            break;
-
             case ACT_UNIT_DESTROY:
             {
                 // unit destroy should be more likely when far from enemies
@@ -296,12 +281,6 @@ int PlayerAI::MakeCellPriority(const GameMapCell & cell, int enemyDist) const
     const Unit * unit = cell.GetUnit();
     const int numElems = unit ? unit->GetNumElements() : 0;
     priority += maxPriorityUnits - (incPriorityUnits * numElems);
-
-    // add cell level val
-    const int maxPriorityLevel = 24;
-    const int incPriorityLevel = maxPriorityLevel / MAX_CELL_LEVEL;
-
-    priority += maxPriorityLevel - (incPriorityLevel * cell.level);
 
     return priority;
 }

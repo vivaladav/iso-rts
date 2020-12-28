@@ -104,15 +104,6 @@ ScreenGame::ScreenGame(Game * game)
        ClearSelection(player);
     });
 
-    // UPGRADE CELL
-    mPanelPlayer->SetFunctionCellUpgrade([this, player]
-    {
-        SetupCellUpgrade(player->GetSelectedCell(), player);
-
-        // clear selection
-        ClearSelection(player);
-    });
-
     // CREATE NEW UNIT
     mPanelPlayer->SetFunctionNewUnit([this, player]
     {
@@ -600,13 +591,6 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         switch(action.aid)
         {
-            case ACT_CELL_UPGRADE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - UPGRADE CELL" << std::endl;
-                done = SetupCellUpgrade(action.src, player);
-            }
-            break;
-
             case ACT_NEW_UNIT:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
@@ -673,27 +657,6 @@ bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
     pb->SetFunctionOnCompleted([this, cell, player]
     {
         mGameMap->ConquestCell(cell, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
-    });
-
-    return true;
-}
-
-bool ScreenGame::SetupCellUpgrade(const Cell2D & cell, Player * player)
-{
-    // check if upgrade is possible
-    if(!mGameMap->CanUpgradeCell(cell, player))
-        return false;
-
-    // start upgrade
-    mGameMap->StartUpgradeCell(cell, player);
-
-    // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_CELL, player->GetPlayerId());
-
-    pb->SetFunctionOnCompleted([this, cell, player]
-    {
-        mGameMap->UpgradeCell(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 
