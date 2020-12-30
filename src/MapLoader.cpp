@@ -102,14 +102,16 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         ss.clear();
         ss.str(line);
 
-        unsigned int r;
-        unsigned int c;
         unsigned int layerId;
         unsigned int objId;
+        unsigned int r0;
+        unsigned int c0;
+        unsigned int rows;
+        unsigned int cols;
 
-        ss >> layerId >> r >> c >> objId;
+        ss >> layerId >> objId >> r0 >> c0 >> rows >> cols;
 
-        mGameMap->CreateObject(r, c, layerId, objId);
+        mGameMap->CreateObject(layerId, objId, r0, c0, rows, cols);
     }
 }
 

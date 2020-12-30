@@ -18,14 +18,19 @@ class IsoMap;
 /// An object of an IsoLayer.
 struct IsoObject
 {
-    IsoObject(int ind, const lib::core::Point2D & p)
-        : imgIndex(ind)
-        , pos(p)
+    IsoObject(const lib::core::Point2D & p, int ind,
+              unsigned int rs = 1, unsigned int cs = 1)
+        : pos(p)
+        , imgIndex(ind)
+        , rows(rs)
+        , cols(cs)
     {
     }
 
-    int imgIndex;
     lib::core::Point2D pos;
+    int imgIndex = 0;
+    unsigned int rows = 1;
+    unsigned int cols = 1;
 };
 
 enum ObjectAlignment
@@ -57,6 +62,7 @@ public:
 
     bool ContainsObject(unsigned int r, unsigned int c) const;
     bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
+    bool AddObject(unsigned int r, unsigned int c, unsigned int rows, unsigned int cols, int objIndex);
     void ClearObject(unsigned int r, unsigned int c);
     bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     bool MoveObject(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1,

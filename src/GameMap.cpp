@@ -56,7 +56,7 @@ enum CellTypes : int
     NUM_CELL_TYPES
 };
 
-// ==================== CONSTRUCTORS AND DESTRUCTOR ====================
+// ==================== PUBLIC METHODS ====================
 
 GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     : mGame(game)
@@ -66,7 +66,11 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     SetSize(isoMap->GetNumRows(), isoMap->GetNumCols());
 }
 
-// ==================== PUBLIC METHODS ====================
+GameMap::~GameMap()
+{
+    for(GameObject * obj : mObjects)
+        delete obj;
+}
 
 void GameMap::SetSize(unsigned int rows, unsigned int cols)
 {
@@ -158,23 +162,36 @@ void GameMap::AssignCell(const Cell2D & cell, Player * player)
     player->SumTotalCellsLevel(1);
 }
 
-void GameMap::CreateObject(unsigned int r, unsigned int c,
-                           unsigned int layerId, unsigned int objId)
+void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
+                           unsigned int r0, unsigned int c0,
+                           unsigned int rows, unsigned int cols)
 {
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
+    // object origin is out of map
+    if(r0 >= mRows || c0 >= mCols)
+        return ;
+
+    // full size is out of map
+    const unsigned int r1 = 1 + r0 - rows;
+    const unsigned int c1 = 1 + c0 - cols;
+
+    if(r1 >= mRows || c1 >= mCols)
+        return ;
+
+    const unsigned int ind0 = r0 * mCols + c0;
+
+    GameMapCell & gcell = mCells[ind0];
 
     // cell is already full
     if(gcell.obj)
         return;
 
+    // create game object
+    GameObject * obj = nullptr;
+
     switch (objId)
     {
         case OBJ_RES_GEN:
-        {
-            gcell.obj = new ResourceGenerator(ResourceType::ENERGY);
-            gcell.obj->SetCell(&mCells[ind]);
-        }
+            obj = new ResourceGenerator(ResourceType::ENERGY);
         break;
 
         default:
@@ -183,12 +200,29 @@ void GameMap::CreateObject(unsigned int r, unsigned int c,
         break;
     }
 
-    // update cell
-    gcell.walkable = false;
+    // set object properties
+    obj->SetCell(&mCells[ind0]);
+    obj->SetSize(rows, cols);
+
+    // store object in map list
+    mObjects.push_back(obj);
+
+    // update cells
+    for(unsigned int r = r1; r <= r0; ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(unsigned int c = c1; c <= c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mCells[ind].walkable = false;
+            mCells[ind].obj = obj;
+        }
+    }
 
     // create object in iso map
-    const GameObjectImageId imgId = gcell.obj->GetImageId();
-    mIsoMap->GetLayer(layerId)->AddObject(r, c, imgId, ObjectAlignment::BOTTOM);
+    const GameObjectImageId imgId = obj->GetImageId();
+    mIsoMap->GetLayer(layerId)->AddObject(r0, c0, rows, cols, imgId);
 }
 
 bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
@@ -318,9 +352,20 @@ void GameMap::StartConquestResourceGenerator(const Cell2D & start, const Cell2D 
     const int ind0 = start.row * mCols + start.col;
     mCells[ind0].changing = true;
 
-    // mark end as changing
+    // mark object cells as changing
     const int ind1 = end.row * mCols + end.col;
-    mCells[ind1].changing = true;
+    GameObject * obj = mCells[ind1].obj;
+
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mCells[ind].changing = true;
+        }
+    }
 }
 
 void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
@@ -328,9 +373,23 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
 
-    // assign owner
-    gcell1.owner = player;
-    gcell1.obj->SetOwner(player->GetPlayerId());
+    GameObject * obj = gcell1.obj;
+
+    // assign owner to cells
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mCells[ind].owner = player;
+            mCells[ind].changing = false;
+        }
+    }
+
+    // assign owner to object
+    obj->SetOwner(player->GetPlayerId());
 
     // update player
     player->SumCells(1);
@@ -339,9 +398,6 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
 
     // update iso map
     mIsoMap->GetLayer(OBJECTS)->ChangeObject(end.row, end.col, gcell1.obj->GetImageId());
-
-    // reset end changing flag
-    gcell1.changing = false;
 
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
@@ -443,6 +499,8 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
         gcell.obj = unit;
 
         mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
+
+        mObjects.push_back(unit);
     }
 
     // update player

@@ -112,6 +112,55 @@ bool IsoLayer::AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAli
     return true;
 }
 
+bool IsoLayer::AddObject(unsigned int r, unsigned int c, unsigned int rows, unsigned int cols, int objIndex)
+{
+    const unsigned int mapRows = mMap->GetNumRows();
+    const unsigned int mapCols = mMap->GetNumCols();
+
+    // object origin is out of map
+    if(r >= mapRows || c >= mapCols)
+        return false;
+
+    // full size is out of map
+    const unsigned int r1 = 1 + r - rows;
+    const unsigned int c1 = 1 + c - cols;
+
+    if(r1 >= mapRows || c1 >= mapCols)
+        return false;
+
+    // create new IsoObject
+    IsoObject * obj = new IsoObject({0, 0}, objIndex, rows, cols);
+
+    // position it in a cell
+    const lib::core::Point2D cellPos = mMap->GetCellPosition(r, c);
+    const int cellH = mMap->GetTileHeight();
+
+    const int x0 = cellPos.x + cellH;
+    const int y0 = cellPos.y + cellH;
+
+    const int imgW0 = cols * cellH;
+    const int imgH = mImages[obj->imgIndex]->GetHeight();
+
+    obj->pos.x = x0 - imgW0;
+    obj->pos.y = y0 - imgH;
+
+    // store object
+    for(unsigned int row = r1; row <= r; ++row)
+    {
+        const unsigned int indBase = row * mapCols;
+
+        for(unsigned int col = c1; col <= c; ++col)
+        {
+            const unsigned int ind = indBase + col;
+            mObjectsMap[ind] = obj;
+        }
+    }
+
+    mObjectsList.emplace_back(obj);
+
+    return true;
+}
+
 /**
  * @brief Destroys an object in a cell.
  * @param r Row index, starting from 0
@@ -303,7 +352,7 @@ void IsoLayer::AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignm
 void IsoLayer::AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment)
 {
     // create new IsoObject
-    IsoObject * obj = new IsoObject(objIndex, {0, 0});
+    IsoObject * obj = new IsoObject({0, 0}, objIndex);
 
     // position it in a cell
     AlignObject(obj, cellIndex, alignment);

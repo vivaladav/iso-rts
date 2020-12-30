@@ -6,11 +6,6 @@
 namespace game
 {
 
-GameMapCell::~GameMapCell()
-{
-    delete obj;
-}
-
 Unit * GameMapCell::GetUnit() const
 {
     if(obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_UNIT)

@@ -8,6 +8,7 @@ namespace game
 {
 
 class Game;
+class GameObject;
 class IsoMap;
 class Player;
 class ScreenGame;
@@ -20,6 +21,7 @@ class GameMap
 {
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
+    ~GameMap();
 
     void SetSize(unsigned int rows, unsigned int cols);
 
@@ -32,8 +34,9 @@ public:
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
-    void CreateObject(unsigned int r, unsigned int c,
-                      unsigned int layerId, unsigned int objId);
+    void CreateObject(unsigned int layerId, unsigned int objId,
+                      unsigned int r0, unsigned int c0,
+                      unsigned int rows, unsigned int cols);
 
     // cell conquest
     bool CanConquestCell(const Cell2D & cell, Player * player);
@@ -85,6 +88,7 @@ private:
 
 private:
     std::vector<GameMapCell> mCells;
+    std::vector<GameObject *> mObjects;
 
     Game * mGame = nullptr;
     ScreenGame * mScreenGame = nullptr;
