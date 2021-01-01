@@ -27,31 +27,20 @@ namespace game
 enum CellTypes : int
 {
     EMPTY = 0,
-    FULL,
+    SCENE,
+    FOG_OF_WAR,
 
-    // PLAYER 1
-    P1L1,
-    P1L2,
-    P1L3,
-    P1L4,
+    // FACTION 1
+    F1,
+    F1_CONNECTED,
 
-    // PLAYER 2
-    P2L1,
-    P2L2,
-    P2L3,
-    P2L4,
+    // FACTION 2
+    F2,
+    F2_CONNECTED,
 
-    // PLAYER 3
-    P3L1,
-    P3L2,
-    P3L3,
-    P3L4,
-
-    // PLAYER 4
-    P4L1,
-    P4L2,
-    P4L3,
-    P4L4,
+    // FACTION 3
+    F3,
+    F3_CONNECTED,
 
     NUM_CELL_TYPES
 };
@@ -1058,30 +1047,23 @@ int GameMap::DefineCellType(const GameMapCell & cell)
     {
         case 0:
             if(cell.linked)
-                type = P1L3;
+                type = F1_CONNECTED;
             else
-                type = P1L1;
+                type = F1;
         break;
 
         case 1:
             if(cell.linked)
-                type = P2L3;
+                type = F2_CONNECTED;
             else
-                type = P2L1;
+                type = F2;
         break;
 
         case 2:
             if(cell.linked)
-                type = P3L3;
+                type = F3_CONNECTED;
             else
-                type = P3L1;
-        break;
-
-        case 3:
-            if(cell.linked)
-                type = P4L3;
-            else
-                type = P4L1;
+                type = F3;
         break;
 
         default:

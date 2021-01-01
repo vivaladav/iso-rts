@@ -31,7 +31,7 @@ namespace game
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
 {
-    game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
+    game->SetClearColor(0x0F, 0x0F, 0x0F, 0xFF);
 
     game->AddKeyboardListener(this);
 
@@ -228,33 +228,26 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
 
 void ScreenGame::CreateIsoMap()
 {
-    const int TILE_W = 128;
+    const int TILE_W = 96;
 
     const std::vector<std::string> tileFiles =
     {
         // scene
-        "data/img/tile00.png",
-        "data/img/tile01.png",
-        // player 1
-        "data/img/tile-p1l1.png",
-        "data/img/tile-p1l2.png",
-        "data/img/tile-p1l3.png",
-        "data/img/tile-p1l4.png",
-        // player 2
-        "data/img/tile-p2l1.png",
-        "data/img/tile-p2l2.png",
-        "data/img/tile-p2l3.png",
-        "data/img/tile-p2l4.png",
-        // player 3
-        "data/img/tile-p3l1.png",
-        "data/img/tile-p3l2.png",
-        "data/img/tile-p3l3.png",
-        "data/img/tile-p3l4.png",
-        // player 4
-        "data/img/tile-p4l1.png",
-        "data/img/tile-p4l2.png",
-        "data/img/tile-p4l3.png",
-        "data/img/tile-p4l4.png"
+        "data/img/tile_empty.png",
+        "data/img/tile_scene_01.png",
+        "data/img/tile_fow.png",
+
+        // faction 1
+        "data/img/tile-f1.png",
+        "data/img/tile-f1_connected.png",
+
+        // faction 2
+        "data/img/tile-f2.png",
+        "data/img/tile-f2_connected.png",
+
+        // faction 3
+        "data/img/tile-f3.png",
+        "data/img/tile-f3_connected.png",
     };
 
     // iso map
@@ -348,10 +341,9 @@ void ScreenGame::CreateLayers()
 
         // ENERGY SOURCE
         "data/img/energy_source.png",
-        "data/img/energy_source-p1.png",
-        "data/img/energy_source-p2.png",
-        "data/img/energy_source-p3.png",
-        "data/img/energy_source-p4.png"
+        "data/img/energy_source-f1.png",
+        "data/img/energy_source-f2.png",
+        "data/img/energy_source-f3.png",
     };
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);

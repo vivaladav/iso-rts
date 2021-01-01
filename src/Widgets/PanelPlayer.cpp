@@ -20,6 +20,9 @@
 namespace game
 {
 
+const unsigned int colorHeader = 0x888888FF;
+const unsigned int colorData = 0x777777FF;
+
 PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
@@ -31,25 +34,25 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::NORMAL);
 
     Label * labelHeaderCoins = new Label("ENERGY", fontHeader, this);
-    labelHeaderCoins->SetColor(0x212121FF);
+    labelHeaderCoins->SetColor(colorHeader);
 
     const int coins = player->GetMoney();
     mLabelCoins = new Label(MakeStrCoins(coins).c_str(), fontData, this);
-    mLabelCoins->SetColor(0x212121FF);
+    mLabelCoins->SetColor(colorData);
 
     Label * labelHeaderCells = new Label("CELLS", fontHeader, this);
-    labelHeaderCells->SetColor(0x212121FF);
+    labelHeaderCells->SetColor(colorHeader);
 
     const int cells = player->GetNumCells();
     mLabelCells = new Label(MakeStrCells(cells).c_str(), fontData, this);
-    mLabelCells->SetColor(0x212121FF);
+    mLabelCells->SetColor(colorData);
 
     Label * labelHeaderUnits = new Label("UNITS", fontHeader, this);
-    labelHeaderUnits->SetColor(0x212121FF);
+    labelHeaderUnits->SetColor(colorHeader);
 
     const int units = player->GetNumUnits();
     mLabelUnits = new Label(MakeStrUnits(units).c_str(), fontData, this);
-    mLabelUnits->SetColor(0x212121FF);
+    mLabelUnits->SetColor(colorData);
 
     // -- subpanels --
     const int marginTopRow = 10;
@@ -254,7 +257,7 @@ void PanelPlayer::CreatePanelCell()
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * labelHeader = new Label("CELL", fontHeader, mPanelCell);
-    labelHeader->SetColor(0x212121FF);
+    labelHeader->SetColor(colorHeader);
 
     mButtonNewUnit = new ButtonPanelPlayer(mPanelCell);
 
@@ -279,7 +282,7 @@ void PanelPlayer::CreatePanelUnits()
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
-    labelHeader->SetColor(0x212121FF);
+    labelHeader->SetColor(colorHeader);
 
     const int marginX = 30;
     const int marginY0 = 10;
