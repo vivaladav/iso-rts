@@ -275,69 +275,14 @@ void ScreenGame::CreateLayers()
     {
         "data/img/obj_null.png",
 
-        // PLAYER 1 - LEVEL 1
-        "data/img/unit1-p1l1.png",
-        "data/img/unit2-p1l1.png",
-        "data/img/unit3-p1l1.png",
-        "data/img/unit4-p1l1.png",
-        // PLAYER 1 - LEVEL 2
-        "data/img/unit1-p1l2.png",
-        "data/img/unit2-p1l2.png",
-        "data/img/unit3-p1l2.png",
-        "data/img/unit4-p1l2.png",
-        // PLAYER 1 - LEVEL 3
-        "data/img/unit1-p1l3.png",
-        "data/img/unit2-p1l3.png",
-        "data/img/unit3-p1l3.png",
-        "data/img/unit4-p1l3.png",
+        // FACTION 1
+        "data/img/unit_01-f1.png",
 
-        // PLAYER 2 - LEVEL 1
-        "data/img/unit1-p2l1.png",
-        "data/img/unit2-p2l1.png",
-        "data/img/unit3-p2l1.png",
-        "data/img/unit4-p2l1.png",
-        // PLAYER 2 - LEVEL 2
-        "data/img/unit1-p2l2.png",
-        "data/img/unit2-p2l2.png",
-        "data/img/unit3-p2l2.png",
-        "data/img/unit4-p2l2.png",
-        // PLAYER 2 - LEVEL 3
-        "data/img/unit1-p2l3.png",
-        "data/img/unit2-p2l3.png",
-        "data/img/unit3-p2l3.png",
-        "data/img/unit4-p2l3.png",
+        // FACTION 2
+        "data/img/unit_01-f2.png",
 
-        // PLAYER 3 - LEVEL 1
-        "data/img/unit1-p3l1.png",
-        "data/img/unit2-p3l1.png",
-        "data/img/unit3-p3l1.png",
-        "data/img/unit4-p3l1.png",
-        // PLAYER 3 - LEVEL 2
-        "data/img/unit1-p3l2.png",
-        "data/img/unit2-p3l2.png",
-        "data/img/unit3-p3l2.png",
-        "data/img/unit4-p3l2.png",
-        // PLAYER 3 - LEVEL 3
-        "data/img/unit1-p3l3.png",
-        "data/img/unit2-p3l3.png",
-        "data/img/unit3-p3l3.png",
-        "data/img/unit4-p3l3.png",
-
-        // PLAYER 4 - LEVEL 1
-        "data/img/unit1-p4l1.png",
-        "data/img/unit2-p4l1.png",
-        "data/img/unit3-p4l1.png",
-        "data/img/unit4-p4l1.png",
-        // PLAYER 4 - LEVEL 2
-        "data/img/unit1-p4l2.png",
-        "data/img/unit2-p4l2.png",
-        "data/img/unit3-p4l2.png",
-        "data/img/unit4-p4l2.png",
-        // PLAYER 4 - LEVEL 3
-        "data/img/unit1-p4l3.png",
-        "data/img/unit2-p4l3.png",
-        "data/img/unit3-p4l3.png",
-        "data/img/unit4-p4l3.png",
+        // FACTION 3
+        "data/img/unit_01-f3.png",
 
         // ENERGY SOURCE
         "data/img/energy_source.png",

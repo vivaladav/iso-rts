@@ -53,25 +53,22 @@ void Unit::UpdateImageId()
 
 void Unit::SetImageId()
 {
-    int img = (mElements - 1) + (mLevel * MAX_CELL_UNITS);
+    int img = IMG_NULL;
 
     switch(GetOwner())
     {
         case 0:
-            img += P1_1UL1;
+            img = F1_U1;
         break;
 
         case 1:
-            img += P2_1UL1;
+            img = F2_U1;
         break;
 
         case 2:
-            img += P3_1UL1;
+            img = F3_U1;
         break;
 
-        case 3:
-            img += P4_1UL1;
-        break;
 
         default:
             img = IMG_NULL;

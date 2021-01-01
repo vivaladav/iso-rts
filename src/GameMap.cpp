@@ -487,7 +487,7 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
         unit->SetCell(&mCells[ind]);
         gcell.obj = unit;
 
-        mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
+        mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), BOTTOM);
 
         mObjects.push_back(unit);
     }
