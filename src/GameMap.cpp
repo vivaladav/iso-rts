@@ -710,7 +710,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
             gcell1.obj = gcell0.obj;
             gcell0.obj = nullptr;
 
-            layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, NO_ALIGNMENT);
+            layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, BOTTOM);
         }
         // moving only some elements
         else
@@ -722,7 +722,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
             // create new object in end
             gcell1.obj = new Unit(player->GetPlayerId(), numUnits);
 
-            layerUnits->AddObject(gcell1.row, gcell1.col, gcell1.obj->GetImageId(), NO_ALIGNMENT);
+            layerUnits->AddObject(gcell1.row, gcell1.col, gcell1.obj->GetImageId(), BOTTOM);
         }
 
         gcell1.obj->SetCell(&mCells[ind1]);
