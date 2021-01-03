@@ -38,14 +38,13 @@ void SharedScreenListener::OnKeyUp(lib::core::KeyboardEvent & event)
     else if(key == KeyboardEvent::KEY_F)
         Window::Instance()->SwitchFullscreen();
     else if(key == KeyboardEvent::KEY_1)
-        Window::Instance()->SetSize(960, 540);
-    else if(key == KeyboardEvent::KEY_2)
         Window::Instance()->SetSize(1280, 720);
-    else if(key == KeyboardEvent::KEY_3)
+    else if(key == KeyboardEvent::KEY_2)
         Window::Instance()->SetSize(1600, 900);
-    else if(key == KeyboardEvent::KEY_4)
+    else if(key == KeyboardEvent::KEY_3)
         Window::Instance()->SetSize(1920, 1080);
+    else if(key == KeyboardEvent::KEY_4)
+        Window::Instance()->SetSize(2560, 1440);
 }
-
 
 } // namespace game
