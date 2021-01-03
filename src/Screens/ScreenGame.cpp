@@ -55,8 +55,10 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
 
+    const int playerFaction = game->GetPlayer(0)->GetPlayerId();
+
     // create selection object
-    mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, 0, ObjectAlignment::NO_ALIGNMENT);
+    mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, playerFaction, ObjectAlignment::NO_ALIGNMENT);
 
     // set homes
     mGameMap->SetHomeCells();
@@ -262,7 +264,12 @@ void ScreenGame::CreateLayers()
 {
     // -- LAYERS --
     // SELECTION
-    const std::vector<std::string> selImgs = { "data/img/selection.png" };
+    const std::vector<std::string> selImgs =
+    {
+        "data/img/selection-f1.png",
+        "data/img/selection-f2.png",
+        "data/img/selection-f3.png"
+    };
 
     mIsoMap->CreateLayer(MapLayers::SELECTION, selImgs);
     mIsoMap->SetLayerVisible(SELECTION, false);
