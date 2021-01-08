@@ -128,12 +128,15 @@ void GameMap::SetHomeCells()
         cell.owner = player;
         cell.linked = true;
 
-        const int cellType = DefineCellType(cell);
-        mIsoMap->SetCellType(ind, cellType);
+        UpdateInfluencedCells(corners[c].row, corners[c].col);
 
         player->SetHomeCell(corners[c]);
         player->SumCells(1);
         player->SumTotalCellsLevel(1);
+
+        // this will update the cells with the right type/image
+        // NOTE it's a sub-optimal, but quick solution as most of this code will change soon
+        UpdateLinkedCells(player);
 
         // inc by 2, 1, 2
         pick += 2 - (p % 2);
