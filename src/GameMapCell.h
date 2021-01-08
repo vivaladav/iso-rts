@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <unordered_map>
+
 namespace game
 {
 
@@ -10,11 +12,16 @@ class Unit;
 
 struct GameMapCell
 {
+    GameMapCell();
+
     Unit * GetUnit() const;
     bool HasUnit() const;
 
     ResourceGenerator * GetResourceGenerator() const;
     bool HasResourceGenerator() const;
+
+    std::unordered_map<int, bool> influencers;
+    int influencer = -1;
 
     Player * owner = nullptr;
     GameObject * obj = nullptr;

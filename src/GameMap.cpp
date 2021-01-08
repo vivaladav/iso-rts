@@ -27,20 +27,23 @@ namespace game
 enum CellTypes : int
 {
     EMPTY = 0,
-    SCENE,
     FOG_OF_WAR,
+    SCENE,
 
     // FACTION 1
     F1,
     F1_CONNECTED,
+    F1_INFLUENCED,
 
     // FACTION 2
     F2,
     F2_CONNECTED,
+    F2_INFLUENCED,
 
     // FACTION 3
     F3,
     F3_CONNECTED,
+    F3_INFLUENCED,
 
     NUM_CELL_TYPES
 };
@@ -265,7 +268,9 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
     // reset cell's changing flag
     gcell.changing = false;
 
-    // update map
+    // propagate effects of conquest
+    UpdateInfluencedCells(cell.row, cell.col);
+
     UpdateLinkedCells(player);
 }
 
@@ -374,6 +379,8 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
             const unsigned int ind = indBase + c;
             mCells[ind].owner = player;
             mCells[ind].changing = false;
+
+            UpdateInfluencedCells(r, c);
         }
     }
 
@@ -1037,13 +1044,11 @@ int GameMap::DefineCellDefPoints(const GameMapCell & cell, int numUnits) const
 
 int GameMap::DefineCellType(const GameMapCell & cell)
 {
-    // cell is not owned
-    if(nullptr == cell.owner)
-        return EMPTY;
+    const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;
 
     int type = EMPTY;
 
-    switch(cell.owner->GetPlayerId())
+    switch(ownerId)
     {
         case 0:
             if(cell.linked)
@@ -1066,7 +1071,16 @@ int GameMap::DefineCellType(const GameMapCell & cell)
                 type = F3;
         break;
 
+        // no owner
         default:
+        {
+            if(0 == cell.influencer)
+                type = F1_INFLUENCED;
+            else if(1 == cell.influencer)
+                type = F2_INFLUENCED;
+            else if(2 == cell.influencer)
+                type = F3_INFLUENCED;
+        }
         break;
     }
 
@@ -1089,8 +1103,6 @@ void GameMap::UpdateLinkedCells(Player * player)
     const Cell2D & home = player->GetHomeCell();
     const unsigned int indHome = home.row * mCols + home.col;
     todo.push_back(indHome);
-
-    const unsigned int totCells = mRows * mCols;
 
     while(!todo.empty())
     {
@@ -1147,15 +1159,79 @@ void GameMap::UpdateLinkedCells(Player * player)
         done.insert(currInd);
     }
 
+    // UPDATE INFLUENCE
+    for(unsigned int ind : done)
+    {
+        const int row = ind / mCols;
+        const int col = ind % mCols;
+
+        UpdateInfluencedCells(row, col);
+    }
+
     // UPDATE ALL CELLS IMAGE
+    const unsigned int totCells = mRows * mCols;
+
     for(unsigned int c = 0; c < totCells; ++c)
     {
         const GameMapCell & cell = mCells[c];
 
-        if(cell.owner == player)
+        if(cell.owner == player || cell.influencer != -1)
         {
             const int cellType = DefineCellType(cell);
             mIsoMap->SetCellType(c, cellType);
+        }
+    }
+}
+
+void GameMap::UpdateInfluencedCells(int row, int col)
+{
+    const unsigned int ind0 = row * mCols + col;
+    GameMapCell & gcell = mCells[ind0];
+
+    // not linked cells have no influence
+    if(!gcell.linked)
+        return ;
+
+    const int ownerId = gcell.owner->GetPlayerId();
+
+    const unsigned int r0 = (row > 0) ? row - 1 : row;
+    const unsigned int c0 = (col > 0) ? col - 1 : col;
+
+    const unsigned int r1Inc = row + 2;
+    const unsigned int r1 = (r1Inc < mRows) ? r1Inc : mRows;
+
+    const unsigned int c1Inc = col + 2;
+    const unsigned int c1 = (c1Inc < mCols) ? c1Inc : mCols;
+
+    for(unsigned int r = r0; r < r1; ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(unsigned int c = c0; c < c1; ++c)
+        {
+            const unsigned int ind = indBase + c;
+            GameMapCell & gc = mCells[ind];
+
+            // not walkable empty cell
+            if(!gc.walkable && nullptr == gc.obj)
+                continue;
+
+            // update map of influence
+            gc.influencers[ownerId] = true;
+
+            // count active influencers to see if there's only one
+            int influencers = 0;
+
+            for(auto it : gc.influencers)
+            {
+                if(it.second)
+                    ++influencers;
+            }
+
+            if(influencers == 1)
+                gc.influencer = ownerId;
+            else
+                gc.influencer = -1;
         }
     }
 }

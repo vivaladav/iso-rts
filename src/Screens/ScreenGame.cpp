@@ -239,20 +239,23 @@ void ScreenGame::CreateIsoMap()
     {
         // scene
         "data/img/tile_empty.png",
-        "data/img/tile_scene_01.png",
         "data/img/tile_fow.png",
+        "data/img/tile_scene_01.png",
 
         // faction 1
         "data/img/tile-f1.png",
         "data/img/tile-f1_connected.png",
+        "data/img/tile-f1_influenced.png",
 
         // faction 2
         "data/img/tile-f2.png",
         "data/img/tile-f2_connected.png",
+        "data/img/tile-f2_influenced.png",
 
         // faction 3
         "data/img/tile-f3.png",
         "data/img/tile-f3_connected.png",
+        "data/img/tile-f3_influenced.png",
     };
 
     // iso map

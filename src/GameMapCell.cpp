@@ -6,6 +6,14 @@
 namespace game
 {
 
+GameMapCell::GameMapCell()
+{
+    // init influencers map
+    influencers[0] = false;
+    influencers[1] = false;
+    influencers[2] = false;
+}
+
 Unit * GameMapCell::GetUnit() const
 {
     if(obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_UNIT)

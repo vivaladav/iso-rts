@@ -86,6 +86,8 @@ private:
 
     void UpdateLinkedCells(Player * player);
 
+    void UpdateInfluencedCells(int row, int col);
+
 private:
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
