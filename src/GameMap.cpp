@@ -424,27 +424,11 @@ bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
         return false;
 
     // check if cell has already a unit
-    int unitLevel = 0;
-
     if(gcell.obj)
-    {
-        // cell already contains an object which is not a unit -> exit
-        if(gcell.obj->GetObjectType() != GameObjectType::OBJ_UNIT)
-            return false;
-
-        const Unit * unit = static_cast<Unit *>(gcell.obj);
-
-        // no room for more elements in cell -> exit
-        if(unit->GetNumElements() >= MAX_CELL_UNITS)
-            return false;
-
-        unitLevel = unit->GetUnitLevel();
-    }
+        return false;
 
     // check if player has enough money
-    const int cost = COST_NEW_UNIT[unitLevel];
-
-    if(cost > player->GetMoney())
+    if(COST_NEW_UNIT > player->GetMoney())
         return false;
 
     // all checks passed
@@ -457,16 +441,7 @@ void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    int unitLevel = 0;
-
-    if(gcell.obj)
-    {
-        const Unit * unit = static_cast<Unit *>(gcell.obj);
-        unitLevel = unit->GetUnitLevel();
-    }
-
-    const int cost = COST_NEW_UNIT[unitLevel];
-    player->SumMoney(-cost);
+    player->SumMoney(-COST_NEW_UNIT);
 
     // mark cell as changing
     gcell.changing = true;
@@ -480,27 +455,13 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = nullptr;
+    Unit * unit = new Unit(player->GetPlayerId());
+    unit->SetCell(&mCells[ind]);
+    gcell.obj = unit;
 
-    // existing unit -> add element
-    if(gcell.obj)
-    {
-        unit = static_cast<Unit *>(gcell.obj);
-        unit->SumElements(1);
+    mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), BOTTOM);
 
-        mIsoMap->GetLayer(OBJECTS)->ChangeObject(r, c, unit->GetImageId());
-    }
-    // create new unit
-    else
-    {
-        unit = new Unit(player->GetPlayerId());
-        unit->SetCell(&mCells[ind]);
-        gcell.obj = unit;
-
-        mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), BOTTOM);
-
-        mObjects.push_back(unit);
-    }
+    mObjects.push_back(unit);
 
     // update player
     player->SumUnits(1);
@@ -537,12 +498,11 @@ void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     const Unit * unit = gcell.GetUnit();
-    const int unitElements = unit->GetNumElements();
     const int unitLevel = unit->GetUnitLevel();
 
     // update player
-    player->SumUnits(-unitElements);
-    player->SumTotalUnitsLevel(-unitElements * (unitLevel + 1));
+    player->SumUnits(-1);
+    player->SumTotalUnitsLevel(-(unitLevel + 1));
 
     // remove units from cell
     delete gcell.obj;
@@ -579,8 +539,7 @@ bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
         return false;
 
     // check if player has enough money
-    const int unitElements = unit->GetNumElements();
-    const int cost = COST_UNIT_UPGRADE[unitLevel] * unitElements;
+    const int cost = COST_UNIT_UPGRADE[unitLevel];
 
     if(cost > player->GetMoney())
         return false;
@@ -595,9 +554,8 @@ void GameMap::StartUpgradeUnit(const Cell2D & cell, Player * player)
 
     // make player pay
     const Unit * unit = gcell.GetUnit();
-    const int unitElements = unit->GetNumElements();
     const int unitLevel = unit->GetUnitLevel();
-    const int cost = COST_UNIT_UPGRADE[unitLevel] * unitElements;
+    const int cost = COST_UNIT_UPGRADE[unitLevel];
     player->SumMoney(-cost);
 
     // mark cell as changing
@@ -615,8 +573,7 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
     unit->IncreaseUnitLevel();
 
     // update player
-    const int unitElements = unit->GetNumElements();
-    gcell.owner->SumTotalUnitsLevel(unitElements);
+    gcell.owner->SumTotalUnitsLevel(1);
 
     // update map layer
     mIsoMap->GetLayer(OBJECTS)->ReplaceObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
@@ -671,20 +628,13 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
 
     // fail if destination is full or has different level units
     if(unit1 != nullptr)
-    {
-       const int unitElements1 = unit1->GetNumElements();
-
-       if(unitElements1 == MAX_CELL_UNITS ||
-          (unitElements1 > 0 && gcell0.owner == gcell1.owner && unit0->GetUnitLevel() != unit1->GetUnitLevel()))
-
         return false;
-    }
 
     // all good
     return true;
 }
 
-bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, Player * player)
+bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * player)
 {
     if(!CanUnitMove(start, end, player))
         return false;
@@ -692,24 +642,10 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
     const int ind0 = start.row * mCols + start.col;
     GameMapCell & gcell0 = mCells[ind0];
 
-    // cap units to move to ones in start, just in case
-    Unit * unit0 = gcell0.GetUnit();
-    const int unit0Elements = unit0->GetNumElements();
-
-    if(unit0Elements < numUnits)
-        numUnits = unit0Elements;
-
     const int ind1 = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind1];
 
-    Player * playerDest = gcell1.owner;
-
-    Unit * unit1 = gcell1.GetUnit();
-    const int unit1Elements = unit1 ? unit1->GetNumElements() : 0;
-
-    const bool emptyDest = unit1Elements == 0;
-
-    IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
+    const bool emptyDest = nullptr == gcell1.obj;
 
     // move to empty cell
     if(emptyDest)
@@ -717,6 +653,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, int numUnits, 
         gcell1.obj = gcell0.obj;
         gcell0.obj = nullptr;
 
+        IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
         layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, BOTTOM);
 
         gcell1.obj->SetCell(&mCells[ind1]);

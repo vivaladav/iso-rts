@@ -23,7 +23,6 @@ struct ActionAI
     Cell2D dst;
     AIActionId aid;
     int priority;
-    int units;
 
     friend bool operator==(const ActionAI & a1, const ActionAI & a2);
 };
@@ -31,7 +30,6 @@ struct ActionAI
 inline bool operator==(const ActionAI & a1, const ActionAI & a2)
 {
     return a1.aid == a2.aid &&
-           a1.units == a2.units &&
            a1.src == a2.src &&
            a1.dst == a2.dst;
 }

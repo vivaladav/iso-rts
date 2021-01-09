@@ -138,42 +138,28 @@ void PanelPlayer::ClearSelectedCell()
 
 void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
 {
-    const Unit * unit = cell.GetUnit();
-    int unitElements = 0;
-    int unitLevel = 0;
-
-    if(unit != nullptr)
-    {
-        unitElements = unit->GetNumElements();
-        unitLevel = unit->GetUnitLevel();
-    }
-
-    UpdateButtonNewUnit(unitElements, unitLevel);
+    UpdateButtonNewUnit(cell);
     UpdateButtonUnitDestroy();
-    UpdateButtonUnitUpgrade(unitElements, unitLevel);
+    UpdateButtonUnitUpgrade();
 
     mPanelCell->SetVisible(true);
 }
 
-void PanelPlayer::UpdateButtonNewUnit(int num, int level)
+void PanelPlayer::UpdateButtonNewUnit(const GameMapCell & cell)
 {
+    const bool noUnit = cell.GetUnit() == nullptr;
 
-    if(num >= MAX_CELL_UNITS)
-    {
-        mButtonNewUnit->SetLabel("NEW UNIT");
-        mButtonNewUnit->SetEnabled(false);
-    }
+    std::ostringstream s;
+
+    if(noUnit)
+        s << "NEW UNIT (" << COST_NEW_UNIT << ")";
     else
-    {
-        std::ostringstream s;
-        s << "NEW UNIT (" << COST_NEW_UNIT[level] << ")";
+        s << "NEW UNIT";
 
-        mButtonNewUnit->SetLabel(s.str().c_str());
-        mButtonNewUnit->SetEnabled(true);
-    }
+    mButtonNewUnit->SetLabel(s.str().c_str());
+    mButtonNewUnit->SetEnabled(noUnit);
 
-    const bool hasUnits = num > 0;
-    mPanelUnits->SetVisible(hasUnits);
+    mPanelUnits->SetVisible(!noUnit);
 }
 
 void PanelPlayer::UpdateButtonUnitDestroy()
@@ -182,21 +168,10 @@ void PanelPlayer::UpdateButtonUnitDestroy()
     mButtonUnitsDestroyConf->SetVisible(false);
 }
 
-void PanelPlayer::UpdateButtonUnitUpgrade(int num, int level)
+void PanelPlayer::UpdateButtonUnitUpgrade()
 {
-    if(level >= MAX_UNITS_LEVEL)
-    {
-        mButtonUnitsUpgrade->SetLabel("UPGRADE");
-        mButtonUnitsUpgrade->SetEnabled(false);
-    }
-    else
-    {
-        std::ostringstream s;
-        s << "UPGRADE (" << COST_UNIT_UPGRADE[level] * num << ")";
-
-        mButtonUnitsUpgrade->SetLabel(s.str().c_str());
-        mButtonUnitsUpgrade->SetEnabled(true);
-    }
+    mButtonUnitsUpgrade->SetLabel("UPGRADE");
+    mButtonUnitsUpgrade->SetEnabled(false);
 }
 
 void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)

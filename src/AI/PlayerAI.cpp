@@ -74,21 +74,16 @@ void PlayerAI::DecideActions()
         std::cout << "ACTION " << actId << " - cell priority:" << cellPriority << std::endl;
 
         Cell2D dest = pos;
-        int units = 0;
 
         if(actId == ACT_UNIT_MOVE)
-        {
             dest = DecideMoveDestination(ownCells[c]);
-            units = DecideNumUnitsToMove(ownCells[c]);
-        }
 
         ActionAI action =
         {
             pos,
             dest,
             actId,
-            cellPriority,
-            units
+            cellPriority
         };
 
         AddNewAction(action);
@@ -101,7 +96,7 @@ ActionAI PlayerAI::GetNextAction()
 {
     // return NOP action if queue is empty
     if(mActions.empty())
-        return { {0,0}, {0,0}, ACT_NOP, 0, 0 };
+        return { {0,0}, {0,0}, ACT_NOP, 0 };
 
     // return top action
     return PopAction();
@@ -170,7 +165,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             case ACT_NEW_UNIT:
             {
                 const Unit * unit = cell.GetUnit();
-                cost = unit ? COST_NEW_UNIT[unit->GetNumElements()] : 0;
+                cost = COST_NEW_UNIT;
             }
             break;
 
@@ -217,10 +212,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             case ACT_NEW_UNIT:
             {
                 prob += distScore;
-
-                const Unit * unit = cell.GetUnit();
-                const int numElems = unit ? unit->GetNumElements() : 0;
-                prob += 100.f * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
             }
             break;
 
@@ -240,7 +231,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
                 prob += 100.f - distScore;
 
                 // more units means higher probability
-                prob += 100.f * mPlayer->GetNumUnits() / (mPlayer->GetNumCells() * MAX_CELL_UNITS);
+                prob += 100.f * mPlayer->GetNumUnits() / mPlayer->GetNumCells();
             }
 
             case ACT_UNIT_MOVE:
@@ -275,12 +266,13 @@ int PlayerAI::MakeCellPriority(const GameMapCell & cell, int enemyDist) const
     priority += 100 * (maxDist - enemyDist) / maxDist;
 
     // add units val
-    const int maxPriorityUnits = 52;
-    const int incPriorityUnits = maxPriorityUnits / MAX_CELL_UNITS;
-
     const Unit * unit = cell.GetUnit();
-    const int numElems = unit ? unit->GetNumElements() : 0;
-    priority += maxPriorityUnits - (incPriorityUnits * numElems);
+
+    const int maxPriorityUnits = 52;
+    const int incPriorityUnits = unit ? maxPriorityUnits : 0;
+
+
+    priority += incPriorityUnits;
 
     return priority;
 }
@@ -405,8 +397,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r1, c0 - 1);
 
                 const Unit * unit = tl.GetUnit();
-                const int numElems = unit ? unit->GetNumElements() : 0;
-                const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+                const float prob = unit ? weightUnits : 0.f;
                 const float prob2 = tl.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
@@ -420,8 +411,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r1, c0);
 
             const Unit * unit = tc.GetUnit();
-            const int numElems = unit ? unit->GetNumElements() : 0;
-            const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+            const float prob = unit ? weightUnits : 0.f;
             const float prob2 = tc.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
@@ -436,8 +426,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r1, c0 + 1);
 
                 const Unit * unit = tr.GetUnit();
-                const int numElems = unit ? unit->GetNumElements() : 0;
-                const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+                const float prob = unit ? weightUnits : 0.f;
                 const float prob2 = tr.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
 
@@ -456,8 +445,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r0, c0 - 1);
 
             const Unit * unit = l.GetUnit();
-            const int numElems = unit ? unit->GetNumElements() : 0;
-            const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+            const float prob = unit ? weightUnits : 0.f;
             const float prob2 = l.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
@@ -473,8 +461,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r0, c0 + 1);
 
             const Unit * unit = r.GetUnit();
-            const int numElems = unit ? unit->GetNumElements() : 0;
-            const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+            const float prob = unit ? weightUnits : 0.f;
             const float prob2 = r.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
@@ -495,8 +482,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r2, c0 - 1);
 
                 const Unit * unit = bl.GetUnit();
-                const int numElems = unit ? unit->GetNumElements() : 0;
-                const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+                const float prob = unit ? weightUnits : 0.f;
                 const float prob2 = bl.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
@@ -510,8 +496,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
             dest.emplace_back(r2, c0);
 
             const Unit * unit = bc.GetUnit();
-            const int numElems = unit ? unit->GetNumElements() : 0;
-            const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+            const float prob = unit ? weightUnits : 0.f;
             const float prob2 = bc.owner == nullptr ? weightFree : 0.f;
             probs.emplace_back(prob + prob2);
         }
@@ -526,8 +511,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
                 dest.emplace_back(r2, c0 + 1);
 
                 const Unit * unit = br.GetUnit();
-                const int numElems = unit ? unit->GetNumElements() : 0;
-                const float prob = weightUnits * (MAX_CELL_UNITS - numElems) / MAX_CELL_UNITS;
+                const float prob = unit ? weightUnits : 0.f;
                 const float prob2 = br.owner == nullptr ? weightFree : 0.f;
                 probs.emplace_back(prob + prob2);
             }
@@ -537,15 +521,6 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
     lib::utilities::LoadedDie die(probs);
 
     return dest[die.GetNextValue()];
-}
-
-int PlayerAI::DecideNumUnitsToMove(const GameMapCell & cell) const
-{
-    // TODO
-    const Unit * unit = cell.GetUnit();
-    const int numElems = unit ? unit->GetNumElements() : 0;
-
-    return numElems;
 }
 
 } // namespace game

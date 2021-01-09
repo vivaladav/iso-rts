@@ -35,9 +35,9 @@ public:
     void ClearSelectedCell();
     void SetSelectedCell(const GameMapCell & cell);
 
-    void UpdateButtonNewUnit(int num, int level);
+    void UpdateButtonNewUnit(const GameMapCell & cell);
     void UpdateButtonUnitDestroy();
-    void UpdateButtonUnitUpgrade(int num, int level);
+    void UpdateButtonUnitUpgrade();
 
     void SetFunctionCellConquest(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);

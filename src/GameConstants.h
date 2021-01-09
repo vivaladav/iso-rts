@@ -14,15 +14,12 @@ constexpr int COINS_PER_CELL = 2;
 constexpr int ENERGY_PER_CELL = 1;
 constexpr int ENERGY_PER_UNIT = 1;
 
-constexpr int MAX_CELL_LEVEL = 3;
-
 constexpr int COST_CONQUEST_CELL = 2;
 
 constexpr int COST_CONQUEST_RES_GEN = 4;
 
-constexpr int MAX_CELL_UNITS = 4;
 constexpr int MAX_UNITS_LEVEL = 2;
-constexpr int COST_NEW_UNIT[] = { 1, 2, 3 };
+constexpr int COST_NEW_UNIT = 1;
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
 constexpr float TIME_CONQ_CELL = 2.f;

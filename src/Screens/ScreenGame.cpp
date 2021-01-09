@@ -351,15 +351,14 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             const Cell2D & prevSel = player->GetSelectedCell();
 
             const Unit * unit = mGameMap->GetCell(prevSel.row, prevSel.col).GetUnit();
-            const int unitsToMove = unit ? unit->GetNumElements() : 0;
 
             const bool diffSel = prevSel.row != currSel.row || prevSel.col != currSel.col;
 
-            // has units to move and it's selecting a different cell
-            if(unitsToMove > 0 && diffSel)
+            // has unit to move and it's selecting a different cell
+            if(unit != nullptr && diffSel)
             {
                 // move successful -> select new cell
-                if(mGameMap->MoveUnits(prevSel, currSel, unitsToMove, player))
+                if(mGameMap->MoveUnits(prevSel, currSel, player))
                     SelectCell(currSel, player);
                 // move failed
                 else
@@ -562,14 +561,13 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
             case ACT_UNIT_MOVE:
             {
-                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: "
-                          << action.units << " from "
+                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: from "
                           << action.src.row << "," << action.src.col
                           << " -> "
                           << action.dst.row << "," << action.dst.col
                           << std::endl;
 
-                done = mGameMap->MoveUnits(action.src, action.dst, action.units, player);
+                done = mGameMap->MoveUnits(action.src, action.dst, player);
             }
             break;
 
