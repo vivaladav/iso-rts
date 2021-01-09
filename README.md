@@ -1,9 +1,13 @@
 # iso-rts
-An isometric Real Time Strategy game
+An isometric Real Time Strategy game for PC.
 
-Currently in early stage. Current name is temporary.
+Currently in early stage. Name is temporary.
 
-You can follow the development on [my blog](http://blog.davidecoppola.com/) or on [Linkedin](https://www.linkedin.com/in/davidecoppola/), [Twitter](https://twitter.com/vivaladav) and [Youtube](https://www.youtube.com/channel/UCUYD1ElkmiIklQRemVGxarw).
+You can follow the development on:
+- [Twitter](https://twitter.com/vivaladav)
+- [Youtube](https://www.youtube.com/channel/UCUYD1ElkmiIklQRemVGxarw).
+
+You can also subscribe to the [game newsletter](http://eepurl.com/hmKoSr) to get notified of major updates by email.
 
 ## Current status
 Early development, currently not playable.
