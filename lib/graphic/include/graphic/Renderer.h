@@ -31,6 +31,9 @@ public:
 
     void RenderTexture();
 
+    void SetClipping(int x0, int y0, int w, int h);
+    void ClearClipping();
+
 private:
     Renderer(Window * win);
     ~Renderer();

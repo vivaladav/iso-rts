@@ -7,6 +7,7 @@
 #include "graphic/Font.h"
 #include "graphic/FontManager.h"
 #include "graphic/Image.h"
+#include "graphic/Renderer.h"
 #include "graphic/Text.h"
 
 #include <sstream>
@@ -95,7 +96,15 @@ void MapPreview::OnRender()
 {
     mBg->Render();
 
+    auto * renderer = lib::graphic::Renderer::Instance();
+
+    const int x0 = mBg->GetX() + 1;
+    const int y0 = mBg->GetY() + 1;
+    const int w = mBg->GetWidth() - 2;
+    const int h = mBg->GetHeight() - 2;
+    renderer->SetClipping(x0, y0, w, h);
     mIsoMap->Render();
+    renderer->ClearClipping();
 
     mLabelSize->Render();
 }

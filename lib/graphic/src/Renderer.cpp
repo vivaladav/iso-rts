@@ -109,5 +109,17 @@ void Renderer::Finalize()
     SDL_RenderPresent(mSysRenderer);
 }
 
+void Renderer::SetClipping(int x0, int y0, int w, int h)
+{
+    const SDL_Rect rect = { x0, y0, w, h };
+
+    SDL_RenderSetClipRect(mSysRenderer, &rect);
+}
+
+void Renderer::ClearClipping()
+{
+    SDL_RenderSetClipRect(mSysRenderer, nullptr);
+}
+
 } // namespace graphic
 } // namespace lib
