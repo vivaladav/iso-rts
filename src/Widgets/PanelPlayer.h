@@ -29,7 +29,8 @@ public:
     void SetPanelUnitsVisible(bool val);
 
     void UpdateCells(int cells);
-    void UpdateCoins(int coins);
+    void UpdateEnergy(int energy);
+    void UpdateMaterial(int material);
     void UpdateUnits(int units);
 
     void ClearSelectedCell();
@@ -46,9 +47,7 @@ public:
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
 
 private:
-    std::string MakeStrCells(int cells);
-    std::string MakeStrCoins(int coins);
-    std::string MakeStrUnits(int units);
+    std::string MakeStrValue(int value);
 
     void CreatePanelCell();
 
@@ -59,7 +58,8 @@ private:
     ButtonsPanel * mPanelUnits = nullptr;
 
     lib::sgui::Label * mLabelCells = nullptr;
-    lib::sgui::Label * mLabelCoins = nullptr;
+    lib::sgui::Label * mLabelEnergy = nullptr;
+    lib::sgui::Label * mLabelMaterial = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
     ButtonPanelPlayer * mButtonNewUnit = nullptr;

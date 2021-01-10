@@ -68,8 +68,9 @@ ScreenGame::ScreenGame(Game * game)
     {
         Player * p = game->GetPlayer(i);
 
-        // add start money
+        // add start energy
         p->SumEnergy(START_ENERGY);
+        p->SumMaterial(START_MATERIAL);
 
         // temporary disable AI for development
 //        if(p->IsAI())
@@ -86,12 +87,12 @@ ScreenGame::ScreenGame(Game * game)
     // setup data update functions
     player->SetOnEnergyChanged([this](int val)
     {
-        mPanelPlayer->UpdateCoins(val);
+        mPanelPlayer->UpdateEnergy(val);
     });
 
     player->SetOnMaterialChanged([this](int val)
     {
-       std::cout << "MATERIAL: " << val << std::endl;
+        mPanelPlayer->UpdateMaterial(val);
     });
 
     player->SetOnNumCellsChanged([this](int cells)
@@ -157,7 +158,7 @@ void ScreenGame::Update(float delta)
     if(mPaused)
         return ;
 
-    // -- UPDATE COINS --
+    // -- UPDATE PLAYERS RESOURCES --
     mTimerEnergy -= delta;
 
     if(mTimerEnergy < 0.f)

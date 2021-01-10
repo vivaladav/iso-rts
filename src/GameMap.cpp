@@ -241,7 +241,7 @@ bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
        gcell.owner != nullptr)
         return false;
 
-    // check if player has enough money
+    // check if player has enough energy
     if(COST_CONQUEST_CELL > player->GetEnergy())
         return false;
 
@@ -253,7 +253,7 @@ void GameMap::StartConquestCell(const Cell2D & cell, Player * player)
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
-    // take player's money
+    // take player's energy
     player->SumEnergy(-COST_CONQUEST_CELL);
 
     // mark cell as changing
@@ -297,7 +297,7 @@ bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & 
     if(r1 >= mRows || c1 >= mCols)
         return false;
 
-    // check if player has enough money
+    // check if player has enough energy
     if(COST_CONQUEST_RES_GEN > player->GetEnergy())
         return false;
 
@@ -346,7 +346,7 @@ bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & 
 
 void GameMap::StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
-    // take player's money
+    // take player's energy
     player->SumEnergy(-COST_CONQUEST_RES_GEN);
 
     // mark start as changing
@@ -431,8 +431,9 @@ bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
     if(gcell.obj)
         return false;
 
-    // check if player has enough money
-    if(COST_NEW_UNIT > player->GetEnergy())
+    // check if player has enough resources
+    if(ENERGY_NEW_UNIT > player->GetEnergy() ||
+       MATERIAL_NEW_UNIT > player->GetMaterial())
         return false;
 
     // all checks passed
@@ -445,7 +446,8 @@ void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->SumEnergy(-COST_NEW_UNIT);
+    player->SumEnergy(-ENERGY_NEW_UNIT);
+    player->SumMaterial(-MATERIAL_NEW_UNIT);
 
     // mark cell as changing
     gcell.changing = true;
@@ -542,7 +544,7 @@ bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
     if(MAX_UNITS_LEVEL == unitLevel)
         return false;
 
-    // check if player has enough money
+    // check if player has enough energy
     const int cost = COST_UNIT_UPGRADE[unitLevel];
 
     if(cost > player->GetEnergy())

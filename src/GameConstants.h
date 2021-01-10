@@ -6,10 +6,9 @@ namespace game
 constexpr int MAX_NUM_PLAYERS = 4;
 
 constexpr int START_ENERGY = 100;
+constexpr int START_MATERIAL = 10;
 
 constexpr float TIME_ENERGY_USE = 2.f;
-
-constexpr int COINS_PER_CELL = 2;
 
 constexpr int ENERGY_PER_CELL = 1;
 constexpr int ENERGY_PER_UNIT = 1;
@@ -19,7 +18,8 @@ constexpr int COST_CONQUEST_CELL = 2;
 constexpr int COST_CONQUEST_RES_GEN = 4;
 
 constexpr int MAX_UNITS_LEVEL = 2;
-constexpr int COST_NEW_UNIT = 1;
+constexpr int ENERGY_NEW_UNIT = 1;
+constexpr int MATERIAL_NEW_UNIT = 4;
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
 constexpr float TIME_CONQ_CELL = 2.f;

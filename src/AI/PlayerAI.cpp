@@ -165,7 +165,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
             case ACT_NEW_UNIT:
             {
                 const Unit * unit = cell.GetUnit();
-                cost = COST_NEW_UNIT;
+                cost = ENERGY_NEW_UNIT;
             }
             break;
 
@@ -364,7 +364,7 @@ bool PlayerAI::CanMoveUnit(const GameMapCell & cell) const
 
 bool PlayerAI::CanDestroyUnit(const GameMapCell & cell) const
 {
-    // true if cell has units and player has no money
+    // true if cell has units and player has no energy
     return cell.HasUnit() && mPlayer->GetEnergy() < 0;
 }
 
