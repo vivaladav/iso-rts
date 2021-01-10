@@ -25,6 +25,7 @@ const unsigned int colorData = 0x777777FF;
 
 PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
+    , mPlayer(player)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -171,6 +172,7 @@ void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
     UpdateButtonNewUnit(cell);
     UpdateButtonUnitDestroy();
     UpdateButtonUnitUpgrade();
+    UpdateButtonConquer(cell);
 
     mPanelCell->SetVisible(true);
 }
@@ -204,9 +206,14 @@ void PanelPlayer::UpdateButtonUnitUpgrade()
     mButtonUnitsUpgrade->SetEnabled(false);
 }
 
+void PanelPlayer::UpdateButtonConquer(const GameMapCell & cell)
+{
+    mButtonCellConquer->SetEnabled(cell.owner != mPlayer);
+}
+
 void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
 {
-    mButtonCellConquest->SetOnClickFunction(f);
+    mButtonCellConquer->SetOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
@@ -300,7 +307,7 @@ void PanelPlayer::CreatePanelUnits()
     mButtonUnitsDestroyConf->SetVisible(false);
 
     // button CONQUEST
-    mButtonCellConquest = new ButtonPanelPlayer("CONQUEST", mPanelUnits);
+    mButtonCellConquer = new ButtonPanelPlayer("CONQUER", mPanelUnits);
 
     // -- position elements --
     mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
@@ -309,12 +316,12 @@ void PanelPlayer::CreatePanelUnits()
     mButtonUnitsUpgrade->SetY(buttonY);
 
     buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
-    mButtonCellConquest->SetY(buttonY);
+    mButtonCellConquer->SetY(buttonY);
 
     mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
     mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
 
-    mButtonCellConquest->SetX(mButtonUnitsUpgrade->GetX());
+    mButtonCellConquer->SetX(mButtonUnitsUpgrade->GetX());
 }
 
 } // namespace game
