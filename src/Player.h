@@ -12,6 +12,8 @@ namespace game
 class ResourceGenerator;
 class PlayerAI;
 
+enum ResourceType : unsigned int;
+
 class Player
 {
 public:
@@ -32,9 +34,14 @@ public:
     int GetTotalCellsLevel() const;
     void SumTotalCellsLevel(int val);
 
-    int GetMoney() const;
-    void SumMoney(int val);
-    void SetOnMoneyChanged(const std::function<void(int)> & f);
+    int GetEnergy() const;
+    int GetEnergyUse() const;
+    void SumEnergy(int val);
+    void SetOnEnergyChanged(const std::function<void(int)> & f);
+
+    int GetMaterial() const;
+    void SumMaterial(int val);
+    void SetOnMaterialChanged(const std::function<void(int)> & f);
 
     int GetNumUnits() const;
     void SumUnits(int val);
@@ -51,8 +58,8 @@ public:
     void AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen);
     void RemoveResourceGenerator(unsigned int cellId);
 
-    int GetEnergyProduction() const;
-    int GetEnergyUse() const;
+    int GetResourceProduction(ResourceType type) const;
+    void UpdateResources();
 
     // -- AI --
     bool IsAI() const;
@@ -66,7 +73,8 @@ private:
     std::string mName;
 
     std::function<void(int)> mOnNumCellsChanged;
-    std::function<void(int)> mOnMoneyChanged;
+    std::function<void(int)> mOnEnergyChanged;
+    std::function<void(int)> mOnMaterialChanged;
     std::function<void(int)> mOnNumUnitsChanged;
 
     std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
@@ -81,7 +89,8 @@ private:
 
     int mNumCells = 0;
     int mTotCellsLevel = 0;
-    int mMoney = 0;
+    int mEnergy = 0;
+    int mMaterial1 = 0;
     int mNumUnits = 0;
     int mTotUnitsLevel = 0;
 
@@ -104,10 +113,16 @@ inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
 inline int Player::GetTotalCellsLevel() const { return mTotCellsLevel; }
 inline void Player::SumTotalCellsLevel(int val) { mTotCellsLevel += val; }
 
-inline int Player::GetMoney() const { return mMoney; }
-inline void Player::SetOnMoneyChanged(const std::function<void(int)> & f)
+inline int Player::GetEnergy() const { return mEnergy; }
+inline void Player::SetOnEnergyChanged(const std::function<void(int)> & f)
 {
-    mOnMoneyChanged = f;
+    mOnEnergyChanged = f;
+}
+
+inline int Player::GetMaterial() const { return mMaterial1; }
+inline void Player::SetOnMaterialChanged(const std::function<void(int)> & f)
+{
+    mOnMaterialChanged = f;
 }
 
 inline int Player::GetNumUnits() const { return  mNumUnits; }

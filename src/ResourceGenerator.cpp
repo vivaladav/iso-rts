@@ -23,18 +23,33 @@ void ResourceGenerator::SetImageId()
 {
     const int owner = GetOwner();
 
-    if(owner != -1)
-        mImageId = static_cast<GameObjectImageId>(GameObjectImageId::ENERGY_SOURCE_P1 + owner);
+    if(ENERGY == mResType)
+    {
+        if(owner != -1)
+            mImageId = static_cast<GameObjectImageId>(GameObjectImageId::ENERGY_SOURCE_F1 + owner);
+        else
+            mImageId = GameObjectImageId::ENERGY_SOURCE;
+    }
+    else if(MATERIAL1 == mResType)
+    {
+        if(owner != -1)
+            mImageId = static_cast<GameObjectImageId>(GameObjectImageId::MATERIAL1_SOURCE_F1 + owner);
+        else
+            mImageId = GameObjectImageId::MATERIAL1_SOURCE;
+    }
     else
-        mImageId = GameObjectImageId::ENERGY_SOURCE;
+        mImageId = IMG_NULL;
 }
 
 void ResourceGenerator::UpdateOutput()
 {
     if(ENERGY == mResType)
-    {
         mOutput = 20;
-    }
+    else if(MATERIAL1 == mResType)
+        mOutput = 2;
+    // default
+    else
+        mOutput = 1;
 }
 
 } // namespace game

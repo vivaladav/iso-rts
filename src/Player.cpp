@@ -14,7 +14,8 @@ namespace game
 Player::Player(const char * name, int pid)
     : mName(name)
     , mOnNumCellsChanged([](int){})
-    , mOnMoneyChanged([](int){})
+    , mOnEnergyChanged([](int){})
+    , mOnMaterialChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
     , mSelectedCell({-1, -1})
     , mPlayerId(pid)
@@ -33,11 +34,44 @@ void Player::SumCells(int val)
     mOnNumCellsChanged(mNumCells);
 }
 
-void Player::SumMoney(int val)
+int Player::GetEnergyUse() const
 {
-    mMoney += val;
+    const int energyCells = mNumCells * ENERGY_PER_CELL;
+    const int energyUnits = mTotUnitsLevel * ENERGY_PER_UNIT;
 
-    mOnMoneyChanged(mMoney);
+    return energyCells + energyUnits;
+}
+
+void Player::SumEnergy(int val)
+{
+    mEnergy += val;
+
+    mOnEnergyChanged(mEnergy);
+}
+
+
+void Player::SumMaterial(int val)
+{
+    mMaterial1 += val;
+
+    mOnMaterialChanged(mMaterial1);
+}
+
+void Player::UpdateResources()
+{
+    // energy
+    const int energyProd = GetResourceProduction(ResourceType::ENERGY);
+    const int energyUsed = GetEnergyUse();
+    const int energyDiff = energyProd - energyUsed;
+
+    if(energyDiff != 0)
+        SumEnergy(energyDiff);
+
+    // material 1
+    const int materialProd = GetResourceProduction(ResourceType::MATERIAL1);
+
+    if(materialProd != 0)
+        SumMaterial(materialProd);
 }
 
 void Player::SumUnits(int val)
@@ -65,7 +99,7 @@ void Player::RemoveResourceGenerator(unsigned int cellId)
         mResGenerators.erase(it);
 }
 
-int Player::GetEnergyProduction() const
+int Player::GetResourceProduction(ResourceType type) const
 {
     int energy = 0;
 
@@ -75,20 +109,12 @@ int Player::GetEnergyProduction() const
 
         assert(resGen->GetCell() != nullptr);
 
-        if(resGen->GetResourceType() == ResourceType::ENERGY &&
+        if(resGen->GetResourceType() == type &&
            resGen->GetCell()->linked)
             energy += resGen->GetOutput();
     }
 
     return energy;
-}
-
-int Player::GetEnergyUse() const
-{
-    const int energyCells = mNumCells * ENERGY_PER_CELL;
-    const int energyUnits = mTotUnitsLevel * ENERGY_PER_UNIT;
-
-    return energyCells + energyUnits;
 }
 
 } // namespace game

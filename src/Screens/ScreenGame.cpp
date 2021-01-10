@@ -69,7 +69,7 @@ ScreenGame::ScreenGame(Game * game)
         Player * p = game->GetPlayer(i);
 
         // add start money
-        p->SumMoney(START_ENERGY);
+        p->SumEnergy(START_ENERGY);
 
         // temporary disable AI for development
 //        if(p->IsAI())
@@ -84,9 +84,14 @@ ScreenGame::ScreenGame(Game * game)
     mPanelPlayer = new PanelPlayer(player);
 
     // setup data update functions
-    player->SetOnMoneyChanged([this](int money)
+    player->SetOnEnergyChanged([this](int val)
     {
-        mPanelPlayer->UpdateCoins(money);
+        mPanelPlayer->UpdateCoins(val);
+    });
+
+    player->SetOnMaterialChanged([this](int val)
+    {
+       std::cout << "MATERIAL: " << val << std::endl;
     });
 
     player->SetOnNumCellsChanged([this](int cells)
@@ -162,11 +167,7 @@ void ScreenGame::Update(float delta)
         for(int i = 0; i < game->GetNumPlayers(); ++i)
         {
             Player * p = game->GetPlayer(i);
-
-            const int energyProd = p->GetEnergyProduction();
-            const int energyUsed = p->GetEnergyUse();
-            const int energyDiff = energyProd - energyUsed;
-            p->SumMoney(energyDiff);
+            p->UpdateResources();
         }
 
         mTimerEnergy = TIME_ENERGY_USE;
@@ -300,6 +301,12 @@ void ScreenGame::CreateLayers()
         "data/img/energy_source-f1.png",
         "data/img/energy_source-f2.png",
         "data/img/energy_source-f3.png",
+
+        // MATERIAL SOURCE
+        "data/img/material_source.png",
+        "data/img/material_source-f1.png",
+        "data/img/material_source-f2.png",
+        "data/img/material_source-f3.png",
     };
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);

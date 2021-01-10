@@ -36,7 +36,7 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     Label * labelHeaderCoins = new Label("ENERGY", fontHeader, this);
     labelHeaderCoins->SetColor(colorHeader);
 
-    const int coins = player->GetMoney();
+    const int coins = player->GetEnergy();
     mLabelCoins = new Label(MakeStrCoins(coins).c_str(), fontData, this);
     mLabelCoins->SetColor(colorData);
 

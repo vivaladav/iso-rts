@@ -5,9 +5,10 @@
 namespace game
 {
 
-enum ResourceType
+enum ResourceType : unsigned int
 {
     ENERGY,
+    MATERIAL1,
 
     NUM_RESOURCES,
 

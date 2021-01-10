@@ -6,6 +6,9 @@ namespace game
 enum GameObjectType : unsigned int
 {
     OBJ_RES_GEN,
+    OBJ_RES_GEN_ENERGY,
+    OBJ_RES_GEN_MATERIAL1,
+
     OBJ_UNIT,
 
     NUM_GAME_OBJECT_TYPES,

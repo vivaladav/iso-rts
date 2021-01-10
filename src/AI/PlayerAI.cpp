@@ -365,7 +365,7 @@ bool PlayerAI::CanMoveUnit(const GameMapCell & cell) const
 bool PlayerAI::CanDestroyUnit(const GameMapCell & cell) const
 {
     // true if cell has units and player has no money
-    return cell.HasUnit() && mPlayer->GetMoney() < 0;
+    return cell.HasUnit() && mPlayer->GetEnergy() < 0;
 }
 
 Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
