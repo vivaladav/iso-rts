@@ -7,6 +7,15 @@ enum GameObjectImageId : unsigned int
 {
     IMG_NULL,
 
+    // BASE 1
+    BASE_F1,
+
+    // BASE 2
+    BASE_F2,
+
+    // BASE 3
+    BASE_F3,
+
     // FACTION 1
     F1_U1,
 

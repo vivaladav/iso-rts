@@ -288,6 +288,15 @@ void ScreenGame::CreateLayers()
     {
         "data/img/obj_null.png",
 
+        // BASE 1
+        "data/img/base-f1.png",
+
+        // BASE 2
+        "data/img/base-f2.png",
+
+        // BASE 3
+        "data/img/base-f3.png",
+
         // FACTION 1
         "data/img/unit_01-f1.png",
 
