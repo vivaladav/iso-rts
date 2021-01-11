@@ -1,7 +1,7 @@
 #include "GameMapCell.h"
 
-#include "ResourceGenerator.h"
-#include "Unit.h"
+#include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/Unit.h"
 
 namespace game
 {

@@ -6,8 +6,8 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
-#include "ResourceGenerator.h"
-#include "Unit.h"
+#include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 
 #include <utilities/UniformDistribution.h>

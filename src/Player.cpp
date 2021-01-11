@@ -3,8 +3,8 @@
 #include "Cell2D.h"
 #include "GameConstants.h"
 #include "GameMapCell.h"
-#include "ResourceGenerator.h"
 #include "AI/PlayerAI.h"
+#include "GameObjects/ResourceGenerator.h"
 
 #include <cassert>
 

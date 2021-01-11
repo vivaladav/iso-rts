@@ -20,9 +20,6 @@ add_executable(
     src/GameMap.cpp
     src/GameMapCell.cpp
     src/GameMapCell.h
-    src/GameObject.h
-    src/GameObject.cpp
-    src/GameObjectEnums.h
     src/IsoLayer.h
     src/IsoLayer.cpp
     src/IsoMap.h
@@ -31,13 +28,16 @@ add_executable(
     src/MapLoader.cpp
     src/Player.h
     src/Player.cpp
-    src/ResourceGenerator.h
-    src/ResourceGenerator.cpp
-    src/Unit.h
-    src/Unit.cpp
     src/AI/ActionAI.h
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp
+    src/GameObjects/GameObject.h
+    src/GameObjects/GameObject.cpp
+    src/GameObjects/GameObjectEnums.h
+    src/GameObjects/ResourceGenerator.h
+    src/GameObjects/ResourceGenerator.cpp
+    src/GameObjects/Unit.h
+    src/GameObjects/Unit.cpp
     src/Screens/Screen.h
     src/Screens/Screen.cpp
     src/Screens/ScreenGame.h

@@ -5,6 +5,11 @@ namespace game
 
 enum GameObjectType : unsigned int
 {
+    OBJ_BASE,
+    OBJ_BASE_F1,
+    OBJ_BASE_F2,
+    OBJ_BASE_F3,
+
     OBJ_RES_GEN,
     OBJ_RES_GEN_ENERGY,
     OBJ_RES_GEN_MATERIAL1,
