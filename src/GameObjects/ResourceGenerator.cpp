@@ -1,6 +1,6 @@
-#include "ResourceGenerator.h"
+#include "GameObjects/ResourceGenerator.h"
 
-#include "GameObjectEnums.h"
+#include "GameObjects/GameObjectEnums.h"
 
 namespace game
 {

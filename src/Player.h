@@ -24,15 +24,12 @@ public:
 
     int GetPlayerId() const;
 
-    const Cell2D & GetHomeCell() const;
-    void SetHomeCell(const Cell2D & cell);
+    const Cell2D & GetBaseCell() const;
+    void SetBaseCell(const Cell2D & cell);
 
     int GetNumCells() const;
     void SumCells(int val);
     void SetOnNumCellsChanged(const std::function<void(int)> & f);
-
-    int GetTotalCellsLevel() const;
-    void SumTotalCellsLevel(int val);
 
     int GetEnergy() const;
     int GetEnergyUse() const;
@@ -101,17 +98,14 @@ inline const std::string & Player::GetName() const { return mName; }
 
 inline int Player::GetPlayerId() const { return mPlayerId; }
 
-inline const Cell2D & Player::GetHomeCell() const { return mHomeCell; }
-inline void Player::SetHomeCell(const Cell2D & cell) { mHomeCell = cell; }
+inline const Cell2D & Player::GetBaseCell() const { return mHomeCell; }
+inline void Player::SetBaseCell(const Cell2D & cell) { mHomeCell = cell; }
 
 inline int Player::GetNumCells() const { return mNumCells; }
 inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
 {
     mOnNumCellsChanged = f;
 }
-
-inline int Player::GetTotalCellsLevel() const { return mTotCellsLevel; }
-inline void Player::SumTotalCellsLevel(int val) { mTotCellsLevel += val; }
 
 inline int Player::GetEnergy() const { return mEnergy; }
 inline void Player::SetOnEnergyChanged(const std::function<void(int)> & f)

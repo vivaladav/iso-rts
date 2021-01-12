@@ -31,6 +31,8 @@ add_executable(
     src/AI/ActionAI.h
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp
+    src/GameObjects/Base.h
+    src/GameObjects/Base.cpp
     src/GameObjects/GameObject.h
     src/GameObjects/GameObject.cpp
     src/GameObjects/GameObjectEnums.h

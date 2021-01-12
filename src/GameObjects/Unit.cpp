@@ -1,9 +1,7 @@
-#include "Unit.h"
+#include "GameObjects/Unit.h"
 
 #include "GameConstants.h"
-#include "GameObjectEnums.h"
-
-#include "GameConstants.h"
+#include "GameObjects/GameObjectEnums.h"
 
 namespace game
 {
@@ -47,7 +45,6 @@ void Unit::SetImageId()
         break;
 
         default:
-            img = IMG_NULL;
         break;
     }
 

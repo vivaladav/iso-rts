@@ -60,9 +60,6 @@ ScreenGame::ScreenGame(Game * game)
     // create selection object
     mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, playerFaction, ObjectAlignment::NO_ALIGNMENT);
 
-    // set homes
-    mGameMap->SetHomeCells();
-
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {

@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "GameObjects/Base.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
@@ -99,64 +100,6 @@ void GameMap::SyncWalkableCells()
         mCells[i].walkable = mIsoMap->GetCellType(i) == EMPTY;
 }
 
-void GameMap::SetHomeCells()
-{
-    const int limitRow = mIsoMap->GetNumRows() - 1;
-    const int limitCol = mIsoMap->GetNumCols() - 1;
-
-    const int NUM_CORNERS = 4;
-    const Cell2D corners[NUM_CORNERS] =
-    {
-        { 0, 0 },
-        { 0, limitCol },
-        { limitRow, limitCol  },
-        { limitRow, 0}
-    };
-
-    const int numPlayers = mGame->GetNumPlayers();
-
-    int pick = rand() % NUM_CORNERS;
-
-    for(int p = 0; p < numPlayers; ++p)
-    {
-        Player * player = mGame->GetPlayer(p);
-
-        const int c = pick % NUM_CORNERS;
-        const int ind = corners[c].row * mCols + corners[c].col;
-
-        GameMapCell & cell = mCells[ind];
-        cell.owner = player;
-        cell.linked = true;
-
-        UpdateInfluencedCells(corners[c].row, corners[c].col);
-
-        player->SetHomeCell(corners[c]);
-        player->SumCells(1);
-        player->SumTotalCellsLevel(1);
-
-        // this will update the cells with the right type/image
-        // NOTE it's a sub-optimal, but quick solution as most of this code will change soon
-        UpdateLinkedCells(player);
-
-        // inc by 2, 1, 2
-        pick += 2 - (p % 2);
-    }
-}
-
-void GameMap::AssignCell(const Cell2D & cell, Player * player)
-{
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
-    gcell.owner = player;
-
-    const int cellType = DefineCellType(gcell);
-    mIsoMap->SetCellType(ind, cellType);
-
-    player->SumCells(1);
-    player->SumTotalCellsLevel(1);
-}
-
 void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
                            unsigned int r0, unsigned int c0,
                            unsigned int rows, unsigned int cols)
@@ -185,6 +128,36 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     switch (objId)
     {
+        case OBJ_BASE_F1:
+        case OBJ_BASE_F2:
+        case OBJ_BASE_F3:
+        {
+            const int owner = objId - OBJ_BASE_F1;
+
+            obj = new Base(owner);
+
+            Player * player = mGame->GetPlayer(owner);
+
+            // base cells update
+            for(unsigned int r = r1; r <= r0; ++r)
+            {
+                const unsigned int indBase = r * mCols;
+
+                for(unsigned int c = c1; c <= c0; ++c)
+                {
+                    const unsigned int ind = indBase + c;
+                    mCells[ind].owner = player;
+                    mCells[ind].linked = true;
+
+                    UpdateInfluencedCells(r, c);
+                }
+            }
+
+            player->SetBaseCell(Cell2D(r0, c0));
+            player->SumCells(rows * cols);
+        }
+        break;
+
         case OBJ_RES_GEN_ENERGY:
             obj = new ResourceGenerator(ResourceType::ENERGY);
         break;
@@ -206,7 +179,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
     // store object in map list
     mObjects.push_back(obj);
 
-    // update cells
+    // generic cells update
     for(unsigned int r = r1; r <= r0; ++r)
     {
         const unsigned int indBase = r * mCols;
@@ -214,8 +187,15 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         for(unsigned int c = c1; c <= c0; ++c)
         {
             const unsigned int ind = indBase + c;
-            mCells[ind].walkable = false;
-            mCells[ind].obj = obj;
+
+            GameMapCell & cell = mCells[ind];
+
+            cell.walkable = false;
+            cell.obj = obj;
+
+            // update cell image
+            const int cellType = DefineCellType(cell);
+            mIsoMap->SetCellType(ind, cellType);
         }
     }
 
@@ -270,7 +250,6 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
 
     // update player
     player->SumCells(1);
-    player->SumTotalCellsLevel(1);
 
     // reset cell's changing flag
     gcell.changing = false;
@@ -396,7 +375,6 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
 
     // update player
     player->SumCells(1);
-    player->SumTotalCellsLevel(1);
     player->AddResourceGenerator(ind, static_cast<ResourceGenerator *>(gcell1.obj));
 
     // update iso map
@@ -768,7 +746,7 @@ void GameMap::UpdateLinkedCells(Player * player)
     std::vector<unsigned int> todo;
     std::unordered_set<unsigned int> done;
 
-    const Cell2D & home = player->GetHomeCell();
+    const Cell2D & home = player->GetBaseCell();
     const unsigned int indHome = home.row * mCols + home.col;
     todo.push_back(indHome);
 
@@ -900,6 +878,9 @@ void GameMap::UpdateInfluencedCells(int row, int col)
                 gc.influencer = ownerId;
             else
                 gc.influencer = -1;
+
+            const int cellType = DefineCellType(gc);
+            mIsoMap->SetCellType(ind, cellType);
         }
     }
 }
