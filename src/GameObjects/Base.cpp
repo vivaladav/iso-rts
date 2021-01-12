@@ -23,15 +23,15 @@ void Base::SetImageId()
     switch(GetOwner())
     {
         case 0:
-            img = BASE_F1;
+            img = IsSelected() ? BASE_F1_SEL :BASE_F1;
         break;
 
         case 1:
-            img = BASE_F2;
+            img = IsSelected() ? BASE_F2_SEL :BASE_F2;
         break;
 
         case 2:
-            img = BASE_F3;
+            img = IsSelected() ? BASE_F3_SEL :BASE_F3;
         break;
 
         default:

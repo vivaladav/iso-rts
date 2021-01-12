@@ -13,6 +13,17 @@ GameObject::GameObject(GameObjectType type, int owner)
 
 GameObject::~GameObject() { }
 
+void GameObject::SetSelected(bool val)
+{
+    // same value -> nothing to do
+    if(val == mSelected)
+        return ;
+
+    mSelected = val;
+
+    UpdateImageId();
+}
+
 void GameObject::SetCell(GameMapCell * cell)
 {
     mCell = cell;

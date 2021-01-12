@@ -287,12 +287,15 @@ void ScreenGame::CreateLayers()
 
         // BASE 1
         "data/img/base-f1.png",
+        "data/img/base-f1-sel.png",
 
         // BASE 2
         "data/img/base-f2.png",
+        "data/img/base-f2-sel.png",
 
         // BASE 3
         "data/img/base-f3.png",
+        "data/img/base-f3-sel.png",
 
         // FACTION 1
         "data/img/unit_01-f1.png",

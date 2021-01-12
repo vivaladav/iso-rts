@@ -31,6 +31,9 @@ public:
     GameObject(GameObjectType type, int owner);
     virtual ~GameObject();
 
+    bool IsSelected() const;
+    void SetSelected(bool val);
+
     const GameMapCell * GetCell() const;
     void SetCell(GameMapCell * cell);
 
@@ -64,7 +67,11 @@ private:
 
     unsigned int mRows = 1;
     unsigned int mCols = 1;
+
+    bool mSelected = false;
 };
+
+inline bool GameObject::IsSelected() const { return mSelected; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 

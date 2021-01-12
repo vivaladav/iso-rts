@@ -9,12 +9,15 @@ enum GameObjectImageId : unsigned int
 
     // BASE 1
     BASE_F1,
+    BASE_F1_SEL,
 
     // BASE 2
     BASE_F2,
+    BASE_F2_SEL,
 
     // BASE 3
     BASE_F3,
+    BASE_F3_SEL,
 
     // FACTION 1
     F1_U1,
