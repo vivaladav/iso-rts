@@ -14,6 +14,8 @@ class TexturedRenderable : public Renderable
 public:
     void SetRotation(double degs);
 
+    void SetTexture(Texture * tex);
+
     void Render() override;
 
 public:
@@ -22,8 +24,6 @@ public:
     static const int FLIP_VERT;
 
 protected:
-    void SetTexture(Texture * tex);
-
     void DeleteTexture();
 
 private:

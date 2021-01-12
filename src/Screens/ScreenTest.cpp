@@ -10,6 +10,8 @@
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
 #include <graphic/Text.h>
+#include <graphic/Texture.h>
+#include <graphic/TextureManager.h>
 #include <sgui/ButtonsGroup.h>
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
@@ -170,9 +172,30 @@ void ScreenTest::TestSGui()
 
     buttonY += button->GetHeight() + marginV;
 
-    button = new ButtonMainMenu("TOGGLE 1", container);
+    button = new ButtonMainMenu("SELECTED", container);
     button->SetCheckable(true);
     button->SetY(buttonY);
+
+    buttonY += button->GetHeight() + marginV;
+
+    // testing change of Texture in graphic::Image
+    Image * img = new Image;
+    Texture * tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
+    img->SetTexture(tex);
+    img->SetPosition(container->GetX(), buttonY);
+    mRenderables.emplace_back(img);
+
+    button->SetOnToggleFunction([img](bool checked)
+    {
+        Texture * tex;
+
+        if(checked)
+            tex = TextureManager::Instance()->GetTexture("data/img/base-f1-sel.png");
+        else
+            tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
+
+        img->SetTexture(tex);
+    });
 
     // -- BUTTONS GROUP --
     font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
