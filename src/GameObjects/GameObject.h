@@ -21,15 +21,16 @@ enum GameObjectType : unsigned int
     OBJ_NULL
 };
 
-enum GameObjectImageId : unsigned int;
-
 class GameMapCell;
+class IsoObject;
 
 class GameObject
 {
 public:
-    GameObject(GameObjectType type, int owner);
+    GameObject(GameObjectType type, int owner, int rows, int cols);
     virtual ~GameObject();
+
+    IsoObject * GetIsoObject() const;
 
     bool IsSelected() const;
     void SetSelected(bool val);
@@ -51,13 +52,11 @@ public:
 
     GameObjectType GetObjectType() const;
 
-    GameObjectImageId GetImageId() const;
+protected:
+    virtual void UpdateImage() = 0;
 
 protected:
-    virtual void UpdateImageId() = 0;
-
-protected:
-    GameObjectImageId mImageId;
+    IsoObject * mIsoObj = nullptr;
 
 private:
     GameMapCell * mCell = nullptr;
@@ -71,6 +70,8 @@ private:
     bool mSelected = false;
 };
 
+inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
+
 inline bool GameObject::IsSelected() const { return mSelected; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
@@ -78,8 +79,6 @@ inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 inline int GameObject::GetOwner() const { return mOwner; }
 
 inline GameObjectType GameObject::GetObjectType() const { return mType; }
-
-inline GameObjectImageId GameObject::GetImageId() const { return mImageId; }
 
 inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 {

@@ -8,16 +8,16 @@ namespace game
 class Unit : public GameObject
 {
 public:
-    Unit(int owner);
+    Unit(int owner, int rows, int cols);
 
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
 
 protected:
-    void UpdateImageId() override;
+    void UpdateImage() override;
 
 private:
-    void SetImageId();
+    void SetImage();
 
 private:
     int mLevel = 0;

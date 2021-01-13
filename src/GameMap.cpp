@@ -134,7 +134,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         {
             const int owner = objId - OBJ_BASE_F1;
 
-            obj = new Base(owner);
+            obj = new Base(owner, rows, cols);
 
             Player * player = mGame->GetPlayer(owner);
 
@@ -159,11 +159,11 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         break;
 
         case OBJ_RES_GEN_ENERGY:
-            obj = new ResourceGenerator(ResourceType::ENERGY);
+            obj = new ResourceGenerator(ResourceType::ENERGY, rows, cols);
         break;
 
         case OBJ_RES_GEN_MATERIAL1:
-            obj = new ResourceGenerator(ResourceType::MATERIAL1);
+            obj = new ResourceGenerator(ResourceType::MATERIAL1, rows, cols);
         break;
 
         default:
@@ -200,8 +200,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
     }
 
     // create object in iso map
-    const GameObjectImageId imgId = obj->GetImageId();
-    mIsoMap->GetLayer(layerId)->AddObject(r0, c0, rows, cols, imgId);
+    mIsoMap->GetLayer(layerId)->AddObject(obj->GetIsoObject(), r0, c0);
 }
 
 bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
@@ -377,9 +376,6 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     player->SumCells(1);
     player->AddResourceGenerator(ind, static_cast<ResourceGenerator *>(gcell1.obj));
 
-    // update iso map
-    mIsoMap->GetLayer(OBJECTS)->ChangeObject(end.row, end.col, gcell1.obj->GetImageId());
-
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
     mCells[ind0].changing = false;
@@ -439,11 +435,11 @@ void GameMap::CreateUnit(const Cell2D & cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(player->GetPlayerId());
+    Unit * unit = new Unit(player->GetPlayerId(), 1, 1);
     unit->SetCell(&mCells[ind]);
     gcell.obj = unit;
 
-    mIsoMap->GetLayer(OBJECTS)->AddObject(r, c, unit->GetImageId(), BOTTOM);
+    mIsoMap->GetLayer(OBJECTS)->AddObject(unit->GetIsoObject(), r, c);
 
     mObjects.push_back(unit);
 
@@ -558,9 +554,6 @@ void GameMap::UpgradeUnit(const Cell2D & cell)
 
     // update player
     gcell.owner->SumTotalUnitsLevel(1);
-
-    // update map layer
-    mIsoMap->GetLayer(OBJECTS)->ReplaceObject(r, c, unit->GetImageId(), NO_ALIGNMENT);
 
     // reset cell's changing flag
     gcell.changing = false;

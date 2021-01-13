@@ -1,12 +1,14 @@
 #include "GameObject.h"
 
 #include "GameMapCell.h"
+#include "IsoObject.h"
 
 namespace game
 {
 
-GameObject::GameObject(GameObjectType type, int owner)
-    : mOwner(owner)
+GameObject::GameObject(GameObjectType type, int owner, int rows, int cols)
+    : mIsoObj(new IsoObject(rows, cols))
+    , mOwner(owner)
     , mType(type)
 {
 }
@@ -21,14 +23,14 @@ void GameObject::SetSelected(bool val)
 
     mSelected = val;
 
-    UpdateImageId();
+    UpdateImage();
 }
 
 void GameObject::SetCell(GameMapCell * cell)
 {
     mCell = cell;
 
-    UpdateImageId();
+    UpdateImage();
 }
 
 int GameObject::GetRow0() const { return mCell->row; }
@@ -40,7 +42,7 @@ void GameObject::SetOwner(int owner)
 {
     mOwner = owner;
 
-    UpdateImageId();
+    UpdateImage();
 }
 
 } // namespace game

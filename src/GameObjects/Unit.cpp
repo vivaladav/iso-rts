@@ -1,15 +1,17 @@
 #include "GameObjects/Unit.h"
 
 #include "GameConstants.h"
-#include "GameObjects/GameObjectEnums.h"
+#include "IsoObject.h"
+
+#include <graphic/TextureManager.h>
 
 namespace game
 {
 
-Unit::Unit(int owner)
-    : GameObject(GameObjectType::OBJ_UNIT, owner)
+Unit::Unit(int owner, int rows, int cols)
+    : GameObject(GameObjectType::OBJ_UNIT, owner, rows, cols)
 {
-    SetImageId();
+    SetImage();
 }
 
 void Unit::IncreaseUnitLevel()
@@ -18,37 +20,49 @@ void Unit::IncreaseUnitLevel()
         return ;
 
     ++mLevel;
-    SetImageId();
+    SetImage();
 }
 
-void Unit::UpdateImageId()
+void Unit::UpdateImage()
 {
-    SetImageId();
+    SetImage();
 }
 
-void Unit::SetImageId()
+void Unit::SetImage()
 {
-    int img = IMG_NULL;
+    auto * tm = lib::graphic::TextureManager::Instance();
 
-    switch(GetOwner())
+    lib::graphic::Texture * tex = nullptr;
+
+    const int owner = GetOwner();
+
+    // object is selected
+    if(IsSelected())
     {
-        case 0:
-            img = F1_U1;
-        break;
+        // TODO add selected images
+        const char * imgFiles[] =
+        {
+            "data/img/unit_01-f1.png",
+            "data/img/unit_01-f2.png",
+            "data/img/unit_01-f3.png"
+        };
 
-        case 1:
-            img = F2_U1;
-        break;
+        tex = tm->GetTexture(imgFiles[owner]);
+    }
+    // not selected
+    else
+    {
+        const char * imgFiles[] =
+        {
+            "data/img/unit_01-f1.png",
+            "data/img/unit_01-f2.png",
+            "data/img/unit_01-f3.png"
+        };
 
-        case 2:
-            img = F3_U1;
-        break;
-
-        default:
-        break;
+        tex = tm->GetTexture(imgFiles[owner]);
     }
 
-    mImageId = static_cast<GameObjectImageId>(img);
+    mIsoObj->SetTexture(tex);
 }
 
 } // namespace game

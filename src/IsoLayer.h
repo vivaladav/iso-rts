@@ -14,24 +14,7 @@ namespace game
 {
 
 class IsoMap;
-
-/// An object of an IsoLayer.
-struct IsoObject
-{
-    IsoObject(const lib::core::Point2D & p, int ind,
-              unsigned int rs = 1, unsigned int cs = 1)
-        : pos(p)
-        , imgIndex(ind)
-        , rows(rs)
-        , cols(cs)
-    {
-    }
-
-    lib::core::Point2D pos;
-    int imgIndex = 0;
-    unsigned int rows = 1;
-    unsigned int cols = 1;
-};
+class IsoObject;
 
 enum ObjectAlignment
 {
@@ -61,13 +44,12 @@ public:
     void UpdateSize();
 
     bool ContainsObject(unsigned int r, unsigned int c) const;
-    bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
-    bool AddObject(unsigned int r, unsigned int c, unsigned int rows, unsigned int cols, int objIndex);
+    //bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
+    bool AddObject(IsoObject * obj, unsigned int r, unsigned int c);
     void ClearObject(unsigned int r, unsigned int c);
-    bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
+    //bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     bool MoveObject(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1,
                     ObjectAlignment alignment);
-    bool ChangeObject(unsigned int r, unsigned int c, int objIndex);
 
     void ClearObjects();
 
@@ -80,7 +62,7 @@ public:
 private:
     void AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment);
 
-    void AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment);
+    //void AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int index);
 
     void SetImages(const std::vector<std::string> & files);

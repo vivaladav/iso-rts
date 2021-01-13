@@ -18,17 +18,17 @@ enum ResourceType : unsigned int
 class ResourceGenerator : public GameObject
 {
 public:
-    ResourceGenerator(ResourceType type);
+    ResourceGenerator(ResourceType type, int rows, int cols);
 
     int GetOutput() const;
 
     ResourceType GetResourceType() const;
 
 protected:
-    void UpdateImageId() override;
+    void UpdateImage() override;
 
 private:
-    void SetImageId();
+    void SetImage();
 
     void UpdateOutput();
 

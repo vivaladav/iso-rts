@@ -1,44 +1,71 @@
 #include "GameObjects/ResourceGenerator.h"
 
-#include "GameObjects/GameObjectEnums.h"
+#include "IsoObject.h"
+
+#include <graphic/TextureManager.h>
 
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(ResourceType type)
-    : GameObject(OBJ_RES_GEN, -1)
+ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
+    : GameObject(OBJ_RES_GEN, -1, rows, cols)
     , mResType(type)
 {
-    SetImageId();
+    SetImage();
 
     UpdateOutput();
 }
 
-void ResourceGenerator::UpdateImageId()
+void ResourceGenerator::UpdateImage()
 {
-    SetImageId();
+    SetImage();
 }
 
-void ResourceGenerator::SetImageId()
+void ResourceGenerator::SetImage()
 {
     const int owner = GetOwner();
 
+    auto * tm = lib::graphic::TextureManager::Instance();
+
+    lib::graphic::Texture * tex = nullptr;
+
     if(ENERGY == mResType)
     {
-        if(owner != -1)
-            mImageId = static_cast<GameObjectImageId>(GameObjectImageId::ENERGY_SOURCE_F1 + owner);
+        if(-1 == owner)
+            tex = tm->GetTexture("data/img/energy_source.png");
         else
-            mImageId = GameObjectImageId::ENERGY_SOURCE;
+        {
+            const char * filesFactions[] =
+            {
+                "data/img/energy_source-f1.png",
+                "data/img/energy_source-f2.png",
+                "data/img/energy_source-f3.png"
+            };
+
+            tex = tm->GetTexture(filesFactions[owner]);
+        }
+
     }
     else if(MATERIAL1 == mResType)
     {
-        if(owner != -1)
-            mImageId = static_cast<GameObjectImageId>(GameObjectImageId::MATERIAL1_SOURCE_F1 + owner);
+        if(-1 == owner)
+            tex = tm->GetTexture("data/img/material_source.png");
         else
-            mImageId = GameObjectImageId::MATERIAL1_SOURCE;
+        {
+            const char * filesFactions[] =
+            {
+                "data/img/material_source-f1.png",
+                "data/img/material_source-f2.png",
+                "data/img/material_source-f3.png"
+            };
+
+            tex = tm->GetTexture(filesFactions[owner]);
+        }
     }
     else
-        mImageId = IMG_NULL;
+        tex = tm->GetTexture("data/img/obj_null.png");
+
+    mIsoObj->SetTexture(tex);
 }
 
 void ResourceGenerator::UpdateOutput()

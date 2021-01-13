@@ -55,10 +55,10 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
 
-    const int playerFaction = game->GetPlayer(0)->GetPlayerId();
+    //const int playerFaction = game->GetPlayer(0)->GetPlayerId();
 
     // create selection object
-    mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, playerFaction, ObjectAlignment::NO_ALIGNMENT);
+    //mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, playerFaction, ObjectAlignment::NO_ALIGNMENT);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -474,9 +474,12 @@ void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
 
     mPanelPlayer->SetSelectedCell(gameCell);
 
-    IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
-    layerSel->MoveObject(mPrevSel.row, mPrevSel.col, cell.row, cell.col, NO_ALIGNMENT);
-    mIsoMap->SetLayerVisible(SELECTION, true);
+    if(gameCell.obj)
+        gameCell.obj->SetSelected(true);
+
+//    IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
+//    layerSel->MoveObject(mPrevSel.row, mPrevSel.col, cell.row, cell.col, NO_ALIGNMENT);
+//    mIsoMap->SetLayerVisible(SELECTION, true);
 
     // show move targets if it's player's unit
     const Unit * cellUnit = gameCell.GetUnit();
@@ -493,6 +496,7 @@ void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
 
 void ScreenGame::ShowMoveTargets(const Cell2D & cell, Player * player)
 {
+    /*
     IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
 
     const int numTargets = 8;
@@ -516,6 +520,7 @@ void ScreenGame::ShowMoveTargets(const Cell2D & cell, Player * player)
         if(mGameMap->CanUnitMove(cell, targets[i], player))
             layerTargets->AddObject(targets[i].row, targets[i].col, 0, ObjectAlignment::CENTER);
     }
+    */
 }
 
 void ScreenGame::UpdateAI(float delta)

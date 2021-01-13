@@ -24,6 +24,8 @@ add_executable(
     src/IsoLayer.cpp
     src/IsoMap.h
     src/IsoMap.cpp
+    src/IsoObject.h
+    src/IsoObject.cpp
     src/MapLoader.h
     src/MapLoader.cpp
     src/Player.h
@@ -35,7 +37,6 @@ add_executable(
     src/GameObjects/Base.cpp
     src/GameObjects/GameObject.h
     src/GameObjects/GameObject.cpp
-    src/GameObjects/GameObjectEnums.h
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
     src/GameObjects/Unit.h

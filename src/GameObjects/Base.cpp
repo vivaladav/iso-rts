@@ -1,44 +1,57 @@
 #include "GameObjects/Base.h"
 
-#include "GameObjects/GameObjectEnums.h"
+#include "IsoObject.h"
+
+#include <graphic/TextureManager.h>
 
 namespace game
 {
 
-Base::Base(int owner)
-    : GameObject(GameObjectType::OBJ_BASE, owner)
+Base::Base(int owner, int rows, int cols)
+    : GameObject(GameObjectType::OBJ_BASE, owner, rows, cols)
 {
-    SetImageId();
+    SetImage();
 }
 
-void Base::UpdateImageId()
+void Base::UpdateImage()
 {
-    SetImageId();
+    SetImage();
 }
 
-void Base::SetImageId()
+void Base::SetImage()
 {
-    int img = IMG_NULL;
+    auto * tm = lib::graphic::TextureManager::Instance();
 
-    switch(GetOwner())
+    lib::graphic::Texture * tex = nullptr;
+
+    const int owner = GetOwner();
+
+    // object is selected
+    if(IsSelected())
     {
-        case 0:
-            img = IsSelected() ? BASE_F1_SEL :BASE_F1;
-        break;
+        const char * imgFiles[] =
+        {
+            "data/img/base-f1-sel.png",
+            "data/img/base-f2-sel.png",
+            "data/img/base-f3-sel.png"
+        };
 
-        case 1:
-            img = IsSelected() ? BASE_F2_SEL :BASE_F2;
-        break;
+        tex = tm->GetTexture(imgFiles[owner]);
+    }
+    // not selected
+    else
+    {
+        const char * imgFiles[] =
+        {
+            "data/img/base-f1.png",
+            "data/img/base-f2.png",
+            "data/img/base-f3.png"
+        };
 
-        case 2:
-            img = IsSelected() ? BASE_F3_SEL :BASE_F3;
-        break;
-
-        default:
-        break;
+        tex = tm->GetTexture(imgFiles[owner]);
     }
 
-    mImageId = static_cast<GameObjectImageId>(img);
+    mIsoObj->SetTexture(tex);
 }
 
 } // namespace game

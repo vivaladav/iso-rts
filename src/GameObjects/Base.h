@@ -8,13 +8,13 @@ namespace game
 class Base : public GameObject
 {
 public:
-    Base(int owner);
+    Base(int owner, int rows, int cols);
 
 protected:
-    void UpdateImageId() override;
+    void UpdateImage() override;
 
 private:
-    void SetImageId();
+    void SetImage();
 };
 
 } // namespace game
