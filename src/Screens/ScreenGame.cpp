@@ -55,11 +55,6 @@ ScreenGame::ScreenGame(Game * game)
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
 
-    //const int playerFaction = game->GetPlayer(0)->GetPlayerId();
-
-    // create selection object
-    //mIsoMap->GetLayer(SELECTION)->AddObject(0, 0, playerFaction, ObjectAlignment::NO_ALIGNMENT);
-
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
@@ -264,62 +259,11 @@ void ScreenGame::CreateIsoMap()
 
 void ScreenGame::CreateLayers()
 {
-    // -- LAYERS --
-    // SELECTION
-    const std::vector<std::string> selImgs =
-    {
-        "data/img/selection-f1.png",
-        "data/img/selection-f2.png",
-        "data/img/selection-f3.png"
-    };
+    mIsoMap->CreateLayer(MapLayers::SELECTION);
 
-    mIsoMap->CreateLayer(MapLayers::SELECTION, selImgs);
-    mIsoMap->SetLayerVisible(SELECTION, false);
+    mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS);
 
-    // MOVE TARGETS
-    const std::vector<std::string> mtImgs = { "data/img/move_target.png" };
-    mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS, mtImgs);
-
-    // OBJECTS
-    const std::vector<std::string> objImgs =
-    {
-        "data/img/obj_null.png",
-
-        // BASE 1
-        "data/img/base-f1.png",
-        "data/img/base-f1-sel.png",
-
-        // BASE 2
-        "data/img/base-f2.png",
-        "data/img/base-f2-sel.png",
-
-        // BASE 3
-        "data/img/base-f3.png",
-        "data/img/base-f3-sel.png",
-
-        // FACTION 1
-        "data/img/unit_01-f1.png",
-
-        // FACTION 2
-        "data/img/unit_01-f2.png",
-
-        // FACTION 3
-        "data/img/unit_01-f3.png",
-
-        // ENERGY SOURCE
-        "data/img/energy_source.png",
-        "data/img/energy_source-f1.png",
-        "data/img/energy_source-f2.png",
-        "data/img/energy_source-f3.png",
-
-        // MATERIAL SOURCE
-        "data/img/material_source.png",
-        "data/img/material_source-f1.png",
-        "data/img/material_source-f2.png",
-        "data/img/material_source-f3.png",
-    };
-
-    mIsoMap->CreateLayer(MapLayers::OBJECTS, objImgs);
+    mIsoMap->CreateLayer(MapLayers::OBJECTS);
 }
 
 void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
@@ -462,8 +406,6 @@ void ScreenGame::ClearSelection(Player * player)
 
     mPanelPlayer->ClearSelectedCell();
 
-    mIsoMap->SetLayerVisible(SELECTION, false);
-
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
 }
 
@@ -476,10 +418,6 @@ void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
 
     if(gameCell.obj)
         gameCell.obj->SetSelected(true);
-
-//    IsoLayer * layerSel = mIsoMap->GetLayer(SELECTION);
-//    layerSel->MoveObject(mPrevSel.row, mPrevSel.col, cell.row, cell.col, NO_ALIGNMENT);
-//    mIsoMap->SetLayerVisible(SELECTION, true);
 
     // show move targets if it's player's unit
     const Unit * cellUnit = gameCell.GetUnit();

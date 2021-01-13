@@ -53,7 +53,7 @@ public:
     bool IsCellInside(const Cell2D & cell) const;
 
     // -- IsoLayers --
-    IsoLayer * CreateLayer(unsigned int layerId, const std::vector<std::string> & files);
+    IsoLayer * CreateLayer(unsigned int layerId);
     IsoLayer * GetLayer(unsigned int layerId) const;
     void SetLayerVisible(unsigned int layerId, bool visible);
 

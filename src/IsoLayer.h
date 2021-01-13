@@ -5,11 +5,6 @@
 #include <string>
 #include <vector>
 
-namespace lib
-{
-    namespace graphic { class Image; }
-}
-
 namespace game
 {
 
@@ -38,18 +33,16 @@ enum ObjectAlignment
 class IsoLayer
 {
 public:
-    IsoLayer(const IsoMap * map, const std::vector<std::string> & files);
+    IsoLayer(const IsoMap * map);
     ~IsoLayer();
 
     void UpdateSize();
 
     bool ContainsObject(unsigned int r, unsigned int c) const;
-    //bool AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
     bool AddObject(IsoObject * obj, unsigned int r, unsigned int c);
     void ClearObject(unsigned int r, unsigned int c);
-    //bool ReplaceObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment);
-    bool MoveObject(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1,
-                    ObjectAlignment alignment);
+    bool MoveObject(unsigned int r0, unsigned int c0,
+                    unsigned int r1, unsigned int c1);
 
     void ClearObjects();
 
@@ -60,16 +53,11 @@ public:
     void MoveObjects(int deltaX, int deltaY);
 
 private:
-    void AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment);
+    void PositionObject(IsoObject * obj, unsigned int r, unsigned int c);
 
-    //void AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment);
     void ClearObject(unsigned int index);
 
-    void SetImages(const std::vector<std::string> & files);
-
 private:
-    std::vector<lib::graphic::Image *> mImages;
-
     std::vector<IsoObject *> mObjectsList;
     std::vector<IsoObject *> mObjectsMap;
 

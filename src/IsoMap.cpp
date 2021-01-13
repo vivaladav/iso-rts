@@ -198,7 +198,7 @@ bool IsoMap::IsCellInside(const Cell2D & cell) const
  * @param files Files to create images. Paths are relative to binary
  * @return A pointer to the new IsoLayer
  */
-IsoLayer * IsoMap::CreateLayer(unsigned int layerId, const std::vector<std::string> & files)
+IsoLayer * IsoMap::CreateLayer(unsigned int layerId)
 {
     // check layer has not been created yet
     IsoLayer * layer = GetLayer(layerId);
@@ -207,7 +207,7 @@ IsoLayer * IsoMap::CreateLayer(unsigned int layerId, const std::vector<std::stri
         return layer;
 
     // create and store new layer
-    layer = new IsoLayer(this, files);
+    layer = new IsoLayer(this);
 
     mLayers.emplace_back(layer);
     mLayersMap.insert({layerId, layer});

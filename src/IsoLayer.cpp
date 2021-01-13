@@ -3,10 +3,7 @@
 #include "IsoMap.h"
 #include "IsoObject.h"
 
-#include <graphic/Image.h>
-
 #include <algorithm>
-#include <cassert>
 
 namespace game
 {
@@ -18,26 +15,18 @@ namespace game
  * @param map Pointer to the owner map
  * @param files Files to create images to display in the layer. Paths are relative to binary
  */
-IsoLayer::IsoLayer(const IsoMap * map, const std::vector<std::string> & files)
+IsoLayer::IsoLayer(const IsoMap * map)
     : mMap(map)
 {
-    assert(map);
-
     const int size = mMap->GetNumRows() * mMap->GetNumCols();
 
     mObjectsMap.reserve(size);
     mObjectsMap.assign(size, nullptr);
-
-    SetImages(files);
 }
 
 /// Destructor. delete Images and IsoObjects.
 IsoLayer::~IsoLayer()
 {
-    // images
-    for(lib::graphic::Image * img : mImages)
-        delete img;
-
     // objects
     ClearObjects();
 }
@@ -83,36 +72,6 @@ bool IsoLayer::ContainsObject(unsigned int r, unsigned int c) const
     return mObjectsMap[index] != nullptr;
 }
 
-/**
- * @brief IsoLayer::AddObject
- * @brief Creates a new IsoObject and adds it to the layer.
- * @param r Row index, starting from 0
- * @param c Col index, starting from 0
- * @param index Position index in the layer. Identifies the cell
- * @param objIndex Object index ID. Identifies the associated image
- * @param alignment Visual alignment of the object in the cell
- * @return TRUE on success, FALSE on error
- */
-//bool IsoLayer::AddObject(unsigned int r, unsigned int c, int objIndex, ObjectAlignment alignment)
-//{
-//    const unsigned int rows = mMap->GetNumRows();
-//    const unsigned int cols = mMap->GetNumCols();
-
-//    // ERROR out of bounds
-//    if(!(r < rows && c < cols))
-//        return false;
-
-//    const unsigned int index = r * cols + c;
-
-//    // ERROR cell full
-//    if(mObjectsMap[index])
-//        return false;
-
-//    AddObject(index, objIndex, alignment);
-
-//    return true;
-//}
-
 bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
 {
     const unsigned int mapRows = mMap->GetNumRows();
@@ -129,19 +88,8 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     if(r1 >= mapRows || c1 >= mapCols)
         return false;
 
-    // create new IsoObject
-
     // position it in a cell
-    const lib::core::Point2D cellPos = mMap->GetCellPosition(r, c);
-    const int cellH = mMap->GetTileHeight();
-
-    const int x0 = cellPos.x + cellH;
-    const int y0 = cellPos.y + cellH;
-
-    const int imgW0 = obj->GetCols() * cellH;
-    const int imgH = obj->GetHeight();
-
-    obj->SetPosition(x0 - imgW0, y0 - imgH);
+    PositionObject(obj, r, c);
 
     // store object
     for(unsigned int row = r1; row <= r; ++row)
@@ -184,34 +132,6 @@ void IsoLayer::ClearObject(unsigned int r, unsigned int c)
 }
 
 /**
- * @brief Replaces an object in a cell. First clears the existing one, then creates a new one.
- * @param r Row index, starting from 0
- * @param c Col index, starting from 0
- * @param objIndex Object index ID. Identifies the associated image
- * @param alignment Visual alignment of the object in the cell
- * @return TRUE on success, FALSE otherwise
- */
-//bool IsoLayer::ReplaceObject(unsigned int r, unsigned int c,
-//                             int objIndex, ObjectAlignment alignment)
-//{
-//    const unsigned int rows = mMap->GetNumRows();
-//    const unsigned int cols = mMap->GetNumCols();
-
-//    // ERROR out of bounds
-//    if(!(r < rows && c < cols))
-//        return false;
-
-//    const unsigned int index = r * cols + c;
-
-//    if(mObjectsMap[index])
-//        ClearObject(index);
-
-//    AddObject(index, objIndex, alignment);
-
-//    return true;
-//}
-
-/**
  * @brief Moves an object from one cell to another.
  * @param r0 Row index of start cell, starting from 0
  * @param c0 Col index of start cell, starting from 0
@@ -221,8 +141,7 @@ void IsoLayer::ClearObject(unsigned int r, unsigned int c)
  * @return TRUE on success, FALSE otherwise
  */
 bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
-                          unsigned int r1, unsigned int c1,
-                          ObjectAlignment alignment)
+                          unsigned int r1, unsigned int c1)
 {
     const unsigned int rows = mMap->GetNumRows();
     const unsigned int cols = mMap->GetNumCols();
@@ -246,7 +165,7 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
         return false;
 
     // position object
-    AlignObject(obj, index1, alignment);
+    PositionObject(obj, r1, c1);
 
     mObjectsMap[index0] = nullptr;
     mObjectsMap[index1] = obj;
@@ -288,50 +207,19 @@ void IsoLayer::MoveObjects(int deltaX, int deltaY)
 
 // ==================== PRIVATE METHODS ====================
 
-/**
- * @brief Align an IsoObject inside a cell.
- * @param obj Pointer to IsoObject
- * @param cellIndex Index of the target cell in the layer
- * @param alignment Flags that define the alignment
- */
-void IsoLayer::AlignObject(IsoObject * obj, unsigned int cellIndex, ObjectAlignment alignment)
+void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
 {
-    /*
-    // initial position is cell's TL corner
-    obj->pos = mMap->GetCellPosition(cellIndex);
+    const lib::core::Point2D cellPos = mMap->GetCellPosition(r, c);
+    const int cellH = mMap->GetTileHeight();
 
-    // horizontal alignment
-    if(alignment & HCENTER)
-        obj->pos.x += (mMap->GetTileWidth() - mImages[obj->imgIndex]->GetWidth()) * 0.5f;
-    else if(alignment & RIGHT)
-        obj->pos.x += mMap->GetTileWidth() - mImages[obj->imgIndex]->GetWidth();
+    const int x0 = cellPos.x + cellH;
+    const int y0 = cellPos.y + cellH;
 
-    // vertical alignment
-    if(alignment & VCENTER)
-        obj->pos.y += (mMap->GetTileHeight() - mImages[obj->imgIndex]->GetHeight()) * 0.5f;
-    else if(alignment & BOTTOM)
-        obj->pos.y += mMap->GetTileHeight() - mImages[obj->imgIndex]->GetHeight();
-        */
+    const int imgW0 = obj->GetCols() * cellH;
+    const int imgH = obj->GetHeight();
+
+    obj->SetPosition(x0 - imgW0, y0 - imgH);
 }
-
-/**
- * @brief Creates a new IsoObject and adds it to the layer.
- * @param index Position index in the layer. Identifies the cell
- * @param objIndex Object index ID. Identifies the associated image
- * @param alignment Visual alignment of the object in the cell
- */
-//void IsoLayer::AddObject(unsigned int cellIndex, int objIndex, ObjectAlignment alignment)
-//{
-//    // create new IsoObject
-//    IsoObject * obj = new IsoObject({0, 0}, objIndex);
-
-//    // position it in a cell
-//    AlignObject(obj, cellIndex, alignment);
-
-//    // store object
-//    mObjectsMap[cellIndex] = obj;
-//    mObjectsList.emplace_back(obj);
-//}
 
 /**
  * @brief Destroys an object from a cell.
@@ -348,20 +236,6 @@ void IsoLayer::ClearObject(unsigned int index)
         mObjectsList.erase(it);
 
     delete obj;
-}
-
-/**
- * @brief Creates the Images used to represent the object in the layer.
- * @param files Files to create images. Paths are relative to binary
- */
-void IsoLayer::SetImages(const std::vector<std::string> & files)
-{
-    for(const std::string & file : files)
-    {
-        auto * img = new lib::graphic::Image(file.c_str());
-
-        mImages.emplace_back(img);
-    }
 }
 
 } // namespace game

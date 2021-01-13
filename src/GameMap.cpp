@@ -631,7 +631,7 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * playe
         gcell0.obj = nullptr;
 
         IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
-        layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col, BOTTOM);
+        layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col);
 
         gcell1.obj->SetCell(&mCells[ind1]);
     }
