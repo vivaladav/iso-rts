@@ -404,6 +404,8 @@ void ScreenGame::ClearSelection(Player * player)
 {
     player->ClearSelectedCell();
 
+    player->ClearSelectedObject();
+
     mPanelPlayer->ClearSelectedCell();
 
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
@@ -416,8 +418,9 @@ void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
 
     mPanelPlayer->SetSelectedCell(gameCell);
 
-    if(gameCell.obj)
-        gameCell.obj->SetSelected(true);
+    if(gameCell.obj &&
+       (gameCell.obj->GetOwner() == player->GetPlayerId() || nullptr == gameCell.owner))
+        player->SetSelectedObject(gameCell.obj);
 
     // show move targets if it's player's unit
     const Unit * cellUnit = gameCell.GetUnit();

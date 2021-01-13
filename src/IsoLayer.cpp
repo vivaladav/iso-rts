@@ -131,6 +131,7 @@ void IsoLayer::ClearObject(unsigned int r, unsigned int c)
     ClearObject(index);
 }
 
+// TODO handle move of objects that are bigger than 1 cell
 /**
  * @brief Moves an object from one cell to another.
  * @param r0 Row index of start cell, starting from 0

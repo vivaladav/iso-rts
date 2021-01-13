@@ -4,6 +4,7 @@
 #include "GameConstants.h"
 #include "GameMapCell.h"
 #include "AI/PlayerAI.h"
+#include "GameObjects/GameObject.h"
 #include "GameObjects/ResourceGenerator.h"
 
 #include <cassert>
@@ -84,6 +85,26 @@ void Player::SumUnits(int val)
 void Player::SetSelectedCell(const Cell2D & cell)
 {
     mSelectedCell = cell;
+}
+
+void Player::ClearSelectedObject()
+{
+    if(nullptr == mSelObj)
+        return ;
+
+    mSelObj->SetSelected(false);
+
+    mSelObj = nullptr;
+}
+
+void Player::SetSelectedObject(GameObject * obj)
+{
+    if(mSelObj != nullptr)
+        mSelObj->SetSelected(false);
+
+    mSelObj = obj;
+
+    mSelObj->SetSelected(true);
 }
 
 void Player::AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen)

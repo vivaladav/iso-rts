@@ -9,8 +9,9 @@
 namespace game
 {
 
-class ResourceGenerator;
+class GameObject;
 class PlayerAI;
+class ResourceGenerator;
 
 enum ResourceType : unsigned int;
 
@@ -52,6 +53,10 @@ public:
     const Cell2D & GetSelectedCell() const;
     void SetSelectedCell(const Cell2D & cell);
 
+    void ClearSelectedObject();
+    GameObject * GetSelectedObject() const;
+    void SetSelectedObject(GameObject * obj);
+
     void AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen);
     void RemoveResourceGenerator(unsigned int cellId);
 
@@ -77,6 +82,8 @@ private:
     std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
 
     PlayerAI * mAI = nullptr;
+
+    GameObject * mSelObj = nullptr;
 
     Cell2D mHomeCell;
 
@@ -138,6 +145,8 @@ inline void Player::ClearSelectedCell()
     mSelectedCell.col = -1;
 }
 inline const Cell2D & Player::GetSelectedCell() const { return mSelectedCell; }
+
+inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
 
 inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }
