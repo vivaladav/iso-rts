@@ -56,8 +56,8 @@ void PlayerAI::DecideActions()
         std::vector<AIActionId> actions;
 
         // init possible actions
-        if(mGm->CanCreateUnit(pos, mPlayer))
-            actions.emplace_back(ACT_NEW_UNIT);
+//        if(mGm->CanCreateUnit(pos, mPlayer))
+//            actions.emplace_back(ACT_NEW_UNIT);
         if(mGm->CanUpgradeUnit(pos, mPlayer))
             actions.emplace_back(ACT_UNIT_UPGRADE);
         if(CanMoveUnit(ownCells[c]))

@@ -110,7 +110,7 @@ ScreenGame::ScreenGame(Game * game)
     // CREATE NEW UNIT
     mPanelPlayer->SetFunctionNewUnit([this, player]
     {
-        SetupNewUnit(player->GetSelectedCell(), player);
+        SetupNewUnit(player->GetSelectedObject(), player);
 
         // clear selection
         ClearSelection(player);
@@ -504,7 +504,8 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             case ACT_NEW_UNIT:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-                done = SetupNewUnit(action.src, player);
+//                done = SetupNewUnit(action.src, player);
+                done = true;
             }
             break;
 
@@ -572,11 +573,13 @@ bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
     return true;
 }
 
-bool ScreenGame::SetupNewUnit(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
 {
     // check if create is possible
-    if(!mGameMap->CanCreateUnit(cell, player))
+    if(!mGameMap->CanCreateUnit(gen, player))
         return false;
+
+    Cell2D cell = mGameMap->GetNewUnitDestination(gen);
 
     // start create
     mGameMap->StartCreateUnit(cell, player);

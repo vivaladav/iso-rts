@@ -384,39 +384,80 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
     UpdateLinkedCells(player);
 }
 
-bool GameMap::CanCreateUnit(const Cell2D & cell, Player * player)
+bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-
-    // out of bounds
-    if(!(r < mRows && c < mCols))
+    // generator is not owned by the player
+    if(gen->GetOwner() != player->GetPlayerId())
         return false;
 
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    // already changing, not own cell -> exit
-    if(gcell.changing ||
-       gcell.owner != player)
+    // only base can generate units (for now)
+    if(gen->GetObjectType() != OBJ_BASE)
         return false;
 
-    // check if cell has already a unit
-    if(gcell.obj)
-        return false;
+    // generator is already busy
+    if(gen->IsBusy())
+       return false;
 
     // check if player has enough resources
     if(ENERGY_NEW_UNIT > player->GetEnergy() ||
        MATERIAL_NEW_UNIT > player->GetMaterial())
         return false;
 
-    // all checks passed
-    return true;
+    // check if there's at least 1 free cell where to place the new unit
+    // NOTE this must be the last test or the code below needs to be changed
+    // TODO improve this code to check only external cells
+    const int r1 = gen->GetRow1() > 0 ? gen->GetRow1() - 1 : 0;
+    const int c1 = gen->GetCol1() > 0 ? gen->GetCol1() - 1 : 0;
+    const int r0 = gen->GetRow0() < static_cast<int>(mRows) ? gen->GetRow0() + 1 : mRows;
+    const int c0 = gen->GetCol0() < static_cast<int>(mCols) ? gen->GetCol0() + 1 : mCols;
+
+    for(int r = r1; r < r0; ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = c1; c < c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                return true;
+        }
+    }
+
+    // free cell test failed
+    return false;
 }
 
-void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
+Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
 {
-    const int ind = cell.row * mCols + cell.col;
+    const int r1 = gen->GetRow1() > 0 ? gen->GetRow1() - 1 : 0;
+    const int c1 = gen->GetCol1() > 0 ? gen->GetCol1() - 1 : 0;
+    const int r0 = gen->GetRow0() < static_cast<int>(mRows) ? gen->GetRow0() + 1 : mRows;
+    const int c0 = gen->GetCol0() < static_cast<int>(mCols) ? gen->GetCol0() + 1 : mCols;
+
+    // TODO improve this code to check only external cells
+    // TODO if keeping this code make it a bit smarter choosing
+    // the corner opposite to the closest map end first
+    for(int r = r1; r < r0; ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = c1; c < c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                return Cell2D(mCells[ind].row, mCells[ind].col);
+        }
+    }
+
+    // failed to find a spot
+    return Cell2D(-1, -1);
+}
+
+void GameMap::StartCreateUnit(const Cell2D & dest, Player * player)
+{
+    const int ind = dest.row * mCols + dest.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
@@ -427,10 +468,10 @@ void GameMap::StartCreateUnit(const Cell2D & cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::CreateUnit(const Cell2D & cell, Player * player)
+void GameMap::CreateUnit(const Cell2D & dest, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
+    const unsigned int r = static_cast<unsigned int>(dest.row);
+    const unsigned int c = static_cast<unsigned int>(dest.col);
 
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];

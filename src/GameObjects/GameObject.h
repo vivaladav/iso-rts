@@ -35,6 +35,9 @@ public:
     bool IsSelected() const;
     void SetSelected(bool val);
 
+    bool IsBusy() const;
+    void SetBusy(bool val);
+
     const GameMapCell * GetCell() const;
     void SetCell(GameMapCell * cell);
 
@@ -68,11 +71,16 @@ private:
     unsigned int mCols = 1;
 
     bool mSelected = false;
+
+    bool mBusy = false;
 };
 
 inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
+
+inline bool GameObject::IsBusy() const { return mBusy; }
+inline void GameObject::SetBusy(bool val) { mBusy = val; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 

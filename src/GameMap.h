@@ -46,9 +46,10 @@ public:
     void ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
-    bool CanCreateUnit(const Cell2D & cell, Player * player);
-    void StartCreateUnit(const Cell2D & cell, Player * player);
-    void CreateUnit(const Cell2D & cell, Player * player);
+    bool CanCreateUnit(GameObject * gen, Player * player);
+    Cell2D GetNewUnitDestination(GameObject * gen);
+    void StartCreateUnit(const Cell2D & dest, Player * player);
+    void CreateUnit(const Cell2D & dest, Player * player);
 
     // unit destroy
     bool CanDestroyUnit(const Cell2D & cell, Player * player);
