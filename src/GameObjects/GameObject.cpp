@@ -30,6 +30,9 @@ void GameObject::SetCell(GameMapCell * cell)
 {
     mCell = cell;
 
+    mIsoObj->SetRow(cell->row);
+    mIsoObj->SetCol(cell->col);
+
     UpdateImage();
 }
 

@@ -92,18 +92,9 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     PositionObject(obj, r, c);
 
     // store object
-    for(unsigned int row = r1; row <= r; ++row)
-    {
-        const unsigned int indBase = row * mapCols;
+    InsertObjectInMap(obj);
 
-        for(unsigned int col = c1; col <= c; ++col)
-        {
-            const unsigned int ind = indBase + col;
-            mObjectsMap[ind] = obj;
-        }
-    }
-
-    mObjectsList.emplace_back(obj);
+    InsertObjectInList(obj);
 
     return true;
 }
@@ -171,6 +162,10 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
     mObjectsMap[index0] = nullptr;
     mObjectsMap[index1] = obj;
 
+    // move object in list
+    RemoveObjectFromList(obj);
+    InsertObjectInList(obj);
+
     return true;
 }
 
@@ -237,6 +232,90 @@ void IsoLayer::ClearObject(unsigned int index)
         mObjectsList.erase(it);
 
     delete obj;
+}
+
+void IsoLayer::RemoveObjectFromList(IsoObject * obj)
+{
+    auto it = mObjectsList.begin();
+
+    while(it != mObjectsList.end())
+    {
+        if(*it == obj)
+        {
+            mObjectsList.erase(it);
+            return ;
+        }
+
+        ++it;
+    }
+}
+
+void IsoLayer::InsertObjectInList(IsoObject * obj)
+{
+    const int mapCols = mMap->GetNumCols();
+
+    const int objInd = obj->GetRow() * mapCols + obj->GetCol();
+
+    auto it = mObjectsList.begin();
+
+    while(it != mObjectsList.end())
+    {
+        IsoObject * nextObj = *it;
+        const int nextInd = nextObj->GetRow() * mapCols + nextObj->GetCol();
+
+        if(objInd < nextInd)
+            break;
+        else
+            ++it;
+    }
+
+    mObjectsList.insert(it, obj);
+}
+
+void IsoLayer::ClearObjectFromMap(IsoObject * obj)
+{
+    const int mapCols = mMap->GetNumCols();
+
+    const int r0 = obj->GetRow();
+    const int c0 = obj->GetCol();
+
+    const int r1 = 1 + r0 - obj->GetRows();
+    const int c1 = 1 + c0 - obj->GetCols();
+
+    // store object
+    for(int r = r1; r <= r0; ++r)
+    {
+        const unsigned int indBase = r * mapCols;
+
+        for(int c = c1; c <= c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mObjectsMap[ind] = nullptr;
+        }
+    }
+}
+
+void IsoLayer::InsertObjectInMap(IsoObject * obj)
+{
+    const int mapCols = mMap->GetNumCols();
+
+    const int r0 = obj->GetRow();
+    const int c0 = obj->GetCol();
+
+    const int r1 = 1 + r0 - obj->GetRows();
+    const int c1 = 1 + c0 - obj->GetCols();
+
+    // store object
+    for(int r = r1; r <= r0; ++r)
+    {
+        const unsigned int indBase = r * mapCols;
+
+        for(int c = c1; c <= c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mObjectsMap[ind] = obj;
+        }
+    }
 }
 
 } // namespace game

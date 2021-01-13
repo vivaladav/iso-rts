@@ -19,6 +19,11 @@ public:
     IsoObject(int rows, int cols);
     ~IsoObject();
 
+    int GetRow() const;
+    void SetRow(int r);
+    int GetCol() const;
+    void SetCol(int c);
+
     int GetRows() const;
     int GetCols() const;
 
@@ -40,7 +45,15 @@ private:
 
     int mRows = 0;
     int mCols = 0;
+
+    int mRow = 0;
+    int mCol = 0;
 };
+
+inline int IsoObject::GetRow() const { return mRow; }
+inline void IsoObject::SetRow(int r) { mRow = r; }
+inline int IsoObject::GetCol() const { return mCol; }
+inline void IsoObject::SetCol(int c) { mCol = c; }
 
 inline int IsoObject::GetRows() const { return mRows; }
 inline int IsoObject::GetCols() const { return mCols; }

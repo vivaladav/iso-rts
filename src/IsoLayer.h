@@ -57,6 +57,12 @@ private:
 
     void ClearObject(unsigned int index);
 
+    void RemoveObjectFromList(IsoObject * obj);
+    void InsertObjectInList(IsoObject * obj);
+
+    void ClearObjectFromMap(IsoObject * obj);
+    void InsertObjectInMap(IsoObject * obj);
+
 private:
     std::vector<IsoObject *> mObjectsList;
     std::vector<IsoObject *> mObjectsMap;
