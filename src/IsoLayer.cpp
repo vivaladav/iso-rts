@@ -24,13 +24,6 @@ IsoLayer::IsoLayer(const IsoMap * map)
     mObjectsMap.assign(size, nullptr);
 }
 
-/// Destructor. delete Images and IsoObjects.
-IsoLayer::~IsoLayer()
-{
-    // objects
-    ClearObjects();
-}
-
 // ==================== PUBLIC METHODS ====================
 
 void IsoLayer::UpdateSize()
@@ -159,11 +152,16 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
     // position object
     PositionObject(obj, r1, c1);
 
-    mObjectsMap[index0] = nullptr;
-    mObjectsMap[index1] = obj;
-
-    // move object in list
+    // remove object
+    ClearObjectFromMap(obj);
     RemoveObjectFromList(obj);
+
+    // need to update object position before adding it again
+    obj->SetRow(r1);
+    obj->SetCol(c1);
+
+    // add object back
+    InsertObjectInMap(obj);
     InsertObjectInList(obj);
 
     return true;
@@ -172,10 +170,6 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
 /// Destroy all the objects
 void IsoLayer::ClearObjects()
 {
-    // delete objects
-    for(IsoObject * obj : mObjectsList)
-        delete obj;
-
     // clear lists
     mObjectsList.clear();
 
@@ -190,7 +184,7 @@ void IsoLayer::Render()
         obj->Render();
 }
 
-void IsoLayer::MoveObjects(int deltaX, int deltaY)
+void IsoLayer::MoveObjectsPosition(int deltaX, int deltaY)
 {
     for(auto * obj : mObjectsList)
     {
@@ -218,20 +212,19 @@ void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
 }
 
 /**
- * @brief Destroys an object from a cell.
+ * @brief Removes an object from a cell. Object is not deleted.
  * @param index Position index in the layer. Identifies the cell
  */
 void IsoLayer::ClearObject(unsigned int index)
 {
     IsoObject * obj = mObjectsMap[index];
-    mObjectsMap[index] = nullptr;
+
+    ClearObjectFromMap(obj);
 
     auto it = std::find(mObjectsList.begin(), mObjectsList.end(), obj);
 
     if(it != mObjectsList.end())
         mObjectsList.erase(it);
-
-    delete obj;
 }
 
 void IsoLayer::RemoveObjectFromList(IsoObject * obj)

@@ -13,7 +13,7 @@ GameObject::GameObject(GameObjectType type, int owner, int rows, int cols)
 {
 }
 
-GameObject::~GameObject() { }
+GameObject::~GameObject() { delete mIsoObj; }
 
 void GameObject::SetSelected(bool val)
 {

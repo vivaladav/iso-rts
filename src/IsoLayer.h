@@ -34,7 +34,6 @@ class IsoLayer
 {
 public:
     IsoLayer(const IsoMap * map);
-    ~IsoLayer();
 
     void UpdateSize();
 
@@ -50,7 +49,7 @@ public:
     void SetVisible(bool val);
     void Render();
 
-    void MoveObjects(int deltaX, int deltaY);
+    void MoveObjectsPosition(int deltaX, int deltaY);
 
 private:
     void PositionObject(IsoObject * obj, unsigned int r, unsigned int c);

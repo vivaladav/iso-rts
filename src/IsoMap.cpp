@@ -125,7 +125,7 @@ void IsoMap::SetOrigin(int x, int y)
 
     // propagate move to layers
     for(IsoLayer * layer : mLayersRenderList)
-        layer->MoveObjects(deltaX, deltaY);
+        layer->MoveObjectsPosition(deltaX, deltaY);
 }
 
 /// Renders all the cells in the map and on top of that all the IsoLayers.
