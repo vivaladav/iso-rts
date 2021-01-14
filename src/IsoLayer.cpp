@@ -81,6 +81,8 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     if(r1 >= mapRows || c1 >= mapCols)
         return false;
 
+    obj->SetLayer(this);
+
     // position it in a cell
     PositionObject(obj, r, c);
 
@@ -192,6 +194,11 @@ void IsoLayer::MoveObjectsPosition(int deltaX, int deltaY)
 
         obj->SetPosition(x, y);
     }
+}
+
+void IsoLayer::RepositionObject(IsoObject * obj)
+{
+    PositionObject(obj, obj->GetRow(), obj->GetCol());
 }
 
 // ==================== PRIVATE METHODS ====================

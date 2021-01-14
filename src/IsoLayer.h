@@ -51,6 +51,8 @@ public:
 
     void MoveObjectsPosition(int deltaX, int deltaY);
 
+    void RepositionObject(IsoObject * obj);
+
 private:
     void PositionObject(IsoObject * obj, unsigned int r, unsigned int c);
 

@@ -12,12 +12,16 @@ namespace lib
 namespace game
 {
 
+class IsoLayer;
+
 /// An object of an IsoLayer.
 class IsoObject
 {
 public:
     IsoObject(int rows, int cols);
     ~IsoObject();
+
+    void SetLayer(IsoLayer * layer);
 
     int GetRow() const;
     void SetRow(int r);
@@ -43,12 +47,16 @@ public:
 private:
     lib::graphic::Image * mImg = nullptr;
 
+    IsoLayer * mLayer = nullptr;
+
     int mRows = 0;
     int mCols = 0;
 
     int mRow = 0;
     int mCol = 0;
 };
+
+inline void IsoObject::SetLayer(IsoLayer * layer) { mLayer = layer; }
 
 inline int IsoObject::GetRow() const { return mRow; }
 inline void IsoObject::SetRow(int r) { mRow = r; }

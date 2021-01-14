@@ -1,5 +1,7 @@
 #include "IsoObject.h"
 
+#include "IsoLayer.h"
+
 #include <graphic/Image.h>
 
 namespace game
@@ -30,7 +32,13 @@ void IsoObject::SetY(int y) { mImg->SetY(y); }
 int IsoObject::GetWidth() const { return mImg->GetWidth(); }
 int IsoObject::GetHeight() const { return mImg->GetHeight(); }
 
-void IsoObject::SetTexture(lib::graphic::Texture * tex) { mImg->SetTexture(tex); }
+void IsoObject::SetTexture(lib::graphic::Texture * tex)
+{
+    mImg->SetTexture(tex);
+
+    if(mLayer)
+        mLayer->RepositionObject(this);
+}
 
 void IsoObject::Render() { mImg->Render(); }
 
