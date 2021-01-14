@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Cell2D.h"
-#include "GameConstants.h"
 #include "Screen.h"
 
 #include <string>
@@ -73,8 +72,8 @@ private:
 
     struct Cell2D mPrevSel;
 
-    float mTimerEnergy = TIME_ENERGY_USE;
-    float mTimerAI = TIME_AI_MOVE;
+    float mTimerEnergy;
+    float mTimerAI;
 
     unsigned int mCurrPlayerAI = 0;
 

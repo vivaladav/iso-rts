@@ -1,7 +1,6 @@
 #include "Player.h"
 
 #include "Cell2D.h"
-#include "GameConstants.h"
 #include "GameMapCell.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/GameObject.h"
@@ -11,6 +10,10 @@
 
 namespace game
 {
+
+// NOTE these will be replaced by dynamic values soon
+constexpr int ENERGY_PER_CELL = 1;
+constexpr int ENERGY_PER_UNIT = 1;
 
 Player::Player(const char * name, int pid)
     : mName(name)

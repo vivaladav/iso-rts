@@ -28,8 +28,19 @@
 namespace game
 {
 
+// NOTE these will be replaced by dynamic values soon
+constexpr float TIME_CONQ_CELL = 2.f;
+constexpr float TIME_NEW_UNIT = 2.f;
+constexpr float TIME_CONQ_RES_GEN = 2.f;
+constexpr float TIME_UPG_UNIT = 1.f;
+
+constexpr float TIME_ENERGY_USE = 2.f;
+constexpr float TIME_AI_MOVE = 0.5f;
+
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
+    , mTimerEnergy(TIME_ENERGY_USE)
+    , mTimerAI(TIME_AI_MOVE)
 {
     game->SetClearColor(0x0F, 0x0F, 0x0F, 0xFF);
 
@@ -60,10 +71,12 @@ ScreenGame::ScreenGame(Game * game)
     {
         Player * p = game->GetPlayer(i);
 
-        // add start energy
-        // TEMP
-        p->SumEnergy(START_ENERGY * 5);
-        p->SumMaterial(START_MATERIAL * 5);
+        // add start resources
+        const int startEnergy = 150;
+        p->SumEnergy(startEnergy);
+
+        const int startMaterial = 10;
+        p->SumMaterial(startMaterial);
 
         // temporary disable AI for development
 //        if(p->IsAI())
