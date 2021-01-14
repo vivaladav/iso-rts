@@ -115,7 +115,6 @@ void IsoLayer::ClearObject(unsigned int r, unsigned int c)
     ClearObject(index);
 }
 
-// TODO handle move of objects that are bigger than 1 cell
 /**
  * @brief Moves an object from one cell to another.
  * @param r0 Row index of start cell, starting from 0
@@ -245,21 +244,35 @@ void IsoLayer::RemoveObjectFromList(IsoObject * obj)
 
 void IsoLayer::InsertObjectInList(IsoObject * obj)
 {
-    const int mapCols = mMap->GetNumCols();
-
-    const int objInd = obj->GetRow() * mapCols + obj->GetCol();
+    const int r0 = obj->GetRow();
+    const int c0 = obj->GetCol();
 
     auto it = mObjectsList.begin();
 
     while(it != mObjectsList.end())
     {
         IsoObject * nextObj = *it;
-        const int nextInd = nextObj->GetRow() * mapCols + nextObj->GetCol();
 
-        if(objInd < nextInd)
-            break;
-        else
-            ++it;
+        const int nextR0 = nextObj->GetRow();
+        const int nextR1 = nextR0 + 1 - nextObj->GetRows();
+        const int nextC0 = nextObj->GetCol();
+        const int nextC1 = nextC0 + 1 - nextObj->GetCols();
+
+        // obj on left side
+        if(c0 < nextC1)
+        {
+            //behind
+            if(r0 <= nextR0)
+                break;
+        }
+        // obj inside cols of next
+        else if(c0 <= nextC0)
+        {
+            if(r0 < nextR1)
+                break;
+        }
+
+        ++it;
     }
 
     mObjectsList.insert(it, obj);
