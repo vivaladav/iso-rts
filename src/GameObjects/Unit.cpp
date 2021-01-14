@@ -39,12 +39,11 @@ void Unit::SetImage()
     // object is selected
     if(IsSelected())
     {
-        // TODO add selected images
         const char * imgFiles[] =
         {
-            "data/img/unit_01-f1.png",
-            "data/img/unit_01-f2.png",
-            "data/img/unit_01-f3.png"
+            "data/img/unit_01-f1-sel.png",
+            "data/img/unit_01-f2-sel.png",
+            "data/img/unit_01-f3-sel.png"
         };
 
         tex = tm->GetTexture(imgFiles[owner]);
