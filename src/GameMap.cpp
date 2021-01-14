@@ -432,8 +432,74 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
 {
     const int r1 = gen->GetRow1() > 0 ? gen->GetRow1() - 1 : 0;
     const int c1 = gen->GetCol1() > 0 ? gen->GetCol1() - 1 : 0;
-    const int r0 = gen->GetRow0() < static_cast<int>(mRows) ? gen->GetRow0() + 1 : mRows;
-    const int c0 = gen->GetCol0() < static_cast<int>(mCols) ? gen->GetCol0() + 1 : mCols;
+    const int r0 = gen->GetRow0() < static_cast<int>(mRows - 1) ? gen->GetRow0() + 1 : (mRows - 1);
+    const int c0 = gen->GetCol0() < static_cast<int>(mCols - 1) ? gen->GetCol0() + 1 : (mCols - 1);
+
+    const int halfRows = mRows / 2;
+    const int halfCols = mCols / 2;
+
+    // BOTTOM of the map
+    if(r0 > halfRows)
+    {
+        // LEFT of the map
+        if(c0 < halfCols)
+        {
+            // check right (top to bottom)
+            for(int r = r1; r <= r0; ++r)
+            {
+                const unsigned int ind = r * mCols + c0;
+
+                if(mCells[ind].walkable)
+                    return Cell2D(r, c0);
+            }
+
+            // check top (right to left)
+            for(int c = c0; c >= c1; --c)
+            {
+                const unsigned int ind = r1 * mCols + c;
+
+                if(mCells[ind].walkable)
+                    return Cell2D(r1, c);
+            }
+
+            // check bottom (right to left)
+            for(int c = c0; c >= c1; --c)
+            {
+                const unsigned int ind = r0 * mCols + c;
+
+                if(mCells[ind].walkable)
+                    return Cell2D(r0, c);
+            }
+
+            // check left (top to bottom)
+            for(int r = r1; r <= r0; ++r)
+            {
+                const unsigned int ind = r * mCols + c1;
+
+                if(mCells[ind].walkable)
+                    return Cell2D(r, c1);
+            }
+        }
+        // RIGHT of the map
+        else
+        {
+
+        }
+    }
+    // TOP of the map
+    else
+    {
+        // LEFT of the map
+        if(c0 < halfCols)
+        {
+
+        }
+        // RIGHT of the map
+        else
+        {
+
+        }
+    }
 
     // TODO improve this code to check only external cells
     // TODO if keeping this code make it a bit smarter choosing
@@ -478,7 +544,11 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
 
     Unit * unit = new Unit(player->GetPlayerId(), 1, 1);
     unit->SetCell(&mCells[ind]);
+
+    // update cell
     gcell.obj = unit;
+    gcell.walkable = false;
+    gcell.changing = false;
 
     mIsoMap->GetLayer(OBJECTS)->AddObject(unit->GetIsoObject(), r, c);
 
@@ -488,8 +558,6 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     player->SumUnits(1);
     player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
 
-    // reset cell's changing flag
-    gcell.changing = false;
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
@@ -669,7 +737,10 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * playe
     if(emptyDest)
     {
         gcell1.obj = gcell0.obj;
+        gcell1.walkable = false;
+
         gcell0.obj = nullptr;
+        gcell0.walkable = true;
 
         IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
         layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col);

@@ -61,8 +61,9 @@ ScreenGame::ScreenGame(Game * game)
         Player * p = game->GetPlayer(i);
 
         // add start energy
-        p->SumEnergy(START_ENERGY);
-        p->SumMaterial(START_MATERIAL);
+        // TEMP
+        p->SumEnergy(START_ENERGY * 5);
+        p->SumMaterial(START_MATERIAL * 5);
 
         // temporary disable AI for development
 //        if(p->IsAI())
