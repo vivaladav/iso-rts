@@ -405,23 +405,43 @@ bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
 
     // check if there's at least 1 free cell where to place the new unit
     // NOTE this must be the last test or the code below needs to be changed
-    // TODO improve this code to check only external cells
     const int r1 = gen->GetRow1() > 0 ? gen->GetRow1() - 1 : 0;
     const int c1 = gen->GetCol1() > 0 ? gen->GetCol1() - 1 : 0;
-    const int r0 = gen->GetRow0() < static_cast<int>(mRows) ? gen->GetRow0() + 1 : mRows;
-    const int c0 = gen->GetCol0() < static_cast<int>(mCols) ? gen->GetCol0() + 1 : mCols;
+    const int r0 = gen->GetRow0() < static_cast<int>(mRows - 1) ? gen->GetRow0() + 1 : mRows - 1;
+    const int c0 = gen->GetCol0() < static_cast<int>(mCols - 1) ? gen->GetCol0() + 1 : mCols - 1;
 
-    for(int r = r1; r < r0; ++r)
+    const int indBaseTop = r1 * mCols;
+    const int indBaseBottom = r0 * mCols;
+
+    // NOTE for simplicity corner cells are overlapping and sometimes checked twice.
+    // This can be optimized, but it's probably not worth it for now.
+
+    // check right (top to bottom)
+    for(int r = r1; r <= r0; ++r)
     {
-        const unsigned int indBase = r * mCols;
+        if(mCells[r * mCols + c0].walkable)
+            return true;
+    }
 
-        for(int c = c1; c < c0; ++c)
-        {
-            const unsigned int ind = indBase + c;
+    // check top (left to right)
+    for(int c = c1; c <= c0; ++c)
+    {
+        if(mCells[indBaseTop + c].walkable)
+            return true;
+    }
 
-            if(mCells[ind].walkable)
-                return true;
-        }
+    // check left (bottom to top)
+    for(int r = r0; r >= r1; --r)
+    {
+        if(mCells[r * mCols + c1].walkable)
+            return true;
+    }
+
+    // check bottom (left to right)
+    for(int c = c1; c <= c0; ++c)
+    {
+        if(mCells[indBaseBottom + c].walkable)
+            return true;
     }
 
     // free cell test failed
@@ -432,11 +452,18 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
 {
     const int r1 = gen->GetRow1() > 0 ? gen->GetRow1() - 1 : 0;
     const int c1 = gen->GetCol1() > 0 ? gen->GetCol1() - 1 : 0;
-    const int r0 = gen->GetRow0() < static_cast<int>(mRows - 1) ? gen->GetRow0() + 1 : (mRows - 1);
-    const int c0 = gen->GetCol0() < static_cast<int>(mCols - 1) ? gen->GetCol0() + 1 : (mCols - 1);
+    const int r0 = gen->GetRow0() < static_cast<int>(mRows - 1) ? gen->GetRow0() + 1 : mRows - 1;
+    const int c0 = gen->GetCol0() < static_cast<int>(mCols - 1) ? gen->GetCol0() + 1 : mCols - 1;
+
+    const int indBaseTop = r1 * mCols;
+    const int indBaseBottom = r0 * mCols;
 
     const int halfRows = mRows / 2;
     const int halfCols = mCols / 2;
+
+    // NOTE for simplicity corner cells are overlapping and sometimes checked twice.
+    // This can be optimized, but it's probably not worth it for now.
+
 
     // BOTTOM of the map
     if(r0 > halfRows)
@@ -447,43 +474,61 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
             // check right (top to bottom)
             for(int r = r1; r <= r0; ++r)
             {
-                const unsigned int ind = r * mCols + c0;
-
-                if(mCells[ind].walkable)
+                if(mCells[r * mCols + c0].walkable)
                     return Cell2D(r, c0);
             }
 
             // check top (right to left)
             for(int c = c0; c >= c1; --c)
             {
-                const unsigned int ind = r1 * mCols + c;
-
-                if(mCells[ind].walkable)
+                if(mCells[indBaseTop + c].walkable)
                     return Cell2D(r1, c);
             }
 
             // check bottom (right to left)
             for(int c = c0; c >= c1; --c)
             {
-                const unsigned int ind = r0 * mCols + c;
-
-                if(mCells[ind].walkable)
+                if(mCells[indBaseBottom + c].walkable)
                     return Cell2D(r0, c);
             }
 
             // check left (top to bottom)
             for(int r = r1; r <= r0; ++r)
             {
-                const unsigned int ind = r * mCols + c1;
-
-                if(mCells[ind].walkable)
+                if(mCells[r * mCols + c1].walkable)
                     return Cell2D(r, c1);
             }
         }
         // RIGHT of the map
         else
         {
+            // check left (top to bottom)
+            for(int r = r1; r <= r0; ++r)
+            {
+                if(mCells[r * mCols + c1].walkable)
+                    return Cell2D(r, c1);
+            }
 
+            // check top (left to right)
+            for(int c = c1; c <= c0; ++c)
+            {
+                if(mCells[indBaseTop + c].walkable)
+                    return Cell2D(r1, c);
+            }
+
+            // check right (top to bottom)
+            for(int r = r1; r <= r0; ++r)
+            {
+                if(mCells[r * mCols + c0].walkable)
+                    return Cell2D(r, c0);
+            }
+
+            // check bottom (left to right)
+            for(int c = c1; c <= c0; ++c)
+            {
+                if(mCells[indBaseBottom + c].walkable)
+                    return Cell2D(r0, c);
+            }
         }
     }
     // TOP of the map
@@ -492,28 +537,64 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
         // LEFT of the map
         if(c0 < halfCols)
         {
+            // check right (bottom to top)
+            for(int r = r0; r >= r1; --r)
+            {
+                if(mCells[r * mCols + c0].walkable)
+                    return Cell2D(r, c0);
+            }
 
+            // check bottom (right to left)
+            for(int c = c0; c >= c1; --c)
+            {
+                if(mCells[indBaseBottom + c].walkable)
+                    return Cell2D(r0, c);
+            }
+
+            // check top (right to left)
+            for(int c = c0; c >= c1; --c)
+            {
+                if(mCells[indBaseTop + c].walkable)
+                    return Cell2D(r1, c);
+            }
+
+            // check left (bottom to top)
+            for(int r = r0; r >= r1; --r)
+            {
+                if(mCells[r * mCols + c1].walkable)
+                    return Cell2D(r, c1);
+            }
         }
         // RIGHT of the map
         else
         {
+            // check left (bottom to top)
+            for(int r = r0; r >= r1; --r)
+            {
+                if(mCells[r * mCols + c1].walkable)
+                    return Cell2D(r, c1);
+            }
 
-        }
-    }
+            // check bottom (left to right)
+            for(int c = c1; c <= c0; ++c)
+            {
+                if(mCells[indBaseBottom + c].walkable)
+                    return Cell2D(r0, c);
+            }
 
-    // TODO improve this code to check only external cells
-    // TODO if keeping this code make it a bit smarter choosing
-    // the corner opposite to the closest map end first
-    for(int r = r1; r < r0; ++r)
-    {
-        const unsigned int indBase = r * mCols;
+            // check top (left to right)
+            for(int c = c1; c <= c0; ++c)
+            {
+                if(mCells[indBaseTop + c].walkable)
+                    return Cell2D(r1, c);
+            }
 
-        for(int c = c1; c < c0; ++c)
-        {
-            const unsigned int ind = indBase + c;
-
-            if(mCells[ind].walkable)
-                return Cell2D(mCells[ind].row, mCells[ind].col);
+            // check right (bottom to top)
+            for(int r = r0; r >= r1; --r)
+            {
+                if(mCells[r * mCols + c0].walkable)
+                    return Cell2D(r, c0);
+            }
         }
     }
 

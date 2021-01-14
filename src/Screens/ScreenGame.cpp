@@ -582,6 +582,12 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
 
     Cell2D cell = mGameMap->GetNewUnitDestination(gen);
 
+    if(-1 == cell.row || -1 == cell.col)
+    {
+        std::cerr << "GameMap::GetNewUnitDestination FAILED" << std::endl;
+        return false;
+    }
+
     // start create
     mGameMap->StartCreateUnit(cell, player);
 
