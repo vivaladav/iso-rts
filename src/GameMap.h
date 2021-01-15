@@ -81,6 +81,9 @@ private:
 
     void UpdateInfluencedCells(int row, int col);
 
+    void AddPlayerObjVisibility(GameObject * obj, Player * player);
+    void UpdateSceneObjVisibility(GameObject * obj, Player * player);
+
 private:
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;

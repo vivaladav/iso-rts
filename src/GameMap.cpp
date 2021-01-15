@@ -245,6 +245,15 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     // create object in iso map
     mIsoMap->GetLayer(layerId)->AddObject(obj->GetIsoObject(), r0, c0);
+
+    // update visibility map
+    // NOTE only for human player for now
+    Player * localPlayer = mGame->GetPlayer(0);
+
+    if(obj->GetOwner() == localPlayer->GetPlayerId())
+        AddPlayerObjVisibility(obj, localPlayer);
+    else
+        UpdateSceneObjVisibility(obj, localPlayer);
 }
 
 bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
@@ -1111,6 +1120,104 @@ void GameMap::UpdateInfluencedCells(int row, int col)
 
             const int cellType = DefineCellType(gc);
             mIsoMap->SetCellType(ind, cellType);
+        }
+    }
+}
+
+void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
+{
+    const int radius = 3;
+
+    const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
+    const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
+    const int rowBR = (obj->GetRow0() + radius + 1) < static_cast<int>(mRows) ? (obj->GetRow0() + radius + 1) : mRows;
+    const int colBR = (obj->GetCol0() + radius + 1) < static_cast<int>(mCols) ? (obj->GetCol0() + radius + 1) : mCols;
+
+    std::unordered_set<GameObject *> extraObjs;
+
+    // add the visibility of the object to the map
+    for(int r = rowTL; r < rowBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = colTL; c < colBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            player->AddVisibility(ind);
+
+            // add any other object found
+            if(mCells[ind].obj != nullptr && mCells[ind].obj != obj)
+                extraObjs.insert(mCells[ind].obj);
+        }
+    }
+
+    // process found objects to make all their cells visible
+    for(GameObject * o : extraObjs)
+    {
+        const int rTL = o->GetRow1();
+        const int cTL = o->GetCol1();
+        const int rBR = o->GetRow0();
+        const int cBR = o->GetCol0();
+
+        for(int r = rTL; r <= rBR; ++r)
+        {
+            const int indBase = r * mCols;
+
+            for(int c = cTL; c <= cBR; ++c)
+            {
+                const int ind = indBase + c;
+
+                if(!player->IsCellVisible(ind))
+                    player->AddVisibility(ind);
+            }
+        }
+    }
+}
+
+void GameMap::UpdateSceneObjVisibility(GameObject * obj, Player * player)
+{
+    const int rTL = obj->GetRow1();
+    const int cTL = obj->GetCol1();
+    const int rBR = obj->GetRow0();
+    const int cBR = obj->GetCol0();
+
+    // check if any cell is visible
+    bool visible = false;
+
+    for(int r = rTL; r <= rBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = cTL; c <= cBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            if(player->IsCellVisible(ind))
+            {
+                visible = true;
+                break;
+            }
+        }
+
+        if(visible)
+            break;
+    }
+
+    // if any cell is visible makes visible all of them
+    if(visible)
+    {
+        for(int r = rTL; r <= rBR; ++r)
+        {
+            const int indBase = r * mCols;
+
+            for(int c = cTL; c <= cBR; ++c)
+            {
+                const int ind = indBase + c;
+
+                if(!player->IsCellVisible(ind))
+                    player->AddVisibility(ind);
+            }
         }
     }
 }
