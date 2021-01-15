@@ -94,6 +94,10 @@ void GameMap::SetSize(unsigned int rows, unsigned int cols)
             cell.col = c;
         }
     }
+
+    // init player(s) visibility map
+    // NOTE for now only for human player
+    mGame->GetPlayer(0)->InitVisibility(mRows, mCols);
 }
 
 void GameMap::SyncWalkableCells()
@@ -102,6 +106,42 @@ void GameMap::SyncWalkableCells()
 
     for(unsigned int i = 0; i < size; ++i)
         mCells[i].walkable = mIsoMap->GetCellType(i) == EMPTY;
+}
+
+void GameMap::ApplyVisibility(Player * player)
+{
+    // update cells
+    const unsigned int totCells = mRows * mCols;
+
+    for(unsigned int ind = 0; ind < totCells; ++ind)
+    {
+        const GameMapCell & cell = mCells[ind];
+
+        if(player->IsCellVisible(ind))
+        {
+            const int cellType = DefineCellType(cell);
+            mIsoMap->SetCellType(ind, cellType);
+        }
+        else
+            mIsoMap->SetCellType(ind, FOG_OF_WAR);
+    }
+
+    // update objects
+    IsoLayer * layer = mIsoMap->GetLayer(OBJECTS);
+
+    for(GameObject * go : mObjects)
+    {
+        // check the visibility of the object 0 position as all
+        // its cells are visible or not
+        const int r0 = go->GetRow0();
+        const int c0 = go->GetCol0();
+        const int ind = r0 * mCols + c0;
+
+        IsoObject * obj = go->GetIsoObject();
+
+        // TODO handle visited cells/objects
+        layer->SetObjectVisible(obj, player->IsCellVisible(ind));
+    }
 }
 
 void GameMap::CreateObject(unsigned int layerId, unsigned int objId,

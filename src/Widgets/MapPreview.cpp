@@ -41,7 +41,7 @@ MapPreview::MapPreview(const std::string & file, lib::sgui::Widget * parent)
     mIsoMap->SetTiles(tiles);
 
     MapLoader ml(nullptr, mIsoMap);
-    ml.LoadPreview(file);
+    ml.Load(file);
 
     // -- LABEL SIZE --
     std::ostringstream os;

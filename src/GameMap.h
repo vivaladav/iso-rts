@@ -27,6 +27,8 @@ public:
 
     void SyncWalkableCells();
 
+    void ApplyVisibility(Player * player);
+
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;

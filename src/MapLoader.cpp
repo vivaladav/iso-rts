@@ -3,6 +3,7 @@
 #include "GameMap.h"
 #include "IsoMap.h"
 
+#include <fstream>
 #include <sstream>
 
 namespace game
@@ -24,22 +25,7 @@ bool MapLoader::Load(const std::string & filename)
 
     ReadObjectsData(fs);
 
-    return true;
-}
-
-bool MapLoader::LoadPreview(const std::string & filename)
-{
-    // map not set
-    if(nullptr == mIsoMap)
-        return false;
-
-    // open map file
-    std::fstream fs(filename);
-
-    if(!fs.is_open())
-        return false;
-
-    ReadBaseData(fs);
+    fs.close();
 
     return true;
 }

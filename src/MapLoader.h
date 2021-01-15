@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <string>
 
 namespace game
@@ -17,7 +16,6 @@ public:
     void SetMaps(GameMap * gm, IsoMap * im);
 
     bool Load(const std::string & filename);
-    bool LoadPreview(const std::string & filename);
 
 private:
     void ReadBaseData(std::fstream & fs);

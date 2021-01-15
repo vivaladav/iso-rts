@@ -86,6 +86,9 @@ ScreenGame::ScreenGame(Game * game)
 //        }
     }
 
+    // apply initial visibility to the game map
+    mGameMap->ApplyVisibility(game->GetPlayer(0));
+
     // -- UI --
     Player * player = game->GetPlayer(0);
     mPanelPlayer = new PanelPlayer(player);
@@ -318,7 +321,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         const bool isLocalPlayer = owner == player;
         const Unit * cellUnit = gameCell.GetUnit();
         const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
-        const bool canSelect = (isLocalPlayer || isPlayerUnit) && !mGameMap->IsCellChanging(currSel.row, currSel.col);
+        const int currInd = currSel.row * mIsoMap->GetNumCols() + currSel.col;
+        const bool canSelect = (isLocalPlayer || isPlayerUnit) &&
+                               !mGameMap->IsCellChanging(currSel.row, currSel.col) &&
+                               player->IsCellVisible(currInd);
 
         // 1 cell previously selected
         if(player->HasSelectedCell())
