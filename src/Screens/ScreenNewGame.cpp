@@ -42,7 +42,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    game->SetClearColor(0xE5, 0xE5, 0xE5, 0xFF);
+    game->SetClearColor(0x0F, 0x0F, 0x0F, 0x0F);
 
     const int marginL = 25;
     const int marginT = 10;
@@ -52,18 +52,19 @@ ScreenNewGame::ScreenNewGame(Game * game)
     int widgetY = marginT;
 
     // -- TITLE --
+    const unsigned int colorTitle = 0x888888FF;
     FontManager * fm = FontManager::Instance();
 
     Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 48, Font::BOLD);
 
     auto * title = new Label("SINGLE PLAYER GAME", fontTitle);
-    title->SetColor(0x111111FF);
+    title->SetColor(colorTitle);
     title->SetPosition(marginL, widgetY);
 
     widgetY += title->GetHeight() + marginTitleB;
 
     // -- CPU PLAYERS --
-    const unsigned int colorHeader = 0x333333FF;
+    const unsigned int colorHeader = 0x777777FF;
     Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
 
     Label * headerPlayers = new Label("CPU PLAYERS", fontHeader);
@@ -78,7 +79,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     bgPlayers->AddButton(new ButtonUnitsSelector("1"));
     bgPlayers->AddButton(new ButtonUnitsSelector("2"));
-    bgPlayers->AddButton(new ButtonUnitsSelector("3"));
 
     bgPlayers->SetButtonChecked(0, true);
 
