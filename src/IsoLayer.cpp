@@ -36,12 +36,12 @@ void IsoLayer::UpdateSize()
     mObjectsMap.resize(size);
 
     // update objects list
-    mObjectsList.clear();
+    mRenderList.clear();
 
     for(unsigned int ind = 0; ind < size; ++ind)
     {
         if(mObjectsMap[ind] != nullptr)
-            mObjectsList.emplace_back(mObjectsMap[ind]);
+            mRenderList.emplace_back(mObjectsMap[ind]);
     }
 }
 
@@ -81,7 +81,14 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     if(r1 >= mapRows || c1 >= mapCols)
         return false;
 
+    // object already added
+    if(std::find(mObjectsList.begin(), mObjectsList.end(), obj) != mObjectsList.end())
+        return false;
+
+    // link layer and object
     obj->SetLayer(this);
+
+    mObjectsList.emplace_back(obj);
 
     // position it in a cell
     PositionObject(obj, r, c);
@@ -89,7 +96,7 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     // store object
     InsertObjectInMap(obj);
 
-    InsertObjectInList(obj);
+    InsertObjectInRenderList(obj);
 
     return true;
 }
@@ -155,7 +162,7 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
 
     // remove object
     ClearObjectFromMap(obj);
-    RemoveObjectFromList(obj);
+    RemoveObjectFromRenderList(obj);
 
     // need to update object position before adding it again
     obj->SetRow(r1);
@@ -163,16 +170,33 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
 
     // add object back
     InsertObjectInMap(obj);
-    InsertObjectInList(obj);
+    InsertObjectInRenderList(obj);
 
     return true;
+}
+
+void IsoLayer::SetObjectVisible(IsoObject * obj, bool visible)
+{
+    if(visible)
+    {
+        // object is not already in
+        if(std::find(mRenderList.begin(), mRenderList.end(), obj) == mRenderList.end())
+            InsertObjectInRenderList(obj);
+    }
+    else
+        RemoveObjectFromRenderList(obj);
 }
 
 /// Destroy all the objects
 void IsoLayer::ClearObjects()
 {
+    // reset Layer link
+    for(auto * obj : mObjectsList)
+        obj->SetLayer(nullptr);
+
     // clear lists
     mObjectsList.clear();
+    mRenderList.clear();
 
     const unsigned int mapsSize = mMap->GetNumRows() * mMap->GetNumCols();
     mObjectsMap.assign(mapsSize, nullptr);
@@ -181,7 +205,7 @@ void IsoLayer::ClearObjects()
 /// Renders all the objects in the layer.
 void IsoLayer::Render()
 {
-    for(auto * obj : mObjectsList)
+    for(auto * obj : mRenderList)
         obj->Render();
 }
 
@@ -225,38 +249,37 @@ void IsoLayer::ClearObject(unsigned int index)
 {
     IsoObject * obj = mObjectsMap[index];
 
-    ClearObjectFromMap(obj);
+    obj->SetLayer(nullptr);
 
+    ClearObjectFromMap(obj);
+    RemoveObjectFromList(obj);
+    RemoveObjectFromRenderList(obj);
+}
+
+void IsoLayer::RemoveObjectFromList(IsoObject * obj)
+{
     auto it = std::find(mObjectsList.begin(), mObjectsList.end(), obj);
 
     if(it != mObjectsList.end())
         mObjectsList.erase(it);
 }
 
-void IsoLayer::RemoveObjectFromList(IsoObject * obj)
+void IsoLayer::RemoveObjectFromRenderList(IsoObject * obj)
 {
-    auto it = mObjectsList.begin();
+    auto it = std::find(mRenderList.begin(), mRenderList.end(), obj);
 
-    while(it != mObjectsList.end())
-    {
-        if(*it == obj)
-        {
-            mObjectsList.erase(it);
-            return ;
-        }
-
-        ++it;
-    }
+    if(it != mRenderList.end())
+        mRenderList.erase(it);
 }
 
-void IsoLayer::InsertObjectInList(IsoObject * obj)
+void IsoLayer::InsertObjectInRenderList(IsoObject * obj)
 {
     const int r0 = obj->GetRow();
     const int c0 = obj->GetCol();
 
-    auto it = mObjectsList.begin();
+    auto it = mRenderList.begin();
 
-    while(it != mObjectsList.end())
+    while(it != mRenderList.end())
     {
         IsoObject * nextObj = *it;
 
@@ -282,7 +305,7 @@ void IsoLayer::InsertObjectInList(IsoObject * obj)
         ++it;
     }
 
-    mObjectsList.insert(it, obj);
+    mRenderList.insert(it, obj);
 }
 
 void IsoLayer::ClearObjectFromMap(IsoObject * obj)

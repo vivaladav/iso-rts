@@ -43,6 +43,8 @@ public:
     bool MoveObject(unsigned int r0, unsigned int c0,
                     unsigned int r1, unsigned int c1);
 
+    void SetObjectVisible(IsoObject * obj, bool visible);
+
     void ClearObjects();
 
     bool IsVisible() const;
@@ -59,13 +61,16 @@ private:
     void ClearObject(unsigned int index);
 
     void RemoveObjectFromList(IsoObject * obj);
-    void InsertObjectInList(IsoObject * obj);
+
+    void RemoveObjectFromRenderList(IsoObject * obj);
+    void InsertObjectInRenderList(IsoObject * obj);
 
     void ClearObjectFromMap(IsoObject * obj);
     void InsertObjectInMap(IsoObject * obj);
 
 private:
     std::vector<IsoObject *> mObjectsList;
+    std::vector<IsoObject *> mRenderList;
     std::vector<IsoObject *> mObjectsMap;
 
     const IsoMap * mMap = nullptr;
