@@ -75,7 +75,8 @@ public:
 private:
     void StopCellChange(GameMapCell & gcell);
 
-    int DefineCellType(const GameMapCell & cell);
+    void UpdateCellType(unsigned int ind, const GameMapCell & cell);
+    int DefineCellType(unsigned int ind, const GameMapCell & cell);
 
     void UpdateLinkedCells(Player * player);
 

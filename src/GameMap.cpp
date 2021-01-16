@@ -116,14 +116,7 @@ void GameMap::ApplyVisibility(Player * player)
     for(unsigned int ind = 0; ind < totCells; ++ind)
     {
         const GameMapCell & cell = mCells[ind];
-
-        if(player->IsCellVisible(ind))
-        {
-            const int cellType = DefineCellType(cell);
-            mIsoMap->SetCellType(ind, cellType);
-        }
-        else
-            mIsoMap->SetCellType(ind, FOG_OF_WAR);
+        UpdateCellType(ind, cell);
     }
 
     // update objects
@@ -238,8 +231,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
             cell.obj = obj;
 
             // update cell image
-            const int cellType = DefineCellType(cell);
-            mIsoMap->SetCellType(ind, cellType);
+            UpdateCellType(ind, cell);
         }
     }
 
@@ -435,6 +427,18 @@ void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end
 
     // update map
     UpdateLinkedCells(player);
+
+    // update visibility
+    Player * localPlayer = mGame->GetPlayer(0);
+
+    if(player == localPlayer)
+    {
+        AddPlayerObjVisibility(obj, localPlayer);
+
+        // TODO this should be optimized as it's affecting the whole map
+        // when only a small portion is changed
+        ApplyVisibility(localPlayer);
+    }
 }
 
 bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
@@ -927,8 +931,17 @@ void GameMap::StopCellChange(GameMapCell & gcell)
     mScreenGame->CancelProgressBar(cell);
 }
 
-int GameMap::DefineCellType(const GameMapCell & cell)
+void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
 {
+    const int cellType = DefineCellType(ind, cell);
+    mIsoMap->SetCellType(ind, cellType);
+}
+
+int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
+{
+    if(!mGame->GetPlayer(0)->IsCellVisible(ind))
+        return FOG_OF_WAR;
+
     const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;
 
     int type = EMPTY;
@@ -1056,15 +1069,12 @@ void GameMap::UpdateLinkedCells(Player * player)
     // UPDATE ALL CELLS IMAGE
     const unsigned int totCells = mRows * mCols;
 
-    for(unsigned int c = 0; c < totCells; ++c)
+    for(unsigned int ind = 0; ind < totCells; ++ind)
     {
-        const GameMapCell & cell = mCells[c];
+        const GameMapCell & cell = mCells[ind];
 
         if(cell.owner == player || cell.influencer != -1)
-        {
-            const int cellType = DefineCellType(cell);
-            mIsoMap->SetCellType(c, cellType);
-        }
+        UpdateCellType(ind, cell);
     }
 }
 
@@ -1118,8 +1128,7 @@ void GameMap::UpdateInfluencedCells(int row, int col)
             else
                 gc.influencer = -1;
 
-            const int cellType = DefineCellType(gc);
-            mIsoMap->SetCellType(ind, cellType);
+            UpdateCellType(ind, gc);
         }
     }
 }
