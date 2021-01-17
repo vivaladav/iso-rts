@@ -577,18 +577,18 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
 bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
 {
     // check if conquest is possible
-    if(!mGameMap->CanConquestCell(cell, player))
+    if(!mGameMap->CanConquerCell(cell, player))
         return false;
 
     // start conquest
-    mGameMap->StartConquestCell(cell, player);
+    mGameMap->StartConquerCell(cell, player);
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_CONQ_CELL, player->GetPlayerId());
 
     pb->SetFunctionOnCompleted([this, cell, player]
     {
-        mGameMap->ConquestCell(cell, player);
+        mGameMap->ConquerCell(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 
@@ -627,18 +627,18 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
 bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // check if conquest is possible
-    if(!mGameMap->CanConquestResourceGenerator(start, end, player))
+    if(!mGameMap->CanConquerResourceGenerator(start, end, player))
         return false;
 
     // start conquest
-    mGameMap->StartConquestResourceGenerator(start, end, player);
+    mGameMap->StartConquerResourceGenerator(start, end, player);
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetPlayerId());
 
     pb->SetFunctionOnCompleted([this, start, end, player]
     {
-        mGameMap->ConquestResourceGenerator(start, end, player);
+        mGameMap->ConquerResourceGenerator(start, end, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
     });
 

@@ -38,14 +38,14 @@ public:
                       unsigned int rows, unsigned int cols);
 
     // cell conquest
-    bool CanConquestCell(const Cell2D & cell, Player * player);
-    void StartConquestCell(const Cell2D & cell, Player * player);
-    void ConquestCell(const Cell2D & cell, Player * player);
+    bool CanConquerCell(const Cell2D & cell, Player * player);
+    void StartConquerCell(const Cell2D & cell, Player * player);
+    void ConquerCell(const Cell2D & cell, Player * player);
 
     // resource generator conquest
-    bool CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
-    void StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
-    void ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    bool CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    void StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    void ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
     bool CanCreateUnit(GameObject * gen, Player * player);
@@ -85,7 +85,8 @@ private:
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
     void UpdateSceneObjVisibility(GameObject * obj, Player * player);
-
+    void AddPlayerCellVisbility(const GameMapCell & cell, Player * player);
+    void DelPlayerCellVisbility(const GameMapCell & cell, Player * player);
 
 private:
     std::vector<GameMapCell> mCells;

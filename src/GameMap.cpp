@@ -258,7 +258,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         UpdateSceneObjVisibility(obj, localPlayer);
 }
 
-bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
+bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
@@ -270,9 +270,12 @@ bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    // already changing or already has an owner
-    if(gcell.changing ||
-       gcell.owner != nullptr)
+    // already changing
+    if(gcell.changing)
+        return false;
+
+    // player already owns the cell
+    if(gcell.owner == player)
         return false;
 
     // check if player has enough energy
@@ -282,7 +285,7 @@ bool GameMap::CanConquestCell(const Cell2D & cell, Player * player)
     return true;
 }
 
-void GameMap::StartConquestCell(const Cell2D & cell, Player * player)
+void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
 {
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
@@ -294,10 +297,12 @@ void GameMap::StartConquestCell(const Cell2D & cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::ConquestCell(const Cell2D & cell, Player * player)
+void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 {
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
+
+    bool stolen = gcell.owner != nullptr && gcell.owner != player;
 
     // assign owner
     gcell.owner = player;
@@ -312,9 +317,23 @@ void GameMap::ConquestCell(const Cell2D & cell, Player * player)
     UpdateInfluencedCells(cell.row, cell.col);
 
     UpdateLinkedCells(player);
+
+    // update visibility map if local player
+    if(player == mGame->GetPlayer(0))
+    {
+        AddPlayerCellVisbility(gcell, player);
+
+        ApplyVisibility(player);
+    }
+    else if(stolen)
+    {
+        DelPlayerCellVisbility(gcell, player);
+
+        ApplyVisibility(player);
+    }
 }
 
-bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
@@ -377,7 +396,7 @@ bool GameMap::CanConquestResourceGenerator(const Cell2D & start, const Cell2D & 
     return true;
 }
 
-void GameMap::StartConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // take player's energy
     player->SumEnergy(-COST_CONQUEST_RES_GEN);
@@ -402,7 +421,7 @@ void GameMap::StartConquestResourceGenerator(const Cell2D & start, const Cell2D 
     }
 }
 
-void GameMap::ConquestResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
@@ -1245,6 +1264,56 @@ void GameMap::UpdateSceneObjVisibility(GameObject * obj, Player * player)
 
         if(visible)
             break;
+    }
+}
+
+void GameMap::AddPlayerCellVisbility(const GameMapCell & cell, Player * player)
+{
+    const int radius = 1;
+
+    const int rowTL = (cell.row - radius) > 0 ? (cell.row - radius) : 0;
+    const int colTL = (cell.col - radius) > 0 ? (cell.col - radius) : 0;
+    const int rowBR = (cell.row + radius + 1) < static_cast<int>(mRows) ? (cell.row + radius + 1) : mRows;
+    const int colBR = (cell.col + radius + 1) < static_cast<int>(mCols) ? (cell.col + radius + 1) : mCols;
+
+    // add the visibility of the object to the map
+    for(int r = rowTL; r < rowBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = colTL; c < colBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            player->AddVisibility(ind);
+
+            // if there's any object mark it as visited
+            if(mCells[ind].obj != nullptr)
+                mCells[ind].obj->SetVisited();
+        }
+    }
+}
+
+void GameMap::DelPlayerCellVisbility(const GameMapCell & cell, Player * player)
+{
+    const int radius = 1;
+
+    const int rowTL = (cell.row - radius) > 0 ? (cell.row - radius) : 0;
+    const int colTL = (cell.col - radius) > 0 ? (cell.col - radius) : 0;
+    const int rowBR = (cell.row + radius + 1) < static_cast<int>(mRows) ? (cell.row + radius + 1) : mRows;
+    const int colBR = (cell.col + radius + 1) < static_cast<int>(mCols) ? (cell.col + radius + 1) : mCols;
+
+    // add the visibility of the object to the map
+    for(int r = rowTL; r < rowBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = colTL; c < colBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            player->RemVisibility(ind);
+        }
     }
 }
 
