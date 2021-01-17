@@ -70,7 +70,7 @@ void MapLoader::ReadBaseData(std::fstream & fs)
     if(mGameMap)
     {
         mGameMap->SetSize(rows, cols);
-        mGameMap->SyncWalkableCells();
+        mGameMap->SyncMapCells();
     }
 }
 

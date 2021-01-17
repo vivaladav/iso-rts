@@ -25,32 +25,6 @@
 namespace game
 {
 
-enum CellTypes : int
-{
-    EMPTY = 0,
-    SCENE,
-
-    // FACTION 1
-    F1,
-    F1_CONNECTED,
-    F1_INFLUENCED,
-
-    // FACTION 2
-    F2,
-    F2_CONNECTED,
-    F2_INFLUENCED,
-
-    // FACTION 3
-    F3,
-    F3_CONNECTED,
-    F3_INFLUENCED,
-
-    // SPECIAL
-    FOG_OF_WAR,
-
-    NUM_CELL_TYPES
-};
-
 // NOTE these will be replaced by dynamic values soon
 constexpr int COST_CONQUEST_CELL = 2;
 constexpr int COST_CONQUEST_RES_GEN = 4;
@@ -102,12 +76,17 @@ void GameMap::SetSize(unsigned int rows, unsigned int cols)
     mGame->GetPlayer(0)->InitVisibility(mRows, mCols);
 }
 
-void GameMap::SyncWalkableCells()
+void GameMap::SyncMapCells()
 {
     const unsigned int size = mRows * mCols;
 
     for(unsigned int i = 0; i < size; ++i)
-        mCells[i].walkable = mIsoMap->GetCellType(i) == EMPTY;
+    {
+        const auto type = static_cast<CellTypes>(mIsoMap->GetCellType(i));
+
+        mCells[i].basicType = type;
+        mCells[i].walkable = type == EMPTY;
+    }
 }
 
 void GameMap::ApplyVisibility(Player * player)
@@ -982,6 +961,10 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
     if(!mGame->GetPlayer(0)->IsCellVisible(ind))
         return FOG_OF_WAR;
 
+    // scene cell
+    if(SCENE == cell.basicType)
+        return SCENE;
+
     const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;
 
     int type = EMPTY;
@@ -1020,19 +1003,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
                 type = F3_INFLUENCED;
             // no influence
             else
-            {
-                // TODO this is temp code as GameMap needs to keep track of basic type of cells
-                // after loading and the type has to be set according to basic type.
-                // That's because a scene cell can be visible or not, but it can't be influenced
-                // or conquered.
-
-                // it's walkable or there's an object on it -> empty cell
-                if(cell.walkable || cell.obj != nullptr)
-                    type = EMPTY;
-                // scene cell
-                else
-                    type = SCENE;
-            }
+                type = EMPTY;
         }
         break;
     }

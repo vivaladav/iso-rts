@@ -25,7 +25,7 @@ public:
 
     void SetSize(unsigned int rows, unsigned int cols);
 
-    void SyncWalkableCells();
+    void SyncMapCells();
 
     void ApplyVisibility(Player * player);
 

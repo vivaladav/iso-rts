@@ -10,6 +10,32 @@ class Player;
 class ResourceGenerator;
 class Unit;
 
+enum CellTypes : int
+{
+    EMPTY = 0,
+    SCENE,
+
+    // FACTION 1
+    F1,
+    F1_CONNECTED,
+    F1_INFLUENCED,
+
+    // FACTION 2
+    F2,
+    F2_CONNECTED,
+    F2_INFLUENCED,
+
+    // FACTION 3
+    F3,
+    F3_CONNECTED,
+    F3_INFLUENCED,
+
+    // SPECIAL
+    FOG_OF_WAR,
+
+    NUM_CELL_TYPES
+};
+
 struct GameMapCell
 {
     GameMapCell();
@@ -25,6 +51,8 @@ struct GameMapCell
 
     Player * owner = nullptr;
     GameObject * obj = nullptr;
+
+    CellTypes basicType = EMPTY;
 
     int row = 0;
     int col = 0;
