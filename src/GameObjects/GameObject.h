@@ -32,11 +32,19 @@ public:
 
     IsoObject * GetIsoObject() const;
 
+    bool IsStructure() const;
+
     bool IsSelected() const;
     void SetSelected(bool val);
 
     bool IsBusy() const;
     void SetBusy(bool val);
+
+    bool IsVisited() const;
+    void SetVisited();
+
+    bool IsVisible() const;
+    void SetVisible(bool val);
 
     const GameMapCell * GetCell() const;
     void SetCell(GameMapCell * cell);
@@ -60,12 +68,12 @@ public:
 protected:
     virtual void UpdateImage() = 0;
 
-protected:
-    IsoObject * mIsoObj = nullptr;
-
-    int mVisRadius = 1;
+    void SetVisibilityRadius(int val);
+    void SetStructure(bool val);
 
 private:
+    IsoObject * mIsoObj = nullptr;
+
     GameMapCell * mCell = nullptr;
 
     int mOwner = -1;
@@ -74,17 +82,31 @@ private:
     unsigned int mRows = 1;
     unsigned int mCols = 1;
 
+    int mVisRadius = 1;
+
+    bool mStructure = false;
+
     bool mSelected = false;
 
     bool mBusy = false;
+
+    bool mVisited = false;
+    bool mVisible = true;
 };
 
 inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
+
+inline bool GameObject::IsStructure() const { return mStructure; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 
 inline bool GameObject::IsBusy() const { return mBusy; }
 inline void GameObject::SetBusy(bool val) { mBusy = val; }
+
+inline bool GameObject::IsVisited() const { return mVisited; }
+inline void GameObject::SetVisited() { mVisited = true; }
+
+inline bool GameObject::IsVisible() const { return mVisible; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
@@ -102,5 +124,8 @@ inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }
+
+inline void GameObject::SetVisibilityRadius(int val) { mVisRadius = val; }
+inline void GameObject::SetStructure(bool val) { mStructure = val; }
 
 } // namespace game

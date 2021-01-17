@@ -61,7 +61,7 @@ void Unit::SetImage()
         tex = tm->GetTexture(imgFiles[owner]);
     }
 
-    mIsoObj->SetTexture(tex);
+    GetIsoObject()->SetTexture(tex);
 }
 
 } // namespace game

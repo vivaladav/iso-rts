@@ -26,6 +26,13 @@ void GameObject::SetSelected(bool val)
     UpdateImage();
 }
 
+void GameObject::SetVisible(bool val)
+{
+    mVisible = val;
+
+    UpdateImage();
+}
+
 void GameObject::SetCell(GameMapCell * cell)
 {
     mCell = cell;

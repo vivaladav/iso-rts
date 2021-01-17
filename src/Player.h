@@ -16,12 +16,6 @@ class ResourceGenerator;
 
 enum ResourceType : unsigned int;
 
-struct VisibilityData
-{
-    char visibility = 0;
-    bool visited = false;
-};
-
 class Player
 {
 public:
@@ -31,7 +25,6 @@ public:
     // visibility map
     void InitVisibility(int rows, int cols);
     bool IsCellVisible(unsigned int ind) const;
-    bool IsCellVisited(unsigned int ind) const;
     void AddVisibility(unsigned int ind);
     void RemVisibility(unsigned int ind);
 
@@ -86,7 +79,7 @@ public:
     void SetLocal(bool val);
 
 private:
-    std::vector<VisibilityData> mVisMap;
+    std::vector<int> mVisMap;
 
     std::string mName;
 
@@ -119,25 +112,18 @@ private:
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {
-    return mVisMap[ind].visibility > 0;
-}
-
-inline bool Player::IsCellVisited(unsigned int ind) const
-{
-    return mVisMap[ind].visited;
+    return mVisMap[ind] > 0;
 }
 
 inline void Player::AddVisibility(unsigned int ind)
 {
-    ++(mVisMap[ind].visibility);
-
-    mVisMap[ind].visited = true;
+    ++mVisMap[ind];
 }
 
 inline void Player::RemVisibility(unsigned int ind)
 {
-    if(mVisMap[ind].visibility > 0)
-        --(mVisMap[ind].visibility);
+    if(mVisMap[ind] > 0)
+        --mVisMap[ind];
 }
 
 inline const std::string & Player::GetName() const { return mName; }

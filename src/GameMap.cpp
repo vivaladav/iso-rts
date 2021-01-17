@@ -133,8 +133,17 @@ void GameMap::ApplyVisibility(Player * player)
             }
         }
 
-        // TODO handle visited cells/objects
-        layer->SetObjectVisible(obj, visible);
+        // show or hide object
+        if(visible != go->IsVisible())
+        {
+            // hide objects if not visited or not a structure
+            if(!visible && (!go->IsVisited() || !go->IsStructure()))
+                layer->SetObjectVisible(obj, false);
+            else
+                layer->SetObjectVisible(obj, true);
+
+            go->SetVisible(visible);
+        }
     }
 }
 
@@ -1178,6 +1187,10 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
             const int ind = indBase + c;
 
             player->AddVisibility(ind);
+
+            // if there's any object mark it as visited
+            if(mCells[ind].obj != nullptr)
+                mCells[ind].obj->SetVisited();
         }
     }
 }

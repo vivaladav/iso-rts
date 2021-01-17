@@ -10,7 +10,8 @@ namespace game
 Base::Base(int owner, int rows, int cols)
     : GameObject(GameObjectType::OBJ_BASE, owner, rows, cols)
 {
-    mVisRadius = 3;
+    SetVisibilityRadius(3);
+    SetStructure(true);
 
     SetImage();
 }
@@ -26,34 +27,41 @@ void Base::SetImage()
 
     lib::graphic::Texture * tex = nullptr;
 
-    const int owner = GetOwner();
-
-    // object is selected
-    if(IsSelected())
-    {
-        const char * imgFiles[] =
-        {
-            "data/img/base-f1-sel.png",
-            "data/img/base-f2-sel.png",
-            "data/img/base-f3-sel.png"
-        };
-
-        tex = tm->GetTexture(imgFiles[owner]);
-    }
-    // not selected
+    // not visible
+    if(!IsVisible())
+        tex = tm->GetTexture("data/img/base-fow.png");
+    // visible
     else
     {
-        const char * imgFiles[] =
-        {
-            "data/img/base-f1.png",
-            "data/img/base-f2.png",
-            "data/img/base-f3.png"
-        };
+        const int owner = GetOwner();
 
-        tex = tm->GetTexture(imgFiles[owner]);
+        // object is selected
+        if(IsSelected())
+        {
+            const char * imgFiles[] =
+            {
+                "data/img/base-f1-sel.png",
+                "data/img/base-f2-sel.png",
+                "data/img/base-f3-sel.png"
+            };
+
+            tex = tm->GetTexture(imgFiles[owner]);
+        }
+        // not selected
+        else
+        {
+            const char * imgFiles[] =
+            {
+                "data/img/base-f1.png",
+                "data/img/base-f2.png",
+                "data/img/base-f3.png"
+            };
+
+            tex = tm->GetTexture(imgFiles[owner]);
+        }
     }
 
-    mIsoObj->SetTexture(tex);
+    GetIsoObject()->SetTexture(tex);
 }
 
 } // namespace game

@@ -34,10 +34,9 @@ Player::~Player()
 void Player::InitVisibility(int rows, int cols)
 {
     const unsigned int size = rows * cols;
-    const VisibilityData vdata;
 
     mVisMap.resize(size);
-    mVisMap.assign(size, vdata);
+    mVisMap.assign(size, 0);
 }
 
 void Player::SumCells(int val)

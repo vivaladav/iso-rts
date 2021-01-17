@@ -11,7 +11,8 @@ ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
     : GameObject(OBJ_RES_GEN, -1, rows, cols)
     , mResType(type)
 {
-    mVisRadius = 2;
+    SetVisibilityRadius(2);
+    SetStructure(true);
 
     SetImage();
 
@@ -33,41 +34,55 @@ void ResourceGenerator::SetImage()
 
     if(ENERGY == mResType)
     {
-        if(-1 == owner)
-            tex = tm->GetTexture("data/img/energy_source.png");
+        // not visible
+        if(!IsVisible())
+            tex = tm->GetTexture("data/img/energy_source-fow.png");
+        // visible
         else
         {
-            const char * filesFactions[] =
+            if(-1 == owner)
+                tex = tm->GetTexture("data/img/energy_source.png");
+            else
             {
-                "data/img/energy_source-f1.png",
-                "data/img/energy_source-f2.png",
-                "data/img/energy_source-f3.png"
-            };
+                const char * filesFactions[] =
+                {
+                    "data/img/energy_source-f1.png",
+                    "data/img/energy_source-f2.png",
+                    "data/img/energy_source-f3.png"
+                };
 
-            tex = tm->GetTexture(filesFactions[owner]);
+                tex = tm->GetTexture(filesFactions[owner]);
+            }
         }
-
     }
     else if(MATERIAL1 == mResType)
     {
-        if(-1 == owner)
-            tex = tm->GetTexture("data/img/material_source.png");
+        // not visible
+        if(!IsVisible())
+            tex = tm->GetTexture("data/img/material_source-fow.png");
+        // visible
         else
         {
-            const char * filesFactions[] =
+            if(-1 == owner)
+                tex = tm->GetTexture("data/img/material_source.png");
+            else
             {
-                "data/img/material_source-f1.png",
-                "data/img/material_source-f2.png",
-                "data/img/material_source-f3.png"
-            };
+                const char * filesFactions[] =
+                {
+                    "data/img/material_source-f1.png",
+                    "data/img/material_source-f2.png",
+                    "data/img/material_source-f3.png"
+                };
 
-            tex = tm->GetTexture(filesFactions[owner]);
+                tex = tm->GetTexture(filesFactions[owner]);
+            }
         }
     }
+    // unknown resource type
     else
         tex = tm->GetTexture("data/img/obj_null.png");
 
-    mIsoObj->SetTexture(tex);
+    GetIsoObject()->SetTexture(tex);
 }
 
 void ResourceGenerator::UpdateOutput()
