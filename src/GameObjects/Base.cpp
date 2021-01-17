@@ -10,6 +10,8 @@ namespace game
 Base::Base(int owner, int rows, int cols)
     : GameObject(GameObjectType::OBJ_BASE, owner, rows, cols)
 {
+    mVisRadius = 3;
+
     SetImage();
 }
 

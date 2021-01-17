@@ -28,7 +28,6 @@ namespace game
 enum CellTypes : int
 {
     EMPTY = 0,
-    FOG_OF_WAR,
     SCENE,
 
     // FACTION 1
@@ -45,6 +44,9 @@ enum CellTypes : int
     F3,
     F3_CONNECTED,
     F3_INFLUENCED,
+
+    // SPECIAL
+    FOG_OF_WAR,
 
     NUM_CELL_TYPES
 };
@@ -124,16 +126,36 @@ void GameMap::ApplyVisibility(Player * player)
 
     for(GameObject * go : mObjects)
     {
-        // check the visibility of the object 0 position as all
-        // its cells are visible or not
-        const int r0 = go->GetRow0();
-        const int c0 = go->GetCol0();
-        const int ind = r0 * mCols + c0;
+        const int rTL = go->GetRow1();
+        const int cTL = go->GetCol1();
+        const int rBR = go->GetRow0();
+        const int cBR = go->GetCol0();
 
         IsoObject * obj = go->GetIsoObject();
 
+        bool visible = false;
+
+        for(int r = rTL; r <= rBR; ++r)
+        {
+            const int indBase = r * mCols;
+
+            for(int c = cTL; c <= cBR; ++c)
+            {
+                const int ind = indBase + c;
+
+                if(player->IsCellVisible(ind))
+                {
+                    visible = true;
+                    break;
+                }
+
+                if(visible)
+                    break;
+            }
+        }
+
         // TODO handle visited cells/objects
-        layer->SetObjectVisible(obj, player->IsCellVisible(ind));
+        layer->SetObjectVisible(obj, visible);
     }
 }
 
@@ -696,6 +718,14 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     player->SumUnits(1);
     player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
 
+    // update visibility map
+    // NOTE only for human player for now
+    Player * localPlayer = mGame->GetPlayer(0);
+
+    if(unit->GetOwner() == localPlayer->GetPlayerId())
+        AddPlayerObjVisibility(unit, localPlayer);
+    else
+        UpdateSceneObjVisibility(unit, localPlayer);
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
@@ -874,6 +904,9 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * playe
     // move to empty cell
     if(emptyDest)
     {
+        if(player == mGame->GetPlayer(0))
+            DelPlayerObjVisibility(gcell0.obj, player);
+
         gcell1.obj = gcell0.obj;
         gcell1.walkable = false;
 
@@ -884,6 +917,12 @@ bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * playe
         layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col);
 
         gcell1.obj->SetCell(&gcell1);
+
+        if(player == mGame->GetPlayer(0))
+        {
+            AddPlayerObjVisibility(gcell1.obj, player);
+            ApplyVisibility(player);
+        }
     }
     else
         return false;
@@ -939,6 +978,7 @@ void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
 
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 {
+    // if cell is not visible it's always Fog Of War
     if(!mGame->GetPlayer(0)->IsCellVisible(ind))
         return FOG_OF_WAR;
 
@@ -978,6 +1018,21 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
                 type = F2_INFLUENCED;
             else if(2 == cell.influencer)
                 type = F3_INFLUENCED;
+            // no influence
+            else
+            {
+                // TODO this is temp code as GameMap needs to keep track of basic type of cells
+                // after loading and the type has to be set according to basic type.
+                // That's because a scene cell can be visible or not, but it can't be influenced
+                // or conquered.
+
+                // it's walkable or there's an object on it -> empty cell
+                if(cell.walkable || cell.obj != nullptr)
+                    type = EMPTY;
+                // scene cell
+                else
+                    type = SCENE;
+            }
         }
         break;
     }
@@ -1135,14 +1190,12 @@ void GameMap::UpdateInfluencedCells(int row, int col)
 
 void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 {
-    const int radius = 3;
+    const int radius = obj->GetVisibilityRadius();
 
     const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
     const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
     const int rowBR = (obj->GetRow0() + radius + 1) < static_cast<int>(mRows) ? (obj->GetRow0() + radius + 1) : mRows;
     const int colBR = (obj->GetCol0() + radius + 1) < static_cast<int>(mCols) ? (obj->GetCol0() + radius + 1) : mCols;
-
-    std::unordered_set<GameObject *> extraObjs;
 
     // add the visibility of the object to the map
     for(int r = rowTL; r < rowBR; ++r)
@@ -1154,32 +1207,29 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
             const int ind = indBase + c;
 
             player->AddVisibility(ind);
-
-            // add any other object found
-            if(mCells[ind].obj != nullptr && mCells[ind].obj != obj)
-                extraObjs.insert(mCells[ind].obj);
         }
     }
+}
 
-    // process found objects to make all their cells visible
-    for(GameObject * o : extraObjs)
+void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
+{
+    const int radius = obj->GetVisibilityRadius();
+
+    const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
+    const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
+    const int rowBR = (obj->GetRow0() + radius + 1) < static_cast<int>(mRows) ? (obj->GetRow0() + radius + 1) : mRows;
+    const int colBR = (obj->GetCol0() + radius + 1) < static_cast<int>(mCols) ? (obj->GetCol0() + radius + 1) : mCols;
+
+    // add the visibility of the object to the map
+    for(int r = rowTL; r < rowBR; ++r)
     {
-        const int rTL = o->GetRow1();
-        const int cTL = o->GetCol1();
-        const int rBR = o->GetRow0();
-        const int cBR = o->GetCol0();
+        const int indBase = r * mCols;
 
-        for(int r = rTL; r <= rBR; ++r)
+        for(int c = colTL; c < colBR; ++c)
         {
-            const int indBase = r * mCols;
+            const int ind = indBase + c;
 
-            for(int c = cTL; c <= cBR; ++c)
-            {
-                const int ind = indBase + c;
-
-                if(!player->IsCellVisible(ind))
-                    player->AddVisibility(ind);
-            }
+            player->RemVisibility(ind);
         }
     }
 }
@@ -1211,23 +1261,6 @@ void GameMap::UpdateSceneObjVisibility(GameObject * obj, Player * player)
 
         if(visible)
             break;
-    }
-
-    // if any cell is visible makes visible all of them
-    if(visible)
-    {
-        for(int r = rTL; r <= rBR; ++r)
-        {
-            const int indBase = r * mCols;
-
-            for(int c = cTL; c <= cBR; ++c)
-            {
-                const int ind = indBase + c;
-
-                if(!player->IsCellVisible(ind))
-                    player->AddVisibility(ind);
-            }
-        }
     }
 }
 

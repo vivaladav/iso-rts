@@ -250,7 +250,6 @@ void ScreenGame::CreateIsoMap()
     {
         // scene
         "data/img/tile_empty.png",
-        "data/img/tile_fow.png",
         "data/img/tile_scene_01.png",
 
         // faction 1
@@ -267,6 +266,9 @@ void ScreenGame::CreateIsoMap()
         "data/img/tile-f3.png",
         "data/img/tile-f3_connected.png",
         "data/img/tile-f3_influenced.png",
+
+        // fog of war
+        "data/img/tile_fow.png",
     };
 
     // iso map

@@ -41,6 +41,8 @@ public:
     const GameMapCell * GetCell() const;
     void SetCell(GameMapCell * cell);
 
+    int GetVisibilityRadius() const;
+
     int GetRow0() const;
     int GetCol0() const;
     int GetRow1() const;
@@ -60,6 +62,8 @@ protected:
 
 protected:
     IsoObject * mIsoObj = nullptr;
+
+    int mVisRadius = 1;
 
 private:
     GameMapCell * mCell = nullptr;
@@ -83,6 +87,8 @@ inline bool GameObject::IsBusy() const { return mBusy; }
 inline void GameObject::SetBusy(bool val) { mBusy = val; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
+
+inline int GameObject::GetVisibilityRadius() const { return mVisRadius; }
 
 inline int GameObject::GetOwner() const { return mOwner; }
 

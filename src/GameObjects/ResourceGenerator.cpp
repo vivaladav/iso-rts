@@ -11,6 +11,8 @@ ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
     : GameObject(OBJ_RES_GEN, -1, rows, cols)
     , mResType(type)
 {
+    mVisRadius = 2;
+
     SetImage();
 
     UpdateOutput();
