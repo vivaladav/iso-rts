@@ -6,6 +6,9 @@
 namespace game
 {
 
+const unsigned int GameObject::COLOR_FOW = 0x555555FF;
+const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
+
 GameObject::GameObject(GameObjectType type, int owner, int rows, int cols)
     : mIsoObj(new IsoObject(rows, cols))
     , mOwner(owner)

@@ -32,11 +32,18 @@ void ResourceGenerator::SetImage()
 
     lib::graphic::Texture * tex = nullptr;
 
+    IsoObject * isoObj = GetIsoObject();
+
+    if(IsVisible())
+        isoObj->SetColor(COLOR_VIS);
+    else
+        isoObj->SetColor(COLOR_FOW);
+
     if(ENERGY == mResType)
     {
         // not visible
         if(!IsVisible())
-            tex = tm->GetTexture("data/img/energy_source-fow.png");
+            tex = tm->GetTexture("data/img/energy_source.png");
         // visible
         else
         {
@@ -59,10 +66,12 @@ void ResourceGenerator::SetImage()
     {
         // not visible
         if(!IsVisible())
-            tex = tm->GetTexture("data/img/material_source-fow.png");
+            tex = tm->GetTexture("data/img/material_source.png");
         // visible
         else
         {
+            GetIsoObject()->SetColor(COLOR_VIS);
+
             if(-1 == owner)
                 tex = tm->GetTexture("data/img/material_source.png");
             else
@@ -82,7 +91,7 @@ void ResourceGenerator::SetImage()
     else
         tex = tm->GetTexture("data/img/obj_null.png");
 
-    GetIsoObject()->SetTexture(tex);
+    isoObj->SetTexture(tex);
 }
 
 void ResourceGenerator::UpdateOutput()

@@ -27,41 +27,41 @@ void Base::SetImage()
 
     lib::graphic::Texture * tex = nullptr;
 
-    // not visible
-    if(!IsVisible())
-        tex = tm->GetTexture("data/img/base-fow.png");
-    // visible
+    IsoObject * isoObj = GetIsoObject();
+
+    if(IsVisible())
+        isoObj->SetColor(COLOR_VIS);
+    else
+        isoObj->SetColor(COLOR_FOW);
+
+    const int owner = GetOwner();
+
+    // object is selected
+    if(IsSelected())
+    {
+        const char * imgFiles[] =
+        {
+            "data/img/base-f1-sel.png",
+            "data/img/base-f2-sel.png",
+            "data/img/base-f3-sel.png"
+        };
+
+        tex = tm->GetTexture(imgFiles[owner]);
+    }
+    // not selected
     else
     {
-        const int owner = GetOwner();
-
-        // object is selected
-        if(IsSelected())
+        const char * imgFiles[] =
         {
-            const char * imgFiles[] =
-            {
-                "data/img/base-f1-sel.png",
-                "data/img/base-f2-sel.png",
-                "data/img/base-f3-sel.png"
-            };
+            "data/img/base-f1.png",
+            "data/img/base-f2.png",
+            "data/img/base-f3.png"
+        };
 
-            tex = tm->GetTexture(imgFiles[owner]);
-        }
-        // not selected
-        else
-        {
-            const char * imgFiles[] =
-            {
-                "data/img/base-f1.png",
-                "data/img/base-f2.png",
-                "data/img/base-f3.png"
-            };
-
-            tex = tm->GetTexture(imgFiles[owner]);
-        }
+        tex = tm->GetTexture(imgFiles[owner]);
     }
 
-    GetIsoObject()->SetTexture(tex);
+    isoObj->SetTexture(tex);
 }
 
 } // namespace game

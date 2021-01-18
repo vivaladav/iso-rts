@@ -71,6 +71,10 @@ protected:
     void SetVisibilityRadius(int val);
     void SetStructure(bool val);
 
+protected:
+    static const unsigned int COLOR_FOW;
+    static const unsigned int COLOR_VIS;
+
 private:
     IsoObject * mIsoObj = nullptr;
 
