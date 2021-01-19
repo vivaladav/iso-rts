@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 
@@ -173,51 +174,38 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
     // create game object
     GameObject * obj = nullptr;
 
-    switch (objId)
+    if(OBJ_RES_GEN_ENERGY == objId)
+        obj = new ResourceGenerator(ResourceType::ENERGY, rows, cols);
+    else if(OBJ_RES_GEN_MATERIAL1 == objId)
+        obj = new ResourceGenerator(ResourceType::MATERIAL1, rows, cols);
+    else if(objId >= OBJ_BASE_F1 && objId <= OBJ_BASE_F3)
     {
-        case OBJ_BASE_F1:
-        case OBJ_BASE_F2:
-        case OBJ_BASE_F3:
+        const int owner = objId - OBJ_BASE_F1;
+
+        obj = new Base(owner, rows, cols);
+
+        Player * player = mGame->GetPlayer(owner);
+
+        // base cells update
+        for(unsigned int r = r1; r <= r0; ++r)
         {
-            const int owner = objId - OBJ_BASE_F1;
+            const unsigned int indBase = r * mCols;
 
-            obj = new Base(owner, rows, cols);
-
-            Player * player = mGame->GetPlayer(owner);
-
-            // base cells update
-            for(unsigned int r = r1; r <= r0; ++r)
+            for(unsigned int c = c1; c <= c0; ++c)
             {
-                const unsigned int indBase = r * mCols;
+                const unsigned int ind = indBase + c;
+                mCells[ind].owner = player;
+                mCells[ind].linked = true;
 
-                for(unsigned int c = c1; c <= c0; ++c)
-                {
-                    const unsigned int ind = indBase + c;
-                    mCells[ind].owner = player;
-                    mCells[ind].linked = true;
-
-                    UpdateInfluencedCells(r, c);
-                }
+                UpdateInfluencedCells(r, c);
             }
-
-            player->SetBaseCell(Cell2D(r0, c0));
-            player->SumCells(rows * cols);
         }
-        break;
 
-        case OBJ_RES_GEN_ENERGY:
-            obj = new ResourceGenerator(ResourceType::ENERGY, rows, cols);
-        break;
-
-        case OBJ_RES_GEN_MATERIAL1:
-            obj = new ResourceGenerator(ResourceType::MATERIAL1, rows, cols);
-        break;
-
-        default:
-            // this should never happen
-            return ;
-        break;
+        player->SetBaseCell(Cell2D(r0, c0));
+        player->SumCells(rows * cols);
     }
+    else if(objId >= OBJ_MOUNTAIN_FIRST && objId <= OBJ_MOUNTAIN_LAST)
+        obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
 
     // set object properties
     obj->SetCell(&mCells[ind0]);

@@ -39,6 +39,8 @@ add_executable(
     src/GameObjects/GameObject.cpp
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
+    src/GameObjects/SceneObject.h
+    src/GameObjects/SceneObject.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
     src/Screens/Screen.h
