@@ -309,13 +309,13 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
     // update visibility map if local player
     if(player == mGame->GetPlayer(0))
     {
-        AddPlayerCellVisbility(gcell, player);
+        AddPlayerCellVisibility(gcell, player);
 
         ApplyVisibility(player);
     }
     else if(stolen)
     {
-        DelPlayerCellVisbility(gcell, player);
+        DelPlayerCellVisibility(gcell, player);
 
         ApplyVisibility(player);
     }
@@ -1255,7 +1255,7 @@ void GameMap::UpdateSceneObjVisibility(GameObject * obj, Player * player)
     }
 }
 
-void GameMap::AddPlayerCellVisbility(const GameMapCell & cell, Player * player)
+void GameMap::AddPlayerCellVisibility(const GameMapCell & cell, Player * player)
 {
     const int radius = 1;
 
@@ -1282,7 +1282,7 @@ void GameMap::AddPlayerCellVisbility(const GameMapCell & cell, Player * player)
     }
 }
 
-void GameMap::DelPlayerCellVisbility(const GameMapCell & cell, Player * player)
+void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
 {
     const int radius = 1;
 

@@ -85,8 +85,8 @@ private:
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
     void UpdateSceneObjVisibility(GameObject * obj, Player * player);
-    void AddPlayerCellVisbility(const GameMapCell & cell, Player * player);
-    void DelPlayerCellVisbility(const GameMapCell & cell, Player * player);
+    void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
+    void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
 
 private:
     std::vector<GameMapCell> mCells;
