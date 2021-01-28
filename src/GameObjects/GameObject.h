@@ -67,7 +67,7 @@ public:
     const GameMapCell * GetCell() const;
     void SetCell(GameMapCell * cell);
 
-    int GetVisibilityRadius() const;
+    int GetVisibilityLevel() const;
 
     int GetRow0() const;
     int GetCol0() const;
@@ -86,7 +86,7 @@ public:
 protected:
     virtual void UpdateImage() = 0;
 
-    void SetVisibilityRadius(int val);
+    void SetVisibilityLevel(int val);
     void SetStructure(bool val);
 
 protected:
@@ -104,7 +104,7 @@ private:
     unsigned int mRows = 1;
     unsigned int mCols = 1;
 
-    int mVisRadius = 1;
+    int mVisLevel = 0;
 
     bool mStructure = false;
 
@@ -132,7 +132,7 @@ inline bool GameObject::IsVisible() const { return mVisible; }
 
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
-inline int GameObject::GetVisibilityRadius() const { return mVisRadius; }
+inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 
 inline int GameObject::GetOwner() const { return mOwner; }
 
@@ -147,7 +147,7 @@ inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }
 
-inline void GameObject::SetVisibilityRadius(int val) { mVisRadius = val; }
+inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
 
 } // namespace game

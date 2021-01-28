@@ -721,6 +721,8 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
         AddPlayerObjVisibility(unit, localPlayer);
     else
         UpdateSceneObjVisibility(unit, localPlayer);
+
+    ApplyVisibility(localPlayer);
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
@@ -1177,21 +1179,42 @@ void GameMap::UpdateInfluencedCells(int row, int col)
 
 void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 {
-    const int radius = obj->GetVisibilityRadius();
+    const int objRows = obj->GetRows();
 
-    const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
-    const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
-    const int rowBR = (obj->GetRow0() + radius + 1) < static_cast<int>(mRows) ? (obj->GetRow0() + radius + 1) : mRows;
-    const int colBR = (obj->GetCol0() + radius + 1) < static_cast<int>(mCols) ? (obj->GetCol0() + radius + 1) : mCols;
+    const int objVisLvl = obj->GetVisibilityLevel();
 
-    // add the visibility of the object to the map
-    for(int r = rowTL; r < rowBR; ++r)
+    const int visHalfLen0 = 2;
+    const int visLenInc = 1;
+    const int visExtSide = visHalfLen0 + visLenInc * objVisLvl;
+
+    const int visLenMax = objRows + visExtSide * 2;
+
+    const int visSideCols = (visLenMax - 1) / 2;
+
+    // object columns
+    int minCol = obj->GetCol1();
+    int maxCol = obj->GetCol0();
+
+    if(objVisLvl % 2 == 1)
     {
-        const int indBase = r * mCols;
+        if(minCol > 0)
+            minCol -= 1;
 
-        for(int c = colTL; c < colBR; ++c)
+        if(maxCol < static_cast<int>(mCols - 1))
+            maxCol += 1;
+    }
+
+    int minRow = obj->GetRow1() - visExtSide;
+    int maxRow = obj->GetRow0() + visExtSide;
+
+    for(int c = minCol; c <= maxCol; ++c)
+    {
+        for(int r = minRow; r <= maxRow; ++r)
         {
-            const int ind = indBase + c;
+            if(r < 0 || r >= static_cast<int>(mRows))
+                continue;
+
+            const int ind = r * mCols + c;
 
             player->AddVisibility(ind);
 
@@ -1200,11 +1223,74 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
                 mCells[ind].obj->SetVisited();
         }
     }
+
+    // left columns
+    if(minCol - 1 > -1)
+    {
+        int minColL = minCol - visSideCols;
+        int maxColL = minCol - 1;
+
+        if(minColL < 0)
+            minColL = 0;
+
+        int minRowL = minRow;
+        int maxRowL = maxRow;
+
+        for(int c = minColL; c <= maxColL; ++c)
+        {
+            ++minRowL;
+            --maxRowL;
+
+            for(int r = minRowL; r <= maxRowL; ++r)
+            {
+                if(r < 0 || r >= static_cast<int>(mRows))
+                    continue;
+
+                const int ind = r * mCols + c;
+
+                player->AddVisibility(ind);
+
+                // if there's any object mark it as visited
+                if(mCells[ind].obj != nullptr)
+                    mCells[ind].obj->SetVisited();
+            }
+        }
+    }
+
+    // right columns
+    if(maxCol + 1 < static_cast<int>(mCols))
+    {
+        int minColR = maxCol + 1;
+        int maxColR = maxCol + visSideCols;
+
+        int minRowR = minRow;
+        int maxRowR = maxRow;
+
+        for(int c = minColR; c <= maxColR; ++c)
+        {
+            ++minRowR;
+            --maxRowR;
+
+            for(int r = minRowR; r <= maxRowR; ++r)
+            {
+                if(r < 0 || r >= static_cast<int>(mRows))
+                    continue;
+
+                const int ind = r * mCols + c;
+
+                player->AddVisibility(ind);
+
+                // if there's any object mark it as visited
+                if(mCells[ind].obj != nullptr)
+                    mCells[ind].obj->SetVisited();
+            }
+        }
+    }
 }
 
 void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
 {
-    const int radius = obj->GetVisibilityRadius();
+    const int radius = obj->GetVisibilityLevel();
 
     const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
     const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
