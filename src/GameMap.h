@@ -2,6 +2,7 @@
 
 #include "GameMapCell.h"
 
+#include <functional>
 #include <vector>
 
 namespace game
@@ -82,11 +83,19 @@ private:
 
     void UpdateInfluencedCells(int row, int col);
 
+    // -- player visibility --
+    void AddVisibilityToCell(Player * player, int ind);
+    void DelVisibilityToCell(Player * player, int ind);
+
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
-    void UpdateSceneObjVisibility(GameObject * obj, Player * player);
+    void PropagatePlayerObjVisibility(GameObject * obj, Player * player,
+                                      std::function<void(Player * player, int ind)> visFun);
+
     void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
+    void PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
+                                       std::function<void(Player * player, int ind)> visFun);
 
 private:
     std::vector<GameMapCell> mCells;

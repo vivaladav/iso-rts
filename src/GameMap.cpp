@@ -242,8 +242,6 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     if(obj->GetOwner() == localPlayer->GetPlayerId())
         AddPlayerObjVisibility(obj, localPlayer);
-    else
-        UpdateSceneObjVisibility(obj, localPlayer);
 }
 
 bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
@@ -719,8 +717,6 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
 
     if(unit->GetOwner() == localPlayer->GetPlayerId())
         AddPlayerObjVisibility(unit, localPlayer);
-    else
-        UpdateSceneObjVisibility(unit, localPlayer);
 
     ApplyVisibility(localPlayer);
 }
@@ -1177,9 +1173,41 @@ void GameMap::UpdateInfluencedCells(int row, int col)
     }
 }
 
+void  GameMap::AddVisibilityToCell(Player * player, int ind)
+{
+    player->AddVisibility(ind);
+
+    // if there's any object mark it as visited
+    if(mCells[ind].obj != nullptr)
+        mCells[ind].obj->SetVisited();
+}
+
+void GameMap::DelVisibilityToCell(Player * player, int ind)
+{
+    player->RemVisibility(ind);
+}
+
 void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 {
+    using namespace std::placeholders;
+
+    PropagatePlayerObjVisibility(obj, player,
+                                 std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
+}
+
+void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
+{
+    using namespace std::placeholders;
+
+    PropagatePlayerObjVisibility(obj, player,
+                                 std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
+}
+
+void GameMap::PropagatePlayerObjVisibility(GameObject * obj, Player * player,
+                                           std::function<void(Player * player, int ind)> visFun)
+{
     const int objRows = obj->GetRows();
+    const int objCols = obj->GetCols();
 
     const int objVisLvl = obj->GetVisibilityLevel();
 
@@ -1195,7 +1223,7 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
     int minCol = obj->GetCol1();
     int maxCol = obj->GetCol0();
 
-    if(objVisLvl % 2 == 1)
+    if(1 == objCols && objVisLvl % 2 == 1)
     {
         if(minCol > 0)
             minCol -= 1;
@@ -1216,11 +1244,7 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 
             const int ind = r * mCols + c;
 
-            player->AddVisibility(ind);
-
-            // if there's any object mark it as visited
-            if(mCells[ind].obj != nullptr)
-                mCells[ind].obj->SetVisited();
+            visFun(player, ind);
         }
     }
 
@@ -1236,7 +1260,7 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
         int minRowL = minRow;
         int maxRowL = maxRow;
 
-        for(int c = minColL; c <= maxColL; ++c)
+        for(int c = maxColL; c >= minColL; --c)
         {
             ++minRowL;
             --maxRowL;
@@ -1248,11 +1272,7 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 
                 const int ind = r * mCols + c;
 
-                player->AddVisibility(ind);
-
-                // if there's any object mark it as visited
-                if(mCells[ind].obj != nullptr)
-                    mCells[ind].obj->SetVisited();
+                visFun(player, ind);
             }
         }
     }
@@ -1278,97 +1298,30 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 
                 const int ind = r * mCols + c;
 
-                player->AddVisibility(ind);
-
-                // if there's any object mark it as visited
-                if(mCells[ind].obj != nullptr)
-                    mCells[ind].obj->SetVisited();
+                visFun(player, ind);
             }
         }
-    }
-}
-
-void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
-{
-    const int radius = obj->GetVisibilityLevel();
-
-    const int rowTL = (obj->GetRow1() - radius) > 0 ? (obj->GetRow1() - radius) : 0;
-    const int colTL = (obj->GetCol1() - radius) > 0 ? (obj->GetCol1() - radius) : 0;
-    const int rowBR = (obj->GetRow0() + radius + 1) < static_cast<int>(mRows) ? (obj->GetRow0() + radius + 1) : mRows;
-    const int colBR = (obj->GetCol0() + radius + 1) < static_cast<int>(mCols) ? (obj->GetCol0() + radius + 1) : mCols;
-
-    // add the visibility of the object to the map
-    for(int r = rowTL; r < rowBR; ++r)
-    {
-        const int indBase = r * mCols;
-
-        for(int c = colTL; c < colBR; ++c)
-        {
-            const int ind = indBase + c;
-
-            player->RemVisibility(ind);
-        }
-    }
-}
-
-void GameMap::UpdateSceneObjVisibility(GameObject * obj, Player * player)
-{
-    const int rTL = obj->GetRow1();
-    const int cTL = obj->GetCol1();
-    const int rBR = obj->GetRow0();
-    const int cBR = obj->GetCol0();
-
-    // check if any cell is visible
-    bool visible = false;
-
-    for(int r = rTL; r <= rBR; ++r)
-    {
-        const int indBase = r * mCols;
-
-        for(int c = cTL; c <= cBR; ++c)
-        {
-            const int ind = indBase + c;
-
-            if(player->IsCellVisible(ind))
-            {
-                visible = true;
-                break;
-            }
-        }
-
-        if(visible)
-            break;
     }
 }
 
 void GameMap::AddPlayerCellVisibility(const GameMapCell & cell, Player * player)
 {
-    const int radius = 1;
+    using namespace std::placeholders;
 
-    const int rowTL = (cell.row - radius) > 0 ? (cell.row - radius) : 0;
-    const int colTL = (cell.col - radius) > 0 ? (cell.col - radius) : 0;
-    const int rowBR = (cell.row + radius + 1) < static_cast<int>(mRows) ? (cell.row + radius + 1) : mRows;
-    const int colBR = (cell.col + radius + 1) < static_cast<int>(mCols) ? (cell.col + radius + 1) : mCols;
-
-    // add the visibility of the object to the map
-    for(int r = rowTL; r < rowBR; ++r)
-    {
-        const int indBase = r * mCols;
-
-        for(int c = colTL; c < colBR; ++c)
-        {
-            const int ind = indBase + c;
-
-            player->AddVisibility(ind);
-
-            // if there's any object mark it as visited
-            if(mCells[ind].obj != nullptr)
-                mCells[ind].obj->SetVisited();
-        }
-    }
+    PropagatePlayerCellVisibility(cell, player,
+                                  std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
 }
 
 void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
+{
+    using namespace std::placeholders;
+
+    PropagatePlayerCellVisibility(cell, player,
+                                  std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
+}
+
+void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
+                                            std::function<void(Player * player, int ind)> visFun)
 {
     const int radius = 1;
 
@@ -1386,7 +1339,7 @@ void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
         {
             const int ind = indBase + c;
 
-            player->RemVisibility(ind);
+            visFun(player, ind);
         }
     }
 }
