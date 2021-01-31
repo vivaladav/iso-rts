@@ -12,6 +12,8 @@ Base::Base(int owner, int rows, int cols)
 {
     SetStructure(true);
 
+    SetVisibilityLevel(1);
+
     SetImage();
 }
 

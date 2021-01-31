@@ -1191,58 +1191,60 @@ void GameMap::AddPlayerObjVisibility(GameObject * obj, Player * player)
 {
     using namespace std::placeholders;
 
-    PropagatePlayerObjVisibility(obj, player,
-                                 std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
+    // player is bounded to the function object so I don't need to propagate it as param
+    PropagatePlayerObjVisibility(obj,
+                                 std::bind(&GameMap::AddVisibilityToCell, this, player, _1));
 }
 
 void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
 {
     using namespace std::placeholders;
 
-    PropagatePlayerObjVisibility(obj, player,
-                                 std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
+    // player is bounded to the function object so I don't need to propagate it as param
+    PropagatePlayerObjVisibility(obj,
+                                 std::bind(&GameMap::DelVisibilityToCell, this, player, _1));
 }
 
-void GameMap::PropagatePlayerObjVisibility(GameObject * obj, Player * player,
-                                           std::function<void(Player * player, int ind)> visFun)
+void GameMap::PropagatePlayerObjVisibility(GameObject * obj, std::function<void(int)> visFun)
 {
     const Cell2D cell1(obj->GetRow1(), obj->GetCol1());
     const Cell2D cell0(obj->GetRow0(), obj->GetCol0());
 
     const int objVisLvl = obj->GetVisibilityLevel();
 
-    PropagatePlayerVisibility(cell1, cell0, objVisLvl, player, visFun);
+    PropagatePlayerVisibility(cell1, cell0, objVisLvl, visFun);
 }
 
 void GameMap::AddPlayerCellVisibility(const GameMapCell & cell, Player * player)
 {
     using namespace std::placeholders;
 
-    PropagatePlayerCellVisibility(cell, player,
-                                  std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
+    // player is bounded to the function object so I don't need to propagate it as param
+    PropagatePlayerCellVisibility(cell,
+                                  std::bind(&GameMap::AddVisibilityToCell, this, player, _1));
 }
 
 void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
 {
     using namespace std::placeholders;
 
-    PropagatePlayerCellVisibility(cell, player,
-                                  std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
+    // player is bounded to the function object so I don't need to propagate it as param
+    PropagatePlayerCellVisibility(cell,
+                                  std::bind(&GameMap::DelVisibilityToCell, this, player, _1));
 }
 
-void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
-                                            std::function<void(Player * player, int ind)> visFun)
+void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, std::function<void(int)> visFun)
 {
     const Cell2D c(cell.row, cell.col);
 
     // TODO get visibility from player or base
     const int visLvl = 0;
 
-    PropagatePlayerVisibility(c, c, visLvl, player, visFun);
+    PropagatePlayerVisibility(c, c, visLvl, visFun);
 }
 
-void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
-                                        Player * player, std::function<void(Player * player, int ind)> visFun)
+void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0,
+                                        int visLevel, std::function<void(int)> visFun)
 {
     const int objRows = 1 + cell0.row - cell1.row;
     const int objCols = 1 + cell0.col - cell1.col;
@@ -1280,7 +1282,7 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
 
             const int ind = r * mCols + c;
 
-            visFun(player, ind);
+            visFun(ind);
         }
     }
 
@@ -1308,7 +1310,7 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
 
                 const int ind = r * mCols + c;
 
-                visFun(player, ind);
+                visFun(ind);
             }
         }
     }
@@ -1334,7 +1336,7 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
 
                 const int ind = r * mCols + c;
 
-                visFun(player, ind);
+                visFun(ind);
             }
         }
     }
