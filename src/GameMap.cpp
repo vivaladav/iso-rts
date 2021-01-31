@@ -1206,24 +1206,60 @@ void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
 void GameMap::PropagatePlayerObjVisibility(GameObject * obj, Player * player,
                                            std::function<void(Player * player, int ind)> visFun)
 {
-    const int objRows = obj->GetRows();
-    const int objCols = obj->GetCols();
+    const Cell2D cell1(obj->GetRow1(), obj->GetCol1());
+    const Cell2D cell0(obj->GetRow0(), obj->GetCol0());
 
     const int objVisLvl = obj->GetVisibilityLevel();
 
+    PropagatePlayerVisibility(cell1, cell0, objVisLvl, player, visFun);
+}
+
+void GameMap::AddPlayerCellVisibility(const GameMapCell & cell, Player * player)
+{
+    using namespace std::placeholders;
+
+    PropagatePlayerCellVisibility(cell, player,
+                                  std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
+}
+
+void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
+{
+    using namespace std::placeholders;
+
+    PropagatePlayerCellVisibility(cell, player,
+                                  std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
+}
+
+void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
+                                            std::function<void(Player * player, int ind)> visFun)
+{
+    const Cell2D c(cell.row, cell.col);
+
+    // TODO get visibility from player or base
+    const int visLvl = 0;
+
+    PropagatePlayerVisibility(c, c, visLvl, player, visFun);
+}
+
+void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
+                                        Player * player, std::function<void(Player * player, int ind)> visFun)
+{
+    const int objRows = 1 + cell0.row - cell1.row;
+    const int objCols = 1 + cell0.col - cell1.col;
+
     const int visHalfLen0 = 2;
     const int visLenInc = 1;
-    const int visExtSide = visHalfLen0 + visLenInc * objVisLvl;
+    const int visExtSide = visHalfLen0 + visLenInc * visLevel;
 
     const int visLenMax = objRows + visExtSide * 2;
 
     const int visSideCols = (visLenMax - 1) / 2;
 
     // object columns
-    int minCol = obj->GetCol1();
-    int maxCol = obj->GetCol0();
+    int minCol = cell1.col;
+    int maxCol = cell0.col;
 
-    if(1 == objCols && objVisLvl % 2 == 1)
+    if(1 == objCols && visLevel % 2 == 1)
     {
         if(minCol > 0)
             minCol -= 1;
@@ -1232,8 +1268,8 @@ void GameMap::PropagatePlayerObjVisibility(GameObject * obj, Player * player,
             maxCol += 1;
     }
 
-    int minRow = obj->GetRow1() - visExtSide;
-    int maxRow = obj->GetRow0() + visExtSide;
+    int minRow = cell1.row - visExtSide;
+    int maxRow = cell0.row + visExtSide;
 
     for(int c = minCol; c <= maxCol; ++c)
     {
@@ -1300,46 +1336,6 @@ void GameMap::PropagatePlayerObjVisibility(GameObject * obj, Player * player,
 
                 visFun(player, ind);
             }
-        }
-    }
-}
-
-void GameMap::AddPlayerCellVisibility(const GameMapCell & cell, Player * player)
-{
-    using namespace std::placeholders;
-
-    PropagatePlayerCellVisibility(cell, player,
-                                  std::bind(&GameMap::AddVisibilityToCell, this, _1, _2));
-}
-
-void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
-{
-    using namespace std::placeholders;
-
-    PropagatePlayerCellVisibility(cell, player,
-                                  std::bind(&GameMap::DelVisibilityToCell, this, _1, _2));
-}
-
-void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
-                                            std::function<void(Player * player, int ind)> visFun)
-{
-    const int radius = 1;
-
-    const int rowTL = (cell.row - radius) > 0 ? (cell.row - radius) : 0;
-    const int colTL = (cell.col - radius) > 0 ? (cell.col - radius) : 0;
-    const int rowBR = (cell.row + radius + 1) < static_cast<int>(mRows) ? (cell.row + radius + 1) : mRows;
-    const int colBR = (cell.col + radius + 1) < static_cast<int>(mCols) ? (cell.col + radius + 1) : mCols;
-
-    // add the visibility of the object to the map
-    for(int r = rowTL; r < rowBR; ++r)
-    {
-        const int indBase = r * mCols;
-
-        for(int c = colTL; c < colBR; ++c)
-        {
-            const int ind = indBase + c;
-
-            visFun(player, ind);
         }
     }
 }

@@ -92,10 +92,14 @@ private:
     void PropagatePlayerObjVisibility(GameObject * obj, Player * player,
                                       std::function<void(Player * player, int ind)> visFun);
 
+
     void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void PropagatePlayerCellVisibility(const GameMapCell & cell, Player * player,
                                        std::function<void(Player * player, int ind)> visFun);
+
+    void PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel, Player * player,
+                                   std::function<void(Player * player, int ind)> visFun);
 
 private:
     std::vector<GameMapCell> mCells;
