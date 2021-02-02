@@ -183,6 +183,9 @@ void ScreenGame::Update(float delta)
         mTimerEnergy = TIME_ENERGY_USE;
     }
 
+    // -- GAME MAP AND OBJECTS --
+    mGameMap->Update(delta);
+
     // -- PROGRESS BARS --
     UpdateProgressBars(delta);
 

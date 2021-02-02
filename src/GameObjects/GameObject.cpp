@@ -58,4 +58,6 @@ void GameObject::SetOwner(int owner)
     UpdateImage();
 }
 
+void GameObject::Update(float) { }
+
 } // namespace game

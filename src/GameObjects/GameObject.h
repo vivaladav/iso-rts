@@ -83,6 +83,8 @@ public:
 
     GameObjectType GetObjectType() const;
 
+    virtual void Update(float delta);
+
 protected:
     virtual void UpdateImage() = 0;
 

@@ -73,6 +73,8 @@ public:
 
     void CheckGameEnd();
 
+    void Update(float delta);
+
 private:
     void StopCellChange(GameMapCell & gcell);
 

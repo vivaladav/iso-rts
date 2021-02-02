@@ -953,6 +953,12 @@ void GameMap::CheckGameEnd()
         mScreenGame->GameWon();
 }
 
+void GameMap::Update(float delta)
+{
+    for(GameObject * obj : mObjects)
+        obj->Update(delta);
+}
+
 // ==================== PRIVATE METHODS ====================
 
 void GameMap::StopCellChange(GameMapCell & gcell)
