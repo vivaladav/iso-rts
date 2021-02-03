@@ -31,6 +31,8 @@ add_executable(
     src/Player.h
     src/Player.cpp
     src/AI/ActionAI.h
+    src/AI/ObjectPath.h
+    src/AI/ObjectPath.cpp
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp
     src/GameObjects/Base.h
