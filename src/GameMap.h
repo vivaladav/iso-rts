@@ -11,6 +11,7 @@ namespace game
 class Game;
 class GameObject;
 class IsoMap;
+class ObjectPath;
 class Player;
 class ScreenGame;
 
@@ -104,6 +105,7 @@ private:
 private:
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
+    std::vector<ObjectPath *> mPaths;
 
     Game * mGame = nullptr;
     ScreenGame * mScreenGame = nullptr;

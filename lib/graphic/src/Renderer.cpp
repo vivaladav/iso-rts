@@ -38,6 +38,7 @@ Renderer::Renderer(Window * win)
     mW = win->GetWidth();
     mH = win->GetHeight();
 
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "best");
     mSysRenderer = SDL_CreateRenderer(win->mSysWin, -1, SDL_RENDERER_ACCELERATED);
 
     // -- init SDL_image --

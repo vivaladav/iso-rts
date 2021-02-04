@@ -13,7 +13,7 @@ Unit::Unit(int owner, int rows, int cols)
 {
     SetImage();
 
-    SetSpeed(10.f);
+    SetSpeed(1.f);
 }
 
 void Unit::IncreaseUnitLevel()

@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "AI/ObjectPath.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/SceneObject.h"
@@ -719,6 +720,15 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
         AddPlayerObjVisibility(unit, localPlayer);
 
     ApplyVisibility(localPlayer);
+
+    // TEST
+    auto path = new ObjectPath(unit, mIsoMap);
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 1});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 2});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 3});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 4});
+    path->Start();
+    mPaths.emplace_back(path);
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
@@ -955,8 +965,27 @@ void GameMap::CheckGameEnd()
 
 void GameMap::Update(float delta)
 {
+    // -- game objects --
     for(GameObject * obj : mObjects)
         obj->Update(delta);
+
+    // -- paths --
+    auto itPath = mPaths.begin();
+
+    while(itPath != mPaths.end())
+    {
+        ObjectPath * path = *itPath;
+
+        path->Update(delta);
+
+        if(path->GetState() == PathState::COMPLETED)
+        {
+            delete path;
+            itPath = mPaths.erase(itPath);
+        }
+        else
+            ++itPath;
+    }
 }
 
 // ==================== PRIVATE METHODS ====================
