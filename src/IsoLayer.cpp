@@ -225,9 +225,7 @@ void IsoLayer::RepositionObject(IsoObject * obj)
     PositionObject(obj, obj->GetRow(), obj->GetCol());
 }
 
-// ==================== PRIVATE METHODS ====================
-
-void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
+lib::core::Point2D IsoLayer::GetObjectPosition(const IsoObject * obj, unsigned int r, unsigned int c) const
 {
     const lib::core::Point2D cellPos = mMap->GetCellPosition(r, c);
     const int cellH = mMap->GetTileHeight();
@@ -238,7 +236,16 @@ void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
     const int imgW0 = obj->GetCols() * cellH;
     const int imgH = obj->GetHeight();
 
-    obj->SetPosition(x0 - imgW0, y0 - imgH);
+    return lib::core::Point2D(x0 - imgW0, y0 - imgH);
+}
+
+// ==================== PRIVATE METHODS ====================
+
+void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
+{
+    const lib::core::Point2D pos = GetObjectPosition(obj, r, c);
+
+    obj->SetPosition(pos.x, pos.y);
 }
 
 /**

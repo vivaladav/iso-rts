@@ -83,6 +83,8 @@ public:
 
     GameObjectType GetObjectType() const;
 
+    float GetSpeed() const;
+
     virtual void Update(float delta);
 
 protected:
@@ -90,6 +92,8 @@ protected:
 
     void SetVisibilityLevel(int val);
     void SetStructure(bool val);
+
+    void SetSpeed(float speed);
 
 protected:
     static const unsigned int COLOR_FOW;
@@ -107,6 +111,8 @@ private:
     unsigned int mCols = 1;
 
     int mVisLevel = 0;
+
+    float mSpeed = 0.f;
 
     bool mStructure = false;
 
@@ -151,5 +157,8 @@ inline unsigned int GameObject::GetCols() const { return mCols; }
 
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
+
+inline float GameObject::GetSpeed() const { return mSpeed; }
+inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 
 } // namespace game

@@ -55,6 +55,8 @@ public:
 
     void RepositionObject(IsoObject * obj);
 
+    lib::core::Point2D GetObjectPosition(const IsoObject * obj, unsigned int r, unsigned int c) const;
+
 private:
     void PositionObject(IsoObject * obj, unsigned int r, unsigned int c);
 

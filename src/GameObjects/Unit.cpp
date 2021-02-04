@@ -12,6 +12,8 @@ Unit::Unit(int owner, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, owner, rows, cols)
 {
     SetImage();
+
+    SetSpeed(10.f);
 }
 
 void Unit::IncreaseUnitLevel()

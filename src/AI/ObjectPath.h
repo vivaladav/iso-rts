@@ -7,13 +7,68 @@
 namespace game
 {
 
+class GameObject;
+class IsoMap;
+
+enum PathState : unsigned int
+{
+    READY,
+    RUNNING,
+    COMPLETED,
+    FAILED,
+
+    NUM_PATH_STATES
+};
+
 class ObjectPath
 {
 public:
-    ObjectPath();
+    ObjectPath(GameObject * obj, IsoMap * map);
+
+    PathState GetState() const;
+
+    void PushCell(const Cell2D & cell);
+    void SetCells(const std::vector<Cell2D> & cells);
+
+    void Start();
+
+    void Update(float delta);
+
+private:
+    void InitNextMoveStep();
 
 private:
     std::vector<Cell2D> mCells;
+
+    GameObject * mObj = nullptr;
+
+    IsoMap * mMap = nullptr;
+
+    PathState mState = READY;
+
+    unsigned int mNextCell = 0;
+
+    float mObjX = 0.f;
+    float mObjY = 0.f;
+
+    float mVelX = 0.f;
+    float mVelY = 0.f;
+
+    float mTargetX = 0.f;
+    float mTargetY = 0.f;
 };
+
+inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * map) : mObj(obj), mMap(map) { }
+
+inline PathState ObjectPath::GetState() const { return mState; }
+
+inline void ObjectPath::PushCell(const Cell2D & cell) { mCells.emplace_back(cell); }
+inline void ObjectPath::SetCells(const std::vector<Cell2D> & cells) { mCells = cells; }
+
+inline void ObjectPath::Start()
+{
+    if(READY == mState)
+        InitNextMoveStep();
+}
 
 } // namespace game
