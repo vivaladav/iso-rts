@@ -65,7 +65,7 @@ public:
     void SetVisible(bool val);
 
     const GameMapCell * GetCell() const;
-    void SetCell(GameMapCell * cell);
+    void SetCell(const GameMapCell * cell);
 
     int GetVisibilityLevel() const;
 
@@ -102,7 +102,7 @@ protected:
 private:
     IsoObject * mIsoObj = nullptr;
 
-    GameMapCell * mCell = nullptr;
+    const GameMapCell * mCell = nullptr;
 
     int mOwner = -1;
     GameObjectType mType = OBJ_NULL;

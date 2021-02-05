@@ -7,6 +7,7 @@
 namespace game
 {
 
+class GameMap;
 class GameObject;
 class IsoMap;
 
@@ -23,7 +24,7 @@ enum PathState : unsigned int
 class ObjectPath
 {
 public:
-    ObjectPath(GameObject * obj, IsoMap * map);
+    ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm);
 
     PathState GetState() const;
 
@@ -42,7 +43,8 @@ private:
 
     GameObject * mObj = nullptr;
 
-    IsoMap * mMap = nullptr;
+    IsoMap * mIsoMap = nullptr;
+    GameMap * mGameMap = nullptr;
 
     PathState mState = READY;
 
@@ -58,7 +60,10 @@ private:
     float mTargetY = 0.f;
 };
 
-inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * map) : mObj(obj), mMap(map) { }
+inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
+    : mObj(obj), mIsoMap(im), mGameMap(gm)
+{
+}
 
 inline PathState ObjectPath::GetState() const { return mState; }
 

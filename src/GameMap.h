@@ -32,6 +32,7 @@ public:
     void ApplyVisibility(Player * player);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
+    Player * GetObjectOwner(const GameObject * obj) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
@@ -103,6 +104,9 @@ private:
                                    std::function<void(int)> visFun);
 
 private:
+    // to access visibility functions
+    friend class ObjectPath;
+
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
     std::vector<ObjectPath *> mPaths;

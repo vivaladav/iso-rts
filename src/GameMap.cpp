@@ -149,6 +149,14 @@ void GameMap::ApplyVisibility(Player * player)
     }
 }
 
+Player * GameMap::GetObjectOwner(const GameObject * obj) const
+{
+    if(obj)
+        return mGame->GetPlayer(obj->GetOwner());
+    else
+        return nullptr;
+}
+
 void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
                            unsigned int r0, unsigned int c0,
                            unsigned int rows, unsigned int cols)
@@ -722,11 +730,15 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     ApplyVisibility(localPlayer);
 
     // TEST
-    auto path = new ObjectPath(unit, mIsoMap);
+    auto path = new ObjectPath(unit, mIsoMap, this);
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 1});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 2});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 3});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 4});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 5});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 6});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 7});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 8});
     path->Start();
     mPaths.emplace_back(path);
 }

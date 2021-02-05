@@ -1,5 +1,6 @@
 #include "AI/ObjectPath.h"
 
+#include "GameMap.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "IsoObject.h"
@@ -96,6 +97,17 @@ void ObjectPath::Update(float delta)
     // handle reached target
     if(0 == todo)
     {
+        Player * player = mGameMap->GetObjectOwner(mObj);
+
+        mGameMap->DelPlayerObjVisibility(mObj, player);
+
+        const Cell2D & nc = mCells[mNextCell - 1];
+        mObj->SetCell(&mGameMap->GetCell(nc.row, nc.col));
+
+        mGameMap->AddPlayerObjVisibility(mObj, player);
+
+        mGameMap->ApplyVisibility(player);
+
         if(mNextCell < mCells.size())
             InitNextMoveStep();
         else

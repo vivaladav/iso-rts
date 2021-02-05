@@ -36,7 +36,7 @@ void GameObject::SetVisible(bool val)
     UpdateImage();
 }
 
-void GameObject::SetCell(GameMapCell * cell)
+void GameObject::SetCell(const GameMapCell * cell)
 {
     mCell = cell;
 
