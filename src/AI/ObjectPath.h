@@ -26,6 +26,8 @@ class ObjectPath
 public:
     ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm);
 
+    GameObject * GetObject() const;
+
     PathState GetState() const;
 
     void PushCell(const Cell2D & cell);
@@ -65,6 +67,8 @@ inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
 {
 }
 
+inline GameObject * ObjectPath::GetObject() const { return mObj; }
+
 inline PathState ObjectPath::GetState() const { return mState; }
 
 inline void ObjectPath::PushCell(const Cell2D & cell) { mCells.emplace_back(cell); }
@@ -72,8 +76,13 @@ inline void ObjectPath::SetCells(const std::vector<Cell2D> & cells) { mCells = c
 
 inline void ObjectPath::Start()
 {
-    if(READY == mState)
-        InitNextMoveStep();
+    // do nothing if already started
+    if(mState != READY)
+        return ;
+
+    mState = RUNNING;
+
+    InitNextMoveStep();
 }
 
 } // namespace game

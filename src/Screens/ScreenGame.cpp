@@ -344,8 +344,12 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             if(unit != nullptr && diffSel)
             {
                 // move successful -> select new cell
-                if(mGameMap->MoveUnits(prevSel, currSel, player))
-                    SelectCell(currSel, player);
+//                if(mGameMap->MoveUnit(prevSel, currSel, player))
+//                    SelectCell(currSel, player);
+                if(false)
+                {
+                    // TEMP while movement is not finished yet
+                }
                 // move failed
                 else
                 {
@@ -556,7 +560,8 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                           << action.dst.row << "," << action.dst.col
                           << std::endl;
 
-                done = mGameMap->MoveUnits(action.src, action.dst, player);
+                // TODO move unit
+                done = false;
             }
             break;
 

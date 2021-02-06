@@ -739,8 +739,8 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 6});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 7});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 8});
-    path->Start();
-    mPaths.emplace_back(path);
+
+    MoveUnit(path);
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
@@ -903,47 +903,19 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
     return true;
 }
 
-bool GameMap::MoveUnits(const Cell2D & start, const Cell2D & end, Player * player)
+bool GameMap::MoveUnit(ObjectPath * path)
 {
-    if(!CanUnitMove(start, end, player))
+    GameObject * obj = path->GetObject();
+
+    const int ind = obj->GetRow0() * mCols + obj->GetCol0();
+
+    // object is not in its cell !?
+    if(mCells[ind].obj != obj)
         return false;
 
-    const int ind0 = start.row * mCols + start.col;
-    GameMapCell & gcell0 = mCells[ind0];
-
-    const int ind1 = end.row * mCols + end.col;
-    GameMapCell & gcell1 = mCells[ind1];
-
-    const bool emptyDest = nullptr == gcell1.obj;
-
-    // move to empty cell
-    if(emptyDest)
-    {
-        if(player == mGame->GetPlayer(0))
-            DelPlayerObjVisibility(gcell0.obj, player);
-
-        gcell1.obj = gcell0.obj;
-        gcell1.walkable = false;
-
-        gcell0.obj = nullptr;
-        gcell0.walkable = true;
-
-        IsoLayer * layerUnits = mIsoMap->GetLayer(OBJECTS);
-        layerUnits->MoveObject(gcell0.row, gcell0.col, gcell1.row, gcell1.col);
-
-        gcell1.obj->SetCell(&gcell1);
-
-        if(player == mGame->GetPlayer(0))
-        {
-            AddPlayerObjVisibility(gcell1.obj, player);
-            ApplyVisibility(player);
-        }
-    }
-    else
-        return false;
-
-    // check for victory or game over
-    CheckGameEnd();
+    // start path
+    path->Start();
+    mPaths.emplace_back(path);
 
     return true;
 }
@@ -1218,6 +1190,30 @@ void GameMap::UpdateInfluencedCells(int row, int col)
             UpdateCellType(ind, gc);
         }
     }
+}
+
+bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
+{
+    // TODO support objects covering more than 1 cell
+    const int ind0 = obj->GetRow0() * mCols + obj->GetCol0();
+
+    // object is not in its cell !?
+    if(mCells[ind0].obj != obj)
+        return false;
+
+    // remove object from current cell
+    mCells[ind0].obj = nullptr;
+    mCells[ind0].walkable = true;
+
+    // add object to new cell
+    const int ind1 = row * mCols + col;
+
+    obj->SetCell(&mCells[ind1]);
+
+    mCells[ind1].obj = obj;
+    mCells[ind1].walkable = false;
+
+    return true;
 }
 
 void  GameMap::AddVisibilityToCell(Player * player, int ind)

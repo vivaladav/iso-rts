@@ -67,7 +67,7 @@ public:
 
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
-    bool MoveUnits(const Cell2D & start, const Cell2D & end, Player * player);
+    bool MoveUnit(ObjectPath * path);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
     unsigned int GetNumRows() const;
@@ -86,6 +86,8 @@ private:
     void UpdateLinkedCells(Player * player);
 
     void UpdateInfluencedCells(int row, int col);
+
+    bool MoveObjToCell(GameObject * obj, int row, int col);
 
     // -- player visibility --
     void AddVisibilityToCell(Player * player, int ind);

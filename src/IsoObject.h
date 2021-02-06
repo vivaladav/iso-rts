@@ -21,7 +21,7 @@ public:
     IsoObject(int rows, int cols);
     ~IsoObject();
 
-    const IsoLayer * GetLayer() const;
+    IsoLayer * GetLayer() const;
     void SetLayer(IsoLayer * layer);
 
     int GetRow() const;
@@ -58,7 +58,7 @@ private:
     int mCol = 0;
 };
 
-inline const IsoLayer * IsoObject::GetLayer() const { return mLayer; }
+inline IsoLayer * IsoObject::GetLayer() const { return mLayer; }
 inline void IsoObject::SetLayer(IsoLayer * layer) { mLayer = layer; }
 
 inline int IsoObject::GetRow() const { return mRow; }

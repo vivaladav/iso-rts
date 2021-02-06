@@ -35,8 +35,6 @@ void ObjectPath::InitNextMoveStep()
                  " | END: " << mTargetX << "," << mTargetY <<
                  std::endl;
 
-    mState = RUNNING;
-
     ++mNextCell;
 }
 
@@ -102,7 +100,10 @@ void ObjectPath::Update(float delta)
         mGameMap->DelPlayerObjVisibility(mObj, player);
 
         const Cell2D & nc = mCells[mNextCell - 1];
-        mObj->SetCell(&mGameMap->GetCell(nc.row, nc.col));
+        mGameMap->MoveObjToCell(mObj, nc.row, nc.col);
+
+        IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
+        layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), nc.row, nc.col, false);
 
         mGameMap->AddPlayerObjVisibility(mObj, player);
 

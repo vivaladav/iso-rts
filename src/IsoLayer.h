@@ -41,7 +41,8 @@ public:
     bool AddObject(IsoObject * obj, unsigned int r, unsigned int c);
     void ClearObject(unsigned int r, unsigned int c);
     bool MoveObject(unsigned int r0, unsigned int c0,
-                    unsigned int r1, unsigned int c1);
+                    unsigned int r1, unsigned int c1,
+                    bool updatePosition = true);
 
     void SetObjectVisible(IsoObject * obj, bool visible);
 

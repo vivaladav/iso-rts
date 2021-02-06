@@ -134,7 +134,8 @@ void IsoLayer::ClearObject(unsigned int r, unsigned int c)
  * @return TRUE on success, FALSE otherwise
  */
 bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
-                          unsigned int r1, unsigned int c1)
+                          unsigned int r1, unsigned int c1,
+                          bool updatePosition)
 {
     const unsigned int rows = mMap->GetNumRows();
     const unsigned int cols = mMap->GetNumCols();
@@ -157,8 +158,9 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
     if(mObjectsMap[index1])
         return false;
 
-    // position object
-    PositionObject(obj, r1, c1);
+    // re-position object
+    if(updatePosition)
+        PositionObject(obj, r1, c1);
 
     // remove object
     ClearObjectFromMap(obj);
