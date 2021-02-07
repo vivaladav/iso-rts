@@ -110,7 +110,13 @@ void ObjectPath::Update(float delta)
         mGameMap->ApplyVisibility(player);
 
         if(mNextCell < mCells.size())
-            InitNextMoveStep();
+        {
+            // check if next destination is walkable
+            if(mGameMap->GetCell(mCells[mNextCell].row, mCells[mNextCell].col).walkable)
+                InitNextMoveStep();
+            else
+                mState = FAILED;
+        }
         else
             mState = COMPLETED;
     }

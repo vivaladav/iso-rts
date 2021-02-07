@@ -739,6 +739,9 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 6});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 7});
     path->PushCell({unit->GetRow0(), unit->GetCol0() + 8});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 9});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 10});
+    path->PushCell({unit->GetRow0(), unit->GetCol0() + 11});
 
     MoveUnit(path);
 }
@@ -964,6 +967,12 @@ void GameMap::Update(float delta)
 
         if(path->GetState() == PathState::COMPLETED)
         {
+            delete path;
+            itPath = mPaths.erase(itPath);
+        }
+        else if(path->GetState() == PathState::FAILED)
+        {
+            // TODO try to recover from failed path
             delete path;
             itPath = mPaths.erase(itPath);
         }
