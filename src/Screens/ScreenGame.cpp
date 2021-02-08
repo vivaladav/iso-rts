@@ -7,6 +7,7 @@
 #include "IsoMap.h"
 #include "MapLoader.h"
 #include "Player.h"
+#include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Unit.h"
 #include "Widgets/CellProgressBar.h"
@@ -341,19 +342,26 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             const Cell2D & prevSel = player->GetSelectedCell();
 
-            const Unit * unit = mGameMap->GetCell(prevSel.row, prevSel.col).GetUnit();
+            Unit * unit = mGameMap->GetCell(prevSel.row, prevSel.col).GetUnit();
 
             const bool diffSel = prevSel.row != currSel.row || prevSel.col != currSel.col;
 
             // has unit to move and it's selecting a different cell
             if(unit != nullptr && diffSel)
             {
-                // move successful -> select new cell
-//                if(mGameMap->MoveUnit(prevSel, currSel, player))
-//                    SelectCell(currSel, player);
-                if(false)
+                std::vector<unsigned int> path;
+
+                if(mGameMap->IsCellWalkable(currSel.row, currSel.col))
+                    path = mPathfinder->MakePath(prevSel.row, prevSel.col, currSel.row, currSel.col);
+
+                if(!path.empty())
                 {
-                    // TEMP while movement is not finished yet
+                    auto op = new ObjectPath(unit, mIsoMap, mGameMap);
+                    op->SetPathCells(path);
+
+                    mGameMap->MoveUnit(op);
+
+                    ClearSelection(player);
                 }
                 // move failed
                 else
