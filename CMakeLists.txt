@@ -101,6 +101,7 @@ target_include_directories(
 
 target_link_libraries(
     game
+    PRIVATE ai
     PRIVATE core
     PRIVATE graphic
     PRIVATE sgui

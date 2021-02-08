@@ -14,6 +14,7 @@
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
 
+#include <ai/Pathfinder.h>
 #include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <graphic/Renderer.h>
@@ -39,6 +40,7 @@ constexpr float TIME_AI_MOVE = 0.5f;
 
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
+    , mPathfinder(new lib::ai::Pathfinder)
     , mTimerEnergy(TIME_ENERGY_USE)
     , mTimerAI(TIME_AI_MOVE)
 {
@@ -65,6 +67,9 @@ ScreenGame::ScreenGame(Game * game)
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
+
+    // init pathfinder
+    mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)

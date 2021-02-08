@@ -2,6 +2,8 @@
 
 #include "GameMapCell.h"
 
+#include <ai/IPathMap.h>
+
 #include <functional>
 #include <vector>
 
@@ -19,11 +21,13 @@ struct Cell2D;
 struct GameMapCell;
 
 /// Class that handles most of the logic of what happens on the game map.
-class GameMap
+class GameMap : public lib::ai::IPathMap
 {
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
+
+    bool IsCellWalkable(unsigned int r, unsigned int c) const override;
 
     void SetSize(unsigned int rows, unsigned int cols);
 

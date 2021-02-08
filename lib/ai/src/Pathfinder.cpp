@@ -33,10 +33,9 @@ void Pathfinder::SetMap(const IPathMap * map, unsigned int mapRows, unsigned int
     ClearLists();
 
     // reserve memory
-    const int items = map->GetNumWalkableCells();
-    mOpenList.reserve(items);
-    mOpenMap.reserve(items);
-    mClosedMap.reserve(items);
+    mOpenList.reserve(mMapSize);
+    mOpenMap.reserve(mMapSize);
+    mClosedMap.reserve(mMapSize);
 }
 
 std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
@@ -178,10 +177,8 @@ void Pathfinder::ClearLists()
 void Pathfinder::InitNodes()
 {
     delete[] mNodes;
-    mNodes = nullptr;
 
-    if(mMap)
-        mNodes = new PathNode[mMap->GetNumWalkableCells()];
+    mNodes = new PathNode[mMapSize];
 
     mNextAvailableNode = 0;
 }

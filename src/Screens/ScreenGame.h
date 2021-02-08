@@ -7,6 +7,11 @@
 #include <unordered_map>
 #include <vector>
 
+namespace lib
+{
+    namespace ai { class Pathfinder; }
+}
+
 namespace game
 {
 
@@ -69,6 +74,8 @@ private:
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
+
+    lib::ai::Pathfinder * mPathfinder = nullptr;
 
     struct Cell2D mPrevSel;
 

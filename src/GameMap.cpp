@@ -47,6 +47,14 @@ GameMap::~GameMap()
         delete obj;
 }
 
+bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
+{
+    const unsigned int ind = r * mCols + c;
+
+    // TODO handle Fog of War
+    return mCells[ind].walkable;
+}
+
 void GameMap::SetSize(unsigned int rows, unsigned int cols)
 {
     const unsigned int size = rows * cols;
@@ -728,28 +736,6 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
         AddPlayerObjVisibility(unit, localPlayer);
 
     ApplyVisibility(localPlayer);
-
-    // TEST
-    auto path = new ObjectPath(unit, mIsoMap, this);
-
-    const unsigned int indBase = unit->GetRow0() * mCols + unit->GetCol0();
-    std::vector<unsigned int> indexes =
-    {
-        indBase + 1,
-        indBase + 2,
-        indBase + 3,
-        indBase + 4,
-        indBase + 5,
-        indBase + 6,
-        indBase + 7,
-        indBase + 8,
-        indBase + 9,
-        indBase + 10,
-        indBase + 11,
-    };
-    path->SetPathCells(indexes);
-
-    MoveUnit(path);
 }
 
 bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
