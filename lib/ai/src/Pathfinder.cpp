@@ -47,8 +47,8 @@ std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
     if(!(r0 < mMapRows && c0 < mMapCols && r1 < mMapRows && c1 < mMapCols))
         return path;
 
-    // unwalkable start/goal
-    if(!mMap->IsCellWalkable(r0, c0) || !mMap->IsCellWalkable(r1, c1))
+    // unwalkable goal
+    if(!mMap->IsCellWalkable(r1, c1))
         return path;
 
     // no pathfinding needed
