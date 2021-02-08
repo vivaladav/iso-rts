@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Cell2D.h"
-
 #include <vector>
 
 namespace game
@@ -30,8 +28,7 @@ public:
 
     PathState GetState() const;
 
-    void PushCell(const Cell2D & cell);
-    void SetCells(const std::vector<Cell2D> & cells);
+    void SetPathCells(const std::vector<unsigned int> & cells);
 
     void Start();
 
@@ -41,7 +38,7 @@ private:
     void InitNextMoveStep();
 
 private:
-    std::vector<Cell2D> mCells;
+    std::vector<unsigned int> mCells;
 
     GameObject * mObj = nullptr;
 
@@ -71,8 +68,7 @@ inline GameObject * ObjectPath::GetObject() const { return mObj; }
 
 inline PathState ObjectPath::GetState() const { return mState; }
 
-inline void ObjectPath::PushCell(const Cell2D & cell) { mCells.emplace_back(cell); }
-inline void ObjectPath::SetCells(const std::vector<Cell2D> & cells) { mCells = cells; }
+inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells) { mCells = cells; }
 
 inline void ObjectPath::Start()
 {

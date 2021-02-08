@@ -21,8 +21,10 @@ void ObjectPath::InitNextMoveStep()
     mObjX = isoObj->GetX();
     mObjY = isoObj->GetY();
 
-    const Cell2D & nc = mCells[mNextCell];
-    const lib::core::Point2D target = layerObj->GetObjectPosition(isoObj, nc.row, nc.col);
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const lib::core::Point2D target = layerObj->GetObjectPosition(isoObj, nextRow, nextCol);
     mTargetX = target.x;
     mTargetY = target.y;
 
@@ -87,7 +89,6 @@ void ObjectPath::Update(float delta)
         --todo;
 
     // position object
-    //std::cout << "ObjectPath::Update - POS: " << mObjX << "," << mObjY << std::endl;
     IsoObject * isoObj = mObj->GetIsoObject();
     isoObj->SetX(static_cast<int>(std::roundf(mObjX)));
     isoObj->SetY(static_cast<int>(std::roundf(mObjY)));
@@ -99,11 +100,13 @@ void ObjectPath::Update(float delta)
 
         mGameMap->DelPlayerObjVisibility(mObj, player);
 
-        const Cell2D & nc = mCells[mNextCell - 1];
-        mGameMap->MoveObjToCell(mObj, nc.row, nc.col);
+        const unsigned int targetInd = mCells[mNextCell - 1];
+        const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
+        const unsigned int targetCol = targetInd % mIsoMap->GetNumCols();
+        mGameMap->MoveObjToCell(mObj, targetRow, targetCol);
 
         IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
-        layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), nc.row, nc.col, false);
+        layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
 
         mGameMap->AddPlayerObjVisibility(mObj, player);
 
@@ -111,8 +114,12 @@ void ObjectPath::Update(float delta)
 
         if(mNextCell < mCells.size())
         {
+            const unsigned int nextInd = mCells[mNextCell];
+            const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+            const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+
             // check if next destination is walkable
-            if(mGameMap->GetCell(mCells[mNextCell].row, mCells[mNextCell].col).walkable)
+            if(mGameMap->GetCell(nextRow, nextCol).walkable)
                 InitNextMoveStep();
             else
                 mState = FAILED;

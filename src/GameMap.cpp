@@ -731,17 +731,23 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
 
     // TEST
     auto path = new ObjectPath(unit, mIsoMap, this);
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 1});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 2});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 3});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 4});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 5});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 6});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 7});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 8});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 9});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 10});
-    path->PushCell({unit->GetRow0(), unit->GetCol0() + 11});
+
+    const unsigned int indBase = unit->GetRow0() * mCols + unit->GetCol0();
+    std::vector<unsigned int> indexes =
+    {
+        indBase + 1,
+        indBase + 2,
+        indBase + 3,
+        indBase + 4,
+        indBase + 5,
+        indBase + 6,
+        indBase + 7,
+        indBase + 8,
+        indBase + 9,
+        indBase + 10,
+        indBase + 11,
+    };
+    path->SetPathCells(indexes);
 
     MoveUnit(path);
 }
