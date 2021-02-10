@@ -16,6 +16,8 @@ class Pathfinder
 public:
     ~Pathfinder();
 
+    void SetAllowDiagonals(bool allow);
+
     void SetMap(const IPathMap * map, unsigned int mapRows, unsigned int mapCols);
 
     std::vector<unsigned int> MakePath(unsigned int r0, unsigned int c0,
@@ -54,7 +56,11 @@ private:
 
     int mCostHor = 10;
     int mCostDia = 14;
+
+    bool mAllowDiag = true;
 };
+
+inline void Pathfinder::SetAllowDiagonals(bool allow) { mAllowDiag = allow; }
 
 inline unsigned int Pathfinder::GetCellIndex(unsigned int r, unsigned int c) const
 {

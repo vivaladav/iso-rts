@@ -71,6 +71,7 @@ ScreenGame::ScreenGame(Game * game)
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
+    mPathfinder->SetAllowDiagonals(false);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)

@@ -98,17 +98,20 @@ std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
             return path;
         }
 
-        // process neighbor nodes
-        HandleNode(curr, -1, -1);
+        // process neighbor nodes (orthagonals)
         HandleNode(curr, -1, 0);
-        HandleNode(curr, -1, 1);
-
         HandleNode(curr, 0, -1);
         HandleNode(curr, 0, 1);
-
-        HandleNode(curr, 1, -1);
         HandleNode(curr, 1, 0);
-        HandleNode(curr, 1, 1);
+
+        // process diagonals nodes if allowed
+        if(mAllowDiag)
+        {
+            HandleNode(curr, -1, -1);
+            HandleNode(curr, -1, 1);
+            HandleNode(curr, 1, -1);
+            HandleNode(curr, 1, 1);
+        }
     }
 
     return path;
