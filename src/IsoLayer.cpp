@@ -297,17 +297,15 @@ void IsoLayer::InsertObjectInRenderList(IsoObject * obj)
         const int nextC0 = nextObj->GetCol();
         const int nextC1 = nextC0 + 1 - nextObj->GetCols();
 
+        // behind row
+        if(r0 < nextR1)
+            break;
+
         // obj on left side
         if(c0 < nextC1)
         {
             //behind
             if(r0 <= nextR0)
-                break;
-        }
-        // obj inside cols of next
-        else if(c0 <= nextC0)
-        {
-            if(r0 < nextR1)
                 break;
         }
 

@@ -42,8 +42,6 @@ void GameObject::SetCell(const GameMapCell * cell)
 
     mIsoObj->SetRow(cell->row);
     mIsoObj->SetCol(cell->col);
-
-    UpdateImage();
 }
 
 int GameObject::GetRow0() const { return mCell->row; }

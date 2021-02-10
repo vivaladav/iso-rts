@@ -103,10 +103,11 @@ void ObjectPath::Update(float delta)
         const unsigned int targetInd = mCells[mNextCell - 1];
         const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
         const unsigned int targetCol = targetInd % mIsoMap->GetNumCols();
-        mGameMap->MoveObjToCell(mObj, targetRow, targetCol);
 
         IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
         layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
+
+        mGameMap->MoveObjToCell(mObj, targetRow, targetCol);
 
         mGameMap->AddPlayerObjVisibility(mObj, player);
 
