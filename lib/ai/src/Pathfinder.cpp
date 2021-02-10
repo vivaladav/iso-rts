@@ -126,15 +126,16 @@ void Pathfinder::HandleNode(PathNode * prev, int dr, int dc)
 {
     const unsigned int r = prev->GetRow() + dr;
     const unsigned int c = prev->GetCol() + dc;
-    const unsigned int adjIdx = GetCellIndex(r, c);
 
     // out of bounds
-    if(adjIdx >= mMapSize)
+    if(!(r < mMapRows && c < mMapCols))
         return;
 
     // not walkable
     if(!mMap->IsCellWalkable(r, c))
         return;
+
+    const unsigned int adjIdx = GetCellIndex(r, c);
 
     // in closed list
     if(mClosedMap.find(adjIdx) != mClosedMap.end())
