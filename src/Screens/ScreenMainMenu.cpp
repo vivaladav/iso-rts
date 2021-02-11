@@ -4,10 +4,8 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
+#include <graphic/Image.h>
 #include <graphic/Renderer.h>
-#include <sgui/Label.h>
 #include <sgui/PushButton.h>
 #include <sgui/Stage.h>
 
@@ -20,25 +18,24 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    game->SetClearColor(0x11, 0x11, 0x11, 0xFF);
+    game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    Widget * panel = new Widget();
+    Widget * panel = new Widget;
 
     int buttonY = 0;
     const int VMARGIN = 100;
 
+    const int screenW = Renderer::Instance()->GetWidth();
+
     // -- TITLE --
-    FontManager * fm = FontManager::Instance();
+    mLogo = new lib::graphic::Image("data/img/logo.png");
 
-    Font * fontTitle = fm->GetFont("data/fonts/OpenSans.ttf", 128, Font::BOLD);
-
-    auto * labelTitle = new Label("Iso RTS", fontTitle);
-    const int titleX = (Renderer::Instance()->GetWidth() - labelTitle->GetWidth()) * 0.5f;
-    labelTitle->SetPosition(titleX, VMARGIN);
+    const int logoX = (screenW - mLogo->GetWidth()) * 0.5f;
+    const int logoY = 0;
+    mLogo->SetPosition(logoX, logoY);
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panel);
-    button->SetY(buttonY);
 
     button->SetOnClickFunction([game]
     {
@@ -55,14 +52,16 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button->SetY(buttonY);
 
     // position buttons panel
-    const int containerX = (Renderer::Instance()->GetWidth() - panel->GetWidth()) * 0.5f;
-    const int containerY = 350;
+    const int containerX = (screenW - panel->GetWidth()) * 0.5f;
+    const int containerY = mLogo->GetY() + mLogo->GetHeight() + VMARGIN;
     panel->SetPosition(containerX, containerY);
 }
 
 ScreenMainMenu::~ScreenMainMenu()
 {
     lib::sgui::Stage::Instance()->ClearWidgets();
+
+    delete mLogo;
 }
 
 void ScreenMainMenu::Update(float update)
@@ -71,6 +70,7 @@ void ScreenMainMenu::Update(float update)
 
 void ScreenMainMenu::Render()
 {
+    mLogo->Render();
 }
 
 } // namespace game
