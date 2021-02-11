@@ -8,8 +8,6 @@
 
 #include <cmath>
 
-#include <iostream>
-
 namespace game
 {
 
@@ -30,12 +28,6 @@ void ObjectPath::InitNextMoveStep()
 
     mVelX = (mTargetX - mObjX) * mObj->GetSpeed();
     mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
-
-    std::cout << "ObjectPath::InitNextMoveStep - VEL: " << mVelX << "," << mVelY <<
-                 " | NEXT CELL: " << mNextCell <<
-                 " | POS: " << mObjX << "," << mObjY <<
-                 " | END: " << mTargetX << "," << mTargetY <<
-                 std::endl;
 
     ++mNextCell;
 }

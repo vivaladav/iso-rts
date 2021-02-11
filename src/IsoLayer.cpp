@@ -292,6 +292,24 @@ void IsoLayer::InsertObjectInRenderList(IsoObject * obj)
     {
         IsoObject * nextObj = *it;
 
+        // check if they overlap
+        const int objXL = obj->GetX();
+        const int objXR = obj->GetX() + obj->GetWidth();
+        const int objYT = obj->GetY();
+        const int objYB = obj->GetY() + obj->GetHeight();
+
+        const int nobjXL = nextObj->GetX();
+        const int nobjXR = nextObj->GetX() + nextObj->GetWidth();
+        const int nobjYT = nextObj->GetY();
+        const int nobjYB = nextObj->GetY() + nextObj->GetHeight();
+
+        // ignore images that do not overlap
+        if(objXL > nobjXR || nobjXL > objXR || objYT > nobjYB || nobjYT > objYB)
+        {
+            ++it;
+            continue;
+        }
+
         const int nextR0 = nextObj->GetRow();
         const int nextR1 = nextR0 + 1 - nextObj->GetRows();
         const int nextC0 = nextObj->GetCol();
@@ -303,11 +321,7 @@ void IsoLayer::InsertObjectInRenderList(IsoObject * obj)
 
         // obj on left side
         if(c0 < nextC1)
-        {
-            //behind
-            if(r0 <= nextR0)
-                break;
-        }
+            break;
 
         ++it;
     }
