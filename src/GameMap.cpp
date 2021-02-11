@@ -1365,6 +1365,9 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
         int minColR = maxCol + 1;
         int maxColR = maxCol + visSideCols;
 
+        if(maxColR >= static_cast<int>(mCols))
+            maxColR = mCols - 1;
+
         int minRowR = minRow;
         int maxRowR = maxRow;
 
