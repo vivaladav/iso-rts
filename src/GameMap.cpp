@@ -261,6 +261,21 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         AddPlayerObjVisibility(obj, localPlayer);
 }
 
+bool GameMap::AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const
+{
+    // expand obj1 area by 1
+    const int expRowTL = obj1->GetRow1() - 1;
+    const int expColTL = obj1->GetCol1() - 1;
+    const int expRowBR = obj1->GetRow0() + 1;
+    const int expColBR = obj1->GetCol0() + 1;
+
+    // check if expanded area and obj2 intersect
+    return expRowTL <= obj2->GetRow0() &&
+           obj2->GetRow1() <= expRowBR &&
+           expColTL <= obj2->GetCol0() &&
+           obj2->GetCol1() <= expColBR;
+}
+
 bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
@@ -340,33 +355,9 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
-
-    // start out of bounds
-    if(r0 >= mRows || c0 >= mCols)
-        return false;
-
     const unsigned int r1 = static_cast<unsigned int>(end.row);
     const unsigned int c1 = static_cast<unsigned int>(end.col);
 
-    // end out of bounds
-    if(r1 >= mRows || c1 >= mCols)
-        return false;
-
-    // check if player has enough energy
-    if(COST_CONQUEST_RES_GEN > player->GetEnergy())
-        return false;
-
-    const int diffR = abs(end.row - start.row);
-
-    // end too far - units can only conquest to next cell
-    if(diffR > 1)
-        return false;
-
-    const int diffC = abs(end.col - start.col);
-
-    // end too far - units can only conquest to next cell
-    if(diffC > 1)
-         return false;
 
     const int ind0 = r0 * mCols + c0;
     GameMapCell & gcell0 = mCells[ind0];
@@ -730,7 +721,7 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
 
     // update visibility map
     // NOTE only for human player for now
-    Player * localPlayer = mGame->GetPlayer(0);
+    Player * localPlayer = mGame->GetLocalPlayer();
 
     if(unit->GetOwner() == localPlayer->GetPlayerId())
         AddPlayerObjVisibility(unit, localPlayer);

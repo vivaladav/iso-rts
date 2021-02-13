@@ -44,6 +44,8 @@ public:
                       unsigned int r0, unsigned int c0,
                       unsigned int rows, unsigned int cols);
 
+    bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
+
     // cell conquest
     bool CanConquerCell(const Cell2D & cell, Player * player);
     void StartConquerCell(const Cell2D & cell, Player * player);

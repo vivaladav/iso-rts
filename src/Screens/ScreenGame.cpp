@@ -392,7 +392,23 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     // destination not walkable
                     else
                     {
+                        const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
+                        const bool clickVis = player->IsCellVisible(clickInd);
 
+                        // destination or object is visible -> try to interact
+                        if(clickVis || (clickObj != nullptr && clickObj->IsVisible()))
+                        {
+                            if(clickObj != nullptr && mGameMap->AreObjectsAdjacent(selObj, clickObj))
+                            {
+                                if(SetupResourceGeneratorConquest(selCell, clickCell, player))
+                                    ClearSelection(player);
+                            }
+                        }
+                        // destination is not visible -> try to walk close to it
+                        else
+                        {
+
+                        }
                     }
                 }
             }
