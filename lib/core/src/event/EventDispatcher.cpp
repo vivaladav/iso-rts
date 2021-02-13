@@ -154,7 +154,7 @@ void EventDispatcher::Update()
 
             case SDL_KEYDOWN:
             {
-                KeyboardEvent e(event.key.keysym.sym);
+                KeyboardEvent e(event.key.keysym.sym, event.key.keysym.mod);
 
                 for(KeyboardEventListener * el : mKeyboardListeners)
                 {
@@ -169,7 +169,7 @@ void EventDispatcher::Update()
 
             case SDL_KEYUP:
             {
-                KeyboardEvent e(event.key.keysym.sym);
+                KeyboardEvent e(event.key.keysym.sym, event.key.keysym.mod);
 
                 for(KeyboardEventListener * el : mKeyboardListeners)
                 {

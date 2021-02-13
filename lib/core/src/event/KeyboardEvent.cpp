@@ -286,5 +286,15 @@ const int KeyboardEvent::MOD_RSHIFT      = KMOD_RSHIFT;
 const int KeyboardEvent::MOD_SHIFT       = KMOD_SHIFT;      // LSHIFT or RSHIFT
 const int KeyboardEvent::MOD_NONE        = KMOD_NONE;
 
+// == PRIVATE FUNCTIOns ==
+KeyboardEvent::KeyboardEvent(int key, unsigned int modifiers)
+    : mKey(key)
+    , mModAltDown(modifiers & KMOD_ALT)
+    , mModCtrlDown(modifiers & KMOD_CTRL)
+    , mModGuiDown(modifiers & KMOD_GUI)
+    , mModShiftDown(modifiers & KMOD_SHIFT)
+{
+}
+
 } // namespace core
 } // namespace lib

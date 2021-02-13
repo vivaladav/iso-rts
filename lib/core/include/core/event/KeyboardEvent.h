@@ -14,8 +14,13 @@ class KeyboardEvent : public Event
 public:
     int GetKey() const;
 
+    bool IsModAltDown() const;
+    bool IsModCtrlDown() const;
+    bool IsModGuiDown() const;
+    bool IsModShiftDown() const;
+
 private:
-    KeyboardEvent(int  key);
+    KeyboardEvent(int key, unsigned int modifiers);
 
 public:
     // == KEYS ==
@@ -300,17 +305,21 @@ public:
 private:
     int mKey;
 
+    bool mModAltDown = false;
+    bool mModCtrlDown = false;
+    bool mModGuiDown = false;
+    bool mModShiftDown = false;
+
     // only EventDispatcher can create an event
     friend class EventDispatcher;
 };
 
-
-inline KeyboardEvent::KeyboardEvent(int  key)
-    : mKey(key)
-{
-}
-
 inline int KeyboardEvent::GetKey() const { return mKey; }
+
+inline bool KeyboardEvent::IsModAltDown() const { return mModAltDown; }
+inline bool KeyboardEvent::IsModCtrlDown() const { return mModCtrlDown; }
+inline bool KeyboardEvent::IsModGuiDown() const { return mModGuiDown; }
+inline bool KeyboardEvent::IsModShiftDown() const { return mModShiftDown; }
 
 } // namespace core
 } // namespace lib
