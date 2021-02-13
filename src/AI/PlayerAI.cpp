@@ -58,12 +58,10 @@ void PlayerAI::DecideActions()
         // init possible actions
 //        if(mGm->CanCreateUnit(pos, mPlayer))
 //            actions.emplace_back(ACT_NEW_UNIT);
-        if(mGm->CanUpgradeUnit(pos, mPlayer))
+        if(mGm->CanUpgradeUnit(mGm->GetCell(pos.row, pos.col).GetUnit(), mPlayer))
             actions.emplace_back(ACT_UNIT_UPGRADE);
         if(CanMoveUnit(ownCells[c]))
             actions.emplace_back(ACT_UNIT_MOVE);
-        if(CanDestroyUnit(ownCells[c]))
-            actions.emplace_back(ACT_UNIT_DESTROY);
 
         // no action available for now -> skip this cell
         if(actions.empty())
@@ -164,7 +162,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
         {
             case ACT_NEW_UNIT:
             {
-                const Unit * unit = cell.GetUnit();
                 cost = ENERGY_NEW_UNIT;
             }
             break;
@@ -224,15 +221,6 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
                 prob += 100.f * (MAX_UNITS_LEVEL - unitLevel) / MAX_UNITS_LEVEL;
             }
             break;
-
-            case ACT_UNIT_DESTROY:
-            {
-                // unit destroy should be more likely when far from enemies
-                prob += 100.f - distScore;
-
-                // more units means higher probability
-                prob += 100.f * mPlayer->GetNumUnits() / mPlayer->GetNumCells();
-            }
 
             case ACT_UNIT_MOVE:
             {
@@ -360,12 +348,6 @@ bool PlayerAI::CanMoveUnit(const GameMapCell & cell) const
 
     // no walkable cell found
     return false;
-}
-
-bool PlayerAI::CanDestroyUnit(const GameMapCell & cell) const
-{
-    // true if cell has units and player has no energy
-    return cell.HasUnit() && mPlayer->GetEnergy() < 0;
 }
 
 Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const

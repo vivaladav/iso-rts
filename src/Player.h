@@ -57,14 +57,10 @@ public:
     int GetTotalUnitsLevel() const;
     void SumTotalUnitsLevel(int val);
 
-    bool HasSelectedCell() const;
-    void ClearSelectedCell();
-    const Cell2D & GetSelectedCell() const;
-    void SetSelectedCell(const Cell2D & cell);
-
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;
     void SetSelectedObject(GameObject * obj);
+    bool HasSelectedObject() const;
 
     void AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen);
     void RemoveResourceGenerator(unsigned int cellId);
@@ -97,8 +93,6 @@ private:
     GameObject * mSelObj = nullptr;
 
     Cell2D mHomeCell;
-
-    Cell2D mSelectedCell;
 
     int mPlayerId;
 
@@ -162,18 +156,8 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
-inline bool Player::HasSelectedCell() const
-{
-    return mSelectedCell.row >= 0 && mSelectedCell.col >= 0;
-}
-inline void Player::ClearSelectedCell()
-{
-    mSelectedCell.row = -1;
-    mSelectedCell.col = -1;
-}
-inline const Cell2D & Player::GetSelectedCell() const { return mSelectedCell; }
-
 inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
+inline bool Player::HasSelectedObject() const { return mSelObj != nullptr; }
 
 inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }

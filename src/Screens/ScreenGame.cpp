@@ -1,4 +1,4 @@
-﻿#include "Screens/ScreenGame.h"
+#include "Screens/ScreenGame.h"
 
 #include "Game.h"
 #include "GameConstants.h"
@@ -125,7 +125,13 @@ ScreenGame::ScreenGame(Game * game)
     // CONQUEST CELL
     mPanelPlayer->SetFunctionCellConquest([this, player]
     {
-       SetupCellConquest(player->GetSelectedCell(), player);
+        GameObject * obj = player->GetSelectedObject();
+
+        if(obj != nullptr)
+        {
+            const Cell2D cell(obj->GetRow0(), obj->GetCol0());
+            SetupCellConquest(cell, player);
+        }
 
        // clear selection
        ClearSelection(player);
@@ -140,18 +146,10 @@ ScreenGame::ScreenGame(Game * game)
         ClearSelection(player);
     });
 
-    // UNIT DESTROY
-    mPanelPlayer->SetFunctionUnitsDestroy([this, player]
-    {
-       SetupUnitDestroy(player->GetSelectedCell(), player);
-
-       ClearSelection(player);
-    });
-
     // UNIT UPGRADE
     mPanelPlayer->SetFunctionUnitsUpgrade([this, player]
     {
-        SetupUnitUpgrade(player->GetSelectedCell(), player);
+        SetupUnitUpgrade(player->GetSelectedObject(), player);
 
         // clear selection
         ClearSelection(player);
@@ -338,14 +336,76 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     if(event.GetButton() != lib::core::MouseEvent::BUTTON_LEFT)
         return ;
 
-    const Cell2D currSel = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    Player * player = GetGame()->GetLocalPlayer();
 
-    const bool insideMap = mIsoMap->IsCellInside(currSel);
+    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    const bool insideMap = mIsoMap->IsCellInside(clickCell);
 
-    Player * player = GetGame()->GetPlayer(0);
+    const bool hasSelected = player->HasSelectedObject();
 
-    if(insideMap)
+    // clicked outside the map
+    if(!insideMap)
     {
+        // clear the previous selection, if any
+        if(hasSelected)
+            ClearSelection(player);
+
+        return ;
+    }
+
+    const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
+    GameObject * clickObj = clickGameCell.obj;
+    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player->GetPlayerId();
+
+    if(hasSelected)
+    {
+        GameObject * selObj = player->GetSelectedObject();
+        const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
+        const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
+
+        // selected object is a unit
+        if(selObj->GetObjectType() == OBJ_UNIT)
+        {
+            Unit * selUnit = static_cast<Unit *>(selObj);
+
+            // move
+            if(selUnit->GetActiveAction() == MOVE)
+            {
+                // click cell is different from unit cell -> try to move
+                if(diffClick)
+                {
+                    // destination is walkable -> try to generate a path
+                    if(mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
+                    {
+                        auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                          clickCell.row, clickCell.col);
+
+                        // path available -> start moving
+                        if(!path.empty())
+                        {
+                            auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
+                            op->SetPathCells(path);
+
+                            mGameMap->MoveUnit(op);
+                        }
+                    }
+                    // destination not walkable
+                    else
+                    {
+
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+
+        if(isClickObjOwn)
+            SelectObject(clickObj, player);
+    }
+
+        /*
         const GameMapCell & gameCell = mGameMap->GetCell(currSel.row, currSel.col);
         const Player * owner = gameCell.owner;
         const bool isLocalPlayer = owner == player;
@@ -415,14 +475,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             if(canSelect)
                 SelectCell(currSel, player);
         }
-    }
-    // click outside the map
-    else
-    {
-        // clear the previous selection, if any
-        if(player->HasSelectedCell())
-            ClearSelection(player);
-    }
+        */
 }
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
@@ -463,8 +516,6 @@ void ScreenGame::UpdateProgressBars(float delta)
 
 void ScreenGame::ClearSelection(Player * player)
 {
-    player->ClearSelectedCell();
-
     player->ClearSelectedObject();
 
     mPanelPlayer->ClearSelectedCell();
@@ -472,28 +523,36 @@ void ScreenGame::ClearSelection(Player * player)
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
 }
 
-void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
+//void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
+//{
+//    const GameMapCell & gameCell = mGameMap->GetCell(cell.row, cell.col);
+
+//    mPanelPlayer->SetSelectedCell(gameCell);
+
+//    if(gameCell.obj &&
+//       (gameCell.obj->GetOwner() == player->GetPlayerId() || nullptr == gameCell.owner))
+//        player->SetSelectedObject(gameCell.obj);
+
+//    // show move targets if it's player's unit
+//    const Unit * cellUnit = gameCell.GetUnit();
+
+//    if(cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId())
+//    {
+//        mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
+//        ShowMoveTargets(cell, player);
+//    }
+
+//    // store selection cell
+//    mPrevSel = cell;
+//}
+
+void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
-    player->SetSelectedCell(cell);
-    const GameMapCell & gameCell = mGameMap->GetCell(cell.row, cell.col);
+    obj->SetSelected(true);
 
-    mPanelPlayer->SetSelectedCell(gameCell);
+    player->SetSelectedObject(obj);
 
-    if(gameCell.obj &&
-       (gameCell.obj->GetOwner() == player->GetPlayerId() || nullptr == gameCell.owner))
-        player->SetSelectedObject(gameCell.obj);
-
-    // show move targets if it's player's unit
-    const Unit * cellUnit = gameCell.GetUnit();
-
-    if(cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId())
-    {
-        mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
-        ShowMoveTargets(cell, player);
-    }
-
-    // store selection cell
-    mPrevSel = cell;
+    mPanelPlayer->SetSelectedObject(obj);
 }
 
 void ScreenGame::ShowMoveTargets(const Cell2D & cell, Player * player)
@@ -573,14 +632,8 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             case ACT_UNIT_UPGRADE:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
-                done = SetupUnitUpgrade(action.src, player);
-            }
-            break;
-
-            case ACT_UNIT_DESTROY:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - UNIT DESTROY" << std::endl;
-                done = SetupUnitDestroy(action.src, player);
+                //done = SetupUnitUpgrade(action.obj, player);
+                done = true;
             }
             break;
 
@@ -685,24 +738,16 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
     return true;
 }
 
-bool ScreenGame::SetupUnitDestroy(const Cell2D & cell, Player * player)
-{
-    if(!mGameMap->CanDestroyUnit(cell, player))
-        return false;
-
-    mGameMap->DestroyUnit(cell, player);
-
-    return true;
-}
-
-bool ScreenGame::SetupUnitUpgrade(const Cell2D & cell, Player * player)
+bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
 {
     // check if upgrade is possible
-    if(!mGameMap->CanUpgradeUnit(cell, player))
+    if(!mGameMap->CanUpgradeUnit(obj, player))
         return false;
 
     // start upgrade
-    mGameMap->StartUpgradeUnit(cell, player);
+    mGameMap->StartUpgradeUnit(obj, player);
+
+    const Cell2D cell(obj->GetRow0(), obj->GetCol0());
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());

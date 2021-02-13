@@ -60,13 +60,9 @@ public:
     void StartCreateUnit(const Cell2D & dest, Player * player);
     void CreateUnit(const Cell2D & dest, Player * player);
 
-    // unit destroy
-    bool CanDestroyUnit(const Cell2D & cell, Player * player);
-    void DestroyUnit(const Cell2D & cell, Player * player);
-
     // unit upgrade
-    bool CanUpgradeUnit(const Cell2D & cell, Player * player);
-    void StartUpgradeUnit(const Cell2D & cell, Player * player);
+    bool CanUpgradeUnit(GameObject * obj, Player * player);
+    void StartUpgradeUnit(GameObject * obj, Player * player);
     void UpgradeUnit(const Cell2D & cell);
 
     // move units

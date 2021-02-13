@@ -59,6 +59,7 @@ public:
     int GetNumPlayers() const;
 
     Player * GetPlayer(unsigned int index) const;
+    Player * GetLocalPlayer() const;
 
 private:
     void Update(float delta) override;
@@ -111,6 +112,13 @@ inline Player * Game::GetPlayer(unsigned int index) const
         return mPlayers[index];
     else
         return nullptr;
+}
+
+inline Player * Game::GetLocalPlayer() const
+{
+    // NOTE for now local player is always at index 0. This might change in the future
+    const int indLocal = 0;
+    return mPlayers[indLocal];
 }
 
 } // namespace game

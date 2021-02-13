@@ -15,6 +15,7 @@ namespace game
 
 class ButtonPanelPlayer;
 class ButtonsPanel;
+class GameObject;
 class Player;
 class UnitsSelector;
 
@@ -35,16 +36,15 @@ public:
 
     void ClearSelectedCell();
     void SetSelectedCell(const GameMapCell & cell);
+    void SetSelectedObject(GameObject * obj);
 
-    void UpdateButtonNewUnit(const GameMapCell & cell);
-    void UpdateButtonUnitDestroy();
-    void UpdateButtonUnitUpgrade();
-    void UpdateButtonConquer(const GameMapCell & cell);
+    void UpdateButtonNewUnit(const GameObject * obj);
+    void UpdateButtonUnitUpgrade(const GameObject * obj);
+    void UpdateButtonConquer(const GameObject * obj);
 
     void SetFunctionCellConquest(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
-    void SetFunctionUnitsDestroy(const std::function<void()> & f);
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
 
 private:
@@ -65,8 +65,6 @@ private:
 
     ButtonPanelPlayer * mButtonNewUnit = nullptr;
 
-    ButtonPanelPlayer * mButtonUnitsDestroy = nullptr;
-    ButtonPanelPlayer * mButtonUnitsDestroyConf = nullptr;
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
     ButtonPanelPlayer * mButtonCellConquer = nullptr;
 

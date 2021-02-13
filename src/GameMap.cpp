@@ -738,66 +738,17 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     ApplyVisibility(localPlayer);
 }
 
-bool GameMap::CanDestroyUnit(const Cell2D & cell, Player * player)
+bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
 {
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-
-    // out of bounds
-    if(!(r < mRows && c < mCols))
+    // this should never happen
+    if(nullptr == obj)
         return false;
 
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    // not own cell or no units -> exit
-    if(gcell.owner != player || !gcell.HasUnit())
+    // object is not an unit
+    if(obj->GetObjectType() != OBJ_UNIT)
         return false;
 
-    return true;
-}
-
-void GameMap::DestroyUnit(const Cell2D & cell, Player * player)
-{
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    const Unit * unit = gcell.GetUnit();
-    const int unitLevel = unit->GetUnitLevel();
-
-    // update player
-    player->SumUnits(-1);
-    player->SumTotalUnitsLevel(-(unitLevel + 1));
-
-    // remove units from cell
-    delete gcell.obj;
-    gcell.obj = nullptr;
-
-    // destroy object
-    mIsoMap->GetLayer(OBJECTS)->ClearObject(r, c);
-}
-
-bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
-{
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-
-    // out of bounds
-    if(!(r < mRows && c < mCols))
-        return false;
-
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    const Unit * unit = gcell.GetUnit();
-
-    // cell already changing, not own cell or no unit -> exit
-    if(gcell.changing ||
-       gcell.owner != player ||
-       nullptr == unit)
-        return false;
+    auto unit = static_cast<Unit *>(obj);
 
     // check if reached max level for units
     const int unitLevel = unit->GetUnitLevel();
@@ -814,13 +765,13 @@ bool GameMap::CanUpgradeUnit(const Cell2D & cell, Player * player)
     return true;
 }
 
-void GameMap::StartUpgradeUnit(const Cell2D & cell, Player * player)
+void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)
 {
-    const int ind = cell.row * mCols + cell.col;
+    const int ind = obj->GetRow0() * mCols + obj->GetCol0();
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    const Unit * unit = gcell.GetUnit();
+    const Unit * unit = static_cast<Unit *>(obj);
     const int unitLevel = unit->GetUnitLevel();
     const int cost = COST_UNIT_UPGRADE[unitLevel];
     player->SumEnergy(-cost);

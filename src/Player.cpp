@@ -5,6 +5,7 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/Unit.h"
 
 #include <cassert>
 
@@ -21,7 +22,6 @@ Player::Player(const char * name, int pid)
     , mOnEnergyChanged([](int){})
     , mOnMaterialChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
-    , mSelectedCell({-1, -1})
     , mPlayerId(pid)
 {
 }
@@ -108,17 +108,15 @@ void Player::SumUnits(int val)
     mOnNumUnitsChanged(mNumUnits);
 }
 
-void Player::SetSelectedCell(const Cell2D & cell)
-{
-    mSelectedCell = cell;
-}
-
 void Player::ClearSelectedObject()
 {
     if(nullptr == mSelObj)
         return ;
 
     mSelObj->SetSelected(false);
+
+    if(mSelObj->GetObjectType() == OBJ_UNIT)
+        static_cast<Unit *>(mSelObj)->SetActiveAction(IDLE);
 
     mSelObj = nullptr;
 }
@@ -129,6 +127,9 @@ void Player::SetSelectedObject(GameObject * obj)
         mSelObj->SetSelected(false);
 
     mSelObj = obj;
+
+    if(mSelObj->GetObjectType() == OBJ_UNIT)
+        static_cast<Unit *>(mSelObj)->SetActiveAction(MOVE);
 
     mSelObj->SetSelected(true);
 }

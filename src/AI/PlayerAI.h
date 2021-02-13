@@ -42,7 +42,6 @@ private:
     void AddNewAction(const ActionAI & action);
 
     bool CanMoveUnit(const GameMapCell & cell) const;
-    bool CanDestroyUnit(const GameMapCell & cell) const;
     Cell2D DecideMoveDestination(const GameMapCell & cell) const;
 
 private:

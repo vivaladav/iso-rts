@@ -167,48 +167,56 @@ void PanelPlayer::ClearSelectedCell()
     mPanelUnits->SetVisible(false);
 }
 
-void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
+//void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
+//{
+//    UpdateButtonNewUnit(cell);
+//    UpdateButtonUnitUpgrade();
+//    UpdateButtonConquer(cell);
+
+//    mPanelCell->SetVisible(true);
+//}
+
+void PanelPlayer::SetSelectedObject(GameObject * obj)
 {
-    UpdateButtonNewUnit(cell);
-    UpdateButtonUnitDestroy();
-    UpdateButtonUnitUpgrade();
-    UpdateButtonConquer(cell);
+    const GameObjectType objType = obj->GetObjectType();
 
-    mPanelCell->SetVisible(true);
-}
+    if(objType == OBJ_BASE)
+    {
+        mPanelCell->SetVisible(true);
+        mPanelUnits->SetVisible(false);
 
-void PanelPlayer::UpdateButtonNewUnit(const GameMapCell & cell)
-{
-    const bool noUnit = cell.GetUnit() == nullptr;
+        UpdateButtonNewUnit(obj);
+    }
+    else if(objType == OBJ_UNIT)
+    {
+        mPanelCell->SetVisible(false);
+        mPanelUnits->SetVisible(true);
 
-    std::ostringstream s;
-
-    if(noUnit)
-        s << "NEW UNIT (" << ENERGY_NEW_UNIT << ")";
+        UpdateButtonUnitUpgrade(obj);
+        UpdateButtonConquer(obj);
+    }
     else
-        s << "NEW UNIT";
-
-    mButtonNewUnit->SetLabel(s.str().c_str());
-    mButtonNewUnit->SetEnabled(noUnit);
-
-    mPanelUnits->SetVisible(!noUnit);
+    {
+        mPanelCell->SetVisible(false);
+        mPanelUnits->SetVisible(false);
+    }
 }
 
-void PanelPlayer::UpdateButtonUnitDestroy()
+void PanelPlayer::UpdateButtonNewUnit(const GameObject * obj)
 {
-    mButtonUnitsDestroy->SetVisible(true);
-    mButtonUnitsDestroyConf->SetVisible(false);
+    mButtonNewUnit->SetLabel("NEW UNIT");
+    mButtonNewUnit->SetEnabled(true);
 }
 
-void PanelPlayer::UpdateButtonUnitUpgrade()
+void PanelPlayer::UpdateButtonUnitUpgrade(const GameObject * obj)
 {
     mButtonUnitsUpgrade->SetLabel("UPGRADE");
     mButtonUnitsUpgrade->SetEnabled(false);
 }
 
-void PanelPlayer::UpdateButtonConquer(const GameMapCell & cell)
+void PanelPlayer::UpdateButtonConquer(const GameObject * obj)
 {
-    mButtonCellConquer->SetEnabled(cell.owner != mPlayer);
+    mButtonCellConquer->SetEnabled(true);
 }
 
 void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
@@ -219,11 +227,6 @@ void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
 void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
 {
     mButtonNewUnit->SetOnClickFunction(f);
-}
-
-void PanelPlayer::SetFunctionUnitsDestroy(const std::function<void()> & f)
-{
-    mButtonUnitsDestroyConf->SetOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
@@ -286,40 +289,21 @@ void PanelPlayer::CreatePanelUnits()
     Label * labelHeader = new Label("UNITS", fontHeader, mPanelUnits);
     labelHeader->SetColor(colorHeader);
 
-    const int marginX = 30;
     const int marginY0 = 10;
     const int marginY = 30;
 
     // button UPGRADE
     mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
 
-    // button DESTROY
-    mButtonUnitsDestroy = new ButtonPanelPlayer("DESTROY", mPanelUnits);
-
-    mButtonUnitsDestroy->SetOnClickFunction([this]
-    {
-        mButtonUnitsDestroy->SetVisible(false);
-        mButtonUnitsDestroyConf->SetVisible(true);
-    });
-
-    // button DESTROY CONFIRM
-    mButtonUnitsDestroyConf = new ButtonPanelPlayer("CONFIRM", mPanelUnits);
-    mButtonUnitsDestroyConf->SetVisible(false);
-
     // button CONQUEST
     mButtonCellConquer = new ButtonPanelPlayer("CONQUER", mPanelUnits);
 
     // -- position elements --
-    mButtonUnitsDestroy->SetX(mButtonUnitsUpgrade->GetX() + marginX + mButtonUnitsUpgrade->GetWidth());
-
     int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
     mButtonUnitsUpgrade->SetY(buttonY);
 
     buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
     mButtonCellConquer->SetY(buttonY);
-
-    mButtonUnitsDestroy->SetY(mButtonUnitsUpgrade->GetY());
-    mButtonUnitsDestroyConf->SetPosition(mButtonUnitsDestroy->GetX(), mButtonUnitsDestroy->GetY());
 
     mButtonCellConquer->SetX(mButtonUnitsUpgrade->GetX());
 }

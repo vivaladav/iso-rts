@@ -49,7 +49,7 @@ private:
     void UpdateProgressBars(float delta);
 
     void ClearSelection(Player * player);
-    void SelectCell(const Cell2D & cell, Player * player);
+    void SelectObject(GameObject * obj, Player * player);
 
     void ShowMoveTargets(const Cell2D & cell, Player * player);
 
@@ -61,8 +61,7 @@ private:
     bool SetupCellConquest(const Cell2D & cell, Player * player);
     bool SetupNewUnit(GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
-    bool SetupUnitDestroy(const Cell2D & cell, Player * player);
-    bool SetupUnitUpgrade(const Cell2D & cell, Player * player);
+    bool SetupUnitUpgrade(GameObject * obj, Player * player);
 
 private:
     std::vector<Player *> mAiPlayers;
