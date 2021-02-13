@@ -404,7 +404,33 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                             // object is far
                             else
                             {
+                                Cell2D target = mGameMap->GetAdjacentMoveTarget(selCell, clickObj);
 
+                                if(target.row != -1 && target.col != -1)
+                                {
+                                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                                      target.row, target.col);
+
+                                    // path available -> start moving
+                                    if(!path.empty())
+                                    {
+                                        auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
+                                        op->SetPathCells(path);
+
+                                        auto fun = [this, selUnit, clickCell, player]
+                                        {
+
+                                            const Cell2D selCell(selUnit->GetRow0(), selUnit->GetCol0());
+
+                                            if(SetupResourceGeneratorConquest(selCell, clickCell, player))
+                                                ClearSelection(player);
+                                        };
+
+                                        op->SetOnCompleted(fun);
+
+                                        mGameMap->MoveUnit(op);
+                                    }
+                                }
                             }
                         }
                         // no destination object or object not visible -> try to walk close to destination
@@ -438,78 +464,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         if(isClickObjOwn)
             SelectObject(clickObj, player);
     }
-
-        /*
-        const GameMapCell & gameCell = mGameMap->GetCell(currSel.row, currSel.col);
-        const Player * owner = gameCell.owner;
-        const bool isLocalPlayer = owner == player;
-        const Unit * cellUnit = gameCell.GetUnit();
-        const bool isPlayerUnit = cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId();
-        const int currInd = currSel.row * mIsoMap->GetNumCols() + currSel.col;
-        const bool canSelect = (isLocalPlayer || isPlayerUnit) &&
-                               !mGameMap->IsCellChanging(currSel.row, currSel.col) &&
-                               player->IsCellVisible(currInd);
-
-        // 1 cell previously selected
-        if(player->HasSelectedCell())
-        {
-            const Cell2D & prevSel = player->GetSelectedCell();
-
-            Unit * unit = mGameMap->GetCell(prevSel.row, prevSel.col).GetUnit();
-
-            const bool diffSel = prevSel.row != currSel.row || prevSel.col != currSel.col;
-
-            // has unit to move and it's selecting a different cell
-            if(unit != nullptr && diffSel)
-            {
-                std::vector<unsigned int> path;
-
-                if(mGameMap->IsCellWalkable(currSel.row, currSel.col))
-                    path = mPathfinder->MakePath(prevSel.row, prevSel.col, currSel.row, currSel.col);
-
-                if(!path.empty())
-                {
-                    auto op = new ObjectPath(unit, mIsoMap, mGameMap);
-                    op->SetPathCells(path);
-
-                    mGameMap->MoveUnit(op);
-
-                    ClearSelection(player);
-                }
-                // move failed
-                else
-                {
-                    // try to conquest a resource generator
-                    if(SetupResourceGeneratorConquest(prevSel, currSel, player))
-                        ClearSelection(player);
-                    // try to select the cell
-                    else if(canSelect)
-                        SelectCell(currSel, player);
-                    // all failed, clear the selection
-                    else
-                        ClearSelection(player);
-                }
-            }
-            else
-            {
-                if(canSelect)
-                {
-                    if(diffSel)
-                        SelectCell(currSel, player);
-                    else
-                        ClearSelection(player);
-                }
-                else
-                    ClearSelection(player);
-            }
-        }
-        // no cell previously selected
-        else
-        {
-            if(canSelect)
-                SelectCell(currSel, player);
-        }
-        */
 }
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
@@ -556,29 +510,6 @@ void ScreenGame::ClearSelection(Player * player)
 
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
 }
-
-//void ScreenGame::SelectCell(const Cell2D & cell, Player * player)
-//{
-//    const GameMapCell & gameCell = mGameMap->GetCell(cell.row, cell.col);
-
-//    mPanelPlayer->SetSelectedCell(gameCell);
-
-//    if(gameCell.obj &&
-//       (gameCell.obj->GetOwner() == player->GetPlayerId() || nullptr == gameCell.owner))
-//        player->SetSelectedObject(gameCell.obj);
-
-//    // show move targets if it's player's unit
-//    const Unit * cellUnit = gameCell.GetUnit();
-
-//    if(cellUnit != nullptr && cellUnit->GetOwner() == player->GetPlayerId())
-//    {
-//        mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
-//        ShowMoveTargets(cell, player);
-//    }
-
-//    // store selection cell
-//    mPrevSel = cell;
-//}
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {

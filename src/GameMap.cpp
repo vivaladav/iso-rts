@@ -859,8 +859,6 @@ bool GameMap::MoveUnit(ObjectPath * path)
 
 Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
 {
-    Cell2D dest(-1, -1);
-
     // get all walkable cells around end
     const int rowTL = end.row - 1 > 0 ? end.row - 1 : 0;
     const int colTL = end.col - 1 > 0 ? end.col - 1 : 0;
@@ -884,35 +882,42 @@ Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
         }
     }
 
-    // failed to find any walkable
-    if(walkalbes.empty())
-        return dest;
+    return GetClosestCell(start, walkalbes);
+}
 
-    // get closest cell
-    int minInd = 0;
-    int minDist = std::abs(start.row - walkalbes[minInd].row) +
-                  std::abs(start.col - walkalbes[minInd].col);
+Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target)
+{
+    // get all walkable cells around target
+    const int tRowTL = target->GetRow1();
+    const int tColTL = target->GetCol1();
+    const int tRowBR = target->GetRow0();
+    const int tColBR = target->GetCol0();
+    const int tRows = target->GetRows();
+    const int tCols = target->GetCols();
 
-    for(unsigned int i = 1; i < walkalbes.size(); ++i)
+    const int rowTL = tRowTL - 1 > 0 ? tRowTL - 1 : 0;
+    const int colTL = tColTL - 1 > 0 ? tColTL - 1 : 0;
+    const int rowBR = tRowBR + 1 < static_cast<int>(mRows - 1) ? tRowBR + 1 : mRows - 1;
+    const int colBR = tColBR + 1 < static_cast<int>(mCols - 1) ? tColBR + 1 : mCols - 1;
+
+    std::vector<Cell2D> walkalbes;
+    const int maxWalkables = (tCols + 2) * 2 + tRows;
+    walkalbes.reserve(maxWalkables);
+
+    for(int r = rowTL; r <= rowBR; ++r)
     {
-        const int dist = std::abs(start.row - walkalbes[i].row) +
-                         std::abs(start.col - walkalbes[i].col);
+        const int indBase = r * mCols;
 
-        if(dist < minDist)
+        for(int c = colTL; c <= colBR; ++c)
         {
-            minDist = dist;
-            minInd = i;
+            const int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
         }
     }
 
-    return walkalbes[minInd];
-}
-
-Cell2D GetCloseMoveTarget(const Cell2D & start, const GameObject * target)
-{
-    Cell2D dest(-1, -1);
-
-    return dest;
+    return GetClosestCell(start, walkalbes);
 }
 
 void GameMap::CheckGameEnd()
@@ -1215,6 +1220,32 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     mCells[ind1].walkable = false;
 
     return true;
+}
+
+Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets)
+{
+    // failed to find any walkable
+    if(targets.empty())
+        return Cell2D(-1, -1);
+
+    // get closest cell
+    int minInd = 0;
+    int minDist = std::abs(start.row - targets[minInd].row) +
+                  std::abs(start.col - targets[minInd].col);
+
+    for(unsigned int i = 1; i < targets.size(); ++i)
+    {
+        const int dist = std::abs(start.row - targets[i].row) +
+                         std::abs(start.col - targets[i].col);
+
+        if(dist < minDist)
+        {
+            minDist = dist;
+            minInd = i;
+        }
+    }
+
+    return targets[minInd];
 }
 
 void  GameMap::AddVisibilityToCell(Player * player, int ind)

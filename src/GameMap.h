@@ -72,7 +72,7 @@ public:
     bool MoveUnit(ObjectPath * path);
 
     Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end);
-    Cell2D GetCloseMoveTarget(const Cell2D & start, const GameObject * target);
+    Cell2D GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target);
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
     unsigned int GetNumRows() const;
@@ -93,6 +93,8 @@ private:
     void UpdateInfluencedCells(int row, int col);
 
     bool MoveObjToCell(GameObject * obj, int row, int col);
+
+    Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets);
 
     // -- player visibility --
     void AddVisibilityToCell(Player * player, int ind);

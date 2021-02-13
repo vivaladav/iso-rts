@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 
 namespace game
@@ -30,6 +31,8 @@ public:
 
     void SetPathCells(const std::vector<unsigned int> & cells);
 
+    void SetOnCompleted(const std::function<void()> & f);
+
     void Start();
 
     void Update(float delta);
@@ -39,6 +42,8 @@ private:
 
 private:
     std::vector<unsigned int> mCells;
+
+    std::function<void()> mOnCompleted;
 
     GameObject * mObj = nullptr;
 
@@ -60,7 +65,7 @@ private:
 };
 
 inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
-    : mObj(obj), mIsoMap(im), mGameMap(gm)
+    : mOnCompleted([]{}), mObj(obj), mIsoMap(im), mGameMap(gm)
 {
 }
 
@@ -69,6 +74,8 @@ inline GameObject * ObjectPath::GetObject() const { return mObj; }
 inline PathState ObjectPath::GetState() const { return mState; }
 
 inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells) { mCells = cells; }
+
+inline void ObjectPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
 
 inline void ObjectPath::Start()
 {

@@ -118,7 +118,11 @@ void ObjectPath::Update(float delta)
                 mState = FAILED;
         }
         else
+        {
             mState = COMPLETED;
+
+            mOnCompleted();
+        }
     }
 }
 
