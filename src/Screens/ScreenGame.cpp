@@ -1,4 +1,4 @@
-#include "Screens/ScreenGame.h"
+﻿#include "Screens/ScreenGame.h"
 
 #include "Game.h"
 #include "GameConstants.h"
@@ -392,22 +392,40 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     // destination not walkable
                     else
                     {
-                        const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
-                        const bool clickVis = player->IsCellVisible(clickInd);
-
-                        // destination or object is visible -> try to interact
-                        if(clickVis || (clickObj != nullptr && clickObj->IsVisible()))
+                        // destination object is visible -> try to interact
+                        if(clickObj != nullptr && clickObj->IsVisible())
                         {
-                            if(clickObj != nullptr && mGameMap->AreObjectsAdjacent(selObj, clickObj))
+                            // object is adjacent
+                            if(mGameMap->AreObjectsAdjacent(selObj, clickObj))
                             {
                                 if(SetupResourceGeneratorConquest(selCell, clickCell, player))
                                     ClearSelection(player);
                             }
+                            // object is far
+                            else
+                            {
+
+                            }
                         }
-                        // destination is not visible -> try to walk close to it
+                        // no destination object or object not visible -> try to walk close to destination
                         else
                         {
+                            Cell2D target = mGameMap->GetCloseMoveTarget(selCell, clickCell);
 
+                            if(target.row != -1 && target.col != -1)
+                            {
+                                auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                                  target.row, target.col);
+
+                                // path available -> start moving
+                                if(!path.empty())
+                                {
+                                    auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
+                                    op->SetPathCells(path);
+
+                                    mGameMap->MoveUnit(op);
+                                }
+                            }
                         }
                     }
                 }

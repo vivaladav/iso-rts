@@ -857,6 +857,64 @@ bool GameMap::MoveUnit(ObjectPath * path)
     return true;
 }
 
+Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
+{
+    Cell2D dest(-1, -1);
+
+    // get all walkable cells around end
+    const int rowTL = end.row - 1 > 0 ? end.row - 1 : 0;
+    const int colTL = end.col - 1 > 0 ? end.col - 1 : 0;
+    const int rowBR = end.row + 1 < static_cast<int>(mRows - 1) ? end.row + 1 : mRows - 1;
+    const int colBR = end.col + 1 < static_cast<int>(mCols - 1) ? end.col + 1 : mCols - 1;
+
+    std::vector<Cell2D> walkalbes;
+    const int maxWalkables = 8;
+    walkalbes.reserve(maxWalkables);
+
+    for(int r = rowTL; r <= rowBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = colTL; c <= colBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
+        }
+    }
+
+    // failed to find any walkable
+    if(walkalbes.empty())
+        return dest;
+
+    // get closest cell
+    int minInd = 0;
+    int minDist = std::abs(start.row - walkalbes[minInd].row) +
+                  std::abs(start.col - walkalbes[minInd].col);
+
+    for(unsigned int i = 1; i < walkalbes.size(); ++i)
+    {
+        const int dist = std::abs(start.row - walkalbes[i].row) +
+                         std::abs(start.col - walkalbes[i].col);
+
+        if(dist < minDist)
+        {
+            minDist = dist;
+            minInd = i;
+        }
+    }
+
+    return walkalbes[minInd];
+}
+
+Cell2D GetCloseMoveTarget(const Cell2D & start, const GameObject * target)
+{
+    Cell2D dest(-1, -1);
+
+    return dest;
+}
+
 void GameMap::CheckGameEnd()
 {
     const int numPlayers = mGame->GetNumPlayers();

@@ -71,6 +71,9 @@ public:
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
     bool MoveUnit(ObjectPath * path);
 
+    Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end);
+    Cell2D GetCloseMoveTarget(const Cell2D & start, const GameObject * target);
+
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
     unsigned int GetNumRows() const;
     unsigned int GetNumCols() const;
