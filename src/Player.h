@@ -27,6 +27,8 @@ public:
     bool IsCellVisible(unsigned int ind) const;
     void AddVisibility(unsigned int ind);
     void RemVisibility(unsigned int ind);
+    void AddVisibilityToAll();
+    void RemVisibilityToAll();
 
     const std::string & GetName() const;
 

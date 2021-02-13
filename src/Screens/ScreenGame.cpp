@@ -309,10 +309,28 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable player panel when paused
         mPanelPlayer->SetEnabled(!mPaused);
     }
+    else if(key == KeyboardEvent::KEY_V)
+    {
+        Player * p = GetGame()->GetLocalPlayer();
+
+        // SHIFT + V -> add visibility to all cells
+        if(event.IsModShiftDown())
+        {
+            p->AddVisibilityToAll();
+            mGameMap->ApplyVisibility(p);
+        }
+        // CTRL + V -> remove visibility from all cells
+        else if(event.IsModCtrlDown())
+        {
+            p->RemVisibilityToAll();
+            mGameMap->ApplyVisibility(p);
+        }
+    }
 }
 
 void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
+    // no interaction while game is paused
     if(mPaused)
         return ;
 

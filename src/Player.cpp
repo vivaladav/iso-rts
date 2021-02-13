@@ -39,6 +39,21 @@ void Player::InitVisibility(int rows, int cols)
     mVisMap.assign(size, 0);
 }
 
+void Player::AddVisibilityToAll()
+{
+    for(unsigned int i = 0; i < mVisMap.size(); ++i)
+        ++mVisMap[i];
+}
+
+void Player::RemVisibilityToAll()
+{
+    for(unsigned int i = 0; i < mVisMap.size(); ++i)
+    {
+        if(mVisMap[i] > 0)
+            --mVisMap[i];
+    }
+}
+
 void Player::SumCells(int val)
 {
     mNumCells += val;
