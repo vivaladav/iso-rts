@@ -363,6 +363,15 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
         const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
 
+        // select another own object
+        if(isClickObjOwn && clickObj != selObj)
+        {
+            ClearSelection(player);
+            SelectObject(clickObj, player);
+
+            return ;
+        }
+
         // selected object is a unit
         if(selObj->GetObjectType() == OBJ_UNIT)
         {
@@ -460,7 +469,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     }
     else
     {
-
         if(isClickObjOwn)
             SelectObject(clickObj, player);
     }
