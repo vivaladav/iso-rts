@@ -85,6 +85,8 @@ inline void ObjectPath::Start()
 
     mState = RUNNING;
 
+    mNextCell = 1;
+
     InitNextMoveStep();
 }
 
