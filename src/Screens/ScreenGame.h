@@ -3,6 +3,7 @@
 #include "Cell2D.h"
 #include "Screen.h"
 
+#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -41,6 +42,9 @@ public:
 
     void CancelProgressBar(const Cell2D & cell);
 
+    void CreateProgressBar(const Cell2D & cell, float time, Player * player,
+                           const std::function<void()> & onCompleted);
+
 private:
     void CreateIsoMap();
     void CreateLayers();
@@ -58,7 +62,6 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupCellConquest(const Cell2D & cell, Player * player);
     bool SetupNewUnit(GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);

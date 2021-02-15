@@ -10,18 +10,19 @@ class GameMap;
 class GameObject;
 class IsoMap;
 
-enum PathState : unsigned int
-{
-    READY,
-    RUNNING,
-    COMPLETED,
-    FAILED,
-
-    NUM_PATH_STATES
-};
-
 class ObjectPath
 {
+public:
+    enum PathState : unsigned int
+    {
+        READY,
+        RUNNING,
+        COMPLETED,
+        FAILED,
+
+        NUM_PATH_STATES
+    };
+
 public:
     ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm);
 
@@ -71,7 +72,7 @@ inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
 
 inline GameObject * ObjectPath::GetObject() const { return mObj; }
 
-inline PathState ObjectPath::GetState() const { return mState; }
+inline ObjectPath::PathState ObjectPath::GetState() const { return mState; }
 
 inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells) { mCells = cells; }
 

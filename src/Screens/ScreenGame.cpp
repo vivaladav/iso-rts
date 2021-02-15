@@ -7,6 +7,7 @@
 #include "IsoMap.h"
 #include "MapLoader.h"
 #include "Player.h"
+#include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Unit.h"
@@ -31,7 +32,6 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr float TIME_CONQ_CELL = 2.f;
 constexpr float TIME_NEW_UNIT = 2.f;
 constexpr float TIME_CONQ_RES_GEN = 2.f;
 constexpr float TIME_UPG_UNIT = 1.f;
@@ -122,19 +122,17 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // -- UI actions --
-    // CONQUEST CELL
-    mPanelPlayer->SetFunctionCellConquest([this, player]
+    // CONQUER CELL
+    mPanelPlayer->SetFunctionCellConquest([this]
     {
+        Player * player = GetGame()->GetLocalPlayer();
         GameObject * obj = player->GetSelectedObject();
 
-        if(obj != nullptr)
+        if(obj != nullptr && obj->GetObjectType() == OBJ_UNIT)
         {
-            const Cell2D cell(obj->GetRow0(), obj->GetCol0());
-            SetupCellConquest(cell, player);
+            auto unit = static_cast<Unit *>(obj);
+            unit->SetActiveAction(UnitAction::CONQUER);
         }
-
-       // clear selection
-       ClearSelection(player);
     });
 
     // CREATE NEW UNIT
@@ -248,6 +246,22 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
 
     if(it2 != mProgressBarsToDelete.end())
         mProgressBarsToDelete.erase(it2);
+}
+
+void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * player,
+                                  const std::function<void()> & onCompleted)
+{
+    CellProgressBar * pb = CreateProgressBar(cell, time, player->GetPlayerId());
+
+    // TODO make widgets accept multiple callback functions so that this code can be changed
+    // returning the ProgressBar and letting the caller set another callback while the
+    // callback handling the deletion is added here
+    pb->SetFunctionOnCompleted([this, cell, onCompleted]
+    {
+        onCompleted();
+
+        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+    });
 }
 
 void ScreenGame::CreateIsoMap()
@@ -377,8 +391,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             Unit * selUnit = static_cast<Unit *>(selObj);
 
+            const UnitAction action = selUnit->GetActiveAction();
+
             // move
-            if(selUnit->GetActiveAction() == MOVE)
+            if(action == UnitAction::MOVE)
             {
                 // click cell is different from unit cell -> try to move
                 if(diffClick)
@@ -462,6 +478,28 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                                 }
                             }
                         }
+                    }
+                }
+            }
+            else if(action == UnitAction::CONQUER)
+            {
+                const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
+
+                // destination is visible and walkable
+                if(player->IsCellVisible(clickInd) &&
+                   (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
+                {
+                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                      clickCell.row, clickCell.col);
+
+                    // path available -> start conquering
+                    if(!path.empty())
+                    {
+
+                        auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
+                        cp->SetPathCells(path);
+
+                        mGameMap->ConquerCells(cp);
                     }
                 }
             }
@@ -638,27 +676,6 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 int ScreenGame::CellToIndex(const Cell2D & cell) const
 {
     return cell.row * mIsoMap->GetNumCols() + cell.col;
-}
-
-bool ScreenGame::SetupCellConquest(const Cell2D & cell, Player * player)
-{
-    // check if conquest is possible
-    if(!mGameMap->CanConquerCell(cell, player))
-        return false;
-
-    // start conquest
-    mGameMap->StartConquerCell(cell, player);
-
-    // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_CONQ_CELL, player->GetPlayerId());
-
-    pb->SetFunctionOnCompleted([this, cell, player]
-    {
-        mGameMap->ConquerCell(cell, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
-    });
-
-    return true;
 }
 
 bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)

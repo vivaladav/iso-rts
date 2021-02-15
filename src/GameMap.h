@@ -10,6 +10,7 @@
 namespace game
 {
 
+class ConquerPath;
 class Game;
 class GameObject;
 class IsoMap;
@@ -50,6 +51,7 @@ public:
     bool CanConquerCell(const Cell2D & cell, Player * player);
     void StartConquerCell(const Cell2D & cell, Player * player);
     void ConquerCell(const Cell2D & cell, Player * player);
+    void ConquerCells(ConquerPath * path);
 
     // resource generator conquest
     bool CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
@@ -112,13 +114,19 @@ private:
     void PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
                                    std::function<void(int)> visFun);
 
+    void UpdateObjectPaths(float delta);
+    void UpdateConquerPaths(float delta);
+
 private:
     // to access visibility functions
     friend class ObjectPath;
+    friend class ConquerPath;
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
     std::vector<ObjectPath *> mPaths;
+    std::vector<ConquerPath *> mConquerPaths;
+
 
     Game * mGame = nullptr;
     ScreenGame * mScreenGame = nullptr;

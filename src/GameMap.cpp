@@ -6,6 +6,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "Player.h"
+#include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/ResourceGenerator.h"
@@ -349,6 +350,14 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 
         ApplyVisibility(player);
     }
+}
+
+void GameMap::ConquerCells(ConquerPath * path)
+{
+
+    path->Start();
+
+    mConquerPaths.emplace_back(path);
 }
 
 bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
@@ -953,29 +962,11 @@ void GameMap::Update(float delta)
     for(GameObject * obj : mObjects)
         obj->Update(delta);
 
-    // -- paths --
-    auto itPath = mPaths.begin();
+    // paths
+    UpdateObjectPaths(delta);
 
-    while(itPath != mPaths.end())
-    {
-        ObjectPath * path = *itPath;
-
-        path->Update(delta);
-
-        if(path->GetState() == PathState::COMPLETED)
-        {
-            delete path;
-            itPath = mPaths.erase(itPath);
-        }
-        else if(path->GetState() == PathState::FAILED)
-        {
-            // TODO try to recover from failed path
-            delete path;
-            itPath = mPaths.erase(itPath);
-        }
-        else
-            ++itPath;
-    }
+    // conquer paths
+    UpdateConquerPaths(delta);
 }
 
 // ==================== PRIVATE METHODS ====================
@@ -1417,6 +1408,58 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
                 visFun(ind);
             }
         }
+    }
+}
+
+void GameMap::UpdateObjectPaths(float delta)
+{
+    auto itPath = mPaths.begin();
+
+    while(itPath != mPaths.end())
+    {
+        ObjectPath * path = *itPath;
+
+        path->Update(delta);
+
+        if(path->GetState() == ObjectPath::PathState::COMPLETED)
+        {
+            delete path;
+            itPath = mPaths.erase(itPath);
+        }
+        else if(path->GetState() == ObjectPath::PathState::FAILED)
+        {
+            // TODO try to recover from failed path
+            delete path;
+            itPath = mPaths.erase(itPath);
+        }
+        else
+            ++itPath;
+    }
+}
+
+void GameMap::UpdateConquerPaths(float delta)
+{
+    auto itCP = mConquerPaths.begin();
+
+    while(itCP != mConquerPaths.end())
+    {
+        ConquerPath * path = *itCP;
+
+        path->Update(delta);
+
+        if(path->GetState() == ConquerPath::ConquerState::COMPLETED)
+        {
+            delete path;
+            itCP = mConquerPaths.erase(itCP);
+        }
+        else if(path->GetState() == ConquerPath::ConquerState::FAILED)
+        {
+            // TODO try to recover from failed path
+            delete path;
+            itCP = mConquerPaths.erase(itCP);
+        }
+        else
+            ++itCP;
     }
 }
 
