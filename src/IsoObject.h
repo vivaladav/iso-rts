@@ -19,7 +19,7 @@ class IsoObject
 {
 public:
     IsoObject(int rows, int cols);
-    ~IsoObject();
+    virtual ~IsoObject();
 
     IsoLayer * GetLayer() const;
     void SetLayer(IsoLayer * layer);
@@ -44,7 +44,7 @@ public:
     void SetTexture(lib::graphic::Texture * tex);
     void SetColor(unsigned int color);
 
-    void Render();
+    virtual void Render();
 
 private:
     lib::graphic::Image * mImg = nullptr;
