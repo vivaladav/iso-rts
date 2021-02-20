@@ -18,14 +18,42 @@ float const MoveIndicator::COST_UNKNOWN = -1.f;
 MoveIndicator::MoveIndicator()
     : IsoObject(1, 1)
 {
-    using namespace lib::graphic;
-
-    // indicator texture
-    Texture * tex = TextureManager::Instance()->GetTexture("data/img/selection-f1.png");
-    SetTexture(tex);
+    // init type
+    SetIndicatorType(NORMAL);
 
     // init cost label
     SetCost(0);
+}
+
+void MoveIndicator::SetIndicatorType(IndicatorType type)
+{
+    using namespace lib::graphic;
+
+    if(type == mType)
+        return ;
+
+    mType = type;
+
+    auto tm = TextureManager::Instance();
+
+    // update image of indicator and text color of cost
+    Texture * tex = tm->GetTexture("data/img/move_ind.png");
+
+    if(NO_VIS_CELL == mType)
+    {
+        SetColor(0x808080FF);
+        mColorCost = 0xB2B2B2FF;
+    }
+    else
+    {
+        SetColor(0xE5E5E5FF);
+        mColorCost = 0xE5E5E5FF;
+    }
+
+    SetTexture(tex);
+
+    if(mTxtCost)
+        mTxtCost->SetColor(mColorCost);
 }
 
 void MoveIndicator::SetCost(float val)
@@ -58,6 +86,8 @@ void MoveIndicator::SetCost(float val)
         s << std::fixed << std::setprecision(1) << mCost;
         mTxtCost = new Text(s.str().c_str(), font);
     }
+
+    mTxtCost->SetColor(mColorCost);
 }
 
 void MoveIndicator::Render()

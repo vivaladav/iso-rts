@@ -799,9 +799,12 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
     if(!showIndicator)
         return ;
 
-    // show path cost if destination is visible
     if(currVisible)
     {
+        // set indicator type
+        mMoveInd->SetIndicatorType(MoveIndicator::NORMAL);
+
+        // show path cost when destination is visible
         std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
                                                                currCell.row, currCell.col);
 
@@ -810,9 +813,15 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 
         mMoveInd->SetCost(op.GetPathCost());
     }
-    // not visible destination -> unknown cost
+    // not visible destination
     else
+    {
+        // set indicator type
+        mMoveInd->SetIndicatorType(MoveIndicator::NO_VIS_CELL);
+
+        // hide cost when destination is not visible
         mMoveInd->SetCostUnknown();
+    }
 }
 
 void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)
