@@ -788,12 +788,31 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
     Player * player = GetGame()->GetLocalPlayer();
 
     const bool currVisible = player->IsCellVisible(currInd);
-    const bool currVisited = mGameMap->IsCellObjectVisited(currCell.row, currCell.col);
-    const bool currWalkable = mGameMap->IsCellWalkable(currCell.row, currCell.col);
+    const bool currVisited = mGameMap->IsCellObjectVisited(currInd);
+    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
 
     const bool showIndicator = (!currVisible && !currVisited) || currWalkable;
 
     layer->SetObjectVisible(mMoveInd, showIndicator);
+
+    // stop here if not showing indicator
+    if(!showIndicator)
+        return ;
+
+    // show path cost if destination is visible
+    if(currVisible)
+    {
+        std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                                               currCell.row, currCell.col);
+
+        ObjectPath op(unit, mIsoMap, mGameMap);
+        op.SetPathCells(path);
+
+        mMoveInd->SetCost(op.GetPathCost());
+    }
+    // not visible destination -> unknown cost
+    else
+        mMoveInd->SetCostUnknown();
 }
 
 void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)

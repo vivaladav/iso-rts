@@ -52,26 +52,13 @@ bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
 
-    // TODO handle Fog of War
     return mCells[ind].walkable;
 }
 
-bool GameMap::HasCellObject(unsigned int r, unsigned int c)
+bool GameMap::IsCellObjectVisited(unsigned int cellInd) const
 {
-    const unsigned int ind = r * mCols + c;
-
-    if(ind < mRows * mCols)
-        return mCells[ind].obj != nullptr;
-    else
-        return false;
-}
-
-bool GameMap::IsCellObjectVisited(unsigned int r, unsigned int c)
-{
-    const unsigned int ind = r * mCols + c;
-
-    if(ind < mRows * mCols)
-        return mCells[ind].obj && mCells[ind].obj->IsVisited();
+    if(cellInd < mRows * mCols)
+        return mCells[cellInd].obj && mCells[cellInd].obj->IsVisited();
     else
         return false;
 }

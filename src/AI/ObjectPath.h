@@ -30,6 +30,8 @@ public:
 
     PathState GetState() const;
 
+    float GetPathCost() const;
+
     void SetPathCells(const std::vector<unsigned int> & cells);
 
     void SetOnCompleted(const std::function<void()> & f);
@@ -40,6 +42,8 @@ public:
 
 private:
     void InitNextMoveStep();
+
+    void UpdatePathCost();
 
 private:
     std::vector<unsigned int> mCells;
@@ -63,6 +67,8 @@ private:
 
     float mTargetX = 0.f;
     float mTargetY = 0.f;
+
+    float mCost = 0.f;
 };
 
 inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
@@ -74,7 +80,13 @@ inline GameObject * ObjectPath::GetObject() const { return mObj; }
 
 inline ObjectPath::PathState ObjectPath::GetState() const { return mState; }
 
-inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells) { mCells = cells; }
+inline float ObjectPath::GetPathCost() const { return mCost; }
+
+inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells)
+{
+    mCells = cells;
+    UpdatePathCost();
+}
 
 inline void ObjectPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
 

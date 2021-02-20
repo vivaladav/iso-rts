@@ -28,10 +28,11 @@ public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
 
+    bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
 
-    bool HasCellObject(unsigned int r, unsigned int c);
-    bool IsCellObjectVisited(unsigned int r, unsigned int c);
+    bool IsCellObjectVisited(unsigned int cellInd) const;
+    bool IsCellObjectVisited(unsigned int r, unsigned int c) const;
 
     void SetSize(unsigned int rows, unsigned int cols);
 
@@ -141,6 +142,17 @@ private:
 };
 
 // ==================== INLINE METHODS ====================
+
+inline bool GameMap::IsCellWalkable(unsigned int cellInd) const
+{
+    return mCells[cellInd].walkable;
+}
+
+inline bool GameMap::IsCellObjectVisited(unsigned int r, unsigned int c) const
+{
+    const unsigned int cellInd = r * mCols + c;
+    return IsCellObjectVisited(cellInd);
+}
 
 /**
  * @brief Returns the player ID of the Player that currently controls the cell.

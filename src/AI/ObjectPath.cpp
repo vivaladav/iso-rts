@@ -126,4 +126,10 @@ void ObjectPath::Update(float delta)
     }
 }
 
+void ObjectPath::UpdatePathCost()
+{
+    // TODO proper cost computation
+    mCost = (mCells.size() - 1) * 0.5f;
+}
+
 } // namespace game
