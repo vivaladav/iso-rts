@@ -20,7 +20,7 @@ constexpr unsigned int PLAYER_COLOR[] =
 
 enum MapLayers
 {
-    SELECTION,
+    CELL_OVERLAYS,
     MOVE_TARGETS,
     OBJECTS,
 

@@ -21,9 +21,11 @@ class GameMap;
 class GameObject;
 class IsoLayer;
 class IsoMap;
+class MoveIndicator;
 class PanelPlayer;
 class Player;
 class PlayerAI;
+class Unit;
 
 class ScreenGame : public Screen
 {
@@ -36,6 +38,7 @@ public:
 
     void OnKeyUp(lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
+    void OnMouseMotion(lib::core::MouseMotionEvent & event) override;
 
     void GameOver();
     void GameWon();
@@ -55,8 +58,6 @@ private:
     void ClearSelection(Player * player);
     void SelectObject(GameObject * obj, Player * player);
 
-    void ShowMoveTargets(const Cell2D & cell, Player * player);
-
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
 
@@ -65,6 +66,11 @@ private:
     bool SetupNewUnit(GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);
+
+    void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
+    void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
+
+    void ClearMoveIndicator();
 
 private:
     std::vector<Player *> mAiPlayers;
@@ -79,7 +85,9 @@ private:
 
     lib::ai::Pathfinder * mPathfinder = nullptr;
 
-    struct Cell2D mPrevSel;
+    MoveIndicator * mMoveInd = nullptr;
+
+    struct Cell2D mPrevCell;
 
     float mTimerEnergy;
     float mTimerAI;

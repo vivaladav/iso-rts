@@ -11,6 +11,7 @@
 #include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Unit.h"
+#include "Indicators/MoveIndicator.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
@@ -19,6 +20,7 @@
 #include <ai/Pathfinder.h>
 #include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
+#include <core/event/MouseMotionEvent.h>
 #include <graphic/Renderer.h>
 #include <sgui/Stage.h>
 
@@ -42,6 +44,7 @@ constexpr float TIME_AI_MOVE = 0.5f;
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
     , mPathfinder(new lib::ai::Pathfinder)
+    , mPrevCell(-1, -1)
     , mTimerEnergy(TIME_ENERGY_USE)
     , mTimerAI(TIME_AI_MOVE)
 {
@@ -300,7 +303,7 @@ void ScreenGame::CreateIsoMap()
 
 void ScreenGame::CreateLayers()
 {
-    mIsoMap->CreateLayer(MapLayers::SELECTION);
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS);
 
     mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS);
 
@@ -412,6 +415,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                             op->SetPathCells(path);
 
                             mGameMap->MoveUnit(op);
+
+                            ClearMoveIndicator();
                         }
                     }
                     // destination not walkable
@@ -454,6 +459,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                                         op->SetOnCompleted(fun);
 
                                         mGameMap->MoveUnit(op);
+
+                                        ClearMoveIndicator();
                                     }
                                 }
                             }
@@ -475,6 +482,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                                     op->SetPathCells(path);
 
                                     mGameMap->MoveUnit(op);
+
+                                    ClearMoveIndicator();
                                 }
                             }
                         }
@@ -510,6 +519,32 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         if(isClickObjOwn)
             SelectObject(clickObj, player);
     }
+}
+
+void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
+{
+    const Cell2D currCell = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+
+    // still in the same cell -> nothing to do
+    if(mPrevCell == currCell)
+        return ;
+
+    Player * player = GetGame()->GetLocalPlayer();
+    GameObject * selObj = player->GetSelectedObject();
+
+    Unit * selUnit = (selObj && selObj->GetObjectType() == OBJ_UNIT) ?
+                     static_cast<Unit *>(selObj) : nullptr;
+
+    // no unit selected -> nothing to do
+    if(nullptr == selUnit)
+        return ;
+
+    if(selUnit->GetActiveAction() == MOVE)
+        HandleUnitMoveOnMouseMove(selUnit, currCell);
+    else if(selUnit->GetActiveAction() == CONQUER)
+        HandleUnitConquestOnMouseMove(selUnit, currCell);
+
+    mPrevCell = currCell;
 }
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
@@ -564,35 +599,6 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     player->SetSelectedObject(obj);
 
     mPanelPlayer->SetSelectedObject(obj);
-}
-
-void ScreenGame::ShowMoveTargets(const Cell2D & cell, Player * player)
-{
-    /*
-    IsoLayer * layerTargets = mIsoMap->GetLayer(MOVE_TARGETS);
-
-    const int numTargets = 8;
-    const Cell2D targets[numTargets] =
-    {
-        {cell.row - 1, cell.col - 1},     // TL
-        {cell.row - 1, cell.col},         // T
-        {cell.row - 1, cell.col + 1},     // TR
-
-        {cell.row, cell.col - 1},         // L
-        {cell.row, cell.col + 1},         // R
-
-        {cell.row + 1, cell.col - 1},     // BL
-        {cell.row + 1, cell.col},         // B
-        {cell.row + 1, cell.col + 1}      // BR
-    };
-
-    // add targets where unit can move
-    for(int i = 0; i < numTargets; ++i)
-    {
-        if(mGameMap->CanUnitMove(cell, targets[i], player))
-            layerTargets->AddObject(targets[i].row, targets[i].col, 0, ObjectAlignment::CENTER);
-    }
-    */
 }
 
 void ScreenGame::UpdateAI(float delta)
@@ -749,6 +755,62 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
     });
 
     return true;
+}
+
+void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+
+    const bool currInside = mIsoMap->IsCellInside(currCell);
+
+    // mouse outside the map
+    if(!currInside)
+    {
+        // hide the indicator, if any
+        if(mMoveInd != nullptr)
+            layer->SetObjectVisible(mMoveInd, false);
+
+        return ;
+    }
+
+    // move indicator already created -> move it and continue
+    if(mMoveInd != nullptr)
+        layer->MoveObject(mMoveInd->GetRow(), mMoveInd->GetCol(), currCell.row, currCell.col);
+    // create new move indicator
+    else
+    {
+        mMoveInd = new MoveIndicator;
+        layer->AddObject(mMoveInd, currCell.row, currCell.col);
+    }
+
+    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const bool currVisible = player->IsCellVisible(currInd);
+    const bool currVisited = mGameMap->IsCellObjectVisited(currCell.row, currCell.col);
+    const bool currWalkable = mGameMap->IsCellWalkable(currCell.row, currCell.col);
+
+    const bool showIndicator = (!currVisible && !currVisited) || currWalkable;
+
+    layer->SetObjectVisible(mMoveInd, showIndicator);
+}
+
+void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)
+{
+    // TODO
+}
+
+void ScreenGame::ClearMoveIndicator()
+{
+    if(nullptr == mMoveInd)
+        return ;
+
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    layer->ClearObject(mMoveInd);
+
+    delete mMoveInd;
+    mMoveInd = nullptr;
 }
 
 } // namespace game

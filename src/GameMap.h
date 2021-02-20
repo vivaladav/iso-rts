@@ -30,6 +30,9 @@ public:
 
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
 
+    bool HasCellObject(unsigned int r, unsigned int c);
+    bool IsCellObjectVisited(unsigned int r, unsigned int c);
+
     void SetSize(unsigned int rows, unsigned int cols);
 
     void SyncMapCells();
