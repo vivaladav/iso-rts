@@ -88,6 +88,10 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     // link layer and object
     obj->SetLayer(this);
 
+    // set object position in layer
+    obj->SetRow(r);
+    obj->SetCol(c);
+
     mObjectsList.emplace_back(obj);
 
     // position it in a cell
@@ -99,6 +103,18 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     InsertObjectInRenderList(obj);
 
     return true;
+}
+
+void IsoLayer::ClearObject(IsoObject * obj)
+{
+    if(nullptr == obj)
+        return ;
+
+    obj->SetLayer(nullptr);
+
+    ClearObjectFromMap(obj);
+    RemoveObjectFromList(obj);
+    RemoveObjectFromRenderList(obj);
 }
 
 /**
@@ -258,11 +274,7 @@ void IsoLayer::ClearObject(unsigned int index)
 {
     IsoObject * obj = mObjectsMap[index];
 
-    obj->SetLayer(nullptr);
-
-    ClearObjectFromMap(obj);
-    RemoveObjectFromList(obj);
-    RemoveObjectFromRenderList(obj);
+    ClearObject(obj);
 }
 
 void IsoLayer::RemoveObjectFromList(IsoObject * obj)

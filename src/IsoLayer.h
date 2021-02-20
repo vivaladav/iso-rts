@@ -39,6 +39,7 @@ public:
 
     bool ContainsObject(unsigned int r, unsigned int c) const;
     bool AddObject(IsoObject * obj, unsigned int r, unsigned int c);
+    void ClearObject(IsoObject * obj);
     void ClearObject(unsigned int r, unsigned int c);
     bool MoveObject(unsigned int r0, unsigned int c0,
                     unsigned int r1, unsigned int c1,
