@@ -136,6 +136,8 @@ ScreenGame::ScreenGame(Game * game)
         {
             auto unit = static_cast<Unit *>(obj);
             unit->SetActiveAction(UnitAction::CONQUER);
+
+            ClearMoveIndicator();
         }
     });
 
@@ -541,15 +543,16 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
     Unit * selUnit = (selObj && selObj->GetObjectType() == OBJ_UNIT) ?
                      static_cast<Unit *>(selObj) : nullptr;
 
-    // no unit selected -> nothing to do
-    if(nullptr == selUnit)
-        return ;
+    // unit selected -> handle mouse motion
+    if(selUnit != nullptr)
+    {
+        if(selUnit->GetActiveAction() == MOVE)
+            HandleUnitMoveOnMouseMove(selUnit, currCell);
+        else if(selUnit->GetActiveAction() == CONQUER)
+            HandleUnitConquestOnMouseMove(selUnit, currCell);
+    }
 
-    if(selUnit->GetActiveAction() == MOVE)
-        HandleUnitMoveOnMouseMove(selUnit, currCell);
-    else if(selUnit->GetActiveAction() == CONQUER)
-        HandleUnitConquestOnMouseMove(selUnit, currCell);
-
+    // update previous cell before exit
     mPrevCell = currCell;
 }
 
@@ -597,6 +600,7 @@ void ScreenGame::ClearSelection(Player * player)
 
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
 
+    ClearMoveIndicator();
     ClearCellOverlays();
 }
 
