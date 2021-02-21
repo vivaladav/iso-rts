@@ -171,19 +171,26 @@ ScreenNewGame::ScreenNewGame(Game * game)
     mButtonStart->SetEnabled(false);
     mButtonStart->SetX(buttonBackW + marginButtonsH);
 
+    // TODO proper selection of factions
     mButtonStart->SetOnClickFunction([this, game]
     {
         // create human player
         game->AddPlayer("PLAYER 1", 0);
         Player * p = game->GetPlayer(0);
         p->SetLocal(true);
+        p->SetFaction(FACTION_1);
 
         // create AI players
         const char * strPlayers[] =
         {
             "PLAYER 2",
-            "PLAYER 3",
-            "PLAYER 4"
+            "PLAYER 3"
+        };
+
+        const PlayerFaction factions[] =
+        {
+            FACTION_2,
+            FACTION_3
         };
 
         for(int i = 0; i < mCpuPlayers; ++i)
@@ -192,6 +199,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
             game->AddPlayer(strPlayers[i], playerId);
             p = game->GetPlayer(playerId);
+            p->SetFaction(factions[i]);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
         }

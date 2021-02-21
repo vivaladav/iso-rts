@@ -17,6 +17,7 @@ namespace game
 {
 
 class CellProgressBar;
+class ConquestIndicator;
 class GameMap;
 class GameObject;
 class IsoLayer;
@@ -71,12 +72,15 @@ private:
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
 
     void ClearMoveIndicator();
+    void ClearCellOverlays();
 
 private:
     std::vector<Player *> mAiPlayers;
 
     std::unordered_map<int, CellProgressBar *> mProgressBars;
     std::vector<int> mProgressBarsToDelete;
+
+    std::vector<ConquestIndicator *> mConquestIndicators;
 
     PanelPlayer * mPanelPlayer = nullptr;
 

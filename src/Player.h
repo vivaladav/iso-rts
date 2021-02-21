@@ -16,11 +16,23 @@ class ResourceGenerator;
 
 enum ResourceType : unsigned int;
 
+enum PlayerFaction : unsigned int
+{
+    FACTION_1,
+    FACTION_2,
+    FACTION_3,
+
+    NUM_FACTIONS
+};
+
 class Player
 {
 public:
     Player(const char * name, int pid);
     ~Player();
+
+    PlayerFaction GetFaction() const;
+    void SetFaction(PlayerFaction faction);
 
     // visibility map
     void InitVisibility(int rows, int cols);
@@ -96,6 +108,8 @@ private:
 
     int mPlayerId;
 
+    PlayerFaction mFaction;
+
     int mNumCells = 0;
     int mTotCellsLevel = 0;
     int mEnergy = 0;
@@ -105,6 +119,9 @@ private:
 
     bool mLocal = false;
 };
+
+inline PlayerFaction Player::GetFaction() const { return mFaction; }
+inline void Player::SetFaction(PlayerFaction faction) { mFaction = faction; }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {

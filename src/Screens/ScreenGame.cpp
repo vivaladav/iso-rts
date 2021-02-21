@@ -11,6 +11,7 @@
 #include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Unit.h"
+#include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
@@ -159,6 +160,9 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
+    for(auto ind : mConquestIndicators)
+        delete ind;
+
     delete mIsoMap;
     delete mGameMap;
 
@@ -509,6 +513,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                         cp->SetPathCells(path);
 
                         mGameMap->ConquerCells(cp);
+
+                        ClearCellOverlays();
                     }
                 }
             }
@@ -590,6 +596,8 @@ void ScreenGame::ClearSelection(Player * player)
     mPanelPlayer->ClearSelectedCell();
 
     mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
+
+    ClearCellOverlays();
 }
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
@@ -826,7 +834,68 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 
 void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
-    // TODO
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+
+    // first clear all objects from the layer
+    layer->ClearObjects();
+
+    const bool currInside = mIsoMap->IsCellInside(currCell);
+
+    // mouse outside the map
+    if(!currInside)
+        return ;
+
+    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const bool currVisible = player->IsCellVisible(currInd);
+    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
+
+    const bool canConquer = currVisible && currWalkable;
+
+    if(!canConquer)
+        return ;
+
+    // show path cost when destination is visible
+    std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                                           currCell.row, currCell.col);
+
+    // this should never happen, but just in case
+    if(path.empty())
+        return ;
+
+    const unsigned int lastIdx = path.size() - 1;
+
+    const PlayerFaction faction = player->GetFaction();
+
+    for(unsigned int i = 0; i < path.size(); ++i)
+    {
+        ConquestIndicator * ind = nullptr;
+
+        if(i < mConquestIndicators.size())
+            ind = mConquestIndicators[i];
+        else
+        {
+            ind = new ConquestIndicator;
+            mConquestIndicators.emplace_back(ind);
+        }
+
+        // add indicator to layer
+        const unsigned int pathInd = path[i];
+        const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
+        const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
+
+        layer->AddObject(ind, indRow, indCol);
+
+        ind->SetFaction(faction);
+        ind->ShowCost(i == lastIdx);
+    }
+
+    ConquerPath cp(unit, mIsoMap, mGameMap, this);
+    cp.SetPathCells(path);
+
+    mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
 }
 
 void ScreenGame::ClearMoveIndicator()
@@ -839,6 +908,12 @@ void ScreenGame::ClearMoveIndicator()
 
     delete mMoveInd;
     mMoveInd = nullptr;
+}
+
+void ScreenGame::ClearCellOverlays()
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    layer->ClearObjects();
 }
 
 } // namespace game
