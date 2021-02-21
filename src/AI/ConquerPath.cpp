@@ -80,6 +80,12 @@ void ConquerPath::InitNextMoveStep()
     mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
 }
 
+void ConquerPath::UpdatePathCost()
+{
+    // TODO proper cost computation
+    mCost = (mCells.size() - 1) * 0.5f;
+}
+
 void ConquerPath::Start()
 {
     // do nothing if already started

@@ -47,6 +47,8 @@ add_executable(
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
+    src/Indicators/ConquestIndicator.h
+    src/Indicators/ConquestIndicator.cpp
     src/Indicators/MoveIndicator.h
     src/Indicators/MoveIndicator.cpp
     src/Screens/Screen.h

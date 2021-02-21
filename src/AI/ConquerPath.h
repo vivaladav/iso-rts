@@ -31,6 +31,8 @@ public:
 
     ConquerState GetState() const;
 
+    float GetPathCost() const;
+
     void SetPathCells(const std::vector<unsigned int> & cells);
 
     void Start();
@@ -41,6 +43,8 @@ private:
     void InitNextConquest();
     void TransitionToMoveStep();
     void InitNextMoveStep();
+
+    void UpdatePathCost();
 
 private:
     std::vector<unsigned int> mCells;
@@ -64,6 +68,8 @@ private:
 
     float mTargetX = 0.f;
     float mTargetY = 0.f;
+
+    float mCost = 0.f;
 };
 
 inline ConquerPath::ConquerPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
@@ -75,6 +81,13 @@ inline GameObject * ConquerPath::GetObject() const { return mObj; }
 
 inline ConquerPath::ConquerState ConquerPath::GetState() const { return mState; }
 
-inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells) { mCells = cells; }
+inline float ConquerPath::GetPathCost() const { return mCost; }
+
+inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells)
+{
+    mCells = cells;
+
+    UpdatePathCost();
+}
 
 } // namespace game
