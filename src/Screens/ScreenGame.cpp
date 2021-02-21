@@ -855,8 +855,9 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
 
     const bool currVisible = player->IsCellVisible(currInd);
     const bool currWalkable = mGameMap->IsCellWalkable(currInd);
+    const bool currIsUnitCell = currCell.row == unit->GetRow0() && currCell.col == unit->GetCol0();
 
-    const bool canConquer = currVisible && currWalkable;
+    const bool canConquer = currVisible && (currWalkable || currIsUnitCell);
 
     if(!canConquer)
         return ;
