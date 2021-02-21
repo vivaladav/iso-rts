@@ -516,7 +516,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
                         mGameMap->ConquerCells(cp);
 
-                        ClearCellOverlays();
+                        ClearSelection(player);
                     }
                 }
             }
