@@ -12,6 +12,7 @@ ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
     , mResType(type)
 {
     SetStructure(true);
+    SetCanBeConquered(true);
 
     SetImage();
 

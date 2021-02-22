@@ -384,7 +384,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     {
         GameObject * selObj = player->GetSelectedObject();
         const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
-        const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
 
         // select another own object
         if(isClickObjOwn && clickObj != selObj)
@@ -405,96 +404,11 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             // move
             if(action == UnitAction::MOVE)
             {
-                // click cell is different from unit cell -> try to move
+                const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
+
+                // try to move only if clicked on a different cell
                 if(diffClick)
-                {
-                    // destination is walkable -> try to generate a path
-                    if(mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
-                    {
-                        auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                          clickCell.row, clickCell.col);
-
-                        // path available -> start moving
-                        if(!path.empty())
-                        {
-                            auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
-                            op->SetPathCells(path);
-
-                            mGameMap->MoveUnit(op);
-
-                            ClearMoveIndicator();
-                        }
-                    }
-                    // destination not walkable
-                    else
-                    {
-                        // destination object is visible -> try to interact
-                        if(clickObj != nullptr && clickObj->IsVisible())
-                        {
-                            // object is adjacent
-                            if(mGameMap->AreObjectsAdjacent(selObj, clickObj))
-                            {
-                                if(SetupResourceGeneratorConquest(selCell, clickCell, player))
-                                    ClearSelection(player);
-                            }
-                            // object is far
-                            else
-                            {
-                                Cell2D target = mGameMap->GetAdjacentMoveTarget(selCell, clickObj);
-
-                                if(target.row != -1 && target.col != -1)
-                                {
-                                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                                      target.row, target.col);
-
-                                    // path available -> start moving
-                                    if(!path.empty())
-                                    {
-                                        auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
-                                        op->SetPathCells(path);
-
-                                        auto fun = [this, selUnit, clickCell, player]
-                                        {
-
-                                            const Cell2D selCell(selUnit->GetRow0(), selUnit->GetCol0());
-
-                                            if(SetupResourceGeneratorConquest(selCell, clickCell, player))
-                                                ClearSelection(player);
-                                        };
-
-                                        op->SetOnCompleted(fun);
-
-                                        mGameMap->MoveUnit(op);
-
-                                        ClearMoveIndicator();
-                                    }
-                                }
-                            }
-                        }
-                        // no destination object or object not visible -> try to walk close to destination
-                        else
-                        {
-                            Cell2D target = mGameMap->GetCloseMoveTarget(selCell, clickCell);
-
-                            if(target.row != -1 && target.col != -1)
-                            {
-                                auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                                  target.row, target.col);
-
-                                // path available -> start moving
-                                if(!path.empty())
-                                {
-                                    auto op = new ObjectPath(selUnit, mIsoMap, mGameMap);
-                                    op->SetPathCells(path);
-
-                                    mGameMap->MoveUnit(op);
-
-                                    ClearMoveIndicator();
-                                }
-                            }
-                        }
-                    }
-                }
+                    HandleUnitMoveOnMouseUp(selUnit, clickCell);
             }
             else if(action == UnitAction::CONQUER)
             {
@@ -522,6 +436,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             }
         }
     }
+    // no object currently selected
     else
     {
         if(isClickObjOwn)
@@ -769,6 +684,24 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
     return true;
 }
 
+void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
+                               const std::function<void()> & onCompleted)
+{
+    auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col);
+
+    // empty path -> exit
+    if(path.empty())
+        return ;
+
+    auto op = new ObjectPath(unit, mIsoMap, mGameMap);
+    op->SetPathCells(path);
+    op->SetOnCompleted(onCompleted);
+
+    mGameMap->MoveUnit(op);
+
+    ClearMoveIndicator();
+}
+
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
@@ -901,6 +834,74 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
     cp.SetPathCells(path);
 
     mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
+}
+
+void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
+{
+    const Cell2D selCell(unit->GetRow0(), unit->GetCol0());
+
+    const bool clickWalkable = mGameMap->IsCellWalkable(clickCell.row, clickCell.col);
+
+    // destination is walkable -> try to generate a path and move
+    if(clickWalkable)
+    {
+        SetupUnitMove(unit, selCell, clickCell);
+        return ;
+    }
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
+    const GameObject * clickObj = clickGameCell.obj;
+    const bool clickVisited = clickObj && clickObj->IsVisited();
+
+    // destination never visited (hence not visible as well) -> try to move close
+    if(!clickVisited)
+    {
+        Cell2D target = mGameMap->GetCloseMoveTarget(selCell, clickCell);
+
+        // failed to find a suitable target
+        if(-1 == target.row || -1 == target.col)
+            return ;
+
+        SetupUnitMove(unit, selCell, target);
+        return ;
+    }
+
+    // check if destination obj is visible
+    const bool clickVisible = clickObj && clickObj->IsVisible();
+
+    // visited, but not visible object -> exit
+    if(!clickVisible)
+        return ;
+
+    // visible, but it can't be conquered -> exit
+    if(!clickObj->CanBeConquered())
+        return ;
+
+    // object is adjacent -> try yo interact
+    if(mGameMap->AreObjectsAdjacent(unit, clickObj))
+    {
+        if(SetupResourceGeneratorConquest(selCell, clickCell, player))
+            ClearSelection(player);
+    }
+    // object is far -> move close and then try to interact
+    else
+    {
+        Cell2D target = mGameMap->GetAdjacentMoveTarget(selCell, clickObj);
+
+        // failed to find a suitable target
+        if(-1 == target.row || -1 == target.col)
+            return ;
+
+        SetupUnitMove(unit, selCell, target, [this, unit, clickCell, player]
+        {
+            const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
+
+            if(SetupResourceGeneratorConquest(currCell, clickCell, player))
+                ClearSelection(player);
+        });
+    }
 }
 
 void ScreenGame::ClearMoveIndicator()

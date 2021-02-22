@@ -67,9 +67,13 @@ private:
     bool SetupNewUnit(GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);
+    void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
+                       const std::function<void()> & onCompleted = []{});
 
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
+
+    void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell);
 
     void ClearMoveIndicator();
     void ClearCellOverlays();

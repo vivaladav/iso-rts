@@ -374,7 +374,6 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
     const unsigned int r1 = static_cast<unsigned int>(end.row);
     const unsigned int c1 = static_cast<unsigned int>(end.col);
 
-
     const int ind0 = r0 * mCols + c0;
     GameMapCell & gcell0 = mCells[ind0];
 
