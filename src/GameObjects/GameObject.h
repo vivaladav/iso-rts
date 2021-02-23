@@ -48,6 +48,8 @@ public:
     GameObject(GameObjectType type, int owner, int rows, int cols);
     virtual ~GameObject();
 
+    unsigned int GetObjectId() const;
+
     IsoObject * GetIsoObject() const;
 
     bool IsStructure() const;
@@ -102,7 +104,12 @@ protected:
     static const unsigned int COLOR_VIS;
 
 private:
+    static unsigned int counter;
+
+private:
     IsoObject * mIsoObj = nullptr;
+
+    unsigned int mObjId;
 
     const GameMapCell * mCell = nullptr;
 
@@ -124,9 +131,11 @@ private:
 
     bool mBusy = false;
 
-    bool mVisited = false;
     bool mVisible = true;
+    bool mVisited = false;
 };
+
+inline unsigned int GameObject::GetObjectId() const { return mObjId; }
 
 inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 
