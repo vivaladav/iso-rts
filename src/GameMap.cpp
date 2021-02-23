@@ -151,7 +151,7 @@ void GameMap::ApplyVisibility(Player * player)
             }
         }
 
-        // show or hide object
+        // update visibility if status changed
         if(visible != go->IsVisible())
         {
             // hide objects if not visited or not a structure
@@ -162,6 +162,10 @@ void GameMap::ApplyVisibility(Player * player)
 
             go->SetVisible(visible);
         }
+
+        // update visited flag independently to avoid problems on init
+        if(visible)
+            go->SetVisited();
     }
 }
 
@@ -1248,10 +1252,6 @@ Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> t
 void  GameMap::AddVisibilityToCell(Player * player, int ind)
 {
     player->AddVisibility(ind);
-
-    // if there's any object mark it as visited
-    if(mCells[ind].obj != nullptr)
-        mCells[ind].obj->SetVisited();
 }
 
 void GameMap::DelVisibilityToCell(Player * player, int ind)
