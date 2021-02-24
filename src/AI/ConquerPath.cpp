@@ -5,14 +5,47 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "IsoObject.h"
+#include "Player.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/Unit.h"
+#include "Indicators/ConquestIndicator.h"
 #include "Screens/ScreenGame.h"
 
 #include <cmath>
 
 namespace game
 {
+
+ConquerPath::~ConquerPath()
+{
+    // delete the ConquestIndicators
+    for(auto ind : mConquestIndicators)
+        delete ind;
+}
+
+void ConquerPath::CreateIndicators()
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
+    Player * player = mGameMap->GetObjectOwner(mObj);
+
+    const PlayerFaction faction = player->GetFaction();
+
+    for(unsigned int i = 1; i < mCells.size(); ++i)
+    {
+        ConquestIndicator * ind = new ConquestIndicator;
+            mConquestIndicators.emplace_back(ind);
+
+        // add indicator to layer
+        const unsigned int pathInd = mCells[i];
+        const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
+        const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
+
+        layer->AddObject(ind, indRow, indCol);
+
+        ind->SetFaction(faction);
+    }
+}
 
 void ConquerPath::InitNextConquest()
 {
@@ -92,6 +125,8 @@ void ConquerPath::Start()
     if(mState != READY)
         return ;
 
+    CreateIndicators();
+
     // stat conquering first cell
     InitNextConquest();
 }
@@ -156,6 +191,11 @@ void ConquerPath::Update(float delta)
     // handle reached target
     if(0 == todo)
     {
+        // remove the ConquestIndicator from the new cell
+        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+        layerOverlay->ClearObject(mConquestIndicators[mNextCell - 1]);
+
+        // handle object movement in maps
         Player * player = mGameMap->GetObjectOwner(mObj);
 
         mGameMap->DelPlayerObjVisibility(mObj, player);

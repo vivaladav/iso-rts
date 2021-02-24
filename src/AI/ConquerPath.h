@@ -5,6 +5,7 @@
 namespace game
 {
 
+class ConquestIndicator;
 class GameMap;
 class GameObject;
 class IsoMap;
@@ -26,6 +27,7 @@ public:
 
 public:
     ConquerPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg);
+    ~ConquerPath();
 
     GameObject * GetObject() const;
 
@@ -40,6 +42,8 @@ public:
     void Update(float delta);
 
 private:
+    void CreateIndicators();
+
     void InitNextConquest();
     void TransitionToMoveStep();
     void InitNextMoveStep();
@@ -48,6 +52,8 @@ private:
 
 private:
     std::vector<unsigned int> mCells;
+
+    std::vector<ConquestIndicator *> mConquestIndicators;
 
     GameObject * mObj = nullptr;
 

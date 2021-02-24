@@ -309,9 +309,9 @@ void ScreenGame::CreateIsoMap()
 
 void ScreenGame::CreateLayers()
 {
-    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS);
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS1);
 
-    mIsoMap->CreateLayer(MapLayers::MOVE_TARGETS);
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS2);
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS);
 }
@@ -513,8 +513,6 @@ void ScreenGame::ClearSelection(Player * player)
 
     mPanelPlayer->ClearSelectedCell();
 
-    mIsoMap->GetLayer(MOVE_TARGETS)->ClearObjects();
-
     ClearMoveIndicator();
     ClearCellOverlays();
 }
@@ -704,7 +702,7 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
 
     const bool currInside = mIsoMap->IsCellInside(currCell);
 
@@ -771,7 +769,7 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 
 void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
 
     // first clear all objects from the layer
     layer->ClearObjects();
@@ -909,7 +907,7 @@ void ScreenGame::ClearMoveIndicator()
     if(nullptr == mMoveInd)
         return ;
 
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
     layer->ClearObject(mMoveInd);
 
     delete mMoveInd;
@@ -918,7 +916,7 @@ void ScreenGame::ClearMoveIndicator()
 
 void ScreenGame::ClearCellOverlays()
 {
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS);
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
     layer->ClearObjects();
 }
 
