@@ -103,7 +103,6 @@ void GameMap::SyncMapCells()
         const auto type = static_cast<CellTypes>(mIsoMap->GetCellType(i));
 
         mCells[i].basicType = type;
-        mCells[i].walkable = type == EMPTY;
     }
 }
 
