@@ -9,6 +9,7 @@
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "GameObjects/Base.h"
+#include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/SceneObject.h"
@@ -105,9 +106,13 @@ void GameMap::SyncMapCells()
 
         mCells[i].basicType = type;
 
-        if(DIAMONDS == type)
+        if(DIAMONDS_SOURCE == type)
         {
-            auto dg = new DiamondsGenerator(this);
+           const int row = i / mCols;
+           const int col = i % mCols;
+
+           auto dg = new DiamondsGenerator(this);
+           dg->SetCell(row, col);
            mDiamondsGen.emplace_back(dg);
         }
     }
@@ -183,20 +188,20 @@ Player * GameMap::GetObjectOwner(const GameObject * obj) const
         return nullptr;
 }
 
-void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
-                           unsigned int r0, unsigned int c0,
-                           unsigned int rows, unsigned int cols)
+GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
+                                   unsigned int r0, unsigned int c0,
+                                   unsigned int rows, unsigned int cols)
 {
     // object origin is out of map
     if(r0 >= mRows || c0 >= mCols)
-        return ;
+        return nullptr;
 
     // full size is out of map
     const unsigned int r1 = 1 + r0 - rows;
     const unsigned int c1 = 1 + c0 - cols;
 
     if(r1 >= mRows || c1 >= mCols)
-        return ;
+        return nullptr;
 
     const unsigned int ind0 = r0 * mCols + c0;
 
@@ -204,7 +209,7 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     // cell is already full
     if(gcell.obj)
-        return;
+        return nullptr;
 
     // create game object
     GameObject * obj = nullptr;
@@ -241,6 +246,8 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
     }
     else if(objId >= OBJ_MOUNTAIN_FIRST && objId <= OBJ_MOUNTAIN_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
+    else if(OBJ_DIAMONDS == objId)
+        obj = new Diamonds;
 
     // set object properties
     obj->SetCell(&mCells[ind0]);
@@ -277,6 +284,8 @@ void GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     if(obj->GetOwner() == localPlayer->GetPlayerId())
         AddPlayerObjVisibility(obj, localPlayer);
+
+    return obj;
 }
 
 bool GameMap::AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const
@@ -1011,7 +1020,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
         return FOG_OF_WAR;
 
     // scene cell
-    if(SCENE == cell.basicType || DIAMONDS == cell.basicType)
+    if(SCENE == cell.basicType || DIAMONDS_SOURCE == cell.basicType)
         return cell.basicType;
 
     const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;

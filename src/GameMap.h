@@ -29,6 +29,8 @@ public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
 
+    bool HasObject(unsigned int r, unsigned int c) const;
+
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
 
@@ -46,9 +48,9 @@ public:
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
-    void CreateObject(unsigned int layerId, unsigned int objId,
-                      unsigned int r0, unsigned int c0,
-                      unsigned int rows, unsigned int cols);
+    GameObject * CreateObject(unsigned int layerId, unsigned int objId,
+                              unsigned int r0, unsigned int c0,
+                              unsigned int rows, unsigned int cols);
 
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
 
@@ -143,6 +145,13 @@ private:
 };
 
 // ==================== INLINE METHODS ====================
+
+inline bool GameMap::HasObject(unsigned int r, unsigned int c) const
+{
+    const unsigned int ind = r * mCols + c;
+
+    return ind < mCells.size() && mCells[ind].obj != nullptr;
+}
 
 inline bool GameMap::IsCellWalkable(unsigned int cellInd) const
 {
