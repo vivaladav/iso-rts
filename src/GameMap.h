@@ -11,6 +11,7 @@ namespace game
 {
 
 class ConquerPath;
+class DiamondsGenerator;
 class Game;
 class GameObject;
 class IsoMap;
@@ -128,9 +129,9 @@ private:
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
+    std::vector<DiamondsGenerator *> mDiamondsGen;
     std::vector<ObjectPath *> mPaths;
     std::vector<ConquerPath *> mConquerPaths;
-
 
     Game * mGame = nullptr;
     ScreenGame * mScreenGame = nullptr;

@@ -282,6 +282,7 @@ void ScreenGame::CreateIsoMap()
         // scene
         "data/img/tile_empty.png",
         "data/img/tile_scene_01.png",
+        "data/img/tile-diamonds.png",
 
         // faction 1
         "data/img/tile-f1.png",

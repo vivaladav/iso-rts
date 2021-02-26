@@ -9,6 +9,7 @@
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "GameObjects/Base.h"
+#include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
@@ -103,6 +104,12 @@ void GameMap::SyncMapCells()
         const auto type = static_cast<CellTypes>(mIsoMap->GetCellType(i));
 
         mCells[i].basicType = type;
+
+        if(DIAMONDS == type)
+        {
+            auto dg = new DiamondsGenerator(this);
+           mDiamondsGen.emplace_back(dg);
+        }
     }
 }
 
@@ -971,6 +978,9 @@ void GameMap::Update(float delta)
     for(GameObject * obj : mObjects)
         obj->Update(delta);
 
+    for(DiamondsGenerator * dg : mDiamondsGen)
+        dg->Update(delta);
+
     // paths
     UpdateObjectPaths(delta);
 
@@ -1001,8 +1011,8 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
         return FOG_OF_WAR;
 
     // scene cell
-    if(SCENE == cell.basicType)
-        return SCENE;
+    if(SCENE == cell.basicType || DIAMONDS == cell.basicType)
+        return cell.basicType;
 
     const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;
 
