@@ -41,7 +41,11 @@ public:
 
     void SyncMapCells();
 
+    void ApplyLocalVisibility();
     void ApplyVisibility(Player * player);
+
+    void ApplyLocalVisibilityToObject(GameObject * go);
+    void ApplyVisibilityToObject(Player * player, GameObject * go);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
     Player * GetObjectOwner(const GameObject * obj) const;

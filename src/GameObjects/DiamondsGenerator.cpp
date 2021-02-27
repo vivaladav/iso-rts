@@ -14,7 +14,7 @@ DiamondsGenerator::DiamondsGenerator(GameMap * gm)
 {
     // time range, in ms
     const int minTime = 5;
-    const int maxTime = 30;
+    const int maxTime = 10;
 
     lib::utilities::UniformDistribution ran(minTime, maxTime);
 
@@ -40,13 +40,16 @@ void DiamondsGenerator::Update(float delta)
     GameObject * obj = mGameMap->CreateObject(MapLayers::OBJECTS,GameObjectType::OBJ_DIAMONDS,
                                               mRow, mCol, 1, 1);
 
-    if(obj != nullptr)
-    {
-        lib::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
-        const int num = ran.GetNextValue();
+    if(nullptr == obj)
+        return ;
 
-        static_cast<Diamonds *>(obj)->SetNum(num);
-    }
+    // set number of diamonds in cell
+    lib::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
+    const int num = ran.GetNextValue();
+    static_cast<Diamonds *>(obj)->SetNum(num);
+
+    // update visibility
+    mGameMap->ApplyLocalVisibilityToObject(obj);
 }
 
 } // namespace game

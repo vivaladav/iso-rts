@@ -5,6 +5,7 @@
 #include "GameConstants.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
+#include "IsoObject.h"
 #include "Player.h"
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
@@ -118,6 +119,13 @@ void GameMap::SyncMapCells()
     }
 }
 
+void GameMap::ApplyLocalVisibility()
+{
+    Player * p = mGame->GetLocalPlayer();
+
+    ApplyVisibility(p);
+}
+
 void GameMap::ApplyVisibility(Player * player)
 {
     // update cells
@@ -130,54 +138,63 @@ void GameMap::ApplyVisibility(Player * player)
     }
 
     // update objects
-    IsoLayer * layer = mIsoMap->GetLayer(OBJECTS);
-
     for(GameObject * go : mObjects)
+        ApplyVisibilityToObject(player, go);
+}
+
+void GameMap::ApplyLocalVisibilityToObject(GameObject * go)
+{
+    Player * p = mGame->GetLocalPlayer();
+
+    ApplyVisibilityToObject(p, go);
+}
+
+void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
+{
+    const int rTL = go->GetRow1();
+    const int cTL = go->GetCol1();
+    const int rBR = go->GetRow0();
+    const int cBR = go->GetCol0();
+
+    IsoObject * obj = go->GetIsoObject();
+    IsoLayer * layer = obj->GetLayer();
+
+    bool visible = false;
+
+    for(int r = rTL; r <= rBR; ++r)
     {
-        const int rTL = go->GetRow1();
-        const int cTL = go->GetCol1();
-        const int rBR = go->GetRow0();
-        const int cBR = go->GetCol0();
+        const int indBase = r * mCols;
 
-        IsoObject * obj = go->GetIsoObject();
-
-        bool visible = false;
-
-        for(int r = rTL; r <= rBR; ++r)
+        for(int c = cTL; c <= cBR; ++c)
         {
-            const int indBase = r * mCols;
+            const int ind = indBase + c;
 
-            for(int c = cTL; c <= cBR; ++c)
+            if(player->IsCellVisible(ind))
             {
-                const int ind = indBase + c;
-
-                if(player->IsCellVisible(ind))
-                {
-                    visible = true;
-                    break;
-                }
-
-                if(visible)
-                    break;
+                visible = true;
+                break;
             }
+
+            if(visible)
+                break;
         }
-
-        // update visibility if status changed
-        if(visible != go->IsVisible())
-        {
-            // hide objects if not visited or not a structure
-            if(!visible && (!go->IsVisited() || !go->IsStructure()))
-                layer->SetObjectVisible(obj, false);
-            else
-                layer->SetObjectVisible(obj, true);
-
-            go->SetVisible(visible);
-        }
-
-        // update visited flag independently to avoid problems on init
-        if(visible)
-            go->SetVisited();
     }
+
+    // update visibility if status changed
+    if(visible != go->IsVisible())
+    {
+        // hide objects if not visited or not a structure
+        if(!visible && (!go->IsVisited() || !go->IsStructure()))
+            layer->SetObjectVisible(obj, false);
+        else
+            layer->SetObjectVisible(obj, true);
+
+        go->SetVisible(visible);
+    }
+
+    // update visited flag independently to avoid problems on init
+    if(visible)
+        go->SetVisited();
 }
 
 Player * GameMap::GetObjectOwner(const GameObject * obj) const
