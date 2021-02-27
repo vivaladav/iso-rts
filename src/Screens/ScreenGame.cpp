@@ -98,7 +98,7 @@ ScreenGame::ScreenGame(Game * game)
     }
 
     // apply initial visibility to the game map
-    mGameMap->ApplyVisibility(game->GetPlayer(0));
+    mGameMap->ApplyLocalVisibility();
 
     // -- UI --
     Player * player = game->GetPlayer(0);

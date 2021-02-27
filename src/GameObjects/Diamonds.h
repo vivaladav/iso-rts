@@ -5,10 +5,15 @@
 namespace game
 {
 
+class DiamondsGenerator;
+
 class Diamonds : public GameObject
 {
 public:
     Diamonds();
+    ~Diamonds();
+
+    void SetGenerator(DiamondsGenerator * gen);
 
     int GetNum() const;
     void SetNum(int num);
@@ -24,12 +29,17 @@ private:
     void SetImage();
 
 private:
+    DiamondsGenerator * mGen = nullptr;
+
     int mNum = 0;
 };
 
 inline Diamonds::Diamonds() : GameObject(GameObjectType::OBJ_DIAMONDS, -1, 1, 1)
 {
+    SetCollectable(true);
 }
+
+inline void Diamonds::SetGenerator(DiamondsGenerator * gen) { mGen = gen; }
 
 inline int Diamonds::GetNum() const { return mNum; }
 

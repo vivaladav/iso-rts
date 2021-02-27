@@ -11,6 +11,8 @@ public:
     DiamondsGenerator(GameMap * gm);
     void SetCell(int row, int col);
 
+    void ResetTimer();
+
     void Update(float delta);
 
 private:
@@ -28,5 +30,7 @@ inline void DiamondsGenerator::SetCell(int row, int col)
     mRow = row;
     mCol = col;
 }
+
+inline void DiamondsGenerator::ResetTimer() { mTimerRegen = mTimeRegen; }
 
 } // namespace game

@@ -49,6 +49,8 @@ GameMap::~GameMap()
 {
     for(GameObject * obj : mObjects)
         delete obj;
+
+    // TODO destroy objects in other containers
 }
 
 bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
@@ -56,6 +58,13 @@ bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
     const unsigned int ind = r * mCols + c;
 
     return mCells[ind].walkable;
+}
+
+void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
+{
+    const unsigned int ind = r * mCols + c;
+
+    mCells[ind].walkable = val;
 }
 
 bool GameMap::IsCellObjectVisited(unsigned int cellInd) const
@@ -297,12 +306,59 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
 
     // update visibility map
     // NOTE only for human player for now
-    Player * localPlayer = mGame->GetPlayer(0);
+    Player * localPlayer = mGame->GetLocalPlayer();
 
     if(obj->GetOwner() == localPlayer->GetPlayerId())
         AddPlayerObjVisibility(obj, localPlayer);
 
     return obj;
+}
+
+bool GameMap::DestroyObject(GameObject * obj)
+{
+    // remove from objects list
+    auto it = std::find(mObjects.begin(), mObjects.end(), obj);
+
+    if(mObjects.end() == it)
+        return false;
+
+    mObjects.erase(it);
+
+    // update visibility map
+    // NOTE only local player for now
+    Player * localPlayer = mGame->GetLocalPlayer();
+
+    if(obj->GetOwner() == localPlayer->GetPlayerId())
+        DelPlayerObjVisibility(obj, localPlayer);
+
+    // generic cells update
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            GameMapCell & cell = mCells[ind];
+
+            cell.walkable = true;
+            cell.obj = nullptr;
+
+            // update cell image
+            UpdateCellType(ind, cell);
+        }
+    }
+
+    // remove iso object from layer
+    IsoObject * isoObj = obj->GetIsoObject();
+    IsoLayer * layer = isoObj->GetLayer();
+    layer->ClearObject(isoObj);
+
+    // finally delete the object
+    delete obj;
+
+    return true;
 }
 
 bool GameMap::AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const

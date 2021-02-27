@@ -34,6 +34,8 @@ public:
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
 
+    void SetCellWalkable(unsigned int r, unsigned int c, bool val);
+
     bool IsCellObjectVisited(unsigned int cellInd) const;
     bool IsCellObjectVisited(unsigned int r, unsigned int c) const;
 
@@ -55,6 +57,8 @@ public:
     GameObject * CreateObject(unsigned int layerId, unsigned int objId,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
+
+    bool DestroyObject(GameObject * obj);
 
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
 

@@ -24,6 +24,11 @@ DiamondsGenerator::DiamondsGenerator(GameMap * gm)
 
 void DiamondsGenerator::Update(float delta)
 {
+    // try to generate some diamonds if cell is empty
+    if(mGameMap->HasObject(mRow, mCol))
+        return ;
+
+    // decrease timer if there's no object on cell
     mTimerRegen -= delta;
 
     // nothing to do until timer is 0
@@ -33,23 +38,25 @@ void DiamondsGenerator::Update(float delta)
     // reset timer
     mTimerRegen = mTimeRegen;
 
-    // try to generate some diamonds if cell is empty
-    if(mGameMap->HasObject(mRow, mCol))
-        return ;
-
     GameObject * obj = mGameMap->CreateObject(MapLayers::OBJECTS,GameObjectType::OBJ_DIAMONDS,
                                               mRow, mCol, 1, 1);
 
     if(nullptr == obj)
         return ;
 
+    auto diamonds = static_cast<Diamonds *>(obj);
+
     // set number of diamonds in cell
     lib::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
     const int num = ran.GetNextValue();
-    static_cast<Diamonds *>(obj)->SetNum(num);
+    diamonds->SetNum(num);
+
+    diamonds->SetGenerator(this);
 
     // update visibility
     mGameMap->ApplyLocalVisibilityToObject(obj);
+
+    mGameMap->SetCellWalkable(mRow, mCol, true);
 }
 
 } // namespace game

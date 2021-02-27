@@ -4,6 +4,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "IsoObject.h"
+#include "Player.h"
 #include "GameObjects/GameObject.h"
 
 #include <cmath>
@@ -96,6 +97,17 @@ void ObjectPath::Update(float delta)
         const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
         const unsigned int targetCol = targetInd % mIsoMap->GetNumCols();
 
+        const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
+
+        // collect collectable object, if any
+        if(targetCell.walkable && targetCell.obj != nullptr && targetCell.obj->IsCollectable())
+        {
+            player->HandleCollectable(targetCell.obj);
+
+            mGameMap->DestroyObject(targetCell.obj);
+        }
+
+        // handle moving object
         IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
         layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
 
@@ -105,6 +117,7 @@ void ObjectPath::Update(float delta)
 
         mGameMap->ApplyVisibility(player);
 
+        // handle next step or termination
         if(mNextCell < mCells.size())
         {
             const unsigned int nextInd = mCells[mNextCell];
@@ -112,7 +125,9 @@ void ObjectPath::Update(float delta)
             const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
 
             // check if next destination is walkable
-            if(mGameMap->GetCell(nextRow, nextCol).walkable)
+            const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
+
+            if(nextCell.walkable)
                 InitNextMoveStep();
             else
                 mState = FAILED;

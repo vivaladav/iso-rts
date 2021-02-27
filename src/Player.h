@@ -80,6 +80,8 @@ public:
     int GetResourceProduction(ResourceType type) const;
     void UpdateResources();
 
+    void HandleCollectable(GameObject * obj);
+
     // -- AI --
     bool IsAI() const;
     PlayerAI * GetAI();

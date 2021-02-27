@@ -101,6 +101,11 @@ void Player::UpdateResources()
         SumMaterial(materialProd);
 }
 
+void Player::HandleCollectable(GameObject * obj)
+{
+    // TODO handle collection
+}
+
 void Player::SumUnits(int val)
 {
     mNumUnits += val;

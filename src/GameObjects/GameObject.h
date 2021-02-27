@@ -57,6 +57,8 @@ public:
     bool IsStructure() const;
     bool CanBeConquered() const;
 
+    bool IsCollectable() const;
+
     bool IsSelected() const;
     void SetSelected(bool val);
 
@@ -98,6 +100,7 @@ protected:
     void SetVisibilityLevel(int val);
     void SetStructure(bool val);
     void SetCanBeConquered(bool val);
+    void SetCollectable(bool val);
 
     void SetSpeed(float speed);
 
@@ -127,6 +130,8 @@ private:
 
     bool mStructure = false;
 
+    bool mCollectable = false;
+
     bool mCanBeConq = false;
 
     bool mSelected = false;
@@ -144,6 +149,8 @@ inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 inline bool GameObject::IsStructure() const { return mStructure; }
 
 inline bool GameObject::CanBeConquered() const { return mCanBeConq; }
+
+inline bool GameObject::IsCollectable() const { return mCollectable; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 
@@ -175,6 +182,7 @@ inline unsigned int GameObject::GetCols() const { return mCols; }
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
 inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
+inline void GameObject::SetCollectable(bool val) { mCollectable = val; }
 
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
