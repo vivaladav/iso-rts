@@ -10,36 +10,19 @@ namespace game
 {
 
 DiamondsGenerator::DiamondsGenerator(GameMap * gm)
-    : mGameMap(gm)
+    : CollectableGenerator(gm, 10, 60)
 {
-    // time range, in ms
-    const int minTime = 10;
-    const int maxTime = 60;
-
-    lib::utilities::UniformDistribution ran(minTime, maxTime);
-
-    mTimeRegen = ran.GetNextValue();
-    mTimerRegen = mTimeRegen;
 }
 
-void DiamondsGenerator::Update(float delta)
+void DiamondsGenerator::OnGeneration()
 {
-    // try to generate some diamonds if cell is empty
-    if(mGameMap->HasObject(mRow, mCol))
-        return ;
+    GameMap * gm = GetGameMap();
 
-    // decrease timer if there's no object on cell
-    mTimerRegen -= delta;
+    const int r = GetRow();
+    const int c = GetCol();
 
-    // nothing to do until timer is 0
-    if(mTimerRegen > 0.f)
-        return ;
-
-    // reset timer
-    mTimerRegen = mTimeRegen;
-
-    GameObject * obj = mGameMap->CreateObject(MapLayers::OBJECTS,GameObjectType::OBJ_DIAMONDS,
-                                              mRow, mCol, 1, 1);
+    GameObject * obj = gm->CreateObject(MapLayers::OBJECTS, GameObjectType::OBJ_DIAMONDS,
+                                        r, c, 1, 1);
 
     if(nullptr == obj)
         return ;
@@ -54,9 +37,10 @@ void DiamondsGenerator::Update(float delta)
     diamonds->SetGenerator(this);
 
     // update visibility
-    mGameMap->ApplyLocalVisibilityToObject(obj);
+    gm->ApplyLocalVisibilityToObject(obj);
 
-    mGameMap->SetCellWalkable(mRow, mCol, true);
+    // make the cell walkable for collection
+    gm->SetCellWalkable(r, c, true);
 }
 
 } // namespace game

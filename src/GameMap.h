@@ -10,8 +10,8 @@
 namespace game
 {
 
+class CollectableGenerator;
 class ConquerPath;
-class DiamondsGenerator;
 class Game;
 class GameObject;
 class IsoMap;
@@ -132,6 +132,8 @@ private:
     void UpdateObjectPaths(float delta);
     void UpdateConquerPaths(float delta);
 
+    void DestroyDiamondsGenerator(const Cell2D & cell);
+
 private:
     // to access visibility functions
     friend class ObjectPath;
@@ -139,7 +141,7 @@ private:
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
-    std::vector<DiamondsGenerator *> mDiamondsGen;
+    std::vector<CollectableGenerator *> mCollGen;
     std::vector<ObjectPath *> mPaths;
     std::vector<ConquerPath *> mConquerPaths;
 

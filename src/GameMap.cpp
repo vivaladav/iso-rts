@@ -116,6 +116,7 @@ void GameMap::SyncMapCells()
 
         mCells[i].basicType = type;
 
+        // DIAMONDS GENERATOR
         if(DIAMONDS_SOURCE == type)
         {
            const int row = i / mCols;
@@ -123,7 +124,8 @@ void GameMap::SyncMapCells()
 
            auto dg = new DiamondsGenerator(this);
            dg->SetCell(row, col);
-           mDiamondsGen.emplace_back(dg);
+
+           mCollGen.emplace_back(dg);
         }
     }
 }
@@ -449,11 +451,12 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 
         ApplyVisibility(player);
     }
+
+
 }
 
 void GameMap::ConquerCells(ConquerPath * path)
 {
-
     path->Start();
 
     mConquerPaths.emplace_back(path);
@@ -1060,7 +1063,7 @@ void GameMap::Update(float delta)
     for(GameObject * obj : mObjects)
         obj->Update(delta);
 
-    for(DiamondsGenerator * dg : mDiamondsGen)
+    for(CollectableGenerator * dg : mCollGen)
         dg->Update(delta);
 
     // paths

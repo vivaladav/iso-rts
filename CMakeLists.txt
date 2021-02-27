@@ -39,6 +39,8 @@ add_executable(
     src/AI/PlayerAI.cpp
     src/GameObjects/Base.h
     src/GameObjects/Base.cpp
+    src/GameObjects/CollectableGenerator.h
+    src/GameObjects/CollectableGenerator.cpp
     src/GameObjects/Diamonds.h
     src/GameObjects/Diamonds.cpp
     src/GameObjects/DiamondsGenerator.h
