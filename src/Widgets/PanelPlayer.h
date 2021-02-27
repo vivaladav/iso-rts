@@ -32,6 +32,7 @@ public:
     void UpdateCells(int cells);
     void UpdateEnergy(int energy);
     void UpdateMaterial(int material);
+    void UpdateDiamonds(int diamonds);
     void UpdateUnits(int units);
 
     void ClearSelectedCell();
@@ -61,6 +62,7 @@ private:
     lib::sgui::Label * mLabelCells = nullptr;
     lib::sgui::Label * mLabelEnergy = nullptr;
     lib::sgui::Label * mLabelMaterial = nullptr;
+    lib::sgui::Label * mLabelDiamonds = nullptr;
     lib::sgui::Label * mLabelUnits = nullptr;
 
     ButtonPanelPlayer * mButtonNewUnit = nullptr;

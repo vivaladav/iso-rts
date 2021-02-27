@@ -101,7 +101,7 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->ApplyLocalVisibility();
 
     // -- UI --
-    Player * player = game->GetPlayer(0);
+    Player * player = game->GetLocalPlayer();
     mPanelPlayer = new PanelPlayer(player);
 
     // setup data update functions
@@ -113,6 +113,11 @@ ScreenGame::ScreenGame(Game * game)
     player->SetOnMaterialChanged([this](int val)
     {
         mPanelPlayer->UpdateMaterial(val);
+    });
+
+    player->SetOnDiamondsChanged([this](int val)
+    {
+        mPanelPlayer->UpdateDiamonds(val);
     });
 
     player->SetOnNumCellsChanged([this](int cells)
