@@ -3,11 +3,13 @@
 #include "Cell2D.h"
 #include "GameMapCell.h"
 #include "AI/PlayerAI.h"
+#include "GameObjects/Diamonds.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 
 #include <cassert>
+#include <iostream>
 
 namespace game
 {
@@ -21,6 +23,7 @@ Player::Player(const char * name, int pid)
     , mOnNumCellsChanged([](int){})
     , mOnEnergyChanged([](int){})
     , mOnMaterialChanged([](int){})
+    , mOnDiamondsChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
     , mPlayerId(pid)
 {
@@ -103,7 +106,14 @@ void Player::UpdateResources()
 
 void Player::HandleCollectable(GameObject * obj)
 {
-    // TODO handle collection
+    // DIAMONDS
+    if(obj->GetObjectType() == OBJ_DIAMONDS)
+    {
+        auto d = static_cast<Diamonds *>(obj);
+
+        const int diamondsMult = 5;
+        SumDiamonds(d->GetNum() * diamondsMult);
+    }
 }
 
 void Player::SumUnits(int val)

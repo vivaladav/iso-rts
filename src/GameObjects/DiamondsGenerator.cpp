@@ -13,8 +13,8 @@ DiamondsGenerator::DiamondsGenerator(GameMap * gm)
     : mGameMap(gm)
 {
     // time range, in ms
-    const int minTime = 5;
-    const int maxTime = 10;
+    const int minTime = 10;
+    const int maxTime = 60;
 
     lib::utilities::UniformDistribution ran(minTime, maxTime);
 
