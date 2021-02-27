@@ -36,7 +36,6 @@ private:
 
 inline Diamonds::Diamonds() : GameObject(GameObjectType::OBJ_DIAMONDS, -1, 1, 1)
 {
-    SetCollectable(true);
 }
 
 inline void Diamonds::SetGenerator(DiamondsGenerator * gen) { mGen = gen; }

@@ -203,7 +203,17 @@ void ConquerPath::Update(float delta)
         const unsigned int targetInd = mCells[mNextCell];
         const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
         const unsigned int targetCol = targetInd % mIsoMap->GetNumCols();
+        const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
 
+        // collect collectable object, if any
+        if(targetCell.walkable && targetCell.obj != nullptr)
+        {
+            player->HandleCollectable(targetCell.obj);
+
+            mGameMap->DestroyObject(targetCell.obj);
+        }
+
+        // handle moving object
         IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
         layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
 

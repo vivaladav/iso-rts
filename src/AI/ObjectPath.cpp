@@ -100,7 +100,7 @@ void ObjectPath::Update(float delta)
         const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
 
         // collect collectable object, if any
-        if(targetCell.walkable && targetCell.obj != nullptr && targetCell.obj->IsCollectable())
+        if(targetCell.walkable && targetCell.obj != nullptr)
         {
             player->HandleCollectable(targetCell.obj);
 
