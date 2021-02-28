@@ -1,18 +1,11 @@
 #include "GameObjects/Diamonds.h"
 
 #include "IsoObject.h"
-#include "GameObjects/DiamondsGenerator.h"
 
 #include <graphic/TextureManager.h>
 
 namespace game
 {
-
-Diamonds::~Diamonds()
-{
-    // reset generator timer to avoid to get new diamonds generated immediately
-    mGen->ResetTimer();
-}
 
 void Diamonds::SetNum(int num)
 {

@@ -114,6 +114,9 @@ void Player::HandleCollectable(GameObject * obj)
         const int diamondsMult = 10;
         SumDiamonds(d->GetNum() * diamondsMult);
     }
+
+    // notify collection
+    static_cast<Collectable *>(obj)->Collected();
 }
 
 void Player::SumUnits(int val)

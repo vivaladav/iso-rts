@@ -1,19 +1,16 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Collectable.h"
 
 namespace game
 {
 
 class DiamondsGenerator;
 
-class Diamonds : public GameObject
+class Diamonds : public Collectable
 {
 public:
     Diamonds();
-    ~Diamonds();
-
-    void SetGenerator(DiamondsGenerator * gen);
 
     int GetNum() const;
     void SetNum(int num);
@@ -29,16 +26,12 @@ private:
     void SetImage();
 
 private:
-    DiamondsGenerator * mGen = nullptr;
-
     int mNum = 0;
 };
 
-inline Diamonds::Diamonds() : GameObject(GameObjectType::OBJ_DIAMONDS, -1, 1, 1)
+inline Diamonds::Diamonds() : Collectable(GameObjectType::OBJ_DIAMONDS, 1, 1)
 {
 }
-
-inline void Diamonds::SetGenerator(DiamondsGenerator * gen) { mGen = gen; }
 
 inline int Diamonds::GetNum() const { return mNum; }
 
