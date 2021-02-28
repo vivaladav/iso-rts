@@ -50,7 +50,14 @@ GameMap::~GameMap()
     for(GameObject * obj : mObjects)
         delete obj;
 
-    // TODO destroy objects in other containers
+    for(CollectableGenerator * cg : mCollGen)
+        delete cg;
+
+    for(ObjectPath * op : mPaths)
+        delete op;
+
+    for(ConquerPath * cp : mConquerPaths)
+        delete cp;
 }
 
 bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
