@@ -419,10 +419,24 @@ void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
 
 void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 {
+    // check if cell was of another faction
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
-
     bool stolen = gcell.owner != nullptr && gcell.owner != player;
+
+    // destroys collectable generators and turn cell into empty one
+    auto it = std::find_if(mCollGen.begin(), mCollGen.end(), [cell](CollectableGenerator * gen)
+    {
+        return gen->GetRow() == cell.row && gen->GetCol() == cell.col;
+    });
+
+    if(it != mCollGen.end())
+    {
+        delete *it;
+        mCollGen.erase(it);
+
+        gcell.basicType = EMPTY;
+    }
 
     // assign owner
     gcell.owner = player;
@@ -451,8 +465,6 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 
         ApplyVisibility(player);
     }
-
-
 }
 
 void GameMap::ConquerCells(ConquerPath * path)
