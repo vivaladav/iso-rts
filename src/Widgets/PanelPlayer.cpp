@@ -76,12 +76,11 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
 
     // -- subpanels --
     const int marginTopRow = 10;
-    const int marginRightPanels = 50;
 
-    CreatePanelCell();
+    CreatePanelBase();
     mPanelCell->SetVisible(false);
 
-    CreatePanelUnits();
+    CreatePanelUnit();
     mPanelUnits->SetVisible(false);
 
     // -- position elements --
@@ -125,13 +124,13 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
 
     mLabelUnits->SetPosition(widgetX, labelHeaderUnits->GetY());
 
-    // sub-panel cell buttons
     const int panelY = mLabelEnergy->GetY() + mLabelEnergy->GetHeight() + marginTopRow;
+
+    // sub-panel cell buttons
     mPanelCell->SetPosition(marginX0, panelY);
 
     // sub-panel unit buttons
-    const int panelX = mPanelCell->GetX() + mPanelCell->GetWidth() + marginRightPanels;
-    mPanelUnits->SetPosition(panelX, panelY);
+    mPanelUnits->SetPosition(marginX0, panelY);
 }
 
 void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
@@ -225,6 +224,11 @@ void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
     mButtonCellConquer->SetOnClickFunction(f);
 }
 
+void PanelPlayer::SetFunctionUnitMove(const std::function<void()> & f)
+{
+    mButtonUnitMove->SetOnClickFunction(f);
+}
+
 void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
 {
     mButtonNewUnit->SetOnClickFunction(f);
@@ -251,7 +255,7 @@ std::string PanelPlayer::MakeStrValue(int value)
         return std::to_string(value);
 }
 
-void PanelPlayer::CreatePanelCell()
+void PanelPlayer::CreatePanelBase()
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -276,7 +280,7 @@ void PanelPlayer::CreatePanelCell()
     buttonY += mButtonNewUnit->GetHeight() + marginY;
 }
 
-void PanelPlayer::CreatePanelUnits()
+void PanelPlayer::CreatePanelUnit()
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -291,22 +295,27 @@ void PanelPlayer::CreatePanelUnits()
     labelHeader->SetColor(colorHeader);
 
     const int marginY0 = 10;
-    const int marginY = 30;
+    const int marginY = 20;
 
     // button UPGRADE
     mButtonUnitsUpgrade = new ButtonPanelPlayer(mPanelUnits);
 
-    // button CONQUEST
+    // button CONQUER
     mButtonCellConquer = new ButtonPanelPlayer("CONQUER", mPanelUnits);
+
+    // button MOVE
+    mButtonUnitMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
 
     // -- position elements --
     int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
     mButtonUnitsUpgrade->SetY(buttonY);
-
     buttonY += mButtonUnitsUpgrade->GetHeight() + marginY;
-    mButtonCellConquer->SetY(buttonY);
 
-    mButtonCellConquer->SetX(mButtonUnitsUpgrade->GetX());
+    mButtonCellConquer->SetY(buttonY);
+    buttonY += mButtonCellConquer->GetHeight() + marginY;
+
+    mButtonUnitMove->SetY(buttonY);
+
 }
 
 } // namespace game

@@ -44,6 +44,7 @@ public:
     void UpdateButtonConquer(const GameObject * obj);
 
     void SetFunctionCellConquest(const std::function<void()> & f);
+    void SetFunctionUnitMove(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
 
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
@@ -51,9 +52,9 @@ public:
 private:
     std::string MakeStrValue(int value);
 
-    void CreatePanelCell();
+    void CreatePanelBase();
 
-    void CreatePanelUnits();
+    void CreatePanelUnit();
 
 private:
     ButtonsPanel * mPanelCell = nullptr;
@@ -69,6 +70,7 @@ private:
 
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
     ButtonPanelPlayer * mButtonCellConquer = nullptr;
+    ButtonPanelPlayer * mButtonUnitMove = nullptr;
 
     Player * mPlayer = nullptr;
 };

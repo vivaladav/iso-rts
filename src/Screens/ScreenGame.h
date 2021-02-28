@@ -75,7 +75,6 @@ private:
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell);
 
-    void ClearMoveIndicator();
     void ClearCellOverlays();
 
 private:

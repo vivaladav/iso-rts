@@ -135,16 +135,24 @@ ScreenGame::ScreenGame(Game * game)
     mPanelPlayer->SetFunctionCellConquest([this]
     {
         Player * player = GetGame()->GetLocalPlayer();
-        GameObject * obj = player->GetSelectedObject();
 
-        if(obj != nullptr && obj->GetObjectType() == OBJ_UNIT)
-        {
-            auto unit = static_cast<Unit *>(obj);
-            unit->SetActiveAction(UnitAction::CONQUER);
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::CONQUER);
 
-            ClearMoveIndicator();
-        }
+        ClearCellOverlays();
     });
+
+    // MOVE UNIT
+    mPanelPlayer->SetFunctionUnitMove([this]
+    {
+        Player * player = GetGame()->GetLocalPlayer();
+
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::MOVE);
+
+        ClearCellOverlays();
+    });
+
 
     // CREATE NEW UNIT
     mPanelPlayer->SetFunctionNewUnit([this, player]
@@ -519,7 +527,6 @@ void ScreenGame::ClearSelection(Player * player)
 
     mPanelPlayer->ClearSelectedCell();
 
-    ClearMoveIndicator();
     ClearCellOverlays();
 }
 
@@ -703,7 +710,7 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     mGameMap->MoveUnit(op);
 
-    ClearMoveIndicator();
+    ClearCellOverlays();
 }
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
@@ -908,22 +915,14 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
     }
 }
 
-void ScreenGame::ClearMoveIndicator()
-{
-    if(nullptr == mMoveInd)
-        return ;
-
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
-    layer->ClearObject(mMoveInd);
-
-    delete mMoveInd;
-    mMoveInd = nullptr;
-}
-
 void ScreenGame::ClearCellOverlays()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
     layer->ClearObjects();
+
+    // delete move indicator
+    delete mMoveInd;
+    mMoveInd = nullptr;
 }
 
 } // namespace game
