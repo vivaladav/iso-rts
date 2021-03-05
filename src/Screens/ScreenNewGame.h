@@ -20,6 +20,8 @@ class MapPreview;
 
 enum Difficulty : unsigned int;
 
+enum PlayerFaction : unsigned int;
+
 class ScreenNewGame : public Screen
 {
 public:
@@ -51,6 +53,7 @@ private:
 
     int mCpuPlayers = 1;
     Difficulty mDiff;
+    PlayerFaction mFaction;
 };
 
 } // namespace game

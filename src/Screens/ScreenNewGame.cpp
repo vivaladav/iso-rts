@@ -109,6 +109,29 @@ ScreenNewGame::ScreenNewGame(Game * game)
             mDiff = static_cast<Difficulty>(ind);
     });
 
+    // -- FACTION --
+    auto * headerFaction = new Label("FACTION", fontHeader);
+    headerFaction->SetColor(colorHeader);
+    headerFaction->SetPosition(headerDiff->GetX() + headerDiff->GetWidth() + marginWidgetsH, headerDiff->GetY());
+
+    // buttons
+    auto * bgFaction = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
+    bgFaction->SetPosition(headerFaction->GetX(), widgetY);
+
+    bgFaction->AddButton(new ButtonUnitsSelector("R"));
+    bgFaction->AddButton(new ButtonUnitsSelector("G"));
+    bgFaction->AddButton(new ButtonUnitsSelector("B"));
+
+    bgFaction->SetButtonChecked(0, true);
+
+    bgFaction->SetFunctionOnToggle([this](unsigned int ind, bool checked)
+    {
+        if(checked)
+            mFaction = static_cast<PlayerFaction>(ind);
+    });
+
+
+    // move down
     widgetY += bgDiff->GetHeight() + marginWidgetsV;
 
     // -- MAP --
@@ -178,7 +201,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         game->AddPlayer("PLAYER 1", 0);
         Player * p = game->GetPlayer(0);
         p->SetLocal(true);
-        p->SetFaction(FACTION_1);
+        p->SetFaction(mFaction);
 
         // create AI players
         const char * strPlayers[] =
@@ -189,9 +212,12 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
         const PlayerFaction factions[] =
         {
+            FACTION_1,
             FACTION_2,
             FACTION_3
         };
+
+        int indFaction = (FACTION_1 == mFaction) ? 1 : 0;
 
         for(int i = 0; i < mCpuPlayers; ++i)
         {
@@ -199,9 +225,14 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
             game->AddPlayer(strPlayers[i], playerId);
             p = game->GetPlayer(playerId);
-            p->SetFaction(factions[i]);
+            p->SetFaction(factions[indFaction]);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
+
+            ++indFaction;
+
+            if(factions[indFaction] == mFaction)
+                ++indFaction;
         }
 
         // set game difficulty
