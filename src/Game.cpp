@@ -37,7 +37,7 @@ Game::Game(int argc, char * argv[])
 {
     using namespace lib::graphic;
 
-    mWin = Window::Create("Iso RTS - v. 0.0.1", 1280, 720);
+    mWin = Window::Create("Virtueror - v. 0.0.1", 1280, 720);
     mRenderer = Renderer::Create(mWin);
     mRenderer->SetLogicalSize(1920, 1080);
 
