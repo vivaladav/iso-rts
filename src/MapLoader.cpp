@@ -85,6 +85,10 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
     // READ OBJECTS
     while(std::getline(fs, line))
     {
+        // skip comments
+        if(!line.empty() && '#' == line[0])
+            continue;
+
         ss.clear();
         ss.str(line);
 
