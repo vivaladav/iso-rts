@@ -1129,27 +1129,27 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
     if(SCENE == cell.basicType || DIAMONDS_SOURCE == cell.basicType)
         return cell.basicType;
 
-    const int ownerId = cell.owner ? cell.owner->GetPlayerId() : -1;
+    const PlayerFaction ownerFaction = cell.owner ? cell.owner->GetFaction() : NO_FACTION;
 
     int type = EMPTY;
 
-    switch(ownerId)
+    switch(ownerFaction)
     {
-        case 0:
+        case FACTION_1:
             if(cell.linked)
                 type = F1_CONNECTED;
             else
                 type = F1;
         break;
 
-        case 1:
+        case FACTION_2:
             if(cell.linked)
                 type = F2_CONNECTED;
             else
                 type = F2;
         break;
 
-        case 2:
+        case FACTION_3:
             if(cell.linked)
                 type = F3_CONNECTED;
             else
@@ -1264,7 +1264,7 @@ void GameMap::UpdateLinkedCells(Player * player)
         const GameMapCell & cell = mCells[ind];
 
         if(cell.owner == player || cell.influencer != -1)
-        UpdateCellType(ind, cell);
+            UpdateCellType(ind, cell);
     }
 }
 
@@ -1277,7 +1277,7 @@ void GameMap::UpdateInfluencedCells(int row, int col)
     if(!gcell.linked)
         return ;
 
-    const int ownerId = gcell.owner->GetPlayerId();
+    const PlayerFaction faction = gcell.owner->GetFaction();
 
     const unsigned int r0 = (row > 0) ? row - 1 : row;
     const unsigned int c0 = (col > 0) ? col - 1 : col;
@@ -1302,7 +1302,7 @@ void GameMap::UpdateInfluencedCells(int row, int col)
                 continue;
 
             // update map of influence
-            gc.influencers[ownerId] = true;
+            gc.influencers[faction] = true;
 
             // count active influencers to see if there's only one
             int influencers = 0;
@@ -1314,9 +1314,9 @@ void GameMap::UpdateInfluencedCells(int row, int col)
             }
 
             if(influencers == 1)
-                gc.influencer = ownerId;
+                gc.influencer = faction;
             else
-                gc.influencer = -1;
+                gc.influencer = NO_FACTION;
 
             UpdateCellType(ind, gc);
         }

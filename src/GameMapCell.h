@@ -10,6 +10,8 @@ class Player;
 class ResourceGenerator;
 class Unit;
 
+enum PlayerFaction : unsigned int;
+
 enum CellTypes : int
 {
     EMPTY = 0,
@@ -48,7 +50,7 @@ struct GameMapCell
     bool HasResourceGenerator() const;
 
     std::unordered_map<int, bool> influencers;
-    int influencer = -1;
+    PlayerFaction influencer;
 
     Player * owner = nullptr;
     GameObject * obj = nullptr;

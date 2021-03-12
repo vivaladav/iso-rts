@@ -7,11 +7,13 @@ namespace lib { namespace graphic { class Image; } }
 namespace game
 {
 
+enum PlayerFaction : unsigned int;
+
 class CellProgressBar : public lib::sgui::ProgressBar
 {
 public:
-    CellProgressBar(int player, lib::sgui::Widget * parent = nullptr);
-    CellProgressBar(int player, float min, float max, lib::sgui::Widget * parent = nullptr);
+    CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent = nullptr);
+    CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent = nullptr);
     ~CellProgressBar();
 
 private:

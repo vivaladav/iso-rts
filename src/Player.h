@@ -22,7 +22,9 @@ enum PlayerFaction : unsigned int
     FACTION_2,
     FACTION_3,
 
-    NUM_FACTIONS
+    NUM_FACTIONS,
+
+    NO_FACTION
 };
 
 class Player

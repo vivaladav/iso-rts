@@ -28,6 +28,8 @@ class Player;
 class PlayerAI;
 class Unit;
 
+enum PlayerFaction : unsigned int;
+
 class ScreenGame : public Screen
 {
 public:
@@ -53,7 +55,7 @@ private:
     void CreateIsoMap();
     void CreateLayers();
 
-    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, int playerId);
+    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
 
     void ClearSelection(Player * player);

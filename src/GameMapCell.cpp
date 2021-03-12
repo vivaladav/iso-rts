@@ -1,5 +1,6 @@
 #include "GameMapCell.h"
 
+#include "Player.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 
@@ -7,6 +8,7 @@ namespace game
 {
 
 GameMapCell::GameMapCell()
+    : influencer(NO_FACTION)
 {
     // init influencers map
     influencers[0] = false;

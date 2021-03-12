@@ -1,17 +1,19 @@
 #include "CellProgressBar.h"
 
+#include "Player.h"
+
 #include <graphic/Image.h>
 
 namespace game
 {
 
-CellProgressBar::CellProgressBar(int player, lib::sgui::Widget * parent)
-    : CellProgressBar(player, 0, 100.f, parent)
+CellProgressBar::CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent)
+    : CellProgressBar(faction, 0, 100.f, parent)
 {
     HandleProgressUpdate();
 }
 
-CellProgressBar::CellProgressBar(int player, float min, float max, lib::sgui::Widget * parent)
+CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent)
     : lib::sgui::ProgressBar(min, max, parent)
 {
     using namespace  lib::graphic;
@@ -20,14 +22,12 @@ CellProgressBar::CellProgressBar(int player, float min, float max, lib::sgui::Wi
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
-    if(0 == player)
+    if(FACTION_1 == faction)
         mBar = new Image("data/img/cell_bar-p1.png");
-    else if(1 == player)
+    else if(FACTION_2 == faction)
         mBar = new Image("data/img/cell_bar-p2.png");
-    else if(2 == player)
+    else
         mBar = new Image("data/img/cell_bar-p3.png");
-    else if(3 == player)
-        mBar = new Image("data/img/cell_bar-p4.png");
 
     mBarW = mBar->GetWidth();
     mBarH = mBar->GetHeight();

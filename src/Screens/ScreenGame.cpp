@@ -273,7 +273,7 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
 void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * player,
                                   const std::function<void()> & onCompleted)
 {
-    CellProgressBar * pb = CreateProgressBar(cell, time, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(cell, time, player->GetFaction());
 
     // TODO make widgets accept multiple callback functions so that this code can be changed
     // returning the ProgressBar and letting the caller set another callback while the
@@ -485,9 +485,9 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
     mPrevCell = currCell;
 }
 
-CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, int playerId)
+CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction)
 {
-    auto pb = new CellProgressBar(playerId, 0.f, time);
+    auto pb = new CellProgressBar(playerFaction, 0.f, time);
     pb->SetValue(0.f);
     auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
     const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
@@ -640,7 +640,7 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     mGameMap->StartCreateUnit(cell, player);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
     pb->SetFunctionOnCompleted([this, cell, player]
     {
@@ -661,7 +661,7 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
     mGameMap->StartConquerResourceGenerator(start, end, player);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->SetFunctionOnCompleted([this, start, end, player]
     {
@@ -684,7 +684,7 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
     const Cell2D cell(obj->GetRow0(), obj->GetCol0());
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetPlayerId());
+    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
 
     pb->SetFunctionOnCompleted([this, cell]
     {
