@@ -221,7 +221,7 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
 {
     if(objId >= MapObjectId::BASE_P1 && objId <= MapObjectId::BASE_P3)
     {
-        const int playerInd = static_cast<unsigned int>(objId) - static_cast<unsigned int>(MapObjectId::BASE_P1);
+        const int playerInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::BASE_P1);
 
         Player * owner =  mGame->GetPlayerByIndex(playerInd);
 
@@ -231,7 +231,16 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
 
         CreateObject(layerId, OBJ_BASE, owner, r0, c0, rows, cols);
     }
+    else if(MapObjectId::GEN_ENERGY == objId)
+        CreateObject(layerId, OBJ_RES_GEN_ENERGY, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::GEN_MATERIAL1 == objId)
+        CreateObject(layerId, OBJ_RES_GEN_MATERIAL1, nullptr, r0, c0, rows, cols);
+    if(objId >= MapObjectId::MOUNTAIN_FIRST && objId <= MapObjectId::MOUNTAIN_LAST)
+    {
+        const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
 
+        CreateObject(layerId, OBJ_MOUNTAIN_FIRST + objInd, nullptr, r0, c0, rows, cols);
+    }
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
