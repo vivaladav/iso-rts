@@ -27,7 +27,7 @@ void ConquerPath::CreateIndicators()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
-    Player * player = mGameMap->GetObjectOwner(mObj);
+    Player * player = mObj->GetOwner();
 
     const PlayerFaction faction = player->GetFaction();
 
@@ -56,7 +56,7 @@ void ConquerPath::InitNextConquest()
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
     const Cell2D nextCell(nextRow, nextCol);
 
-    Player * player = mGameMap->GetObjectOwner(mObj);
+    Player * player = mObj->GetOwner();
 
     // check if conquest is possible
     if(!mGameMap->CanConquerCell(nextCell, player))
@@ -196,7 +196,7 @@ void ConquerPath::Update(float delta)
         layerOverlay->ClearObject(mConquestIndicators[mNextCell - 1]);
 
         // handle object movement in maps
-        Player * player = mGameMap->GetObjectOwner(mObj);
+        Player * player = mObj->GetOwner();
 
         mGameMap->DelPlayerObjVisibility(mObj, player);
 

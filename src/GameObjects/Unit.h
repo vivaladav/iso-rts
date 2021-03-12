@@ -18,7 +18,7 @@ enum UnitAction : unsigned int
 class Unit : public GameObject
 {
 public:
-    Unit(int owner, int rows, int cols);
+    Unit(int rows, int cols);
 
     int GetUnitLevel() const;
     void IncreaseUnitLevel();

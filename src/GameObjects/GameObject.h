@@ -3,12 +3,49 @@
 namespace game
 {
 
+enum class MapObjectId : unsigned int
+{
+    // BASE START POINT
+    BASE_P1 = 1000,
+    BASE_P2,
+    BASE_P3,
+
+    // ENERGY SOURCES
+    GEN_ENERGY = 2000,
+    GEN_MATERIAL1,
+
+    // COLLECTABLES
+    DIAMONDS = 3000,
+
+    // SCENE OBJECTS
+    MOUNTAIN_ROW_END_L_1 = 4000,
+    MOUNTAIN_ROW_END_R_1,
+    MOUNTAIN_COL_END_L_1,
+    MOUNTAIN_COL_END_R_1,
+    MOUNTAIN_ROW_1,
+    MOUNTAIN_ROW_2,
+    MOUNTAIN_ROW_3,
+    MOUNTAIN_COL_1,
+    MOUNTAIN_COL_2,
+    MOUNTAIN_COL_3,
+    MOUNTAIN_CORN_BL_1,
+    MOUNTAIN_CORN_BR_1,
+    MOUNTAIN_CORN_TL_1,
+    MOUNTAIN_CORN_TR_1,
+    MOUNTAIN_FIRST = MOUNTAIN_ROW_END_L_1,
+    MOUNTAIN_LAST = MOUNTAIN_CORN_TR_1,
+
+    // UNITS
+    UNIT = 5000,
+
+    NUM_MAP_OBJECTS,
+
+    OBJ_NULL
+};
+
 enum GameObjectType : unsigned int
 {
     OBJ_BASE,
-    OBJ_BASE_F1,
-    OBJ_BASE_F2,
-    OBJ_BASE_F3,
 
     OBJ_RES_GEN,
     OBJ_RES_GEN_ENERGY,
@@ -43,11 +80,12 @@ enum GameObjectType : unsigned int
 
 class GameMapCell;
 class IsoObject;
+class Player;
 
 class GameObject
 {
 public:
-    GameObject(GameObjectType type, int owner, int rows, int cols);
+    GameObject(GameObjectType type, int rows, int cols);
     virtual ~GameObject();
 
     unsigned int GetObjectId() const;
@@ -83,8 +121,8 @@ public:
     unsigned int GetRows() const;
     unsigned int GetCols() const;
 
-    int GetOwner() const;
-    void SetOwner(int owner);
+    Player * GetOwner() const;
+    void SetOwner(Player * owner);
 
     GameObjectType GetObjectType() const;
 
@@ -115,7 +153,7 @@ private:
 
     const GameMapCell * mCell = nullptr;
 
-    int mOwner = -1;
+    Player * mOwner = nullptr;
     GameObjectType mType = OBJ_NULL;
 
     unsigned int mRows = 1;
@@ -159,7 +197,7 @@ inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
 inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 
-inline int GameObject::GetOwner() const { return mOwner; }
+inline Player * GameObject::GetOwner() const { return mOwner; }
 
 inline GameObjectType GameObject::GetObjectType() const { return mType; }
 

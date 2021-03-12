@@ -20,7 +20,7 @@ private:
     CollectableGenerator * mGen = nullptr;
 };
 
-inline Collectable::Collectable(GameObjectType type, int rows, int cols) : GameObject(type, -1, rows, cols)
+inline Collectable::Collectable(GameObjectType type, int rows, int cols) : GameObject(type, rows, cols)
 {
 }
 

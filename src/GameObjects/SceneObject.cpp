@@ -8,7 +8,7 @@ namespace game
 {
 
 SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_SCENE_OBJECT, -1, rows, cols)
+    : GameObject(GameObjectType::OBJ_SCENE_OBJECT, rows, cols)
     , mSubtypeInd(subtype - GameObjectType::OBJ_MOUNTAIN_FIRST)
 {
     SetStructure(true);

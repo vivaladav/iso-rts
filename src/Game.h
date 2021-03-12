@@ -58,7 +58,7 @@ public:
 
     int GetNumPlayers() const;
 
-    Player * GetPlayer(unsigned int index) const;
+    Player * GetPlayerByIndex(unsigned int index) const;
     Player * GetLocalPlayer() const;
 
 private:
@@ -106,7 +106,7 @@ inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }
 
-inline Player * Game::GetPlayer(unsigned int index) const
+inline Player * Game::GetPlayerByIndex(unsigned int index) const
 {
     if(index < mPlayers.size())
         return mPlayers[index];

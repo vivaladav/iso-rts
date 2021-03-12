@@ -1,6 +1,7 @@
 #include "GameObjects/ResourceGenerator.h"
 
 #include "IsoObject.h"
+#include "Player.h"
 
 #include <graphic/TextureManager.h>
 
@@ -8,7 +9,7 @@ namespace game
 {
 
 ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
-    : GameObject(OBJ_RES_GEN, -1, rows, cols)
+    : GameObject(OBJ_RES_GEN, rows, cols)
     , mResType(type)
 {
     SetStructure(true);
@@ -26,8 +27,6 @@ void ResourceGenerator::UpdateImage()
 
 void ResourceGenerator::SetImage()
 {
-    const int owner = GetOwner();
-
     auto * tm = lib::graphic::TextureManager::Instance();
 
     lib::graphic::Texture * tex = nullptr;
@@ -39,6 +38,8 @@ void ResourceGenerator::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
+    const Player * owner = GetOwner();
+
     if(ENERGY == mResType)
     {
         // not visible
@@ -47,10 +48,12 @@ void ResourceGenerator::SetImage()
         // visible
         else
         {
-            if(-1 == owner)
+            if(nullptr == owner)
                 tex = tm->GetTexture("data/img/energy_source.png");
             else
             {
+                const unsigned int faction = owner->GetFaction();
+
                 const char * filesFactions[] =
                 {
                     "data/img/energy_source-f1.png",
@@ -58,7 +61,7 @@ void ResourceGenerator::SetImage()
                     "data/img/energy_source-f3.png"
                 };
 
-                tex = tm->GetTexture(filesFactions[owner]);
+                tex = tm->GetTexture(filesFactions[faction]);
             }
         }
     }
@@ -72,10 +75,12 @@ void ResourceGenerator::SetImage()
         {
             GetIsoObject()->SetColor(COLOR_VIS);
 
-            if(-1 == owner)
+            if(nullptr == owner)
                 tex = tm->GetTexture("data/img/material_source.png");
             else
             {
+                const unsigned int faction = owner->GetFaction();
+
                 const char * filesFactions[] =
                 {
                     "data/img/material_source-f1.png",
@@ -83,7 +88,7 @@ void ResourceGenerator::SetImage()
                     "data/img/material_source-f3.png"
                 };
 
-                tex = tm->GetTexture(filesFactions[owner]);
+                tex = tm->GetTexture(filesFactions[faction]);
             }
         }
     }

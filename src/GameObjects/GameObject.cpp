@@ -11,10 +11,9 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 
 unsigned int GameObject::counter = 0;
 
-GameObject::GameObject(GameObjectType type, int owner, int rows, int cols)
+GameObject::GameObject(GameObjectType type, int rows, int cols)
     : mIsoObj(new IsoObject(rows, cols))
     , mObjId(++counter)
-    , mOwner(owner)
     , mType(type)
 {
 }
@@ -52,8 +51,12 @@ int GameObject::GetCol0() const { return mCell->col; }
 int GameObject::GetRow1() const { return 1 + mCell->row - mRows; }
 int GameObject::GetCol1() const { return 1 + mCell->col - mCols; }
 
-void GameObject::SetOwner(int owner)
+void GameObject::SetOwner(Player * owner)
 {
+    // setting same owner again -> nothing to do
+    if(owner == mOwner)
+        return ;
+
     mOwner = owner;
 
     UpdateImage();

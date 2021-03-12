@@ -22,6 +22,8 @@ class ScreenGame;
 struct Cell2D;
 struct GameMapCell;
 
+enum class MapObjectId : unsigned int;
+
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public lib::ai::IPathMap
 {
@@ -50,11 +52,14 @@ public:
     void ApplyVisibilityToObject(Player * player, GameObject * go);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
-    Player * GetObjectOwner(const GameObject * obj) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
 
-    GameObject * CreateObject(unsigned int layerId, unsigned int objId,
+    void CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
+                              unsigned int r0, unsigned int c0,
+                              unsigned int rows, unsigned int cols);
+
+    GameObject * CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 

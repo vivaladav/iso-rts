@@ -8,7 +8,7 @@ namespace game
 class Base : public GameObject
 {
 public:
-    Base(int owner, int rows, int cols);
+    Base(int rows, int cols);
 
 protected:
     void UpdateImage() override;

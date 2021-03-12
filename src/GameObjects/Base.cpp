@@ -1,20 +1,19 @@
 #include "GameObjects/Base.h"
 
 #include "IsoObject.h"
+#include "Player.h"
 
 #include <graphic/TextureManager.h>
 
 namespace game
 {
 
-Base::Base(int owner, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_BASE, owner, rows, cols)
+Base::Base(int rows, int cols)
+    : GameObject(GameObjectType::OBJ_BASE, rows, cols)
 {
     SetStructure(true);
 
     SetVisibilityLevel(1);
-
-    SetImage();
 }
 
 void Base::UpdateImage()
@@ -35,7 +34,13 @@ void Base::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const int owner = GetOwner();
+    const Player * owner = GetOwner();
+
+    // avoid to set an image when there's no owner set
+    if(nullptr == owner)
+        return ;
+
+    const unsigned int faction = owner->GetFaction();
 
     // object is selected
     if(IsSelected())
@@ -47,7 +52,7 @@ void Base::SetImage()
             "data/img/base-f3-sel.png"
         };
 
-        tex = tm->GetTexture(imgFiles[owner]);
+        tex = tm->GetTexture(imgFiles[faction]);
     }
     // not selected
     else
@@ -59,7 +64,7 @@ void Base::SetImage()
             "data/img/base-f3.png"
         };
 
-        tex = tm->GetTexture(imgFiles[owner]);
+        tex = tm->GetTexture(imgFiles[faction]);
     }
 
     isoObj->SetTexture(tex);

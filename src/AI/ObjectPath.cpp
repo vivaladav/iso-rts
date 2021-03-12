@@ -89,7 +89,7 @@ void ObjectPath::Update(float delta)
     // handle reached target
     if(0 == todo)
     {
-        Player * player = mGameMap->GetObjectOwner(mObj);
+        Player * player = mObj->GetOwner();
 
         mGameMap->DelPlayerObjVisibility(mObj, player);
 

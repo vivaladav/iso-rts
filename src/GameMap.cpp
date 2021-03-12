@@ -110,7 +110,7 @@ void GameMap::SetSize(unsigned int rows, unsigned int cols)
 
     // init player(s) visibility map
     // NOTE for now only for human player
-    mGame->GetPlayer(0)->InitVisibility(mRows, mCols);
+    mGame->GetPlayerByIndex(0)->InitVisibility(mRows, mCols);
 }
 
 void GameMap::SyncMapCells()
@@ -215,15 +215,26 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
         go->SetVisited();
 }
 
-Player * GameMap::GetObjectOwner(const GameObject * obj) const
+void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
+                                   unsigned int r0, unsigned int c0,
+                                   unsigned int rows, unsigned int cols)
 {
-    if(obj)
-        return mGame->GetPlayer(obj->GetOwner());
-    else
-        return nullptr;
+    if(objId >= MapObjectId::BASE_P1 && objId <= MapObjectId::BASE_P3)
+    {
+        const int playerInd = static_cast<unsigned int>(objId) - static_cast<unsigned int>(MapObjectId::BASE_P1);
+
+        Player * owner =  mGame->GetPlayerByIndex(playerInd);
+
+        // no player in this map
+        if(nullptr == owner)
+            return ;
+
+        CreateObject(layerId, OBJ_BASE, owner, r0, c0, rows, cols);
+    }
+
 }
 
-GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
+GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
                                    unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
@@ -253,13 +264,9 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
         obj = new ResourceGenerator(ResourceType::ENERGY, rows, cols);
     else if(OBJ_RES_GEN_MATERIAL1 == objId)
         obj = new ResourceGenerator(ResourceType::MATERIAL1, rows, cols);
-    else if(objId >= OBJ_BASE_F1 && objId <= OBJ_BASE_F3)
+    else if(OBJ_BASE == objId)
     {
-        const int owner = objId - OBJ_BASE_F1;
-
-        obj = new Base(owner, rows, cols);
-
-        Player * player = mGame->GetPlayer(owner);
+        obj = new Base(rows, cols);
 
         // base cells update
         for(unsigned int r = r1; r <= r0; ++r)
@@ -269,20 +276,23 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
             for(unsigned int c = c1; c <= c0; ++c)
             {
                 const unsigned int ind = indBase + c;
-                mCells[ind].owner = player;
+                mCells[ind].owner = owner;
                 mCells[ind].linked = true;
 
                 UpdateInfluencedCells(r, c);
             }
         }
 
-        player->SetBaseCell(Cell2D(r0, c0));
-        player->SumCells(rows * cols);
+        owner->SetBaseCell(Cell2D(r0, c0));
+        owner->SumCells(rows * cols);
     }
     else if(objId >= OBJ_MOUNTAIN_FIRST && objId <= OBJ_MOUNTAIN_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
+
+    // assign owner
+    obj->SetOwner(owner);
 
     // set object properties
     obj->SetCell(&mCells[ind0]);
@@ -317,7 +327,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId,
     // NOTE only for human player for now
     Player * localPlayer = mGame->GetLocalPlayer();
 
-    if(obj->GetOwner() == localPlayer->GetPlayerId())
+    if(owner == localPlayer)
         AddPlayerObjVisibility(obj, localPlayer);
 
     return obj;
@@ -337,7 +347,7 @@ bool GameMap::DestroyObject(GameObject * obj)
     // NOTE only local player for now
     Player * localPlayer = mGame->GetLocalPlayer();
 
-    if(obj->GetOwner() == localPlayer->GetPlayerId())
+    if(obj->GetOwner() == localPlayer)
         DelPlayerObjVisibility(obj, localPlayer);
 
     // generic cells update
@@ -460,7 +470,7 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
     UpdateLinkedCells(player);
 
     // update visibility map if local player
-    if(player == mGame->GetPlayer(0))
+    if(player == mGame->GetPlayerByIndex(0))
     {
         AddPlayerCellVisibility(gcell, player);
 
@@ -498,7 +508,7 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
         return false;
 
     // not player's unit
-    if(unit->GetOwner() != player->GetPlayerId())
+    if(unit->GetOwner() != player)
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -567,7 +577,7 @@ void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end,
     }
 
     // assign owner to object
-    obj->SetOwner(player->GetPlayerId());
+    obj->SetOwner(player);
 
     // update player
     player->SumCells(1);
@@ -581,7 +591,7 @@ void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end,
     UpdateLinkedCells(player);
 
     // update visibility
-    Player * localPlayer = mGame->GetPlayer(0);
+    Player * localPlayer = mGame->GetPlayerByIndex(0);
 
     if(player == localPlayer)
     {
@@ -596,7 +606,7 @@ void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end,
 bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
 {
     // generator is not owned by the player
-    if(gen->GetOwner() != player->GetPlayerId())
+    if(gen->GetOwner() != player)
         return false;
 
     // only base can generate units (for now)
@@ -832,7 +842,8 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(player->GetPlayerId(), 1, 1);
+    Unit * unit = new Unit(1, 1);
+    unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
 
     // update cell
@@ -852,7 +863,7 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     // NOTE only for human player for now
     Player * localPlayer = mGame->GetLocalPlayer();
 
-    if(unit->GetOwner() == localPlayer->GetPlayerId())
+    if(unit->GetOwner() == localPlayer)
         AddPlayerObjVisibility(unit, localPlayer);
 
     ApplyVisibility(localPlayer);
@@ -949,7 +960,7 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
         return false;
 
     // trying to move an enemy unit
-    if(unit0->GetOwner() != player->GetPlayerId())
+    if(unit0->GetOwner() != player)
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -1057,7 +1068,7 @@ void GameMap::CheckGameEnd()
     // check for game over and defeated opponents
     for(int i = 0; i < numPlayers; ++i)
     {
-        const Player * p = mGame->GetPlayer(i);
+        const Player * p = mGame->GetPlayerByIndex(i);
 
         if(p->GetNumCells() == 0)
         {
@@ -1111,7 +1122,7 @@ void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 {
     // if cell is not visible it's always Fog Of War
-    if(!mGame->GetPlayer(0)->IsCellVisible(ind))
+    if(!mGame->GetPlayerByIndex(0)->IsCellVisible(ind))
         return FOG_OF_WAR;
 
     // scene cell

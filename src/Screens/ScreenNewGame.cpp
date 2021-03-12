@@ -38,6 +38,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     : Screen(game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
+    , mFaction(FACTION_1)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -199,7 +200,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     {
         // create human player
         game->AddPlayer("PLAYER 1", 0);
-        Player * p = game->GetPlayer(0);
+        Player * p = game->GetPlayerByIndex(0);
         p->SetLocal(true);
         p->SetFaction(mFaction);
 
@@ -224,7 +225,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
             const int playerId = i + 1;
 
             game->AddPlayer(strPlayers[i], playerId);
-            p = game->GetPlayer(playerId);
+            p = game->GetPlayerByIndex(playerId);
             p->SetFaction(factions[indFaction]);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);

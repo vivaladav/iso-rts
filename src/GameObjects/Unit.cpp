@@ -2,17 +2,16 @@
 
 #include "GameConstants.h"
 #include "IsoObject.h"
+#include "Player.h"
 
 #include <graphic/TextureManager.h>
 
 namespace game
 {
 
-Unit::Unit(int owner, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_UNIT, owner, rows, cols)
+Unit::Unit(int rows, int cols)
+    : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
 {
-    SetImage();
-
     SetSpeed(2.f);
 }
 
@@ -36,7 +35,13 @@ void Unit::SetImage()
 
     lib::graphic::Texture * tex = nullptr;
 
-    const int owner = GetOwner();
+    const Player * owner = GetOwner();
+
+    // avoid to set an image when there's no owner set
+    if(nullptr == owner)
+        return ;
+
+    const unsigned int faction = owner->GetFaction();
 
     // object is selected
     if(IsSelected())
@@ -48,7 +53,7 @@ void Unit::SetImage()
             "data/img/unit_01-f3-sel.png"
         };
 
-        tex = tm->GetTexture(imgFiles[owner]);
+        tex = tm->GetTexture(imgFiles[faction]);
     }
     // not selected
     else
@@ -60,7 +65,7 @@ void Unit::SetImage()
             "data/img/unit_01-f3.png"
         };
 
-        tex = tm->GetTexture(imgFiles[owner]);
+        tex = tm->GetTexture(imgFiles[faction]);
     }
 
     GetIsoObject()->SetTexture(tex);

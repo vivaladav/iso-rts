@@ -80,7 +80,7 @@ ScreenGame::ScreenGame(Game * game)
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
     {
-        Player * p = game->GetPlayer(i);
+        Player * p = game->GetPlayerByIndex(i);
 
         // add start resources
         const int startEnergy = 150;
@@ -201,7 +201,7 @@ void ScreenGame::Update(float delta)
 
         for(int i = 0; i < game->GetNumPlayers(); ++i)
         {
-            Player * p = game->GetPlayer(i);
+            Player * p = game->GetPlayerByIndex(i);
             p->UpdateResources();
         }
 
@@ -392,7 +392,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
     GameObject * clickObj = clickGameCell.obj;
-    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player->GetPlayerId();
+    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
 
     if(hasSelected)
     {
