@@ -344,6 +344,12 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable player panel when paused
         mPanelPlayer->SetEnabled(!mPaused);
     }
+    else if(key == KeyboardEvent::KEY_U)
+    {
+        auto stage = lib::sgui::Stage::Instance();
+
+        stage->SetVisible(!stage->IsVisible());
+    }
     else if(key == KeyboardEvent::KEY_V)
     {
         Player * p = GetGame()->GetLocalPlayer();

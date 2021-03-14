@@ -21,6 +21,9 @@ public:
     static Stage * Instance();
     static void Destroy();
 
+    void SetVisible(bool val);
+    bool IsVisible() const;
+
     // temporary code
     graphic::Font * GetDefaultFont();
     void SetDefaultFont(graphic::Font * font);
@@ -40,16 +43,25 @@ private:
 
     graphic::Font * mDefaultFont = nullptr;
 
+    bool mVisible = true;
+
     // access private methods to notify changes
     friend class Widget;
 };
 
 inline Stage * Stage::Instance() { return mInstance; }
 
+inline void Stage::SetVisible(bool val) { mVisible = val; }
+inline bool Stage::IsVisible() const { return mVisible; }
+
 inline graphic::Font * Stage::GetDefaultFont() { return mDefaultFont; }
 inline void Stage::SetDefaultFont(graphic::Font * font) { mDefaultFont = font; }
 
-inline void Stage::Render() { PropagateRender(); }
+inline void Stage::Render()
+{
+    if(mVisible)
+        PropagateRender();
+}
 
 } // namespace sgui
 } // namespace lib
