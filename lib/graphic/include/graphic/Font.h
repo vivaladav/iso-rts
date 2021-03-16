@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/Size.h"
+
 typedef struct _TTF_Font TTF_Font;
 
 namespace lib
@@ -21,6 +23,8 @@ public:
 
     int GetSize() const;
     int GetStyle() const;
+
+    core::Sized GetTextSize(const char * text);
 
 private:
     Font(const char * file, int size, int style);

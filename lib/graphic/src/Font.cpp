@@ -1,5 +1,7 @@
 #include "graphic/Font.h"
 
+#include "core/Size.h"
+
 #include <SDL2/SDL_ttf.h>
 
 #include <iostream>
@@ -18,6 +20,20 @@ const int Font::UNDERLINE       = TTF_STYLE_UNDERLINE;
 int Font::GetStyle() const
 {
     return TTF_GetFontStyle(mSysFont);
+}
+
+core::Sized Font::GetTextSize(const char * text)
+{
+    core::Sized size;
+
+    // reset size in case of error
+    if(TTF_SizeUTF8(mSysFont, text, &(size.w), &(size.h)) != 0)
+    {
+        size.w = 0;
+        size.h = 0;
+    }
+
+    return size;
 }
 
 Font::Font(const char * file, int size, int style)

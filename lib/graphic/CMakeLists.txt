@@ -40,4 +40,5 @@ target_link_libraries(
     PRIVATE SDL2
     PRIVATE SDL2_image
     PRIVATE SDL2_ttf
+    PUBLIC core
 )
