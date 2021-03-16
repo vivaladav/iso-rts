@@ -159,6 +159,16 @@ ScreenGame::ScreenGame(Game * game)
         ClearCellOverlays();
     });
 
+    // BUILD WALL
+    mPanelPlayer->SetFunctionBuildWall([this]
+    {
+        Player * player = GetGame()->GetLocalPlayer();
+
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::BUILD_WALL);
+
+        ClearCellOverlays();
+    });
 
     // CREATE NEW UNIT
     mPanelPlayer->SetFunctionNewUnit([this, player]
@@ -487,10 +497,14 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
     // unit selected -> handle mouse motion
     if(selUnit != nullptr)
     {
-        if(selUnit->GetActiveAction() == MOVE)
+        const UnitAction action = selUnit->GetActiveAction();
+
+        if(action == MOVE)
             HandleUnitMoveOnMouseMove(selUnit, currCell);
-        else if(selUnit->GetActiveAction() == CONQUER)
+        else if(action == CONQUER)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
+        else if(action == BUILD_WALL)
+            HandleUnitBuildWallOnMouseMove(selUnit, currCell);
     }
 
     // update previous cell before exit
@@ -857,6 +871,11 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
     cp.SetPathCells(path);
 
     mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
+}
+
+void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell)
+{
+
 }
 
 void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)

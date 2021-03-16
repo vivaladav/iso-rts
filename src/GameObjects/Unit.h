@@ -11,6 +11,7 @@ enum UnitAction : unsigned int
     MOVE,
     CONQUER,
     ATTACK,
+    BUILD_WALL,
 
     NUM_UNIT_ACTIONS
 };

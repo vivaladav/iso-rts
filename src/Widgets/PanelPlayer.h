@@ -46,6 +46,7 @@ public:
     void SetFunctionCellConquest(const std::function<void()> & f);
     void SetFunctionUnitMove(const std::function<void()> & f);
     void SetFunctionNewUnit(const std::function<void()> & f);
+    void SetFunctionBuildWall(const std::function<void()> & f);
 
     void SetFunctionUnitsUpgrade(const std::function<void()> & f);
 
@@ -71,6 +72,7 @@ private:
     ButtonPanelPlayer * mButtonUnitsUpgrade = nullptr;
     ButtonPanelPlayer * mButtonCellConquer = nullptr;
     ButtonPanelPlayer * mButtonUnitMove = nullptr;
+    ButtonPanelPlayer * mButtonBuildWall = nullptr;
 
     Player * mPlayer = nullptr;
 };

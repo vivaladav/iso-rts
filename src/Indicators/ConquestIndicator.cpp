@@ -18,7 +18,6 @@ namespace game
 ConquestIndicator::ConquestIndicator()
     : IsoObject(1, 1)
 {
-
     // init cost label
     SetCost(0);
 }

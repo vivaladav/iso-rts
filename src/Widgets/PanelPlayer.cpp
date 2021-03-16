@@ -234,6 +234,11 @@ void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
     mButtonNewUnit->SetOnClickFunction(f);
 }
 
+void PanelPlayer::SetFunctionBuildWall(const std::function<void()> & f)
+{
+    mButtonBuildWall->SetOnClickFunction(f);
+}
+
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
 {
     mButtonUnitsUpgrade->SetOnClickFunction(f);
@@ -306,6 +311,9 @@ void PanelPlayer::CreatePanelUnit()
     // button MOVE
     mButtonUnitMove = new ButtonPanelPlayer("MOVE", mPanelUnits);
 
+    // button BUILD WALL
+    mButtonBuildWall = new ButtonPanelPlayer("BUILD WALL", mPanelUnits);
+
     // -- position elements --
     int buttonY = labelHeader->GetY() + labelHeader->GetHeight() + marginY0;
     mButtonUnitsUpgrade->SetY(buttonY);
@@ -315,6 +323,9 @@ void PanelPlayer::CreatePanelUnit()
     buttonY += mButtonCellConquer->GetHeight() + marginY;
 
     mButtonUnitMove->SetY(buttonY);
+    buttonY += mButtonUnitMove->GetHeight() + marginY;
+
+    mButtonBuildWall->SetY(buttonY);
 
 }
 
