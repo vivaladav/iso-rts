@@ -7,6 +7,7 @@ add_library(
     core
     include/core/Application.h
     include/core/Point.h
+    include/core/Size.h
     include/core/event/ApplicationEvent.h
     include/core/event/ApplicationEventListener.h
     include/core/event/Event.h
