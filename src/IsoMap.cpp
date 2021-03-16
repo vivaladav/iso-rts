@@ -61,7 +61,7 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
     mMap.assign(mapSize, 0);
 
     mTilePositions.reserve(mapSize);
-    mTilePositions.assign(mapSize, lib::core::Point2D());
+    mTilePositions.assign(mapSize, lib::core::Pointd2D());
 
     // update layers
     for(IsoLayer * layer : mLayers)
@@ -76,13 +76,13 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
  * @param index Position index in the map. Identifies the cell
  * @return A Point2D struct containing the (x,y) coordinates of the cell
  */
-lib::core::Point2D IsoMap::GetCellPosition(unsigned int index) const
+lib::core::Pointd2D IsoMap::GetCellPosition(unsigned int index) const
 {
     if(index < mTilePositions.size())
         return mTilePositions[index];
     else
     {
-        const lib::core::Point2D p(-1, -1);
+        const lib::core::Pointd2D p(-1, -1);
         return p;
     }
 }
@@ -141,7 +141,7 @@ void IsoMap::Render()
 
             lib::graphic::Image * img = mTiles[mMap[ind]];
 
-            const lib::core::Point2D & p = mTilePositions[ind];
+            const lib::core::Pointd2D & p = mTilePositions[ind];
 
             img->SetPosition(p.x, p.y);
             img->Render();
@@ -285,7 +285,7 @@ void IsoMap::UpdateTilePositions()
         {
             const unsigned int ind = indb + c;
 
-            lib::core::Point2D & p = mTilePositions[ind];
+            lib::core::Pointd2D & p = mTilePositions[ind];
 
             // x =  (h * c)   -   (h * r)   = h * (c - r)
             // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)

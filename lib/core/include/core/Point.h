@@ -15,7 +15,7 @@ struct Point
     T y = 0;
 };
 
-using Point2D = Point<int>;
+using Pointd2D = Point<int>;
 using Pointf2D = Point<float>;
 
 } // namespace core

@@ -28,8 +28,8 @@ public:
     int GetNumRows() const;
     int GetNumCols() const;
 
-    lib::core::Point2D GetCellPosition(unsigned int r, unsigned int c) const;
-    lib::core::Point2D GetCellPosition(unsigned int index) const;
+    lib::core::Pointd2D GetCellPosition(unsigned int r, unsigned int c) const;
+    lib::core::Pointd2D GetCellPosition(unsigned int index) const;
 
     void SetTiles(const std::vector<std::string> & files);
 
@@ -75,7 +75,7 @@ private:
     // maps
     std::vector<unsigned int> mMap;
     std::vector<lib::graphic::Image *> mTiles;
-    std::vector<lib::core::Point2D> mTilePositions;
+    std::vector<lib::core::Pointd2D> mTilePositions;
 
     // layers
     std::vector<IsoLayer *> mLayers;
@@ -91,7 +91,7 @@ private:
  * @param c Column index of the cell
  * @return A Point2D struct containing the (x,y) coordinates of the cell
  */
-inline lib::core::Point2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
+inline lib::core::Pointd2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
     return GetCellPosition(ind);
