@@ -104,6 +104,8 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlayer.h
     src/Widgets/PanelPlayer.cpp
+    src/Widgets/PanelResourcesBar.h
+    src/Widgets/PanelResourcesBar.cpp
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
 )

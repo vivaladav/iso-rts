@@ -24,6 +24,7 @@ class IsoLayer;
 class IsoMap;
 class MoveIndicator;
 class PanelPlayer;
+class PanelResourcesBar;
 class Player;
 class PlayerAI;
 class Unit;
@@ -87,7 +88,9 @@ private:
 
     std::vector<ConquestIndicator *> mConquestIndicators;
 
+    // -- UI --
     PanelPlayer * mPanelPlayer = nullptr;
+    PanelResourcesBar * mPanelResBar = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

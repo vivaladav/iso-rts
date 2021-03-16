@@ -17,6 +17,7 @@
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
+#include "Widgets/PanelResourcesBar.h"
 
 #include <ai/Pathfinder.h>
 #include <core/event/KeyboardEvent.h>
@@ -129,6 +130,11 @@ ScreenGame::ScreenGame(Game * game)
     {
         mPanelPlayer->UpdateUnits(units);
     });
+
+    // top resources bar
+    mPanelResBar = new PanelResourcesBar(player);
+    mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
+
 
     // -- UI actions --
     // CONQUER CELL
