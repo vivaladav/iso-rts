@@ -1,6 +1,7 @@
 #include "PanelResourcesBar.h"
 
 #include "Player.h"
+#include "Widgets/DigitsDisplay.h"
 #include "Widgets/ProgressBarResources.h"
 
 #include <graphic/Image.h>
@@ -10,15 +11,19 @@
 namespace game
 {
 
-
 PanelResourcesBar::PanelResourcesBar(Player * player)
     : mBg(new lib::graphic::Image)
 {
     SetBg();
 
+    auto dd = new DigitsDisplay(5, this);
+    dd->SetValue(125);
+    dd->SetPosition(50, 10);
+
     auto bar1 = new ProgressBarResources(0.f, 1000.f, this);
     bar1->SetValue(300.f);
-    bar1->SetPosition(30, 10);
+    bar1->SetPosition(dd->GetX() + (dd->GetWidth() - bar1->GetWidth()) * 0.5f, dd->GetY() + dd->GetHeight());
+
 }
 
 PanelResourcesBar::~PanelResourcesBar()

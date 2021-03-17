@@ -94,6 +94,8 @@ add_executable(
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
     src/Widgets/CellProgressBar.cpp
+    src/Widgets/DigitsDisplay.h
+    src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
     src/Widgets/MapPreview.h
