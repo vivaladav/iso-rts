@@ -115,8 +115,12 @@ void Widget::UpdateSize()
             maxY = y;
     }
 
-    mWidth = maxX;
-    mHeight = maxY;
+    // update size if bigger than current
+    if(maxX > mWidth)
+        mWidth = maxX;
+
+    if(maxY > mHeight)
+        mHeight = maxY;
 }
 
 void Widget::SetPosition(int x, int y)

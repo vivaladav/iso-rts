@@ -1,6 +1,7 @@
 #include "PanelResourcesBar.h"
 
 #include "Player.h"
+#include "Widgets/ProgressBarResources.h"
 
 #include <graphic/Image.h>
 #include <graphic/Texture.h>
@@ -14,6 +15,10 @@ PanelResourcesBar::PanelResourcesBar(Player * player)
     : mBg(new lib::graphic::Image)
 {
     SetBg();
+
+    auto bar1 = new ProgressBarResources(0.f, 1000.f, this);
+    bar1->SetValue(300.f);
+    bar1->SetPosition(30, 10);
 }
 
 PanelResourcesBar::~PanelResourcesBar()

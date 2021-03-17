@@ -59,6 +59,7 @@ void CellProgressBar::HandleProgressUpdate()
 void CellProgressBar::OnRender()
 {
     mBg->Render();
-    mBar->Render();}
+    mBar->Render();
+}
 
 } // namespace game
