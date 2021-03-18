@@ -110,6 +110,8 @@ add_executable(
     src/Widgets/PanelResourcesBar.cpp
     src/Widgets/ProgressBarResources.h
     src/Widgets/ProgressBarResources.cpp
+    src/Widgets/ResourceDisplay.h
+    src/Widgets/ResourceDisplay.cpp
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
 )
