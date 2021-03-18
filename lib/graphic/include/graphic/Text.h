@@ -12,7 +12,7 @@ class Font;
 class Text : public TexturedRenderable
 {
 public:
-    Text(const char * text, Font * font);
+    Text(const char * text, Font * font, bool trim = false);
     ~Text();
 };
 

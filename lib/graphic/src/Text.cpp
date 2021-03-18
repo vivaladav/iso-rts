@@ -10,13 +10,14 @@
 
 #include <cassert>
 #include <iostream>
+#include <string>
 
 namespace lib
 {
 namespace graphic
 {
 
-Text::Text(const char * text, Font * font)
+Text::Text(const char * text, Font * font, bool trim)
 {
     assert(text);
     assert(font);
@@ -31,6 +32,51 @@ Text::Text(const char * text, Font * font)
     {
        std::cout << "TTF Render ERROR: " << TTF_GetError() << std::endl;
        return ;
+    }
+
+    if(trim)
+    {
+        const std::string str(text);
+        const int strLen = str.length();
+
+        const int height = TTF_FontHeight(f);
+        const int ascent = TTF_FontAscent(f);
+        const int bottom = height - ascent;
+
+        int minTop = height;
+
+        for(int i = 0; i < strLen; ++i)
+        {
+            int miny = 0;
+            int maxy = 0;
+            TTF_GlyphMetrics(f, str[i], nullptr, nullptr, &miny, &maxy, nullptr);
+
+            const int top = height - bottom - (maxy - miny);
+
+            if(top < minTop)
+                minTop = top;
+        }
+
+        const int trimH = height - minTop - bottom;
+
+        const unsigned int depth = surf->format->BitsPerPixel;
+        const unsigned int maskR = surf->format->Rmask;
+        const unsigned int maskG = surf->format->Gmask;
+        const unsigned int maskB = surf->format->Bmask;
+        const unsigned int maskA = surf->format->Amask;
+        SDL_Surface * trimSurf = SDL_CreateRGBSurface(0, surf->w, trimH, depth,
+                                                      maskR, maskG, maskB, maskA);
+//        SDL_Surface * trimSurf = SDL_CreateRGBSurfaceWithFormat(0, surf->w, trimH, 32, surf->format->format);
+//        SDL_BlendMode bm;
+//        SDL_GetSurfaceBlendMode(trimSurf, &bm);
+//        SDL_GetSurfaceBlendMode(surf, &bm);
+        SDL_SetSurfaceBlendMode(surf, SDL_BLENDMODE_NONE);
+
+        const SDL_Rect srcRect = { 0, minTop, surf->w, trimH };
+        SDL_BlitSurface(surf, &srcRect, trimSurf, nullptr);
+
+        SDL_FreeSurface(surf);
+        surf = trimSurf;
     }
 
     const TextureQuality tq = TextureManager::Instance()->GetNewTextureQuality();
