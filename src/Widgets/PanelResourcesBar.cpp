@@ -1,12 +1,13 @@
 #include "PanelResourcesBar.h"
 
 #include "Player.h"
-#include "Widgets/DigitsDisplay.h"
-#include "Widgets/ProgressBarResources.h"
+#include "Widgets/ResourceDisplay.h"
 
 #include <graphic/Image.h>
 #include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
+
+#include <sgui/Image.h>
 
 namespace game
 {
@@ -16,14 +17,8 @@ PanelResourcesBar::PanelResourcesBar(Player * player)
 {
     SetBg();
 
-    auto dd = new DigitsDisplay(5, this);
-    dd->SetValue(125);
-    dd->SetPosition(50, 10);
-
-    auto bar1 = new ProgressBarResources(0.f, 1000.f, this);
-    bar1->SetValue(300.f);
-    bar1->SetPosition(dd->GetX() + (dd->GetWidth() - bar1->GetWidth()) * 0.5f, dd->GetY() + dd->GetHeight());
-
+    auto rd = new ResourceDisplay("data/img/UI/icon_energy.png", this);
+    rd->SetPosition(50, 10);
 }
 
 PanelResourcesBar::~PanelResourcesBar()

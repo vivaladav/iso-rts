@@ -7,8 +7,6 @@
 
 #include <sstream>
 
-#include <iostream>
-
 namespace game
 {
 
@@ -49,15 +47,11 @@ void DigitsDisplay::SetValue(int val)
 
     ss << val;
 
-    std::cout << ss.str() << std::endl;
-
     Font * font = FontManager::Instance()->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
     lib::core::Sized size = font->GetTextSize(ss.str().c_str());
 
     // update widget size
-    SetSize(size.w, size.h);
-
-    std::cout << size.w << "x" << size.h << std::endl;
+    //SetSize(size.w, size.h);
 
     // create zeroes
     delete mTxtZeros;
@@ -67,10 +61,11 @@ void DigitsDisplay::SetValue(int val)
     if(digitsZero)
     {
         const std::string str(digitsZero, '0');
-        std::cout << str << std::endl;
 
-        mTxtZeros = new Text(str.c_str(), font);
+        mTxtZeros = new Text(str.c_str(), font, true);
         mTxtZeros->SetColor(0x454f54FF);
+
+        SetSize(size.w, mTxtZeros->GetHeight());
     }
     else
         mTxtZeros = new DummyRenderable;
@@ -81,10 +76,11 @@ void DigitsDisplay::SetValue(int val)
     if(digitsVal)
     {
         const std::string str(std::to_string(mValue));
-        std::cout << str << std::endl;
 
-        mTxtDigits = new Text(str.c_str(), font);
+        mTxtDigits = new Text(str.c_str(), font, true);
         mTxtDigits->SetColor(0xE3E6e8FF);
+
+        SetSize(size.w, mTxtDigits->GetHeight());
     }
     else
         mTxtDigits = new DummyRenderable;
