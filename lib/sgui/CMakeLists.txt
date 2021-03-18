@@ -6,6 +6,7 @@ find_package(SDL2 REQUIRED)
 add_library(
     sgui
     include/sgui/ButtonsGroup.h
+    include/sgui/Image.h
     include/sgui/Label.h
     include/sgui/ProgressBar.h
     include/sgui/PushButton.h
@@ -13,6 +14,7 @@ add_library(
     include/sgui/WidgetContainer.h
     include/sgui/Widget.h
     src/ButtonsGroup.cpp
+    src/Image.cpp
     src/Label.cpp
     src/ProgressBar.cpp
     src/PushButton.cpp
