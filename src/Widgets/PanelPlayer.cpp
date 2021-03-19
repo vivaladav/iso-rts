@@ -8,7 +8,6 @@
 #include "Widgets/ButtonsPanel.h"
 #include "Widgets/UnitsSelector.h"
 
-#include <core/event/MouseButtonEvent.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <sgui/Label.h>
@@ -21,62 +20,12 @@ namespace game
 {
 
 const unsigned int colorHeader = 0x888888FF;
-const unsigned int colorData = 0x777777FF;
 
 PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
     , mPlayer(player)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
-
-    FontManager * fm = FontManager::Instance();
-    Font * fontHeader = fm->GetFont("data/fonts/OpenSans.ttf", 28, Font::BOLD);
-    Font * fontData = fm->GetFont("data/fonts/OpenSans.ttf", 28, Font::NORMAL);
-
-    // ENERGY
-    Label * labelHeaderEnergy = new Label("ENERGY", fontHeader, this);
-    labelHeaderEnergy->SetColor(colorHeader);
-
-    const int energy = player->GetEnergy();
-    mLabelEnergy = new Label(MakeStrValue(energy).c_str(), fontData, this);
-    mLabelEnergy->SetColor(colorData);
-
-    // MATERIAL
-    Label * labelHeaderMaterial = new Label("MATERIAL", fontHeader, this);
-    labelHeaderMaterial->SetColor(colorHeader);
-
-    const int material = player->GetMaterial();
-    mLabelMaterial = new Label(MakeStrValue(material).c_str(), fontData, this);
-    mLabelMaterial->SetColor(colorData);
-
-    // DIAMONDS
-    Label * labelHeaderDiamonds = new Label("DIAMONDS", fontHeader, this);
-    labelHeaderDiamonds->SetColor(colorHeader);
-
-    const int diamonds = player->GetDiamonds();
-    mLabelDiamonds = new Label(MakeStrValue(diamonds).c_str(), fontData, this);
-    mLabelDiamonds->SetColor(colorData);
-
-    // CELLS
-    Label * labelHeaderCells = new Label("CELLS", fontHeader, this);
-    labelHeaderCells->SetColor(colorHeader);
-
-    const int cells = player->GetNumCells();
-    mLabelCells = new Label(MakeStrValue(cells).c_str(), fontData, this);
-    mLabelCells->SetColor(colorData);
-
-    // UNITS
-    Label * labelHeaderUnits = new Label("UNITS", fontHeader, this);
-    labelHeaderUnits->SetColor(colorHeader);
-
-    const int units = player->GetNumUnits();
-    mLabelUnits = new Label(MakeStrValue(units).c_str(), fontData, this);
-    mLabelUnits->SetColor(colorData);
-
     // -- subpanels --
-    const int marginTopRow = 10;
-
     CreatePanelBase();
     mPanelCell->SetVisible(false);
 
@@ -84,97 +33,24 @@ PanelPlayer::PanelPlayer(Player * player, lib::sgui::Widget * parent)
     mPanelUnits->SetVisible(false);
 
     // -- position elements --
-    const int marginX0 = 10;
-    const int marginX1 = 10;
-    const int marginX2 = 100;
-
-    int widgetX = marginX0;
-
-    // energy
-    labelHeaderEnergy->SetX(widgetX);
-    widgetX += labelHeaderEnergy->GetWidth() + marginX1;
-
-    mLabelEnergy->SetPosition(widgetX, labelHeaderEnergy->GetY());
-    widgetX += mLabelEnergy->GetWidth() + marginX2;
-
-    // material
-    labelHeaderMaterial->SetX(widgetX);
-    widgetX += labelHeaderMaterial->GetWidth() + marginX1;
-
-    mLabelMaterial->SetPosition(widgetX, labelHeaderMaterial->GetY());
-    widgetX += mLabelMaterial->GetWidth() + marginX2;
-
-    // diamonds
-    labelHeaderDiamonds->SetX(widgetX);
-    widgetX += labelHeaderDiamonds->GetWidth() + marginX1;
-
-    mLabelDiamonds->SetPosition(widgetX, labelHeaderDiamonds->GetY());
-    widgetX += mLabelDiamonds->GetWidth() + marginX2;
-
-    // cells
-    labelHeaderCells->SetX(widgetX);
-    widgetX += labelHeaderCells->GetWidth() + marginX1;
-
-    mLabelCells->SetPosition(widgetX, labelHeaderCells->GetY());
-    widgetX += mLabelCells->GetWidth() + marginX2;
-
-    // units
-    labelHeaderUnits->SetX(widgetX);
-    widgetX += labelHeaderUnits->GetWidth() + marginX1;
-
-    mLabelUnits->SetPosition(widgetX, labelHeaderUnits->GetY());
-
-    const int panelY = mLabelEnergy->GetY() + mLabelEnergy->GetHeight() + marginTopRow;
+    const int panelX = 10;
+    const int panelY = 0;
 
     // sub-panel cell buttons
-    mPanelCell->SetPosition(marginX0, panelY);
+    mPanelCell->SetPosition(panelX, panelY);
 
     // sub-panel unit buttons
-    mPanelUnits->SetPosition(marginX0, panelY);
+    mPanelUnits->SetPosition(panelX, panelY);
 }
 
 void PanelPlayer::SetPanelCellVisible(bool val) { mPanelCell->SetVisible(val); }
 void PanelPlayer::SetPanelUnitsVisible(bool val) { mPanelUnits->SetVisible(val); }
-
-void PanelPlayer::UpdateCells(int cells)
-{
-    mLabelCells->SetText(MakeStrValue(cells).c_str());
-}
-
-void PanelPlayer::UpdateEnergy(int energy)
-{
-    mLabelEnergy->SetText(MakeStrValue(energy).c_str());
-}
-
-void PanelPlayer::UpdateMaterial(int material)
-{
-    mLabelMaterial->SetText(MakeStrValue(material).c_str());
-}
-
-void PanelPlayer::UpdateDiamonds(int diamonds)
-{
-    mLabelDiamonds->SetText(MakeStrValue(diamonds).c_str());
-}
-
-void PanelPlayer::UpdateUnits(int units)
-{
-    mLabelUnits->SetText(MakeStrValue(units).c_str());
-}
 
 void PanelPlayer::ClearSelectedCell()
 {
     mPanelCell->SetVisible(false);
     mPanelUnits->SetVisible(false);
 }
-
-//void PanelPlayer::SetSelectedCell(const GameMapCell & cell)
-//{
-//    UpdateButtonNewUnit(cell);
-//    UpdateButtonUnitUpgrade();
-//    UpdateButtonConquer(cell);
-
-//    mPanelCell->SetVisible(true);
-//}
 
 void PanelPlayer::SetSelectedObject(GameObject * obj)
 {

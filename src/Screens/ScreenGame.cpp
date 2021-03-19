@@ -105,36 +105,9 @@ ScreenGame::ScreenGame(Game * game)
     Player * player = game->GetLocalPlayer();
     mPanelPlayer = new PanelPlayer(player);
 
-    // setup data update functions
-    player->SetOnEnergyChanged([this](int val)
-    {
-        mPanelPlayer->UpdateEnergy(val);
-    });
-
-    player->SetOnMaterialChanged([this](int val)
-    {
-        mPanelPlayer->UpdateMaterial(val);
-    });
-
-    player->SetOnDiamondsChanged([this](int val)
-    {
-        mPanelPlayer->UpdateDiamonds(val);
-    });
-
-    player->SetOnNumCellsChanged([this](int cells)
-    {
-        mPanelPlayer->UpdateCells(cells);
-    });
-
-    player->SetOnNumUnitsChanged([this](int units)
-    {
-        mPanelPlayer->UpdateUnits(units);
-    });
-
     // top resources bar
     mPanelResBar = new PanelResources(player);
     mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
-
 
     // -- UI actions --
     // CONQUER CELL
