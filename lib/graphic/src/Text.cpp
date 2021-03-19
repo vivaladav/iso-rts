@@ -34,6 +34,7 @@ Text::Text(const char * text, Font * font, bool trim)
        return ;
     }
 
+    // trim text to remove upper and lower margin
     if(trim)
     {
         const std::string str(text);
@@ -66,10 +67,8 @@ Text::Text(const char * text, Font * font, bool trim)
         const unsigned int maskA = surf->format->Amask;
         SDL_Surface * trimSurf = SDL_CreateRGBSurface(0, surf->w, trimH, depth,
                                                       maskR, maskG, maskB, maskA);
-//        SDL_Surface * trimSurf = SDL_CreateRGBSurfaceWithFormat(0, surf->w, trimH, 32, surf->format->format);
-//        SDL_BlendMode bm;
-//        SDL_GetSurfaceBlendMode(trimSurf, &bm);
-//        SDL_GetSurfaceBlendMode(surf, &bm);
+
+        // set blend mode of source to NONE to have exact pixel copy
         SDL_SetSurfaceBlendMode(surf, SDL_BLENDMODE_NONE);
 
         const SDL_Rect srcRect = { 0, minTop, surf->w, trimH };
