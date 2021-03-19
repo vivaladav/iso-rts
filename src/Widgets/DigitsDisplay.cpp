@@ -47,7 +47,7 @@ void DigitsDisplay::SetValue(int val)
 
     ss << val;
 
-    Font * font = FontManager::Instance()->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
+    Font * font = FontManager::Instance()->GetFont("data/fonts/Lato-Regular.ttf", 19, Font::NORMAL);
     lib::core::Sized size = font->GetTextSize(ss.str().c_str());
 
     // update widget size

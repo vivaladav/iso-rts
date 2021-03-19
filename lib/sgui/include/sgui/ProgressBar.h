@@ -14,6 +14,8 @@ class ProgressBar : public Widget
 public:
     ProgressBar(float min, float max, Widget * parent = nullptr);
 
+    void SetMinMax(float min, float max);
+
     float GetValue() const;
     void SetValue(float progress);
     void IncValue(float val);

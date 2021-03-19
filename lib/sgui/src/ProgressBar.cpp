@@ -16,6 +16,14 @@ ProgressBar::ProgressBar(float min, float max, Widget * parent)
 {
 }
 
+void ProgressBar::SetMinMax(float min, float max)
+{
+    mMin = min;
+    mMax = max;
+
+    SetValue(mValue);
+}
+
 void ProgressBar::SetValue(float progress)
 {
     if(mCompleted)

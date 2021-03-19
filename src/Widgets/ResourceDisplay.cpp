@@ -22,18 +22,19 @@ ResourceDisplay::ResourceDisplay(const char * icon, lib::sgui::Widget * parent)
     const int iconH = mIcon->GetHeight();
 
     const int marginH = 10;
-    const int marginV = 0;
+    const int marginV = 6;
     const int x1 = iconW + marginH;
 
     // DIGITS
-    mDigits = new DigitsDisplay(5, this);
-    mDigits->SetValue(125);
+    const int digits = 5;
+    mDigits = new DigitsDisplay(digits, this);
     const int digitsW = mDigits->GetWidth();
     const int digitsH = mDigits->GetHeight();
 
     // BAR
-    mBar = new ProgressBarResources(0.f, 1000.f, this);
-    mBar->SetValue(300.f);
+    const float min = 0.f;
+    const float max = 1000.;
+    mBar = new ProgressBarResources(min, max, this);
     const int barW = mBar->GetWidth();
     const int barH = mBar->GetHeight();
 
@@ -63,6 +64,17 @@ ResourceDisplay::ResourceDisplay(const char * icon, lib::sgui::Widget * parent)
 
     const int barY = blockY + digitsH + marginV;
     mBar->SetPosition(barX, barY);
+}
+
+void ResourceDisplay::SetValue(int val)
+{
+    mDigits->SetValue(val);
+    mBar->SetValue(val);
+}
+
+void ResourceDisplay::SetValueMinMax(int min, int max)
+{
+    mBar->SetMinMax(min, max);
 }
 
 } // namespace game

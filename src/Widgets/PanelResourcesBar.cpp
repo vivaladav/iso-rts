@@ -17,8 +17,23 @@ PanelResourcesBar::PanelResourcesBar(Player * player)
 {
     SetBg();
 
+    const int x0 = 15;
+
     auto rd = new ResourceDisplay("data/img/UI/icon_energy.png", this);
-    rd->SetPosition(50, 10);
+    rd->SetValue(100);
+    rd->SetPosition(x0 + 50, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    rd = new ResourceDisplay("data/img/UI/icon_material1.png", this);
+    rd->SetValue(325);
+    rd->SetPosition(x0 + 200, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    rd = new ResourceDisplay("data/img/UI/icon_diamond.png", this);
+    rd->SetValue(654);
+    rd->SetPosition(x0 + 350, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    rd = new ResourceDisplay("data/img/UI/icon_blob.png", this);
+    rd->SetValue(950);
+    rd->SetPosition(x0 + 500, (GetHeight() - rd->GetHeight()) * 0.5f);
 }
 
 PanelResourcesBar::~PanelResourcesBar()
