@@ -34,48 +34,49 @@ Text::Text(const char * text, Font * font, bool trim)
        return ;
     }
 
+    // define top and bottom padding
+    const std::string str(text);
+    const int strLen = str.length();
+
+    const int height = TTF_FontHeight(f);
+    const int ascent = TTF_FontAscent(f);
+    mPaddingBottom = height - ascent;
+
+    mPaddingTop = height;
+
+    for(int i = 0; i < strLen; ++i)
+    {
+        int miny = 0;
+        int maxy = 0;
+        TTF_GlyphMetrics(f, str[i], nullptr, nullptr, &miny, &maxy, nullptr);
+
+        const int top = height - mPaddingBottom - (maxy - miny);
+
+        if(top < mPaddingTop)
+            mPaddingTop = top;
+    }
+
     // trim text to remove upper and lower margin
     if(trim)
     {
-        const std::string str(text);
-        const int strLen = str.length();
+        const int trimH = height - mPaddingTop - mPaddingBottom;
 
-        const int height = TTF_FontHeight(f);
-        const int ascent = TTF_FontAscent(f);
-        const int bottom = height - ascent;
-
-        int minTop = height;
-
-        for(int i = 0; i < strLen; ++i)
-        {
-            int miny = 0;
-            int maxy = 0;
-            TTF_GlyphMetrics(f, str[i], nullptr, nullptr, &miny, &maxy, nullptr);
-
-            const int top = height - bottom - (maxy - miny);
-
-            if(top < minTop)
-                minTop = top;
-        }
-
-        const int trimH = height - minTop - bottom;
-
-        const unsigned int depth = surf->format->BitsPerPixel;
-        const unsigned int maskR = surf->format->Rmask;
-        const unsigned int maskG = surf->format->Gmask;
-        const unsigned int maskB = surf->format->Bmask;
-        const unsigned int maskA = surf->format->Amask;
-        SDL_Surface * trimSurf = SDL_CreateRGBSurface(0, surf->w, trimH, depth,
-                                                      maskR, maskG, maskB, maskA);
+        const SDL_PixelFormat * pf = surf->format;
+        SDL_Surface * trimSurf = SDL_CreateRGBSurface(0, surf->w, trimH, pf->BitsPerPixel,
+                                                      pf->Rmask, pf->Gmask, pf->Bmask, pf->Amask);
 
         // set blend mode of source to NONE to have exact pixel copy
         SDL_SetSurfaceBlendMode(surf, SDL_BLENDMODE_NONE);
 
-        const SDL_Rect srcRect = { 0, minTop, surf->w, trimH };
+        const SDL_Rect srcRect = { 0, mPaddingTop, surf->w, trimH };
         SDL_BlitSurface(surf, &srcRect, trimSurf, nullptr);
 
         SDL_FreeSurface(surf);
         surf = trimSurf;
+
+        // reset padding
+        mPaddingTop = 0;
+        mPaddingBottom = 0;
     }
 
     const TextureQuality tq = TextureManager::Instance()->GetNewTextureQuality();
