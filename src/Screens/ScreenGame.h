@@ -24,7 +24,7 @@ class IsoLayer;
 class IsoMap;
 class MoveIndicator;
 class PanelPlayer;
-class PanelResourcesBar;
+class PanelResources;
 class Player;
 class PlayerAI;
 class Unit;
@@ -91,7 +91,7 @@ private:
 
     // -- UI --
     PanelPlayer * mPanelPlayer = nullptr;
-    PanelResourcesBar * mPanelResBar = nullptr;
+    PanelResources * mPanelResBar = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

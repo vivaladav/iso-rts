@@ -17,7 +17,7 @@
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
-#include "Widgets/PanelResourcesBar.h"
+#include "Widgets/PanelResources.h"
 
 #include <ai/Pathfinder.h>
 #include <core/event/KeyboardEvent.h>
@@ -132,7 +132,7 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // top resources bar
-    mPanelResBar = new PanelResourcesBar(player);
+    mPanelResBar = new PanelResources(player);
     mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
 
 

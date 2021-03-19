@@ -16,11 +16,11 @@ namespace game
 
 class Player;
 
-class PanelResourcesBar : public lib::sgui::Widget
+class PanelResources : public lib::sgui::Widget
 {
 public:
-    PanelResourcesBar(Player * player);
-    ~PanelResourcesBar();
+    PanelResources(Player * player);
+    ~PanelResources();
 
 private:
     void OnRender() override;

@@ -106,8 +106,8 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlayer.h
     src/Widgets/PanelPlayer.cpp
-    src/Widgets/PanelResourcesBar.h
-    src/Widgets/PanelResourcesBar.cpp
+    src/Widgets/PanelResources.h
+    src/Widgets/PanelResources.cpp
     src/Widgets/ProgressBarResources.h
     src/Widgets/ProgressBarResources.cpp
     src/Widgets/ResourceDisplay.h

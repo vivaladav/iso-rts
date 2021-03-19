@@ -1,4 +1,4 @@
-#include "PanelResourcesBar.h"
+#include "PanelResources.h"
 
 #include "Player.h"
 #include "Widgets/ResourceDisplay.h"
@@ -12,7 +12,7 @@
 namespace game
 {
 
-PanelResourcesBar::PanelResourcesBar(Player * player)
+PanelResources::PanelResources(Player * player)
     : mBg(new lib::graphic::Image)
 {
     SetBg();
@@ -48,17 +48,17 @@ PanelResourcesBar::PanelResourcesBar(Player * player)
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 }
 
-PanelResourcesBar::~PanelResourcesBar()
+PanelResources::~PanelResources()
 {
     delete mBg;
 }
 
-void PanelResourcesBar::OnRender()
+void PanelResources::OnRender()
 {
     mBg->Render();
 }
 
-void PanelResourcesBar::SetBg()
+void PanelResources::SetBg()
 {
     // NOTE in the future this will chose the right bg based on the number of slots
     auto * tm = lib::graphic::TextureManager::Instance();
@@ -70,7 +70,7 @@ void PanelResourcesBar::SetBg()
     SetSize(tex->GetWidth(), tex->GetHeight());
 }
 
-void PanelResourcesBar::HandlePositionChanged()
+void PanelResources::HandlePositionChanged()
 {
     mBg->SetPosition(GetScreenX(), GetScreenY());
 }
