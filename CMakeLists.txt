@@ -30,6 +30,8 @@ add_executable(
     src/MapLoader.cpp
     src/Player.h
     src/Player.cpp
+    src/StatValue.h
+    src/StatValue.cpp
     src/AI/ActionAI.h
     src/AI/ConquerPath.h
     src/AI/ConquerPath.cpp
