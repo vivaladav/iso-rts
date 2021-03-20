@@ -73,8 +73,13 @@ void ProgressBarResources::SetBarColor()
 
     const float mult = static_cast<float>(numColors) / 100.f;
 
-    const int colorInd = static_cast<int>(perc * mult);
-    mBar->SetColor(colors[colorInd]);
+    if(perc < 100.f)
+    {
+        const int colorInd = static_cast<int>(perc * mult);
+        mBar->SetColor(colors[colorInd]);
+    }
+    else
+        mBar->SetColor(colors[numColors - 1]);
 }
 
 } // namespace game
