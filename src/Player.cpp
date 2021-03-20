@@ -3,8 +3,8 @@
 #include "Cell2D.h"
 #include "GameMapCell.h"
 #include "AI/PlayerAI.h"
+#include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
-#include "GameObjects/GameObject.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 
@@ -101,13 +101,22 @@ void Player::UpdateResources()
 
 void Player::HandleCollectable(GameObject * obj)
 {
+    const GameObjectType type = obj->GetObjectType();
+
     // DIAMONDS
-    if(obj->GetObjectType() == OBJ_DIAMONDS)
+    if(type == OBJ_DIAMONDS)
     {
         auto d = static_cast<Diamonds *>(obj);
 
         const int diamondsMult = 10;
         mStats[Stat::DIAMONDS].SumValue(d->GetNum() * diamondsMult);
+    }
+    else if(type == OBJ_BLOBS)
+    {
+        auto d = static_cast<Blobs *>(obj);
+
+        const int blobsMult = 5;
+        mStats[Stat::BLOBS].SumValue(d->GetNum() * blobsMult);
     }
 
     // notify collection

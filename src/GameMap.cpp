@@ -10,6 +10,8 @@
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "GameObjects/Base.h"
+#include "GameObjects/Blobs.h"
+#include "GameObjects/BlobsGenerator.h"
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/ResourceGenerator.h"
@@ -130,6 +132,16 @@ void GameMap::SyncMapCells()
            const int col = i % mCols;
 
            auto dg = new DiamondsGenerator(this);
+           dg->SetCell(row, col);
+
+           mCollGen.emplace_back(dg);
+        }
+        else if(BLOBS_SOURCE == type)
+        {
+           const int row = i / mCols;
+           const int col = i % mCols;
+
+           auto dg = new BlobsGenerator(this);
            dg->SetCell(row, col);
 
            mCollGen.emplace_back(dg);
@@ -299,6 +311,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
+    else if(OBJ_BLOBS == objId)
+        obj  = new Blobs;
 
     // assign owner
     obj->SetOwner(owner);
@@ -1135,7 +1149,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
         return FOG_OF_WAR;
 
     // scene cell
-    if(SCENE == cell.basicType || DIAMONDS_SOURCE == cell.basicType)
+    if(SCENE == cell.basicType || DIAMONDS_SOURCE == cell.basicType || BLOBS_SOURCE == cell.basicType)
         return cell.basicType;
 
     const PlayerFaction ownerFaction = cell.owner ? cell.owner->GetFaction() : NO_FACTION;

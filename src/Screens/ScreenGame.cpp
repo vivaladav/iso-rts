@@ -88,6 +88,7 @@ ScreenGame::ScreenGame(Game * game)
         p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
 
         const int startMaterial = 20;
+
         p->GetStat(Player::Stat::MATERIAL).SetValue(startMaterial);
 
         // temporary disable AI for development
@@ -284,6 +285,7 @@ void ScreenGame::CreateIsoMap()
         // scene
         "data/img/tile_empty.png",
         "data/img/tile_scene_01.png",
+        "data/img/tile-blobs.png",
         "data/img/tile-diamonds.png",
 
         // faction 1

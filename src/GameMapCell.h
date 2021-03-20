@@ -16,6 +16,7 @@ enum CellTypes : int
 {
     EMPTY = 0,
     SCENE,
+    BLOBS_SOURCE,
     DIAMONDS_SOURCE,
 
     // FACTION 1

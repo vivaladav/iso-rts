@@ -41,6 +41,10 @@ add_executable(
     src/AI/PlayerAI.cpp
     src/GameObjects/Base.h
     src/GameObjects/Base.cpp
+    src/GameObjects/Blobs.h
+    src/GameObjects/Blobs.cpp
+    src/GameObjects/BlobsGenerator.h
+    src/GameObjects/BlobsGenerator.cpp
     src/GameObjects/Collectable.h
     src/GameObjects/Collectable.cpp
     src/GameObjects/CollectableGenerator.h
