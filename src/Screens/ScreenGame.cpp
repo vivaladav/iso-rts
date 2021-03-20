@@ -85,10 +85,12 @@ ScreenGame::ScreenGame(Game * game)
 
         // add start resources
         const int startEnergy = 150;
-        p->SumEnergy(startEnergy);
+        //p->SumEnergy(startEnergy);
+        p->GetStat(Player::Stat::ENERGY).SumValue(startEnergy);
 
         const int startMaterial = 10;
-        p->SumMaterial(startMaterial);
+        //p->SumMaterial(startMaterial);
+        p->GetStat(Player::Stat::MATERIAL).SumValue(startMaterial);
 
         // temporary disable AI for development
 //        if(p->IsAI())

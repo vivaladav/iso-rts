@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cell2D.h"
+#include "StatValue.h"
 
 #include <functional>
 #include <string>
@@ -30,6 +31,19 @@ enum PlayerFaction : unsigned int
 class Player
 {
 public:
+    enum Stat : unsigned int
+    {
+        BLOBS,
+        DIAMONDS,
+        ENERGY,
+        MATERIAL,
+
+        NUM_PSTATS,
+
+        INVALID_STAT
+    };
+
+public:
     Player(const char * name, int pid);
     ~Player();
 
@@ -50,6 +64,9 @@ public:
 
     const Cell2D & GetBaseCell() const;
     void SetBaseCell(const Cell2D & cell);
+
+    // stats
+    StatValue & GetStat(Stat sid);
 
     int GetNumCells() const;
     void SumCells(int val);
@@ -98,6 +115,9 @@ public:
 
 private:
     std::vector<int> mVisMap;
+
+    std::vector<StatValue> mStats;
+    StatValue mDummyStat;
 
     std::string mName;
 
@@ -155,6 +175,14 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 
 inline const Cell2D & Player::GetBaseCell() const { return mHomeCell; }
 inline void Player::SetBaseCell(const Cell2D & cell) { mHomeCell = cell; }
+
+inline StatValue & Player::GetStat(Stat sid)
+{
+    if(sid < NUM_PSTATS)
+        return mStats[sid];
+    else
+        return mDummyStat;
+}
 
 inline int Player::GetNumCells() const { return mNumCells; }
 inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)

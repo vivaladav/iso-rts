@@ -19,7 +19,8 @@ constexpr int ENERGY_PER_CELL = 1;
 constexpr int ENERGY_PER_UNIT = 1;
 
 Player::Player(const char * name, int pid)
-    : mName(name)
+    : mDummyStat(INVALID_STAT, 0)
+    , mName(name)
     , mOnNumCellsChanged([](int){})
     , mOnEnergyChanged([](int){})
     , mOnMaterialChanged([](int){})
@@ -27,6 +28,18 @@ Player::Player(const char * name, int pid)
     , mOnNumUnitsChanged(([](int){}))
     , mPlayerId(pid)
 {
+    mStats.emplace_back(Stat::BLOBS, 0);
+    mStats.emplace_back(Stat::DIAMONDS, 0);
+    mStats.emplace_back(Stat::ENERGY, 0);
+    mStats.emplace_back(Stat::MATERIAL, 0);
+
+    for(StatValue & val : mStats)
+        val.SetMin(0);
+
+    mStats[Stat::BLOBS].SetMax(100);
+    mStats[Stat::DIAMONDS].SetMax(100);
+    mStats[Stat::ENERGY].SetMax(500);
+    mStats[Stat::MATERIAL].SetMax(100);
 }
 
 Player::~Player()

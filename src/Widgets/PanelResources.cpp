@@ -25,27 +25,43 @@ PanelResources::PanelResources(Player * player)
 
     int slotX = x0;
 
+    StatValue & energy = player->GetStat(Player::Stat::ENERGY);
     auto rd = new ResourceDisplay("data/img/UI/icon_energy.png", this);
-    rd->SetValue(100);
+    rd->SetValueMinMax(energy.GetIntMin(), energy.GetIntMax());
+    rd->SetValue(energy.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    energy.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
+    StatValue & material = player->GetStat(Player::Stat::MATERIAL);
     rd = new ResourceDisplay("data/img/UI/icon_material1.png", this);
-    rd->SetValue(325);
+    rd->SetValueMinMax(material.GetIntMin(), material.GetIntMax());
+    rd->SetValue(material.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    material.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
+    StatValue & diamonds = player->GetStat(Player::Stat::DIAMONDS);
     rd = new ResourceDisplay("data/img/UI/icon_diamond.png", this);
-    rd->SetValue(654);
+    rd->SetValueMinMax(diamonds.GetIntMin(), diamonds.GetIntMax());
+    rd->SetValue(diamonds.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    diamonds.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
+    StatValue & blobs = player->GetStat(Player::Stat::BLOBS);
     rd = new ResourceDisplay("data/img/UI/icon_blob.png", this);
-    rd->SetValue(950);
+    rd->SetValueMinMax(blobs.GetIntMin(), blobs.GetIntMax());
+    rd->SetValue(blobs.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
+
+    blobs.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 }
 
 PanelResources::~PanelResources()
