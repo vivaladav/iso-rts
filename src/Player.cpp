@@ -22,9 +22,6 @@ Player::Player(const char * name, int pid)
     : mDummyStat(INVALID_STAT, 0)
     , mName(name)
     , mOnNumCellsChanged([](int){})
-    , mOnEnergyChanged([](int){})
-    , mOnMaterialChanged([](int){})
-    , mOnDiamondsChanged([](int){})
     , mOnNumUnitsChanged(([](int){}))
     , mPlayerId(pid)
 {
@@ -39,7 +36,7 @@ Player::Player(const char * name, int pid)
     mStats[Stat::BLOBS].SetMax(100);
     mStats[Stat::DIAMONDS].SetMax(100);
     mStats[Stat::ENERGY].SetMax(500);
-    mStats[Stat::MATERIAL].SetMax(100);
+    mStats[Stat::MATERIAL].SetMax(200);
 }
 
 Player::~Player()
@@ -85,21 +82,6 @@ int Player::GetEnergyUse() const
     return energyCells + energyUnits;
 }
 
-void Player::SumEnergy(int val)
-{
-    mEnergy += val;
-
-    mOnEnergyChanged(mEnergy);
-}
-
-
-void Player::SumMaterial(int val)
-{
-    mMaterial1 += val;
-
-    mOnMaterialChanged(mMaterial1);
-}
-
 void Player::UpdateResources()
 {
     // energy
@@ -108,13 +90,13 @@ void Player::UpdateResources()
     const int energyDiff = energyProd - energyUsed;
 
     if(energyDiff != 0)
-        SumEnergy(energyDiff);
+        mStats[Player::Stat::ENERGY].SumValue(energyDiff);
 
     // material 1
     const int materialProd = GetResourceProduction(ResourceType::MATERIAL1);
 
     if(materialProd != 0)
-        SumMaterial(materialProd);
+        mStats[Player::Stat::MATERIAL].SumValue(materialProd);
 }
 
 void Player::HandleCollectable(GameObject * obj)
@@ -125,7 +107,7 @@ void Player::HandleCollectable(GameObject * obj)
         auto d = static_cast<Diamonds *>(obj);
 
         const int diamondsMult = 10;
-        SumDiamonds(d->GetNum() * diamondsMult);
+        mStats[Stat::DIAMONDS].SumValue(d->GetNum() * diamondsMult);
     }
 
     // notify collection

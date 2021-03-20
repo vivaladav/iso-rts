@@ -425,7 +425,7 @@ bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
         return false;
 
     // check if player has enough energy
-    if(COST_CONQUEST_CELL > player->GetEnergy())
+    if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::ENERGY).GetIntValue())
         return false;
 
     return true;
@@ -437,7 +437,7 @@ void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // take player's energy
-    player->SumEnergy(-COST_CONQUEST_CELL);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
 
     // mark cell as changing
     gcell.changing = true;
@@ -541,7 +541,7 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
 void GameMap::StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // take player's energy
-    player->SumEnergy(-COST_CONQUEST_RES_GEN);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_RES_GEN);
 
     // mark start as changing
     const int ind0 = start.row * mCols + start.col;
@@ -627,8 +627,8 @@ bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
        return false;
 
     // check if player has enough resources
-    if(ENERGY_NEW_UNIT > player->GetEnergy() ||
-       MATERIAL_NEW_UNIT > player->GetMaterial())
+    if(ENERGY_NEW_UNIT > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
+       MATERIAL_NEW_UNIT > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
         return false;
 
     // check if there's at least 1 free cell where to place the new unit
@@ -836,8 +836,8 @@ void GameMap::StartCreateUnit(const Cell2D & dest, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->SumEnergy(-ENERGY_NEW_UNIT);
-    player->SumMaterial(-MATERIAL_NEW_UNIT);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-ENERGY_NEW_UNIT);
+    player->GetStat(Player::Stat::MATERIAL).SumValue(-MATERIAL_NEW_UNIT);
 
     // mark cell as changing
     gcell.changing = true;
@@ -899,7 +899,7 @@ bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
     // check if player has enough energy
     const int cost = COST_UNIT_UPGRADE[unitLevel];
 
-    if(cost > player->GetEnergy())
+    if(cost > player->GetStat(Player::Stat::ENERGY).GetIntValue())
         return false;
 
     return true;
@@ -913,8 +913,8 @@ void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)
     // make player pay
     const Unit * unit = static_cast<Unit *>(obj);
     const int unitLevel = unit->GetUnitLevel();
-    const int cost = COST_UNIT_UPGRADE[unitLevel];
-    player->SumEnergy(-cost);
+    const int cost = -COST_UNIT_UPGRADE[unitLevel];
+    player->GetStat(Player::Stat::ENERGY).SumValue(cost);
 
     // mark cell as changing
     gcell.changing = true;
@@ -1272,7 +1272,7 @@ void GameMap::UpdateLinkedCells(Player * player)
     {
         const GameMapCell & cell = mCells[ind];
 
-        if(cell.owner == player || cell.influencer != -1)
+        if(cell.owner == player || cell.influencer != NO_FACTION)
             UpdateCellType(ind, cell);
     }
 }

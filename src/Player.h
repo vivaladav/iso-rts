@@ -72,18 +72,7 @@ public:
     void SumCells(int val);
     void SetOnNumCellsChanged(const std::function<void(int)> & f);
 
-    int GetEnergy() const;
     int GetEnergyUse() const;
-    void SumEnergy(int val);
-    void SetOnEnergyChanged(const std::function<void(int)> & f);
-
-    int GetMaterial() const;
-    void SumMaterial(int val);
-    void SetOnMaterialChanged(const std::function<void(int)> & f);
-
-    int GetDiamonds() const;
-    void SumDiamonds(int val);
-    void SetOnDiamondsChanged(const std::function<void(int)> & f);
 
     int GetNumUnits() const;
     void SumUnits(int val);
@@ -122,9 +111,6 @@ private:
     std::string mName;
 
     std::function<void(int)> mOnNumCellsChanged;
-    std::function<void(int)> mOnEnergyChanged;
-    std::function<void(int)> mOnMaterialChanged;
-    std::function<void(int)> mOnDiamondsChanged;
     std::function<void(int)> mOnNumUnitsChanged;
 
     std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
@@ -189,27 +175,6 @@ inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
 {
     mOnNumCellsChanged = f;
 }
-
-inline int Player::GetEnergy() const { return mEnergy; }
-inline void Player::SetOnEnergyChanged(const std::function<void(int)> & f)
-{
-    mOnEnergyChanged = f;
-}
-
-inline int Player::GetMaterial() const { return mMaterial1; }
-inline void Player::SetOnMaterialChanged(const std::function<void(int)> & f)
-{
-    mOnMaterialChanged = f;
-}
-
-inline int Player::GetDiamonds() const { return mDiamonds; }
-inline void Player::SumDiamonds(int val)
-{
-    mDiamonds += val;
-
-    mOnDiamondsChanged(mDiamonds);
-}
-inline void Player::SetOnDiamondsChanged(const std::function<void(int)> & f) { mOnDiamondsChanged = f; }
 
 inline int Player::GetNumUnits() const { return  mNumUnits; }
 inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)

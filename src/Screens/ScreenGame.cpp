@@ -84,13 +84,11 @@ ScreenGame::ScreenGame(Game * game)
         Player * p = game->GetPlayerByIndex(i);
 
         // add start resources
-        const int startEnergy = 150;
-        //p->SumEnergy(startEnergy);
-        p->GetStat(Player::Stat::ENERGY).SumValue(startEnergy);
+        const int startEnergy = 200;
+        p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
 
-        const int startMaterial = 10;
-        //p->SumMaterial(startMaterial);
-        p->GetStat(Player::Stat::MATERIAL).SumValue(startMaterial);
+        const int startMaterial = 20;
+        p->GetStat(Player::Stat::MATERIAL).SetValue(startMaterial);
 
         // temporary disable AI for development
 //        if(p->IsAI())
