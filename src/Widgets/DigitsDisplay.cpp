@@ -50,25 +50,27 @@ void DigitsDisplay::SetValue(int val)
     Font * font = FontManager::Instance()->GetFont("data/fonts/Lato-Regular.ttf", 19, Font::NORMAL);
     lib::core::Sized size = font->GetTextSize(ss.str().c_str());
 
-    // update widget size
-    //SetSize(size.w, size.h);
-
     // create zeroes
-    delete mTxtZeros;
-
     const int digitsZero = mDigits - digitsVal;
 
-    if(digitsZero)
+    if(mNumZeros != digitsZero)
     {
-        const std::string str(digitsZero, '0');
+        mNumZeros = digitsZero;
 
-        mTxtZeros = new Text(str.c_str(), font, true);
-        mTxtZeros->SetColor(0x454f54FF);
+        delete mTxtZeros;
 
-        SetSize(size.w, mTxtZeros->GetHeight());
+        if(digitsZero)
+        {
+            const std::string str(digitsZero, '0');
+
+            mTxtZeros = new Text(str.c_str(), font, true);
+            mTxtZeros->SetColor(0x454f54FF);
+
+            SetSize(size.w, mTxtZeros->GetHeight());
+        }
+        else
+            mTxtZeros = new DummyRenderable;
     }
-    else
-        mTxtZeros = new DummyRenderable;
 
     // create value digits
     delete mTxtDigits;
@@ -84,6 +86,8 @@ void DigitsDisplay::SetValue(int val)
     }
     else
         mTxtDigits = new DummyRenderable;
+
+    SetPositions();
 }
 
 void DigitsDisplay::OnRender()
@@ -93,6 +97,11 @@ void DigitsDisplay::OnRender()
 }
 
 void DigitsDisplay::HandlePositionChanged()
+{
+    SetPositions();
+}
+
+void DigitsDisplay::SetPositions()
 {
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();

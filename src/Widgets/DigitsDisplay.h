@@ -19,9 +19,13 @@ private:
 
     void HandlePositionChanged() override;
 
+    void SetPositions();
+
 private:
     int mDigits = 0;
     int mValue = -1;
+
+    int mNumZeros = -1;
 
     lib::graphic::Renderable * mTxtZeros = nullptr;
     lib::graphic::Renderable * mTxtDigits = nullptr;
