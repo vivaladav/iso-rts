@@ -173,7 +173,11 @@ ScreenGame::~ScreenGame()
 
     GetGame()->ClearPlayers();
 
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    auto stage = lib::sgui::Stage::Instance();
+
+    stage->ClearWidgets();
+    // make sure to reset stage visibility in case it was off before exit
+    stage->SetVisible(true);
 }
 
 void ScreenGame::Update(float delta)
