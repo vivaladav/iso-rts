@@ -1,6 +1,8 @@
 The files in this project are released under different licenses.
 
-The font in the data/fonts directory is licensed under the Apache License, Version 2.0 license.
+Font file data/fonts/Lato-Regular.ttf is licensed under the Open Font License.
+A copy of this license is available here:https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+Font file data/fonts/OpenSans.ttf is licensed under the Apache License, Version 2.0 license.
 A copy of this license is available here: http://www.apache.org/licenses/LICENSE-2.0
 
 The other assets in the data directory are released under the Attribution-NonCommercial-NoDerivatives 4.0 International license. 
