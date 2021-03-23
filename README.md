@@ -1,5 +1,5 @@
 # VIRTUEROR, THE VIRTUAL CONQUEROR
-![Virtueror, the virtual conqueror](https://github.com/vivaladav/iso-rts/blob/master/data/img/logo.png?raw=true)
+![Virtueror, the virtual conqueror](https://i.imgur.com/2j1Ob3l.jpg)
 
 An isometric Real Time Strategy game for PC.
 
@@ -12,4 +12,4 @@ You can follow the development on:
 
 ## Current status
 Early development, not playable yet.
-![Virtueror, current state screenshot](https://i.imgur.com/BYKNd4n.png)
+![Virtueror, current state screenshot](https://i.imgur.com/ztxAaao.png)
