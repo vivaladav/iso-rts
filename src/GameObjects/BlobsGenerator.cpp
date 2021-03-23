@@ -10,7 +10,7 @@ namespace game
 {
 
 BlobsGenerator::BlobsGenerator(GameMap * gm)
-    : CollectableGenerator(gm, 1, 6)
+    : CollectableGenerator(gm, 10, 40)
 {
 }
 

@@ -10,7 +10,7 @@ namespace game
 {
 
 DiamondsGenerator::DiamondsGenerator(GameMap * gm)
-    : CollectableGenerator(gm, 10, 60)
+    : CollectableGenerator(gm, 10, 40)
 {
 }
 
