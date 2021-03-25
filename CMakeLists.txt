@@ -65,6 +65,8 @@ add_executable(
     src/Indicators/ConquestIndicator.cpp
     src/Indicators/MoveIndicator.h
     src/Indicators/MoveIndicator.cpp
+    src/Indicators/WallIndicator.h
+    src/Indicators/WallIndicator.cpp
     src/Screens/Screen.h
     src/Screens/Screen.cpp
     src/Screens/ScreenGame.h

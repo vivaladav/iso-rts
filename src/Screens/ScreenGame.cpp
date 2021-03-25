@@ -13,6 +13,7 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
+#include "Indicators/WallIndicator.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
@@ -166,6 +167,9 @@ ScreenGame::ScreenGame(Game * game)
 ScreenGame::~ScreenGame()
 {
     for(auto ind : mConquestIndicators)
+        delete ind;
+
+    for(auto ind : mWallIndicators)
         delete ind;
 
     delete mIsoMap;
@@ -854,7 +858,69 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
 
 void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
 
+    // first clear all objects from the layer
+    layer->ClearObjects();
+
+    const bool currInside = mIsoMap->IsCellInside(currCell);
+
+    // mouse outside the map
+    if(!currInside)
+        return ;
+
+    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const bool currVisible = player->IsCellVisible(currInd);
+    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
+    const bool currIsUnitCell = currCell.row == unit->GetRow0() && currCell.col == unit->GetCol0();
+
+    const bool canBuild = currVisible && (currWalkable || currIsUnitCell);
+
+    if(!canBuild)
+        return ;
+
+    // show path cost when destination is visible
+    std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                                           currCell.row, currCell.col, false);
+
+    // this should not happen
+    if(path.empty())
+        return ;
+
+    const unsigned int lastIdx = path.size() - 1;
+
+    const PlayerFaction faction = player->GetFaction();
+
+    for(unsigned int i = 0; i < path.size(); ++i)
+    {
+        WallIndicator * ind = nullptr;
+
+        if(i < mWallIndicators.size())
+            ind = mWallIndicators[i];
+        else
+        {
+            ind = new WallIndicator;
+            mWallIndicators.emplace_back(ind);
+        }
+
+        // add indicator to layer
+        const unsigned int pathInd = path[i];
+        const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
+        const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
+
+        layer->AddObject(ind, indRow, indCol);
+
+        ind->SetFaction(faction);
+        ind->ShowCost(i == lastIdx);
+    }
+
+//    ConquerPath cp(unit, mIsoMap, mGameMap, this);
+//    cp.SetPathCells(path);
+
+//    mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
 }
 
 void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)

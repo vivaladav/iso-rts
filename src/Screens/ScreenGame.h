@@ -28,6 +28,7 @@ class PanelResources;
 class Player;
 class PlayerAI;
 class Unit;
+class WallIndicator;
 
 enum PlayerFaction : unsigned int;
 
@@ -88,6 +89,7 @@ private:
     std::vector<int> mProgressBarsToDelete;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
+    std::vector<WallIndicator *> mWallIndicators;
 
     // -- UI --
     PanelPlayer * mPanelPlayer = nullptr;
