@@ -21,7 +21,8 @@ public:
     void SetMap(const IPathMap * map, unsigned int mapRows, unsigned int mapCols);
 
     std::vector<unsigned int> MakePath(unsigned int r0, unsigned int c0,
-                                       unsigned int r1, unsigned int c1);
+                                       unsigned int r1, unsigned int c1,
+                                       bool includeStart = true);
 
 private:
     unsigned int GetCellIndex(unsigned int r, unsigned int c) const;
