@@ -42,18 +42,18 @@ void WallIndicator::SetBeforeAfterDirections(int br, int bc, int ar, int ac)
     if(1 == bc)
     {
         if(1 == ar)
-            mBlock = BOTTOM_RIGHT;
-        else if(-1 == ar)
             mBlock = TOP_RIGHT;
+        else if(-1 == ar)
+            mBlock = BOTTOM_RIGHT;
         else
             mBlock = HORIZONTAL;
     }
     else if(-1 == bc)
     {
         if(1 == ar)
-            mBlock = BOTTOM_LEFT;
-        else if(-1 == ar)
             mBlock = TOP_LEFT;
+        else if(-1 == ar)
+            mBlock = BOTTOM_LEFT;
         else
             mBlock = HORIZONTAL;
     }
