@@ -19,6 +19,8 @@ public:
 
     void SetFaction(PlayerFaction faction);
 
+    void SetBeforeAfterDirections(int br, int bc, int ar, int ac);
+
     void Render() override;
 
 private:
@@ -27,13 +29,29 @@ private:
     void UpdateImage();
 
 private:
+    enum Block : unsigned int
+    {
+        HORIZONTAL,
+        VERTICAL,
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+
+        NUM_BLOCKS,
+
+        INVALID
+    };
+
     lib::graphic::Text * mTxtCostEnergy = nullptr;
-    lib::graphic::Text * mTxtCostMAterial = nullptr;
+    lib::graphic::Text * mTxtCostMaterial = nullptr;
     unsigned int mColorCost = 0;
 
     PlayerFaction mFaction;
     float mCostEnergy = 0.f;
     float mCostMaterial = 0.f;
+
+    Block mBlock = INVALID;
 };
 
 } // namespace game

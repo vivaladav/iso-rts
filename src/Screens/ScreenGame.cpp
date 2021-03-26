@@ -884,17 +884,26 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
 
     // show path cost when destination is visible
     std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                           currCell.row, currCell.col, false);
+                                                           currCell.row, currCell.col);
 
     // this should not happen
-    if(path.empty())
+    if(path.size() < 2)
         return ;
 
     const unsigned int lastIdx = path.size() - 1;
 
     const PlayerFaction faction = player->GetFaction();
 
-    for(unsigned int i = 0; i < path.size(); ++i)
+    std::vector<Cell2D> cellsPath;
+    cellsPath.reserve(path.size());
+
+    // store coordinates of start cell
+    const unsigned int pathInd0 = path[0];
+    const unsigned int indRow0 = pathInd0 / mIsoMap->GetNumCols();
+    const unsigned int indCol0 = pathInd0 % mIsoMap->GetNumCols();
+    cellsPath.emplace_back(indRow0, indCol0);
+
+    for(unsigned int i = 0; i < lastIdx; ++i)
     {
         WallIndicator * ind = nullptr;
 
@@ -906,16 +915,40 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
             mWallIndicators.emplace_back(ind);
         }
 
-        // add indicator to layer
-        const unsigned int pathInd = path[i];
+        // add indicator to layer - skip path[0] as that's start
+        const unsigned int pathInd = path[i + 1];
         const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
         const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
+        cellsPath.emplace_back(indRow, indCol);
 
         layer->AddObject(ind, indRow, indCol);
 
         ind->SetFaction(faction);
         ind->ShowCost(i == lastIdx);
     }
+
+    // set directions
+    for(unsigned int i = 1; i < lastIdx; ++i)
+    {
+        const int br = cellsPath[i].row - cellsPath[i - 1].row;
+        const int bc = cellsPath[i].col - cellsPath[i - 1].col;
+
+        const int ar = cellsPath[i + 1].row - cellsPath[i].row;
+        const int ac = cellsPath[i + 1].col - cellsPath[i].col;
+
+        mWallIndicators[i - 1]->SetBeforeAfterDirections(br, bc, ar, ac);
+
+        std::cout << "wall indicator " << (i - 1) << " : B " << br << "," << bc <<
+                     " - A " << ar << "," << ac << std::endl;
+    }
+
+    // set directions for last cell
+    const int br = cellsPath[lastIdx].row - cellsPath[lastIdx - 1].row;
+    const int bc = cellsPath[lastIdx].col - cellsPath[lastIdx - 1].col;
+    mWallIndicators[lastIdx - 1]->SetBeforeAfterDirections(br, bc, 0, 0);
+
+    std::cout << "wall indicator " << (lastIdx - 1) << " : B " << br << "," << bc <<
+                 " - A 0,0 " << std::endl << std::endl;
 
 //    ConquerPath cp(unit, mIsoMap, mGameMap, this);
 //    cp.SetPathCells(path);
