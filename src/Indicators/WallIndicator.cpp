@@ -76,7 +76,14 @@ void WallIndicator::SetBeforeAfterDirections(int br, int bc, int ar, int ac)
             mBlock = VERTICAL;
     }
     else
-        mBlock = INVALID;
+    {
+        if(1 == ar || -1 == ar)
+            mBlock = VERTICAL;
+        else if(1 == ac || -1 == ac)
+            mBlock = HORIZONTAL;
+        else
+            mBlock = INVALID;
+    }
 
     UpdateImage();
 }
