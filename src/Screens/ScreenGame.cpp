@@ -10,6 +10,7 @@
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
+#include "AI/WallBuildPath.h"
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
@@ -452,6 +453,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                         ClearSelection(player);
                     }
                 }
+            }
+            else if (action == UnitAction::BUILD_WALL)
+            {
+
             }
         }
     }
@@ -924,7 +929,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
         layer->AddObject(ind, indRow, indCol);
 
         ind->SetFaction(faction);
-        ind->ShowCost(i == lastIdx);
+        ind->ShowCost(false);
     }
 
     // -- set directions --
@@ -978,10 +983,10 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
 
     std::cout << std::endl;
 
-//    ConquerPath cp(unit, mIsoMap, mGameMap, this);
-//    cp.SetPathCells(path);
+    WallBuildPath wbp(unit, mIsoMap, mGameMap, this);
+    wbp.SetPathCells(path);
 
-//    mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
+    mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
 }
 
 void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)

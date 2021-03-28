@@ -39,6 +39,8 @@ add_executable(
     src/AI/ObjectPath.cpp
     src/AI/PlayerAI.h
     src/AI/PlayerAI.cpp
+    src/AI/WallBuildPath.h
+    src/AI/WallBuildPath.cpp
     src/GameObjects/Base.h
     src/GameObjects/Base.cpp
     src/GameObjects/Blobs.h

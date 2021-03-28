@@ -2,7 +2,14 @@
 
 #include "IsoObject.h"
 
-namespace lib { namespace graphic { class Text; } }
+namespace lib
+{
+    namespace graphic
+    {
+        class Image;
+        class Text;
+    }
+}
 
 namespace game
 {
@@ -43,9 +50,11 @@ private:
         INVALID
     };
 
+    lib::graphic::Image * mIconEnergy = nullptr;
     lib::graphic::Text * mTxtCostEnergy = nullptr;
+    lib::graphic::Image * mIconMaterial = nullptr;
     lib::graphic::Text * mTxtCostMaterial = nullptr;
-    unsigned int mColorCost = 0;
+    unsigned int mColorCost = 0xd6f5dbff;
 
     PlayerFaction mFaction;
     float mCostEnergy = 0.f;
