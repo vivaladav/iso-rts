@@ -444,7 +444,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     // path available -> start conquering
                     if(!path.empty())
                     {
-
                         auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
                         cp->SetPathCells(path);
 
@@ -456,7 +455,26 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             }
             else if (action == UnitAction::BUILD_WALL)
             {
+                const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
+                // destination is visible and walkable
+                if(player->IsCellVisible(clickInd) &&
+                   (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
+                {
+                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                      clickCell.row, clickCell.col);
+
+                    // path available -> start building
+                    if(!path.empty())
+                    {
+                        auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
+                        wbp->SetPathCells(path);
+
+                        mGameMap->BuildWalls(wbp);
+
+                        ClearSelection(player);
+                    }
+                }
             }
         }
     }
@@ -932,59 +950,12 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
         ind->ShowCost(false);
     }
 
-    // -- set directions --
+    // -- set directions and costs --
     const unsigned int lastIndicator = lastIdx - 1;
-
-    if(0 == lastIndicator)
-    {
-        const int br = cellsPath[1].row - cellsPath[0].row;
-        const int bc = cellsPath[1].col - cellsPath[0].col;
-        const int ar = 0;
-        const int ac = 0;
-
-        mWallIndicators[0]->SetBeforeAfterDirections(br, bc, ar, ac);
-
-        std::cout << "solo wall indicator 0 : B " << br << "," << bc <<
-                     " - A " << ar << "," << ac << std::endl;
-    }
-    else
-    {
-        const int ar = cellsPath[2].row - cellsPath[1].row;
-        const int ac = cellsPath[2].col - cellsPath[1].col;
-
-        mWallIndicators[0]->SetBeforeAfterDirections(0, 0, ar, ac);
-
-        std::cout << "first wall indicator 0 : B 0,0 " <<
-                     " - A " << ar << "," << ac << std::endl;
-
-        // 2nd to n-1 indicators
-        for(unsigned int i = 1; i < lastIndicator; ++i)
-        {
-            const int br = cellsPath[i + 1].row - cellsPath[i].row;
-            const int bc = cellsPath[i + 1].col - cellsPath[i].col;
-
-            const int ar = cellsPath[i + 2].row - cellsPath[i + 1].row;
-            const int ac = cellsPath[i + 2].col - cellsPath[i + 1].col;
-
-            mWallIndicators[i]->SetBeforeAfterDirections(br, bc, ar, ac);
-
-            std::cout << "loop wall indicator " << i << " : B " << br << "," << bc <<
-                         " - A " << ar << "," << ac << std::endl;
-        }
-
-        // set directions for last indicator
-        const int br = cellsPath[lastIdx].row - cellsPath[lastIdx - 1].row;
-        const int bc = cellsPath[lastIdx].col - cellsPath[lastIdx - 1].col;
-        mWallIndicators[lastIndicator]->SetBeforeAfterDirections(br, bc, 0, 0);
-
-        std::cout << "last wall indicator " << (lastIndicator) << " : B " << br << "," << bc <<
-                     " - A 0,0 " << std::endl;
-    }
-
-    std::cout << std::endl;
 
     WallBuildPath wbp(unit, mIsoMap, mGameMap, this);
     wbp.SetPathCells(path);
+    wbp.SetIndicatorsType(cellsPath, mWallIndicators);
 
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
 }

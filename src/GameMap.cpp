@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
+#include "AI/WallBuildPath.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/BlobsGenerator.h"
@@ -17,6 +18,7 @@
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
+#include "GameObjects/Wall.h"
 #include "Screens/ScreenGame.h"
 
 #include <utilities/UniformDistribution.h>
@@ -309,6 +311,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     }
     else if(objId >= OBJ_MOUNTAIN_FIRST && objId <= OBJ_MOUNTAIN_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
+    else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)
+        obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)
@@ -464,19 +468,8 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
     bool stolen = gcell.owner != nullptr && gcell.owner != player;
 
-    // destroys collectable generators and turn cell into empty one
-    auto it = std::find_if(mCollGen.begin(), mCollGen.end(), [cell](CollectableGenerator * gen)
-    {
-        return gen->GetRow() == cell.row && gen->GetCol() == cell.col;
-    });
-
-    if(it != mCollGen.end())
-    {
-        delete *it;
-        mCollGen.erase(it);
-
-        gcell.basicType = EMPTY;
-    }
+    // make cell empty
+    ClearCell(gcell);
 
     // assign owner
     gcell.owner = player;
@@ -512,6 +505,96 @@ void GameMap::ConquerCells(ConquerPath * path)
     path->Start();
 
     mConquerPaths.emplace_back(path);
+}
+
+bool GameMap::CanBuildWall(const Cell2D & cell, Player * player)
+{
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return false;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // already changing
+    if(gcell.changing)
+        return false;
+
+    // cell is full
+    if(!gcell.walkable)
+        return false;
+
+    // check if player has enough energy and material
+    // TODO
+    //if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
+        //return false;
+
+    return true;
+}
+
+void GameMap::StartBuildWall(const Cell2D & cell, Player * player)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // take player's material
+    // TODO
+    //player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::BuildWall(const Cell2D & cell, Player * player)
+{
+    // check if cell was of another faction
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+    bool stolen = gcell.owner != nullptr && gcell.owner != player;
+
+    // make cell empty
+    ClearCell(gcell);
+
+    // assign owner
+    gcell.owner = player;
+
+    // update player
+    player->SumCells(1);
+
+    // reset cell's changing flag
+    gcell.changing = false;
+    // propagate effects of conquest
+    UpdateInfluencedCells(cell.row, cell.col);
+
+    UpdateLinkedCells(player);
+
+    // add object wall
+    const GameObjectType wallType = GameObjectType::OBJ_WALL_VERT;
+    CreateObject(OBJECTS, wallType, player, cell.row, cell.col, 1, 1);
+
+    // update visibility map if local player
+    if(player == mGame->GetPlayerByIndex(0))
+    {
+        AddPlayerCellVisibility(gcell, player);
+
+        ApplyVisibility(player);
+    }
+    else if(stolen)
+    {
+        DelPlayerCellVisibility(gcell, player);
+
+        ApplyVisibility(player);
+    }
+}
+
+void GameMap::BuildWalls(WallBuildPath * path)
+{
+    path->Start();
+
+    mWallBuildPaths.emplace_back(path);
 }
 
 bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
@@ -1124,9 +1207,30 @@ void GameMap::Update(float delta)
 
     // conquer paths
     UpdateConquerPaths(delta);
+
+    // wall building paths
+    UpdateWallBuildPaths(delta);
 }
 
 // ==================== PRIVATE METHODS ====================
+
+void GameMap::ClearCell(GameMapCell & gcell)
+{
+    // destroy any generator
+    auto it = std::find_if(mCollGen.begin(), mCollGen.end(), [gcell](CollectableGenerator * gen)
+    {
+        return gen->GetRow() == gcell.row && gen->GetCol() == gcell.col;
+    });
+
+
+    if(it != mCollGen.end())
+    {
+        delete *it;
+        mCollGen.erase(it);
+    }
+
+    gcell.basicType = EMPTY;
+}
 
 void GameMap::StopCellChange(GameMapCell & gcell)
 {
@@ -1613,6 +1717,32 @@ void GameMap::UpdateConquerPaths(float delta)
         }
         else
             ++itCP;
+    }
+}
+
+void GameMap::UpdateWallBuildPaths(float delta)
+{
+    auto it = mWallBuildPaths.begin();
+
+    while(it != mWallBuildPaths.end())
+    {
+        WallBuildPath * path = *it;
+
+        path->Update(delta);
+
+        if(path->GetState() == WallBuildPath::BuildState::COMPLETED)
+        {
+            delete path;
+            it = mWallBuildPaths.erase(it);
+        }
+        else if(path->GetState() == WallBuildPath::BuildState::FAILED)
+        {
+            // TODO try to recover from failed path
+            delete path;
+            it = mWallBuildPaths.erase(it);
+        }
+        else
+            ++it;
     }
 }
 

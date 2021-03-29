@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Cell2D.h"
+
 #include <vector>
 
 namespace game
@@ -18,6 +20,7 @@ public:
     {
         READY,
         BUILDING,
+        START_NEXT,
         COMPLETED,
         FAILED,
 
@@ -40,6 +43,9 @@ public:
     void Start();
 
     void Update(float delta);
+
+    void SetIndicatorsType(const std::vector<Cell2D> & cells,
+                           const std::vector<WallIndicator *> & indicators);
 
 private:
     void CreateIndicators();

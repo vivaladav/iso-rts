@@ -18,6 +18,7 @@ class IsoMap;
 class ObjectPath;
 class Player;
 class ScreenGame;
+class WallBuildPath;
 
 struct Cell2D;
 struct GameMapCell;
@@ -73,6 +74,12 @@ public:
     void ConquerCell(const Cell2D & cell, Player * player);
     void ConquerCells(ConquerPath * path);
 
+    // wall building
+    bool CanBuildWall(const Cell2D & cell, Player * player);
+    void StartBuildWall(const Cell2D & cell, Player * player);
+    void BuildWall(const Cell2D & cell, Player * player);
+    void BuildWalls(WallBuildPath * path);
+
     // resource generator conquest
     bool CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
     void StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
@@ -105,6 +112,8 @@ public:
     void Update(float delta);
 
 private:
+    void ClearCell(GameMapCell & gcell);
+
     void StopCellChange(GameMapCell & gcell);
 
     void UpdateCellType(unsigned int ind, const GameMapCell & cell);
@@ -136,6 +145,7 @@ private:
 
     void UpdateObjectPaths(float delta);
     void UpdateConquerPaths(float delta);
+    void UpdateWallBuildPaths(float delta);
 
     void DestroyDiamondsGenerator(const Cell2D & cell);
 
@@ -149,6 +159,7 @@ private:
     std::vector<CollectableGenerator *> mCollGen;
     std::vector<ObjectPath *> mPaths;
     std::vector<ConquerPath *> mConquerPaths;
+    std::vector<WallBuildPath *> mWallBuildPaths;
 
     Game * mGame = nullptr;
     ScreenGame * mScreenGame = nullptr;
