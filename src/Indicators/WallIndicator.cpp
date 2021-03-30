@@ -195,8 +195,6 @@ void WallIndicator::UpdateImage()
 {
     using namespace lib::graphic;
 
-    std::cout << "WallIndicator::UpdateImage - faction: " << mFaction << " - block: " << mBlock << std::endl;
-
     auto tm = TextureManager::Instance();
 
     // not in a valid state
