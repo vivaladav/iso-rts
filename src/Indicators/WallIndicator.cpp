@@ -32,6 +32,8 @@ void WallIndicator::SetFaction(PlayerFaction faction)
     mFaction = faction;
 
     UpdateImage();
+
+    UpdateCostColor();
 }
 
 void WallIndicator::SetBeforeAfterDirections(int br, int bc, int ar, int ac)
@@ -231,6 +233,22 @@ void WallIndicator::UpdateImage()
 
     const unsigned int index = mFaction * NUM_BLOCKS + mBlock;
     SetTexture(tm->GetTexture(files[index]));
+}
+
+void WallIndicator::UpdateCostColor()
+{
+    if(FACTION_1 == mFaction)
+        mColorCost = 0xf0dbdbff;
+    else if(FACTION_2 == mFaction)
+        mColorCost = 0xd9f2ddff;
+    else
+        mColorCost = 0xd6edf5ff;
+
+    if(mTxtCostEnergy != nullptr)
+    {
+        mTxtCostEnergy->SetColor(mColorCost);
+        mTxtCostMaterial->SetColor(mColorCost);
+    }
 }
 
 } // namespace game

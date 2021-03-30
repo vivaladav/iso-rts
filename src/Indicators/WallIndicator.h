@@ -34,6 +34,7 @@ private:
     void CreateCostData();
 
     void UpdateImage();
+    void UpdateCostColor();
 
 private:
     enum Block : unsigned int
@@ -54,7 +55,7 @@ private:
     lib::graphic::Text * mTxtCostEnergy = nullptr;
     lib::graphic::Image * mIconMaterial = nullptr;
     lib::graphic::Text * mTxtCostMaterial = nullptr;
-    unsigned int mColorCost = 0xd6f5dbff;
+    unsigned int mColorCost = 0xFFFFFFFF;
 
     PlayerFaction mFaction;
     float mCostEnergy = 0.f;
