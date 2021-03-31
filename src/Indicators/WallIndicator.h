@@ -14,12 +14,15 @@ namespace lib
 namespace game
 {
 
+enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
 
 class WallIndicator : public IsoObject
 {
 public:
     WallIndicator();
+
+    GameObjectType GetBlockType() const;
 
     void SetCost(float energy, float material);
     void ShowCost(bool val);
@@ -37,18 +40,18 @@ private:
     void UpdateCostColor();
 
 private:
-    enum Block : unsigned int
+    enum WallBlock : unsigned int
     {
-        HORIZONTAL,
-        VERTICAL,
-        TOP_LEFT,
-        TOP_RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT,
+        WB_HORIZONTAL,
+        WB_VERTICAL,
+        WB_TOP_LEFT,
+        WB_TOP_RIGHT,
+        WB_BOTTOM_LEFT,
+        WB_BOTTOM_RIGHT,
 
-        NUM_BLOCKS,
+        NUM_WALL_BLOCKS,
 
-        INVALID
+        WB_INVALID
     };
 
     lib::graphic::Image * mIconEnergy = nullptr;
@@ -61,7 +64,7 @@ private:
     float mCostEnergy = 0.f;
     float mCostMaterial = 0.f;
 
-    Block mBlock = INVALID;
+    WallBlock mBlock = WB_INVALID;
 };
 
 } // namespace game

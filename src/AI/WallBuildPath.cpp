@@ -83,14 +83,19 @@ void WallBuildPath::InitNextBuild()
         mGameMap->StartBuildWall(nextCell, player);
 
         // clear indicator before starting construction
+        const int indexInd = mNextCell - 1;
+
         IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-        layerOverlay->ClearObject(mIndicators[mNextCell - 1]);
+        layerOverlay->ClearObject(mIndicators[indexInd]);
+
+        const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
 
         // TODO get conquer time from unit
         constexpr float TIME_BUILD = 2.f;
-        mScreen->CreateProgressBar(nextCell, TIME_BUILD, player, [this, nextCell, player]
+        mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
+                                   [this, nextCell, player, blockType]
         {
-            mGameMap->BuildWall(nextCell, player);
+            mGameMap->BuildWall(nextCell, player, blockType);
 
             ++mNextCell;
 

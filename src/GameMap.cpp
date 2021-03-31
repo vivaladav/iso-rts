@@ -548,7 +548,7 @@ void GameMap::StartBuildWall(const Cell2D & cell, Player * player)
     gcell.changing = true;
 }
 
-void GameMap::BuildWall(const Cell2D & cell, Player * player)
+void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType planned)
 {
     // check if cell was of another faction
     const int ind = cell.row * mCols + cell.col;
@@ -572,7 +572,8 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player)
     UpdateLinkedCells(player);
 
     // add object wall
-    const GameObjectType wallType = GameObjectType::OBJ_WALL_VERT;
+    // TODO assign type based on neighbors
+    const GameObjectType wallType = planned;
     CreateObject(OBJECTS, wallType, player, cell.row, cell.col, 1, 1);
 
     // update visibility map if local player

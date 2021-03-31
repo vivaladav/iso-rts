@@ -10,6 +10,8 @@ class Wall : public GameObject
 public:
     Wall(GameObjectType subtype, int rows, int cols);
 
+    void SetWallType(GameObjectType type);
+
 protected:
     void UpdateImage() override;
 

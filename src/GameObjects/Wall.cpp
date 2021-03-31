@@ -17,6 +17,13 @@ Wall::Wall(GameObjectType subtype, int rows, int cols)
     SetImage();
 }
 
+void Wall::SetWallType(GameObjectType type)
+{
+    mSubtypeInd = type - GameObjectType::OBJ_WALL_FIRST;
+
+    UpdateImage();
+}
+
 void Wall::UpdateImage()
 {
     SetImage();
@@ -41,28 +48,43 @@ void Wall::SetImage()
 
     const unsigned int faction = owner->GetFaction();
 
-    const char * imgFiles[] =
+    static const char * imgFiles[] =
     {
+        "data/img/wall_h-f1.png",
         "data/img/wall_v-f1.png",
-        "data/img/wall_v-f1.png",
-        "data/img/wall_v-f1.png",
-        "data/img/wall_v-f1.png",
-        "data/img/wall_v-f1.png",
-        "data/img/wall_v-f1.png",
+        "data/img/wall_tl-f1.png",
+        "data/img/wall_tr-f1.png",
+        "data/img/wall_bl-f1.png",
+        "data/img/wall_br-f1.png",
+        "data/img/wall_intn-f1.png",
+        "data/img/wall_ints-f1.png",
+        "data/img/wall_intw-f1.png",
+        "data/img/wall_inte-f1.png",
+        "data/img/wall_cross-f1.png",
 
+        "data/img/wall_h-f2.png",
         "data/img/wall_v-f2.png",
-        "data/img/wall_v-f2.png",
-        "data/img/wall_v-f2.png",
-        "data/img/wall_v-f2.png",
-        "data/img/wall_v-f2.png",
-        "data/img/wall_v-f2.png",
+        "data/img/wall_tl-f2.png",
+        "data/img/wall_tr-f2.png",
+        "data/img/wall_bl-f2.png",
+        "data/img/wall_br-f2.png",
+        "data/img/wall_intn-f2.png",
+        "data/img/wall_ints-f2.png",
+        "data/img/wall_intw-f2.png",
+        "data/img/wall_inte-f2.png",
+        "data/img/wall_cross-f2.png",
 
+        "data/img/wall_h-f3.png",
         "data/img/wall_v-f3.png",
-        "data/img/wall_v-f3.png",
-        "data/img/wall_v-f3.png",
-        "data/img/wall_v-f3.png",
-        "data/img/wall_v-f3.png",
-        "data/img/wall_v-f3.png"
+        "data/img/wall_tl-f3.png",
+        "data/img/wall_tr-f3.png",
+        "data/img/wall_bl-f3.png",
+        "data/img/wall_br-f3.png",
+        "data/img/wall_intn-f3.png",
+        "data/img/wall_ints-f3.png",
+        "data/img/wall_intw-f3.png",
+        "data/img/wall_inte-f3.png",
+        "data/img/wall_cross-f3.png"
     };
 
     const int ind = mSubtypeInd + (faction * NUM_OBJS_WALL);

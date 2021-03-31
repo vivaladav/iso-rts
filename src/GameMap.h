@@ -23,6 +23,7 @@ class WallBuildPath;
 struct Cell2D;
 struct GameMapCell;
 
+enum GameObjectType : unsigned int;
 enum class MapObjectId : unsigned int;
 
 /// Class that handles most of the logic of what happens on the game map.
@@ -77,7 +78,7 @@ public:
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player);
     void StartBuildWall(const Cell2D & cell, Player * player);
-    void BuildWall(const Cell2D & cell, Player * player);
+    void BuildWall(const Cell2D & cell, Player * player, GameObjectType planned);
     void BuildWalls(WallBuildPath * path);
 
     // resource generator conquest

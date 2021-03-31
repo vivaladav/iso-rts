@@ -1,6 +1,7 @@
 #include "Indicators/WallIndicator.h"
 
 #include "Player.h"
+#include "GameObjects/GameObject.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -45,50 +46,69 @@ void WallIndicator::SetBeforeAfterDirections(int br, int bc, int ar, int ac)
     if(1 == bc)
     {
         if(1 == ar)
-            mBlock = TOP_RIGHT;
+            mBlock = WB_TOP_RIGHT;
         else if(-1 == ar)
-            mBlock = BOTTOM_RIGHT;
+            mBlock = WB_BOTTOM_RIGHT;
         else
-            mBlock = HORIZONTAL;
+            mBlock = WB_HORIZONTAL;
     }
     else if(-1 == bc)
     {
         if(1 == ar)
-            mBlock = TOP_LEFT;
+            mBlock = WB_TOP_LEFT;
         else if(-1 == ar)
-            mBlock = BOTTOM_LEFT;
+            mBlock = WB_BOTTOM_LEFT;
         else
-            mBlock = HORIZONTAL;
+            mBlock = WB_HORIZONTAL;
     }
     else if(1 == br)
     {
         if(1 == ac)
-            mBlock = BOTTOM_LEFT;
+            mBlock = WB_BOTTOM_LEFT;
         else if(-1 == ac)
-            mBlock = BOTTOM_RIGHT;
+            mBlock = WB_BOTTOM_RIGHT;
         else
-            mBlock = VERTICAL;
+            mBlock = WB_VERTICAL;
     }
     else if(-1 == br)
     {
         if(1 == ac)
-            mBlock = TOP_LEFT;
+            mBlock = WB_TOP_LEFT;
         else if(-1 == ac)
-            mBlock = TOP_RIGHT;
+            mBlock = WB_TOP_RIGHT;
         else
-            mBlock = VERTICAL;
+            mBlock = WB_VERTICAL;
     }
     else
     {
         if(1 == ar || -1 == ar)
-            mBlock = VERTICAL;
+            mBlock = WB_VERTICAL;
         else if(1 == ac || -1 == ac)
-            mBlock = HORIZONTAL;
+            mBlock = WB_HORIZONTAL;
         else
-            mBlock = INVALID;
+            mBlock = WB_INVALID;
     }
 
     UpdateImage();
+}
+
+
+GameObjectType WallIndicator::GetBlockType() const
+{
+    static const GameObjectType types[] =
+    {
+        OBJ_WALL_HORIZ,
+        OBJ_WALL_VERT,
+        OBJ_WALL_TL,
+        OBJ_WALL_TR,
+        OBJ_WALL_BL,
+        OBJ_WALL_BR
+    };
+
+    if(WB_INVALID == mBlock)
+        return OBJ_WALL_HORIZ;
+    else
+        return types[mBlock];
 }
 
 void WallIndicator::SetCost(float energy, float material)
@@ -200,7 +220,7 @@ void WallIndicator::UpdateImage()
     auto tm = TextureManager::Instance();
 
     // not in a valid state
-    if(NO_FACTION == mFaction || INVALID == mBlock)
+    if(NO_FACTION == mFaction || WB_INVALID == mBlock)
     {
         SetTexture(tm->GetTexture("data/img/wall_plan_invalid.png"));
         return ;
@@ -231,7 +251,7 @@ void WallIndicator::UpdateImage()
         "data/img/wall_plan_br-f3.png"
     };
 
-    const unsigned int index = mFaction * NUM_BLOCKS + mBlock;
+    const unsigned int index = mFaction * NUM_WALL_BLOCKS + mBlock;
     SetTexture(tm->GetTexture(files[index]));
 }
 
