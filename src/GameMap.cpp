@@ -572,9 +572,10 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     UpdateLinkedCells(player);
 
     // add object wall
-    // TODO assign type based on neighbors
-    const GameObjectType wallType = planned;
-    CreateObject(OBJECTS, wallType, player, cell.row, cell.col, 1, 1);
+    CreateObject(OBJECTS, planned, player, cell.row, cell.col, 1, 1);
+
+    // update this wall type and the ones surrounding it
+    UpdateWalls(cell);
 
     // update visibility map if local player
     if(player == mGame->GetPlayerByIndex(0))
@@ -1744,6 +1745,142 @@ void GameMap::UpdateWallBuildPaths(float delta)
         }
         else
             ++it;
+    }
+}
+
+void GameMap::UpdateWalls(const Cell2D & center)
+{
+    const int rows = static_cast<int>(mRows);
+    const int cols = static_cast<int>(mCols);
+
+    // cell out of map !?
+    if(center.row < 0 || center.col < 0 || center.row >= rows || center.col >= cols)
+        return ;
+
+    UpdateWall(center);
+
+    // update north
+    if(center.row > 0)
+        UpdateWall({center.row - 1, center.col});
+
+    // update south
+    if(center.row + 1 < rows)
+    UpdateWall({center.row + 1, center.col});
+
+    // update west
+    if(center.col > 0)
+        UpdateWall({center.row, center.col - 1});
+
+    // update east
+    if(center.col + 1 < cols)
+        UpdateWall({center.row, center.col + 1});
+}
+
+void GameMap::UpdateWall(const Cell2D & cell)
+{
+    GameObject * obj = GetCell(cell.row, cell.col).obj;
+
+    // no wall here
+    if(nullptr == obj || obj->GetObjectType() != OBJ_WALL)
+        return ;
+
+    Wall * w = static_cast<Wall *>(obj);
+
+    const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).obj : nullptr;
+    const bool wallN = objN && objN->GetObjectType() == OBJ_WALL;
+
+    const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).obj : nullptr;
+    const bool wallS = objS && objS->GetObjectType() == OBJ_WALL;
+
+    const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).obj : nullptr;
+    const bool wallW = objW && objW->GetObjectType() == OBJ_WALL;
+
+    const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).obj : nullptr;
+    const bool wallE = objE && objE->GetObjectType() == OBJ_WALL;
+
+    enum Flags
+    {
+        NORTH   = 0x1,
+        SOUTH   = 0x2,
+        WEST    = 0x4,
+        EAST    = 0x8
+    };
+
+    enum Configurations
+    {
+        HORIZ_1 = WEST,
+        HORIZ_2 = EAST,
+        HORIZ_3 = WEST + EAST,
+
+        VERT_1 = NORTH,
+        VERT_2 = SOUTH,
+        VERT_3 = NORTH + SOUTH,
+
+        TL = EAST + SOUTH,
+        TR = WEST + SOUTH,
+        BL = EAST+ NORTH,
+        BR = WEST + NORTH,
+
+        INTN = NORTH + WEST + EAST,
+        INTS = SOUTH + WEST + EAST,
+        INTW = NORTH + SOUTH + WEST,
+        INTE = NORTH + SOUTH + EAST,
+
+        CROSS = NORTH + SOUTH + WEST + EAST
+    };
+
+    const int conf = NORTH * static_cast<int>(wallN) +
+                     SOUTH * static_cast<int>(wallS) +
+                     WEST * static_cast<int>(wallW) +
+                     EAST * static_cast<int>(wallE);
+
+    switch(conf)
+    {
+        case HORIZ_1:
+        case HORIZ_2:
+        case HORIZ_3:
+            w->SetWallType(OBJ_WALL_HORIZ);
+        break;
+
+        case VERT_1:
+        case VERT_2:
+        case VERT_3:
+            w->SetWallType(OBJ_WALL_VERT);
+        break;
+
+        case TL:
+            w->SetWallType(OBJ_WALL_TL);
+        break;
+        case TR:
+            w->SetWallType(OBJ_WALL_TR);
+        break;
+        case BL:
+            w->SetWallType(OBJ_WALL_BL);
+        break;
+        case BR:
+            w->SetWallType(OBJ_WALL_BR);
+        break;
+
+        case INTN:
+            w->SetWallType(OBJ_WALL_INTN);
+        break;
+        case INTS:
+            w->SetWallType(OBJ_WALL_INTS);
+        break;
+        case INTW:
+            w->SetWallType(OBJ_WALL_INTW);
+        break;
+        case INTE:
+            w->SetWallType(OBJ_WALL_INTE);
+        break;
+
+        case CROSS:
+            w->SetWallType(OBJ_WALL_CROSS);
+        break;
+
+        default:
+            // do nothing for any other case
+        break;
     }
 }
 

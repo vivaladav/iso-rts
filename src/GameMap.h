@@ -148,7 +148,8 @@ private:
     void UpdateConquerPaths(float delta);
     void UpdateWallBuildPaths(float delta);
 
-    void DestroyDiamondsGenerator(const Cell2D & cell);
+    void UpdateWalls(const Cell2D & center);
+    void UpdateWall(const Cell2D & cell);
 
 private:
     // to access visibility functions
