@@ -32,7 +32,7 @@ Game::Game(int argc, char * argv[])
         "data/maps/12x12-01.map",
         "data/maps/15x15-01.map",
         "data/maps/20x20-01.map",
-        "data/maps/20x20-02.map",
+        "data/maps/40x40-01.map",
     }
 {
     using namespace lib::graphic;
