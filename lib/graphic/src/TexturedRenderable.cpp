@@ -2,6 +2,7 @@
 
 #include "graphic/Renderer.h"
 #include "graphic/Texture.h"
+#include "graphic/TextureData.h"
 
 #include <SDL2/SDL.h>
 
@@ -21,7 +22,7 @@ void TexturedRenderable::Render()
     SDL_Renderer * r = Renderer::Instance()->mSysRenderer;
     const SDL_RendererFlip flip = static_cast<SDL_RendererFlip>(mFlip);
 
-    SDL_RenderCopyEx(r, mTex->mData, nullptr, mRect, mRot, nullptr, flip);
+    SDL_RenderCopyEx(r, mTex->mTexData->mData, mTex->mSrcRect, mRect, mRot, nullptr, flip);
 }
 
 void TexturedRenderable::SetTexture(Texture * tex)

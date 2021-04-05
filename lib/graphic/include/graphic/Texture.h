@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+
+struct SDL_Rect;
 struct SDL_Surface;
 struct SDL_Texture;
 
@@ -8,7 +11,7 @@ namespace lib
 namespace graphic
 {
 
-class TexturedRenderable;
+class TextureData;
 
 enum TextureQuality : int;
 
@@ -17,29 +20,27 @@ class Texture
 public:
     Texture(SDL_Surface * data, TextureQuality q);
     Texture(const char * file, TextureQuality q);
+    Texture(const std::shared_ptr<TextureData> & data);
     ~Texture();
 
     int GetWidth() const;
     int GetHeight() const;
 
+    void SetSourceRect(int x, int y, int w, int h);
+
     void SetAlpha(unsigned char a);
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 private:
-    void SetTextureQuality(TextureQuality q);
+    void InitSrcRect();
 
 private:
-    SDL_Texture * mData = nullptr;
+    std::shared_ptr<TextureData> mTexData;
+    SDL_Rect * mSrcRect = nullptr;
 
-    int mW = 0;
-    int mH = 0;
-
-    // access SDL Texture data
+    // access private data
     friend class TexturedRenderable;
 };
-
-inline int Texture::GetWidth() const { return mW; }
-inline int Texture::GetHeight() const { return mH; }
 
 } // namespace graphic
 } // namespace lib

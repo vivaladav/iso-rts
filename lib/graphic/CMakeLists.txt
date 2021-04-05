@@ -15,6 +15,7 @@ add_library(
     include/graphic/Text.h
     include/graphic/TexturedRenderable.h
     include/graphic/Texture.h
+    include/graphic/TextureData.h
     include/graphic/TextureManager.h
     include/graphic/Window.h
     src/DummyRenderable.cpp
@@ -25,6 +26,7 @@ add_library(
     src/Renderer.cpp
     src/Text.cpp
     src/Texture.cpp
+    src/TextureData.cpp
     src/TexturedRenderable.cpp
     src/TextureManager.cpp
     src/Window.cpp

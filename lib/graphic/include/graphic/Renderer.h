@@ -46,9 +46,9 @@ private:
     int mW = 0;
     int mH = 0;
 
-    // classess that need to access the low level system renderer
+    // classes that need to access the low level system renderer
     friend class TexturedRenderable;
-    friend class Texture;
+    friend class TextureData;
 };
 
 inline Renderer * Renderer::Instance() { return mInstance; }
