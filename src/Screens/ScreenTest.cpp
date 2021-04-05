@@ -282,7 +282,7 @@ void ScreenTest::TestSprite()
 
     Image * img = nullptr;
 
-    img = new Image(tm->GetTexture("data/img/test_sprite.png"));
+    img = new Image(tm->GetTexture(file));
     mRenderables.emplace_back(img);
 
     img->SetPosition(x0, y0);

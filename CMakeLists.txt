@@ -16,6 +16,8 @@ add_executable(
     src/Game.h
     src/Game.cpp
     src/GameConstants.h
+    src/GameData.h
+    src/GameData.cpp
     src/GameMap.h
     src/GameMap.cpp
     src/GameMapCell.cpp

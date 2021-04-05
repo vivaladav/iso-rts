@@ -1,5 +1,6 @@
 #include "GameObjects/Diamonds.h"
 
+#include "GameData.h"
 #include "IsoObject.h"
 
 #include <graphic/TextureManager.h>
@@ -26,10 +27,7 @@ void Diamonds::UpdateImage()
 
 void Diamonds::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
-
-    lib::graphic::Texture * tex = nullptr;
-
+    // set color
     IsoObject * isoObj = GetIsoObject();
 
     if(IsVisible())
@@ -37,15 +35,11 @@ void Diamonds::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const char * imgFiles[] =
-    {
-        "data/img/diamonds_1.png",
-        "data/img/diamonds_2.png",
-        "data/img/diamonds_3.png",
-        "data/img/diamonds_4.png"
-    };
+    // assign texture
+    const int spriteId = SpriteCollectiblesId::DIAMONDS_1 + (mNum - 1);
 
-    tex = tm->GetTexture(imgFiles[mNum - 1]);
+    auto * tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteCollectibleFile, spriteId);
 
     isoObj->SetTexture(tex);
 }

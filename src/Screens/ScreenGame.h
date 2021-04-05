@@ -54,6 +54,8 @@ public:
                            const std::function<void()> & onCompleted);
 
 private:
+    void InitSprites();
+
     void CreateIsoMap();
     void CreateLayers();
 

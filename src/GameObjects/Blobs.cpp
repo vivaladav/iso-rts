@@ -1,5 +1,6 @@
 #include "GameObjects/Blobs.h"
 
+#include "GameData.h"
 #include "IsoObject.h"
 
 #include <graphic/TextureManager.h>
@@ -26,10 +27,7 @@ void Blobs::UpdateImage()
 
 void Blobs::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
-
-    lib::graphic::Texture * tex = nullptr;
-
+    // set color
     IsoObject * isoObj = GetIsoObject();
 
     if(IsVisible())
@@ -37,15 +35,11 @@ void Blobs::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const char * imgFiles[] =
-    {
-        "data/img/blobs_1.png",
-        "data/img/blobs_2.png",
-        "data/img/blobs_3.png",
-        "data/img/blobs_4.png"
-    };
+    // assign texture
+    const int spriteId = SpriteCollectiblesId::BLOBS_1 + (mNum - 1);
 
-    tex = tm->GetTexture(imgFiles[mNum - 1]);
+    auto * tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteCollectibleFile, spriteId);
 
     isoObj->SetTexture(tex);
 }

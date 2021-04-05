@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "GameData.h"
 #include "GameMap.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
@@ -26,6 +27,7 @@
 #include <core/event/MouseButtonEvent.h>
 #include <core/event/MouseMotionEvent.h>
 #include <graphic/Renderer.h>
+#include <graphic/TextureManager.h>
 #include <sgui/Stage.h>
 
 #include <algorithm>
@@ -55,6 +57,8 @@ ScreenGame::ScreenGame(Game * game)
     game->SetClearColor(0x0F, 0x0F, 0x0F, 0xFF);
 
     game->AddKeyboardListener(this);
+
+    InitSprites();
 
     // -- ISOMETRIC MAP --
     CreateIsoMap();
@@ -283,6 +287,29 @@ void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * pla
 
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+}
+
+void ScreenGame::InitSprites()
+{
+    auto tm = lib::graphic::TextureManager::Instance();
+
+    // COLLECTIBLES
+    const std::vector<lib::core::Rectd> rectsColl
+    {
+        // diamonds
+        { 0, 0, 96, 51 },
+        { 96, 0, 96, 51 },
+        { 192, 0, 96, 51 },
+        { 288, 0, 96, 70 },
+
+        // blobs
+        { 0, 70, 96, 48 },
+        { 96, 70, 96, 48 },
+        { 192, 70, 96, 48 },
+        { 288, 70, 96, 58 }
+    };
+
+    tm->RegisterSprite(SpriteCollectibleFile, rectsColl);
 }
 
 void ScreenGame::CreateIsoMap()
