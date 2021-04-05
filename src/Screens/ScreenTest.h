@@ -27,6 +27,7 @@ public:
 
 private:
     void TestSGui();
+    void TestSprite();
 
 private:
     std::vector<lib::graphic::TexturedRenderable *> mRenderables;

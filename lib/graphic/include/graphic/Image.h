@@ -12,6 +12,7 @@ class Image : public TexturedRenderable
 public:
     Image();
     Image(const char * file);
+    Image(Texture * tex);
 
     bool Load(const char * file);
 };

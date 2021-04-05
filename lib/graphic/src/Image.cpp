@@ -18,6 +18,13 @@ Image::Image(const char * file)
     Load(file);
 }
 
+Image::Image(Texture * tex)
+{
+    assert(tex);
+
+    SetTexture(tex);
+}
+
 bool Image::Load(const char * file)
 {
     assert(file);

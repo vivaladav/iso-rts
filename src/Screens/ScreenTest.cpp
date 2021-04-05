@@ -89,6 +89,8 @@ ScreenTest::ScreenTest(Game * game)
     txt->SetColor(50, 150, 250, 128);
     mRenderables.emplace_back(txt);
 
+    TestSprite();
+
     TestSGui();
 }
 
@@ -251,6 +253,66 @@ void ScreenTest::TestSGui()
         mPb1->Reset();
         mPb2->Reset();
     });
+}
+
+void ScreenTest::TestSprite()
+{
+    using namespace lib::graphic;
+
+    auto tm = TextureManager::Instance();
+
+    const std::vector<lib::core::Rectd> rects
+    {
+        { 0, 0, 40, 40 },
+        { 40, 0, 40, 40 },
+        { 0, 40, 40, 40 },
+        { 40, 40, 40, 40 }
+    };
+
+    const unsigned int numRects = rects.size();
+
+    const char file[] = "data/img/test_sprite.png";
+
+    tm->RegisterSprite(file, rects);
+
+    const int x0 = 20;
+    const int y0 = 550;
+    const int marginH = 20;
+    const int marginV = 20;
+
+    Image * img = nullptr;
+
+    img = new Image(tm->GetTexture("data/img/test_sprite.png"));
+    mRenderables.emplace_back(img);
+
+    img->SetPosition(x0, y0);
+
+    const int x1 = x0 + img->GetWidth() + marginH;
+
+    // row 1
+    int x = x1;
+
+    for(unsigned int i = 0; i < numRects; ++i)
+    {
+        img = new Image(tm->GetSprite(file, i));
+        img->SetPosition(x, y0);
+        mRenderables.emplace_back(img);
+
+        x += img->GetWidth() + marginH;
+    }
+
+    // row 2
+    x = x1;
+    const int y1 = y0 + img->GetHeight() + marginV;
+
+    for(unsigned int i = 0; i < numRects; ++i)
+    {
+        img = new Image(tm->GetSprite(file, numRects - i - 1));
+        img->SetPosition(x, y1);
+        mRenderables.emplace_back(img);
+
+        x += img->GetWidth() + marginH;
+    }
 }
 
 } // namespace game
