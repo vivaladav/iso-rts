@@ -3,6 +3,8 @@
 namespace game
 {
 
-const char SpriteCollectibleFile[] = "data/img/collectibles.png";
+const char SpriteCollectiblesFile[] = "data/img/collectibles.png";
+
+const char SpriteWallsFile[] = "data/img/walls.png";
 
 } // namespace game

@@ -39,7 +39,7 @@ void Diamonds::SetImage()
     const int spriteId = SpriteCollectiblesId::DIAMONDS_1 + (mNum - 1);
 
     auto * tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteCollectibleFile, spriteId);
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteCollectiblesFile, spriteId);
 
     isoObj->SetTexture(tex);
 }

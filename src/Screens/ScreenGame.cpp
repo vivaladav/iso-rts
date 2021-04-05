@@ -309,7 +309,34 @@ void ScreenGame::InitSprites()
         { 288, 70, 96, 58 }
     };
 
-    tm->RegisterSprite(SpriteCollectibleFile, rectsColl);
+    tm->RegisterSprite(SpriteCollectiblesFile, rectsColl);
+
+    // WALLS
+    std::vector<lib::core::Rectd> rectsWall;
+
+    // level 1 walls
+    const int wallFactions = 3;
+    const int wallSegments = 11;
+
+    const int wallSegW = 96;
+    const int wallSegH = 48;
+
+    int x = 0;
+    int y = 0;
+
+    for(int r = 0; r < wallFactions; ++r)
+    {
+        for(int c = 0; c < wallSegments; ++c)
+        {
+            rectsWall.emplace_back(x, y, wallSegW, wallSegH);
+            x += wallSegW;
+        }
+
+        x = 0;
+        y += wallSegH;
+    }
+
+    tm->RegisterSprite(SpriteWallsFile, rectsWall);
 }
 
 void ScreenGame::CreateIsoMap()
