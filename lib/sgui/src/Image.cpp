@@ -24,6 +24,15 @@ Image::Image(const char * file, Widget * parent)
     LoadImage(file);
 }
 
+Image::Image(graphic::Texture * tex, Widget * parent)
+    : Widget(parent)
+    , mImg(new graphic::Image(tex))
+{
+    assert(tex);
+
+    SetSize(mImg->GetWidth(), mImg->GetHeight());
+}
+
 Image::~Image()
 {
     delete mImg;
