@@ -311,6 +311,34 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteCollectiblesFile, rectsColl);
 
+    // ROCKS
+    std::vector<lib::core::Rectd> rectsRocks
+    {
+        // row 0
+        { 0, 0, 96, 51 },
+        { 96, 0, 96, 54 },
+        { 192, 0, 96, 54 },
+        { 288, 0, 96, 51 },
+        { 384, 0, 96, 56 },
+        { 480, 0, 96, 55 },
+        { 576, 0, 96, 58 },
+        { 672, 0, 96, 56 },
+        { 768, 0, 96, 55 },
+        { 864, 0, 96, 58 },
+        // row 1
+        { 0, 58, 96, 60 },
+        { 96, 58, 96, 57 },
+        { 192, 58, 96, 53 },
+        { 288, 58, 96, 60 },
+        { 384, 58, 96, 59 },
+        { 480, 58, 96, 59 },
+        { 576, 58, 96, 59 },
+        { 672, 58, 96, 59 },
+        { 768, 58, 96, 59 }
+    };
+
+    tm->RegisterSprite(SpriteRocksFile, rectsRocks);
+
     // WALLS
     std::vector<lib::core::Rectd> rectsWall;
 

@@ -253,7 +253,7 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
     {
         const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
 
-        CreateObject(layerId, OBJ_MOUNTAIN_FIRST + objInd, nullptr, r0, c0, rows, cols);
+        CreateObject(layerId, OBJ_ROCKS_FIRST + objInd, nullptr, r0, c0, rows, cols);
     }
 }
 
@@ -309,7 +309,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         owner->SetBaseCell(Cell2D(r0, c0));
         owner->SumCells(rows * cols);
     }
-    else if(objId >= OBJ_MOUNTAIN_FIRST && objId <= OBJ_MOUNTAIN_LAST)
+    else if(objId >= OBJ_ROCKS_FIRST && objId <= OBJ_ROCKS_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)
         obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);

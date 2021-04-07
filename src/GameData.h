@@ -19,6 +19,32 @@ enum SpriteCollectiblesId : unsigned int
     BLOBS_4
 };
 
+// ROCKS
+extern const char SpriteRocksFile[];
+
+enum SpriteRocksId : unsigned int
+{
+    ROCKS_ROW_END_L_1,
+    ROCKS_ROW_END_R_1,
+    ROCKS_COL_END_L_1,
+    ROCKS_COL_END_R_1,
+    ROCKS_ROW_1,
+    ROCKS_ROW_2,
+    ROCKS_ROW_3,
+    ROCKS_COL_1,
+    ROCKS_COL_2,
+    ROCKS_COL_3,
+    ROCKS_CORN_BL_1,
+    ROCKS_CORN_BR_1,
+    ROCKS_CORN_TL_1,
+    ROCKS_CORN_TR_1,
+    ROCKS_INTN,
+    ROCKS_INTS,
+    ROCKS_INTW,
+    ROCKS_INTE,
+    ROCKS_CROSS
+};
+
 // WALLS
 extern const char SpriteWallsFile[];
 
