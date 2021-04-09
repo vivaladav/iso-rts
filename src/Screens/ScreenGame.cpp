@@ -293,6 +293,9 @@ void ScreenGame::InitSprites()
 {
     auto tm = lib::graphic::TextureManager::Instance();
 
+    int x = 0;
+    int y = 0;
+
     // COLLECTIBLES
     const std::vector<lib::core::Rectd> rectsColl
     {
@@ -310,6 +313,37 @@ void ScreenGame::InitSprites()
     };
 
     tm->RegisterSprite(SpriteCollectiblesFile, rectsColl);
+
+    // INDICATORS
+    std::vector<lib::core::Rectd> rectsInds;
+    const int indRows = 4;
+    const int indCols = 6;
+    const int indW = 96;
+    const int indH = 48;
+
+    x = 0;
+    y = 0;
+
+    for(int r = 0; r < indRows; ++r)
+    {
+        for(int c = 0; c < indCols; ++c)
+        {
+            rectsInds.emplace_back(x, y, indW, indH);
+
+            if(rectsInds.size() == NUM_IND_SPRITES)
+                break;
+
+            x += indW;
+        }
+
+        if(rectsInds.size() == NUM_IND_SPRITES)
+            break;
+
+        x = 0;
+        y += indH;
+    }
+
+    tm->RegisterSprite(SpriteFileIndicators, rectsInds);
 
     // ROCKS
     std::vector<lib::core::Rectd> rectsRocks
@@ -349,8 +383,8 @@ void ScreenGame::InitSprites()
     const int wallSegW = 96;
     const int wallSegH = 48;
 
-    int x = 0;
-    int y = 0;
+    x = 0;
+    y = 0;
 
     for(int r = 0; r < wallFactions; ++r)
     {

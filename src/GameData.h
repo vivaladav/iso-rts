@@ -19,6 +19,50 @@ enum SpriteCollectiblesId : unsigned int
     BLOBS_4
 };
 
+// INDICATORS
+extern const char SpriteFileIndicators[];
+
+enum SpriteIdIndicators : unsigned int
+{
+    // WALL INDICATORS
+    IND_WB_HORIZONTAL_F1,
+    IND_WB_VERTICAL_F1,
+    IND_WB_TOP_LEFT_F1,
+    IND_WB_TOP_RIGHT_F1,
+    IND_WB_BOTTOM_LEFT_F1,
+    IND_WB_BOTTOM_RIGHT_F1,
+
+    IND_WB_HORIZONTAL_F2,
+    IND_WB_VERTICAL_F2,
+    IND_WB_TOP_LEFT_F2,
+    IND_WB_TOP_RIGHT_F2,
+    IND_WB_BOTTOM_LEFT_F2,
+    IND_WB_BOTTOM_RIGHT_F2,
+
+    IND_WB_HORIZONTAL_F3,
+    IND_WB_VERTICAL_F3,
+    IND_WB_TOP_LEFT_F3,
+    IND_WB_TOP_RIGHT_F3,
+    IND_WB_BOTTOM_LEFT_F3,
+    IND_WB_BOTTOM_RIGHT_F3,
+
+    IND_WB_INVALID,
+
+    // MOVE INDICATOR
+    IND_MOVE,
+
+    // CONQUEST INDICATOR
+    IND_CONQUEST_F1,
+    IND_CONQUEST_F2,
+    IND_CONQUEST_F3,
+
+    // TOTAL
+    NUM_IND_SPRITES,
+
+    // SPECIAL VALUES
+    IND_WB_FIRST = IND_WB_HORIZONTAL_F1
+};
+
 // ROCKS
 extern const char SpriteRocksFile[];
 

@@ -1,5 +1,6 @@
 #include "Indicators/ConquestIndicator.h"
 
+#include "GameData.h"
 #include "Player.h"
 
 #include <graphic/Font.h>
@@ -27,15 +28,10 @@ void ConquestIndicator::SetFaction(PlayerFaction faction)
     using namespace lib::graphic;
 
     // upate object body
-    const char * files[] =
-    {
-        "data/img/conquest_ind-f1.png",
-        "data/img/conquest_ind-f2.png",
-        "data/img/conquest_ind-f3.png"
-    };
+    const unsigned int indSprite = IND_CONQUEST_F1 + faction;
 
     auto tm = TextureManager::Instance();
-    Texture * tex = tm->GetTexture(files[static_cast<unsigned int>(faction)]);
+    Texture * tex = tm->GetSprite(SpriteFileIndicators, indSprite);
 
     SetTexture(tex);
 

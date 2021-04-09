@@ -1,5 +1,6 @@
 #include "Indicators/WallIndicator.h"
 
+#include "GameData.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
 
@@ -222,37 +223,13 @@ void WallIndicator::UpdateImage()
     // not in a valid state
     if(NO_FACTION == mFaction || WB_INVALID == mBlock)
     {
-        SetTexture(tm->GetTexture("data/img/wall_plan_invalid.png"));
+        SetTexture(tm->GetSprite(SpriteFileIndicators, IND_WB_INVALID));
         return ;
     }
 
     // upate object body
-    const char * files[] =
-    {
-        "data/img/wall_plan_h-f1.png",
-        "data/img/wall_plan_v-f1.png",
-        "data/img/wall_plan_tl-f1.png",
-        "data/img/wall_plan_tr-f1.png",
-        "data/img/wall_plan_bl-f1.png",
-        "data/img/wall_plan_br-f1.png",
-
-        "data/img/wall_plan_h-f2.png",
-        "data/img/wall_plan_v-f2.png",
-        "data/img/wall_plan_tl-f2.png",
-        "data/img/wall_plan_tr-f2.png",
-        "data/img/wall_plan_bl-f2.png",
-        "data/img/wall_plan_br-f2.png",
-
-        "data/img/wall_plan_h-f3.png",
-        "data/img/wall_plan_v-f3.png",
-        "data/img/wall_plan_tl-f3.png",
-        "data/img/wall_plan_tr-f3.png",
-        "data/img/wall_plan_bl-f3.png",
-        "data/img/wall_plan_br-f3.png"
-    };
-
-    const unsigned int index = mFaction * NUM_WALL_BLOCKS + mBlock;
-    SetTexture(tm->GetTexture(files[index]));
+    const unsigned int index = IND_WB_FIRST + (mFaction * NUM_WALL_BLOCKS) + mBlock;
+    SetTexture(tm->GetSprite(SpriteFileIndicators, index));
 }
 
 void WallIndicator::UpdateCostColor()

@@ -1,5 +1,7 @@
 #include "Indicators/MoveIndicator.h"
 
+#include "GameData.h"
+
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/TextureManager.h>
@@ -34,10 +36,9 @@ void MoveIndicator::SetIndicatorType(IndicatorType type)
 
     mType = type;
 
-    auto tm = TextureManager::Instance();
-
     // update image of indicator and text color of cost
-    Texture * tex = tm->GetTexture("data/img/move_ind.png");
+    auto tm = TextureManager::Instance();
+    Texture * tex = tm->GetSprite(SpriteFileIndicators, IND_MOVE);
 
     if(NO_VIS_CELL == mType)
     {
