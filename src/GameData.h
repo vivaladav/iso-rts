@@ -3,6 +3,36 @@
 namespace game
 {
 
+
+// CELLS
+extern const char SpriteFileCells[];
+
+enum SpriteIdCells : unsigned int
+{
+    // SCENE
+    IND_EMPTY,
+    IND_SCENE_ROCKS,
+    IND_BLOBS_SOURCE,
+    IND_DIAMONDS_SOURCE,
+    // F1
+    IND_F1,
+    IND_F1_CONNECTED,
+    IND_F1_INFLUENCED,
+    // F2
+    IND_F2,
+    IND_F2_CONNECTED,
+    IND_F2_INFLUENCED,
+    // F3
+    IND_F3,
+    IND_F3_CONNECTED,
+    IND_F3_INFLUENCED,
+    // SPECIAL
+    IND_FOG_OF_WAR,
+
+    NUM_IND_CELLS
+
+};
+
 // COLLECTIBLES
 extern const char SpriteCollectiblesFile[];
 

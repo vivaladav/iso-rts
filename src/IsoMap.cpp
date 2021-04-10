@@ -4,6 +4,7 @@
 #include "IsoLayer.h"
 
 #include <graphic/Image.h>
+#include <graphic/TextureManager.h>
 
 #include <algorithm>
 
@@ -103,6 +104,19 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
     UpdateTilePositions();
 }
 
+void IsoMap::SetTiles(const char * texFile, int numSprites)
+{
+    auto tm = lib::graphic::TextureManager::Instance();
+
+    for(int i = 0; i < numSprites; ++i)
+    {
+        auto * img = new lib::graphic::Image(tm->GetSprite(texFile, i));
+
+        mTiles.emplace_back(img);
+    }
+
+    UpdateTilePositions();
+}
 
 /**
  * @brief Sets the origin point of the map. This is the point where the top corner of the 0,0 iso cell will be placed.

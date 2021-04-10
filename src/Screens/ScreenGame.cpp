@@ -295,6 +295,35 @@ void ScreenGame::InitSprites()
 
     int x = 0;
     int y = 0;
+    int indRows = 0;
+    int indCols = 0;
+    int indW = 0;
+    int indH = 0;
+
+    // CELLS
+    std::vector<lib::core::Rectd> rectsCells;
+    indRows = 2;
+    indCols = 7;
+    indW = 96;
+    indH = 48;
+
+    x = 0;
+    y = 0;
+
+    for(int r = 0; r < indRows; ++r)
+    {
+        for(int c = 0; c < indCols; ++c)
+        {
+            rectsCells.emplace_back(x, y, indW, indH);
+
+            x += indW;
+        }
+
+        x = 0;
+        y += indH;
+    }
+
+    tm->RegisterSprite(SpriteFileCells, rectsCells);
 
     // COLLECTIBLES
     const std::vector<lib::core::Rectd> rectsColl
@@ -316,10 +345,10 @@ void ScreenGame::InitSprites()
 
     // INDICATORS
     std::vector<lib::core::Rectd> rectsInds;
-    const int indRows = 4;
-    const int indCols = 6;
-    const int indW = 96;
-    const int indH = 48;
+    indRows = 4;
+    indCols = 6;
+    indW = 96;
+    indH = 48;
 
     x = 0;
     y = 0;
@@ -377,25 +406,24 @@ void ScreenGame::InitSprites()
     std::vector<lib::core::Rectd> rectsWall;
 
     // level 1 walls
-    const int wallFactions = 3;
-    const int wallSegments = 11;
-
-    const int wallSegW = 96;
-    const int wallSegH = 48;
+    indRows = 3;
+    indCols = 11;
+    indW = 96;
+    indH = 48;
 
     x = 0;
     y = 0;
 
-    for(int r = 0; r < wallFactions; ++r)
+    for(int r = 0; r < indRows; ++r)
     {
-        for(int c = 0; c < wallSegments; ++c)
+        for(int c = 0; c < indCols; ++c)
         {
-            rectsWall.emplace_back(x, y, wallSegW, wallSegH);
-            x += wallSegW;
+            rectsWall.emplace_back(x, y, indW, indH);
+            x += indW;
         }
 
         x = 0;
-        y += wallSegH;
+        y += indH;
     }
 
     tm->RegisterSprite(SpriteWallsFile, rectsWall);
@@ -405,36 +433,9 @@ void ScreenGame::CreateIsoMap()
 {
     const int TILE_W = 96;
 
-    const std::vector<std::string> tileFiles =
-    {
-        // scene
-        "data/img/tile_empty.png",
-        "data/img/tile_scene_01.png",
-        "data/img/tile-blobs.png",
-        "data/img/tile-diamonds.png",
-
-        // faction 1
-        "data/img/tile-f1.png",
-        "data/img/tile-f1_connected.png",
-        "data/img/tile-f1_influenced.png",
-
-        // faction 2
-        "data/img/tile-f2.png",
-        "data/img/tile-f2_connected.png",
-        "data/img/tile-f2_influenced.png",
-
-        // faction 3
-        "data/img/tile-f3.png",
-        "data/img/tile-f3_connected.png",
-        "data/img/tile-f3_influenced.png",
-
-        // fog of war
-        "data/img/tile_fow.png",
-    };
-
     // iso map
     mIsoMap = new IsoMap(TILE_W);
-    mIsoMap->SetTiles(tileFiles);
+    mIsoMap->SetTiles(SpriteFileCells, NUM_IND_CELLS);
 }
 
 void ScreenGame::CreateLayers()

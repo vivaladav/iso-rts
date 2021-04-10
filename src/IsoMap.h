@@ -32,6 +32,7 @@ public:
     lib::core::Pointd2D GetCellPosition(unsigned int index) const;
 
     void SetTiles(const std::vector<std::string> & files);
+    void SetTiles(const char * texFile, int numSprites);
 
     void SetCellType(unsigned int r, unsigned int c, unsigned int type);
     void SetCellType(unsigned int index, unsigned int type);
