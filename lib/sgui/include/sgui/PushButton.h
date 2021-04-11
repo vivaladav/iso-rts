@@ -46,14 +46,14 @@ protected:
 
     void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
 
+    void HandlePositionChanged() override;
+
+    void OnRender() override;
+
     virtual void HandleCheckedChanged(bool checked);
 
 private:
-    void HandlePositionChanged() override;
-
     void PositionLabel();
-
-    void OnRender() override;
 
 private:
     std::string mText;

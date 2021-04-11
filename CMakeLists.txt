@@ -112,8 +112,12 @@ add_executable(
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
+    src/Widgets/GameUIData.h
+    src/Widgets/GameUIData.cpp
     src/Widgets/MapPreview.h
     src/Widgets/MapPreview.cpp
+    src/Widgets/ObjectActionButton.h
+    src/Widgets/ObjectActionButton.cpp
     src/Widgets/PanelGameOver.h
     src/Widgets/PanelGameOver.cpp
     src/Widgets/PanelGameWon.h

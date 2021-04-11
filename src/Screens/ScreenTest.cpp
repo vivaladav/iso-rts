@@ -34,23 +34,23 @@ ScreenTest::ScreenTest(Game * game)
     // -- Image testing --
     Image * img = nullptr;
 
-    img = new Image("data/img/tile00.png");
+    img = new Image("data/img/obj_null.png");
     img->SetPosition(64, 32);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/tile00.png");
+    img = new Image("data/img/obj_null.png");
     img->SetPosition(128, 64);
     img->SetAlpha(128);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/tile00.png");
+    img = new Image("data/img/obj_null.png");
     img->SetPosition(300, 32);
     img->ScaleH(2.f);
     img->SetRotation(45.f);
     img->SetColor(0x3366F0FF);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/tile00.png");
+    img = new Image("data/img/obj_null.png");
     img->SetPosition(32, 64);
     img->SetWidth(64);
     img->SetHeight(32);

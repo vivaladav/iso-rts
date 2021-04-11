@@ -3,7 +3,6 @@
 namespace game
 {
 
-
 // CELLS
 extern const char SpriteFileCells[];
 

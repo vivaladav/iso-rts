@@ -17,6 +17,7 @@
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/WallIndicator.h"
 #include "Widgets/CellProgressBar.h"
+#include "Widgets/GameUIData.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelPlayer.h"
@@ -427,6 +428,41 @@ void ScreenGame::InitSprites()
     }
 
     tm->RegisterSprite(SpriteWallsFile, rectsWall);
+
+    // -- UI --
+    // OBJECT ACTION BUTTON
+    std::vector<lib::core::Rectd> rectsObjActButton;
+
+    // button bg
+    indCols = 5;
+    indW = 56;
+    indH = 56;
+
+    x = 0;
+    y = 0;
+
+    for(int c = 0; c < indCols; ++c)
+    {
+        rectsObjActButton.emplace_back(x, y, indW, indH);
+        x += indW;
+    }
+
+    y += indH;
+
+    // icons
+    indCols = 6;
+    indW = 42;
+    indH = 42;
+
+    x = 0;
+
+    for(int c = 0; c < indCols; ++c)
+    {
+        rectsObjActButton.emplace_back(x, y, indW, indH);
+        x += indW;
+    }
+
+    tm->RegisterSprite(SpriteFileObjActionButton, rectsObjActButton);
 }
 
 void ScreenGame::CreateIsoMap()
