@@ -16,6 +16,8 @@ enum SpriteIdCells : unsigned int
     IND_SCENE_RESOURCE,
     IND_BLOBS_SOURCE,
     IND_DIAMONDS_SOURCE,
+    IND_BLOBS_SURR,
+    IND_DIAMONDS_SURR,
     // F1
     IND_F1,
     IND_F1_CONNECTED,

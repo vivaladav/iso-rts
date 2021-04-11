@@ -20,6 +20,8 @@ enum CellTypes : int
     SCENE_RESOURCE,
     BLOBS_SOURCE,
     DIAMONDS_SOURCE,
+    BLOBS_SURR,
+    DIAMONDS_SURR,
 
     // FACTION 1
     F1,
