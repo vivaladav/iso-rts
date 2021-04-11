@@ -303,7 +303,7 @@ void ScreenGame::InitSprites()
     // CELLS
     std::vector<lib::core::Rectd> rectsCells;
     indRows = 2;
-    indCols = 7;
+    indCols = 8;
     indW = 96;
     indH = 48;
 

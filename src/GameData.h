@@ -12,6 +12,8 @@ enum SpriteIdCells : unsigned int
     // SCENE
     IND_EMPTY,
     IND_SCENE_ROCKS,
+    IND_SCENE_ROCKS_SURR,
+    IND_SCENE_RESOURCE,
     IND_BLOBS_SOURCE,
     IND_DIAMONDS_SOURCE,
     // F1

@@ -15,7 +15,9 @@ enum PlayerFaction : unsigned int;
 enum CellTypes : int
 {
     EMPTY = 0,
-    SCENE,
+    SCENE_ROCKS,
+    SCENE_ROCKS_SURR,
+    SCENE_RESOURCE,
     BLOBS_SOURCE,
     DIAMONDS_SOURCE,
 
@@ -56,6 +58,7 @@ struct GameMapCell
     Player * owner = nullptr;
     GameObject * obj = nullptr;
 
+    CellTypes currType = EMPTY;
     CellTypes basicType = EMPTY;
 
     int row = 0;

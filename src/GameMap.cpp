@@ -125,6 +125,7 @@ void GameMap::SyncMapCells()
     {
         const auto type = static_cast<CellTypes>(mIsoMap->GetCellType(i));
 
+        mCells[i].currType = type;
         mCells[i].basicType = type;
 
         // DIAMONDS GENERATOR
@@ -1231,7 +1232,7 @@ void GameMap::ClearCell(GameMapCell & gcell)
         mCollGen.erase(it);
     }
 
-    gcell.basicType = EMPTY;
+    gcell.currType = EMPTY;
 }
 
 void GameMap::StopCellChange(GameMapCell & gcell)
@@ -1255,8 +1256,8 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
         return FOG_OF_WAR;
 
     // scene cell
-    if(SCENE == cell.basicType || DIAMONDS_SOURCE == cell.basicType || BLOBS_SOURCE == cell.basicType)
-        return cell.basicType;
+    if(SCENE_ROCKS == cell.currType || DIAMONDS_SOURCE == cell.currType || BLOBS_SOURCE == cell.currType)
+        return cell.currType;
 
     const PlayerFaction ownerFaction = cell.owner ? cell.owner->GetFaction() : NO_FACTION;
 
@@ -1296,7 +1297,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
                 type = F3_INFLUENCED;
             // no influence
             else
-                type = EMPTY;
+                type = cell.basicType;
         }
         break;
     }
