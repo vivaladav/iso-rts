@@ -14,6 +14,8 @@ namespace game
 
 PanelObjectActions::PanelObjectActions()
 {
+    SetResizePolicy(ResizePolicy::DYNAMIC);
+
     // create all buttons
     mButtons[BTN_BUILD_UNIT] = new ObjectActionButton(ObjectActionButton::UNITS, "U", this);
     mButtons[BTN_MOVE] = new ObjectActionButton(ObjectActionButton::MOVE, "M", this);
