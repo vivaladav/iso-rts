@@ -150,6 +150,7 @@ void Player::SetSelectedObject(GameObject * obj)
 
     mSelObj = obj;
 
+    // reset active action to move when unit is selected
     if(mSelObj->GetObjectType() == OBJ_UNIT)
         static_cast<Unit *>(mSelObj)->SetActiveAction(MOVE);
 

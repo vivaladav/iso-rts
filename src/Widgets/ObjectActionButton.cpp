@@ -57,6 +57,11 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, l
             mIcon->SetTexture(tex);
         break;
 
+        case UPGRADE:
+            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_UPGRADE);
+            mIcon->SetTexture(tex);
+        break;
+
         // this should not happen
         default:
 

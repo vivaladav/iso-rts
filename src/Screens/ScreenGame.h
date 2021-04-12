@@ -23,7 +23,7 @@ class GameObject;
 class IsoLayer;
 class IsoMap;
 class MoveIndicator;
-class PanelPlayer;
+class PanelObjectActions;
 class PanelResources;
 class Player;
 class PlayerAI;
@@ -58,6 +58,9 @@ private:
 
     void CreateIsoMap();
     void CreateLayers();
+
+    void CreateUI();
+    void HidePanelObjActions();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
@@ -94,8 +97,8 @@ private:
     std::vector<WallIndicator *> mWallIndicators;
 
     // -- UI --
-    PanelPlayer * mPanelPlayer = nullptr;
     PanelResources * mPanelResBar = nullptr;
+    PanelObjectActions * mPanelObjActions = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

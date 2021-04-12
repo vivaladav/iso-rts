@@ -18,9 +18,9 @@
 #include "Indicators/WallIndicator.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
-#include "Widgets/PanelPlayer.h"
 #include "Widgets/PanelResources.h"
 
 #include <ai/Pathfinder.h>
@@ -109,65 +109,8 @@ ScreenGame::ScreenGame(Game * game)
     // apply initial visibility to the game map
     mGameMap->ApplyLocalVisibility();
 
-    // -- UI --
-    Player * player = game->GetLocalPlayer();
-    mPanelPlayer = new PanelPlayer(player);
-
-    // top resources bar
-    mPanelResBar = new PanelResources(player);
-    mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
-
-    // -- UI actions --
-    // CONQUER CELL
-    mPanelPlayer->SetFunctionCellConquest([this]
-    {
-        Player * player = GetGame()->GetLocalPlayer();
-
-        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::CONQUER);
-
-        ClearCellOverlays();
-    });
-
-    // MOVE UNIT
-    mPanelPlayer->SetFunctionUnitMove([this]
-    {
-        Player * player = GetGame()->GetLocalPlayer();
-
-        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::MOVE);
-
-        ClearCellOverlays();
-    });
-
-    // BUILD WALL
-    mPanelPlayer->SetFunctionBuildWall([this]
-    {
-        Player * player = GetGame()->GetLocalPlayer();
-
-        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::BUILD_WALL);
-
-        ClearCellOverlays();
-    });
-
-    // CREATE NEW UNIT
-    mPanelPlayer->SetFunctionNewUnit([this, player]
-    {
-        SetupNewUnit(player->GetSelectedObject(), player);
-
-        // clear selection
-        ClearSelection(player);
-    });
-
-    // UNIT UPGRADE
-    mPanelPlayer->SetFunctionUnitsUpgrade([this, player]
-    {
-        SetupUnitUpgrade(player->GetSelectedObject(), player);
-
-        // clear selection
-        ClearSelection(player);
-    });
+    // UI
+    CreateUI();
 }
 
 ScreenGame::~ScreenGame()
@@ -483,6 +426,73 @@ void ScreenGame::CreateLayers()
     mIsoMap->CreateLayer(MapLayers::OBJECTS);
 }
 
+void ScreenGame::CreateUI()
+{
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    // top resources bar
+    mPanelResBar = new PanelResources(player);
+    mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
+
+    // BASE ACTIONS
+    mPanelObjActions = new PanelObjectActions;
+    mPanelObjActions->SetVisible(false);
+
+    // create new unit
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT, [this, player]
+    {
+        SetupNewUnit(player->GetSelectedObject(), player);
+
+        // clear selection
+        ClearSelection(player);
+    });
+
+    // UNIT ACTIONS
+    // build wall
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
+    {
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::BUILD_WALL);
+
+        ClearCellOverlays();
+    });
+
+    // conquer
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER, [this, player]
+    {
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::CONQUER);
+
+        ClearCellOverlays();
+    });
+
+    // move
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_MOVE, [this, player]
+    {
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(UnitAction::MOVE);
+
+        ClearCellOverlays();
+    });
+
+    // GENERIC ACTIONS
+    // upgrade
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_UPGRADE, [this, player]
+    {
+        // TODO
+
+        ClearCellOverlays();
+    });
+}
+
+void ScreenGame::HidePanelObjActions()
+{
+    mPanelObjActions->ClearObject();
+    mPanelObjActions->SetVisible(false);
+}
+
 void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
 {
     using namespace lib::core;
@@ -494,8 +504,8 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     {
         mPaused = !mPaused;
 
-        // disable player panel when paused
-        mPanelPlayer->SetEnabled(!mPaused);
+        // disable actions panel when paused
+        mPanelObjActions->SetEnabled(!mPaused);
     }
     else if(key == KeyboardEvent::KEY_U)
     {
@@ -708,9 +718,15 @@ void ScreenGame::UpdateProgressBars(float delta)
 
 void ScreenGame::ClearSelection(Player * player)
 {
+    GameObject * selObj = player->GetSelectedObject();
+
+    if(selObj != nullptr)
+        HidePanelObjActions();
+
     player->ClearSelectedObject();
 
-    mPanelPlayer->ClearSelectedCell();
+    mPanelObjActions->ClearObject();
+    mPanelObjActions->SetVisible(false);
 
     ClearCellOverlays();
 }
@@ -719,9 +735,10 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
     obj->SetSelected(true);
 
-    player->SetSelectedObject(obj);
+    mPanelObjActions->SetObject(obj);
+    mPanelObjActions->SetVisible(true);
 
-    mPanelPlayer->SetSelectedObject(obj);
+    player->SetSelectedObject(obj);
 }
 
 void ScreenGame::UpdateAI(float delta)
@@ -749,7 +766,7 @@ void ScreenGame::UpdateAI(float delta)
 
 void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 {
-    Player * player = ai->GetPlayer();
+    //Player * player = ai->GetPlayer();
     ai->DecideActions();
 
     bool done = false;
