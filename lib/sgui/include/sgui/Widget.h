@@ -12,8 +12,18 @@ class Stage;
 class Widget : public WidgetContainer
 {
 public:
+    enum ResizePolicy : unsigned int
+    {
+        FIXED,          // size only changes when set with SetSize()
+        GROW_ONLY,      // size grows dinamically, but it doesn't shrink
+        DYNAMIC         // size grows and shrinks when adding/removing elements
+    };
+
+public:
     Widget(Widget * parent = nullptr);
     ~Widget();
+
+    void SetResizePolicy(ResizePolicy policy);
 
     void SetWidgetId(int wid);
     int GetWidgetId() const;
@@ -73,6 +83,8 @@ private:
     Stage * mStage = nullptr;
     Widget * mParent = nullptr;
 
+    ResizePolicy mResizePol = GROW_ONLY;
+
     int mId = -1;
 
     int mRelX = 0;
@@ -92,8 +104,9 @@ private:
     friend class WidgetContainer;
 };
 
-
 inline Widget::Widget(Widget * parent) { SetParent(parent); }
+
+inline void Widget::SetResizePolicy(ResizePolicy policy) { mResizePol = policy; }
 
 inline void Widget::SetWidgetId(int wid) { mId = wid; }
 inline int Widget::GetWidgetId() const { return mId; }

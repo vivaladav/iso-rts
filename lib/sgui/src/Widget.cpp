@@ -78,7 +78,11 @@ void Widget::SetVisible(bool val)
     mVisible = val;
 
     if(mParent)
+    {
         mParent->HandleChildVisibleChanged(this);
+        // TODO this should be in HandleChildVisibleChanged when implemented
+        mParent->UpdateSize();
+    }
     else
         mStage->HandleChildVisibleChanged(this);
 }
@@ -99,12 +103,20 @@ void Widget::HandleMouseOut() { }
 // current behavior for Widgets is to grow according to children position and size
 void Widget::UpdateSize()
 {
+    // resize not allowed wiht FIXED policy
+    if(FIXED == mResizePol)
+        return ;
+
     // TODO decide what to do with negative position
     int maxX = 0;
     int maxY = 0;
 
     for(Widget * w : mWidgets)
     {
+        // skip invisible widgets
+        if(!w->IsVisible())
+            continue;
+
         int x = w->GetX() + w->GetWidth();
         int y = w->GetY() + w->GetHeight();
 
@@ -115,12 +127,23 @@ void Widget::UpdateSize()
             maxY = y;
     }
 
-    // update size if bigger than current
-    if(maxX > mWidth)
-        mWidth = maxX;
+    // update size if different than current
+    if(GROW_ONLY == mResizePol)
+    {
+        if(maxX > mWidth)
+            mWidth = maxX;
 
-    if(maxY > mHeight)
-        mHeight = maxY;
+        if(maxY > mHeight)
+            mHeight = maxY;
+    }
+    else
+    {
+        if(maxX != mWidth)
+            mWidth = maxX;
+
+        if(maxY != mHeight)
+            mHeight = maxY;
+    }
 }
 
 void Widget::SetPosition(int x, int y)

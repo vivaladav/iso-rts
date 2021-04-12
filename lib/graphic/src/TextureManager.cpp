@@ -77,7 +77,8 @@ void TextureManager::RegisterSprite(const char * file, const std::vector<core::R
     // vector with Textures already created
     if(res != mSprites.end())
     {
-        std::cout << "TextureManager::RegisterSprite - ERR: Sprite already registered" << std::endl;
+        std::cout << "TextureManager::RegisterSprite - ERR: Sprite " << file
+                  << " already registered" << std::endl;
         return ;
     }
 
