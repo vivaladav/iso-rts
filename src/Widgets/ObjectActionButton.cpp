@@ -193,8 +193,8 @@ void ObjectActionButton::HandlePositionChanged()
    const int y = GetScreenY();
 
    // ICON
-   const int iconBoxW = 50;
-   const int iconBoxH = 50;
+   const int iconBoxW = 56;
+   const int iconBoxH = 56;
 
    const int iconX = x + (iconBoxW - mIcon->GetWidth()) * 0.5f;
    const int iconY = y + (iconBoxH - mIcon->GetHeight()) * 0.5f;
@@ -202,11 +202,11 @@ void ObjectActionButton::HandlePositionChanged()
    mIcon->SetPosition(iconX, iconY);
 
    // SHORTCUT
-   const int shortcutX0 = 42;
-   const int shortcutY0 = 42;
+   const int shortcutX0 = 48;
+   const int shortcutY0 = 48;
 
-   const int shortcutBoxW = 14;
-   const int shortcutBoxH = 14;
+   const int shortcutBoxW = 16;
+   const int shortcutBoxH = 16;
 
    const int shortcutX = x + shortcutX0 + (shortcutBoxW - mShortcut->GetWidth()) * 0.5f;
    const int shortcutY = y + shortcutY0 + (shortcutBoxH - mShortcut->GetHeight()) * 0.5f;

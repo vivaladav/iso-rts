@@ -378,8 +378,8 @@ void ScreenGame::InitSprites()
 
     // button bg
     indCols = 5;
-    indW = 56;
-    indH = 56;
+    indW = 64;
+    indH = 64;
 
     x = 0;
     y = 0;
@@ -394,8 +394,8 @@ void ScreenGame::InitSprites()
 
     // icons
     indCols = 6;
-    indW = 42;
-    indH = 42;
+    indW = 48;
+    indH = 48;
 
     x = 0;
 
