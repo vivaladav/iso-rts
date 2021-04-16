@@ -35,6 +35,8 @@ public:
     bool IsChecked() const;
     void SetChecked(bool val);
 
+    void Click();
+
     void SetOnClickFunction(const std::function<void()> & f);
     void SetOnToggleFunction(const std::function<void(bool)> & f);
 

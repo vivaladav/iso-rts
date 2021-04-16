@@ -110,6 +110,22 @@ void PushButton::SetChecked(bool val)
     }
 }
 
+void PushButton::Click()
+{
+    // checkable button
+    if(mCheckable)
+    {
+        mChecked = !mChecked;
+
+        HandleCheckedChanged(mChecked);
+
+        mOnToggle(mChecked);
+    }
+    // standard button
+    else
+        mOnClick();
+}
+
 void PushButton::SetCurrBg(graphic::Renderable * bg)
 {
     mCurrBg = bg;
@@ -147,18 +163,7 @@ void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
 {
     event.SetConsumed();
 
-    // checkable button
-    if(mCheckable)
-    {
-        mChecked = !mChecked;
-
-        HandleCheckedChanged(mChecked);
-
-        mOnToggle(mChecked);
-    }
-    // standard button
-    else
-        mOnClick();
+    Click();
 }
 
 void PushButton::HandleCheckedChanged(bool) { }
