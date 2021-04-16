@@ -1,5 +1,6 @@
 #include "sgui/WidgetContainer.h"
 
+#include "core/event/KeyboardEvent.h"
 #include "core/event/MouseButtonEvent.h"
 #include "core/event/MouseMotionEvent.h"
 #include "sgui/Widget.h"
@@ -129,6 +130,44 @@ void WidgetContainer::PropagateMouseMotion(core::MouseMotionEvent & event)
     }
 }
 
+void WidgetContainer::PropagateKeyDown(core::KeyboardEvent & event)
+{
+    // TODO handle keyboard focus
+
+    for(Widget * w : mWidgets)
+    {
+        if(w->IsEnabled() && w->IsVisible()) // TODO remove this when implemented rendering and active lists
+        {
+            w->PropagateKeyDown(event);
+
+            w->HandleKeyDown(event);
+
+            // stop propagation if event is consumed
+            if(event.IsConsumed())
+                break;
+        }
+    }
+}
+
+void WidgetContainer::PropagateKeyUp(core::KeyboardEvent & event)
+{
+    // TODO handle keyboard focus
+
+    for(Widget * w : mWidgets)
+    {
+        if(w->IsEnabled() && w->IsVisible()) // TODO remove this when implemented rendering and active lists
+        {
+            w->PropagateKeyUp(event);
+
+            w->HandleKeyUp(event);
+
+            // stop propagation if event is consumed
+            if(event.IsConsumed())
+                break;
+        }
+    }
+}
+
 void WidgetContainer::PropagateRender()
 {
     for(Widget * w : mWidgets)
@@ -140,6 +179,7 @@ void WidgetContainer::PropagateRender()
         }
     }
 }
+
 
 } // namespace sgui
 } // namespace lib

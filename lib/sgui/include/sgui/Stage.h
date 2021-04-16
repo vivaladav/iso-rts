@@ -38,6 +38,9 @@ private:
     void OnMouseButtonUp(core::MouseButtonEvent & event) override;
     void OnMouseMotion(core::MouseMotionEvent & event) override;
 
+    void OnKeyDown(core::KeyboardEvent & event) override;
+    void OnKeyUp(core::KeyboardEvent & event) override;
+
 private:
     static Stage * mInstance;
 

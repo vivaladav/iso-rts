@@ -42,5 +42,15 @@ void Stage::OnMouseMotion(core::MouseMotionEvent & event)
     PropagateMouseMotion(event);
 }
 
+void Stage::OnKeyDown(core::KeyboardEvent & event)
+{
+    PropagateKeyDown(event);
+}
+
+void Stage::OnKeyUp(core::KeyboardEvent & event)
+{
+    PropagateKeyUp(event);
+}
+
 } // namespace sgui
 } // namespace lib

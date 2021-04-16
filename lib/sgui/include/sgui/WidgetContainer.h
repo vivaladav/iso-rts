@@ -7,6 +7,7 @@ namespace lib
 
 namespace core
 {
+    class KeyboardEvent;
     class MouseButtonEvent;
     class MouseMotionEvent;
 }
@@ -35,6 +36,9 @@ protected:
     void PropagateMouseButtonDown(core::MouseButtonEvent & event);
     void PropagateMouseButtonUp(core::MouseButtonEvent & event);
     void PropagateMouseMotion(core::MouseMotionEvent & event);
+
+    void PropagateKeyDown(core::KeyboardEvent & event);
+    void PropagateKeyUp(core::KeyboardEvent & event);
 
     void PropagateRender();
 

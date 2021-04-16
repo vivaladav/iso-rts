@@ -63,6 +63,9 @@ protected:
     virtual void HandleMouseButtonUp(core::MouseButtonEvent & event);
     virtual void HandleMouseMotion(core::MouseMotionEvent & event);
 
+    virtual void HandleKeyDown(core::KeyboardEvent & event);
+    virtual void HandleKeyUp(core::KeyboardEvent & event);
+
     virtual void HandleMouseOver();
     virtual void HandleMouseOut();
 

@@ -212,6 +212,9 @@ void Widget::HandleMouseButtonDown(core::MouseButtonEvent &) { }
 void Widget::HandleMouseButtonUp(core::MouseButtonEvent &) { }
 void Widget::HandleMouseMotion(core::MouseMotionEvent &) { }
 
+void Widget::HandleKeyDown(core::KeyboardEvent &) { }
+void Widget::HandleKeyUp(core::KeyboardEvent &) { }
+
 void Widget::SetMouseOver()
 {
     // mouse already over -> nothing to do
