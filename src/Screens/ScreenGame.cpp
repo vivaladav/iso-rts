@@ -507,7 +507,7 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
-    else if(key == KeyboardEvent::KEY_U)
+    else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {
         auto stage = lib::sgui::Stage::Instance();
 

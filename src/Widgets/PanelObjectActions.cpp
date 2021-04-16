@@ -4,6 +4,7 @@
 #include "GameObjects/Unit.h"
 #include "Widgets/ObjectActionButton.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <graphic/Image.h>
 #include <graphic/Renderer.h>
 #include <graphic/Texture.h>
@@ -14,15 +15,17 @@ namespace game
 
 PanelObjectActions::PanelObjectActions()
 {
+    using namespace lib::core;
+
     SetResizePolicy(ResizePolicy::DYNAMIC);
 
     // create all buttons
-    mButtons[BTN_BUILD_UNIT] = new ObjectActionButton(ObjectActionButton::UNITS, "U", this);
-    mButtons[BTN_MOVE] = new ObjectActionButton(ObjectActionButton::MOVE, "M", this);
-    mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "A", this);
-    mButtons[BTN_CONQUER] = new ObjectActionButton(ObjectActionButton::CONQUER, "C", this);
-    mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", this);
-    mButtons[BTN_UPGRADE] = new ObjectActionButton(ObjectActionButton::UPGRADE, "U", this);
+    mButtons[BTN_BUILD_UNIT] = new ObjectActionButton(ObjectActionButton::UNITS, "U", KeyboardEvent::KEY_U, this);
+    mButtons[BTN_MOVE] = new ObjectActionButton(ObjectActionButton::MOVE, "M", KeyboardEvent::KEY_M, this);
+    mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "A", KeyboardEvent::KEY_A, this);
+    mButtons[BTN_CONQUER] = new ObjectActionButton(ObjectActionButton::CONQUER, "C", KeyboardEvent::KEY_C, this);
+    mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", KeyboardEvent::KEY_W, this);
+    mButtons[BTN_UPGRADE] = new ObjectActionButton(ObjectActionButton::UPGRADE, "U", KeyboardEvent::KEY_U, this);
 }
 
 PanelObjectActions::~PanelObjectActions()

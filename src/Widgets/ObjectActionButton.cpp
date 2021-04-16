@@ -2,6 +2,7 @@
 
 #include "Widgets/GameUIData.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
@@ -13,10 +14,12 @@
 namespace game
 {
 
-ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, lib::sgui::Widget * parent)
+ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
+                                       int shortcutKey, lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
     , mBody(new lib::graphic::Image)
     , mIcon(new lib::graphic::Image)
+    , mShortcutKey(shortcutKey)
 {
     using namespace lib::graphic;
 
@@ -135,6 +138,16 @@ void ObjectActionButton::HandleMouseOut()
         return ;
 
     SetElements(NORMAL);
+}
+
+void ObjectActionButton::HandleKeyUp(lib::core::KeyboardEvent & event)
+{
+    if(event.GetKey() == mShortcutKey)
+    {
+        event.SetConsumed();
+
+        Click();
+    }
 }
 
 void ObjectActionButton::HandleCheckedChanged(bool checked)

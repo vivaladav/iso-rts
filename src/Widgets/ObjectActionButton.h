@@ -30,7 +30,8 @@ public:
     };
 
 public:
-    ObjectActionButton(ActionIcon icon, const char * shortcut, lib::sgui::Widget * parent);
+    ObjectActionButton(ActionIcon icon, const char * shortcut,
+                       int shortcutKey, lib::sgui::Widget * parent);
     ~ObjectActionButton();
 
 protected:
@@ -42,6 +43,8 @@ protected:
 
     void HandleMouseOver() override;
     void HandleMouseOut() override;
+
+    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
 
     void HandleCheckedChanged(bool checked) override;
 
@@ -71,6 +74,8 @@ private:
     lib::graphic::Text * mShortcut = nullptr;
 
     int mState = NULL_STATE;
+
+    int mShortcutKey = -1;
 };
 
 } // namespace game
