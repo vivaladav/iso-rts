@@ -102,31 +102,19 @@ void ObjectActionButton::HandleMouseButtonDown(lib::core::MouseButtonEvent & eve
 {
     PushButton::HandleMouseButtonDown(event);
 
-    if(!IsEnabled())
-        return ;
-
-    if(IsCheckable())
-        SetElements(CHECKED);
-    else
-        SetElements(PUSHED);
+    OnButtonDown();
 }
 
 void ObjectActionButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     PushButton::HandleMouseButtonUp(event);
 
-    if(!IsEnabled())
-        return ;
-
-    if(IsCheckable())
-        SetElements(IsChecked() ? CHECKED : NORMAL);
-    else
-        SetElements(NORMAL);
+    OnButtonUp();
 }
 
 void ObjectActionButton::HandleMouseOver()
 {
-    if(!IsEnabled() || IsChecked())
+    if(IsChecked())
         return ;
 
     SetElements(MOUSE_OVER);
@@ -134,10 +122,20 @@ void ObjectActionButton::HandleMouseOver()
 
 void ObjectActionButton::HandleMouseOut()
 {
-    if(!IsEnabled() || IsChecked())
+    if(IsChecked())
         return ;
 
     SetElements(NORMAL);
+}
+
+void ObjectActionButton::HandleKeyDown(lib::core::KeyboardEvent & event)
+{
+    if(event.GetKey() == mShortcutKey)
+    {
+        event.SetConsumed();
+
+        OnButtonDown();
+    }
 }
 
 void ObjectActionButton::HandleKeyUp(lib::core::KeyboardEvent & event)
@@ -145,6 +143,8 @@ void ObjectActionButton::HandleKeyUp(lib::core::KeyboardEvent & event)
     if(event.GetKey() == mShortcutKey)
     {
         event.SetConsumed();
+
+        OnButtonUp();
 
         Click();
     }
@@ -234,6 +234,22 @@ void ObjectActionButton::OnRender()
     mIcon->Render();
 
     mShortcut->Render();
+}
+
+void ObjectActionButton::OnButtonDown()
+{
+    if(IsCheckable())
+        SetElements(CHECKED);
+    else
+        SetElements(PUSHED);
+}
+
+void ObjectActionButton::OnButtonUp()
+{
+    if(IsCheckable())
+        SetElements(IsChecked() ? CHECKED : NORMAL);
+    else
+        SetElements(NORMAL);
 }
 
 } // namespace game

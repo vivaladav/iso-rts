@@ -44,6 +44,7 @@ protected:
     void HandleMouseOver() override;
     void HandleMouseOut() override;
 
+    void HandleKeyDown(lib::core::KeyboardEvent & event) override;
     void HandleKeyUp(lib::core::KeyboardEvent & event) override;
 
     void HandleCheckedChanged(bool checked) override;
@@ -54,6 +55,9 @@ private:
     void HandlePositionChanged() override;
 
     void OnRender() override;
+
+    void OnButtonDown();
+    void OnButtonUp();
 
 private:
     enum VisualState : int
