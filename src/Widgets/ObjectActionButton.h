@@ -25,6 +25,7 @@ public:
         CONQUER,
         BUILD_WALL,
         UPGRADE,
+        CANCEL,
 
         NUM_ACTION_ICONS
     };

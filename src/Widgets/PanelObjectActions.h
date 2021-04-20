@@ -27,6 +27,7 @@ public:
         BTN_CONQUER,
         BTN_BUILD_WALL,
         BTN_UPGRADE,
+        BTN_CANCEL,
 
         NUM_BUTTONS
     };

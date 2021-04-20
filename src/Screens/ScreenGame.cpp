@@ -393,7 +393,7 @@ void ScreenGame::InitSprites()
     y += indH;
 
     // icons
-    indCols = 6;
+    indCols = 7;
     indW = 48;
     indH = 48;
 
@@ -480,6 +480,14 @@ void ScreenGame::CreateUI()
     // GENERIC ACTIONS
     // upgrade
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_UPGRADE, [this, player]
+    {
+        // TODO
+
+        ClearCellOverlays();
+    });
+
+    // cancel
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CANCEL, [this, player]
     {
         // TODO
 

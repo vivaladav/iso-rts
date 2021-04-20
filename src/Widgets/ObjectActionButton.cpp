@@ -65,6 +65,11 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
             mIcon->SetTexture(tex);
         break;
 
+        case CANCEL:
+            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_CANCEL);
+            mIcon->SetTexture(tex);
+        break;
+
         // this should not happen
         default:
 
