@@ -43,7 +43,7 @@ void CellProgressBar::HandlePositionChanged()
 {
     const int x = GetScreenX();
     const int y = GetScreenY();
-    const int border = 2;
+    const int border = 1;
 
     mBg->SetPosition(x, y);
     mBar->SetPosition(x + border, y + border);
