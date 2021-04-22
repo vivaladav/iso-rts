@@ -849,11 +849,15 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     // start create
     mGameMap->StartCreateUnit(cell, player);
 
+    gen->SetActiveAction(GameObject::BUILD_UNIT);
+
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player]
+    pb->SetFunctionOnCompleted([this, cell, player, gen]
     {
+        gen->SetActiveAction(GameObject::IDLE);
+
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
