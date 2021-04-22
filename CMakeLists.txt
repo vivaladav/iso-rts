@@ -59,6 +59,7 @@ add_executable(
     src/GameObjects/DiamondsGenerator.cpp
     src/GameObjects/GameObject.h
     src/GameObjects/GameObject.cpp
+    src/GameObjects/GameObjectAction.h
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
     src/GameObjects/SceneObject.h

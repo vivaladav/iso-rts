@@ -489,9 +489,36 @@ void ScreenGame::CreateUI()
     // cancel
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CANCEL, [this, player]
     {
-        // TODO
+        GameObject * selObj = player->GetSelectedObject();
 
-        ClearCellOverlays();
+        auto it = mActiveObjActions.begin();
+
+        // search selected object in active actions
+        while(it != mActiveObjActions.end())
+        {
+            if(it->obj == selObj)
+            {
+                GameObjectAction & act = *it;
+
+                // object is a Base
+                if(act.obj->GetObjectType() == OBJ_BASE)
+                {
+                    // building a new unit
+                    if(act.obj->GetActiveAction() == GameObject::BUILD_UNIT)
+                    {
+                        CancelProgressBar(act.actionCell);
+
+                        act.obj->SetActiveAction(GameObject::IDLE);
+                    }
+                }
+
+                mActiveObjActions.erase(it);
+
+                break;
+            }
+            else
+                ++it;
+        }
     });
 }
 
@@ -861,6 +888,9 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    // store active action
+    mActiveObjActions.emplace_back(gen, cell);
 
     return true;
 }

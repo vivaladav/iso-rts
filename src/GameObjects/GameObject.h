@@ -270,5 +270,4 @@ inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 inline GameObject::ObjectAction GameObject::GetActiveAction() const { return mActiveAction; }
 inline void GameObject::SetActiveAction(GameObject::ObjectAction action) { mActiveAction = action; }
 
-
 } // namespace game

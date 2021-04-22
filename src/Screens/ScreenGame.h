@@ -2,6 +2,7 @@
 
 #include "Cell2D.h"
 #include "Screen.h"
+#include "GameObjects/GameObjectAction.h"
 
 #include <functional>
 #include <string>
@@ -95,6 +96,8 @@ private:
 
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::vector<WallIndicator *> mWallIndicators;
+
+    std::vector<GameObjectAction> mActiveObjActions;
 
     // -- UI --
     PanelResources * mPanelResBar = nullptr;
