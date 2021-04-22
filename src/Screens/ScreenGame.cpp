@@ -454,7 +454,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::BUILD_WALL);
+        unit->SetActiveAction(GameObject::BUILD_WALL);
 
         ClearCellOverlays();
     });
@@ -463,7 +463,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::CONQUER);
+        unit->SetActiveAction(GameObject::CONQUER);
 
         ClearCellOverlays();
     });
@@ -472,7 +472,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_MOVE, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(UnitAction::MOVE);
+        unit->SetActiveAction(GameObject::MOVE);
 
         ClearCellOverlays();
     });
@@ -590,10 +590,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             Unit * selUnit = static_cast<Unit *>(selObj);
 
-            const UnitAction action = selUnit->GetActiveAction();
+            const GameObject::ObjectAction action = selUnit->GetActiveAction();
 
             // move
-            if(action == UnitAction::MOVE)
+            if(action == GameObject::MOVE)
             {
                 const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
 
@@ -601,7 +601,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 if(diffClick)
                     HandleUnitMoveOnMouseUp(selUnit, clickCell);
             }
-            else if(action == UnitAction::CONQUER)
+            else if(action == GameObject::CONQUER)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -624,7 +624,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     }
                 }
             }
-            else if (action == UnitAction::BUILD_WALL)
+            else if (action == GameObject::BUILD_WALL)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -674,13 +674,13 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
     // unit selected -> handle mouse motion
     if(selUnit != nullptr)
     {
-        const UnitAction action = selUnit->GetActiveAction();
+        const GameObject::ObjectAction action = selUnit->GetActiveAction();
 
-        if(action == MOVE)
+        if(action == GameObject::MOVE)
             HandleUnitMoveOnMouseMove(selUnit, currCell);
-        else if(action == CONQUER)
+        else if(action == GameObject::CONQUER)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
-        else if(action == BUILD_WALL)
+        else if(action == GameObject::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
     }
 

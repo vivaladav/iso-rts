@@ -88,7 +88,7 @@ void ConquerPath::TransitionToMoveStep()
     else
     {
         mState = COMPLETED;
-        static_cast<Unit *>(mObj)->SetActiveAction(UnitAction::MOVE);
+        static_cast<Unit *>(mObj)->SetActiveAction(GameObject::MOVE);
     }
 }
 

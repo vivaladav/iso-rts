@@ -13,6 +13,7 @@ Unit::Unit(int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
 {
     SetSpeed(2.f);
+    SetVisibilityLevel(1);
 }
 
 void Unit::IncreaseUnitLevel()

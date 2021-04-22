@@ -138,7 +138,7 @@ void Player::ClearSelectedObject()
     mSelObj->SetSelected(false);
 
     if(mSelObj->GetObjectType() == OBJ_UNIT)
-        static_cast<Unit *>(mSelObj)->SetActiveAction(IDLE);
+        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObject::IDLE);
 
     mSelObj = nullptr;
 }
@@ -152,7 +152,7 @@ void Player::SetSelectedObject(GameObject * obj)
 
     // reset active action to move when unit is selected
     if(mSelObj->GetObjectType() == OBJ_UNIT)
-        static_cast<Unit *>(mSelObj)->SetActiveAction(MOVE);
+        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObject::MOVE);
 
     mSelObj->SetSelected(true);
 }
