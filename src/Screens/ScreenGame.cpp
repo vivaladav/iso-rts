@@ -500,16 +500,26 @@ void ScreenGame::CreateUI()
             {
                 GameObjectAction & act = *it;
 
+                const GameObjectType objType = act.obj->GetObjectType();
+                const GameObject::ObjectAction objActId = act.obj->GetActiveAction();
+
                 // object is a Base
-                if(act.obj->GetObjectType() == OBJ_BASE)
+                if(objType == OBJ_BASE)
                 {
                     // building a new unit
-                    if(act.obj->GetActiveAction() == GameObject::BUILD_UNIT)
+                    if(objActId == GameObject::BUILD_UNIT)
                     {
                         CancelProgressBar(act.actionCell);
 
                         act.obj->SetActiveAction(GameObject::IDLE);
                     }
+                }
+                // object is a Unit
+                else if(objType == OBJ_UNIT)
+                {
+                    // moving
+                    if(objActId == GameObject::MOVE)
+                        mGameMap->AbortMove(selObj);
                 }
 
                 mActiveObjActions.erase(it);
@@ -955,6 +965,9 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     mGameMap->MoveUnit(op);
 
     ClearCellOverlays();
+
+    // store active action
+    mActiveObjActions.emplace_back(unit);
 }
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)

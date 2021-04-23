@@ -1106,6 +1106,20 @@ bool GameMap::MoveUnit(ObjectPath * path)
     return true;
 }
 
+bool GameMap::AbortMove(GameObject * obj)
+{
+    for(auto path : mPaths)
+    {
+        if(path->GetObject() == obj)
+        {
+            path->Abort();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
 {
     // get all walkable cells around end
@@ -1681,12 +1695,14 @@ void GameMap::UpdateObjectPaths(float delta)
 
         path->Update(delta);
 
-        if(path->GetState() == ObjectPath::PathState::COMPLETED)
+        const ObjectPath::PathState state = path->GetState();
+
+        if(state == ObjectPath::PathState::COMPLETED || state == ObjectPath::PathState::ABORTED)
         {
             delete path;
             itPath = mPaths.erase(itPath);
         }
-        else if(path->GetState() == ObjectPath::PathState::FAILED)
+        else if(state == ObjectPath::PathState::FAILED)
         {
             // TODO try to recover from failed path
             delete path;

@@ -118,6 +118,8 @@ void ObjectPath::Update(float delta)
         mGameMap->ApplyVisibility(player);
 
         // handle next step or termination
+        if(ABORTING == mState)
+            mState = ABORTED;
         if(mNextCell < mCells.size())
         {
             const unsigned int nextInd = mCells[mNextCell];

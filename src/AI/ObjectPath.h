@@ -19,6 +19,8 @@ public:
         RUNNING,
         COMPLETED,
         FAILED,
+        ABORTING,
+        ABORTED,
 
         NUM_PATH_STATES
     };
@@ -37,6 +39,8 @@ public:
     void SetOnCompleted(const std::function<void()> & f);
 
     void Start();
+
+    void Abort();
 
     void Update(float delta);
 
@@ -101,6 +105,11 @@ inline void ObjectPath::Start()
     mNextCell = 1;
 
     InitNextMoveStep();
+}
+
+inline void ObjectPath::Abort()
+{
+    mState = ABORTING;
 }
 
 } // namespace game

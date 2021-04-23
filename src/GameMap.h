@@ -100,6 +100,7 @@ public:
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
     bool MoveUnit(ObjectPath * path);
+    bool AbortMove(GameObject * obj);
 
     Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end);
     Cell2D GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target);
