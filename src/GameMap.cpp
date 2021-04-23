@@ -508,6 +508,20 @@ void GameMap::ConquerCells(ConquerPath * path)
     mConquerPaths.emplace_back(path);
 }
 
+bool GameMap::AbortCellConquest(GameObject * obj)
+{
+    for(auto path : mConquerPaths)
+    {
+        if(path->GetObject() == obj)
+        {
+            path->Abort();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool GameMap::CanBuildWall(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
@@ -1723,12 +1737,14 @@ void GameMap::UpdateConquerPaths(float delta)
 
         path->Update(delta);
 
-        if(path->GetState() == ConquerPath::ConquerState::COMPLETED)
+        const ConquerPath::ConquerState state = path->GetState();
+
+        if(state == ConquerPath::ConquerState::COMPLETED || state == ConquerPath::ConquerState::ABORTED)
         {
             delete path;
             itCP = mConquerPaths.erase(itCP);
         }
-        else if(path->GetState() == ConquerPath::ConquerState::FAILED)
+        else if(state == ConquerPath::ConquerState::FAILED)
         {
             // TODO try to recover from failed path
             delete path;

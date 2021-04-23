@@ -74,6 +74,7 @@ public:
     void StartConquerCell(const Cell2D & cell, Player * player);
     void ConquerCell(const Cell2D & cell, Player * player);
     void ConquerCells(ConquerPath * path);
+    bool AbortCellConquest(GameObject * obj);
 
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player);

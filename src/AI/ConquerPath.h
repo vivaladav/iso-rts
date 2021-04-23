@@ -21,6 +21,8 @@ public:
         MOVING,
         COMPLETED,
         FAILED,
+        ABORTING,
+        ABORTED,
 
         NUM_PATH_STATES
     };
@@ -39,6 +41,8 @@ public:
 
     void Start();
 
+    void Abort();
+
     void Update(float delta);
 
 private:
@@ -49,6 +53,8 @@ private:
     void InitNextMoveStep();
 
     void UpdatePathCost();
+
+    void FinishAbortion();
 
 private:
     std::vector<unsigned int> mCells;

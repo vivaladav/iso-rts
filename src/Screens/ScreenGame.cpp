@@ -454,7 +454,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObject::BUILD_WALL);
+        unit->SetActiveAction(GameObjectActionId::BUILD_WALL);
 
         ClearCellOverlays();
     });
@@ -463,7 +463,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObject::CONQUER);
+        unit->SetActiveAction(GameObjectActionId::CONQUER);
 
         ClearCellOverlays();
     });
@@ -472,7 +472,7 @@ void ScreenGame::CreateUI()
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_MOVE, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObject::MOVE);
+        unit->SetActiveAction(GameObjectActionId::MOVE);
 
         ClearCellOverlays();
     });
@@ -501,25 +501,27 @@ void ScreenGame::CreateUI()
                 GameObjectAction & act = *it;
 
                 const GameObjectType objType = act.obj->GetObjectType();
-                const GameObject::ObjectAction objActId = act.obj->GetActiveAction();
+                const GameObjectActionId objActId = act.actId;
 
                 // object is a Base
                 if(objType == OBJ_BASE)
                 {
                     // building a new unit
-                    if(objActId == GameObject::BUILD_UNIT)
+                    if(objActId == GameObjectActionId::BUILD_UNIT)
                     {
                         CancelProgressBar(act.actionCell);
 
-                        act.obj->SetActiveAction(GameObject::IDLE);
+                        act.obj->SetActiveAction(GameObjectActionId::IDLE);
                     }
                 }
                 // object is a Unit
                 else if(objType == OBJ_UNIT)
                 {
                     // moving
-                    if(objActId == GameObject::MOVE)
+                    if(objActId == GameObjectActionId::MOVE)
                         mGameMap->AbortMove(selObj);
+                    else if(objActId == GameObjectActionId::CONQUER)
+                        mGameMap->AbortCellConquest(selObj);
                 }
 
                 mActiveObjActions.erase(it);
@@ -627,10 +629,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         {
             Unit * selUnit = static_cast<Unit *>(selObj);
 
-            const GameObject::ObjectAction action = selUnit->GetActiveAction();
+            const GameObjectActionId action = selUnit->GetActiveAction();
 
             // move
-            if(action == GameObject::MOVE)
+            if(action == GameObjectActionId::MOVE)
             {
                 const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
 
@@ -638,7 +640,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 if(diffClick)
                     HandleUnitMoveOnMouseUp(selUnit, clickCell);
             }
-            else if(action == GameObject::CONQUER)
+            else if(action == GameObjectActionId::CONQUER)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -657,11 +659,14 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
                         mGameMap->ConquerCells(cp);
 
+                        // store active action
+                        mActiveObjActions.emplace_back(selUnit, action);
+
                         ClearSelection(player);
                     }
                 }
             }
-            else if (action == GameObject::BUILD_WALL)
+            else if (action == GameObjectActionId::BUILD_WALL)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -711,13 +716,13 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
     // unit selected -> handle mouse motion
     if(selUnit != nullptr)
     {
-        const GameObject::ObjectAction action = selUnit->GetActiveAction();
+        const GameObjectActionId action = selUnit->GetActiveAction();
 
-        if(action == GameObject::MOVE)
+        if(action == GameObjectActionId::MOVE)
             HandleUnitMoveOnMouseMove(selUnit, currCell);
-        else if(action == GameObject::CONQUER)
+        else if(action == GameObjectActionId::CONQUER)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
-        else if(action == GameObject::BUILD_WALL)
+        else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
     }
 
@@ -886,21 +891,21 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     // start create
     mGameMap->StartCreateUnit(cell, player);
 
-    gen->SetActiveAction(GameObject::BUILD_UNIT);
+    gen->SetActiveAction(GameObjectActionId::BUILD_UNIT);
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
     pb->SetFunctionOnCompleted([this, cell, player, gen]
     {
-        gen->SetActiveAction(GameObject::IDLE);
+        gen->SetActiveAction(GameObjectActionId::IDLE);
 
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
 
     // store active action
-    mActiveObjActions.emplace_back(gen, cell);
+    mActiveObjActions.emplace_back(gen, GameObjectActionId::BUILD_UNIT, cell);
 
     return true;
 }
@@ -967,7 +972,7 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     ClearCellOverlays();
 
     // store active action
-    mActiveObjActions.emplace_back(unit);
+    mActiveObjActions.emplace_back(unit, GameObjectActionId::MOVE);
 }
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)

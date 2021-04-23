@@ -88,7 +88,7 @@ void ConquerPath::TransitionToMoveStep()
     else
     {
         mState = COMPLETED;
-        static_cast<Unit *>(mObj)->SetActiveAction(GameObject::MOVE);
+        static_cast<Unit *>(mObj)->SetActiveAction(GameObjectActionId::MOVE);
     }
 }
 
@@ -119,6 +119,26 @@ void ConquerPath::UpdatePathCost()
     mCost = (mCells.size() - 1) * 0.5f;
 }
 
+void ConquerPath::FinishAbortion()
+{
+    // clear progress bar
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const Cell2D cell(nextRow, nextCol);
+
+    mScreen->CancelProgressBar(cell);
+
+    // clear indicators
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
+    for(unsigned int i = mNextCell - 1; i < mConquestIndicators.size(); ++i)
+        layerOverlay->ClearObject(mConquestIndicators[i]);
+
+    // set new state
+    mState = ABORTED;
+}
+
 void ConquerPath::Start()
 {
     // do nothing if already started
@@ -131,10 +151,18 @@ void ConquerPath::Start()
     InitNextConquest();
 }
 
+void ConquerPath::Abort()
+{
+    if(CONQUERING == mState)
+        FinishAbortion();
+    else
+        mState = ABORTING;
+}
+
 void ConquerPath::Update(float delta)
 {
     // only do something while moving
-    if(mState != MOVING)
+    if(mState != MOVING && mState != ABORTING)
         return ;
 
     int todo = 2;
@@ -223,8 +251,11 @@ void ConquerPath::Update(float delta)
 
         mGameMap->ApplyVisibility(player);
 
-        // init next conquest
-        InitNextConquest();
+        // init next step
+        if(ABORTING == mState)
+            FinishAbortion();
+        else
+            InitNextConquest();
     }
 }
 

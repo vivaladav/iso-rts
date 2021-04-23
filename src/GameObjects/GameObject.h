@@ -105,29 +105,28 @@ enum GameObjectType : unsigned int
     OBJ_NULL
 };
 
+enum GameObjectActionId : unsigned int
+{
+    IDLE,
+
+    // BASE
+    BUILD_UNIT,
+
+    // UNIT
+    MOVE,
+    CONQUER,
+    ATTACK,
+    BUILD_WALL,
+
+    NUM_OBJ_ACTIONS
+};
+
 class GameMapCell;
 class IsoObject;
 class Player;
 
 class GameObject
 {
-public:
-    enum ObjectAction : unsigned int
-    {
-        IDLE,
-
-        // BASE
-        BUILD_UNIT,
-
-        // UNIT
-        MOVE,
-        CONQUER,
-        ATTACK,
-        BUILD_WALL,
-
-        NUM_OBJ_ACTIONS
-    };
-
 public:
     GameObject(GameObjectType type, int rows, int cols);
     virtual ~GameObject();
@@ -172,8 +171,8 @@ public:
 
     float GetSpeed() const;
 
-    ObjectAction GetActiveAction() const;
-    void SetActiveAction(ObjectAction action);
+    GameObjectActionId GetActiveAction() const;
+    void SetActiveAction(GameObjectActionId action);
 
     virtual void Update(float delta);
 
@@ -203,7 +202,7 @@ private:
     Player * mOwner = nullptr;
     GameObjectType mType = OBJ_NULL;
 
-    ObjectAction mActiveAction = IDLE;
+    GameObjectActionId mActiveAction = IDLE;
 
     unsigned int mRows = 1;
     unsigned int mCols = 1;
@@ -267,7 +266,7 @@ inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 
-inline GameObject::ObjectAction GameObject::GetActiveAction() const { return mActiveAction; }
-inline void GameObject::SetActiveAction(GameObject::ObjectAction action) { mActiveAction = action; }
+inline GameObjectActionId GameObject::GetActiveAction() const { return mActiveAction; }
+inline void GameObject::SetActiveAction(GameObjectActionId action) { mActiveAction = action; }
 
 } // namespace game
