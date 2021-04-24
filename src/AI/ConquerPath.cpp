@@ -31,6 +31,7 @@ void ConquerPath::CreateIndicators()
 
     const PlayerFaction faction = player->GetFaction();
 
+    // do not create indicator for cell 0 as it's current under conquest
     for(unsigned int i = 1; i < mCells.size(); ++i)
     {
         ConquestIndicator * ind = new ConquestIndicator;
@@ -129,10 +130,12 @@ void ConquerPath::FinishAbortion()
 
     mScreen->CancelProgressBar(cell);
 
+    mGameMap->SetCellChanging(nextRow, nextCol, false);
+
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
-    for(unsigned int i = mNextCell - 1; i < mConquestIndicators.size(); ++i)
+    for(unsigned int i = mNextCell; i < mConquestIndicators.size(); ++i)
         layerOverlay->ClearObject(mConquestIndicators[i]);
 
     // set new state

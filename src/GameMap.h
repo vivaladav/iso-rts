@@ -56,6 +56,7 @@ public:
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
+    void SetCellChanging(unsigned int r, unsigned int c, bool changing);
 
     void CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
                               unsigned int r0, unsigned int c0,
@@ -220,6 +221,12 @@ inline bool GameMap::IsCellChanging(unsigned int r, unsigned int c) const
         return mCells[r * mCols + c].changing;
     else
         return false;
+}
+
+inline void GameMap::SetCellChanging(unsigned int r, unsigned int c, bool changing)
+{
+    if(r < mRows && c < mCols)
+        mCells[r * mCols + c].changing = changing;
 }
 
 /**
