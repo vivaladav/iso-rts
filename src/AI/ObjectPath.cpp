@@ -6,6 +6,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
+#include "Screens/ScreenGame.h"
 
 #include <cmath>
 
@@ -137,6 +138,9 @@ void ObjectPath::Update(float delta)
         else
         {
             mState = COMPLETED;
+
+            // clear action data once the action is completed
+            mScreen->ClearObjectAction(mObj);
 
             mOnCompleted();
         }

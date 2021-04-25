@@ -89,7 +89,9 @@ void ConquerPath::TransitionToMoveStep()
     else
     {
         mState = COMPLETED;
-        static_cast<Unit *>(mObj)->SetActiveAction(GameObjectActionId::MOVE);
+
+        // clear action data once the action is completed
+        mScreen->ClearObjectAction(mObj);
     }
 }
 

@@ -233,6 +233,23 @@ void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * pla
     });
 }
 
+void ScreenGame::ClearObjectAction(GameObject * obj)
+{
+    auto it = mActiveObjActions.begin();
+
+    // search selected object in active actions
+    while(it != mActiveObjActions.end())
+    {
+        if(it->obj == obj)
+        {
+            mActiveObjActions.erase(it);
+            return ;
+        }
+
+        ++it;
+    }
+}
+
 void ScreenGame::InitSprites()
 {
     auto tm = lib::graphic::TextureManager::Instance();
@@ -493,15 +510,23 @@ void ScreenGame::CreateUI()
 
         auto it = mActiveObjActions.begin();
 
+        std::cout << "BTN_CANCEL function - selObj: " << selObj << std::endl;
+
         // search selected object in active actions
         while(it != mActiveObjActions.end())
         {
             if(it->obj == selObj)
             {
+                std::cout << "BTN_CANCEL function - actObj: " << it->obj << std::endl;
+
                 GameObjectAction & act = *it;
 
                 const GameObjectType objType = act.obj->GetObjectType();
                 const GameObjectActionId objActId = act.actId;
+
+                std::cout << "BTN_CANCEL function - actObj: " << it->obj <<
+                             " - objType: " << objType <<
+                             " - objActId: " << objActId << std::endl;
 
                 // object is a Base
                 if(objType == OBJ_BASE)
@@ -522,6 +547,11 @@ void ScreenGame::CreateUI()
                         mGameMap->AbortMove(selObj);
                     else if(objActId == GameObjectActionId::CONQUER)
                         mGameMap->AbortCellConquest(selObj);
+                    else if(objActId == GameObjectActionId::BUILD_WALL)
+                    {
+                        bool res = mGameMap->AbortBuildWalls(selObj);
+                        std::cout << "AbortBuildWalls " << (res ? "OK" : "FAIL") << std::endl;
+                    }
                 }
 
                 mActiveObjActions.erase(it);
@@ -684,6 +714,9 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                         wbp->SetPathCells(path);
 
                         mGameMap->BuildWalls(wbp);
+
+                        // store active action
+                        mActiveObjActions.emplace_back(selUnit, action);
 
                         ClearSelection(player);
                     }
@@ -902,6 +935,8 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
 
         mGameMap->CreateUnit(cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+
+        ClearObjectAction(gen);
     });
 
     // store active action
@@ -963,7 +998,7 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     if(path.empty())
         return ;
 
-    auto op = new ObjectPath(unit, mIsoMap, mGameMap);
+    auto op = new ObjectPath(unit, mIsoMap, mGameMap, this);
     op->SetPathCells(path);
     op->SetOnCompleted(onCompleted);
 
@@ -1026,7 +1061,7 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
         std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
                                                                currCell.row, currCell.col);
 
-        ObjectPath op(unit, mIsoMap, mGameMap);
+        ObjectPath op(unit, mIsoMap, mGameMap, this);
         op.SetPathCells(path);
 
         mMoveInd->SetCost(op.GetPathCost());

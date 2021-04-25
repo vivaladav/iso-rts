@@ -23,6 +23,7 @@ public:
         START_NEXT,
         COMPLETED,
         FAILED,
+        ABORTED,
 
         NUM_PATH_STATES
     };
@@ -42,6 +43,8 @@ public:
 
     void Start();
 
+    void Abort();
+
     void Update(float delta);
 
     void SetIndicatorsType(const std::vector<Cell2D> & cells,
@@ -53,6 +56,8 @@ private:
     void InitNextBuild();
 
     void UpdatePathCost();
+
+    void FinishAbortion();
 
 private:
     std::vector<unsigned int> mCells;

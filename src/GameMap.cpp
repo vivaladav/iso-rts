@@ -614,6 +614,20 @@ void GameMap::BuildWalls(WallBuildPath * path)
     mWallBuildPaths.emplace_back(path);
 }
 
+bool GameMap::AbortBuildWalls(GameObject * obj)
+{
+    for(auto path : mWallBuildPaths)
+    {
+        if(path->GetObject() == obj)
+        {
+            path->Abort();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);
@@ -1765,12 +1779,14 @@ void GameMap::UpdateWallBuildPaths(float delta)
 
         path->Update(delta);
 
-        if(path->GetState() == WallBuildPath::BuildState::COMPLETED)
+        const WallBuildPath::BuildState state = path->GetState();
+
+        if(state == WallBuildPath::BuildState::COMPLETED || state == WallBuildPath::BuildState::ABORTED)
         {
             delete path;
             it = mWallBuildPaths.erase(it);
         }
-        else if(path->GetState() == WallBuildPath::BuildState::FAILED)
+        else if(state == WallBuildPath::BuildState::FAILED)
         {
             // TODO try to recover from failed path
             delete path;

@@ -9,6 +9,7 @@ namespace game
 class GameMap;
 class GameObject;
 class IsoMap;
+class ScreenGame;
 
 class ObjectPath
 {
@@ -26,7 +27,7 @@ public:
     };
 
 public:
-    ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm);
+    ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg);
 
     GameObject * GetObject() const;
 
@@ -59,6 +60,8 @@ private:
     IsoMap * mIsoMap = nullptr;
     GameMap * mGameMap = nullptr;
 
+    ScreenGame * mScreen = nullptr;
+
     PathState mState = READY;
 
     unsigned int mNextCell = 0;
@@ -75,8 +78,8 @@ private:
     float mCost = 0.f;
 };
 
-inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm)
-    : mOnCompleted([]{}), mObj(obj), mIsoMap(im), mGameMap(gm)
+inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
+    : mOnCompleted([]{}), mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
 {
 }
 

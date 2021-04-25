@@ -13,6 +13,8 @@
 
 #include <cmath>
 
+#include <iostream>
+
 namespace game
 {
 
@@ -40,6 +42,8 @@ void WallBuildPath::CreateIndicators()
     const unsigned int indCol0 = pathInd0 % mIsoMap->GetNumCols();
     cellsPath.emplace_back(indRow0, indCol0);
 
+    // start from 1 as first cell is unit position
+    // first indicator is going to be destroyed immediately, but it's needed to keep the block type
     for(unsigned int i = 1; i < mCells.size(); ++i)
     {
         auto ind = new WallIndicator;
@@ -62,6 +66,7 @@ void WallBuildPath::CreateIndicators()
 void WallBuildPath::InitNextBuild()
 {
     mState = BUILDING;
+
     while(mNextCell < mCells.size())
     {
         const unsigned int nextInd = mCells[mNextCell];
@@ -71,9 +76,16 @@ void WallBuildPath::InitNextBuild()
 
         Player * player = mObj->GetOwner();
 
+        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
+        const int indexInd = mNextCell - 1;
+
         // check if conquest is possible
         if(!mGameMap->CanBuildWall(nextCell, player))
         {
+            // remove current indicator
+            layerOverlay->ClearObject(mIndicators[indexInd]);
+
             ++mNextCell;
 
             continue;
@@ -83,15 +95,12 @@ void WallBuildPath::InitNextBuild()
         mGameMap->StartBuildWall(nextCell, player);
 
         // clear indicator before starting construction
-        const int indexInd = mNextCell - 1;
-
-        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
         layerOverlay->ClearObject(mIndicators[indexInd]);
 
         const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
 
         // TODO get conquer time from unit
-        constexpr float TIME_BUILD = 2.f;
+        constexpr float TIME_BUILD = 4.f;
         mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                    [this, nextCell, player, blockType]
         {
@@ -102,8 +111,16 @@ void WallBuildPath::InitNextBuild()
             if(mNextCell < mCells.size())
                 mState = START_NEXT;
             else
+            {
                 mState = COMPLETED;
+
+                // clear action data once the action is completed
+                mScreen->ClearObjectAction(mObj);
+            }
         });
+
+        std::cout << "WallBuildPath::InitNextBuild - created bar at " <<
+                     nextCell.row << "," << nextCell.col << std::endl;
 
         return ;
     }
@@ -116,6 +133,35 @@ void WallBuildPath::UpdatePathCost()
     // TODO proper cost computation
     mEnergyCost = (mCells.size() - 1) * 5.f;
     mMaterialCost = (mCells.size() - 1) * 10.f;
+}
+
+void WallBuildPath::FinishAbortion()
+{
+    std::cout << "WallBuildPath::FinishAbortion" << std::endl;
+
+    // clear progress bar
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const Cell2D cell(nextRow, nextCol);
+
+    mGameMap->SetCellChanging(nextRow, nextCol, false);
+
+    mScreen->CancelProgressBar(cell);
+
+    std::cout << "WallBuildPath::FinishAbortion - cancel bar at " <<
+                 cell.row << "," << cell.col << std::endl;
+
+    // clear indicators
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
+    for(unsigned int i = mNextCell; i < mIndicators.size(); ++i)
+        layerOverlay->ClearObject(mIndicators[i]);
+
+    //layerOverlay->ClearObjects();
+
+    // set new state
+    mState = ABORTED;
 }
 
 void WallBuildPath::Start()
@@ -131,6 +177,18 @@ void WallBuildPath::Start()
 
     // stat conquering first cell
     InitNextBuild();
+}
+
+void WallBuildPath::Abort()
+{
+    std::cout << "WallBuildPath::Abort - START" << std::endl;
+
+    if(BUILDING == mState)
+        FinishAbortion();
+    else
+        mState = ABORTED;
+
+    std::cout << "WallBuildPath::Abort - END" << std::endl;
 }
 
 void WallBuildPath::Update(float delta)

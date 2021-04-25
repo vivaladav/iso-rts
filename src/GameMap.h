@@ -82,6 +82,7 @@ public:
     void StartBuildWall(const Cell2D & cell, Player * player);
     void BuildWall(const Cell2D & cell, Player * player, GameObjectType planned);
     void BuildWalls(WallBuildPath * path);
+    bool AbortBuildWalls(GameObject * obj);
 
     // resource generator conquest
     bool CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
