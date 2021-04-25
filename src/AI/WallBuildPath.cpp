@@ -13,8 +13,6 @@
 
 #include <cmath>
 
-#include <iostream>
-
 namespace game
 {
 
@@ -100,7 +98,7 @@ void WallBuildPath::InitNextBuild()
         const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
 
         // TODO get conquer time from unit
-        constexpr float TIME_BUILD = 4.f;
+        constexpr float TIME_BUILD = 2.f;
         mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                    [this, nextCell, player, blockType]
         {
@@ -119,9 +117,6 @@ void WallBuildPath::InitNextBuild()
             }
         });
 
-        std::cout << "WallBuildPath::InitNextBuild - created bar at " <<
-                     nextCell.row << "," << nextCell.col << std::endl;
-
         return ;
     }
 
@@ -137,8 +132,6 @@ void WallBuildPath::UpdatePathCost()
 
 void WallBuildPath::FinishAbortion()
 {
-    std::cout << "WallBuildPath::FinishAbortion" << std::endl;
-
     // clear progress bar
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
@@ -148,9 +141,6 @@ void WallBuildPath::FinishAbortion()
     mGameMap->SetCellChanging(nextRow, nextCol, false);
 
     mScreen->CancelProgressBar(cell);
-
-    std::cout << "WallBuildPath::FinishAbortion - cancel bar at " <<
-                 cell.row << "," << cell.col << std::endl;
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -181,14 +171,10 @@ void WallBuildPath::Start()
 
 void WallBuildPath::Abort()
 {
-    std::cout << "WallBuildPath::Abort - START" << std::endl;
-
     if(BUILDING == mState)
         FinishAbortion();
     else
         mState = ABORTED;
-
-    std::cout << "WallBuildPath::Abort - END" << std::endl;
 }
 
 void WallBuildPath::Update(float delta)

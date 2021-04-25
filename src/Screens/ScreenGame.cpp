@@ -510,23 +510,15 @@ void ScreenGame::CreateUI()
 
         auto it = mActiveObjActions.begin();
 
-        std::cout << "BTN_CANCEL function - selObj: " << selObj << std::endl;
-
         // search selected object in active actions
         while(it != mActiveObjActions.end())
         {
             if(it->obj == selObj)
             {
-                std::cout << "BTN_CANCEL function - actObj: " << it->obj << std::endl;
-
                 GameObjectAction & act = *it;
 
                 const GameObjectType objType = act.obj->GetObjectType();
                 const GameObjectActionId objActId = act.actId;
-
-                std::cout << "BTN_CANCEL function - actObj: " << it->obj <<
-                             " - objType: " << objType <<
-                             " - objActId: " << objActId << std::endl;
 
                 // object is a Base
                 if(objType == OBJ_BASE)
@@ -548,10 +540,7 @@ void ScreenGame::CreateUI()
                     else if(objActId == GameObjectActionId::CONQUER_CELL)
                         mGameMap->AbortCellConquest(selObj);
                     else if(objActId == GameObjectActionId::BUILD_WALL)
-                    {
-                        bool res = mGameMap->AbortBuildWalls(selObj);
-                        std::cout << "AbortBuildWalls " << (res ? "OK" : "FAIL") << std::endl;
-                    }
+                        mGameMap->AbortBuildWalls(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
                         mGameMap->AbortConquerResourceGenerator(act.actionCell, act.target);
                 }
