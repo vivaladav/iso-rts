@@ -50,8 +50,8 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
             mIcon->SetTexture(tex);
         break;
 
-        case CONQUER:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_CONQUER);
+        case CONQUER_CELL:
+            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_CONQUER_CELL);
             mIcon->SetTexture(tex);
         break;
 

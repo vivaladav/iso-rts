@@ -17,7 +17,7 @@ public:
     enum ConquerState : unsigned int
     {
         READY,
-        CONQUERING,
+        CONQUER_CELLING,
         MOVING,
         COMPLETED,
         FAILED,

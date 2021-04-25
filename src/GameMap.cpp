@@ -691,6 +691,28 @@ void GameMap::StartConquerResourceGenerator(const Cell2D & start, const Cell2D &
     }
 }
 
+void GameMap::AbortConquerResourceGenerator(const Cell2D & unitCell, GameObject * target)
+{
+    // mark start as not changing
+    const int ind0 = unitCell.row * mCols + unitCell.col;
+    mCells[ind0].changing = false;
+
+    // mark object cells as not changing
+    for(int r = target->GetRow1(); r <= target->GetRow0(); ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = target->GetCol1(); c <= target->GetCol0(); ++c)
+        {
+            const unsigned int ind = indBase + c;
+            mCells[ind].changing = false;
+        }
+    }
+
+    // stop progress bar
+    mScreenGame->CancelProgressBar(unitCell);
+}
+
 void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const int ind = end.row * mCols + end.col;

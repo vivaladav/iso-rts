@@ -477,10 +477,10 @@ void ScreenGame::CreateUI()
     });
 
     // conquer
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER, [this, player]
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER_CELL, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObjectActionId::CONQUER);
+        unit->SetActiveAction(GameObjectActionId::CONQUER_CELL);
 
         ClearCellOverlays();
     });
@@ -545,13 +545,15 @@ void ScreenGame::CreateUI()
                     // moving
                     if(objActId == GameObjectActionId::MOVE)
                         mGameMap->AbortMove(selObj);
-                    else if(objActId == GameObjectActionId::CONQUER)
+                    else if(objActId == GameObjectActionId::CONQUER_CELL)
                         mGameMap->AbortCellConquest(selObj);
                     else if(objActId == GameObjectActionId::BUILD_WALL)
                     {
                         bool res = mGameMap->AbortBuildWalls(selObj);
                         std::cout << "AbortBuildWalls " << (res ? "OK" : "FAIL") << std::endl;
                     }
+                    else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
+                        mGameMap->AbortConquerResourceGenerator(act.actionCell, act.target);
                 }
 
                 mActiveObjActions.erase(it);
@@ -670,7 +672,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 if(diffClick)
                     HandleUnitMoveOnMouseUp(selUnit, clickCell);
             }
-            else if(action == GameObjectActionId::CONQUER)
+            else if(action == GameObjectActionId::CONQUER_CELL)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -753,7 +755,7 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
 
         if(action == GameObjectActionId::MOVE)
             HandleUnitMoveOnMouseMove(selUnit, currCell);
-        else if(action == GameObjectActionId::CONQUER)
+        else if(action == GameObjectActionId::CONQUER_CELL)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
         else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
@@ -954,14 +956,25 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
     // start conquest
     mGameMap->StartConquerResourceGenerator(start, end, player);
 
+    const GameMapCell & unitCell = mGameMap->GetCell(start.row, start.col);
+    GameObject * unit = unitCell.obj;
+
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, start, end, player]
+    pb->SetFunctionOnCompleted([this, start, end, player, unit]
     {
         mGameMap->ConquerResourceGenerator(start, end, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
+
+        // clear action data once the action is completed
+        ClearObjectAction(unit);
     });
+
+    // store active action
+    const GameMapCell & targetCell = mGameMap->GetCell(end.row, end.col);
+
+    mActiveObjActions.emplace_back(unit, targetCell.obj, GameObjectActionId::CONQUER_STRUCTURE, start);
 
     return true;
 }

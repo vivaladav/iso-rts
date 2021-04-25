@@ -50,7 +50,7 @@ void ConquerPath::CreateIndicators()
 
 void ConquerPath::InitNextConquest()
 {
-    mState = CONQUERING;
+    mState = CONQUER_CELLING;
 
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
@@ -158,7 +158,7 @@ void ConquerPath::Start()
 
 void ConquerPath::Abort()
 {
-    if(CONQUERING == mState)
+    if(CONQUER_CELLING == mState)
         FinishAbortion();
     else
         mState = ABORTING;

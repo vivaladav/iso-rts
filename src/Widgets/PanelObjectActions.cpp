@@ -23,7 +23,7 @@ PanelObjectActions::PanelObjectActions()
     mButtons[BTN_BUILD_UNIT] = new ObjectActionButton(ObjectActionButton::UNITS, "U", KeyboardEvent::KEY_U, this);
     mButtons[BTN_MOVE] = new ObjectActionButton(ObjectActionButton::MOVE, "M", KeyboardEvent::KEY_M, this);
     mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "A", KeyboardEvent::KEY_A, this);
-    mButtons[BTN_CONQUER] = new ObjectActionButton(ObjectActionButton::CONQUER, "C", KeyboardEvent::KEY_C, this);
+    mButtons[BTN_CONQUER_CELL] = new ObjectActionButton(ObjectActionButton::CONQUER_CELL, "C", KeyboardEvent::KEY_C, this);
     mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", KeyboardEvent::KEY_W, this);
     mButtons[BTN_UPGRADE] = new ObjectActionButton(ObjectActionButton::UPGRADE, "U", KeyboardEvent::KEY_U, this);
     mButtons[BTN_CANCEL] = new ObjectActionButton(ObjectActionButton::CANCEL, "X", KeyboardEvent::KEY_X, this);
@@ -51,7 +51,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
             mButtons[BTN_BUILD_UNIT]->SetVisible(true);
             mButtons[BTN_MOVE]->SetVisible(false);
             mButtons[BTN_ATTACK]->SetVisible(false);
-            mButtons[BTN_CONQUER]->SetVisible(false);
+            mButtons[BTN_CONQUER_CELL]->SetVisible(false);
             mButtons[BTN_BUILD_WALL]->SetVisible(false);
             mButtons[BTN_CANCEL]->SetVisible(true);
             // TODO handle upgrades
@@ -64,7 +64,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
             mButtons[BTN_BUILD_UNIT]->SetVisible(false);
             mButtons[BTN_MOVE]->SetVisible(true);
             mButtons[BTN_ATTACK]->SetVisible(true);
-            mButtons[BTN_CONQUER]->SetVisible(true);
+            mButtons[BTN_CONQUER_CELL]->SetVisible(true);
             mButtons[BTN_BUILD_WALL]->SetVisible(true);
             mButtons[BTN_CANCEL]->SetVisible(true);
             // TODO handle upgrades

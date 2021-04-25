@@ -114,7 +114,8 @@ enum GameObjectActionId : unsigned int
 
     // UNIT
     MOVE,
-    CONQUER,
+    CONQUER_CELL,
+    CONQUER_STRUCTURE,
     ATTACK,
     BUILD_WALL,
 

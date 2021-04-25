@@ -22,7 +22,7 @@ public:
         UNITS,
         MOVE,
         ATTACK,
-        CONQUER,
+        CONQUER_CELL,
         BUILD_WALL,
         UPGRADE,
         CANCEL,

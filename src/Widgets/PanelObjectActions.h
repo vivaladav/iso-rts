@@ -24,7 +24,7 @@ public:
         BTN_BUILD_UNIT,
         BTN_MOVE,
         BTN_ATTACK,
-        BTN_CONQUER,
+        BTN_CONQUER_CELL,
         BTN_BUILD_WALL,
         BTN_UPGRADE,
         BTN_CANCEL,

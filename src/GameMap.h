@@ -87,6 +87,7 @@ public:
     // resource generator conquest
     bool CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
     void StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
+    void AbortConquerResourceGenerator(const Cell2D & unitCell, GameObject * target);
     void ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
