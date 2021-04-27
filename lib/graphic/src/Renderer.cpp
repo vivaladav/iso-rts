@@ -1,5 +1,6 @@
 #include "graphic/Renderer.h"
 
+#include "graphic/Camera.h"
 #include "graphic/TextureManager.h"
 #include "graphic/Window.h"
 
@@ -22,7 +23,12 @@ Renderer * Renderer::Create(Window * win)
     assert(win);
 
     if(!mInstance)
+    {
         mInstance = new Renderer(win);
+
+        // create dummy camera for all Renderables
+        Camera::CreateDummyCamera();
+    }
 
     return mInstance;
 }
@@ -31,6 +37,8 @@ void Renderer::Destroy()
 {
     delete mInstance;
     mInstance = nullptr;
+
+    Camera::DestroyDummyCamera();
 }
 
 Renderer::Renderer(Window * win)

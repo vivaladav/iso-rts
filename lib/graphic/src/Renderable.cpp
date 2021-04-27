@@ -1,5 +1,7 @@
 #include "graphic/Renderable.h"
 
+#include "graphic/Camera.h"
+
 #include <SDL2/SDL.h>
 
 namespace lib
@@ -8,8 +10,9 @@ namespace graphic
 {
 
 Renderable::Renderable()
+    : mRect(new SDL_Rect{0, 0, 0, 0})
+    , mCamera(Camera::GetDummyCamera())
 {
-    mRect = new SDL_Rect{0, 0, 0, 0};
 }
 
 Renderable::~Renderable()

@@ -5,6 +5,7 @@ find_package(SDL2 REQUIRED)
 
 add_library(
     graphic
+    include/graphic/Camera.h
     include/graphic/DummyRenderable.h
     include/graphic/Font.h
     include/graphic/FontManager.h
@@ -18,6 +19,7 @@ add_library(
     include/graphic/TextureData.h
     include/graphic/TextureManager.h
     include/graphic/Window.h
+    src/Camera.cpp
     src/DummyRenderable.cpp
     src/Font.cpp
     src/FontManager.cpp

@@ -7,6 +7,8 @@ namespace lib
 namespace graphic
 {
 
+class Camera;
+
 class Renderable
 {
 public:
@@ -37,10 +39,14 @@ public:
     // color as #RRGGBBAA
     void SetColor(unsigned int color);
 
+    void SetCamera(Camera * cam);
+
     virtual void Render() = 0;
 
 protected:
     SDL_Rect * mRect = nullptr;
+
+    Camera * mCamera = nullptr;
 
     int mOrigW = 0;
     int mOrigH = 0;
@@ -65,6 +71,8 @@ inline void Renderable::SetColor(unsigned char r, unsigned char g, unsigned char
     mB = b;
     mA = a;
 }
+
+inline void Renderable::SetCamera(Camera * cam) { mCamera = cam; }
 
 } // namespace graphic
 } // namespace lib
