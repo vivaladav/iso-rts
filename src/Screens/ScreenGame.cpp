@@ -27,6 +27,7 @@
 #include <core/event/KeyboardEvent.h>
 #include <core/event/MouseButtonEvent.h>
 #include <core/event/MouseMotionEvent.h>
+#include <graphic/Camera.h>
 #include <graphic/Renderer.h>
 #include <graphic/TextureManager.h>
 #include <sgui/Stage.h>
@@ -59,6 +60,11 @@ ScreenGame::ScreenGame(Game * game)
 
     game->AddKeyboardListener(this);
 
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    mCamera = lib::graphic::Camera::GetDefaultCamera();
+
     InitSprites();
 
     // -- ISOMETRIC MAP --
@@ -75,9 +81,6 @@ ScreenGame::ScreenGame(Game * game)
 
     // center map on screen
     const int mapH = mIsoMap->GetHeight();
-
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
 
@@ -567,6 +570,8 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
 
     const int key = event.GetKey();
 
+    const int cameraDelta = 10;
+
     // P -> PAUSE
     if(key == KeyboardEvent::KEY_P)
     {
@@ -575,6 +580,14 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
+    else if(key == KeyboardEvent::KEY_LEFT)
+        mCamera->MoveX(-cameraDelta);
+    else if(key == KeyboardEvent::KEY_RIGHT)
+        mCamera->MoveX(cameraDelta);
+    else if(key == KeyboardEvent::KEY_UP)
+        mCamera->MoveY(-cameraDelta);
+    else if(key == KeyboardEvent::KEY_DOWN)
+        mCamera->MoveY(cameraDelta);
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {
         auto stage = lib::sgui::Stage::Instance();
@@ -612,7 +625,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
     Player * player = GetGame()->GetLocalPlayer();
 
-    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    const int worldX = mCamera->GetScreenToWorldX(event.GetX());
+    const int worldY = mCamera->GetScreenToWorldY(event.GetY());
+
+    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
     const bool insideMap = mIsoMap->IsCellInside(clickCell);
 
     const bool hasSelected = player->HasSelectedObject();
@@ -725,7 +741,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
 void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
 {
-    const Cell2D currCell = mIsoMap->CellFromScreenPoint(event.GetX(), event.GetY());
+    const int worldX = mCamera->GetScreenToWorldX(event.GetX());
+    const int worldY = mCamera->GetScreenToWorldY(event.GetY());
+
+    const Cell2D currCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
 
     // still in the same cell -> nothing to do
     if(mPrevCell == currCell)

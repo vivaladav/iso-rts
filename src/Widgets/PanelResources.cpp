@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Widgets/ResourceDisplay.h"
 
+#include <graphic/Camera.h>
 #include <graphic/Image.h>
 #include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
@@ -15,6 +16,8 @@ namespace game
 PanelResources::PanelResources(Player * player)
     : mBg(new lib::graphic::Image)
 {
+    RegisterRenderable(mBg);
+
     SetBg();
 
     // TODO change this to have dynamic slots added/removed at runtime

@@ -2,6 +2,7 @@
 
 #include "Player.h"
 
+#include <graphic/Camera.h>
 #include <graphic/Image.h>
 
 namespace game
@@ -14,11 +15,13 @@ ProgressBarResources::ProgressBarResources(float min, float max, lib::sgui::Widg
 
     // background
     mBg = new Image("data/img/UI/progress_bar-resources-bg.png");
+    RegisterRenderable(mBg);
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
     // bar
     mBar = new Image("data/img/UI/progress_bar-resources-bar.png");
+    RegisterRenderable(mBar);
     mBarW = mBar->GetWidth();
     mBarH = mBar->GetHeight();
 

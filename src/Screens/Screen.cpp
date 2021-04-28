@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "Screens/SharedScreenListener.h"
 
+#include <graphic/Camera.h>
+
 namespace game
 {
 
@@ -12,6 +14,8 @@ Screen::Screen(Game * game)
 {
     mGame->AddApplicationListener(mSharedListener);
     mGame->AddKeyboardListener(mSharedListener);
+
+    lib::graphic::Camera::GetDefaultCamera()->ResetPosition();
 }
 
 Screen::~Screen()

@@ -11,6 +11,7 @@
 
 namespace lib
 {
+    namespace graphic { class Camera; }
     namespace ai { class Pathfinder; }
 }
 
@@ -100,6 +101,8 @@ private:
     std::vector<WallIndicator *> mWallIndicators;
 
     std::vector<GameObjectAction> mActiveObjActions;
+
+    lib::graphic::Camera * mCamera = nullptr;
 
     // -- UI --
     PanelResources * mPanelResBar = nullptr;

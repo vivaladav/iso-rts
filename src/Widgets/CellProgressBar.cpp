@@ -2,6 +2,7 @@
 
 #include "Player.h"
 
+#include <graphic/Camera.h>
 #include <graphic/Image.h>
 
 namespace game
@@ -10,15 +11,21 @@ namespace game
 CellProgressBar::CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent)
     : CellProgressBar(faction, 0, 100.f, parent)
 {
+    SetCamera(lib::graphic::Camera::GetDefaultCamera());
+
     HandleProgressUpdate();
 }
 
 CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent)
     : lib::sgui::ProgressBar(min, max, parent)
 {
-    using namespace  lib::graphic;
+    using namespace lib::graphic;
+
+    // CellProgressBar is part of the game scene
+    SetCamera(Camera::GetDefaultCamera());
 
     mBg = new Image("data/img/cell_bar_bg.png");
+    RegisterRenderable(mBg);
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
@@ -28,6 +35,8 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, li
         mBar = new Image("data/img/cell_bar-p2.png");
     else
         mBar = new Image("data/img/cell_bar-p3.png");
+
+    RegisterRenderable(mBar);
 
     mBarW = mBar->GetWidth();
     mBarH = mBar->GetHeight();

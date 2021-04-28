@@ -1,6 +1,7 @@
 
 #include "GameButton.h"
 
+#include <graphic/Camera.h>
 #include <graphic/Image.h>
 
 namespace game
@@ -31,7 +32,10 @@ void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgF
 {
     // init background data
     for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
+    {
         mBackgrounds[i] = new lib::graphic::Image(bgFiles[i]);
+        RegisterRenderable(mBackgrounds[i]);
+    }
 
     // init label data
     mLabelsColor = labelsColor;

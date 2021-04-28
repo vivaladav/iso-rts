@@ -3,6 +3,7 @@
 #include "Widgets/GameUIData.h"
 
 #include <core/event/KeyboardEvent.h>
+#include <graphic/Camera.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
@@ -24,6 +25,9 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     using namespace lib::graphic;
 
     assert(icon < NUM_ACTION_ICONS);
+
+    RegisterRenderable(mBody);
+    RegisterRenderable(mIcon);
 
     SetCurrBg(mBody);
 
@@ -80,6 +84,8 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     auto fm = FontManager::Instance();
     auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 12, Font::BOLD);
     mShortcut = new Text(shortcut, font, true);
+
+    RegisterRenderable(mShortcut);
 }
 
 ObjectActionButton::~ObjectActionButton()

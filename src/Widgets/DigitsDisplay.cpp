@@ -1,5 +1,6 @@
 #include "Widgets/DigitsDisplay.h"
 
+#include <graphic/Camera.h>
 #include <graphic/DummyRenderable.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -57,6 +58,9 @@ void DigitsDisplay::SetValue(int val)
     {
         mNumZeros = digitsZero;
 
+        if(mTxtZeros)
+            UnregisterRenderable(mTxtZeros);
+
         delete mTxtZeros;
 
         if(digitsZero)
@@ -70,9 +74,14 @@ void DigitsDisplay::SetValue(int val)
         }
         else
             mTxtZeros = new DummyRenderable;
+
+        RegisterRenderable(mTxtZeros);
     }
 
     // create value digits
+    if(mTxtDigits)
+        UnregisterRenderable(mTxtDigits);
+
     delete mTxtDigits;
 
     if(digitsVal)
@@ -86,6 +95,8 @@ void DigitsDisplay::SetValue(int val)
     }
     else
         mTxtDigits = new DummyRenderable;
+
+    RegisterRenderable(mTxtDigits);
 
     SetPositions();
 }
