@@ -54,6 +54,8 @@ void Label::SetText(const char * txt)
 
     const unsigned int color = mTxt->GetColor();
 
+    UnregisterRenderable(mTxt);
+
     delete mTxt;
 
     mStr = t;
@@ -69,6 +71,8 @@ void Label::CreateText()
         mTxt = new graphic::DummyRenderable;
     else
         mTxt = new graphic::Text(mStr.c_str(), mFont);  // TODO check if Text is valid after creation and fallback on dummy
+
+    RegisterRenderable(mTxt);
 
     mTxt->SetPosition(GetScreenX(), GetScreenY());
 

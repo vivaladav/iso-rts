@@ -2,12 +2,22 @@
 
 #include "core/event/MouseButtonEvent.h"
 #include "core/event/MouseMotionEvent.h"
+#include "graphic/Camera.h"
+#include "graphic/Renderable.h"
 #include "sgui/Stage.h"
+
+#include <algorithm>
 
 namespace lib
 {
 namespace sgui
 {
+
+Widget::Widget(Widget * parent)
+    : mCamera(graphic::Camera::GetDummyCamera())
+{
+    SetParent(parent);
+}
 
 Widget::~Widget()
 {
@@ -87,6 +97,19 @@ void Widget::SetVisible(bool val)
         mStage->HandleChildVisibleChanged(this);
 }
 
+void Widget::SetCamera(graphic::Camera * cam)
+{
+    // same camera -> exit
+    if(cam == mCamera)
+        return ;
+
+    mCamera = cam;
+
+    // update graphic elements
+    for(auto elem : mRenderables)
+        elem->SetCamera(mCamera);
+}
+
 void Widget::SetSize(int w, int h)
 {
     mWidth = w;
@@ -99,6 +122,21 @@ void Widget::SetSize(int w, int h)
 void Widget::HandleMouseOver() { }
 
 void Widget::HandleMouseOut() { }
+
+void Widget::RegisterRenderable(graphic::Renderable * elem)
+{
+    mRenderables.push_back(elem);
+
+    elem->SetCamera(mCamera);
+}
+
+void Widget::UnregisterRenderable(graphic::Renderable * elem)
+{
+    auto it = std::find(mRenderables.begin(), mRenderables.end(), elem);
+
+    if(it != mRenderables.end())
+        mRenderables.erase(it);
+}
 
 // current behavior for Widgets is to grow according to children position and size
 void Widget::UpdateSize()

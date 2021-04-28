@@ -14,6 +14,7 @@ Image::Image(Widget * parent)
     : Widget(parent)
     , mImg(new graphic::DummyRenderable)
 {
+    RegisterRenderable(mImg);
 }
 
 Image::Image(const char * file, Widget * parent)
@@ -29,6 +30,8 @@ Image::Image(graphic::Texture * tex, Widget * parent)
     , mImg(new graphic::Image(tex))
 {
     assert(tex);
+
+    RegisterRenderable(mImg);
 
     SetSize(mImg->GetWidth(), mImg->GetHeight());
 }
@@ -51,10 +54,14 @@ void Image::LoadImage(const char * file)
 
     mImg = new graphic::Image(file);
 
+    RegisterRenderable(mImg);
+
     if(oldImg)
     {
         mImg->SetPosition(oldImg->GetX(), oldImg->GetY());
         mImg->SetColor(oldImg->GetColor());
+
+        UnregisterRenderable(oldImg);
 
         delete oldImg;
     }

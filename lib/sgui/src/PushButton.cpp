@@ -23,6 +23,8 @@ PushButton::PushButton(Widget * parent)
     , mCurrBg(mBg)
     , mCurrLabel(mLabel)
 {
+    RegisterRenderable(mBg);
+    RegisterRenderable(mLabel);
 }
 
 PushButton::~PushButton()
@@ -35,9 +37,11 @@ void PushButton::SetBackground(const char * file)
 {
     assert(file);
 
+    UnregisterRenderable(mBg);
     delete mBg;
 
     mBg = new graphic::Image(file); // TODO check if Image is valid after creation and fallback on dummy
+    RegisterRenderable(mBg);
 
     SetCurrBg(mBg);
 }
@@ -54,12 +58,15 @@ void PushButton::SetLabel(const char * text)
 
     const unsigned int col = mCurrLabel->GetColor();
 
+    UnregisterRenderable(mLabel);
     delete mLabel;
 
     if(mText.empty())
         mLabel = new graphic::DummyRenderable;
     else
         mLabel = new graphic::Text(text, mFontLabel);
+
+    RegisterRenderable(mLabel);
 
     mLabel->SetColor(col);
 
@@ -89,9 +96,11 @@ void PushButton::SetLabelFont(graphic::Font * font)
     {
         const unsigned int col = mCurrLabel->GetColor();
 
+        UnregisterRenderable(mLabel);
         delete mLabel;
 
         mLabel = new graphic::Text(mText.c_str(), mFontLabel);
+        RegisterRenderable(mLabel);
 
         mLabel->SetColor(col);
 

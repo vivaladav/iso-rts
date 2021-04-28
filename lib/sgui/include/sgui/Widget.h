@@ -2,8 +2,17 @@
 
 #include "sgui/WidgetContainer.h"
 
+#include <vector>
+
 namespace lib
 {
+
+namespace graphic
+{
+    class Camera;
+    class Renderable;
+}
+
 namespace sgui
 {
 
@@ -51,6 +60,8 @@ public:
     int GetWidth() const;
     int GetHeight() const;
 
+    void SetCamera(graphic::Camera * cam);
+
 protected:
     void SetSize(int w, int h);
 
@@ -69,6 +80,9 @@ protected:
     virtual void HandleMouseOver();
     virtual void HandleMouseOut();
 
+    void RegisterRenderable(graphic::Renderable * elem);
+    void UnregisterRenderable(graphic::Renderable * elem);
+
 private:
     void SetScreenPosition(int x, int y);
 
@@ -83,8 +97,12 @@ private:
     void PropagateParentPositionChanged(int dx, int dy);
 
 private:
+    std::vector<graphic::Renderable *> mRenderables;
+
     Stage * mStage = nullptr;
     Widget * mParent = nullptr;
+
+    graphic::Camera * mCamera = nullptr;
 
     ResizePolicy mResizePol = GROW_ONLY;
 
@@ -106,8 +124,6 @@ private:
     // access private methods for events and rendering
     friend class WidgetContainer;
 };
-
-inline Widget::Widget(Widget * parent) { SetParent(parent); }
 
 inline void Widget::SetResizePolicy(ResizePolicy policy) { mResizePol = policy; }
 
