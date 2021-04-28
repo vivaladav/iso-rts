@@ -43,6 +43,7 @@ public:
     void Update(float delta) override;
     void Render() override;
 
+    void OnKeyDown(lib::core::KeyboardEvent & event) override;
     void OnKeyUp(lib::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
     void OnMouseMotion(lib::core::MouseMotionEvent & event) override;
@@ -103,6 +104,9 @@ private:
     std::vector<GameObjectAction> mActiveObjActions;
 
     lib::graphic::Camera * mCamera = nullptr;
+
+    int mCameraDirX = 0;
+    int mCameraDirY = 0;
 
     // -- UI --
     PanelResources * mPanelResBar = nullptr;

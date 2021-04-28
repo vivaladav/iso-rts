@@ -20,8 +20,8 @@ public:
     void SetWidth(int w);
     void SetHeight(int h);
 
-    void MoveX(int delta);
-    void MoveY(int delta);
+    void MoveX(float delta);
+    void MoveY(float delta);
 
     void ResetPosition();
 
@@ -43,8 +43,10 @@ private:
     static Camera * mDummy;
     static Camera * mDefault;
 
-    int mX = 0;
-    int mY = 0;
+    float mXf = 0.f;
+    float mYf = 0.f;
+    int mXd = 0;
+    int mYd = 0;
     int mWidth = 0;
     int mHeight = 0;
 };
@@ -55,25 +57,25 @@ inline Camera::Camera(int w, int h)
 {
 }
 
-inline int Camera::GetX() const { return mX; }
-inline int Camera::GetY() const { return mY; }
+inline int Camera::GetX() const { return mXd; }
+inline int Camera::GetY() const { return mYd; }
 inline int Camera::GetWidth() const { return mWidth; }
 inline int Camera::GetHeight() const { return mHeight; }
 
 inline void Camera::SetWidth(int w) { mWidth = w; }
 inline void Camera::SetHeight(int h) { mHeight = h; }
 
-inline void Camera::MoveX(int delta) { mX += delta; }
-inline void Camera::MoveY(int delta) { mY += delta; }
-
 inline void Camera::ResetPosition()
 {
-    mX = 0;
-    mY = 0;
+    mXf = 0.f;
+    mYf = 0.f;
+
+    mXd = 0;
+    mYd = 0;
 }
 
-inline int Camera::GetScreenToWorldX(int x) const { return x + mX; }
-inline int Camera::GetScreenToWorldY(int y) const { return y + mY; }
+inline int Camera::GetScreenToWorldX(int x) const { return x + mXd; }
+inline int Camera::GetScreenToWorldY(int y) const { return y + mYd; }
 
 inline Camera * Camera::GetDefaultCamera() { return mDefault; }
 

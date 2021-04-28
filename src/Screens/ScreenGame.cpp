@@ -142,6 +142,15 @@ void ScreenGame::Update(float delta)
     if(mPaused)
         return ;
 
+    // -- UPDATE CAMERA --
+    const float cameraSpeed = 300.f;
+
+    if(mCameraDirX != 0)
+        mCamera->MoveX(mCameraDirX * cameraSpeed * delta);
+
+    if(mCameraDirY != 0)
+        mCamera->MoveY(mCameraDirY * cameraSpeed * delta);
+
     // -- UPDATE PLAYERS RESOURCES --
     mTimerEnergy -= delta;
 
@@ -564,13 +573,27 @@ void ScreenGame::HidePanelObjActions()
     mPanelObjActions->SetVisible(false);
 }
 
-void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
+void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
 {
     using namespace lib::core;
 
     const int key = event.GetKey();
 
-    const int cameraDelta = 10;
+    if(key == KeyboardEvent::KEY_LEFT)
+        mCameraDirX = -1;
+    else if(key == KeyboardEvent::KEY_RIGHT)
+        mCameraDirX = 1;
+    else if(key == KeyboardEvent::KEY_UP)
+        mCameraDirY = -1;
+    else if(key == KeyboardEvent::KEY_DOWN)
+        mCameraDirY = 1;
+}
+
+void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
+{
+    using namespace lib::core;
+
+    const int key = event.GetKey();
 
     // P -> PAUSE
     if(key == KeyboardEvent::KEY_P)
@@ -581,13 +604,13 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         mPanelObjActions->SetEnabled(!mPaused);
     }
     else if(key == KeyboardEvent::KEY_LEFT)
-        mCamera->MoveX(-cameraDelta);
+        mCameraDirX = 0;
     else if(key == KeyboardEvent::KEY_RIGHT)
-        mCamera->MoveX(cameraDelta);
+        mCameraDirX = 0;
     else if(key == KeyboardEvent::KEY_UP)
-        mCamera->MoveY(-cameraDelta);
+        mCameraDirY = 0;
     else if(key == KeyboardEvent::KEY_DOWN)
-        mCamera->MoveY(cameraDelta);
+        mCameraDirY = 0;
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {
         auto stage = lib::sgui::Stage::Instance();

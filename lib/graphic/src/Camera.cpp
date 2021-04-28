@@ -1,5 +1,7 @@
 #include "graphic/Camera.h"
 
+#include <cmath>
+
 namespace lib
 {
 namespace graphic
@@ -7,6 +9,21 @@ namespace graphic
 
 Camera * Camera::mDefault = nullptr;
 Camera * Camera::mDummy = nullptr;
+
+
+void Camera::MoveX(float delta)
+{
+    mXf += delta;
+
+    mXd = std::roundf(mXf);
+}
+
+void Camera::MoveY(float delta)
+{
+    mYf += delta;
+
+    mYd = std::roundf(mYf);
+}
 
 void Camera::CreateDefaultCamera()
 {
