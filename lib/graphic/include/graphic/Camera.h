@@ -23,9 +23,16 @@ public:
     void MoveX(int delta);
     void MoveY(int delta);
 
+    void ResetPosition();
+
     // conversion
     int GetScreenToWorldX(int x) const;
     int GetScreenToWorldY(int y) const;
+
+    // default camera
+    static void CreateDefaultCamera();
+    static Camera * GetDefaultCamera();
+    static void DestroyDefaultCamera();
 
     // dummy camera
     static void CreateDummyCamera();
@@ -34,6 +41,7 @@ public:
 
 private:
     static Camera * mDummy;
+    static Camera * mDefault;
 
     int mX = 0;
     int mY = 0;
@@ -58,8 +66,16 @@ inline void Camera::SetHeight(int h) { mHeight = h; }
 inline void Camera::MoveX(int delta) { mX += delta; }
 inline void Camera::MoveY(int delta) { mY += delta; }
 
+inline void Camera::ResetPosition()
+{
+    mX = 0;
+    mY = 0;
+}
+
 inline int Camera::GetScreenToWorldX(int x) const { return x + mX; }
 inline int Camera::GetScreenToWorldY(int y) const { return y + mY; }
+
+inline Camera * Camera::GetDefaultCamera() { return mDefault; }
 
 inline Camera * Camera::GetDummyCamera() { return mDummy; }
 

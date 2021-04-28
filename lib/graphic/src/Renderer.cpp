@@ -26,7 +26,8 @@ Renderer * Renderer::Create(Window * win)
     {
         mInstance = new Renderer(win);
 
-        // create dummy camera for all Renderables
+        // create dummy and default camera for all Renderables
+        Camera::CreateDefaultCamera();
         Camera::CreateDummyCamera();
     }
 
@@ -38,6 +39,7 @@ void Renderer::Destroy()
     delete mInstance;
     mInstance = nullptr;
 
+    Camera::DestroyDefaultCamera();
     Camera::DestroyDummyCamera();
 }
 

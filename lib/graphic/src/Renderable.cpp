@@ -11,7 +11,7 @@ namespace graphic
 
 Renderable::Renderable()
     : mRect(new SDL_Rect{0, 0, 0, 0})
-    , mCamera(Camera::GetDummyCamera())
+    , mCamera(Camera::GetDefaultCamera())
 {
 }
 

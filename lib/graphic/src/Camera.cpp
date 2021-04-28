@@ -5,7 +5,20 @@ namespace lib
 namespace graphic
 {
 
+Camera * Camera::mDefault = nullptr;
 Camera * Camera::mDummy = nullptr;
+
+void Camera::CreateDefaultCamera()
+{
+    if(nullptr == mDefault)
+        mDefault = new Camera;
+}
+
+void Camera::DestroyDefaultCamera()
+{
+    delete mDefault;
+    mDefault = nullptr;
+}
 
 void Camera::CreateDummyCamera()
 {
