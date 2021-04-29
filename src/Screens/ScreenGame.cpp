@@ -617,6 +617,8 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
 
         stage->SetVisible(!stage->IsVisible());
     }
+    else if(key == KeyboardEvent::KEY_C)
+        mCamera->ResetPosition();
     else if(key == KeyboardEvent::KEY_V)
     {
         Player * p = GetGame()->GetLocalPlayer();
