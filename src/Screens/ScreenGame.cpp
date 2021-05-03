@@ -143,7 +143,7 @@ void ScreenGame::Update(float delta)
         return ;
 
     // -- UPDATE CAMERA --
-    const float cameraSpeed = 300.f;
+    const float cameraSpeed = 400.f;
 
     if(mCameraDirX != 0)
         mCamera->MoveX(mCameraDirX * cameraSpeed * delta);
@@ -541,6 +541,7 @@ void ScreenGame::CreateUI()
                         CancelProgressBar(act.actionCell);
 
                         act.obj->SetActiveAction(GameObjectActionId::IDLE);
+                        act.obj->SetBusy(false);
                     }
                 }
                 // object is a Unit
@@ -957,7 +958,7 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     }
 
     // start create
-    mGameMap->StartCreateUnit(cell, player);
+    mGameMap->StartCreateUnit(gen, cell, player);
 
     gen->SetActiveAction(GameObjectActionId::BUILD_UNIT);
 
@@ -968,7 +969,7 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     {
         gen->SetActiveAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(cell, player);
+        mGameMap->CreateUnit(gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         ClearObjectAction(gen);

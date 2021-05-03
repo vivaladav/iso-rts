@@ -980,7 +980,7 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
     return Cell2D(-1, -1);
 }
 
-void GameMap::StartCreateUnit(const Cell2D & dest, Player * player)
+void GameMap::StartCreateUnit(GameObject * gen, const Cell2D & dest, Player * player)
 {
     const int ind = dest.row * mCols + dest.col;
     GameMapCell & gcell = mCells[ind];
@@ -991,9 +991,12 @@ void GameMap::StartCreateUnit(const Cell2D & dest, Player * player)
 
     // mark cell as changing
     gcell.changing = true;
+
+    // mark generator as busy
+    gen->SetBusy(true);
 }
 
-void GameMap::CreateUnit(const Cell2D & dest, Player * player)
+void GameMap::CreateUnit(GameObject * gen, const Cell2D & dest, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(dest.row);
     const unsigned int c = static_cast<unsigned int>(dest.col);
@@ -1013,6 +1016,9 @@ void GameMap::CreateUnit(const Cell2D & dest, Player * player)
     mIsoMap->GetLayer(OBJECTS)->AddObject(unit->GetIsoObject(), r, c);
 
     mObjects.push_back(unit);
+
+    // update generator
+    gen->SetBusy(false);
 
     // update player
     player->SumUnits(1);
