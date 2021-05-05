@@ -13,6 +13,7 @@ namespace lib
 {
     namespace graphic { class Camera; }
     namespace ai { class Pathfinder; }
+    namespace sgui { class Widget; }
 }
 
 namespace game
@@ -20,6 +21,7 @@ namespace game
 
 class CellProgressBar;
 class ConquestIndicator;
+class DialogNewUnit;
 class GameMap;
 class GameObject;
 class IsoLayer;
@@ -109,8 +111,10 @@ private:
     int mCameraDirY = 0;
 
     // -- UI --
+    std::vector<lib::sgui::Widget *> mWidgetsToDelete;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
+    DialogNewUnit * mDialogNewUnit = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

@@ -18,6 +18,7 @@
 #include "Indicators/WallIndicator.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/DialogNewUnit.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
@@ -138,6 +139,12 @@ ScreenGame::~ScreenGame()
 
 void ScreenGame::Update(float delta)
 {
+    // handle Widgets scheduled for deletion
+    for(auto w : mWidgetsToDelete)
+        delete w;
+
+    mWidgetsToDelete.clear();
+
     // do nothing when paused
     if(mPaused)
         return ;
@@ -402,6 +409,30 @@ void ScreenGame::InitSprites()
     tm->RegisterSprite(SpriteWallsFile, rectsWall);
 
     // -- UI --
+    // NEW UNIT DIALOG
+    std::vector<lib::core::Rectd> rectsNewUnitDialog;
+
+    rectsNewUnitDialog.emplace_back(0, 0, 180, 375);
+    rectsNewUnitDialog.emplace_back(180, 0, 120, 375);
+    rectsNewUnitDialog.emplace_back(300, 0, 10, 375);
+
+    rectsNewUnitDialog.emplace_back(310, 0, 116, 41);
+    rectsNewUnitDialog.emplace_back(426, 0, 116, 41);
+    rectsNewUnitDialog.emplace_back(310, 41, 116, 41);
+    rectsNewUnitDialog.emplace_back(426, 41, 116, 41);
+    rectsNewUnitDialog.emplace_back(310, 82, 116, 41);
+
+    rectsNewUnitDialog.emplace_back(310, 123, 150, 180);
+    rectsNewUnitDialog.emplace_back(460, 82, 110, 100);
+    rectsNewUnitDialog.emplace_back(460, 182, 110, 180);
+
+    rectsNewUnitDialog.emplace_back(310, 303, 4, 12);
+    rectsNewUnitDialog.emplace_back(314, 303, 8, 14);
+    rectsNewUnitDialog.emplace_back(322, 303, 11, 12);
+    rectsNewUnitDialog.emplace_back(333, 303, 10, 8);
+
+    tm->RegisterSprite(SpriteFileNewUnitDialog, rectsNewUnitDialog);
+
     // OBJECT ACTION BUTTON
     std::vector<lib::core::Rectd> rectsObjActButton;
 
@@ -472,10 +503,25 @@ void ScreenGame::CreateUI()
     // create new unit
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT, [this, player]
     {
-        SetupNewUnit(player->GetSelectedObject(), player);
+        if(nullptr == mDialogNewUnit)
+        {
+            mDialogNewUnit = new DialogNewUnit;
 
-        // clear selection
-        ClearSelection(player);
+            mDialogNewUnit->SetFunctionOnClose([this]
+            {
+                mWidgetsToDelete.push_back(mDialogNewUnit);
+                mDialogNewUnit = nullptr;
+            });
+
+            mDialogNewUnit->AddUnitSlot();
+
+            const int posX = mPanelObjActions->GetX();
+            const int posY = mPanelObjActions->GetY() - mDialogNewUnit->GetHeight();
+
+            mDialogNewUnit->SetPosition(posX, posY);
+        }
+
+//        SetupNewUnit(player->GetSelectedObject(), player);
     });
 
     // UNIT ACTIONS

@@ -97,6 +97,8 @@ add_executable(
     src/States/StatesIds.h
     src/States/StateTest.h
     src/States/StateTest.cpp
+    src/Widgets/ButtonCloseDialog.h
+    src/Widgets/ButtonCloseDialog.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
     src/Widgets/ButtonNavigation.h
@@ -109,6 +111,8 @@ add_executable(
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
     src/Widgets/CellProgressBar.cpp
+    src/Widgets/DialogNewUnit.h
+    src/Widgets/DialogNewUnit.cpp
     src/Widgets/DigitsDisplay.h
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
@@ -133,6 +137,8 @@ add_executable(
     src/Widgets/ProgressBarResources.cpp
     src/Widgets/ResourceDisplay.h
     src/Widgets/ResourceDisplay.cpp
+    src/Widgets/SlotDialogNewUnit.h
+    src/Widgets/SlotDialogNewUnit.cpp
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
 )

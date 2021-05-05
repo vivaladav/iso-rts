@@ -3,6 +3,37 @@
 namespace game
 {
 
+// NEW UNIT DIALOG
+extern const char SpriteFileNewUnitDialog[];
+
+enum SpriteIdNewUnitDialog : unsigned int
+{
+    // BACKGROUND
+    IND_NU_DIALOG_BG_LEFT,
+    IND_NU_DIALOG_BG_SLOT,
+    IND_NU_DIALOG_BG_RIGHT,
+
+    // BUILD BUTTON
+    IND_NU_BUTTON_NORMAL,
+    IND_NU_BUTTON_DISABLED,
+    IND_NU_BUTTON_MOUSE_OVER,
+    IND_NU_BUTTON_PUSHED,
+    IND_NU_BUTTON_CHECKED,
+
+    // PANELS
+    IND_NU_PANEL_HEADERS,
+    IND_NU_PANEL_UNIT,
+    IND_NU_PANEL_STATS,
+
+    // ICONS
+    IND_NU_BAR_ITEM,
+    IND_NU_ICON_ENERGY,
+    IND_NU_ICON_MATERIAL,
+    IND_NU_ICON_CLOSE,
+
+    NUM_IND_NEW_UNIT_DIALOG
+};
+
 // OBJECT ACTION BUTTON
 extern const char SpriteFileObjActionButton[];
 
