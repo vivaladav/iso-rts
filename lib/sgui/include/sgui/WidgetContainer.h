@@ -26,6 +26,9 @@ public:
 
     int GetNumChildren() const;
 
+    void MoveChildToBack(Widget * w);
+    void MoveChildToFront(Widget * w);
+
 protected:
     void AddChild(Widget * w);
     void RemoveChild(Widget * w);

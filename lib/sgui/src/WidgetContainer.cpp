@@ -37,6 +37,34 @@ void WidgetContainer::ClearWidgets()
     mWidgets.clear();
 }
 
+void WidgetContainer::MoveChildToBack(Widget * w)
+{
+    auto res = std::find(mWidgets.begin(), mWidgets.end(), w);
+
+    // remove widget from children
+    if(mWidgets.end() == res)
+        return ;
+
+    mWidgets.erase(res);
+
+    // add widget to back
+    mWidgets.insert(mWidgets.begin(), w);
+}
+
+void WidgetContainer::MoveChildToFront(Widget * w)
+{
+    auto res = std::find(mWidgets.begin(), mWidgets.end(), w);
+
+    // remove widget from children
+    if(mWidgets.end() == res)
+        return ;
+
+    mWidgets.erase(res);
+
+    // add widget to front
+    mWidgets.push_back(w);
+}
+
 void WidgetContainer::AddChild(Widget * w)
 {
     mWidgets.emplace_back(w);
