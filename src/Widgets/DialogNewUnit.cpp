@@ -5,8 +5,11 @@
 #include "Widgets/SlotDialogNewUnit.h"
 
 #include <graphic/Camera.h>
+#include <graphic/Font.h>
+#include <graphic/FontManager.h>
 #include <graphic/TextureManager.h>
 #include <sgui/Image.h>
+#include <sgui/Label.h>
 
 namespace game
 {
@@ -22,6 +25,8 @@ DialogNewUnit::DialogNewUnit()
     // left bg
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_DIALOG_BG_LEFT);
     mBgLeft = new Image(tex, this);
+
+    CreateHeadersPanel();
 
     // right bg
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_DIALOG_BG_RIGHT);
@@ -43,6 +48,15 @@ DialogNewUnit::~DialogNewUnit()
 void DialogNewUnit::AddUnitSlot()
 {
     auto slot = new SlotDialogNewUnit(this);
+
+    // test
+    slot->SetStatValue(0, 1);
+    slot->SetStatValue(1, 2);
+    slot->SetStatValue(2, 4);
+    slot->SetStatValue(3, 6);
+    slot->SetStatValue(4, 8);
+    slot->SetStatValue(5, 10);
+    // test
 
     mSlots.emplace_back(slot);
 
@@ -77,6 +91,54 @@ void DialogNewUnit::RepositionElements()
     // close button
     elemX = GetWidth() - mButtonClose->GetWidth();
     mButtonClose->SetPosition(elemX, 0);
+}
+
+void DialogNewUnit::CreateHeadersPanel()
+{
+    using namespace lib::sgui;
+
+    auto fm = lib::graphic::FontManager::Instance();
+    auto tm = lib::graphic::TextureManager::Instance();
+
+    // label UNITS
+    auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 32, lib::graphic::Font::NORMAL);
+    auto label = new Label("UNITS", font, mBgLeft);
+    label->SetColor(0xabb4baff);
+    label->SetPosition(50, 58);
+
+    // panel BG
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_PANEL_HEADERS);
+    auto panel = new Image(tex, mBgLeft);
+    panel->SetPosition(20, 130);
+
+    // HEADERS
+    auto fontHeaders = fm->GetFont("data/fonts/Lato-Bold.ttf", 16, lib::graphic::Font::NORMAL);
+
+    const unsigned int numHeaders = 6;
+    const unsigned int colorHeader = 0xf1f2f4ff;
+
+    const char * strings[numHeaders] =
+    {
+        "ENERGY",
+        "RESISTANCE",
+        "ATTACK",
+        "SPEED",
+        "CONSTRUCTION",
+        "CONQUEST"
+    };
+
+    const int headerX = 10;
+    const int marginV = 8;
+    int headerY = 10;
+
+    for(unsigned int i = 0; i < numHeaders; ++i)
+    {
+        label = new Label(strings[i], fontHeaders, panel);
+        label->SetColor(colorHeader);
+        label->SetPosition(headerX, headerY);
+
+        headerY += marginV + label->GetHeight();
+    }
 }
 
 } // namespace game

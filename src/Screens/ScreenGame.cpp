@@ -426,7 +426,7 @@ void ScreenGame::InitSprites()
     rectsNewUnitDialog.emplace_back(460, 82, 110, 100);
     rectsNewUnitDialog.emplace_back(460, 182, 110, 180);
 
-    rectsNewUnitDialog.emplace_back(310, 303, 4, 12);
+    rectsNewUnitDialog.emplace_back(310, 303, 4, 13);
     rectsNewUnitDialog.emplace_back(314, 303, 8, 14);
     rectsNewUnitDialog.emplace_back(322, 303, 11, 12);
     rectsNewUnitDialog.emplace_back(333, 303, 10, 8);
@@ -513,6 +513,10 @@ void ScreenGame::CreateUI()
                 mDialogNewUnit = nullptr;
             });
 
+            mDialogNewUnit->AddUnitSlot();
+            mDialogNewUnit->AddUnitSlot();
+            mDialogNewUnit->AddUnitSlot();
+            mDialogNewUnit->AddUnitSlot();
             mDialogNewUnit->AddUnitSlot();
 
             const int posX = mPanelObjActions->GetX();

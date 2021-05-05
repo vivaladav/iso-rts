@@ -29,6 +29,8 @@ public:
 private:
     void RepositionElements();
 
+    void CreateHeadersPanel();
+
 private:
     std::vector<SlotDialogNewUnit *> mSlots;
 
