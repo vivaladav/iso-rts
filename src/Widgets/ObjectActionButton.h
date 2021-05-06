@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgui/PushButton.h>
+#include "Widgets/ShortcutButton.h"
 
 namespace lib
 {
@@ -14,7 +14,7 @@ namespace lib
 namespace game
 {
 
-class ObjectActionButton : public lib::sgui::PushButton
+class ObjectActionButton : public ShortcutButton
 {
 public:
     enum ActionIcon : unsigned int
@@ -36,51 +36,17 @@ public:
     ~ObjectActionButton();
 
 protected:
-    void HandleStateEnabled() override;
-    void HandleStateDisabled() override;
-
-    void HandleMouseButtonDown(lib::core::MouseButtonEvent & event) override;
-    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
-
-    void HandleMouseOver() override;
-    void HandleMouseOut() override;
-
-    void HandleKeyDown(lib::core::KeyboardEvent & event) override;
-    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
-
-    void HandleCheckedChanged(bool checked) override;
-
-    void SetElements(int index);
+    void SetElements(VisualState state) override;
 
 private:
     void HandlePositionChanged() override;
 
     void OnRender() override;
 
-    void OnButtonDown();
-    void OnButtonUp();
-
 private:
-    enum VisualState : int
-    {
-        NORMAL = 0,
-        DISABLED,
-        MOUSE_OVER,
-        PUSHED,
-        CHECKED,
-
-        NUM_VISUAL_STATES,
-
-        NULL_STATE
-    };
-
     lib::graphic::Image * mBody = nullptr;
     lib::graphic::Image * mIcon = nullptr;
     lib::graphic::Text * mShortcut = nullptr;
-
-    int mState = NULL_STATE;
-
-    int mShortcutKey = -1;
 };
 
 } // namespace game

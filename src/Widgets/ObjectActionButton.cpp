@@ -17,10 +17,9 @@ namespace game
 
 ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
                                        int shortcutKey, lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
+    : ShortcutButton(shortcutKey, parent)
     , mBody(new lib::graphic::Image)
     , mIcon(new lib::graphic::Image)
-    , mShortcutKey(shortcutKey)
 {
     using namespace lib::graphic;
 
@@ -30,8 +29,6 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     RegisterRenderable(mIcon);
 
     SetCurrBg(mBody);
-
-    SetElements(NORMAL);
 
     // -- SET ICON TEXTURE --
     auto tm = TextureManager::Instance();
@@ -86,6 +83,9 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     mShortcut = new Text(shortcut, font, true);
 
     RegisterRenderable(mShortcut);
+
+    // set initial visual state
+    SetState(NORMAL);
 }
 
 ObjectActionButton::~ObjectActionButton()
@@ -97,86 +97,12 @@ ObjectActionButton::~ObjectActionButton()
     delete mShortcut;
 }
 
-void ObjectActionButton::HandleStateEnabled()
+void ObjectActionButton::SetElements(VisualState state)
 {
-    if(IsChecked())
-        SetElements(CHECKED);
-    else
-        SetElements(NORMAL);
-}
-void ObjectActionButton::HandleStateDisabled()
-{
-     SetElements(DISABLED);
-}
-
-void ObjectActionButton::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonDown(event);
-
-    OnButtonDown();
-}
-
-void ObjectActionButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonUp(event);
-
-    OnButtonUp();
-}
-
-void ObjectActionButton::HandleMouseOver()
-{
-    if(IsChecked())
-        return ;
-
-    SetElements(MOUSE_OVER);
-}
-
-void ObjectActionButton::HandleMouseOut()
-{
-    if(IsChecked())
-        return ;
-
-    SetElements(NORMAL);
-}
-
-void ObjectActionButton::HandleKeyDown(lib::core::KeyboardEvent & event)
-{
-    if(event.GetKey() == mShortcutKey)
-    {
-        event.SetConsumed();
-
-        OnButtonDown();
-    }
-}
-
-void ObjectActionButton::HandleKeyUp(lib::core::KeyboardEvent & event)
-{
-    if(event.GetKey() == mShortcutKey)
-    {
-        event.SetConsumed();
-
-        OnButtonUp();
-
-        Click();
-    }
-}
-
-void ObjectActionButton::HandleCheckedChanged(bool checked)
-{
-    SetElements(checked ? CHECKED : NORMAL);
-}
-
-void ObjectActionButton::SetElements(int index)
-{
-    if(mState == index)
-        return ;
-
-    mState = index;
-
     auto tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex = nullptr;
 
-    switch (mState)
+    switch(state)
     {
         case NORMAL:
             tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_NORMAL);
@@ -245,22 +171,6 @@ void ObjectActionButton::OnRender()
     mIcon->Render();
 
     mShortcut->Render();
-}
-
-void ObjectActionButton::OnButtonDown()
-{
-    if(IsCheckable())
-        SetElements(CHECKED);
-    else
-        SetElements(PUSHED);
-}
-
-void ObjectActionButton::OnButtonUp()
-{
-    if(IsCheckable())
-        SetElements(IsChecked() ? CHECKED : NORMAL);
-    else
-        SetElements(NORMAL);
 }
 
 } // namespace game
