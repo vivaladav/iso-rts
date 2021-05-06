@@ -4,6 +4,7 @@
 #include "Widgets/GameUIData.h"
 #include "Widgets/SlotDialogNewUnit.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <graphic/Camera.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -50,7 +51,7 @@ void DialogNewUnit::AddUnitSlot()
     auto slot = new SlotDialogNewUnit(this);
 
     // test
-    slot->SetStatValue(0, 1);
+    slot->SetStatValue(0, 0);
     slot->SetStatValue(1, 2);
     slot->SetStatValue(2, 4);
     slot->SetStatValue(3, 6);
@@ -138,6 +139,17 @@ void DialogNewUnit::CreateHeadersPanel()
         label->SetPosition(headerX, headerY);
 
         headerY += marginV + label->GetHeight();
+    }
+}
+
+void DialogNewUnit::HandleKeyUp(lib::core::KeyboardEvent & event)
+{
+    // ESC -> close dialog
+    if(event.GetKey() == lib::core::KeyboardEvent::KEY_ESC)
+    {
+        mButtonClose->Click();
+
+        event.SetConsumed();
     }
 }
 

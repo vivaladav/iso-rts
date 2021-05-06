@@ -31,6 +31,8 @@ private:
 
     void CreateHeadersPanel();
 
+    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
+
 private:
     std::vector<SlotDialogNewUnit *> mSlots;
 
