@@ -97,6 +97,8 @@ add_executable(
     src/States/StatesIds.h
     src/States/StateTest.h
     src/States/StateTest.cpp
+    src/Widgets/ButtonBuildNewUnit.h
+    src/Widgets/ButtonBuildNewUnit.cpp
     src/Widgets/ButtonCloseDialog.h
     src/Widgets/ButtonCloseDialog.cpp
     src/Widgets/ButtonMainMenu.h

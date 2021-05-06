@@ -1,7 +1,9 @@
 #include "Widgets/SlotDialogNewUnit.h"
 
+#include "Widgets/ButtonBuildNewUnit.h"
 #include "Widgets/GameUIData.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <graphic/Camera.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -16,7 +18,7 @@ constexpr int NUM_STATS = 6;
 constexpr int NUM_BAR_POINTS = 10;
 constexpr int NUM_TOT_POINTS = NUM_STATS * NUM_BAR_POINTS;
 
-SlotDialogNewUnit::SlotDialogNewUnit(lib::sgui::Widget * parent)
+SlotDialogNewUnit::SlotDialogNewUnit(int index, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
     , mBg(new lib::graphic::Image)
 {
@@ -55,6 +57,11 @@ SlotDialogNewUnit::SlotDialogNewUnit(lib::sgui::Widget * parent)
 
         mBarsPoints.push_back(img);
     }
+
+    // BUTTON BUILD
+    const int shortcutKey = lib::core::KeyboardEvent::KEY_1 + index;
+    std::string shortcutStr = std::to_string(index + 1);
+    mButtonBuild = new ButtonBuildNewUnit(shortcutStr.c_str(), shortcutKey, this);
 }
 
 SlotDialogNewUnit::~SlotDialogNewUnit()
@@ -154,6 +161,10 @@ void SlotDialogNewUnit::HandlePositionChanged()
 
         y += mBarsPoints[0]->GetHeight() + 15;
     }
+
+    // button BUILD
+    const int buttonY = mPanelStats->GetY() + mPanelStats->GetHeight() + 10 - y0;
+    mButtonBuild->SetY(buttonY);
 }
 
 void SlotDialogNewUnit::OnRender()

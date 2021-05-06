@@ -12,10 +12,12 @@ namespace lib
 namespace game
 {
 
+class ButtonBuildNewUnit;
+
 class SlotDialogNewUnit : public lib::sgui::Widget
 {
 public:
-    SlotDialogNewUnit(lib::sgui::Widget * parent);
+    SlotDialogNewUnit(int index, lib::sgui::Widget * parent);
     ~SlotDialogNewUnit();
 
     // value has to be in the range [0-10]
@@ -33,6 +35,8 @@ private:
 
     lib::graphic::Image * mPanelUnit = nullptr;
     lib::graphic::Image * mPanelStats = nullptr;
+
+    ButtonBuildNewUnit * mButtonBuild = nullptr;
 };
 
 } // namespace game

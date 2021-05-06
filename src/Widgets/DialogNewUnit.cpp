@@ -48,7 +48,7 @@ DialogNewUnit::~DialogNewUnit()
 
 void DialogNewUnit::AddUnitSlot()
 {
-    auto slot = new SlotDialogNewUnit(this);
+    auto slot = new SlotDialogNewUnit(mSlots.size(), this);
 
     // test
     slot->SetStatValue(0, 0);
