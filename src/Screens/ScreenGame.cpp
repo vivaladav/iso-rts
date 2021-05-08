@@ -382,6 +382,36 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteRocksFile, rectsRocks);
 
+    // UNITS
+    std::vector<lib::core::Rectd> rectsUnits
+    {
+        // row 0
+        { 0, 0, 96, 54 },
+        { 96, 0, 96, 54 },
+        { 192, 0, 96, 58 },
+        { 288, 0, 96, 58 },
+        { 384, 0, 96, 54 },
+        { 480, 0, 96, 54 },
+
+        // row 1
+        { 0, 58, 96, 54 },
+        { 96, 58, 96, 54 },
+        { 192, 58, 96, 58 },
+        { 288, 58, 96, 58 },
+        { 384, 58, 96, 54 },
+        { 480, 58, 96, 54 },
+
+        // row 2
+        { 0, 116, 96, 54 },
+        { 96, 116, 96, 54 },
+        { 192, 116, 96, 58 },
+        { 288, 116, 96, 58 },
+        { 384, 116, 96, 54 },
+        { 480, 116, 96, 54 }
+    };
+
+    tm->RegisterSprite(SpriteFileUnits, rectsUnits);
+
     // WALLS
     std::vector<lib::core::Rectd> rectsWall;
 
@@ -1019,7 +1049,8 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     {
         gen->SetActiveAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(gen, cell, player);
+        // TODO set unit type when creating it
+        //mGameMap->CreateUnit(gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         ClearObjectAction(gen);

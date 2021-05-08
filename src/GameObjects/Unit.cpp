@@ -1,6 +1,7 @@
 #include "GameObjects/Unit.h"
 
 #include "GameConstants.h"
+#include "GameData.h"
 #include "IsoObject.h"
 #include "Player.h"
 
@@ -9,8 +10,9 @@
 namespace game
 {
 
-Unit::Unit(int rows, int cols)
+Unit::Unit(UnitType unitType, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
+    , mUnitType(unitType)
 {
     SetSpeed(2.f);
     SetVisibilityLevel(1);
@@ -32,9 +34,6 @@ void Unit::UpdateImage()
 
 void Unit::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
-
-    lib::graphic::Texture * tex = nullptr;
 
     const Player * owner = GetOwner();
 
@@ -44,30 +43,13 @@ void Unit::SetImage()
 
     const unsigned int faction = owner->GetFaction();
 
-    // object is selected
-    if(IsSelected())
-    {
-        const char * imgFiles[] =
-        {
-            "data/img/unit_01-f1-sel.png",
-            "data/img/unit_01-f2-sel.png",
-            "data/img/unit_01-f3-sel.png"
-        };
+    const unsigned int texInd = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
+                                (NUM_UNIT_SPRITES_PER_TYPE * mUnitType) +
+                                 static_cast<unsigned int>(IsSelected());
 
-        tex = tm->GetTexture(imgFiles[faction]);
-    }
-    // not selected
-    else
-    {
-        const char * imgFiles[] =
-        {
-            "data/img/unit_01-f1.png",
-            "data/img/unit_01-f2.png",
-            "data/img/unit_01-f3.png"
-        };
 
-        tex = tm->GetTexture(imgFiles[faction]);
-    }
+    auto * tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 
     GetIsoObject()->SetTexture(tex);
 }

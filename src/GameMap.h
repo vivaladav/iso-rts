@@ -24,6 +24,7 @@ struct Cell2D;
 struct GameMapCell;
 
 enum GameObjectType : unsigned int;
+enum UnitType : unsigned int;
 enum class MapObjectId : unsigned int;
 
 /// Class that handles most of the logic of what happens on the game map.
@@ -94,7 +95,7 @@ public:
     bool CanCreateUnit(GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
     void StartCreateUnit(GameObject * gen, const Cell2D & dest, Player * player);
-    void CreateUnit(GameObject * gen, const Cell2D & dest, Player * player);
+    void CreateUnit(UnitType type, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade
     bool CanUpgradeUnit(GameObject * obj, Player * player);

@@ -996,7 +996,7 @@ void GameMap::StartCreateUnit(GameObject * gen, const Cell2D & dest, Player * pl
     gen->SetBusy(true);
 }
 
-void GameMap::CreateUnit(GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::CreateUnit(UnitType type, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(dest.row);
     const unsigned int c = static_cast<unsigned int>(dest.col);
@@ -1004,7 +1004,7 @@ void GameMap::CreateUnit(GameObject * gen, const Cell2D & dest, Player * player)
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(1, 1);
+    Unit * unit = new Unit(type, 1, 1);
     unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
 

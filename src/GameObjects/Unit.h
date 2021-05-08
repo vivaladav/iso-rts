@@ -5,10 +5,21 @@
 namespace game
 {
 
+enum UnitType : unsigned int
+{
+    UNIT_1,
+    UNIT_2,
+    UNIT_3,
+
+    NUM_UNIT_TYPES
+};
+
 class Unit : public GameObject
 {
 public:
-    Unit(int rows, int cols);
+    Unit(UnitType unitType, int rows, int cols);
+
+    UnitType GetUnitType() const;
 
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
@@ -21,7 +32,11 @@ private:
 
 private:
     int mLevel = 0;
+
+    UnitType mUnitType;
 };
+
+inline UnitType Unit::GetUnitType() const { return mUnitType; }
 
 inline int Unit::GetUnitLevel() const { return mLevel; }
 
