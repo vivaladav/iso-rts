@@ -27,6 +27,9 @@ public:
 
     void AddUnitSlot(UnitType type, int costEnergy, int costMaterial);
 
+    UnitType GetTypeToBuild() const;
+
+    void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
 
 private:
@@ -39,12 +42,18 @@ private:
 private:
     std::vector<SlotDialogNewUnit *> mSlots;
 
+    std::function<void()> mOnBuild;
+
     lib::sgui::Image * mBgLeft = nullptr;
     lib::sgui::Image * mBgRight = nullptr;
 
     ButtonCloseDialog * mButtonClose = nullptr;
 
     PlayerFaction mFaction;
+
+    UnitType mTypeToBuild;
 };
+
+inline UnitType DialogNewUnit::GetTypeToBuild() const { return mTypeToBuild; }
 
 } // namespace game

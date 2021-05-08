@@ -35,6 +35,7 @@ class Unit;
 class WallIndicator;
 
 enum PlayerFaction : unsigned int;
+enum UnitType : unsigned int;
 
 class ScreenGame : public Screen
 {
@@ -80,7 +81,7 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(GameObject * gen, Player * player);
+    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);
     void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,

@@ -539,6 +539,17 @@ void ScreenGame::CreateUI()
 
             mDialogNewUnit->SetFunctionOnClose([this]
             {
+                // schedule dialog deletion
+                mWidgetsToDelete.push_back(mDialogNewUnit);
+                mDialogNewUnit = nullptr;
+            });
+
+            mDialogNewUnit->SetFunctionOnBuild([this, player]
+            {
+                const UnitType type = mDialogNewUnit->GetTypeToBuild();
+                SetupNewUnit(type, player->GetSelectedObject(), player);
+
+                // schedule dialog deletion
                 mWidgetsToDelete.push_back(mDialogNewUnit);
                 mDialogNewUnit = nullptr;
             });
@@ -552,8 +563,6 @@ void ScreenGame::CreateUI()
 
             mDialogNewUnit->SetPosition(posX, posY);
         }
-
-//        SetupNewUnit(player->GetSelectedObject(), player);
     });
 
     // UNIT ACTIONS
@@ -1021,7 +1030,7 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
     return cell.row * mIsoMap->GetNumCols() + cell.col;
 }
 
-bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
+bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
 {
     // check if create is possible
     if(!mGameMap->CanCreateUnit(gen, player))
@@ -1043,12 +1052,11 @@ bool ScreenGame::SetupNewUnit(GameObject * gen, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, type]
     {
         gen->SetActiveAction(GameObjectActionId::IDLE);
 
-        // TODO set unit type when creating it
-        //mGameMap->CreateUnit(gen, cell, player);
+        mGameMap->CreateUnit(type, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         ClearObjectAction(gen);

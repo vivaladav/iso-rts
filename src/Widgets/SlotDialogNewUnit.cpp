@@ -161,6 +161,11 @@ void SlotDialogNewUnit::SetStatValue(unsigned int index, unsigned int val)
     }
 }
 
+void SlotDialogNewUnit::SetOnBuildFunction(const std::function<void()> & f)
+{
+    mButtonBuild->SetOnClickFunction(f);
+}
+
 void SlotDialogNewUnit::HandlePositionChanged()
 {
     const int x0 = GetScreenX();

@@ -2,6 +2,7 @@
 
 #include <sgui/Widget.h>
 
+#include <functional>
 #include <vector>
 
 namespace lib
@@ -33,6 +34,8 @@ public:
     // value has to be in the range [0-10]
     void SetStatValue(unsigned int index, unsigned int val);
 
+    void SetOnBuildFunction(const std::function<void()> & f);
+
 private:
     void HandlePositionChanged() override;
 
@@ -56,5 +59,7 @@ private:
 
     UnitType mType;
 };
+
+inline UnitType SlotDialogNewUnit::GetUnitType() const { return mType; }
 
 } // namespace game

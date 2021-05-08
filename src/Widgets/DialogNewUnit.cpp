@@ -1,5 +1,6 @@
 #include "Widgets/DialogNewUnit.h"
 
+#include "GameObjects/Unit.h"
 #include "Widgets/ButtonCloseDialog.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/SlotDialogNewUnit.h"
@@ -66,6 +67,19 @@ void DialogNewUnit::AddUnitSlot(UnitType type, int costEnergy, int costMaterial)
     RepositionElements();
 
     MoveChildToFront(mButtonClose);
+
+    // handle build button clicked
+    slot->SetOnBuildFunction([this, slot]
+    {
+        mTypeToBuild = slot->GetUnitType();
+
+        mOnBuild();
+    });
+}
+
+void DialogNewUnit::SetFunctionOnBuild(const std::function<void()> & f)
+{
+    mOnBuild = f;
 }
 
 void DialogNewUnit::SetFunctionOnClose(const std::function<void()> & f)
