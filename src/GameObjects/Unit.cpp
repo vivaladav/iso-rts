@@ -47,7 +47,6 @@ void Unit::SetImage()
                                 (NUM_UNIT_SPRITES_PER_TYPE * mUnitType) +
                                  static_cast<unsigned int>(IsSelected());
 
-
     auto * tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 

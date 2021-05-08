@@ -1,5 +1,6 @@
 #include "Widgets/SlotDialogNewUnit.h"
 
+#include "GameData.h"
 #include "Widgets/ButtonBuildNewUnit.h"
 #include "Widgets/GameUIData.h"
 
@@ -18,9 +19,11 @@ constexpr int NUM_STATS = 6;
 constexpr int NUM_BAR_POINTS = 10;
 constexpr int NUM_TOT_POINTS = NUM_STATS * NUM_BAR_POINTS;
 
-SlotDialogNewUnit::SlotDialogNewUnit(int index, lib::sgui::Widget * parent)
+SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type,
+                                     int index, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
     , mBg(new lib::graphic::Image)
+    , mType(type)
 {
     using namespace lib::graphic;
 
@@ -41,6 +44,13 @@ SlotDialogNewUnit::SlotDialogNewUnit(int index, lib::sgui::Widget * parent)
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_PANEL_UNIT);
     mPanelUnit = new Image(tex);
     RegisterRenderable(mPanelUnit);
+
+    // unit icon
+    const unsigned int texUnit = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
+                                 (NUM_UNIT_SPRITES_PER_TYPE * mType);
+    tex = tm->GetSprite(SpriteFileUnits, texUnit);
+    mUnit = new Image(tex);
+    RegisterRenderable(mUnit);
 
     // STATS PANEL
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_PANEL_STATS);
@@ -136,8 +146,13 @@ void SlotDialogNewUnit::HandlePositionChanged()
     int y = y0 + 20;
     mPanelUnit->SetPosition(x, y);
 
+    // unit icon
+    const int unitX = x + (mPanelUnit->GetWidth() - mUnit->GetWidth()) * 0.5f;
+    y += 23;
+    mUnit->SetPosition(unitX, y);
+
     // panel stats
-    y += mPanelUnit->GetHeight() + 10;
+    y = mPanelUnit->GetY() + mPanelUnit->GetHeight() + 10;
     mPanelStats->SetPosition(x, y);
 
     // stats bars
@@ -172,6 +187,8 @@ void SlotDialogNewUnit::OnRender()
     mBg->Render();
 
     mPanelUnit->Render();
+    mUnit->Render();
+
     mPanelStats->Render();
 
     for(auto img : mBarsPoints)

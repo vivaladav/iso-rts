@@ -14,11 +14,17 @@ namespace game
 
 class ButtonBuildNewUnit;
 
+enum PlayerFaction : unsigned int;
+enum UnitType : unsigned int;
+
 class SlotDialogNewUnit : public lib::sgui::Widget
 {
 public:
-    SlotDialogNewUnit(int index, lib::sgui::Widget * parent);
+    SlotDialogNewUnit(PlayerFaction faction, UnitType type,
+                      int index, lib::sgui::Widget * parent);
     ~SlotDialogNewUnit();
+
+    UnitType GetUnitType() const;
 
     // value has to be in the range [0-10]
     void SetStatValue(unsigned int index, unsigned int val);
@@ -33,10 +39,14 @@ private:
 
     lib::graphic::Image * mBg = nullptr;
 
+    lib::graphic::Image * mUnit = nullptr;
+
     lib::graphic::Image * mPanelUnit = nullptr;
     lib::graphic::Image * mPanelStats = nullptr;
 
     ButtonBuildNewUnit * mButtonBuild = nullptr;
+
+    UnitType mType;
 };
 
 } // namespace game

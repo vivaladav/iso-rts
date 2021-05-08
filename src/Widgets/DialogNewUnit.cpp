@@ -15,7 +15,8 @@
 namespace game
 {
 
-DialogNewUnit::DialogNewUnit()
+DialogNewUnit::DialogNewUnit(PlayerFaction faction)
+    : mFaction(faction)
 {
     using namespace lib::sgui;
 
@@ -46,9 +47,9 @@ DialogNewUnit::~DialogNewUnit()
     delete mBgRight;
 }
 
-void DialogNewUnit::AddUnitSlot()
+void DialogNewUnit::AddUnitSlot(UnitType type)
 {
-    auto slot = new SlotDialogNewUnit(mSlots.size(), this);
+    auto slot = new SlotDialogNewUnit(mFaction, type, mSlots.size(), this);
 
     // test
     slot->SetStatValue(0, 0);

@@ -535,7 +535,7 @@ void ScreenGame::CreateUI()
     {
         if(nullptr == mDialogNewUnit)
         {
-            mDialogNewUnit = new DialogNewUnit;
+            mDialogNewUnit = new DialogNewUnit(player->GetFaction());
 
             mDialogNewUnit->SetFunctionOnClose([this]
             {
@@ -543,11 +543,9 @@ void ScreenGame::CreateUI()
                 mDialogNewUnit = nullptr;
             });
 
-            mDialogNewUnit->AddUnitSlot();
-            mDialogNewUnit->AddUnitSlot();
-            mDialogNewUnit->AddUnitSlot();
-            mDialogNewUnit->AddUnitSlot();
-            mDialogNewUnit->AddUnitSlot();
+            mDialogNewUnit->AddUnitSlot(UNIT_1);
+            mDialogNewUnit->AddUnitSlot(UNIT_2);
+            mDialogNewUnit->AddUnitSlot(UNIT_3);
 
             const int posX = mPanelObjActions->GetX();
             const int posY = mPanelObjActions->GetY() - mDialogNewUnit->GetHeight();

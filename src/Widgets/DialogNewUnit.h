@@ -16,13 +16,16 @@ namespace game
 class ButtonCloseDialog;
 class SlotDialogNewUnit;
 
+enum PlayerFaction : unsigned int;
+enum UnitType : unsigned int;
+
 class DialogNewUnit : public lib::sgui::Widget
 {
 public:
-    DialogNewUnit();
+    DialogNewUnit(PlayerFaction faction);
     ~DialogNewUnit();
 
-    void AddUnitSlot();
+    void AddUnitSlot(UnitType type);
 
     void SetFunctionOnClose(const std::function<void()> & f);
 
@@ -40,6 +43,8 @@ private:
     lib::sgui::Image * mBgRight = nullptr;
 
     ButtonCloseDialog * mButtonClose = nullptr;
+
+    PlayerFaction mFaction;
 };
 
 } // namespace game
