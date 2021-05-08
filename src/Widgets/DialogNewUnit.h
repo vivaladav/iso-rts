@@ -25,7 +25,7 @@ public:
     DialogNewUnit(PlayerFaction faction);
     ~DialogNewUnit();
 
-    void AddUnitSlot(UnitType type);
+    void AddUnitSlot(UnitType type, int costEnergy, int costMaterial);
 
     void SetFunctionOnClose(const std::function<void()> & f);
 

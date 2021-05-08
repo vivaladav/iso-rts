@@ -543,9 +543,9 @@ void ScreenGame::CreateUI()
                 mDialogNewUnit = nullptr;
             });
 
-            mDialogNewUnit->AddUnitSlot(UNIT_1);
-            mDialogNewUnit->AddUnitSlot(UNIT_2);
-            mDialogNewUnit->AddUnitSlot(UNIT_3);
+            mDialogNewUnit->AddUnitSlot(UNIT_1, 10, 15);
+            mDialogNewUnit->AddUnitSlot(UNIT_2, 15, 30);
+            mDialogNewUnit->AddUnitSlot(UNIT_3, 20, 40);
 
             const int posX = mPanelObjActions->GetX();
             const int posY = mPanelObjActions->GetY() - mDialogNewUnit->GetHeight();

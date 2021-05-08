@@ -9,6 +9,7 @@
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
+#include <graphic/Text.h>
 #include <graphic/TextureManager.h>
 #include <sgui/Image.h>
 
@@ -19,18 +20,21 @@ constexpr int NUM_STATS = 6;
 constexpr int NUM_BAR_POINTS = 10;
 constexpr int NUM_TOT_POINTS = NUM_STATS * NUM_BAR_POINTS;
 
-SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type,
-                                     int index, lib::sgui::Widget * parent)
+SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type, int costEnergy,
+                                     int costMaterial, int index, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
     , mBg(new lib::graphic::Image)
     , mType(type)
 {
     using namespace lib::graphic;
 
-    // BACKGROUND
+    auto fm = FontManager::Instance();
+    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, lib::graphic::Font::NORMAL);
+
     auto tm = TextureManager::Instance();
     Texture * tex = nullptr;
 
+    // BACKGROUND
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_DIALOG_BG_SLOT);
     mBg->SetTexture(tex);
     RegisterRenderable(mBg);
@@ -45,12 +49,32 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type,
     mPanelUnit = new Image(tex);
     RegisterRenderable(mPanelUnit);
 
+    const unsigned int colorCosts = 0xe3e6e8ff;
+
     // unit icon
     const unsigned int texUnit = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
                                  (NUM_UNIT_SPRITES_PER_TYPE * mType);
     tex = tm->GetSprite(SpriteFileUnits, texUnit);
-    mUnit = new Image(tex);
-    RegisterRenderable(mUnit);
+    mIconUnit = new Image(tex);
+    RegisterRenderable(mIconUnit);
+
+    // icon energy
+    tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_ICON_ENERGY);
+    mIconEnergy = new Image(tex);
+    RegisterRenderable(mIconEnergy);
+
+    // text energy
+    mTextEnergy = new Text(std::to_string(costEnergy).c_str(), font, true);
+    mTextEnergy->SetColor(colorCosts);
+
+    // icon material
+    tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_ICON_MATERIAL);
+    mIconMaterial = new Image(tex);
+    RegisterRenderable(mIconMaterial);
+
+    // text material
+    mTextMaterial = new Text(std::to_string(costMaterial).c_str(), font, true);
+    mTextMaterial->SetColor(colorCosts);
 
     // STATS PANEL
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_PANEL_STATS);
@@ -80,6 +104,10 @@ SlotDialogNewUnit::~SlotDialogNewUnit()
 
     delete mPanelUnit;
     delete mPanelStats;
+
+    delete mIconUnit;
+    delete mIconEnergy;
+    delete mIconMaterial;
 
     for(auto img : mBarsPoints)
         delete img;
@@ -147,9 +175,29 @@ void SlotDialogNewUnit::HandlePositionChanged()
     mPanelUnit->SetPosition(x, y);
 
     // unit icon
-    const int unitX = x + (mPanelUnit->GetWidth() - mUnit->GetWidth()) * 0.5f;
-    y += 23;
-    mUnit->SetPosition(unitX, y);
+    const int unitX = x + (mPanelUnit->GetWidth() - mIconUnit->GetWidth()) * 0.5f;
+    y += 20;
+    mIconUnit->SetPosition(unitX, y);
+
+    // energy and material costs
+    const int costW = 94;
+    const int costX0 = x + (mPanelUnit->GetWidth() - costW) * 0.5f;
+    const int costY0 = mPanelUnit->GetY() + mPanelUnit->GetHeight() - mIconEnergy->GetHeight() - 15;
+    const int costIconMargin = 5;
+
+    mIconEnergy->SetPosition(costX0, costY0);
+
+    const int txtEnergyX = mIconEnergy->GetX() + mIconEnergy->GetWidth() + costIconMargin;
+    const int txtEnergyY = mIconEnergy->GetY() + (mIconEnergy->GetHeight() - mTextEnergy->GetHeight()) * 0.5f;
+    mTextEnergy->SetPosition(txtEnergyX, txtEnergyY);
+
+    const int txtMaterialX = costX0 + costW - mTextMaterial->GetWidth();
+    const int txtMaterialY = txtEnergyY;
+    mTextMaterial->SetPosition(txtMaterialX, txtMaterialY);
+
+    const int materialX = txtMaterialX - costIconMargin - mIconMaterial->GetWidth();
+    const int materialY = mIconEnergy->GetY() + (mIconEnergy->GetHeight() - mIconMaterial->GetHeight()) * 0.5f;
+    mIconMaterial->SetPosition(materialX, materialY);
 
     // panel stats
     y = mPanelUnit->GetY() + mPanelUnit->GetHeight() + 10;
@@ -187,7 +235,11 @@ void SlotDialogNewUnit::OnRender()
     mBg->Render();
 
     mPanelUnit->Render();
-    mUnit->Render();
+    mIconUnit->Render();
+    mIconEnergy->Render();
+    mTextEnergy->Render();
+    mIconMaterial->Render();
+    mTextMaterial->Render();
 
     mPanelStats->Render();
 
