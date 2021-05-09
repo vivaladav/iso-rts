@@ -18,6 +18,7 @@ namespace game
 {
 
 class ButtonBuildNewUnit;
+struct UnitData;
 
 enum PlayerFaction : unsigned int;
 enum UnitType : unsigned int;
@@ -25,8 +26,7 @@ enum UnitType : unsigned int;
 class SlotDialogNewUnit : public lib::sgui::Widget
 {
 public:
-    SlotDialogNewUnit(PlayerFaction faction, UnitType type, int costEnergy,
-                      int costMaterial, int index, lib::sgui::Widget * parent);
+    SlotDialogNewUnit(PlayerFaction faction, const UnitData & data, int index, lib::sgui::Widget * parent);
     ~SlotDialogNewUnit();
 
     UnitType GetUnitType() const;

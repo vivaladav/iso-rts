@@ -23,6 +23,7 @@ namespace game
 {
 
 class Player;
+class UnitsDataRegistry;
 
 enum StateId : int;
 
@@ -52,8 +53,10 @@ public:
     Difficulty GetDifficulty() const;
     void SetDifficulty(Difficulty level);
 
+    const UnitsDataRegistry * GetUnitsRegistry() const;
+
     // -- players --
-    void AddPlayer(const char * name, int pid);
+    Player * AddPlayer(const char * name, int pid);
     void ClearPlayers();
 
     int GetNumPlayers() const;
@@ -76,6 +79,8 @@ private:
 
     lib::sgui::Stage * mStage = nullptr;
     lib::graphic::Font * mFontGui = nullptr;
+
+    UnitsDataRegistry * mUnitsRegistry = nullptr;
 
     Difficulty mDiff = EASY;
 
@@ -103,6 +108,8 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 
 inline Difficulty Game::GetDifficulty() const { return mDiff; }
 inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
+
+inline const UnitsDataRegistry * Game::GetUnitsRegistry() const { return mUnitsRegistry; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }
 

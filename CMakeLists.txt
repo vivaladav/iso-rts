@@ -66,6 +66,9 @@ add_executable(
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
+    src/GameObjects/UnitData.h
+    src/GameObjects/UnitsDataRegistry.h
+    src/GameObjects/UnitsDataRegistry.cpp
     src/GameObjects/Wall.h
     src/GameObjects/Wall.cpp
     src/Indicators/ConquestIndicator.h

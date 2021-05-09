@@ -554,10 +554,13 @@ void ScreenGame::CreateUI()
                 mDialogNewUnit = nullptr;
             });
 
-            mDialogNewUnit->AddUnitSlot(UNIT_1, 10, 15);
-            mDialogNewUnit->AddUnitSlot(UNIT_2, 15, 30);
-            mDialogNewUnit->AddUnitSlot(UNIT_3, 20, 40);
+            // populate available units
+            const std::vector<UnitData> & unitsData = player->GetAvailableUnits();
 
+            for(const UnitData & data : unitsData)
+                mDialogNewUnit->AddUnitSlot(data);
+
+            // position dialog
             const int posX = mPanelObjActions->GetX();
             const int posY = mPanelObjActions->GetY() - mDialogNewUnit->GetHeight();
 

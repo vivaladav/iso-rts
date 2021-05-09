@@ -48,19 +48,9 @@ DialogNewUnit::~DialogNewUnit()
     delete mBgRight;
 }
 
-void DialogNewUnit::AddUnitSlot(UnitType type, int costEnergy, int costMaterial)
+void DialogNewUnit::AddUnitSlot(const UnitData & data)
 {
-    auto slot = new SlotDialogNewUnit(mFaction, type, costEnergy, costMaterial,
-                                      mSlots.size(), this);
-
-    // test
-    slot->SetStatValue(0, 0);
-    slot->SetStatValue(1, 2);
-    slot->SetStatValue(2, 4);
-    slot->SetStatValue(3, 6);
-    slot->SetStatValue(4, 8);
-    slot->SetStatValue(5, 10);
-    // test
+    auto slot = new SlotDialogNewUnit(mFaction, data, mSlots.size(), this);
 
     mSlots.emplace_back(slot);
 

@@ -15,6 +15,7 @@ namespace game
 
 class ButtonCloseDialog;
 class SlotDialogNewUnit;
+struct UnitData;
 
 enum PlayerFaction : unsigned int;
 enum UnitType : unsigned int;
@@ -25,7 +26,7 @@ public:
     DialogNewUnit(PlayerFaction faction);
     ~DialogNewUnit();
 
-    void AddUnitSlot(UnitType type, int costEnergy, int costMaterial);
+    void AddUnitSlot(const game::UnitData & data);
 
     UnitType GetTypeToBuild() const;
 

@@ -2,6 +2,7 @@
 
 #include "GameConstants.h"
 #include "Player.h"
+#include "GameObjects/UnitsDataRegistry.h"
 #include "States/StatesIds.h"
 #include "States/StateGame.h"
 #include "States/StateMainMenu.h"
@@ -29,6 +30,7 @@ Game::Game(int argc, char * argv[])
     {
         "data/maps/40x40-01.map"
     }
+    , mUnitsRegistry(new UnitsDataRegistry)
 {
     using namespace lib::graphic;
 
@@ -61,6 +63,8 @@ Game::Game(int argc, char * argv[])
 
 Game::~Game()
 {
+    delete mUnitsRegistry;
+
     ClearPlayers();
 
     delete mStateMan;
@@ -91,12 +95,16 @@ void Game::Update(float delta)
     mRenderer->Finalize();
 }
 
-void Game::AddPlayer(const char * name, int pid)
+Player * Game::AddPlayer(const char * name, int pid)
 {
     if(mPlayers.size() == MAX_NUM_PLAYERS)
-        return;
+        return nullptr;
 
-    mPlayers.emplace_back(new Player(name, pid));
+    Player * p = new Player(name, pid);
+
+    mPlayers.push_back(p);
+
+    return p;
 }
 
 void Game::ClearPlayers()

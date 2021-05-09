@@ -1,6 +1,7 @@
 #include "Widgets/SlotDialogNewUnit.h"
 
 #include "GameData.h"
+#include "GameObjects/UnitData.h"
 #include "Widgets/ButtonBuildNewUnit.h"
 #include "Widgets/GameUIData.h"
 
@@ -20,11 +21,10 @@ constexpr int NUM_STATS = 6;
 constexpr int NUM_BAR_POINTS = 10;
 constexpr int NUM_TOT_POINTS = NUM_STATS * NUM_BAR_POINTS;
 
-SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type, int costEnergy,
-                                     int costMaterial, int index, lib::sgui::Widget * parent)
+SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, const UnitData & data, int index, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
     , mBg(new lib::graphic::Image)
-    , mType(type)
+    , mType(data.type)
 {
     using namespace lib::graphic;
 
@@ -64,7 +64,7 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type, int c
     RegisterRenderable(mIconEnergy);
 
     // text energy
-    mTextEnergy = new Text(std::to_string(costEnergy).c_str(), font, true);
+    mTextEnergy = new Text(std::to_string(data.costEnergy).c_str(), font, true);
     mTextEnergy->SetColor(colorCosts);
 
     // icon material
@@ -73,7 +73,7 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type, int c
     RegisterRenderable(mIconMaterial);
 
     // text material
-    mTextMaterial = new Text(std::to_string(costMaterial).c_str(), font, true);
+    mTextMaterial = new Text(std::to_string(data.costMaterial).c_str(), font, true);
     mTextMaterial->SetColor(colorCosts);
 
     // STATS PANEL
@@ -91,6 +91,14 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, UnitType type, int c
 
         mBarsPoints.push_back(img);
     }
+
+    // set stats
+    SetStatValue(USTAT_ENERGY, data.statEnergy);
+    SetStatValue(USTAT_RESISTANCE, data.statResistance);
+    SetStatValue(USTAT_ATTACK, data.statAttack);
+    SetStatValue(USTAT_SPEED, data.statSpeed);
+    SetStatValue(USTAT_CONSTRUCTION, data.statConstruction);
+    SetStatValue(USTAT_CONQUEST, data.statConquest);
 
     // BUTTON BUILD
     const int shortcutKey = lib::core::KeyboardEvent::KEY_1 + index;

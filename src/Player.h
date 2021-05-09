@@ -2,6 +2,7 @@
 
 #include "Cell2D.h"
 #include "StatValue.h"
+#include "GameObjects/UnitData.h"
 
 #include <functional>
 #include <string>
@@ -81,6 +82,10 @@ public:
     int GetTotalUnitsLevel() const;
     void SumTotalUnitsLevel(int val);
 
+    // available units
+    void AddAvailableUnit(const UnitData & data);
+    const std::vector<UnitData> & GetAvailableUnits() const;
+
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;
     void SetSelectedObject(GameObject * obj);
@@ -107,6 +112,8 @@ private:
 
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
+
+    std::vector<UnitData> mAvailableUnits;
 
     std::string mName;
 
@@ -184,6 +191,10 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
+
+// available units
+inline void Player::AddAvailableUnit(const UnitData & data) { mAvailableUnits.push_back(data); }
+inline const std::vector<UnitData> & Player::GetAvailableUnits() const { return mAvailableUnits; }
 
 inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
 inline bool Player::HasSelectedObject() const { return mSelObj != nullptr; }

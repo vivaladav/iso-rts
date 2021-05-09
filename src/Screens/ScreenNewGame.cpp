@@ -2,6 +2,8 @@
 
 #include "Game.h"
 #include "Player.h"
+#include "GameObjects/Unit.h"
+#include "GameObjects/UnitsDataRegistry.h"
 #include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
@@ -198,11 +200,18 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // TODO proper selection of factions
     mButtonStart->SetOnClickFunction([this, game]
     {
+        const UnitsDataRegistry * unitsReg = mGame->GetUnitsRegistry();
+
         // create human player
-        game->AddPlayer("PLAYER 1", 0);
-        Player * p = game->GetPlayerByIndex(0);
+        Player * p = game->AddPlayer("PLAYER 1", 0);
         p->SetLocal(true);
         p->SetFaction(mFaction);
+
+        // assign initial available units
+        p->AddAvailableUnit(unitsReg->GetData(UNIT_1));
+        p->AddAvailableUnit(unitsReg->GetData(UNIT_2));
+        // TODO temporary for testing. In the future start only with 2 types
+        p->AddAvailableUnit(unitsReg->GetData(UNIT_3));
 
         // create AI players
         const char * strPlayers[] =
@@ -224,11 +233,16 @@ ScreenNewGame::ScreenNewGame(Game * game)
         {
             const int playerId = i + 1;
 
-            game->AddPlayer(strPlayers[i], playerId);
-            p = game->GetPlayerByIndex(playerId);
+            p = game->AddPlayer(strPlayers[i], playerId);
             p->SetFaction(factions[indFaction]);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
+
+            // assign initial available units
+            p->AddAvailableUnit(unitsReg->GetData(UNIT_1));
+            p->AddAvailableUnit(unitsReg->GetData(UNIT_2));
+            // TODO temporary for testing. In the future start only with 2 types
+            p->AddAvailableUnit(unitsReg->GetData(UNIT_3));
 
             ++indFaction;
 
