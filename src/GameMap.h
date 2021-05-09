@@ -93,9 +93,9 @@ public:
     void ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
-    bool CanCreateUnit(GameObject * gen, Player * player);
+    bool CanCreateUnit(const UnitData & data, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
-    void StartCreateUnit(GameObject * gen, const Cell2D & dest, Player * player);
+    void StartCreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player);
     void CreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade

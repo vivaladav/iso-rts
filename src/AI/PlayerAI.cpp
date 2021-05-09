@@ -162,7 +162,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
         {
             case ACT_NEW_UNIT:
             {
-                cost = ENERGY_NEW_UNIT;
+                // TODO
             }
             break;
 

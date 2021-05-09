@@ -68,6 +68,7 @@ public:
 
     // stats
     StatValue & GetStat(Stat sid);
+    void SetOnResourcesChanged(const std::function<void()> & f);
 
     int GetNumCells() const;
     void SumCells(int val);
@@ -120,6 +121,7 @@ private:
 
     std::function<void(int)> mOnNumCellsChanged;
     std::function<void(int)> mOnNumUnitsChanged;
+    std::function<void()> mOnResourcesChanged;
 
     std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
 
@@ -177,6 +179,8 @@ inline StatValue & Player::GetStat(Stat sid)
     else
         return mDummyStat;
 }
+
+inline void Player::SetOnResourcesChanged(const std::function<void()> & f) { mOnResourcesChanged = f; }
 
 inline int Player::GetNumCells() const { return mNumCells; }
 inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)

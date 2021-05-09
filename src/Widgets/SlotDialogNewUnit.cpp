@@ -121,52 +121,9 @@ SlotDialogNewUnit::~SlotDialogNewUnit()
         delete img;
 }
 
-void SlotDialogNewUnit::SetStatValue(unsigned int index, unsigned int val)
+void SlotDialogNewUnit::SetButtonEnabled(bool enabled)
 {
-    // index out of bounds
-    if(index > NUM_STATS)
-        return ;
-
-    if(val > NUM_BAR_POINTS)
-        val = NUM_BAR_POINTS;
-
-    const unsigned int colors[] =
-    {
-        0xf5a3a3ff,
-        0xf5daa3ff,
-        0xa6f2a6ff,
-        0xa3daf5ff
-    };
-
-    const unsigned int colorOffsets[] = { 3, 6, 9 };
-
-    const unsigned int colorOff = 0x768089ff;
-    int colorOn = colorOff;
-
-    if(val < colorOffsets[0])
-        colorOn = colors[0];
-    else if(val < colorOffsets[1])
-        colorOn = colors[1];
-    else if(val < colorOffsets[2])
-        colorOn = colors[2];
-    else
-        colorOn = colors[3];
-
-    const unsigned int index0 = index * NUM_BAR_POINTS;
-
-    // ON points
-    for(unsigned int i = 0; i < val; ++i)
-    {
-        const unsigned int point = index0 + i;
-        mBarsPoints[point]->SetColor(colorOn);
-    }
-
-    // OFF points
-    for(unsigned int i = val; i < NUM_BAR_POINTS; ++i)
-    {
-        const unsigned int point = index0 + i;
-        mBarsPoints[point]->SetColor(colorOff);
-    }
+    mButtonBuild->SetEnabled(enabled);
 }
 
 void SlotDialogNewUnit::SetOnBuildFunction(const std::function<void()> & f)
@@ -258,6 +215,54 @@ void SlotDialogNewUnit::OnRender()
 
     for(auto img : mBarsPoints)
         img->Render();
+}
+
+void SlotDialogNewUnit::SetStatValue(unsigned int index, unsigned int val)
+{
+    // index out of bounds
+    if(index > NUM_STATS)
+        return ;
+
+    if(val > NUM_BAR_POINTS)
+        val = NUM_BAR_POINTS;
+
+    const unsigned int colors[] =
+    {
+        0xf5a3a3ff,
+        0xf5daa3ff,
+        0xa6f2a6ff,
+        0xa3daf5ff
+    };
+
+    const unsigned int colorOffsets[] = { 3, 6, 9 };
+
+    const unsigned int colorOff = 0x768089ff;
+    int colorOn = colorOff;
+
+    if(val < colorOffsets[0])
+        colorOn = colors[0];
+    else if(val < colorOffsets[1])
+        colorOn = colors[1];
+    else if(val < colorOffsets[2])
+        colorOn = colors[2];
+    else
+        colorOn = colors[3];
+
+    const unsigned int index0 = index * NUM_BAR_POINTS;
+
+    // ON points
+    for(unsigned int i = 0; i < val; ++i)
+    {
+        const unsigned int point = index0 + i;
+        mBarsPoints[point]->SetColor(colorOn);
+    }
+
+    // OFF points
+    for(unsigned int i = val; i < NUM_BAR_POINTS; ++i)
+    {
+        const unsigned int point = index0 + i;
+        mBarsPoints[point]->SetColor(colorOff);
+    }
 }
 
 } // namespace game

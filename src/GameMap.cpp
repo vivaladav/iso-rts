@@ -762,7 +762,7 @@ void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end,
     }
 }
 
-bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
+bool GameMap::CanCreateUnit(const UnitData & data, GameObject * gen, Player * player)
 {
     // generator is not owned by the player
     if(gen->GetOwner() != player)
@@ -777,8 +777,8 @@ bool GameMap::CanCreateUnit(GameObject * gen, Player * player)
        return false;
 
     // check if player has enough resources
-    if(ENERGY_NEW_UNIT > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
-       MATERIAL_NEW_UNIT > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
+    if(data.costEnergy > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
+       data.costMaterial > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
         return false;
 
     // check if there's at least 1 free cell where to place the new unit
@@ -980,14 +980,14 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
     return Cell2D(-1, -1);
 }
 
-void GameMap::StartCreateUnit(GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::StartCreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const int ind = dest.row * mCols + dest.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->GetStat(Player::Stat::ENERGY).SumValue(-ENERGY_NEW_UNIT);
-    player->GetStat(Player::Stat::MATERIAL).SumValue(-MATERIAL_NEW_UNIT);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-data.costEnergy);
+    player->GetStat(Player::Stat::MATERIAL).SumValue(-data.costMaterial);
 
     // mark cell as changing
     gcell.changing = true;

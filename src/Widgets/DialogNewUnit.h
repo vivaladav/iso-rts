@@ -14,16 +14,16 @@ namespace game
 {
 
 class ButtonCloseDialog;
+class Player;
 class SlotDialogNewUnit;
 struct UnitData;
 
-enum PlayerFaction : unsigned int;
 enum UnitType : unsigned int;
 
 class DialogNewUnit : public lib::sgui::Widget
 {
 public:
-    DialogNewUnit(PlayerFaction faction);
+    DialogNewUnit(Player * player);
     ~DialogNewUnit();
 
     void AddUnitSlot(const game::UnitData & data);
@@ -33,10 +33,14 @@ public:
     void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
 
+    void UpdateSlots();
+
 private:
     void RepositionElements();
 
     void CreateHeadersPanel();
+
+    void UpdateSlotButton(const game::UnitData & data, SlotDialogNewUnit * slot);
 
     void HandleKeyUp(lib::core::KeyboardEvent & event) override;
 
@@ -45,12 +49,12 @@ private:
 
     std::function<void()> mOnBuild;
 
+    Player * mPlayer = nullptr;
+
     lib::sgui::Image * mBgLeft = nullptr;
     lib::sgui::Image * mBgRight = nullptr;
 
     ButtonCloseDialog * mButtonClose = nullptr;
-
-    PlayerFaction mFaction;
 
     UnitType mTypeToBuild;
 };

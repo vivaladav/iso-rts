@@ -6,8 +6,6 @@ namespace game
 constexpr int MAX_NUM_PLAYERS = 4;
 
 constexpr int MAX_UNITS_LEVEL = 2;
-constexpr int ENERGY_NEW_UNIT = 1;
-constexpr int MATERIAL_NEW_UNIT = 4;
 constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 
 constexpr unsigned int PLAYER_COLOR[] =

@@ -1,6 +1,8 @@
 #include "Widgets/DialogNewUnit.h"
 
+#include "Player.h"
 #include "GameObjects/Unit.h"
+#include "GameObjects/UnitData.h"
 #include "Widgets/ButtonCloseDialog.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/SlotDialogNewUnit.h"
@@ -16,8 +18,8 @@
 namespace game
 {
 
-DialogNewUnit::DialogNewUnit(PlayerFaction faction)
-    : mFaction(faction)
+DialogNewUnit::DialogNewUnit(Player * player)
+    : mPlayer(player)
 {
     using namespace lib::sgui;
 
@@ -50,7 +52,10 @@ DialogNewUnit::~DialogNewUnit()
 
 void DialogNewUnit::AddUnitSlot(const UnitData & data)
 {
-    auto slot = new SlotDialogNewUnit(mFaction, data, mSlots.size(), this);
+    const PlayerFaction faction = mPlayer->GetFaction();
+    auto slot = new SlotDialogNewUnit(faction, data, mSlots.size(), this);
+
+    UpdateSlotButton(data, slot);
 
     mSlots.emplace_back(slot);
 
@@ -75,6 +80,14 @@ void DialogNewUnit::SetFunctionOnBuild(const std::function<void()> & f)
 void DialogNewUnit::SetFunctionOnClose(const std::function<void()> & f)
 {
     mButtonClose->SetOnClickFunction(f);
+}
+
+void DialogNewUnit::UpdateSlots()
+{
+    const std::vector<UnitData> & unitsData = mPlayer->GetAvailableUnits();
+
+    for(unsigned int i = 0; i < mSlots.size(); ++i)
+        UpdateSlotButton(unitsData[i], mSlots[i]);
 }
 
 void DialogNewUnit::RepositionElements()
@@ -146,6 +159,14 @@ void DialogNewUnit::CreateHeadersPanel()
 
         headerY += marginV + label->GetHeight();
     }
+}
+
+void DialogNewUnit::UpdateSlotButton(const game::UnitData & data, SlotDialogNewUnit * slot)
+{
+    const bool ok = data.costEnergy <= mPlayer->GetStat(Player::Stat::ENERGY).GetIntValue() &&
+                    data.costMaterial <= mPlayer->GetStat(Player::Stat::MATERIAL).GetIntValue();
+
+    slot->SetButtonEnabled(ok);
 }
 
 void DialogNewUnit::HandleKeyUp(lib::core::KeyboardEvent & event)

@@ -98,7 +98,7 @@ ScreenGame::ScreenGame(Game * game)
         const int startEnergy = 200;
         p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
 
-        const int startMaterial = 20;
+        const int startMaterial = 50;
 
         p->GetStat(Player::Stat::MATERIAL).SetValue(startMaterial);
 
@@ -109,6 +109,16 @@ ScreenGame::ScreenGame(Game * game)
 //            mAiPlayers.push_back(p);
 //        }
     }
+
+    // LOCAL PLAYER
+    Player * localPlayer = game->GetLocalPlayer();
+
+    // react to local player changes in stats
+    localPlayer->SetOnResourcesChanged([this]
+    {
+        if(mDialogNewUnit != nullptr)
+            mDialogNewUnit->UpdateSlots();
+    });
 
     // apply initial visibility to the game map
     mGameMap->ApplyLocalVisibility();
@@ -535,7 +545,7 @@ void ScreenGame::CreateUI()
     {
         if(nullptr == mDialogNewUnit)
         {
-            mDialogNewUnit = new DialogNewUnit(player->GetFaction());
+            mDialogNewUnit = new DialogNewUnit(player);
 
             mDialogNewUnit->SetFunctionOnClose([this]
             {
@@ -1035,8 +1045,10 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
 
 bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
 {
+    const UnitData & data = player->GetAvailableUnitData(type);
+
     // check if create is possible
-    if(!mGameMap->CanCreateUnit(gen, player))
+    if(!mGameMap->CanCreateUnit(data, gen, player))
         return false;
 
     Cell2D cell = mGameMap->GetNewUnitDestination(gen);
@@ -1048,18 +1060,17 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     }
 
     // start create
-    mGameMap->StartCreateUnit(gen, cell, player);
+    mGameMap->StartCreateUnit(data, gen, cell, player);
 
     gen->SetActiveAction(GameObjectActionId::BUILD_UNIT);
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, type]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, data]
     {
         gen->SetActiveAction(GameObjectActionId::IDLE);
 
-        const UnitData & data = player->GetAvailableUnitData(type);
         mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 

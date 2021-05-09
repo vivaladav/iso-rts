@@ -31,8 +31,7 @@ public:
 
     UnitType GetUnitType() const;
 
-    // value has to be in the range [0-10]
-    void SetStatValue(unsigned int index, unsigned int val);
+    void SetButtonEnabled(bool enabled);
 
     void SetOnBuildFunction(const std::function<void()> & f);
 
@@ -40,6 +39,9 @@ private:
     void HandlePositionChanged() override;
 
     void OnRender() override;
+
+    // value has to be in the range [0-10]
+    void SetStatValue(unsigned int index, unsigned int val);
 
 private:
     std::vector<lib::graphic::Image *> mBarsPoints;

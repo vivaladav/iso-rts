@@ -22,7 +22,8 @@ Player::Player(const char * name, int pid)
     : mDummyStat(INVALID_STAT, 0)
     , mName(name)
     , mOnNumCellsChanged([](int){})
-    , mOnNumUnitsChanged(([](int){}))
+    , mOnNumUnitsChanged([](int){})
+    , mOnResourcesChanged([](){})
     , mPlayerId(pid)
 {
     mStats.emplace_back(Stat::BLOBS, 0);
@@ -89,14 +90,25 @@ void Player::UpdateResources()
     const int energyUsed = GetEnergyUse();
     const int energyDiff = energyProd - energyUsed;
 
+    bool changed = false;
+
     if(energyDiff != 0)
+    {
         mStats[Player::Stat::ENERGY].SumValue(energyDiff);
+        changed = true;
+    }
 
     // material 1
     const int materialProd = GetResourceProduction(ResourceType::MATERIAL1);
 
     if(materialProd != 0)
+    {
         mStats[Player::Stat::MATERIAL].SumValue(materialProd);
+        changed = true;
+    }
+
+    if(changed)
+        mOnResourcesChanged();
 }
 
 void Player::HandleCollectable(GameObject * obj)
@@ -118,6 +130,8 @@ void Player::HandleCollectable(GameObject * obj)
         const int blobsMult = 5;
         mStats[Stat::BLOBS].SumValue(d->GetNum() * blobsMult);
     }
+
+    mOnResourcesChanged();
 
     // notify collection
     static_cast<Collectable *>(obj)->Collected();
