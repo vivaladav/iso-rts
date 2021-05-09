@@ -85,6 +85,7 @@ public:
     // available units
     void AddAvailableUnit(const UnitData & data);
     const std::vector<UnitData> & GetAvailableUnits() const;
+    const UnitData & GetAvailableUnitData(UnitType type) const;
 
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;
@@ -195,6 +196,7 @@ inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 // available units
 inline void Player::AddAvailableUnit(const UnitData & data) { mAvailableUnits.push_back(data); }
 inline const std::vector<UnitData> & Player::GetAvailableUnits() const { return mAvailableUnits; }
+inline const UnitData & Player::GetAvailableUnitData(UnitType type) const { return mAvailableUnits[type]; }
 
 inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
 inline bool Player::HasSelectedObject() const { return mSelObj != nullptr; }

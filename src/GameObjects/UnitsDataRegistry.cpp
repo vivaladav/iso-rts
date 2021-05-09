@@ -13,7 +13,7 @@ UnitsDataRegistry::UnitsDataRegistry()
         // type
         UNIT_1,
         // stats : energy, resistance, attack, speed, construction, conquest
-        3, 2, 5, 4, 2, 2,
+        3, 2, 4, 4, 2, 2,
         // costs : energy, material
         10, 20
     );
@@ -22,14 +22,14 @@ UnitsDataRegistry::UnitsDataRegistry()
     mData.emplace_back
     (
         UNIT_2,
-        3, 3, 1, 4, 5, 4,
+        3, 3, 1, 3, 4, 3,
         15, 25
     );
 
     // UNIT 3
     mData.emplace_back
     (
-        UNIT_2,
+        UNIT_3,
         3, 4, 3, 2, 1, 1,
         30, 40
     );

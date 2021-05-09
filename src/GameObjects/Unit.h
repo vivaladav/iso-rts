@@ -2,8 +2,12 @@
 
 #include "GameObject.h"
 
+#include <vector>
+
 namespace game
 {
+
+struct UnitData;
 
 enum UnitType : unsigned int
 {
@@ -17,7 +21,7 @@ enum UnitType : unsigned int
 class Unit : public GameObject
 {
 public:
-    Unit(UnitType unitType, int rows, int cols);
+    Unit(const UnitData & data, int rows, int cols);
 
     UnitType GetUnitType() const;
 
@@ -32,6 +36,9 @@ private:
 
 private:
     int mLevel = 0;
+
+    // stats
+    std::vector<int> mStats;
 
     UnitType mUnitType;
 };

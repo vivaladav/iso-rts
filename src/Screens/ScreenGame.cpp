@@ -1059,7 +1059,8 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     {
         gen->SetActiveAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(type, gen, cell, player);
+        const UnitData & data = player->GetAvailableUnitData(type);
+        mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         ClearObjectAction(gen);

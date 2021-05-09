@@ -12,7 +12,9 @@ enum UnitStats : unsigned int
     USTAT_ATTACK,
     USTAT_SPEED,
     USTAT_CONSTRUCTION,
-    USTAT_CONQUEST
+    USTAT_CONQUEST,
+
+    NUM_UNIT_STATS
 };
 
 struct UnitData
