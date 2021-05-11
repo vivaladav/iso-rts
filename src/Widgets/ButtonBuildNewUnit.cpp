@@ -31,11 +31,11 @@ ButtonBuildNewUnit::ButtonBuildNewUnit(const char * shortcut,
     auto fm = FontManager::Instance();
     auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 16, Font::NORMAL);
     mLabel  = new Text("BUILD", font, true);
+    RegisterRenderable(mLabel);
 
     // -- CREATE SHORTCUT TEXT --
     font = fm->GetFont("data/fonts/Lato-Bold.ttf", 12, Font::NORMAL);
     mShortcut = new Text(shortcut, font, true);
-
     RegisterRenderable(mShortcut);
 
     // set initial visual state

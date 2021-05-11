@@ -66,6 +66,7 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, const UnitData & dat
     // text energy
     mTextEnergy = new Text(std::to_string(data.costEnergy).c_str(), font, true);
     mTextEnergy->SetColor(colorCosts);
+    RegisterRenderable(mTextEnergy);
 
     // icon material
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_ICON_MATERIAL);
@@ -75,6 +76,7 @@ SlotDialogNewUnit::SlotDialogNewUnit(PlayerFaction faction, const UnitData & dat
     // text material
     mTextMaterial = new Text(std::to_string(data.costMaterial).c_str(), font, true);
     mTextMaterial->SetColor(colorCosts);
+    RegisterRenderable(mTextMaterial);
 
     // STATS PANEL
     tex = tm->GetSprite(SpriteFileNewUnitDialog, IND_NU_PANEL_STATS);
