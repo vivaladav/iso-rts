@@ -165,6 +165,23 @@ enum SpriteIdUnits : unsigned int
     NUM_UNIT_SPRITES_PER_TYPE = 2
 };
 
+// UNITS PARTICLES
+extern const char SpriteFileUnitsParticles[];
+
+enum SpriteIdUnitsParticles : unsigned int
+{
+    // faction 1
+    SPR_UPART_LASER_F1,
+
+    // faction 2
+    SPR_UPART_LASER_F2,
+
+    // faction 3
+    SPR_UPART_LASER_F3,
+
+    NUM_UNIT_PART_SPRITES_PER_FACTION = 1
+};
+
 // WALLS
 extern const char SpriteWallsFile[];
 

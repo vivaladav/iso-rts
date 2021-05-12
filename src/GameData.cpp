@@ -9,6 +9,7 @@ const char SpriteFileIndicators[] = "data/img/indicators.png";
 const char SpriteRocksFile[] = "data/img/rocks.png";
 const char SpriteFileSceneElements[] = "data/img/scene_elements.png";
 const char SpriteFileUnits[] = "data/img/units.png";
+const char SpriteFileUnitsParticles[] = "data/img/units_particles.png";;
 const char SpriteWallsFile[] = "data/img/walls.png";
 
 } // namespace game
