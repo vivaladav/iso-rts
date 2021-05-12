@@ -122,6 +122,14 @@ enum SpriteRocksId : unsigned int
     ROCKS_CROSS
 };
 
+// SCENE ELEMENTS
+extern const char SpriteFileSceneElements[];
+
+enum SpriteIdSceneElements : unsigned int
+{
+  SPR_PRACTICE_TARGET1
+};
+
 // UNITS
 extern const char SpriteFileUnits[];
 

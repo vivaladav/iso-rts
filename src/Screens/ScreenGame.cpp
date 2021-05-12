@@ -392,6 +392,14 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteRocksFile, rectsRocks);
 
+    // SCENE ELEMENTS
+    std::vector<lib::core::Rectd> rectsSceneElements
+    {
+        { 0, 0, 96, 48 }
+    };
+
+    tm->RegisterSprite(SpriteFileSceneElements, rectsSceneElements);
+
     // UNITS
     std::vector<lib::core::Rectd> rectsUnits
     {

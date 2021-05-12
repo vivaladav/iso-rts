@@ -7,6 +7,7 @@ const char SpriteFileCells[] = "data/img/tiles.png";
 const char SpriteCollectiblesFile[] = "data/img/collectibles.png";
 const char SpriteFileIndicators[] = "data/img/indicators.png";
 const char SpriteRocksFile[] = "data/img/rocks.png";
+const char SpriteFileSceneElements[] = "data/img/scene_elements.png";
 const char SpriteFileUnits[] = "data/img/units.png";
 const char SpriteWallsFile[] = "data/img/walls.png";
 
