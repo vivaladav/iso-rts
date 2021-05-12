@@ -62,6 +62,8 @@ void GameObject::SetOwner(Player * owner)
     UpdateImage();
 }
 
+void GameObject::HandleOtherObjectDestroyed(GameObject * obj) { }
+
 void GameObject::Update(float) { }
 
 } // namespace game

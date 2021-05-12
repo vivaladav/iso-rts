@@ -243,7 +243,7 @@ void ConquerPath::Update(float delta)
         {
             player->HandleCollectable(targetCell.obj);
 
-            mGameMap->DestroyObject(targetCell.obj);
+            mGameMap->RemoveAndDestroyObject(targetCell.obj);
         }
 
         // handle moving object

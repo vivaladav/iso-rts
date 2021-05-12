@@ -366,49 +366,18 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     return obj;
 }
 
-bool GameMap::DestroyObject(GameObject * obj)
+bool GameMap::RemoveAndDestroyObject(GameObject * obj)
 {
-    // remove from objects list
     auto it = std::find(mObjects.begin(), mObjects.end(), obj);
 
+    // object not found
     if(mObjects.end() == it)
         return false;
 
+    // remove from objects list and destroy
     mObjects.erase(it);
 
-    // update visibility map
-    // NOTE only local player for now
-    Player * localPlayer = mGame->GetLocalPlayer();
-
-    if(obj->GetOwner() == localPlayer)
-        DelPlayerObjVisibility(obj, localPlayer);
-
-    // generic cells update
-    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
-    {
-        const unsigned int indBase = r * mCols;
-
-        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
-        {
-            const unsigned int ind = indBase + c;
-
-            GameMapCell & cell = mCells[ind];
-
-            cell.walkable = true;
-            cell.obj = nullptr;
-
-            // update cell image
-            UpdateCellType(ind, cell);
-        }
-    }
-
-    // remove iso object from layer
-    IsoObject * isoObj = obj->GetIsoObject();
-    IsoLayer * layer = isoObj->GetLayer();
-    layer->ClearObject(isoObj);
-
-    // finally delete the object
-    delete obj;
+    DestroyObject(obj);
 
     return true;
 }
@@ -1274,8 +1243,25 @@ void GameMap::CheckGameEnd()
 void GameMap::Update(float delta)
 {
     // -- game objects --
-    for(GameObject * obj : mObjects)
+    auto itObj = mObjects.begin();
+
+    while(itObj != mObjects.end())
+    {
+        GameObject * obj = *itObj;
+
         obj->Update(delta);
+
+        if(obj->IsDestroyed())
+        {
+            GameObject * obj = *itObj;
+
+            itObj = mObjects.erase(itObj);
+
+            DestroyObject(obj);
+        }
+        else
+            ++itObj;
+    }
 
     for(CollectableGenerator * dg : mCollGen)
         dg->Update(delta);
@@ -1576,6 +1562,47 @@ Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> t
     }
 
     return targets[minInd];
+}
+
+void GameMap::DestroyObject(GameObject * obj)
+{
+    // update visibility map
+    // NOTE only local player for now
+    Player * localPlayer = mGame->GetLocalPlayer();
+
+    if(obj->GetOwner() == localPlayer)
+        DelPlayerObjVisibility(obj, localPlayer);
+
+    // generic cells update
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            GameMapCell & cell = mCells[ind];
+
+            cell.walkable = true;
+            cell.obj = nullptr;
+
+            // update cell image
+            UpdateCellType(ind, cell);
+        }
+    }
+
+    // remove iso object from layer
+    IsoObject * isoObj = obj->GetIsoObject();
+    IsoLayer * layer = isoObj->GetLayer();
+    layer->ClearObject(isoObj);
+
+    // notify other objects this has been destroyed
+    for(GameObject * o : mObjects)
+        o->HandleOtherObjectDestroyed(obj);
+
+    // finally delete the object
+    delete obj;
 }
 
 void  GameMap::AddVisibilityToCell(Player * player, int ind)

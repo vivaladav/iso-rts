@@ -46,6 +46,31 @@ void Unit::IncreaseUnitLevel()
     SetImage();
 }
 
+void Unit::HandleOtherObjectDestroyed(GameObject * obj)
+{
+    if(mTarget == obj)
+        mTarget = nullptr;
+}
+
+void Unit::Update(float delta)
+{
+    // attacking other object
+    if(mTarget)
+    {
+        mTimerAttack -= delta;
+
+        // time to shoot!
+        if(mTimerAttack < 0.f)
+        {
+            // TODO calculate chance of hitting based on attack and defense attributes
+            // for now assuming it's always hit
+            mTarget->SumHealth(-mWeaponDamage);
+
+            mTimerAttack = mTimeAttack;
+        }
+    }
+}
+
 void Unit::UpdateImage()
 {
     SetImage();

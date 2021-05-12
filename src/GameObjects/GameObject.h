@@ -161,6 +161,8 @@ public:
     bool IsVisible() const;
     void SetVisible(bool val);
 
+    bool IsDestroyed() const;
+
     const GameMapCell * GetCell() const;
     void SetCell(const GameMapCell * cell);
 
@@ -180,10 +182,15 @@ public:
 
     GameObjectType GetObjectType() const;
 
+    float GetHealth() const;
+    void SumHealth(float val);
+
     float GetSpeed() const;
 
     GameObjectActionId GetActiveAction() const;
     void SetActiveAction(GameObjectActionId action);
+
+    virtual void HandleOtherObjectDestroyed(GameObject * obj);
 
     virtual void Update(float delta);
 
@@ -194,6 +201,8 @@ protected:
     void SetStructure(bool val);
     void SetCanBeConquered(bool val);
 
+    void SetHealth(float health);
+    void SetMaxHealth(float max);
     void SetSpeed(float speed);
 
 protected:
@@ -220,6 +229,8 @@ private:
 
     int mVisLevel = 0;
 
+    float mMaxHealth = 100.f;
+    float mHealth = 100.f;
     float mSpeed = 0.f;
 
     bool mStructure = false;
@@ -253,6 +264,12 @@ inline void GameObject::SetVisited() { mVisited = true; }
 
 inline bool GameObject::IsVisible() const { return mVisible; }
 
+inline bool GameObject::IsDestroyed() const
+{
+    const float minH = 0.01f;
+    return mHealth < minH;
+}
+
 inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
 inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
@@ -273,6 +290,17 @@ inline unsigned int GameObject::GetCols() const { return mCols; }
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
 inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
+
+inline float GameObject::GetHealth() const { return mHealth; }
+inline void GameObject::SumHealth(float val)
+{
+    mHealth += val;
+
+    if(mHealth > mMaxHealth)
+        mHealth = mMaxHealth;
+}
+inline void GameObject::SetHealth(float health) { mHealth = health; }
+inline void GameObject::SetMaxHealth(float max) { mMaxHealth = max; }
 
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }

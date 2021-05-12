@@ -596,6 +596,15 @@ void ScreenGame::CreateUI()
         ClearCellOverlays();
     });
 
+    // attack
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_ATTACK, [this, player]
+    {
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(GameObjectActionId::ATTACK);
+
+        ClearCellOverlays();
+    });
+
     // conquer
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER_CELL, [this, player]
     {
@@ -802,7 +811,6 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
             const GameObjectActionId action = selUnit->GetActiveAction();
 
-            // move
             if(action == GameObjectActionId::MOVE)
             {
                 const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
@@ -810,6 +818,14 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                 // try to move only if clicked on a different cell
                 if(diffClick)
                     HandleUnitMoveOnMouseUp(selUnit, clickCell);
+            }
+            if(action == GameObjectActionId::ATTACK)
+            {
+                // clicked on nothing
+                if(isClickObjOwn || nullptr == clickObj)
+                    return ;
+
+                selUnit->SetAttackTarget(clickObj);
             }
             else if(action == GameObjectActionId::CONQUER_CELL)
             {

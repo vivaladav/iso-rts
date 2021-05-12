@@ -28,6 +28,12 @@ public:
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
 
+    void SetAttackTarget(GameObject * obj);
+
+    void HandleOtherObjectDestroyed(GameObject * obj) override;
+
+    void Update(float delta) override;
+
 protected:
     void UpdateImage() override;
 
@@ -40,12 +46,21 @@ private:
     // stats
     std::vector<int> mStats;
 
+    // weapon
+    float mTimeAttack = 0.25f;
+    float mTimerAttack = 0.f;
+    float mWeaponDamage = 10.f;
+
+    GameObject * mTarget = nullptr;
+
     UnitType mUnitType;
 };
 
 inline UnitType Unit::GetUnitType() const { return mUnitType; }
 
 inline int Unit::GetUnitLevel() const { return mLevel; }
+
+inline void Unit::SetAttackTarget(GameObject * obj) { mTarget = obj; }
 
 } // namespace game
 

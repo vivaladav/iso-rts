@@ -68,7 +68,7 @@ public:
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 
-    bool DestroyObject(GameObject * obj);
+    bool RemoveAndDestroyObject(GameObject * obj);
 
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
 
@@ -135,6 +135,8 @@ private:
 
     Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets);
 
+    void DestroyObject(GameObject * obj);
+
     // -- player visibility --
     void AddVisibilityToCell(Player * player, int ind);
     void DelVisibilityToCell(Player * player, int ind);
@@ -142,7 +144,6 @@ private:
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
     void PropagatePlayerObjVisibility(GameObject * obj, std::function<void(int)> visFun);
-
 
     void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
