@@ -12,6 +12,9 @@ class Texture;
 class TexturedRenderable : public Renderable
 {
 public:
+    TexturedRenderable() = default;
+    TexturedRenderable(Texture * tex);
+
     void SetRotation(double degs);
 
     void SetTexture(Texture * tex);

@@ -16,6 +16,11 @@ const int TexturedRenderable::FLIP_NO    = SDL_FLIP_NONE;
 const int TexturedRenderable::FLIP_HORIZ = SDL_FLIP_HORIZONTAL;
 const int TexturedRenderable::FLIP_VERT  = SDL_FLIP_VERTICAL;
 
+TexturedRenderable::TexturedRenderable(Texture * tex)
+{
+    SetTexture(tex);
+}
+
 void TexturedRenderable::Render()
 {
     mTex->SetColor(mR, mG, mB, mA);

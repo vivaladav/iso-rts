@@ -11,6 +11,9 @@ add_library(
     include/graphic/FontManager.h
     include/graphic/GraphicConstants.h
     include/graphic/Image.h
+    include/graphic/Particle.h
+    include/graphic/ParticlesManager.h
+    include/graphic/ParticlesUpdater.h
     include/graphic/Renderable.h
     include/graphic/Renderer.h
     include/graphic/Text.h
@@ -24,6 +27,7 @@ add_library(
     src/Font.cpp
     src/FontManager.cpp
     src/Image.cpp
+    src/ParticlesManager.cpp
     src/Renderable.cpp
     src/Renderer.cpp
     src/Text.cpp
