@@ -16,6 +16,7 @@
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/WallIndicator.h"
+#include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/DialogNewUnit.h"
@@ -29,6 +30,7 @@
 #include <core/event/MouseButtonEvent.h>
 #include <core/event/MouseMotionEvent.h>
 #include <graphic/Camera.h>
+#include <graphic/ParticlesManager.h>
 #include <graphic/Renderer.h>
 #include <graphic/TextureManager.h>
 #include <sgui/Stage.h>
@@ -52,6 +54,7 @@ constexpr float TIME_AI_MOVE = 0.5f;
 
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
+    , mPartMan(new lib::graphic::ParticlesManager)
     , mPathfinder(new lib::ai::Pathfinder)
     , mPrevCell(-1, -1)
     , mTimerEnergy(TIME_ENERGY_USE)
@@ -129,6 +132,8 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
+    delete mPartMan;
+
     for(auto ind : mConquestIndicators)
         delete ind;
 
@@ -168,6 +173,9 @@ void ScreenGame::Update(float delta)
     if(mCameraDirY != 0)
         mCamera->MoveY(mCameraDirY * cameraSpeed * delta);
 
+    // -- PARTICLES --
+    mPartMan->Update(delta);
+
     // -- UPDATE PLAYERS RESOURCES --
     mTimerEnergy -= delta;
 
@@ -198,6 +206,8 @@ void ScreenGame::Update(float delta)
 void ScreenGame::Render()
 {
     mIsoMap->Render();
+
+    mPartMan->Render();
 }
 
 void ScreenGame::GameOver()
@@ -277,6 +287,11 @@ void ScreenGame::ClearObjectAction(GameObject * obj)
 
         ++it;
     }
+}
+
+lib::graphic::ParticlesUpdater * ScreenGame::GetParticleUpdater(ParticlesUpdaterId updaterId)
+{
+    return mPartMan->GetUpdater(updaterId);
 }
 
 void ScreenGame::InitSprites()
@@ -524,6 +539,13 @@ void ScreenGame::InitSprites()
     }
 
     tm->RegisterSprite(SpriteFileObjActionButton, rectsObjActButton);
+}
+
+void ScreenGame::InitParticlesSystem()
+{
+    // SINGlE LASER
+    auto u = new UpdaterSingleLaser;
+    mPartMan->RegisterUpdater(PU_SINGLE_LASER, u);
 }
 
 void ScreenGame::CreateIsoMap()

@@ -11,7 +11,12 @@
 
 namespace lib
 {
-    namespace graphic { class Camera; }
+    namespace graphic
+    {
+        class Camera;
+        class ParticlesManager;
+        class ParticlesUpdater;
+    }
     namespace ai { class Pathfinder; }
     namespace sgui { class Widget; }
 }
@@ -37,6 +42,11 @@ class WallIndicator;
 enum PlayerFaction : unsigned int;
 enum UnitType : unsigned int;
 
+enum ParticlesUpdaterId : unsigned int
+{
+    PU_SINGLE_LASER
+};
+
 class ScreenGame : public Screen
 {
 public:
@@ -61,8 +71,12 @@ public:
 
     void ClearObjectAction(GameObject * obj);
 
+    lib::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
+
 private:
     void InitSprites();
+
+    void InitParticlesSystem();
 
     void CreateIsoMap();
     void CreateLayers();
@@ -110,6 +124,8 @@ private:
 
     int mCameraDirX = 0;
     int mCameraDirY = 0;
+
+    lib::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --
     std::vector<lib::sgui::Widget *> mWidgetsToDelete;

@@ -14,6 +14,7 @@ class ParticlesManager
 public:
     ~ParticlesManager();
 
+    ParticlesUpdater * GetUpdater(unsigned int key);
     void RegisterUpdater(unsigned int key, ParticlesUpdater * updater);
     void UnregisterUpdater(unsigned int key);
 

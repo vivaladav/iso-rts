@@ -62,7 +62,7 @@ void GameObject::SetOwner(Player * owner)
     UpdateImage();
 }
 
-void GameObject::HandleOtherObjectDestroyed(GameObject * obj) { }
+void GameObject::HandleOtherObjectDestroyed(GameObject *) { }
 
 void GameObject::Update(float) { }
 
