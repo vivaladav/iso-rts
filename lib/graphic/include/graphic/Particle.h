@@ -10,6 +10,7 @@ namespace graphic
 class Particle : public TexturedRenderable
 {
 public:
+    Particle() = default;
     Particle(Texture * tex);
 
     bool IsActive() const;

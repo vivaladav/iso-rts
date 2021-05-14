@@ -7,20 +7,22 @@ namespace lib
 namespace graphic
 {
 
+ParticlesManager::~ParticlesManager()
+{
+    for(auto it : mUpdaters)
+        delete it.second;
+}
+
 void ParticlesManager::Update(float delta)
 {
     for(auto it : mUpdaters)
         it.second->Update(delta);
 }
 
-void ParticlesManager::AddParticleToUpdater(unsigned int updaterId)
+void ParticlesManager::Render()
 {
-    auto res = mUpdaters.find(updaterId);
-
-    if(mUpdaters.end() == res)
-        return ;
-
-    // TODO assign particle
+    for(auto it : mUpdaters)
+        it.second->Render();
 }
 
 } // namespace graphic

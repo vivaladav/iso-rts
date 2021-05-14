@@ -8,32 +8,40 @@ namespace graphic
 {
 
 class Particle;
+class Texture;
+
+struct ParticleData
+{
+    Texture * tex = nullptr;
+};
 
 class ParticlesUpdater
 {
 public:
     virtual ~ParticlesUpdater();
 
-    void AddParticle(Particle * p);
+    void AddParticle(const ParticleData & initData);
 
     virtual void Update(float delta) = 0;
 
-private:
-    virtual void OnParticleAdded() = 0;
+    void Render();
 
 private:
-    std::vector<Particle *> mParticles;
+    virtual Particle * CreateParticle(const ParticleData & initData) = 0;
+
+protected:
+    std::vector<Particle *> mActiveParticles;
 };
 
 // ==================== INLINE FUNCTIONS ====================
 
 inline ParticlesUpdater::~ParticlesUpdater() { }
 
-inline void ParticlesUpdater::AddParticle(Particle * p)
+inline void ParticlesUpdater::AddParticle(const ParticleData & initData)
 {
-    mParticles.push_back(p);
+    Particle * p = CreateParticle(initData);
 
-    OnParticleAdded();
+    mActiveParticles.push_back(p);
 }
 
 } // namespace graphic
