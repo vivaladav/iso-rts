@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <map>
 
 namespace lib
 {
@@ -21,7 +21,7 @@ public:
     void Render();
 
 private:
-    std::unordered_map<unsigned int, ParticlesUpdater *> mUpdaters;
+    std::map<unsigned int, ParticlesUpdater *> mUpdaters;
 };
 
 inline void ParticlesManager::RegisterUpdater(unsigned int key, ParticlesUpdater * updater)

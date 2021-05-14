@@ -7,6 +7,8 @@ namespace lib
 namespace graphic
 {
 
+ParticlesUpdater::~ParticlesUpdater() { }
+
 void ParticlesUpdater::Render()
 {
     for(auto p : mActiveParticles)

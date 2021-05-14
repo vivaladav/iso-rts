@@ -35,8 +35,6 @@ protected:
 
 // ==================== INLINE FUNCTIONS ====================
 
-inline ParticlesUpdater::~ParticlesUpdater() { }
-
 inline void ParticlesUpdater::AddParticle(const ParticleData & initData)
 {
     Particle * p = CreateParticle(initData);

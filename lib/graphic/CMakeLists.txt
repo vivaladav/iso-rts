@@ -28,6 +28,7 @@ add_library(
     src/FontManager.cpp
     src/Image.cpp
     src/ParticlesManager.cpp
+    src/ParticlesUpdater.cpp
     src/Renderable.cpp
     src/Renderer.cpp
     src/Text.cpp
