@@ -26,7 +26,7 @@ void UpdaterSingleLaser::Update(float delta)
         const float vel = p->GetVelocity();
         const float x = p->GetXf() + (vel * delta);
         const float y = p->GetYf() + (vel * delta);
-        p->SetPosition(x, y);
+        p->SetPositionf(x, y);
 
         const float diffX = std::fabs(x - p->GetTargetX());
 
@@ -68,7 +68,7 @@ lib::graphic::Particle * UpdaterSingleLaser::CreateParticle(const lib::graphic::
     // init data
     auto data = static_cast<const ParticleDataSingleLaser &>(initData);
     p->SetTexture(data.tex);
-    p->SetPosition(data.x0, data.y0);
+    p->SetPositionf(data.x0, data.y0);
     p->SetRotation(data.angle);
     p->SetTarget(data.targetX, data.targetY);
     p->SetVelocity(data.velocity);

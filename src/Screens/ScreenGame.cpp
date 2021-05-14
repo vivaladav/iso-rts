@@ -71,6 +71,8 @@ ScreenGame::ScreenGame(Game * game)
 
     InitSprites();
 
+    InitParticlesSystem();
+
     // -- ISOMETRIC MAP --
     CreateIsoMap();
     CreateLayers();

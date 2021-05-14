@@ -331,6 +331,9 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     obj->SetCell(&mCells[ind0]);
     obj->SetSize(rows, cols);
 
+    // links to other objects
+    obj->SetScreen(mScreenGame);
+
     // store object in map list
     mObjects.push_back(obj);
 
@@ -981,6 +984,9 @@ void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D &
     Unit * unit = new Unit(data, 1, 1);
     unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
+
+    // links to other objects
+    unit->SetScreen(mScreenGame);
 
     // update cell
     gcell.obj = unit;

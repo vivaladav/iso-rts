@@ -12,7 +12,7 @@ public:
 
     float GetXf() const;
     float GetYf() const;
-    void SetPosition(float x, float y);
+    void SetPositionf(float x, float y);
 
     float GetTargetX() const;
     float GetTargetY() const;
@@ -33,7 +33,7 @@ private:
 
 inline float ParticleSingleLaser::GetXf() const { return mPosXf; }
 inline float ParticleSingleLaser::GetYf() const { return mPosYf; }
-inline void ParticleSingleLaser::SetPosition(float x, float y)
+inline void ParticleSingleLaser::SetPositionf(float x, float y)
 {
     mPosXf = x;
     mPosYf = y;

@@ -34,11 +34,12 @@ public:
 
     void Update(float delta) override;
 
-protected:
+private:
     void UpdateImage() override;
 
-private:
     void SetImage();
+
+    void Shoot();
 
 private:
     int mLevel = 0;

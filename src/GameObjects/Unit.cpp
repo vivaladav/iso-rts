@@ -5,6 +5,8 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/UnitData.h"
+#include "Particles/UpdaterSingleLaser.h"
+#include "Screens/ScreenGame.h"
 
 #include <graphic/TextureManager.h>
 
@@ -62,9 +64,7 @@ void Unit::Update(float delta)
         // time to shoot!
         if(mTimerAttack < 0.f)
         {
-            // TODO calculate chance of hitting based on attack and defense attributes
-            // for now assuming it's always hit
-            mTarget->SumHealth(-mWeaponDamage);
+            Shoot();
 
             mTimerAttack = mTimeAttack;
         }
@@ -95,6 +95,38 @@ void Unit::SetImage()
     lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 
     GetIsoObject()->SetTexture(tex);
+}
+
+void Unit::Shoot()
+{
+    // TODO calculate chance of hitting based on attack and defense attributes
+    // for now assuming it's always hit
+
+    auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
+
+    lib::graphic::Texture * tex = lib::graphic::TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, SpriteIdUnitsParticles::SPR_UPART_LASER_F1);
+
+    const float x0 = GetIsoObject()->GetX();
+    const float y0 = GetIsoObject()->GetY();
+    const float tX = mTarget->GetIsoObject()->GetX();
+    const float tY = mTarget->GetIsoObject()->GetY();
+    const float vel = 10.f;
+
+    const ParticleDataSingleLaser pd =
+    {
+        tex,
+        0,                          //        double angle = 0;
+        x0,     //        float x0 = 0.f;
+        y0,                            //        float y0 = 0.f;
+        tX,                            //        float targetX = 0.f;
+        tY,                            //        float targetY = 0.f;
+        vel                            //        float velocity = 0.f;
+    };
+
+    pu->AddParticle(pd);
+
+    // TODO assign damage after particle has hit, not before
+    mTarget->SumHealth(-mWeaponDamage);
 }
 
 } // namespace game

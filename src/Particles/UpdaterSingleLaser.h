@@ -9,6 +9,17 @@ namespace game
 
 struct ParticleDataSingleLaser : public lib::graphic::ParticleData
 {
+    ParticleDataSingleLaser(lib::graphic::Texture * t, double ang, float x, float y, float tx, float ty, float vel)
+        : ParticleData(t)
+        , angle(ang)
+        , x0(x)
+        , y0(y)
+        , targetX(tx)
+        , targetY(ty)
+        , velocity(vel)
+    {
+    }
+
     double angle = 0;
     float x0 = 0.f;
     float y0 = 0.f;

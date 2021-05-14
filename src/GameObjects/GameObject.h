@@ -135,12 +135,15 @@ enum GameObjectActionId : unsigned int
 class GameMapCell;
 class IsoObject;
 class Player;
+class ScreenGame;
 
 class GameObject
 {
 public:
     GameObject(GameObjectType type, int rows, int cols);
     virtual ~GameObject();
+
+    void SetScreen(ScreenGame * screen);
 
     unsigned int GetObjectId() const;
 
@@ -197,6 +200,8 @@ public:
 protected:
     virtual void UpdateImage() = 0;
 
+    ScreenGame * GetScreen() const;
+
     void SetVisibilityLevel(int val);
     void SetStructure(bool val);
     void SetCanBeConquered(bool val);
@@ -216,6 +221,8 @@ private:
     IsoObject * mIsoObj = nullptr;
 
     unsigned int mObjId;
+
+    ScreenGame * mScreen = nullptr;
 
     const GameMapCell * mCell = nullptr;
 
@@ -245,6 +252,8 @@ private:
     bool mVisited = false;
 
 };
+
+inline void GameObject::SetScreen(ScreenGame * screen) { mScreen = screen; }
 
 inline unsigned int GameObject::GetObjectId() const { return mObjId; }
 
@@ -286,6 +295,8 @@ inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }
+
+inline ScreenGame * GameObject::GetScreen() const { return mScreen; }
 
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
