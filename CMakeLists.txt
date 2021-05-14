@@ -79,6 +79,10 @@ add_executable(
     src/Indicators/MoveIndicator.cpp
     src/Indicators/WallIndicator.h
     src/Indicators/WallIndicator.cpp
+    src/Particles/ParticleSingleLaser.h
+    src/Particles/ParticleSingleLaser.cpp
+    src/Particles/UpdaterSingleLaser.h
+    src/Particles/UpdaterSingleLaser.cpp
     src/Screens/Screen.h
     src/Screens/Screen.cpp
     src/Screens/ScreenGame.h
