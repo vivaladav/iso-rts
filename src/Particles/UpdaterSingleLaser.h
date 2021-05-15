@@ -9,14 +9,14 @@ namespace game
 
 struct ParticleDataSingleLaser : public lib::graphic::ParticleData
 {
-    ParticleDataSingleLaser(lib::graphic::Texture * t, double ang, float x, float y, float tx, float ty, float vel)
+    ParticleDataSingleLaser(lib::graphic::Texture * t, double ang, float x, float y, float tx, float ty, float sp)
         : ParticleData(t)
         , angle(ang)
         , x0(x)
         , y0(y)
         , targetX(tx)
         , targetY(ty)
-        , velocity(vel)
+        , speed(sp)
     {
     }
 
@@ -25,7 +25,7 @@ struct ParticleDataSingleLaser : public lib::graphic::ParticleData
     float y0 = 0.f;
     float targetX = 0.f;
     float targetY = 0.f;
-    float velocity = 0.f;
+    float speed = 0.f;
 };
 
 class UpdaterSingleLaser : public lib::graphic::ParticlesUpdater

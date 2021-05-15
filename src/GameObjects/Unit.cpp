@@ -8,7 +8,10 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
 
+#include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
+
+#include <cmath>
 
 namespace game
 {
@@ -99,28 +102,47 @@ void Unit::SetImage()
 
 void Unit::Shoot()
 {
+    using namespace lib::graphic;
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 
+    const Player * owner = GetOwner();
+
+    // avoid to set an image when there's no owner set
+    if(nullptr == owner)
+        return ;
+
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    lib::graphic::Texture * tex = lib::graphic::TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, SpriteIdUnitsParticles::SPR_UPART_LASER_F1);
+    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
+    Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
-    const float x0 = GetIsoObject()->GetX();
-    const float y0 = GetIsoObject()->GetY();
-    const float tX = mTarget->GetIsoObject()->GetX();
-    const float tY = mTarget->GetIsoObject()->GetY();
-    const float vel = 10.f;
+    IsoObject * isoObj = GetIsoObject();
+    IsoObject * isoTarget = mTarget->GetIsoObject();
+
+    const float x0 = isoObj->GetX() + isoObj->GetWidth()* 0.5f;
+    const float y0 = isoObj->GetY();
+    const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
+    const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
+    const float speed = 400.f;
+
+    const float rad2deg = 180.f / M_PI;
+    const float dy0 = tY - y0;
+    const float dx1 = tX - x0;
+    const float dy1 = dy0;
+    const float s = dy0 / sqrtf(dx1 * dx1 + dy1 * dy1);
+    const float as = asinf(s);
+    const double angle = as * rad2deg;
 
     const ParticleDataSingleLaser pd =
     {
         tex,
-        0,                          //        double angle = 0;
-        x0,     //        float x0 = 0.f;
-        y0,                            //        float y0 = 0.f;
-        tX,                            //        float targetX = 0.f;
-        tY,                            //        float targetY = 0.f;
-        vel                            //        float velocity = 0.f;
+        angle,
+        x0,
+        y0,
+        tX,
+        tY,
+        speed
     };
 
     pu->AddParticle(pd);

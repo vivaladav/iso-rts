@@ -447,12 +447,12 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteFileUnits, rectsUnits);
 
-    // UNITS
+    // UNIT PARTICLES
     std::vector<lib::core::Rectd> rectsUnitsPart
     {
-        { 0, 0, 28, 2 },
-        { 0, 2, 28, 2 },
-        { 0, 4, 28, 2 }
+        { 0, 0, 20, 2 },
+        { 0, 2, 20, 2 },
+        { 0, 4, 20, 2 }
     };
 
     tm->RegisterSprite(SpriteFileUnitsParticles, rectsUnitsPart);

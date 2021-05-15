@@ -17,37 +17,20 @@ void UpdaterSingleLaser::Update(float delta)
 {
     auto it = mActiveParticles.begin();
 
-    const float minDist = 0.5f;
-
     while(it != mActiveParticles.end())
     {
         auto p = static_cast<ParticleSingleLaser *>(*it);
 
-        const float vel = p->GetVelocity();
-        const float x = p->GetXf() + (vel * delta);
-        const float y = p->GetYf() + (vel * delta);
-        p->SetPositionf(x, y);
-
-        const float diffX = std::fabs(x - p->GetTargetX());
-
-        if(diffX > minDist)
-        {
-            ++it;
-            continue;
-        }
-
-        const float diffY = std::fabs(y - p->GetTargetY());
-
-        if(diffY > minDist)
-        {
-            ++it;
-            continue;
-        }
+        p->Move(delta);
 
         // reached target -> particle can be removed
-        it = mActiveParticles.erase(it);
-
-        mParticles.push_back(p);
+        if(p->IsDone())
+        {
+            it = mActiveParticles.erase(it);
+            mParticles.push_back(p);
+        }
+        else
+            ++it;
     }
 }
 
@@ -68,10 +51,9 @@ lib::graphic::Particle * UpdaterSingleLaser::CreateParticle(const lib::graphic::
     // init data
     auto data = static_cast<const ParticleDataSingleLaser &>(initData);
     p->SetTexture(data.tex);
-    p->SetPositionf(data.x0, data.y0);
+    p->SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
     p->SetRotation(data.angle);
-    p->SetTarget(data.targetX, data.targetY);
-    p->SetVelocity(data.velocity);
+    p->SetSpeed(data.speed);
 
     return p;
 }
