@@ -7,6 +7,8 @@
 
 #include <SDL2/SDL.h>
 
+#include <cmath>
+
 namespace lib
 {
 namespace graphic
@@ -48,12 +50,38 @@ void TexturedRenderable::SetTexture(Texture * tex)
 
     mOrigW = mRect->w;
     mOrigH = mRect->h;
+
+    UpdateRotatedSize();
 }
 
 void TexturedRenderable::DeleteTexture()
 {
     delete mTex;
     mTex = nullptr;
+}
+
+void TexturedRenderable::UpdateRotatedSize()
+{
+    const float halfW = GetWidth() * 0.5f;
+    const float halfH = GetHeight() * 0.5f;
+
+    const float x0 = -halfW;
+    const float y0 = -halfH;
+
+    const float x1 = halfW;
+    const float y1 = halfH;
+
+    const float c = cosf(mRot);
+    const float s = sinf(mRot);
+
+    const float rx0 = x0 * c - y0 * s;
+    const float ry0 = y0 * c + x0 * s;
+
+    const float rx1 = x1 * c - y1 * s;
+    const float ry1 = y1 * c + x1 * s;
+
+    mRotW = fabsf(roundf(rx1 - rx0));
+    mRotH = fabsf(roundf(ry1 - ry0));
 }
 
 } // namespace graphic
