@@ -5,10 +5,12 @@
 namespace game
 {
 
+struct DataParticleSingleLaser;
+
 class ParticleSingleLaser : public lib::graphic::Particle
 {
 public:
-    ParticleSingleLaser();
+    void SetData(const DataParticleSingleLaser & data);
 
     float GetXf() const;
     float GetYf() const;
@@ -16,14 +18,15 @@ public:
     float GetTargetX() const;
     float GetTargetY() const;
 
-    void SetStartAndTarget(int x0, int y0, int tx, int ty);
-
     float GetSpeed() const;
-    void SetSpeed(float vel);
 
     void Move(float delta);
 
     bool IsDone() const;
+
+private:
+    void SetStartAndTarget(int x0, int y0, int tx, int ty);
+    void SetSpeed(float vel);
 
 private:
     float mPosXf = 0.f;

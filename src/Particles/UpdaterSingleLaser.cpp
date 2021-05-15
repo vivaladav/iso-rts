@@ -1,5 +1,6 @@
 #include "Particles/UpdaterSingleLaser.h"
 
+#include "Particles/DataParticleSingleLaser.h"
 #include "Particles/ParticleSingleLaser.h"
 
 #include <cmath>
@@ -49,11 +50,8 @@ lib::graphic::Particle * UpdaterSingleLaser::CreateParticle(const lib::graphic::
     }
 
     // init data
-    auto data = static_cast<const ParticleDataSingleLaser &>(initData);
-    p->SetTexture(data.tex);
-    p->SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
-    p->SetRotation(data.angle);
-    p->SetSpeed(data.speed);
+    auto data = static_cast<const DataParticleSingleLaser &>(initData);
+    p->SetData(data);
 
     return p;
 }

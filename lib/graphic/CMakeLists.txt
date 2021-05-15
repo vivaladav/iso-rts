@@ -12,6 +12,7 @@ add_library(
     include/graphic/GraphicConstants.h
     include/graphic/Image.h
     include/graphic/Particle.h
+    include/graphic/ParticleData.h
     include/graphic/ParticlesManager.h
     include/graphic/ParticlesUpdater.h
     include/graphic/Renderable.h

@@ -5,6 +5,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/UnitData.h"
+#include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
 
@@ -120,11 +121,11 @@ void Unit::Shoot()
     IsoObject * isoObj = GetIsoObject();
     IsoObject * isoTarget = mTarget->GetIsoObject();
 
-    const float x0 = isoObj->GetX() + isoObj->GetWidth()* 0.5f;
+    const float x0 = isoObj->GetX() + isoObj->GetWidth() * 0.5f;
     const float y0 = isoObj->GetY();
     const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
-    const float speed = 400.f;
+    const float speed = 350.f;
 
     const float rad2deg = 180.f / M_PI;
     const float dy0 = tY - y0;
@@ -132,9 +133,29 @@ void Unit::Shoot()
     const float dy1 = dy0;
     const float s = dy0 / sqrtf(dx1 * dx1 + dy1 * dy1);
     const float as = asinf(s);
-    const double angle = as * rad2deg;
+    const double angleDeg = as * rad2deg;
+    double angle;
 
-    const ParticleDataSingleLaser pd =
+    if(dx1 < 0.f)
+    {
+        // bottom left
+        if(dy1 > 0.f)
+            angle = 180.f - angleDeg;
+        // top left
+        else
+            angle = 180.f - angleDeg;
+    }
+    else
+    {
+        // bottom right
+        if(dy1 > 0.f)
+            angle = angleDeg;
+        // top right
+        else
+            angle = 360.f + angleDeg;
+    }
+
+    const DataParticleSingleLaser pd =
     {
         tex,
         angle,
