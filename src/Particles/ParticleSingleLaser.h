@@ -5,6 +5,9 @@
 namespace game
 {
 
+class GameMap;
+class GameObject;
+
 struct DataParticleSingleLaser;
 
 class ParticleSingleLaser : public lib::graphic::Particle
@@ -23,12 +26,16 @@ public:
     void Move(float delta);
 
     bool IsDone() const;
+    void OnDone();
 
 private:
     void SetStartAndTarget(int x0, int y0, int tx, int ty);
     void SetSpeed(float vel);
 
 private:
+    GameMap * mGameMap = nullptr;
+    GameObject * mTarget = nullptr;
+
     float mPosXf = 0.f;
     float mPosYf = 0.f;
 
@@ -38,6 +45,8 @@ private:
     float mSpeed = 0.f;
     float mVelX = 0.f;
     float mVelY = 0.f;
+
+    float mDamage = 0.f;
 
     bool mDoneX = false;
     bool mDoneY = false;

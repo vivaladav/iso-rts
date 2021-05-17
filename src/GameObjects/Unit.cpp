@@ -2,6 +2,7 @@
 
 #include "GameConstants.h"
 #include "GameData.h"
+#include "GameMap.h"
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/UnitData.h"
@@ -52,12 +53,6 @@ void Unit::IncreaseUnitLevel()
     SetImage();
 }
 
-void Unit::HandleOtherObjectDestroyed(GameObject * obj)
-{
-    if(mTarget == obj)
-        mTarget = nullptr;
-}
-
 void Unit::Update(float delta)
 {
     // attacking other object
@@ -68,7 +63,12 @@ void Unit::Update(float delta)
         // time to shoot!
         if(mTimerAttack < 0.f)
         {
-            Shoot();
+            // target still alive -> shoot
+            if(GetGameMap()->HasObject(mTarget))
+                Shoot();
+            // target destroyed -> clear pointer
+            else
+                mTarget = nullptr;
 
             mTimerAttack = mTimeAttack;
         }
@@ -158,18 +158,18 @@ void Unit::Shoot()
     const DataParticleSingleLaser pd =
     {
         tex,
+        GetGameMap(),
+        mTarget,
         angle,
         x0,
         y0,
         tX,
         tY,
-        speed
+        speed,
+        mWeaponDamage
     };
 
     pu->AddParticle(pd);
-
-    // TODO assign damage after particle has hit, not before
-    mTarget->SumHealth(-mWeaponDamage);
 }
 
 } // namespace game

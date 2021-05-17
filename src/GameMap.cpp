@@ -332,10 +332,12 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     obj->SetSize(rows, cols);
 
     // links to other objects
+    obj->SetGameMap(this);
     obj->SetScreen(mScreenGame);
 
-    // store object in map list
+    // store object in map list and in registry
     mObjects.push_back(obj);
+    mObjectsSet.insert(obj);
 
     // generic cells update
     for(unsigned int r = r1; r <= r0; ++r)
@@ -377,8 +379,9 @@ bool GameMap::RemoveAndDestroyObject(GameObject * obj)
     if(mObjects.end() == it)
         return false;
 
-    // remove from objects list and destroy
+    // remove from objects list and set and then destroy it
     mObjects.erase(it);
+    mObjectsSet.erase(obj);
 
     DestroyObject(obj);
 
@@ -986,6 +989,7 @@ void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D &
     unit->SetCell(&mCells[ind]);
 
     // links to other objects
+    unit->SetGameMap(this);
     unit->SetScreen(mScreenGame);
 
     // update cell
@@ -1261,7 +1265,9 @@ void GameMap::Update(float delta)
         {
             GameObject * obj = *itObj;
 
+            // erase object from vector and set
             itObj = mObjects.erase(itObj);
+            mObjectsSet.erase(obj);
 
             DestroyObject(obj);
         }
@@ -1602,10 +1608,6 @@ void GameMap::DestroyObject(GameObject * obj)
     IsoObject * isoObj = obj->GetIsoObject();
     IsoLayer * layer = isoObj->GetLayer();
     layer->ClearObject(isoObj);
-
-    // notify other objects this has been destroyed
-    for(GameObject * o : mObjects)
-        o->HandleOtherObjectDestroyed(obj);
 
     // finally delete the object
     delete obj;

@@ -27,6 +27,8 @@ void UpdaterSingleLaser::Update(float delta)
         // reached target -> particle can be removed
         if(p->IsDone())
         {
+            p->OnDone();
+
             it = mActiveParticles.erase(it);
             mParticles.push_back(p);
         }

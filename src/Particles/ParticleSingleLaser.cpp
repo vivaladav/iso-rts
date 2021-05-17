@@ -1,5 +1,7 @@
 #include "Particles/ParticleSingleLaser.h"
 
+#include "GameMap.h"
+#include "GameObjects/GameObject.h"
 #include "Particles/DataParticleSingleLaser.h"
 
 #include <cmath>
@@ -14,6 +16,10 @@ void ParticleSingleLaser::SetData(const DataParticleSingleLaser & data)
     SetSpeed(data.speed);
     // this has to be called after SetRotation
     SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
+
+    mGameMap = data.map;
+    mTarget = data.target;
+    mDamage = data.damage;
 }
 
 void ParticleSingleLaser::SetStartAndTarget(int x0, int y0, int tx, int ty)
@@ -102,6 +108,16 @@ void ParticleSingleLaser::Move(float delta)
 
         SetY(posY);
     }
+}
+
+void ParticleSingleLaser::OnDone()
+{
+    // target is gone
+    if(!mGameMap->HasObject(mTarget))
+        return ;
+
+    // TODO check hit box
+    mTarget->SumHealth(-mDamage);
 }
 
 } // namespace game

@@ -30,8 +30,6 @@ public:
 
     void SetAttackTarget(GameObject * obj);
 
-    void HandleOtherObjectDestroyed(GameObject * obj) override;
-
     void Update(float delta) override;
 
 private:

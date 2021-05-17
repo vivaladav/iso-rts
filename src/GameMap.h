@@ -5,6 +5,7 @@
 #include <ai/IPathMap.h>
 
 #include <functional>
+#include <unordered_set>
 #include <vector>
 
 namespace game
@@ -67,6 +68,8 @@ public:
     GameObject * CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
+
+    bool HasObject(GameObject * obj) const;
 
     bool RemoveAndDestroyObject(GameObject * obj);
 
@@ -166,6 +169,7 @@ private:
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
+    std::unordered_set<GameObject *> mObjectsSet;
     std::vector<CollectableGenerator *> mCollGen;
     std::vector<ObjectPath *> mPaths;
     std::vector<ConquerPath *> mConquerPaths;
@@ -232,6 +236,11 @@ inline void GameMap::SetCellChanging(unsigned int r, unsigned int c, bool changi
 {
     if(r < mRows && c < mCols)
         mCells[r * mCols + c].changing = changing;
+}
+
+inline bool GameMap::HasObject(GameObject * obj) const
+{
+    return mObjectsSet.find(obj) != mObjectsSet.end();
 }
 
 /**

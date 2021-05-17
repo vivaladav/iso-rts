@@ -132,6 +132,7 @@ enum GameObjectActionId : unsigned int
     NUM_OBJ_ACTIONS
 };
 
+class GameMap;
 class GameMapCell;
 class IsoObject;
 class Player;
@@ -143,6 +144,7 @@ public:
     GameObject(GameObjectType type, int rows, int cols);
     virtual ~GameObject();
 
+    void SetGameMap(GameMap * map);
     void SetScreen(ScreenGame * screen);
 
     unsigned int GetObjectId() const;
@@ -193,13 +195,12 @@ public:
     GameObjectActionId GetActiveAction() const;
     void SetActiveAction(GameObjectActionId action);
 
-    virtual void HandleOtherObjectDestroyed(GameObject * obj);
-
     virtual void Update(float delta);
 
 protected:
     virtual void UpdateImage() = 0;
 
+    GameMap * GetGameMap() const;
     ScreenGame * GetScreen() const;
 
     void SetVisibilityLevel(int val);
@@ -222,6 +223,7 @@ private:
 
     unsigned int mObjId;
 
+    GameMap * mGameMap = nullptr;
     ScreenGame * mScreen = nullptr;
 
     const GameMapCell * mCell = nullptr;
@@ -253,6 +255,7 @@ private:
 
 };
 
+inline void GameObject::SetGameMap(GameMap * map) { mGameMap = map; }
 inline void GameObject::SetScreen(ScreenGame * screen) { mScreen = screen; }
 
 inline unsigned int GameObject::GetObjectId() const { return mObjId; }
@@ -296,6 +299,7 @@ inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }
 
+inline GameMap * GameObject::GetGameMap() const { return mGameMap; }
 inline ScreenGame * GameObject::GetScreen() const { return mScreen; }
 
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
