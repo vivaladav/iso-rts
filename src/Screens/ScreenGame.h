@@ -83,6 +83,7 @@ private:
 
     void CreateUI();
     void HidePanelObjActions();
+    void ClearNewUnitDialog();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);

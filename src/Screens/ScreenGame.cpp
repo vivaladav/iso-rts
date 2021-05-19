@@ -601,9 +601,7 @@ void ScreenGame::CreateUI()
                 const UnitType type = mDialogNewUnit->GetTypeToBuild();
                 SetupNewUnit(type, player->GetSelectedObject(), player);
 
-                // schedule dialog deletion
-                mWidgetsToDelete.push_back(mDialogNewUnit);
-                mDialogNewUnit = nullptr;
+                ClearNewUnitDialog();
             });
 
             // populate available units
@@ -723,6 +721,17 @@ void ScreenGame::HidePanelObjActions()
 {
     mPanelObjActions->ClearObject();
     mPanelObjActions->SetVisible(false);
+}
+
+void ScreenGame::ClearNewUnitDialog()
+{
+    // no dialog -> nothing to do
+    if(nullptr == mDialogNewUnit)
+        return ;
+
+    // schedule dialog deletion
+    mWidgetsToDelete.push_back(mDialogNewUnit);
+    mDialogNewUnit = nullptr;
 }
 
 void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
@@ -1006,6 +1015,8 @@ void ScreenGame::ClearSelection(Player * player)
     mPanelObjActions->SetVisible(false);
 
     ClearCellOverlays();
+
+    ClearNewUnitDialog();
 }
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
