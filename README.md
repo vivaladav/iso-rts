@@ -5,11 +5,12 @@ An isometric Real Time Strategy game for PC.
 
 You can follow the development on:
 - [Newsletter](https://virtueror.com)
-- [Instagram](https://www.instagram.com/vivalagamedev/)
 - [Linkedin](https://www.linkedin.com/company/vivaladev)
 - [Twitter](https://twitter.com/vivaladev)
 - [Youtube](https://www.youtube.com/channel/UCUYD1ElkmiIklQRemVGxarw).
 
 ## Current status
 Early development, not playable yet.
-![Virtueror, current state screenshot](https://i.imgur.com/ztxAaao.png)
+![Virtueror, red faction](https://i.imgur.com/KE1eKCU.png)
+![Virtueror, blue faction](https://i.imgur.com/Q1E9nLU.png)
+![Virtueror, green faction](https://i.imgur.com/ztxAaao.png)
