@@ -34,48 +34,20 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     auto tm = TextureManager::Instance();
     Texture * tex = nullptr;
 
-    switch(icon)
+    const SpriteIdObjActionButton texId[] =
     {
-        case UNITS:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_UNITS);
-            mIcon->SetTexture(tex);
-        break;
+        IND_BUTTON_ICON_UNITS,
+        IND_BUTTON_ICON_MOVE,
+        IND_BUTTON_ICON_ATTACK,
+        IND_BUTTON_ICON_CONQUER_CELL,
+        IND_BUTTON_ICON_BUILD_WALL,
+        IND_BUTTON_ICON_BUILD_STRUCT,
+        IND_BUTTON_ICON_UPGRADE,
+        IND_BUTTON_ICON_CANCEL
+    };
 
-        case MOVE:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_MOVE);
-            mIcon->SetTexture(tex);
-        break;
-
-        case ATTACK:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_ATTACK);
-            mIcon->SetTexture(tex);
-        break;
-
-        case CONQUER_CELL:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_CONQUER_CELL);
-            mIcon->SetTexture(tex);
-        break;
-
-        case BUILD_WALL:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_BUILD_WALL);
-            mIcon->SetTexture(tex);
-        break;
-
-        case UPGRADE:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_UPGRADE);
-            mIcon->SetTexture(tex);
-        break;
-
-        case CANCEL:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_ICON_CANCEL);
-            mIcon->SetTexture(tex);
-        break;
-
-        // this should not happen
-        default:
-
-        break;
-    }
+    tex = tm->GetSprite(SpriteFileObjActionButton, texId[icon]);
+    mIcon->SetTexture(tex);
 
     // -- CREATE SHORTCUT TEXT --
     auto fm = FontManager::Instance();

@@ -26,6 +26,7 @@ public:
         BTN_ATTACK,
         BTN_CONQUER_CELL,
         BTN_BUILD_WALL,
+        BTN_BUILD_STRUCT,
         BTN_UPGRADE,
         BTN_CANCEL,
 

@@ -528,7 +528,7 @@ void ScreenGame::InitSprites()
     y += indH;
 
     // icons
-    indCols = 7;
+    indCols = 8;
     indW = 48;
     indH = 48;
 
@@ -619,6 +619,14 @@ void ScreenGame::CreateUI()
     });
 
     // UNIT ACTIONS
+    // build structure
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this, player]
+    {
+        // TODO
+
+        ClearCellOverlays();
+    });
+
     // build wall
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
     {

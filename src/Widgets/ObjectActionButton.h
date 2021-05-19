@@ -24,6 +24,7 @@ public:
         ATTACK,
         CONQUER_CELL,
         BUILD_WALL,
+        BUILD_STRUCT,
         UPGRADE,
         CANCEL,
 
