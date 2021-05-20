@@ -382,7 +382,7 @@ void ScreenGame::InitSprites()
     tm->RegisterSprite(SpriteFileIndicators, rectsInds);
 
     // ROCKS
-    std::vector<lib::core::Rectd> rectsRocks
+    const std::vector<lib::core::Rectd> rectsRocks
     {
         // row 0
         { 0, 0, 96, 51 },
@@ -410,15 +410,25 @@ void ScreenGame::InitSprites()
     tm->RegisterSprite(SpriteRocksFile, rectsRocks);
 
     // SCENE ELEMENTS
-    std::vector<lib::core::Rectd> rectsSceneElements
+    const std::vector<lib::core::Rectd> rectsSceneElements
     {
         { 0, 0, 96, 48 }
     };
 
     tm->RegisterSprite(SpriteFileSceneElements, rectsSceneElements);
 
+    // STRUCTURES
+    const std::vector<lib::core::Rectd> rectsStructures
+    {
+        { 0, 0, 96, 76 },
+        { 96, 0, 96, 76 },
+        { 192, 0, 96, 76 }
+    };
+
+    tm->RegisterSprite(SpriteFileStructures, rectsStructures);
+
     // UNITS
-    std::vector<lib::core::Rectd> rectsUnits
+    const std::vector<lib::core::Rectd> rectsUnits
     {
         // row 0
         { 0, 0, 96, 54 },
@@ -448,7 +458,7 @@ void ScreenGame::InitSprites()
     tm->RegisterSprite(SpriteFileUnits, rectsUnits);
 
     // UNIT PARTICLES
-    std::vector<lib::core::Rectd> rectsUnitsPart
+    const std::vector<lib::core::Rectd> rectsUnitsPart
     {
         { 0, 0, 10, 2 },
         { 0, 2, 10, 2 },
@@ -622,7 +632,8 @@ void ScreenGame::CreateUI()
     // build structure
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this, player]
     {
-        // TODO
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(GameObjectActionId::BUILD_DEF_TOWER);
 
         ClearCellOverlays();
     });
@@ -968,6 +979,8 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
         else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
+        else if(action == GameObjectActionId::BUILD_DEF_TOWER)
+            HandleUnitBuildStructureOnMouseMove(selUnit, currCell);
     }
 
     // update previous cell before exit
@@ -1449,6 +1462,11 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     wbp.SetIndicatorsType(cellsPath, mWallIndicators);
 
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
+}
+
+void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell)
+{
+
 }
 
 void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)

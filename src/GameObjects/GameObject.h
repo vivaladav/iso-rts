@@ -99,6 +99,7 @@ enum GameObjectType : unsigned int
     OBJ_WALL_CROSS,
 
     OBJ_PRACTICE_TARGET,
+    OBJ_DEF_TOWER,
 
     NUM_GAME_OBJECT_TYPES,
 
@@ -128,6 +129,7 @@ enum GameObjectActionId : unsigned int
     CONQUER_STRUCTURE,
     ATTACK,
     BUILD_WALL,
+    BUILD_DEF_TOWER,
 
     NUM_OBJ_ACTIONS
 };

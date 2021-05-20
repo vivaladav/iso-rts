@@ -13,6 +13,7 @@
 #include "GameObjects/Base.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/BlobsGenerator.h"
+#include "GameObjects/DefensiveTower.h"
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/PracticeTarget.h"
@@ -319,6 +320,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)
         obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);
+    else if(OBJ_DEF_TOWER == objId)
+        obj = new DefensiveTower(rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)

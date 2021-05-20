@@ -105,6 +105,7 @@ private:
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
+    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell);
 

@@ -130,6 +130,16 @@ enum SpriteIdSceneElements : unsigned int
   SPR_PRACTICE_TARGET1
 };
 
+// STRUCTURES
+extern const char SpriteFileStructures[];
+
+enum SpriteIdStructures : unsigned int
+{
+  ID_STRUCT_TOWER_L1_F1,
+  ID_STRUCT_TOWER_L1_F2,
+  ID_STRUCT_TOWER_L1_F3
+};
+
 // UNITS
 extern const char SpriteFileUnits[];
 
