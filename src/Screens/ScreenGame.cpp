@@ -420,9 +420,9 @@ void ScreenGame::InitSprites()
     // STRUCTURES
     const std::vector<lib::core::Rectd> rectsStructures
     {
-        { 0, 0, 96, 76 },
-        { 96, 0, 96, 76 },
-        { 192, 0, 96, 76 }
+        { 0, 0, 96, 78 },
+        { 96, 0, 96, 78 },
+        { 192, 0, 96, 78 }
     };
 
     tm->RegisterSprite(SpriteFileStructures, rectsStructures);
