@@ -2002,16 +2002,16 @@ void GameMap::UpdateWall(const Cell2D & cell)
     Wall * w = static_cast<Wall *>(obj);
 
     const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).obj : nullptr;
-    const bool wallN = objN && objN->GetObjectType() == OBJ_WALL;
+    const bool wallN = objN && (objN->GetObjectType() == OBJ_WALL || objN->GetObjectType() == OBJ_DEF_TOWER);
 
     const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).obj : nullptr;
-    const bool wallS = objS && objS->GetObjectType() == OBJ_WALL;
+    const bool wallS = objS && (objS->GetObjectType() == OBJ_WALL || objS->GetObjectType() == OBJ_DEF_TOWER);
 
     const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).obj : nullptr;
-    const bool wallW = objW && objW->GetObjectType() == OBJ_WALL;
+    const bool wallW = objW && (objW->GetObjectType() == OBJ_WALL || objW->GetObjectType() == OBJ_DEF_TOWER);
 
     const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).obj : nullptr;
-    const bool wallE = objE && objE->GetObjectType() == OBJ_WALL;
+    const bool wallE = objE && (objE->GetObjectType() == OBJ_WALL || objE->GetObjectType() == OBJ_DEF_TOWER);
 
     enum Flags
     {
