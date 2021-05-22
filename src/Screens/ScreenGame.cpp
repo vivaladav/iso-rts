@@ -15,6 +15,7 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
+#include "Indicators/StructureIndicator.h"
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/CellProgressBar.h"
@@ -141,6 +142,9 @@ ScreenGame::~ScreenGame()
 
     for(auto ind : mWallIndicators)
         delete ind;
+
+    for(auto it : mStructIndicators)
+        delete it.second;
 
     delete mIsoMap;
     delete mGameMap;
@@ -576,6 +580,8 @@ void ScreenGame::CreateLayers()
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS2);
 
     mIsoMap->CreateLayer(MapLayers::OBJECTS);
+
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS3);
 }
 
 void ScreenGame::CreateUI()
@@ -980,7 +986,7 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
         else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
         else if(action == GameObjectActionId::BUILD_DEF_TOWER)
-            HandleUnitBuildStructureOnMouseMove(selUnit, currCell);
+            HandleUnitBuildStructureOnMouseMove(currCell, GameObjectType::OBJ_DEF_TOWER);
     }
 
     // update previous cell before exit
@@ -1464,9 +1470,51 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
 }
 
-void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell)
+void ScreenGame::HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, GameObjectType structure)
 {
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
 
+    const bool currInside = mIsoMap->IsCellInside(currCell);
+
+    // mouse outside the map -> nothing to do
+    if(!currInside)
+    {
+        // hide the indicator, if any
+        layer->ClearObjects();
+
+        return ;
+    }
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    StructureIndicator * ind = nullptr;
+    auto it = mStructIndicators.find(structure);
+
+    // indicator already created
+    if(it != mStructIndicators.end())
+    {
+        ind = it->second;
+        layer->MoveObject(ind->GetRow(), ind->GetCol(), currCell.row, currCell.col);
+    }
+    else
+    {
+        ind = new StructureIndicator(structure);
+        mStructIndicators.emplace(structure, ind);
+
+        layer->AddObject(ind, currCell.row, currCell.col);
+    }
+
+    // set visibility
+    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
+    const bool currVisible = player->IsCellVisible(currInd);
+    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
+    const bool showIndicator = currVisible && currWalkable;
+
+    layer->SetObjectVisible(ind, showIndicator);
+
+    // indicator visible -> update faction
+    if(showIndicator)
+        ind->SetFaction(player->GetFaction());
 }
 
 void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
@@ -1540,6 +1588,9 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
 void ScreenGame::ClearCellOverlays()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
+    layer->ClearObjects();
+
+    layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
     layer->ClearObjects();
 
     // delete move indicator

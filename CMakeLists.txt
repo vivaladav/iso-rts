@@ -79,6 +79,8 @@ add_executable(
     src/Indicators/ConquestIndicator.cpp
     src/Indicators/MoveIndicator.h
     src/Indicators/MoveIndicator.cpp
+    src/Indicators/StructureIndicator.h
+    src/Indicators/StructureIndicator.cpp
     src/Indicators/WallIndicator.h
     src/Indicators/WallIndicator.cpp
     src/Particles/DataParticleSingleLaser.h

@@ -36,9 +36,11 @@ class PanelObjectActions;
 class PanelResources;
 class Player;
 class PlayerAI;
+class StructureIndicator;
 class Unit;
 class WallIndicator;
 
+enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
 enum UnitType : unsigned int;
 
@@ -105,7 +107,7 @@ private:
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
+    void HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, GameObjectType structure);
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell);
 
@@ -118,6 +120,7 @@ private:
     std::vector<int> mProgressBarsToDelete;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
+    std::unordered_map<GameObjectType, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
 
     std::vector<GameObjectAction> mActiveObjActions;

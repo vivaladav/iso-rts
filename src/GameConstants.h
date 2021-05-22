@@ -21,6 +21,7 @@ enum MapLayers
     CELL_OVERLAYS1,
     CELL_OVERLAYS2,
     OBJECTS,
+    CELL_OVERLAYS3,
 
     NUM_LAYERS,
 };
