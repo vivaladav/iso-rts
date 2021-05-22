@@ -505,6 +505,87 @@ bool GameMap::AbortCellConquest(GameObject * obj)
     return false;
 }
 
+bool GameMap::CanBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+{
+    const unsigned int r = static_cast<unsigned int>(cell.row);
+    const unsigned int c = static_cast<unsigned int>(cell.col);
+
+    // out of bounds
+    if(!(r < mRows && c < mCols))
+        return false;
+
+    const int ind = r * mCols + c;
+    GameMapCell & gcell = mCells[ind];
+
+    // already changing
+    if(gcell.changing)
+        return false;
+
+    // cell is full
+    if(!gcell.walkable)
+        return false;
+
+    // TODO check cost
+
+    return true;
+}
+
+void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+{
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+
+    // TODO take player's material
+    //player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
+
+    // mark cell as changing
+    gcell.changing = true;
+}
+
+void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+{
+    // check if cell was of another faction
+    const int ind = cell.row * mCols + cell.col;
+    GameMapCell & gcell = mCells[ind];
+    bool stolen = gcell.owner != nullptr && gcell.owner != player;
+
+    // make cell empty
+    ClearCell(gcell);
+
+    // assign owner
+    gcell.owner = player;
+
+    // update player
+    player->SumCells(1);
+
+    // reset cell's changing flag
+    gcell.changing = false;
+    // propagate effects of conquest
+    UpdateInfluencedCells(cell.row, cell.col);
+
+    UpdateLinkedCells(player);
+
+    // add object wall
+    CreateObject(OBJECTS, structure, player, cell.row, cell.col, 1, 1);
+
+    // update this wall type and the ones surrounding it
+    UpdateWalls(cell);
+
+    // update visibility map if local player
+    if(player == mGame->GetPlayerByIndex(0))
+    {
+        AddPlayerCellVisibility(gcell, player);
+
+        ApplyVisibility(player);
+    }
+    else if(stolen)
+    {
+        DelPlayerCellVisibility(gcell, player);
+
+        ApplyVisibility(player);
+    }
+}
+
 bool GameMap::CanBuildWall(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);

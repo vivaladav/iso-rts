@@ -82,6 +82,11 @@ public:
     void ConquerCells(ConquerPath * path);
     bool AbortCellConquest(GameObject * obj);
 
+    // structure building
+    bool CanBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
+    void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
+    void BuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
+
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player);
     void StartBuildWall(const Cell2D & cell, Player * player);

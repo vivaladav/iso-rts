@@ -947,6 +947,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     }
                 }
             }
+            else if (action == GameObjectActionId::BUILD_DEF_TOWER)
+                HandleUnitBuildStructureOnMouseUp(selUnit, clickCell, GameObjectType::OBJ_DEF_TOWER);
         }
     }
     // no object currently selected
@@ -1207,6 +1209,33 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
     const GameMapCell & targetCell = mGameMap->GetCell(end.row, end.col);
 
     mActiveObjActions.emplace_back(unit, targetCell.obj, GameObjectActionId::CONQUER_STRUCTURE, start);
+
+    return true;
+}
+
+bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player, GameObjectType structure)
+{
+    // check if building is possible
+    if(!mGameMap->CanBuildStructure(cellTarget, player, structure))
+        return false;
+
+    mGameMap->StartBuildStructure(cellTarget, player, structure);
+
+    // create and init progress bar
+    // TODO get time from unit
+    CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
+
+    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, structure]
+    {
+        mGameMap->BuildStructure(cellTarget, player, structure);
+        mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
+
+        // clear action data once the action is completed
+        ClearObjectAction(unit);
+    });
+
+    // store active action
+    mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_DEF_TOWER, cellTarget);
 
     return true;
 }
@@ -1487,22 +1516,23 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, Ga
 
     Player * player = GetGame()->GetLocalPlayer();
 
+    // clear existing indicator from layer
+    layer->ClearObjects();
+
+    // get an indicator
     StructureIndicator * ind = nullptr;
     auto it = mStructIndicators.find(structure);
 
-    // indicator already created
     if(it != mStructIndicators.end())
-    {
         ind = it->second;
-        layer->MoveObject(ind->GetRow(), ind->GetCol(), currCell.row, currCell.col);
-    }
     else
     {
         ind = new StructureIndicator(structure);
         mStructIndicators.emplace(structure, ind);
-
-        layer->AddObject(ind, currCell.row, currCell.col);
     }
+
+    // add indicator to layer
+    layer->AddObject(ind, currCell.row, currCell.col);
 
     // set visibility
     const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
@@ -1517,7 +1547,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, Ga
         ind->SetFaction(player->GetFaction());
 }
 
-void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
+void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
 {
     const Cell2D selCell(unit->GetRow0(), unit->GetCol0());
 
@@ -1583,6 +1613,22 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell)
                 ClearSelection(player);
         });
     }
+}
+
+void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell, GameObjectType structure)
+{
+    const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    // destination is visible and walkable
+    if(player->IsCellVisible(clickInd) && mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
+    {
+        if(SetupStructureBuilding(unit, clickCell, player, structure))
+            ClearSelection(player);
+    }
+
+    // TODO handle when click cell is not next to unit -> move next and build
 }
 
 void ScreenGame::ClearCellOverlays()

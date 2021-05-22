@@ -100,6 +100,7 @@ private:
 
     bool SetupNewUnit(UnitType type, GameObject * gen, Player * player);
     bool SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player);
+    bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player, GameObjectType structure);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);
     void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & onCompleted = []{});
@@ -109,7 +110,8 @@ private:
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, GameObjectType structure);
 
-    void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D clickCell);
+    void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
+    void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell, GameObjectType structure);
 
     void ClearCellOverlays();
 
