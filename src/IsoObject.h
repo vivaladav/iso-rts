@@ -42,6 +42,7 @@ public:
     int GetHeight() const;
 
     void SetTexture(lib::graphic::Texture * tex);
+    void SetAlpha(unsigned char alpha);
     void SetColor(unsigned int color);
 
     virtual void Render();

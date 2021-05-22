@@ -40,6 +40,8 @@ void IsoObject::SetTexture(lib::graphic::Texture * tex)
         mLayer->RepositionObject(this);
 }
 
+void IsoObject::SetAlpha(unsigned char alpha) { mImg->SetAlpha(alpha); }
+
 void IsoObject::SetColor(unsigned int color) { mImg->SetColor(color); }
 
 void IsoObject::Render() { mImg->Render(); }
