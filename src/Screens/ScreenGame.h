@@ -124,6 +124,7 @@ private:
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::unordered_map<GameObjectType, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
+    StructureIndicator * mTempStructIndicator = nullptr;
 
     std::vector<GameObjectAction> mActiveObjActions;
 

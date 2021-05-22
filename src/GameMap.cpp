@@ -406,6 +406,16 @@ bool GameMap::AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj
            obj2->GetCol1() <= expColBR;
 }
 
+bool GameMap::AreCellsAdjacent(const Cell2D & cell1, const Cell2D & cell2) const
+{
+    const int distR = std::abs(cell1.row - cell2.row);
+    const int distC = std::abs(cell1.col - cell2.col);
+
+    const int maxDist = 1;
+
+    return distR <= maxDist && distC <= maxDist;
+}
+
 bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
@@ -1244,7 +1254,7 @@ bool GameMap::AbortMove(GameObject * obj)
     return false;
 }
 
-Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
+Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end) const
 {
     // get all walkable cells around end
     const int rowTL = end.row - 1 > 0 ? end.row - 1 : 0;
@@ -1272,20 +1282,24 @@ Cell2D GameMap::GetCloseMoveTarget(const Cell2D & start, const Cell2D & end)
     return GetClosestCell(start, walkalbes);
 }
 
-Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target)
+Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target) const
+{
+    const Cell2D tl(target->GetRow1(), target->GetCol1());
+    const Cell2D br(target->GetRow0(), target->GetCol0());
+
+    return GetAdjacentMoveTarget(start, tl, br);
+}
+
+Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const
 {
     // get all walkable cells around target
-    const int tRowTL = target->GetRow1();
-    const int tColTL = target->GetCol1();
-    const int tRowBR = target->GetRow0();
-    const int tColBR = target->GetCol0();
-    const int tRows = target->GetRows();
-    const int tCols = target->GetCols();
+    const int tRows = targetBR.row - targetTL.row + 1;
+    const int tCols = targetBR.col - targetTL.col + 1;
 
-    const int rowTL = tRowTL - 1 > 0 ? tRowTL - 1 : 0;
-    const int colTL = tColTL - 1 > 0 ? tColTL - 1 : 0;
-    const int rowBR = tRowBR + 1 < static_cast<int>(mRows - 1) ? tRowBR + 1 : mRows - 1;
-    const int colBR = tColBR + 1 < static_cast<int>(mCols - 1) ? tColBR + 1 : mCols - 1;
+    const int rowTL = targetTL.row - 1 > 0 ? targetTL.row - 1 : 0;
+    const int colTL = targetTL.col - 1 > 0 ? targetTL.col - 1 : 0;
+    const int rowBR = targetBR.row + 1 < static_cast<int>(mRows - 1) ? targetBR.row + 1 : mRows - 1;
+    const int colBR = targetBR.col + 1 < static_cast<int>(mCols - 1) ? targetBR.col + 1 : mCols - 1;
 
     std::vector<Cell2D> walkalbes;
     const int maxWalkables = (tCols + 2) * 2 + tRows;
@@ -1634,7 +1648,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     return true;
 }
 
-Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets)
+Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets) const
 {
     // failed to find any walkable
     if(targets.empty())

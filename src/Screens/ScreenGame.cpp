@@ -146,6 +146,8 @@ ScreenGame::~ScreenGame()
     for(auto it : mStructIndicators)
         delete it.second;
 
+    delete mTempStructIndicator;
+
     delete mIsoMap;
     delete mGameMap;
 
@@ -1590,7 +1592,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
     if(!clickObj->CanBeConquered())
         return ;
 
-    // object is adjacent -> try yo interact
+    // object is adjacent -> try to interact
     if(mGameMap->AreObjectsAdjacent(unit, clickObj))
     {
         if(SetupResourceGeneratorConquest(selCell, clickCell, player))
@@ -1624,11 +1626,51 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
     // destination is visible and walkable
     if(player->IsCellVisible(clickInd) && mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
     {
-        if(SetupStructureBuilding(unit, clickCell, player, structure))
-            ClearSelection(player);
-    }
+        const GameMapCell * gmc = unit->GetCell();
+        const Cell2D cellUnit(gmc->row, gmc->col);
 
-    // TODO handle when click cell is not next to unit -> move next and build
+        // unit is next to target cell -> try to build
+        if(mGameMap->AreCellsAdjacent(cellUnit, clickCell))
+        {
+            if(SetupStructureBuilding(unit, clickCell, player, structure))
+                ClearSelection(player);
+        }
+        // unit is far -> move close then try to build
+        else
+        {
+            Cell2D target = mGameMap->GetAdjacentMoveTarget(cellUnit, clickCell, clickCell);
+
+            // failed to find a suitable target
+            if(-1 == target.row || -1 == target.col)
+                return ;
+
+            // add temporary indicator for tower
+            mTempStructIndicator = new StructureIndicator(structure);
+            mTempStructIndicator->SetFaction(player->GetFaction());
+
+            IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS);
+            layer->AddObject(mTempStructIndicator, clickCell.row, clickCell.col);
+
+            // move
+            SetupUnitMove(unit, cellUnit, target, [this, unit, clickCell, player, structure]
+            {
+                const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
+
+                if(SetupStructureBuilding(unit, clickCell, player, structure))
+                    ClearSelection(player);
+
+                // get rid of temporary indicator
+                if(mTempStructIndicator)
+                {
+                    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS);
+                    layer->ClearObject(mTempStructIndicator);
+
+                    delete mTempStructIndicator;
+                    mTempStructIndicator = nullptr;
+                }
+            });
+        }
+    }
 }
 
 void ScreenGame::ClearCellOverlays()

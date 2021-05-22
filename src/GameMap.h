@@ -74,6 +74,7 @@ public:
     bool RemoveAndDestroyObject(GameObject * obj);
 
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
+    bool AreCellsAdjacent(const Cell2D & cell1, const Cell2D & cell2) const;
 
     // cell conquest
     bool CanConquerCell(const Cell2D & cell, Player * player);
@@ -116,8 +117,9 @@ public:
     bool MoveUnit(ObjectPath * path);
     bool AbortMove(GameObject * obj);
 
-    Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end);
-    Cell2D GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target);
+    Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end) const;
+    Cell2D GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target) const;
+    Cell2D GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const;
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
     unsigned int GetNumRows() const;
@@ -141,7 +143,7 @@ private:
 
     bool MoveObjToCell(GameObject * obj, int row, int col);
 
-    Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets);
+    Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets) const;
 
     void DestroyObject(GameObject * obj);
 
