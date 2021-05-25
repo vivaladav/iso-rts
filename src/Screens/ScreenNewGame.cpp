@@ -324,7 +324,7 @@ void ScreenNewGame::ShowMapPreviews(unsigned int mapStart)
             preview->SetPosition(mapX, mapY);
             preview->SetOnClickFunction([this, m]
             {
-                if(mMapPreviews[m] != mMapPreviews[mMapSelInd])
+                if(-1 == mMapSelInd || mMapPreviews[m] != mMapPreviews[mMapSelInd])
                 {
                     mMapPreviews[m]->SetSelected(true);
 
