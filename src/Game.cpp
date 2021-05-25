@@ -28,7 +28,9 @@ Game::Game(int argc, char * argv[])
     : lib::core::Application(argc, argv)
     , mMapFiles
     {
-        "data/maps/40x40-01.map"
+        "data/maps/20x20-empty.map",
+        "data/maps/40x40-01.map",
+        "data/maps/60x60-01.map"
     }
     , mUnitsRegistry(new UnitsDataRegistry)
 {
