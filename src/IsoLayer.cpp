@@ -22,6 +22,9 @@ IsoLayer::IsoLayer(const IsoMap * map)
 
     mObjectsMap.reserve(size);
     mObjectsMap.assign(size, nullptr);
+
+    mObjectsList.reserve(size);
+    mRenderList.reserve(size);
 }
 
 // ==================== PUBLIC METHODS ====================
@@ -100,7 +103,7 @@ bool IsoLayer::AddObject(IsoObject * obj, unsigned int r, unsigned int c)
     // store object
     InsertObjectInMap(obj);
 
-    InsertObjectInRenderList(obj);
+    UpdateRenderList();
 
     return true;
 }
@@ -188,18 +191,21 @@ bool IsoLayer::MoveObject(unsigned int r0, unsigned int c0,
 
     // add object back
     InsertObjectInMap(obj);
-    InsertObjectInRenderList(obj);
+
+    UpdateRenderList();
 
     return true;
 }
 
 void IsoLayer::SetObjectVisible(IsoObject * obj, bool visible)
 {
+    obj->SetVisible(visible);
+
     if(visible)
     {
         // object is not already in
         if(std::find(mRenderList.begin(), mRenderList.end(), obj) == mRenderList.end())
-            InsertObjectInRenderList(obj);
+            UpdateRenderList();
     }
     else
         RemoveObjectFromRenderList(obj);
@@ -293,52 +299,29 @@ void IsoLayer::RemoveObjectFromRenderList(IsoObject * obj)
         mRenderList.erase(it);
 }
 
-void IsoLayer::InsertObjectInRenderList(IsoObject * obj)
+void IsoLayer::UpdateRenderList()
 {
-    const int r0 = obj->GetRow();
-    const int c0 = obj->GetCol();
+    mRenderList.clear();
 
-    auto it = mRenderList.begin();
+    // TODO optimze this to check only cells in camera frame
 
-    while(it != mRenderList.end())
+    const int rows = mMap->GetNumRows();
+    const int cols = mMap->GetNumCols();
+
+    for(int r = 0; r < rows; ++r)
     {
-        IsoObject * nextObj = *it;
+        const int ind0 = r * cols;
 
-        // check if they overlap
-        const int objXL = obj->GetX();
-        const int objXR = obj->GetX() + obj->GetWidth();
-        const int objYT = obj->GetY();
-        const int objYB = obj->GetY() + obj->GetHeight();
-
-        const int nobjXL = nextObj->GetX();
-        const int nobjXR = nextObj->GetX() + nextObj->GetWidth();
-        const int nobjYT = nextObj->GetY();
-        const int nobjYB = nextObj->GetY() + nextObj->GetHeight();
-
-        // ignore images that do not overlap
-        if(objXL > nobjXR || nobjXL > objXR || objYT > nobjYB || nobjYT > objYB)
+        for(int c = 0; c < cols; ++c)
         {
-            ++it;
-            continue;
+            const int ind = ind0 + c;
+
+            IsoObject * obj = mObjectsMap[ind];
+
+            if(obj != nullptr && obj->IsVisible() && obj->GetRow() == r && obj->GetCol() == c)
+                mRenderList.push_back(obj);
         }
-
-        const int nextR0 = nextObj->GetRow();
-        const int nextR1 = nextR0 + 1 - nextObj->GetRows();
-        const int nextC0 = nextObj->GetCol();
-        const int nextC1 = nextC0 + 1 - nextObj->GetCols();
-
-        // behind row
-        if(r0 < nextR1)
-            break;
-
-        // obj on left side
-        if(c0 < nextC1)
-            break;
-
-        ++it;
     }
-
-    mRenderList.insert(it, obj);
 }
 
 void IsoLayer::ClearObjectFromMap(IsoObject * obj)

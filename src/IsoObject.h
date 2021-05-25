@@ -45,6 +45,9 @@ public:
     void SetAlpha(unsigned char alpha);
     void SetColor(unsigned int color);
 
+    bool IsVisible() const;
+    void SetVisible(bool vis);
+
     virtual void Render();
 
 private:
@@ -57,6 +60,8 @@ private:
 
     int mRow = 0;
     int mCol = 0;
+
+    bool mVisible = true;
 };
 
 inline IsoLayer * IsoObject::GetLayer() const { return mLayer; }
@@ -69,5 +74,8 @@ inline void IsoObject::SetCol(int c) { mCol = c; }
 
 inline int IsoObject::GetRows() const { return mRows; }
 inline int IsoObject::GetCols() const { return mCols; }
+
+inline bool IsoObject::IsVisible() const { return mVisible; }
+inline void IsoObject::SetVisible(bool vis) { mVisible = vis; }
 
 } // namespace game
