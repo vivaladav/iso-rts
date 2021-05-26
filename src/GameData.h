@@ -127,7 +127,7 @@ extern const char SpriteFileSceneElements[];
 
 enum SpriteIdSceneElements : unsigned int
 {
-  SPR_PRACTICE_TARGET1
+    SPR_PRACTICE_TARGET1
 };
 
 // STRUCTURES
@@ -135,9 +135,20 @@ extern const char SpriteFileStructures[];
 
 enum SpriteIdStructures : unsigned int
 {
-  ID_STRUCT_TOWER_L1_F1,
-  ID_STRUCT_TOWER_L1_F2,
-  ID_STRUCT_TOWER_L1_F3
+    // BASE LVL 1
+    ID_STRUCT_BASE_L1_F1,
+    ID_STRUCT_BASE_L1_F1_SEL,
+    ID_STRUCT_BASE_L1_F2,
+    ID_STRUCT_BASE_L1_F2_SEL,
+    ID_STRUCT_BASE_L1_F3,
+    ID_STRUCT_BASE_L1_F3_SEL,
+    // DEFENSIVE TOWER LVL 1
+    ID_STRUCT_TOWER_L1_F1,
+    ID_STRUCT_TOWER_L1_F2,
+    ID_STRUCT_TOWER_L1_F3,
+
+    // special values
+    NUM_BASE_SPRITES_PER_FAC = 2
 };
 
 // UNITS

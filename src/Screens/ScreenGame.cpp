@@ -426,9 +426,18 @@ void ScreenGame::InitSprites()
     // STRUCTURES
     const std::vector<lib::core::Rectd> rectsStructures
     {
-        { 0, 0, 96, 78 },
-        { 96, 0, 96, 78 },
-        { 192, 0, 96, 78 }
+        // base lvl 1
+        { 0, 0, 288, 163 },
+        { 288, 0, 288, 163 },
+        { 576, 0, 288, 163 },
+        { 0, 163, 288, 163 },
+        { 288, 163, 288, 163 },
+        { 576, 163, 288, 163 },
+
+        // def tower lvl 1
+        { 0, 326, 96, 78 },
+        { 96, 326, 96, 78 },
+        { 192, 326, 96, 78 }
     };
 
     tm->RegisterSprite(SpriteFileStructures, rectsStructures);

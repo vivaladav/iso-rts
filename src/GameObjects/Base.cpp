@@ -1,5 +1,6 @@
 #include "GameObjects/Base.h"
 
+#include "GameData.h"
 #include "IsoObject.h"
 #include "Player.h"
 
@@ -23,10 +24,6 @@ void Base::UpdateImage()
 
 void Base::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
-
-    lib::graphic::Texture * tex = nullptr;
-
     IsoObject * isoObj = GetIsoObject();
 
     if(IsVisible())
@@ -42,30 +39,12 @@ void Base::SetImage()
 
     const unsigned int faction = owner->GetFaction();
 
-    // object is selected
-    if(IsSelected())
-    {
-        const char * imgFiles[] =
-        {
-            "data/img/base-f1-sel.png",
-            "data/img/base-f2-sel.png",
-            "data/img/base-f3-sel.png"
-        };
+    const unsigned int texInd = SpriteIdStructures::ID_STRUCT_BASE_L1_F1 +
+                                (faction * NUM_BASE_SPRITES_PER_FAC) +
+                                static_cast<int>(IsSelected());
 
-        tex = tm->GetTexture(imgFiles[faction]);
-    }
-    // not selected
-    else
-    {
-        const char * imgFiles[] =
-        {
-            "data/img/base-f1.png",
-            "data/img/base-f2.png",
-            "data/img/base-f3.png"
-        };
-
-        tex = tm->GetTexture(imgFiles[faction]);
-    }
+    auto * tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
 
     isoObj->SetTexture(tex);
 }
