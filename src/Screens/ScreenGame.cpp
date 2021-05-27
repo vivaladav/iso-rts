@@ -101,7 +101,7 @@ ScreenGame::ScreenGame(Game * game)
         Player * p = game->GetPlayerByIndex(i);
 
         // add start resources
-        const int startEnergy = 200;
+        const int startEnergy = 400;
         p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
 
         const int startMaterial = 50;
