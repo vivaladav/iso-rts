@@ -892,7 +892,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
             if(action == GameObjectActionId::MOVE)
             {
-                const bool diffClick = selCell.row != clickCell.row  || selCell.col != clickCell.col;
+                const bool diffClick = selCell != clickCell;
 
                 // try to move only if clicked on a different cell
                 if(diffClick)
@@ -910,7 +910,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
-                // destination is visible and walkable
+                // destination is visible and walkable or conquering unit cell
                 if(player->IsCellVisible(clickInd) &&
                    (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
                 {
@@ -936,9 +936,12 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             {
                 const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
-                // destination is visible and walkable
-                if(player->IsCellVisible(clickInd) &&
-                   (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
+                const bool diffClick = selCell != clickCell;
+
+                // not clicking on unit cell, destination is visible and walkable
+                if(diffClick &&
+                   player->IsCellVisible(clickInd) &&
+                   mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
                 {
                     auto path = mPathfinder->MakePath(selCell.row, selCell.col,
                                                       clickCell.row, clickCell.col);
