@@ -792,6 +792,8 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
 
     const int key = event.GetKey();
 
+    Player * p = GetGame()->GetLocalPlayer();
+
     // P -> PAUSE
     if(key == KeyboardEvent::KEY_P)
     {
@@ -800,6 +802,7 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
+    // ARROS -> move camera
     else if(key == KeyboardEvent::KEY_LEFT)
         mCameraDirX = 0;
     else if(key == KeyboardEvent::KEY_RIGHT)
@@ -808,29 +811,41 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         mCameraDirY = 0;
     else if(key == KeyboardEvent::KEY_DOWN)
         mCameraDirY = 0;
+    // C -> recenter camera
+    else if(key == KeyboardEvent::KEY_C)
+        mCamera->ResetPosition();
+    // DEBUG: ALT + U -> toggle UI
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {
         auto stage = lib::sgui::Stage::Instance();
-
         stage->SetVisible(!stage->IsVisible());
     }
-    else if(key == KeyboardEvent::KEY_C)
-        mCamera->ResetPosition();
+    // DEBUG: SHIFT/CTRL + V -> add/remove visibility to whole map
     else if(key == KeyboardEvent::KEY_V)
     {
-        Player * p = GetGame()->GetLocalPlayer();
-
-        // SHIFT + V -> add visibility to all cells
         if(event.IsModShiftDown())
         {
             p->AddVisibilityToAll();
             mGameMap->ApplyVisibility(p);
         }
-        // CTRL + V -> remove visibility from all cells
         else if(event.IsModCtrlDown())
         {
             p->RemVisibilityToAll();
             mGameMap->ApplyVisibility(p);
+        }
+    }
+    // DEBUG: SHIFT/CTRL + R -> add/remove resources
+    else if(key == KeyboardEvent::KEY_R)
+    {
+        if(event.IsModShiftDown())
+        {
+            p->GetStat(Player::Stat::ENERGY).SumValue(100);
+            p->GetStat(Player::Stat::MATERIAL).SumValue(50);
+        }
+        else if(event.IsModCtrlDown())
+        {
+            p->GetStat(Player::Stat::ENERGY).SumValue(-50);
+            p->GetStat(Player::Stat::MATERIAL).SumValue(-50);
         }
     }
 }
