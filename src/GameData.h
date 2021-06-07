@@ -96,6 +96,38 @@ enum SpriteIdIndicators : unsigned int
     IND_WB_FIRST = IND_WB_HORIZONTAL_F1
 };
 
+// MAIN MENU BUTTONS
+extern const char SpriteFileMainMenu[];
+
+enum SpriteIdMainMenu : unsigned int
+{
+    // PRIMARY BUTTON
+    IND_MM_BTN1_NORMAL,
+    IND_MM_BTN1_DISABLED,
+    IND_MM_BTN1_OVER,
+    IND_MM_BTN1_PUSHED,
+    IND_MM_BTN1_CHECKED,
+
+    // WISHLIST BUTTON
+    IND_MM_BTNW_NORMAL,
+    IND_MM_BTNW_OVER,
+    IND_MM_BTNW_PUSHED,
+
+    // SOCIAL BUTTON
+    IND_MM_BTNS_NORMAL,
+    IND_MM_BTNS_OVER,
+    IND_MM_BTNS_PUSHED,
+
+    // ICONS
+    IND_MM_ICON_STEAM,
+    IND_MM_ICON_DISCORD,
+    IND_MM_ICON_TWITTER,
+    IND_MM_ICON_YOUTUBE,
+    IND_MM_ICON_LINKEDIN,
+
+    NUM_MAIN_MENU_SPRITES
+};
+
 // ROCKS
 extern const char SpriteRocksFile[];
 

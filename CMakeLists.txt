@@ -117,6 +117,8 @@ add_executable(
     src/Widgets/ButtonCloseDialog.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
+    src/Widgets/ButtonMainMenuWishlist.h
+    src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonNavigation.h
     src/Widgets/ButtonNavigation.cpp
     src/Widgets/ButtonPanelPlayer.h

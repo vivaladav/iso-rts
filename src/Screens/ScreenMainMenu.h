@@ -17,7 +17,10 @@ public:
     void Render() override;
 
 private:
-    lib::graphic::Image * mLogo = nullptr;
+    void InitSprites();
+
+private:
+    lib::graphic::Image * mBg = nullptr;
 };
 
 } // namespace game

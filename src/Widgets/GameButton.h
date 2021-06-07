@@ -30,18 +30,26 @@ public:
 
 public:
     GameButton(lib::sgui::Widget * parent);
-
     GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
+               const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
+               lib::sgui::Widget * parent);
+    GameButton(const char * spriteFile,
+               const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
                const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
                lib::sgui::Widget * parent);
 
     ~GameButton();
 
+protected:
     void SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                  const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
                  int state);
 
-protected:
+    void SetData(const char * spriteFile,
+                 const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
+                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
+                 int state);
+
     void HandleStateEnabled() override;
     void HandleStateDisabled() override;
 
