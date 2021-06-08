@@ -4,6 +4,7 @@
 #include "GameData.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
+#include "Widgets/ButtonMainMenuSocial.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
 
 #include <graphic/Font.h>
@@ -28,7 +29,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    Widget * panel = new Widget;
+    Widget * panelButtons = new Widget;
 
     int buttonY = 0;
     const int VMARGIN = 30;
@@ -40,7 +41,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     mBg = new lib::graphic::Image("data/img/main_menu_bg.png");
 
     // -- BUTTON NEW GAME --
-    ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panel);
+    ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panelButtons);
 
     button->SetOnClickFunction([game]
     {
@@ -50,7 +51,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
-    button = new ButtonMainMenu("EXIT", panel);
+    button = new ButtonMainMenu("EXIT", panelButtons);
 
     button->SetOnClickFunction([game] { game->Exit(); });
 
@@ -58,17 +59,44 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // position buttons panel
     const int centerX = 450;
-    const int containerX = centerX - panel->GetWidth() * 0.5f;
+    const int containerX = centerX - panelButtons->GetWidth() * 0.5f;
     const int containerY = 280;
-    panel->SetPosition(containerX, containerY);
+    panelButtons->SetPosition(containerX, containerY);
 
-    // BUTTON WISHLIST
+    // -- BUTTON WISHLIST --
     auto btnWishlist = new ButtonMainMenuWishlist(nullptr);
 
     int buttonX = centerX - btnWishlist->GetWidth() * 0.5f;
     buttonY = screenH - 100 - btnWishlist->GetHeight();
 
     btnWishlist->SetPosition(buttonX, buttonY);
+
+    // -- SOCIAL BUTTONS --
+    auto panelSocial = new Widget;
+
+    // DISCORD
+    const int socialMarginH = 15;
+    int socialX = 0;
+
+    auto btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_DISCORD, panelSocial);
+    socialX += btnSocial->GetWidth() + socialMarginH;
+
+    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_YOUTUBE, panelSocial);
+    btnSocial->SetX(socialX);
+    socialX += btnSocial->GetWidth() + socialMarginH;
+
+    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_TWITTER, panelSocial);
+    btnSocial->SetX(socialX);
+    socialX += btnSocial->GetWidth() + socialMarginH;
+
+    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_LINKEDIN, panelSocial);
+    btnSocial->SetX(socialX);
+
+    // position panel social buttons
+    const int psMarginTop = 25;
+    const int psX = centerX - panelSocial->GetWidth() * 0.5f;
+    const int psY = btnWishlist->GetY() + btnWishlist->GetHeight() + psMarginTop;
+    panelSocial->SetPosition(psX, psY);
 
     // VERSION LABEL
     auto fm = FontManager::Instance();

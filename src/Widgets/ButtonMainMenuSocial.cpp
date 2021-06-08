@@ -1,4 +1,4 @@
-#include "Widgets/ButtonMainMenuWishlist.h"
+#include "Widgets/ButtonMainMenuSocial.h"
 
 #include "GameData.h"
 
@@ -12,7 +12,7 @@
 namespace game
 {
 
-ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
+ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
     , mLabelsColor
     {
@@ -31,17 +31,17 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
     Texture * tex;
 
     // normal
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_NORMAL);
+    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_NORMAL);
     mBackgrounds[NORMAL] = new Image(tex);
     RegisterRenderable(mBackgrounds[NORMAL]);
 
     // mouse over
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_OVER);
+    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_OVER);
     mBackgrounds[MOUSE_OVER] = new Image(tex);
     RegisterRenderable(mBackgrounds[MOUSE_OVER]);
 
     // pushed
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_PUSHED);
+    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_PUSHED);
     mBackgrounds[PUSHED] = new Image(tex);
     RegisterRenderable(mBackgrounds[PUSHED]);
 
@@ -50,16 +50,9 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
     mBackgrounds[CHECKED] = nullptr;
 
     // ICON
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_ICON_STEAM);
+    tex = tm->GetSprite(SpriteFileMainMenu, icon);
     mIcon = new Image(tex);
     RegisterRenderable(mIcon);
-
-    // TEXT LABEL
-    // TODO use setLabel after adding support for icon to PushButton
-    auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
-    mText = new Text("WISHLIST NOW", font, true);
-    RegisterRenderable(mText);
 
     // init to normal state
     SetElements(NORMAL);
@@ -67,55 +60,53 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
     PositionElements();
 }
 
-ButtonMainMenuWishlist::~ButtonMainMenuWishlist()
+ButtonMainMenuSocial::~ButtonMainMenuSocial()
 {
     for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
         delete mBackgrounds[i];
 
     delete mIcon;
-    delete mText;
 }
 
-void ButtonMainMenuWishlist::HandlePositionChanged()
+void ButtonMainMenuSocial::HandlePositionChanged()
 {
      lib::sgui::PushButton::HandlePositionChanged();
 
      PositionElements();
 }
 
-void ButtonMainMenuWishlist::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
+void ButtonMainMenuSocial::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
 {
     PushButton::HandleMouseButtonDown(event);
 
     SetElements(PUSHED);
 }
 
-void ButtonMainMenuWishlist::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
+void ButtonMainMenuSocial::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
 {
     PushButton::HandleMouseButtonUp(event);
 
     SetElements(NORMAL);
 }
 
-void ButtonMainMenuWishlist::HandleMouseOver()
+void ButtonMainMenuSocial::HandleMouseOver()
 {
     SetElements(MOUSE_OVER);
 }
 
-void ButtonMainMenuWishlist::HandleMouseOut()
+void ButtonMainMenuSocial::HandleMouseOut()
 {
     SetElements(NORMAL);
 }
 
-void ButtonMainMenuWishlist::OnRender()
+void ButtonMainMenuSocial::OnRender()
 {
     lib::sgui::PushButton::OnRender();
 
     mIcon->Render();
-    mText->Render();
 }
 
-void ButtonMainMenuWishlist::SetElements(int index)
+void ButtonMainMenuSocial::SetElements(int index)
 {
     if(mState == index)
         return ;
@@ -125,29 +116,19 @@ void ButtonMainMenuWishlist::SetElements(int index)
     SetCurrBg(mBackgrounds[index]);
 
     mIcon->SetColor(mLabelsColor[index]);
-    mText->SetColor(mLabelsColor[index]);
 }
 
-void ButtonMainMenuWishlist::PositionElements()
+void ButtonMainMenuSocial::PositionElements()
 {
     const int x = GetScreenX();
     const int y = GetScreenY();
     const int w = GetWidth();
     const int h = GetHeight();
 
-    const int marginH = 10;
-    const int totW = mIcon->GetWidth() + marginH + mText->GetWidth();
-    const int x0 = x + (w - totW) * 0.5f;
-
-    // icon
-    const int iconX = x0;
+    // center icon
+    const int iconX = x + (w - mIcon->GetWidth()) * 0.5f;
     const int iconY = y + (h - mIcon->GetHeight()) * 0.5f;
     mIcon->SetPosition(iconX, iconY);
-
-    // text
-    const int textX = iconX + mIcon->GetWidth() + marginH;
-    const int textY = y + (h - mText->GetHeight()) * 0.5f;
-    mText->SetPosition(textX, textY);
 }
 
 } // namespace game
