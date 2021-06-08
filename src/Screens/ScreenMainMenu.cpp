@@ -6,9 +6,12 @@
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
 
+#include <graphic/Font.h>
+#include <graphic/FontManager.h>
 #include <graphic/Image.h>
 #include <graphic/Renderer.h>
 #include <graphic/TextureManager.h>
+#include <sgui/Label.h>
 #include <sgui/PushButton.h>
 #include <sgui/Stage.h>
 
@@ -30,6 +33,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     int buttonY = 0;
     const int VMARGIN = 30;
 
+    const int screenW = lib::graphic::Renderer::Instance()->GetWidth();
     const int screenH = lib::graphic::Renderer::Instance()->GetHeight();
 
     // -- BACKGROUND --
@@ -65,6 +69,16 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY = screenH - 100 - btnWishlist->GetHeight();
 
     btnWishlist->SetPosition(buttonX, buttonY);
+
+    // VERSION LABEL
+    auto fm = FontManager::Instance();
+    Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
+
+    auto labelVer = new Label("v. 0.0.1", fnt);
+    labelVer->SetColor(0xb2b2b2ff);
+    const int labelX = screenW - labelVer->GetWidth() - 40;
+    const int labelY = screenH - labelVer->GetHeight() - 10;
+    labelVer->SetPosition(labelX, labelY);
 }
 
 ScreenMainMenu::~ScreenMainMenu()
