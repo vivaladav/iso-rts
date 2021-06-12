@@ -15,6 +15,7 @@
 #include <sgui/Label.h>
 #include <sgui/PushButton.h>
 #include <sgui/Stage.h>
+#include <utilities/System.h>
 
 namespace game
 {
@@ -69,28 +70,61 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     int buttonX = centerX - btnWishlist->GetWidth() * 0.5f;
     buttonY = screenH - 100 - btnWishlist->GetHeight();
 
+    btnWishlist->SetOnClickFunction([]
+    {
+        lib::utilities::System sys;
+        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580?utm_campaign=game&utm_source=mainmenu");
+    });
+
     btnWishlist->SetPosition(buttonX, buttonY);
 
     // -- SOCIAL BUTTONS --
     auto panelSocial = new Widget;
 
-    // DISCORD
     const int socialMarginH = 15;
     int socialX = 0;
 
+    // DISCORD
     auto btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_DISCORD, panelSocial);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
+    btnSocial->SetOnClickFunction([]
+    {
+        lib::utilities::System sys;
+        sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
+    });
+
+    // YOUTUBE
     btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_YOUTUBE, panelSocial);
     btnSocial->SetX(socialX);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
+    btnSocial->SetOnClickFunction([]
+    {
+        lib::utilities::System sys;
+        sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
+    });
+
+    // TWITTER
     btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_TWITTER, panelSocial);
     btnSocial->SetX(socialX);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
+    btnSocial->SetOnClickFunction([]
+    {
+        lib::utilities::System sys;
+        sys.OpenUrlInBrowser("https://twitter.com/vivaladev");
+    });
+
+    // LINKEDIN
     btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_LINKEDIN, panelSocial);
     btnSocial->SetX(socialX);
+
+    btnSocial->SetOnClickFunction([]
+    {
+        lib::utilities::System sys;
+        sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");
+    });
 
     // position panel social buttons
     const int psMarginTop = 25;
