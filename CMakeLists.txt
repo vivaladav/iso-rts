@@ -5,6 +5,10 @@ project(iso-rts LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# set platform version for preprocessor checks
+add_compile_definitions($<$<PLATFORM_ID:Linux>:LINUX=1>
+                        $<$<PLATFORM_ID:Windows>:WINDOWS=1>)
+
 # include internal libraries
 add_subdirectory(lib)
 
@@ -117,6 +121,8 @@ add_executable(
     src/Widgets/ButtonCloseDialog.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
+    src/Widgets/ButtonMainMenuSocial.h
+    src/Widgets/ButtonMainMenuSocial.cpp
     src/Widgets/ButtonMainMenuWishlist.h
     src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonNavigation.h
