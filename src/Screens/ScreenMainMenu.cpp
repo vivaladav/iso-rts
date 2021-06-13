@@ -1,11 +1,11 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
-#include "GameData.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonMainMenuSocial.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
+#include "Widgets/GameUIData.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>

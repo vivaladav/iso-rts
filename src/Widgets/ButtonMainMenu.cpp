@@ -1,6 +1,6 @@
 #include "Widgets/ButtonMainMenu.h"
 
-#include "GameData.h"
+#include "Widgets/GameUIData.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>

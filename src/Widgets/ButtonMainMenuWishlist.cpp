@@ -1,6 +1,6 @@
 #include "Widgets/ButtonMainMenuWishlist.h"
 
-#include "GameData.h"
+#include "Widgets/GameUIData.h"
 
 #include <graphic/Camera.h>
 #include <graphic/Font.h>
