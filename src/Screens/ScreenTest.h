@@ -28,6 +28,7 @@ public:
 private:
     void TestSGui();
     void TestSprite();
+    void TestRotation();
 
 private:
     std::vector<lib::graphic::TexturedRenderable *> mRenderables;

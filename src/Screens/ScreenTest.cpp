@@ -91,6 +91,8 @@ ScreenTest::ScreenTest(Game * game)
 
     TestSprite();
 
+    TestRotation();
+
     TestSGui();
 }
 
@@ -271,7 +273,7 @@ void ScreenTest::TestSprite()
 
     const unsigned int numRects = rects.size();
 
-    const char file[] = "data/img/test_sprite.png";
+    const char file[] = "data/img/test/test_sprite.png";
 
     tm->RegisterSprite(file, rects);
 
@@ -313,6 +315,69 @@ void ScreenTest::TestSprite()
 
         x += img->GetWidth() + marginH;
     }
+}
+
+void ScreenTest::TestRotation()
+{
+    using namespace lib::graphic;
+
+    Image * img = nullptr;
+
+    // no bg bar
+    img = new Image("data/img/test/square100.png");
+    img->SetPosition(50, 800);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/test-bar-nobg.png");
+    img->SetPosition(50, 800);
+    img->SetRotation(45.f);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/red_dot4.png");
+    img->SetPosition(50, 800);
+    mRenderables.emplace_back(img);
+
+    // bar in square
+    img = new Image("data/img/test/square100.png");
+    img->SetPosition(200, 800);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/test-bar-bg.png");
+    img->SetPosition(200, 800);
+    img->SetRotation(45.f);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/red_dot4.png");
+    img->SetPosition(200, 800);
+    mRenderables.emplace_back(img);
+
+    // no bg bar - centered in origin
+    img = new Image("data/img/test/square100.png");
+    img->SetPosition(50, 950);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/test-bar-nobg.png");
+    img->SetPosition(50 - img->GetWidth() * 0.5f, 950- img->GetHeight() * 0.5f);
+    img->SetRotation(45.f);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/red_dot4.png");
+    img->SetPosition(50, 950);
+    mRenderables.emplace_back(img);
+
+    // bar in square - centered in origin
+    img = new Image("data/img/test/square100.png");
+    img->SetPosition(200, 950);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/test-bar-bg.png");
+    img->SetPosition(200 - img->GetWidth() * 0.5f, 950- img->GetHeight() * 0.5f);
+    img->SetRotation(45.f);
+    mRenderables.emplace_back(img);
+
+    img = new Image("data/img/test/red_dot4.png");
+    img->SetPosition(200, 950);
+    mRenderables.emplace_back(img);
 }
 
 } // namespace game
