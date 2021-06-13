@@ -966,6 +966,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     {
                         auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
                         wbp->SetPathCells(path);
+                        // only first level for now
+                        wbp->SetWallLevel(0);
 
                         mGameMap->BuildWalls(wbp);
 

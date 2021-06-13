@@ -10,12 +10,7 @@
 #include <graphic/TextureManager.h>
 #include <graphic/Text.h>
 
-#include <cmath>
-#include <iomanip>
-#include <sstream>
 #include <string>
-
-#include <iostream>
 
 namespace game
 {
@@ -112,7 +107,7 @@ GameObjectType WallIndicator::GetBlockType() const
         return types[mBlock];
 }
 
-void WallIndicator::SetCost(float energy, float material)
+void WallIndicator::SetCost(unsigned int energy, unsigned int material)
 {
     // update cost value
     mCostEnergy = energy;
@@ -191,10 +186,7 @@ void WallIndicator::CreateCostData()
     // ENERGY
     delete mTxtCostEnergy;
 
-    std::ostringstream s;
-    s << std::fixed << std::setprecision(0) << std::roundf(mCostEnergy);
-
-    mTxtCostEnergy = new Text(s.str().c_str(), font);
+    mTxtCostEnergy = new Text(std::to_string(mCostEnergy).c_str(), font);
     mTxtCostEnergy->SetColor(mColorCost);
 
     if(nullptr == mIconEnergy)
@@ -203,11 +195,7 @@ void WallIndicator::CreateCostData()
     // MATERIAL
     delete mTxtCostMaterial;
 
-    s.clear();
-    s.str(std::string());
-    s << std::fixed << std::setprecision(0) << std::roundf(mCostMaterial);
-
-    mTxtCostMaterial = new Text(s.str().c_str(), font);
+    mTxtCostMaterial = new Text(std::to_string(mCostMaterial).c_str(), font);
     mTxtCostMaterial->SetColor(mColorCost);
 
     if(nullptr == mIconMaterial)

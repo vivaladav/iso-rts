@@ -12,6 +12,9 @@ public:
 
     void SetWallType(GameObjectType type);
 
+    static unsigned int GetCostEnergy(unsigned int level);
+    static unsigned int GetCostMaterial(unsigned int level);
+
 protected:
     void UpdateImage() override;
 

@@ -24,7 +24,7 @@ public:
 
     GameObjectType GetBlockType() const;
 
-    void SetCost(float energy, float material);
+    void SetCost(unsigned int energy, unsigned int material);
     void ShowCost(bool val);
 
     void SetFaction(PlayerFaction faction);
@@ -61,8 +61,8 @@ private:
     unsigned int mColorCost = 0xFFFFFFFF;
 
     PlayerFaction mFaction;
-    float mCostEnergy = 0.f;
-    float mCostMaterial = 0.f;
+    unsigned int mCostEnergy = 0;
+    unsigned int mCostMaterial = 0;
 
     WallBlock mBlock = WB_INVALID;
 };

@@ -36,10 +36,13 @@ public:
 
     BuildState GetState() const;
 
-    float GetEnergyCost() const;
-    float GetMateriaCost() const;
+    unsigned int GetEnergyCost() const;
+    unsigned int GetMateriaCost() const;
 
     void SetPathCells(const std::vector<unsigned int> & cells);
+
+    unsigned int GetWallLevel() const;
+    void SetWallLevel(unsigned int level);
 
     void Start();
 
@@ -84,8 +87,10 @@ private:
     float mTargetX = 0.f;
     float mTargetY = 0.f;
 
-    float mEnergyCost = 0.f;
-    float mMaterialCost = 0.f;
+    unsigned int mEnergyCost = 0.f;
+    unsigned int mMaterialCost = 0.f;
+
+    unsigned int mLevel = 0;
 };
 
 inline WallBuildPath::WallBuildPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
@@ -97,8 +102,8 @@ inline GameObject * WallBuildPath::GetObject() const { return mObj; }
 
 inline WallBuildPath::BuildState WallBuildPath::GetState() const { return mState; }
 
-inline float WallBuildPath::GetEnergyCost() const { return mEnergyCost; }
-inline float WallBuildPath::GetMateriaCost() const { return mMaterialCost; }
+inline unsigned int WallBuildPath::GetEnergyCost() const { return mEnergyCost; }
+inline unsigned int WallBuildPath::GetMateriaCost() const { return mMaterialCost; }
 
 inline void WallBuildPath::SetPathCells(const std::vector<unsigned int> & cells)
 {
@@ -106,5 +111,8 @@ inline void WallBuildPath::SetPathCells(const std::vector<unsigned int> & cells)
 
     UpdatePathCost();
 }
+
+inline unsigned int WallBuildPath::GetWallLevel() const { return mLevel; }
+inline void WallBuildPath::SetWallLevel(unsigned int level) { mLevel = level; }
 
 } // namespace game

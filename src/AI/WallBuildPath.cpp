@@ -7,7 +7,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
-#include "GameObjects/Unit.h"
+#include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
 
@@ -79,7 +79,7 @@ void WallBuildPath::InitNextBuild()
         const int indexInd = mNextCell - 1;
 
         // check if conquest is possible
-        if(!mGameMap->CanBuildWall(nextCell, player))
+        if(!mGameMap->CanBuildWall(nextCell, player, mLevel))
         {
             // remove current indicator
             layerOverlay->ClearObject(mIndicators[indexInd]);
@@ -90,7 +90,7 @@ void WallBuildPath::InitNextBuild()
         }
 
         // start conquest
-        mGameMap->StartBuildWall(nextCell, player);
+        mGameMap->StartBuildWall(nextCell, player, mLevel);
 
         // clear indicator before starting construction
         layerOverlay->ClearObject(mIndicators[indexInd]);
@@ -98,7 +98,7 @@ void WallBuildPath::InitNextBuild()
         const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
 
         // TODO get conquer time from unit
-        constexpr float TIME_BUILD = 2.f;
+        constexpr float TIME_BUILD = 0.5f;
         mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                    [this, nextCell, player, blockType]
         {
@@ -125,9 +125,9 @@ void WallBuildPath::InitNextBuild()
 
 void WallBuildPath::UpdatePathCost()
 {
-    // TODO proper cost computation
-    mEnergyCost = (mCells.size() - 1) * 5.f;
-    mMaterialCost = (mCells.size() - 1) * 10.f;
+    const unsigned int segments = mCells.size() - 1;
+    mEnergyCost = segments * Wall::GetCostEnergy(mLevel);
+    mMaterialCost = segments * Wall::GetCostMaterial(mLevel);
 }
 
 void WallBuildPath::FinishAbortion()

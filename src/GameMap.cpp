@@ -596,7 +596,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     }
 }
 
-bool GameMap::CanBuildWall(const Cell2D & cell, Player * player)
+bool GameMap::CanBuildWall(const Cell2D & cell, Player * player, unsigned int level)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
@@ -617,21 +617,24 @@ bool GameMap::CanBuildWall(const Cell2D & cell, Player * player)
         return false;
 
     // check if player has enough energy and material
-    // TODO
-    //if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
-        //return false;
+    const int costMat = Wall::GetCostMaterial(level);
+    const int costEne = Wall::GetCostEnergy(level);
 
-    return true;
+    return player->GetStat(Player::Stat::MATERIAL).GetIntValue() >= costMat  &&
+           player->GetStat(Player::Stat::ENERGY).GetIntValue() >= costEne;
 }
 
-void GameMap::StartBuildWall(const Cell2D & cell, Player * player)
+void GameMap::StartBuildWall(const Cell2D & cell, Player * player, unsigned int level)
 {
     const int ind = cell.row * mCols + cell.col;
     GameMapCell & gcell = mCells[ind];
 
     // take player's material
-    // TODO
-    //player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
+    const int costEne = Wall::GetCostEnergy(level);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-costEne);
+
+    const int costMat = Wall::GetCostMaterial(level);
+    player->GetStat(Player::Stat::MATERIAL).SumValue(-costMat);
 
     // mark cell as changing
     gcell.changing = true;

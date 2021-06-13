@@ -25,6 +25,18 @@ void Wall::SetWallType(GameObjectType type)
     UpdateImage();
 }
 
+unsigned int Wall::GetCostEnergy(unsigned int level)
+{
+    const unsigned int cost0 = 5;
+    return (level + 1) * cost0;
+}
+
+unsigned int Wall::GetCostMaterial(unsigned int level)
+{
+    const unsigned int cost0 = 10;
+    return (level + 1) * cost0;
+}
+
 void Wall::UpdateImage()
 {
     SetImage();

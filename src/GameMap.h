@@ -89,8 +89,8 @@ public:
     void BuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
 
     // wall building
-    bool CanBuildWall(const Cell2D & cell, Player * player);
-    void StartBuildWall(const Cell2D & cell, Player * player);
+    bool CanBuildWall(const Cell2D & cell, Player * player, unsigned int level);
+    void StartBuildWall(const Cell2D & cell, Player * player, unsigned int level);
     void BuildWall(const Cell2D & cell, Player * player, GameObjectType planned);
     void BuildWalls(WallBuildPath * path);
     bool AbortBuildWalls(GameObject * obj);
