@@ -93,7 +93,7 @@ ScreenGame::ScreenGame(Game * game)
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
-    mPathfinder->SetAllowDiagonals(false);
+    mPathfinder->SetAllowDiagonals(true);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -958,8 +958,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                    player->IsCellVisible(clickInd) &&
                    mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
                 {
-                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                      clickCell.row, clickCell.col);
+                    const auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                            clickCell.row, clickCell.col);
 
                     // path available -> start building
                     if(!path.empty())
@@ -1019,7 +1019,7 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
         else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
         else if(action == GameObjectActionId::BUILD_DEF_TOWER)
-            HandleUnitBuildStructureOnMouseMove(currCell, GameObjectType::OBJ_DEF_TOWER);
+            HandleUnitBuildStructureOnMouseMove(selUnit, currCell, GameObjectType::OBJ_DEF_TOWER);
     }
 
     // update previous cell before exit
@@ -1297,7 +1297,7 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
 void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                                const std::function<void()> & onCompleted)
 {
-    auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col);
+    const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col);
 
     // empty path -> exit
     if(path.empty())
@@ -1363,8 +1363,8 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
         mMoveInd->SetIndicatorType(MoveIndicator::NORMAL);
 
         // show path cost when destination is visible
-        std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                               currCell.row, currCell.col);
+        const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                                currCell.row, currCell.col);
 
         ObjectPath op(unit, mIsoMap, mGameMap, this);
         op.SetPathCells(path);
@@ -1409,8 +1409,8 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
         return ;
 
     // show path cost when destination is visible
-    std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                           currCell.row, currCell.col);
+    const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                            currCell.row, currCell.col);
 
     // this should never happen, but just in case
     if(path.empty())
@@ -1476,8 +1476,8 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
         return ;
 
     // show path cost when destination is visible
-    std::vector<unsigned int> path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                           currCell.row, currCell.col);
+    const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                            currCell.row, currCell.col);
 
     // this should not happen
     if(path.size() < 2)
@@ -1530,25 +1530,35 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
 }
 
-void ScreenGame::HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, GameObjectType structure)
+void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell, GameObjectType structure)
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
 
+    // clear any current indicator
+    layer->ClearObjects();
+
+    // check if mouse is inside map
     const bool currInside = mIsoMap->IsCellInside(currCell);
 
-    // mouse outside the map -> nothing to do
     if(!currInside)
-    {
-        // hide the indicator, if any
+        return ;
+
+    // check if unit is next to destination or if there's any walkable cell surrounding destination
+    const int nextDist = 1;
+
+    if((std::abs(unit->GetRow0() - currCell.row) > nextDist ||
+       std::abs(unit->GetCol0() - currCell.col) > nextDist) &&
+        !mGameMap->IsAnyNeighborCellWalkable(currCell.row, currCell.col))
+        return ;
+
+    // check if there's a path between unit and destination
+    const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
+                                            currCell.row, currCell.col);
+
+    if(path.empty())
         layer->ClearObjects();
 
-        return ;
-    }
-
     Player * player = GetGame()->GetLocalPlayer();
-
-    // clear existing indicator from layer
-    layer->ClearObjects();
 
     // get an indicator
     StructureIndicator * ind = nullptr;

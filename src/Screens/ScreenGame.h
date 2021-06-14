@@ -108,7 +108,7 @@ private:
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildStructureOnMouseMove(const Cell2D & currCell, GameObjectType structure);
+    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell, GameObjectType structure);
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell, GameObjectType structure);

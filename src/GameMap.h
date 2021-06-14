@@ -40,6 +40,7 @@ public:
 
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
+    bool IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const;
 
     void SetCellWalkable(unsigned int r, unsigned int c, bool val);
 

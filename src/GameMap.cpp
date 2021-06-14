@@ -73,6 +73,23 @@ bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
     return mCells[ind].walkable;
 }
 
+bool GameMap::IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const
+{
+    const bool checkN = r > 0;
+    const bool checkS = r < (mRows - 1);
+    const bool checkW = c > 0;
+    const bool checkE = c < (mCols - 1);
+
+    return (checkN && IsCellWalkable(r - 1, c)) ||
+           (checkS && IsCellWalkable(r + 1, c)) ||
+           (checkW && IsCellWalkable(r, c - 1)) ||
+           (checkE && IsCellWalkable(r, c + 1)) ||
+           (checkN && checkW && IsCellWalkable(r - 1, c - 1)) ||
+           (checkN && checkE && IsCellWalkable(r - 1, c + 1)) ||
+           (checkS && checkW && IsCellWalkable(r + 1, c - 1)) ||
+           (checkS && checkE && IsCellWalkable(r + 1, c + 1));
+}
+
 void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
 {
     const unsigned int ind = r * mCols + c;
