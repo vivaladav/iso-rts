@@ -1,9 +1,12 @@
-# VIRTUEROR, THE VIRTUAL CONQUEROR
-![Virtueror, the virtual conqueror](https://i.imgur.com/2j1Ob3l.jpg)
+# VIRTUEROR - THE VIRTUAL CONQUEROR
+![Virtueror - The Virtual Conqueror](https://i.imgur.com/2j1Ob3l.jpg)
 
-An isometric Real Time Strategy game for PC.
+An isometric Real Time Strategy game with 4x and RPG elements for PC.
 
-You can follow the development on:
+Wishlist and follow on Steam:
+[![Wishlist and follow on Steam](https://i.imgur.com/xzYNsut.png)](https://store.steampowered.com/app/1607580?utm_campaign=github&utm_source=readme)
+
+You can also follow the development on:
 - [Newsletter](https://virtueror.com)
 - [Linkedin](https://www.linkedin.com/company/vivaladev)
 - [Twitter](https://twitter.com/vivaladev)
