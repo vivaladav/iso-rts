@@ -14,8 +14,8 @@ enum class MapObjectId : unsigned int
     GEN_ENERGY = 2000,
     GEN_MATERIAL1,
 
-    // COLLECTABLES
-    DIAMONDS = 3000,
+    // STRUCTURES
+    RADAR_STATION = 3000,
 
     // SCENE OBJECTS
     MOUNTAIN_ROW_END_L_1 = 4000,
@@ -100,6 +100,7 @@ enum GameObjectType : unsigned int
 
     OBJ_PRACTICE_TARGET,
     OBJ_DEF_TOWER,
+    OBJ_RADAR_STATION,
 
     NUM_GAME_OBJECT_TYPES,
 

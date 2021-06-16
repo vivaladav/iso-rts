@@ -68,6 +68,8 @@ add_executable(
     src/GameObjects/GameObjectAction.h
     src/GameObjects/PracticeTarget.h
     src/GameObjects/PracticeTarget.cpp
+    src/GameObjects/RadarStation.h
+    src/GameObjects/RadarStation.cpp
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
     src/GameObjects/SceneObject.h

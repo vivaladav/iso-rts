@@ -17,6 +17,7 @@
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/PracticeTarget.h"
+#include "GameObjects/RadarStation.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
@@ -269,6 +270,8 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         CreateObject(layerId, OBJ_RES_GEN_ENERGY, nullptr, r0, c0, rows, cols);
     else if(MapObjectId::GEN_MATERIAL1 == objId)
         CreateObject(layerId, OBJ_RES_GEN_MATERIAL1, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::RADAR_STATION == objId)
+        CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
     else if(objId >= MapObjectId::MOUNTAIN_FIRST && objId <= MapObjectId::MOUNTAIN_LAST)
     {
         const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
@@ -331,6 +334,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         owner->SetBaseCell(Cell2D(r0, c0));
         owner->SumCells(rows * cols);
     }
+    else if(OBJ_RADAR_STATION == objId)
+        obj = new RadarStation(rows, cols);
     else if(OBJ_PRACTICE_TARGET == objId)
         obj = new PracticeTarget(rows, cols);
     else if(objId >= OBJ_ROCKS_FIRST && objId <= OBJ_ROCKS_LAST)
