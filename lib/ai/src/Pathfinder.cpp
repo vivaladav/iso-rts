@@ -40,7 +40,7 @@ void Pathfinder::SetMap(const IPathMap * map, unsigned int mapRows, unsigned int
 
 std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
                                                unsigned int r1, unsigned int c1,
-                                               bool includeStart)
+                                               PathOptions options)
 {
     std::vector<unsigned int> path;
 
@@ -51,7 +51,7 @@ std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
     // no pathfinding needed
     if(r0 == r1 && c0 == c1)
     {
-        if(includeStart)
+        if(options & INCLUDE_START)
             path.emplace_back(GetCellIndex(r0, c0));
 
         return path;
@@ -94,7 +94,7 @@ std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
             }
 
             // add start node
-            if(includeStart)
+            if(options & INCLUDE_START)
                 path.emplace_back(GetCellIndex(curr->GetRow(), curr->GetCol()));
 
             std::reverse(path.begin(), path.end());
@@ -109,7 +109,7 @@ std::vector<unsigned int> Pathfinder::MakePath(unsigned int r0, unsigned int c0,
         HandleNode(curr, 1, 0);
 
         // process diagonals nodes if allowed
-        if(mAllowDiag)
+        if(options & ALLOW_DIAGONALS)
         {
             HandleNode(curr, -1, -1);
             HandleNode(curr, -1, 1);

@@ -14,15 +14,22 @@ class PathNode;
 class Pathfinder
 {
 public:
-    ~Pathfinder();
+    enum PathOptions : unsigned int
+    {
+        INCLUDE_START       = 0x1,
+        ALLOW_DIAGONALS     = 0x2,
 
-    void SetAllowDiagonals(bool allow);
+        ALL_OPTIONS = INCLUDE_START | ALLOW_DIAGONALS
+    };
+
+public:
+    ~Pathfinder();
 
     void SetMap(const IPathMap * map, unsigned int mapRows, unsigned int mapCols);
 
     std::vector<unsigned int> MakePath(unsigned int r0, unsigned int c0,
                                        unsigned int r1, unsigned int c1,
-                                       bool includeStart = true);
+                                       PathOptions options = INCLUDE_START);
 
 private:
     unsigned int GetCellIndex(unsigned int r, unsigned int c) const;
@@ -57,11 +64,7 @@ private:
 
     int mCostHor = 10;
     int mCostDia = 14;
-
-    bool mAllowDiag = true;
 };
-
-inline void Pathfinder::SetAllowDiagonals(bool allow) { mAllowDiag = allow; }
 
 inline unsigned int Pathfinder::GetCellIndex(unsigned int r, unsigned int c) const
 {

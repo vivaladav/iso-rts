@@ -93,7 +93,6 @@ ScreenGame::ScreenGame(Game * game)
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
-    mPathfinder->SetAllowDiagonals(true);
 
     // -- PLAYERS --
     for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
@@ -1306,7 +1305,8 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
 void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                                const std::function<void()> & onCompleted)
 {
-    const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col);
+    const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col,
+                                            lib::ai::Pathfinder::ALL_OPTIONS);
 
     // empty path -> exit
     if(path.empty())
@@ -1373,7 +1373,8 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
 
         // show path cost when destination is visible
         const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                currCell.row, currCell.col);
+                                                currCell.row, currCell.col,
+                                                lib::ai::Pathfinder::ALL_OPTIONS);
 
         ObjectPath op(unit, mIsoMap, mGameMap, this);
         op.SetPathCells(path);
@@ -1562,7 +1563,8 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
 
     // check if there's a path between unit and destination
     const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                            currCell.row, currCell.col);
+                                            currCell.row, currCell.col,
+                                            lib::ai::Pathfinder::ALL_OPTIONS);
 
     if(path.empty())
         layer->ClearObjects();
