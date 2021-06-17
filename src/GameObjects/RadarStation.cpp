@@ -16,11 +16,19 @@ RadarStation::RadarStation(int rows, int cols)
     SetCanBeConquered(true);
 
     SetImage();
+
+    SetVisibilityLevel(1);
 }
 
 void RadarStation::UpdateImage()
 {
     SetImage();
+}
+
+void RadarStation::OnLinkedChanged()
+{
+    const int maxVis = 12;
+    SetVisibilityLevel(maxVis * static_cast<int>(IsLinked()));
 }
 
 void RadarStation::SetImage()

@@ -38,6 +38,16 @@ void GameObject::SetVisible(bool val)
     UpdateImage();
 }
 
+void GameObject::SetLinked(bool val)
+{
+    if(val == mLinked)
+        return ;
+
+    mLinked = val;
+
+    OnLinkedChanged();
+}
+
 void GameObject::SetCell(const GameMapCell * cell)
 {
     mCell = cell;
@@ -63,5 +73,7 @@ void GameObject::SetOwner(Player * owner)
 }
 
 void GameObject::Update(float) { }
+
+void GameObject::OnLinkedChanged() { }
 
 } // namespace game

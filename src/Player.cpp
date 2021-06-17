@@ -16,7 +16,6 @@ namespace game
 
 // NOTE these will be replaced by dynamic values soon
 constexpr int ENERGY_PER_CELL = 1;
-constexpr int ENERGY_PER_UNIT = 1;
 
 Player::Player(const char * name, int pid)
     : mDummyStat(INVALID_STAT, 0)
@@ -78,9 +77,8 @@ void Player::SumCells(int val)
 int Player::GetEnergyUse() const
 {
     const int energyCells = mNumCells * ENERGY_PER_CELL;
-    const int energyUnits = mTotUnitsLevel * ENERGY_PER_UNIT;
 
-    return energyCells + energyUnits;
+    return energyCells;
 }
 
 void Player::UpdateResources()

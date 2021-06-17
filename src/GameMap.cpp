@@ -727,7 +727,7 @@ bool GameMap::AbortBuildWalls(GameObject * obj)
     return false;
 }
 
-bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+bool GameMap::CanConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);
     const unsigned int c0 = static_cast<unsigned int>(start.col);
@@ -750,8 +750,12 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
     const int ind1 = r1 * mCols + c1;
     GameMapCell & gcell1 = mCells[ind1];
 
-    // end has no resource generator
-    if(!gcell1.HasResourceGenerator())
+    // end is empty
+    if(nullptr == gcell1.obj)
+        return false;
+
+    // target object can't be conquered
+    if(!gcell1.obj->CanBeConquered())
         return false;
 
     // player already owns the res gen
@@ -765,7 +769,7 @@ bool GameMap::CanConquerResourceGenerator(const Cell2D & start, const Cell2D & e
     return true;
 }
 
-void GameMap::StartConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // take player's energy
     player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_RES_GEN);
@@ -790,7 +794,7 @@ void GameMap::StartConquerResourceGenerator(const Cell2D & start, const Cell2D &
     }
 }
 
-void GameMap::AbortConquerResourceGenerator(const Cell2D & unitCell, GameObject * target)
+void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target)
 {
     // mark start as not changing
     const int ind0 = unitCell.row * mCols + unitCell.col;
@@ -812,7 +816,7 @@ void GameMap::AbortConquerResourceGenerator(const Cell2D & unitCell, GameObject 
     mScreenGame->CancelProgressBar(unitCell);
 }
 
-void GameMap::ConquerResourceGenerator(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
 {
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
@@ -1503,11 +1507,26 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 
 void GameMap::UpdateLinkedCells(Player * player)
 {
+    std::unordered_set<GameObject *> objs;
+
     // CLEAR ALL LINKED STATUS
     for(GameMapCell & cell : mCells)
     {
         if(cell.owner == player)
+        {
             cell.linked = false;
+
+            if(cell.obj != nullptr)
+                objs.insert(cell.obj);
+        }
+    }
+
+    // reset all objects linked flag and remove visibility
+    for(GameObject * obj : objs)
+    {
+        DelPlayerObjVisibility(obj, player);
+
+        obj->SetLinked(false);
     }
 
     // FIND LINKED CELLS
@@ -1522,8 +1541,13 @@ void GameMap::UpdateLinkedCells(Player * player)
     {
         unsigned int currInd = todo.back();
         todo.pop_back();
+
         GameMapCell & currCell = mCells[currInd];
         currCell.linked = true;
+
+        // notify current object
+        if(currCell.obj != nullptr)
+            currCell.obj->SetLinked(true);
 
         // add TOP
         unsigned int r = currCell.row - 1;
@@ -1592,6 +1616,12 @@ void GameMap::UpdateLinkedCells(Player * player)
         if(cell.owner == player || cell.influencer != NO_FACTION)
             UpdateCellType(ind, cell);
     }
+
+    // UPDATE OBJECTS VISIBILITY
+    for(GameObject * obj : objs)
+        AddPlayerObjVisibility(obj, player);
+
+    ApplyVisibility(player);
 }
 
 void GameMap::UpdateInfluencedCells(int row, int col)

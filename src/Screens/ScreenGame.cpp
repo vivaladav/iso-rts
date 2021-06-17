@@ -749,7 +749,7 @@ void ScreenGame::CreateUI()
                     else if(objActId == GameObjectActionId::BUILD_WALL)
                         mGameMap->AbortBuildWalls(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
-                        mGameMap->AbortConquerResourceGenerator(act.actionCell, act.target);
+                        mGameMap->AbortConquerStructure(act.actionCell, act.target);
                 }
 
                 mActiveObjActions.erase(it);
@@ -1221,14 +1221,14 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     return true;
 }
 
-bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell2D & end, Player * player)
+bool ScreenGame::SetupStructureConquest(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // check if conquest is possible
-    if(!mGameMap->CanConquerResourceGenerator(start, end, player))
+    if(!mGameMap->CanConquerStructure(start, end, player))
         return false;
 
     // start conquest
-    mGameMap->StartConquerResourceGenerator(start, end, player);
+    mGameMap->StartConquerStructure(start, end, player);
 
     const GameMapCell & unitCell = mGameMap->GetCell(start.row, start.col);
     GameObject * unit = unitCell.obj;
@@ -1238,7 +1238,7 @@ bool ScreenGame::SetupResourceGeneratorConquest(const Cell2D & start, const Cell
 
     pb->SetFunctionOnCompleted([this, start, end, player, unit]
     {
-        mGameMap->ConquerResourceGenerator(start, end, player);
+        mGameMap->ConquerStructure(start, end, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
 
         // clear action data once the action is completed
@@ -1643,7 +1643,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
     // object is adjacent -> try to interact
     if(mGameMap->AreObjectsAdjacent(unit, clickObj))
     {
-        if(SetupResourceGeneratorConquest(selCell, clickCell, player))
+        if(SetupStructureConquest(selCell, clickCell, player))
             ClearSelection(player);
     }
     // object is far -> move close and then try to interact
@@ -1659,7 +1659,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
         {
             const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-            if(SetupResourceGeneratorConquest(currCell, clickCell, player))
+            if(SetupStructureConquest(currCell, clickCell, player))
                 ClearSelection(player);
         });
     }

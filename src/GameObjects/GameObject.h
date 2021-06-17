@@ -169,6 +169,9 @@ public:
     bool IsVisible() const;
     void SetVisible(bool val);
 
+    bool IsLinked() const;
+    void SetLinked(bool val);
+
     bool IsDestroyed() const;
 
     const GameMapCell * GetCell() const;
@@ -202,6 +205,8 @@ public:
 
 protected:
     virtual void UpdateImage() = 0;
+
+    virtual void OnLinkedChanged();
 
     GameMap * GetGameMap() const;
     ScreenGame * GetScreen() const;
@@ -255,7 +260,7 @@ private:
 
     bool mVisible = true;
     bool mVisited = false;
-
+    bool mLinked = false;
 };
 
 inline void GameObject::SetGameMap(GameMap * map) { mGameMap = map; }
@@ -278,6 +283,8 @@ inline bool GameObject::IsVisited() const { return mVisited; }
 inline void GameObject::SetVisited() { mVisited = true; }
 
 inline bool GameObject::IsVisible() const { return mVisible; }
+
+inline bool GameObject::IsLinked() const { return mLinked; }
 
 inline bool GameObject::IsDestroyed() const
 {

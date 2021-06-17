@@ -13,6 +13,8 @@ public:
 protected:
     void UpdateImage() override;
 
+    void OnLinkedChanged() override;
+
 private:
     void SetImage();
 };
