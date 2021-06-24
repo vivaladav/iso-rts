@@ -51,12 +51,22 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     buttonY += button->GetHeight() + VMARGIN;
 
+    // -- TEMP BUTTON FACTION SEL --
+    button = new ButtonMainMenu("FACTION SELECTION", panelButtons);
+    button->SetY(buttonY);
+
+    button->SetOnClickFunction([game]
+    {
+        game->RequestNextActiveState(StateId::FACTION_SEL);
+    });
+
+    buttonY += button->GetHeight() + VMARGIN;
+
     // -- BUTTON EXIT --
     button = new ButtonMainMenu("EXIT", panelButtons);
+    button->SetY(buttonY);
 
     button->SetOnClickFunction([game] { game->Exit(); });
-
-    button->SetY(buttonY);
 
     // position buttons panel
     const int centerX = 450;

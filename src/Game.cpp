@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "GameObjects/UnitsDataRegistry.h"
 #include "States/StatesIds.h"
+#include "States/StateFactionSelection.h"
 #include "States/StateGame.h"
 #include "States/StateMainMenu.h"
 #include "States/StateNewGame.h"
@@ -47,6 +48,7 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new lib::utilities::StateManager;
 
+    mStateMan->AddState(new StateFactionSelection(this));
     mStateMan->AddState(new StateGame(this));
     mStateMan->AddState(new StateTest(this));
     mStateMan->AddState(new StateMainMenu(this));

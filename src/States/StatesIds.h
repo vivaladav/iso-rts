@@ -7,6 +7,7 @@ enum StateId : int
 {
     GAME,
     MAIN_MENU,
+    FACTION_SEL,
     NEW_GAME,
     TEST,
 

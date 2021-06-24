@@ -96,6 +96,8 @@ add_executable(
     src/Particles/UpdaterSingleLaser.cpp
     src/Screens/Screen.h
     src/Screens/Screen.cpp
+    src/Screens/ScreenFactionSelection.h
+    src/Screens/ScreenFactionSelection.cpp
     src/Screens/ScreenGame.h
     src/Screens/ScreenGame.cpp
     src/Screens/ScreenMainMenu.h
@@ -108,6 +110,8 @@ add_executable(
     src/Screens/SharedScreenListener.cpp
     src/States/BaseGameState.h
     src/States/BaseGameState.cpp
+    src/States/StateFactionSelection.h
+    src/States/StateFactionSelection.cpp
     src/States/StateGame.h
     src/States/StateGame.cpp
     src/States/StateMainMenu.h
