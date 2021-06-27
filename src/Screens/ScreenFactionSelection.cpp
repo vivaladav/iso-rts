@@ -31,6 +31,8 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
 
+    const unsigned int colorHeader = 0xdbebf0ff;
+
     mBg = new graphic::Image("data/img/space_bg.jpg");
 
     auto tm = graphic::TextureManager::Instance();
@@ -56,13 +58,20 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 44, graphic::Font::NORMAL);
     sgui::Label * labelTitle = new sgui::Label("SELECT YOUR FACTION", fnt, panelMain);
     labelTitle->SetPosition(marginL, y);
+    labelTitle->SetColor(colorHeader);
 
     // PANEL FACTION LOGO 1
     y = 100;
 
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F1);
-    sgui::Image * panelFaction = new sgui::Image(tex, panelMain);
+    auto panelFaction = new sgui::Image(tex, panelMain);
     panelFaction->SetPosition(marginL, y);
+
+    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    auto labelFactionName = new sgui::Label("Zulox", fnt, panelFaction);
+    const int labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
+    labelFactionName->SetPosition(labelX, 10);
+    labelFactionName->SetColor(colorHeader);
 
     // PANEL STORY 1
     y += panelFaction->GetHeight() + marginPanelsH;
