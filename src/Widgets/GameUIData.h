@@ -4,6 +4,47 @@ namespace game
 {
 
 // NEW UNIT DIALOG
+extern const char SpriteFileFactionSelection[];
+
+enum SpriteIdFactionSelection : unsigned int
+{
+    // PANELS
+    IND_FSEL_MAIN_BG,
+    IND_FSEL_PANEL_F1,
+    IND_FSEL_PANEL_F2,
+    IND_FSEL_PANEL_F3,
+    IND_FSEL_PANEL_TXT,
+    IND_FSEL_PANEL_ATTR,
+
+    // ATTRIBUTES BAR
+    IND_FSEL_PIP0,
+    IND_FSEL_PIP1,
+    IND_FSEL_PIP2,
+    IND_FSEL_PIP3,
+    IND_FSEL_PIP4,
+    IND_FSEL_PIP5,
+    IND_FSEL_PIP6,
+    IND_FSEL_PIP7,
+    IND_FSEL_PIP9,
+
+    // BACK BUTTON
+    IND_FSEL_BACK_NORMAL,
+    IND_FSEL_BACK_OVER,
+    IND_FSEL_BACK_PUSHED,
+
+    // SELECT BUTTON
+    IND_FSEL_SEL_NORMAL,
+    IND_FSEL_SEL_OVER,
+    IND_FSEL_SEL_PUSHED,
+    IND_FSEL_SEL_CHECKED,
+
+    // CONTINUE BUTTON
+    IND_FSEL_CONTINUE_NORMAL,
+    IND_FSEL_CONTINUE_OVER,
+    IND_FSEL_CONTINUE_PUSHED
+};
+
+// NEW UNIT DIALOG
 extern const char SpriteFileNewUnitDialog[];
 
 enum SpriteIdNewUnitDialog : unsigned int
@@ -58,7 +99,6 @@ enum SpriteIdObjActionButton : unsigned int
 
     NUM_IND_OBJ_ACT_BUTTON
 };
-
 
 // MAIN MENU BUTTONS
 extern const char SpriteFileMainMenu[];

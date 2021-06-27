@@ -6,11 +6,9 @@
 
 namespace lib
 {
-    namespace sgui
-    {
-        class Label;
-        class PushButton;
-    }
+    namespace graphic { class Image; }
+
+    namespace sgui { class PushButton; }
 }
 
 namespace game
@@ -28,6 +26,11 @@ public:
     void Render() override;
 
 private:
+    void InitSprites();
+
+private:
+    lib::graphic::Image * mBg = nullptr;
+
     PlayerFaction mFaction;
 };
 
