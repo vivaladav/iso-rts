@@ -83,9 +83,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     // PANEL ATTRIBUTES 1
     y += panelTxt->GetHeight() + marginPanelsH;
 
-    tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_ATTR);
-    sgui::Image * panelAttr = new sgui::Image(tex, panelMain);
-    panelAttr->SetPosition(marginL, y);
+    AddPanelStats(marginL, y, { 2, 4, 6, 8 }, panelMain);
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()
@@ -150,6 +148,34 @@ void ScreenFactionSelection::InitSprites()
     };
 
     tm->RegisterSprite(SpriteFileFactionSelection, rects);
+}
+
+void ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
+                                           lib::sgui::Widget * parent)
+{
+    using namespace lib;
+
+    const unsigned int colorHeader = 0xdbebf0ff;
+
+    auto tm = graphic::TextureManager::Instance();
+    auto fm = graphic::FontManager::Instance();
+
+    graphic::Texture * tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_ATTR);
+    sgui::Image * panel = new sgui::Image(tex, parent);
+    panel->SetPosition(x, y);
+
+    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
+
+    int headerX = 0;
+    int headerY = 0;
+
+    const int marginHeaderB = 5;
+    const int marginBlockB = 36;
+
+    // HEADER LABEL "EXPLORATION"
+    sgui::Label * header0 = new sgui::Label("EXPLORATION", fnt, panel);
+    header0->SetPosition(headerX, headerY);
+    header0->SetColor(colorHeader);
 }
 
 } // namespace game
