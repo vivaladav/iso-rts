@@ -25,6 +25,7 @@ enum SpriteIdFactionSelection : unsigned int
     IND_FSEL_PIP5,
     IND_FSEL_PIP6,
     IND_FSEL_PIP7,
+    IND_FSEL_PIP8,
     IND_FSEL_PIP9,
 
     // BACK BUTTON

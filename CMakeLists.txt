@@ -125,6 +125,8 @@ add_executable(
     src/Widgets/ButtonBuildNewUnit.cpp
     src/Widgets/ButtonCloseDialog.h
     src/Widgets/ButtonCloseDialog.cpp
+    src/Widgets/ButtonDialogSelect.h
+    src/Widgets/ButtonDialogSelect.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
     src/Widgets/ButtonMainMenuSocial.h

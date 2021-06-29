@@ -44,8 +44,8 @@ private:
 private:
     void InitSprites();
 
-    void AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
-                       lib::sgui::Widget * parent);
+    int AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
+                      lib::sgui::Widget * parent);
 
 private:
     lib::graphic::Image * mBg = nullptr;

@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "States/StatesIds.h"
+#include "Widgets/ButtonDialogSelect.h"
 #include "Widgets/GameUIData.h"
 
 #include <graphic/Font.h>
@@ -111,7 +112,16 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     // PANEL ATTRIBUTES 1
     y += panelTxt->GetHeight() + marginPanelsH;
 
-    AddPanelStats(marginL, y, { 8, 6, 10, 3 }, panelMain);
+    const int panelStatsH = AddPanelStats(marginL, y, { 8, 6, 10, 3 }, panelMain);
+
+    y += panelStatsH + marginPanelsH;
+
+    // BUTTON SELECT
+    auto btnSel = new ButtonDialogSelect(panelMain);
+    btnSel->SetCheckable(true);
+
+    const int btnX = marginL + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
+    btnSel->SetPosition(btnX, y);
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()
@@ -178,7 +188,7 @@ void ScreenFactionSelection::InitSprites()
     tm->RegisterSprite(SpriteFileFactionSelection, rects);
 }
 
-void ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
+int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
                                            lib::sgui::Widget * parent)
 {
     using namespace lib;
@@ -269,6 +279,8 @@ void ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, N
     const int posContY = (panel->GetHeight() - panelContent->GetHeight()) * 0.5f;
 
     panelContent->SetPosition(posContX, posContY);
+
+    return panel->GetHeight();
 }
 
 } // namespace game
