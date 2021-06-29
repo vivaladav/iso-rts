@@ -2,6 +2,8 @@
 
 #include "Screen.h"
 
+#include "Player.h"
+
 #include <array>
 #include <vector>
 
@@ -19,7 +21,8 @@ namespace lib
 namespace game
 {
 
-enum PlayerFaction : unsigned int;
+class ButtonDialogContinue;
+class ButtonDialogSelect;
 
 class ScreenFactionSelection : public Screen
 {
@@ -47,8 +50,14 @@ private:
     int AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
                       lib::sgui::Widget * parent);
 
+    void HandleSelect(bool selected, PlayerFaction faction);
+
 private:
+    std::array<ButtonDialogSelect *, NUM_FACTIONS> mButtonsSelect;
+
     lib::graphic::Image * mBg = nullptr;
+
+    ButtonDialogContinue * mButtonCont = nullptr;
 
     PlayerFaction mFaction;
 };

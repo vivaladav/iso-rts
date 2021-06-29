@@ -46,17 +46,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     button->SetOnClickFunction([game]
     {
-        game->RequestNextActiveState(StateId::NEW_GAME);
-    });
-
-    buttonY += button->GetHeight() + VMARGIN;
-
-    // -- TEMP BUTTON FACTION SEL --
-    button = new ButtonMainMenu("FACTION SELECTION", panelButtons);
-    button->SetY(buttonY);
-
-    button->SetOnClickFunction([game]
-    {
         game->RequestNextActiveState(StateId::FACTION_SEL);
     });
 

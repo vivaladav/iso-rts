@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Screen.h"
 
@@ -19,8 +19,6 @@ namespace game
 class MapPreview;
 
 enum Difficulty : unsigned int;
-
-enum PlayerFaction : unsigned int;
 
 class ScreenNewGame : public Screen
 {
@@ -53,7 +51,6 @@ private:
 
     int mCpuPlayers = 1;
     Difficulty mDiff;
-    PlayerFaction mFaction;
 };
 
 } // namespace game

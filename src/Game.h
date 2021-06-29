@@ -25,6 +25,7 @@ namespace game
 class Player;
 class UnitsDataRegistry;
 
+enum PlayerFaction : unsigned int;
 enum StateId : int;
 
 enum Difficulty : unsigned int
@@ -64,6 +65,9 @@ public:
     Player * GetPlayerByIndex(unsigned int index) const;
     Player * GetLocalPlayer() const;
 
+    void SetLocalPlayerFaction(PlayerFaction faction);
+    PlayerFaction GetLocalPlayerFaction() const;
+
 private:
     void Update(float delta) override;
 
@@ -83,6 +87,8 @@ private:
     UnitsDataRegistry * mUnitsRegistry = nullptr;
 
     Difficulty mDiff = EASY;
+
+    PlayerFaction mLocalFaction;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
@@ -126,6 +132,16 @@ inline Player * Game::GetLocalPlayer() const
     // NOTE for now local player is always at index 0. This might change in the future
     const int indLocal = 0;
     return mPlayers[indLocal];
+}
+
+inline void Game::SetLocalPlayerFaction(PlayerFaction faction)
+{
+    mLocalFaction = faction;
+}
+
+inline PlayerFaction Game::GetLocalPlayerFaction() const
+{
+    return mLocalFaction;
 }
 
 } // namespace game

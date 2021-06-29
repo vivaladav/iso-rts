@@ -1,4 +1,4 @@
-#include "ButtonDialogSelect.h"
+#include "ButtonDialogBack.h"
 
 #include "Widgets/GameUIData.h"
 
@@ -8,27 +8,25 @@
 namespace game
 {
 
-ButtonDialogSelect::ButtonDialogSelect(lib::sgui::Widget * parent)
+ButtonDialogBack::ButtonDialogBack(lib::sgui::Widget * parent)
     : GameButton(SpriteFileFactionSelection,
                 {
-                    IND_FSEL_SEL_NORMAL,
-                    IND_FSEL_SEL_NORMAL,
-                    IND_FSEL_SEL_OVER,
-                    IND_FSEL_SEL_PUSHED,
-                    IND_FSEL_SEL_CHECKED
+                    IND_FSEL_BACK_NORMAL,
+                    IND_FSEL_BACK_NORMAL,
+                    IND_FSEL_BACK_OVER,
+                    IND_FSEL_BACK_PUSHED,
+                    IND_FSEL_BACK_NORMAL
                  },
                  {
                     0xd6ebf5ff,
                     0xFFFFFFFF,
-                    0x99e5ffff,
-                    0x8cd8f3ff,
-                    0xf0f0a8ff
+                    0xecf5f9ff,
+                    0xd7eaf4ff,
+                    0xFFFFFFFF
                  },
                  parent)
 {
     using namespace lib::graphic;
-
-    SetCheckable(true);
 
     // set label font
     auto fm = FontManager::Instance();
@@ -37,7 +35,7 @@ ButtonDialogSelect::ButtonDialogSelect(lib::sgui::Widget * parent)
     SetLabelFont(font);
 
     // init label
-    SetLabel("SELECT");
+    SetLabel("BACK");
 }
 
 } // namespace game

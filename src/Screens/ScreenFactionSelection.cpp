@@ -1,8 +1,9 @@
 #include "Screens/ScreenFactionSelection.h"
 
 #include "Game.h"
-#include "Player.h"
 #include "States/StatesIds.h"
+#include "Widgets/ButtonDialogBack.h"
+#include "Widgets/ButtonDialogContinue.h"
 #include "Widgets/ButtonDialogSelect.h"
 #include "Widgets/GameUIData.h"
 
@@ -42,7 +43,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // MAIN PANEL
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_MAIN_BG);
-    sgui::Image * panelMain = new sgui::Image(tex);
+    auto panelMain = new sgui::Image(tex);
 
     const int pmX = (screenW - panelMain->GetWidth()) * 0.5f;
     const int pmY = 30;
@@ -71,6 +72,17 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     graphic::Font * fntFaction = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
     graphic::Font * fntTxt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
+
+    // BUTTON BACK
+    auto btnBack = new ButtonDialogBack(panelMain);
+    const int posBackX = panelMain->GetWidth() - btnBack->GetWidth();
+    const int posBackY = 0;
+    btnBack->SetPosition(posBackX, posBackY);
+
+    btnBack->SetOnClickFunction([game]
+    {
+        game->RequestNextActiveState(StateId::MAIN_MENU);
+    });
 
     // -- FACTION 1 --
     // PANEL FACTION LOGO
@@ -122,13 +134,17 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    auto btnSel = new ButtonDialogSelect(panelMain);
-    btnSel->SetCheckable(true);
+    mButtonsSelect[FACTION_1] = new ButtonDialogSelect(panelMain);
 
-    int btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
-    btnSel->SetPosition(btnX, y);
+    int btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_1]->GetWidth()) * 0.5f;
+    mButtonsSelect[FACTION_1]->SetPosition(btnX, y);
 
     x += panelFaction->GetWidth() + marginFaction;
+
+    mButtonsSelect[FACTION_1]->SetOnToggleFunction([this](bool checked)
+    {
+       HandleSelect(checked, FACTION_1);
+    });
 
     // -- FACTION 2 --
     // PANEL FACTION LOGO
@@ -180,13 +196,17 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    btnSel = new ButtonDialogSelect(panelMain);
-    btnSel->SetCheckable(true);
+    mButtonsSelect[FACTION_2] = new ButtonDialogSelect(panelMain);
 
-    btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
-    btnSel->SetPosition(btnX, y);
+    btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_2]->GetWidth()) * 0.5f;
+    mButtonsSelect[FACTION_2]->SetPosition(btnX, y);
 
     x += panelFaction->GetWidth() + marginFaction;
+
+    mButtonsSelect[FACTION_2]->SetOnToggleFunction([this](bool checked)
+    {
+       HandleSelect(checked, FACTION_2);
+    });
 
     // -- FACTION 3 --
     // PANEL FACTION LOGO
@@ -240,13 +260,31 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    btnSel = new ButtonDialogSelect(panelMain);
-    btnSel->SetCheckable(true);
+    mButtonsSelect[FACTION_3] = new ButtonDialogSelect(panelMain);
 
-    btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
-    btnSel->SetPosition(btnX, y);
+    btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_3]->GetWidth()) * 0.5f;
+    mButtonsSelect[FACTION_3]->SetPosition(btnX, y);
 
     x += panelFaction->GetWidth() + marginFaction;
+
+    mButtonsSelect[FACTION_3]->SetOnToggleFunction([this](bool checked)
+    {
+       HandleSelect(checked, FACTION_3);
+    });
+
+    // -- BUTTON CONTINUE --
+    mButtonCont = new ButtonDialogContinue;
+    mButtonCont->SetEnabled(false);
+
+    const int posContX = (screenW - mButtonCont->GetWidth()) * 0.5f;
+    const int posContY = panelMain->GetY() + panelMain->GetHeight();
+    mButtonCont->SetPosition(posContX, posContY);
+
+    mButtonCont->SetOnClickFunction([this, game]
+    {
+        game->SetLocalPlayerFaction(mFaction);
+        game->RequestNextActiveState(StateId::NEW_GAME);
+    });
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()
@@ -299,15 +337,16 @@ void ScreenFactionSelection::InitSprites()
         { 642, 971, 320, 50 },
 
         // SELECT BUTTON
-        { 1404, 554, 250, 50 },
-        { 1404, 605, 250, 50 },
-        { 1404, 656, 250, 50 },
-        { 1404, 707, 250, 50 },
+        { 1404, 615, 250, 50 },
+        { 1404, 666, 250, 50 },
+        { 1404, 717, 250, 50 },
+        { 1404, 768, 250, 50 },
 
         // CONTINUE BUTTON
         { 1404, 371, 300, 60 },
         { 1404, 432, 300, 60 },
-        { 1404, 493, 300, 60 }
+        { 1404, 493, 300, 60 },
+        { 1404, 554, 300, 60 }
     };
 
     tm->RegisterSprite(SpriteFileFactionSelection, rects);
@@ -406,6 +445,38 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
     panelContent->SetPosition(posContX, posContY);
 
     return panel->GetHeight();
+}
+
+void ScreenFactionSelection::HandleSelect(bool selected, PlayerFaction faction)
+{
+    // deselecting
+    if(!selected)
+    {
+        // deselecting selected
+        if(faction == mFaction)
+        {
+            mFaction = NO_FACTION;
+
+            mButtonCont->SetEnabled(false);
+        }
+
+        return ;
+    }
+
+    // nothing changed
+    if(faction == mFaction)
+        return ;
+
+    PlayerFaction oldFaction = mFaction;
+
+    // update faction selection and allow to continue
+    mFaction = faction;
+
+    mButtonCont->SetEnabled(true);
+
+    // uncheck previously selected if any
+    if(oldFaction != NO_FACTION)
+        mButtonsSelect[oldFaction]->SetChecked(false);
 }
 
 } // namespace game

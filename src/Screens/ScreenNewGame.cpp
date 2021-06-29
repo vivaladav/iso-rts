@@ -40,7 +40,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     : Screen(game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
-    , mFaction(FACTION_1)
 {
     using namespace lib::graphic;
     using namespace lib::sgui;
@@ -112,28 +111,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
             mDiff = static_cast<Difficulty>(ind);
     });
 
-    // -- FACTION --
-    auto * headerFaction = new Label("FACTION", fontHeader);
-    headerFaction->SetColor(colorHeader);
-    headerFaction->SetPosition(headerDiff->GetX() + headerDiff->GetWidth() + marginWidgetsH, headerDiff->GetY());
-
-    // buttons
-    auto * bgFaction = new ButtonsGroup(ButtonsGroup::HORIZONTAL);
-    bgFaction->SetPosition(headerFaction->GetX(), widgetY);
-
-    bgFaction->AddButton(new ButtonUnitsSelector("R"));
-    bgFaction->AddButton(new ButtonUnitsSelector("G"));
-    bgFaction->AddButton(new ButtonUnitsSelector("B"));
-
-    bgFaction->SetButtonChecked(0, true);
-
-    bgFaction->SetFunctionOnToggle([this](unsigned int ind, bool checked)
-    {
-        if(checked)
-            mFaction = static_cast<PlayerFaction>(ind);
-    });
-
-
     // move down
     widgetY += bgDiff->GetHeight() + marginWidgetsV;
 
@@ -203,9 +180,10 @@ ScreenNewGame::ScreenNewGame(Game * game)
         const UnitsDataRegistry * unitsReg = mGame->GetUnitsRegistry();
 
         // create human player
+        const PlayerFaction pf = game->GetLocalPlayerFaction();
         Player * p = game->AddPlayer("PLAYER 1", 0);
         p->SetLocal(true);
-        p->SetFaction(mFaction);
+        p->SetFaction(pf);
 
         // assign initial available units
         p->AddAvailableUnit(unitsReg->GetData(UNIT_1));
@@ -227,7 +205,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
             FACTION_3
         };
 
-        int indFaction = (FACTION_1 == mFaction) ? 1 : 0;
+        int indFaction = (FACTION_1 == pf) ? 1 : 0;
 
         for(int i = 0; i < mCpuPlayers; ++i)
         {
@@ -246,7 +224,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
             ++indFaction;
 
-            if(factions[indFaction] == mFaction)
+            if(factions[indFaction] == pf)
                 ++indFaction;
         }
 

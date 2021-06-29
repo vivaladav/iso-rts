@@ -34,6 +34,7 @@ Game::Game(int argc, char * argv[])
         "data/maps/60x60-01.map"
     }
     , mUnitsRegistry(new UnitsDataRegistry)
+    , mLocalFaction(NO_FACTION)
 {
     using namespace lib::graphic;
 

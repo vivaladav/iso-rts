@@ -1,4 +1,4 @@
-#include "ButtonDialogSelect.h"
+#include "ButtonDialogContinue.h"
 
 #include "Widgets/GameUIData.h"
 
@@ -8,36 +8,34 @@
 namespace game
 {
 
-ButtonDialogSelect::ButtonDialogSelect(lib::sgui::Widget * parent)
+ButtonDialogContinue::ButtonDialogContinue(lib::sgui::Widget * parent)
     : GameButton(SpriteFileFactionSelection,
                 {
-                    IND_FSEL_SEL_NORMAL,
-                    IND_FSEL_SEL_NORMAL,
-                    IND_FSEL_SEL_OVER,
-                    IND_FSEL_SEL_PUSHED,
-                    IND_FSEL_SEL_CHECKED
+                    IND_FSEL_CONTINUE_NORMAL,
+                    IND_FSEL_CONTINUE_DISABLED,
+                    IND_FSEL_CONTINUE_OVER,
+                    IND_FSEL_CONTINUE_PUSHED,
+                    IND_FSEL_CONTINUE_NORMAL
                  },
                  {
                     0xd6ebf5ff,
-                    0xFFFFFFFF,
+                    0x3d525cff,
                     0x99e5ffff,
                     0x8cd8f3ff,
-                    0xf0f0a8ff
+                    0xFFFFFFFF
                  },
                  parent)
 {
     using namespace lib::graphic;
 
-    SetCheckable(true);
-
     // set label font
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 28, Font::NORMAL);
+    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, Font::NORMAL);
 
     SetLabelFont(font);
 
     // init label
-    SetLabel("SELECT");
+    SetLabel("CONTINUE");
 }
 
 } // namespace game
