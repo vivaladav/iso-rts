@@ -15,6 +15,7 @@
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
 
+#include <cmath>
 #include <iostream>
 #include <string>
 
@@ -80,10 +81,37 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     sgui::Image * panelTxt = new sgui::Image(tex, panelMain);
     panelTxt->SetPosition(marginL, y);
 
+    const unsigned int colorText = 0xb8d3e0ff;
+
+    const int marginTxt = 10;
+    int txtX = marginTxt;
+    int txtY = marginTxt;
+
+    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+    auto labelStory = new sgui::Label("Trained warriors and expert",
+                                      fnt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("weapon makers. They hate the",
+                                 fnt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("Domens.", fnt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
     // PANEL ATTRIBUTES 1
     y += panelTxt->GetHeight() + marginPanelsH;
 
-    AddPanelStats(marginL, y, { 2, 4, 6, 8 }, panelMain);
+    AddPanelStats(marginL, y, { 8, 6, 10, 3 }, panelMain);
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()
@@ -161,21 +189,86 @@ void ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, N
     auto fm = graphic::FontManager::Instance();
 
     graphic::Texture * tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_ATTR);
-    sgui::Image * panel = new sgui::Image(tex, parent);
+    auto panel = new sgui::Image(tex, parent);
     panel->SetPosition(x, y);
 
     graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
 
-    int headerX = 0;
-    int headerY = 0;
-
     const int marginHeaderB = 5;
     const int marginBlockB = 36;
 
-    // HEADER LABEL "EXPLORATION"
-    sgui::Label * header0 = new sgui::Label("EXPLORATION", fnt, panel);
-    header0->SetPosition(headerX, headerY);
-    header0->SetColor(colorHeader);
+    int contX = 0;
+    int contY = 0;
+
+    // CONTENT PANEL
+    auto panelContent = new sgui::Widget(panel);
+
+    const char * strHeader[NUM_FACTION_STATS] =
+    {
+        "EXPLORATION",
+        "CONSTRUCTION",
+        "COMBAT",
+        "TECHNOLOGY"
+    };
+
+    const int attLevels = 4;
+    const unsigned int colorPip[attLevels] =
+    {
+        0xf5a3a3ff,
+        0xf5daa3ff,
+        0xa6f2a6ff,
+        0xa3daf5ff
+    };
+    const int treshPip[attLevels] = { 4, 7, 9, 11 };
+
+    const unsigned int colorPipOff = 0x365463ff;
+
+    for(unsigned int i = 0; i < NUM_FACTION_STATS; ++i)
+    {
+        const unsigned int stat = stats[i];
+
+        // header label
+        auto header0 = new sgui::Label(strHeader[i], fnt, panelContent);
+        header0->SetPosition(contX, contY);
+        header0->SetColor(colorHeader);
+
+        contY += header0->GetHeight() + marginHeaderB;
+
+        // stat bar
+        const int maxH = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PIP9)->GetHeight();
+
+        int colorInd = attLevels - 1;
+
+        if(stat < treshPip[0])
+            colorInd = 0;
+        else if(stat < treshPip[1])
+            colorInd = 1;
+        else if(stat < treshPip[2])
+            colorInd = 2;
+
+        for(unsigned int p = 0; p < NUM_FSEL_PIPS; ++p)
+        {
+            tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PIP0 + p);
+            auto pip = new sgui::Image(tex, panelContent);
+            pip->SetPosition(contX, contY + maxH - pip->GetHeight());
+
+            if(p < stat)
+                pip->SetColor(colorPip[colorInd]);
+            else
+                pip->SetColor(colorPipOff);
+
+            contX += pip->GetWidth() * 2;
+        }
+
+        contX = 0;
+        contY += maxH + marginBlockB;
+    }
+
+    // position content panel
+    const int posContX = (panel->GetWidth() - panelContent->GetWidth()) * 0.5f;
+    const int posContY = (panel->GetHeight() - panelContent->GetHeight()) * 0.5f;
+
+    panelContent->SetPosition(posContX, posContY);
 }
 
 } // namespace game
