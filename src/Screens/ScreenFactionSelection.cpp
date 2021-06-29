@@ -175,7 +175,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL ATTRIBUTES
 
-    panelStatsH = AddPanelStats(x, y, { 5, 10, 3, 8 }, panelMain);
+    panelStatsH = AddPanelStats(x, y, { 6, 9, 3, 8 }, panelMain);
 
     y += panelStatsH + marginPanelsH;
 
@@ -235,7 +235,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL ATTRIBUTES
 
-    panelStatsH = AddPanelStats(x, y, { 9, 5, 5, 5 }, panelMain);
+    panelStatsH = AddPanelStats(x, y, { 9, 6, 5, 6 }, panelMain);
 
     y += panelStatsH + marginPanelsH;
 
@@ -275,23 +275,23 @@ void ScreenFactionSelection::InitSprites()
     {
         // PANELS
         { 0, 0, 1102, 970 },
-        { 1103, 0, 300, 270 },
-        { 1103, 271, 300, 270 },
-        { 1103, 542, 300, 270 },
-        { 1103, 813, 300, 100 },
+        { 1103, 0, 300, 260 },
+        { 1103, 261, 300, 260 },
+        { 1103, 522, 300, 260 },
+        { 1103, 783, 300, 110 },
         { 1404, 0, 300, 370 },
 
         // ATTRIBUTES BAR
-        { 1103, 914, 10, 12 },
-        { 1114, 914, 10, 14 },
-        { 1125, 914, 10, 16 },
-        { 1136, 914, 10, 18 },
-        { 1147, 914, 10, 20 },
-        { 1158, 914, 10, 22 },
-        { 1169, 914, 10, 24 },
-        { 1180, 914, 10, 26 },
-        { 1191, 914, 10, 28 },
-        { 1202, 914, 10, 30 },
+        { 1103, 894, 10, 12 },
+        { 1114, 894, 10, 14 },
+        { 1125, 894, 10, 16 },
+        { 1136, 894, 10, 18 },
+        { 1147, 894, 10, 20 },
+        { 1158, 894, 10, 22 },
+        { 1169, 894, 10, 24 },
+        { 1180, 894, 10, 26 },
+        { 1191, 894, 10, 28 },
+        { 1202, 894, 10, 30 },
 
         // BACK BUTTON
         { 0, 971, 320, 50 },
