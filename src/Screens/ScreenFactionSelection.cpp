@@ -33,8 +33,6 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
 
-    const unsigned int colorHeader = 0xdbebf0ff;
-
     mBg = new graphic::Image("data/img/space_bg.jpg");
 
     auto tm = graphic::TextureManager::Instance();
@@ -51,68 +49,75 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     panelMain->SetPosition(pmX, pmY);
 
+    const unsigned int colorHeader = 0xdbebf0ff;
+    const unsigned int colorText = 0xb8d3e0ff;
+
     const int marginL = 50;
     const int marginPanelsH = 15;
+    const int marginTxt = 10;
+    const int marginFaction = 50;
 
-    int y = 5;
+    const int y0 = 5;
+    const int contentY0 = 100;
+
+    int x = marginL;
+    int y = y0;
 
     // LABEL "SELECT YOUR FACTION"
     fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 44, graphic::Font::NORMAL);
     sgui::Label * labelTitle = new sgui::Label("SELECT YOUR FACTION", fnt, panelMain);
-    labelTitle->SetPosition(marginL, y);
+    labelTitle->SetPosition(x, y);
     labelTitle->SetColor(colorHeader);
 
-    // PANEL FACTION LOGO 1
-    y = 100;
+    graphic::Font * fntFaction = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    graphic::Font * fntTxt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
+
+    // -- FACTION 1 --
+    // PANEL FACTION LOGO
+    y = contentY0;
 
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F1);
     auto panelFaction = new sgui::Image(tex, panelMain);
-    panelFaction->SetPosition(marginL, y);
+    panelFaction->SetPosition(x, y);
 
-    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
-    auto labelFactionName = new sgui::Label("Zulox", fnt, panelFaction);
-    const int labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
+    auto labelFactionName = new sgui::Label("Zulox", fntFaction, panelFaction);
+    int labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
     labelFactionName->SetPosition(labelX, 10);
     labelFactionName->SetColor(colorHeader);
 
-    // PANEL STORY 1
     y += panelFaction->GetHeight() + marginPanelsH;
 
+    // PANEL STORY
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
-    sgui::Image * panelTxt = new sgui::Image(tex, panelMain);
-    panelTxt->SetPosition(marginL, y);
+    auto panelTxt = new sgui::Image(tex, panelMain);
+    panelTxt->SetPosition(x, y);
 
-    const unsigned int colorText = 0xb8d3e0ff;
-
-    const int marginTxt = 10;
     int txtX = marginTxt;
     int txtY = marginTxt;
 
-    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
     auto labelStory = new sgui::Label("Trained warriors and expert",
-                                      fnt, panelTxt);
+                                      fntTxt, panelTxt);
     labelStory->SetPosition(txtX, txtY);
     labelStory->SetColor(colorText);
 
     txtY += labelStory->GetHeight();
 
     labelStory = new sgui::Label("weapon makers. They hate the",
-                                 fnt, panelTxt);
+                                 fntTxt, panelTxt);
     labelStory->SetPosition(txtX, txtY);
     labelStory->SetColor(colorText);
 
     txtY += labelStory->GetHeight();
 
-    labelStory = new sgui::Label("Domens.", fnt, panelTxt);
+    labelStory = new sgui::Label("Domens.", fntTxt, panelTxt);
     labelStory->SetPosition(txtX, txtY);
     labelStory->SetColor(colorText);
 
-    txtY += labelStory->GetHeight();
-
-    // PANEL ATTRIBUTES 1
     y += panelTxt->GetHeight() + marginPanelsH;
 
-    const int panelStatsH = AddPanelStats(marginL, y, { 8, 6, 10, 3 }, panelMain);
+    // PANEL ATTRIBUTES
+
+    int panelStatsH = AddPanelStats(x, y, { 8, 6, 10, 3 }, panelMain);
 
     y += panelStatsH + marginPanelsH;
 
@@ -120,8 +125,128 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     auto btnSel = new ButtonDialogSelect(panelMain);
     btnSel->SetCheckable(true);
 
-    const int btnX = marginL + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
+    int btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
     btnSel->SetPosition(btnX, y);
+
+    x += panelFaction->GetWidth() + marginFaction;
+
+    // -- FACTION 2 --
+    // PANEL FACTION LOGO
+    y = contentY0;
+
+    tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F2);
+    panelFaction = new sgui::Image(tex, panelMain);
+    panelFaction->SetPosition(x, y);
+
+    labelFactionName = new sgui::Label("Domens", fntFaction, panelFaction);
+    labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
+    labelFactionName->SetPosition(labelX, 10);
+    labelFactionName->SetColor(colorHeader);
+
+    y += panelFaction->GetHeight() + marginPanelsH;
+
+    // PANEL STORY
+    tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
+    panelTxt = new sgui::Image(tex, panelMain);
+    panelTxt->SetPosition(x, y);
+
+    txtX = marginTxt;
+    txtY = marginTxt;
+
+    labelStory = new sgui::Label("Masters of engineering and",
+                                 fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("science. Long time enemies of",
+                                 fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("the Zulox.", fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    y += panelTxt->GetHeight() + marginPanelsH;
+
+    // PANEL ATTRIBUTES
+
+    panelStatsH = AddPanelStats(x, y, { 5, 10, 3, 8 }, panelMain);
+
+    y += panelStatsH + marginPanelsH;
+
+    // BUTTON SELECT
+    btnSel = new ButtonDialogSelect(panelMain);
+    btnSel->SetCheckable(true);
+
+    btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
+    btnSel->SetPosition(btnX, y);
+
+    x += panelFaction->GetWidth() + marginFaction;
+
+    // -- FACTION 3 --
+    // PANEL FACTION LOGO
+    y = contentY0;
+
+    tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F3);
+    panelFaction = new sgui::Image(tex, panelMain);
+    panelFaction->SetPosition(x, y);
+
+    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    labelFactionName = new sgui::Label("Alphen", fnt, panelFaction);
+    labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
+    labelFactionName->SetPosition(labelX, 10);
+    labelFactionName->SetColor(colorHeader);
+
+    y += panelFaction->GetHeight() + marginPanelsH;
+
+    // PANEL STORY
+    tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
+    panelTxt = new sgui::Image(tex, panelMain);
+    panelTxt->SetPosition(x, y);
+
+    txtX = marginTxt;
+    txtY = marginTxt;
+
+    labelStory = new sgui::Label("Great explorers and very",
+                                 fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("versatile. They have never",
+                                 fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    txtY += labelStory->GetHeight();
+
+    labelStory = new sgui::Label("fought other factions until now.",
+                                 fntTxt, panelTxt);
+    labelStory->SetPosition(txtX, txtY);
+    labelStory->SetColor(colorText);
+
+    y += panelTxt->GetHeight() + marginPanelsH;
+
+    // PANEL ATTRIBUTES
+
+    panelStatsH = AddPanelStats(x, y, { 9, 5, 5, 5 }, panelMain);
+
+    y += panelStatsH + marginPanelsH;
+
+    // BUTTON SELECT
+    btnSel = new ButtonDialogSelect(panelMain);
+    btnSel->SetCheckable(true);
+
+    btnX = x + (panelFaction->GetWidth() - btnSel->GetWidth()) * 0.5f;
+    btnSel->SetPosition(btnX, y);
+
+    x += panelFaction->GetWidth() + marginFaction;
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()
