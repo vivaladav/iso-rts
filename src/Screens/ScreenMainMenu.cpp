@@ -51,6 +51,14 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     buttonY += button->GetHeight() + VMARGIN;
 
+    // -- BUTTON SETTINGS --
+    button = new ButtonMainMenu("SETTINGS", panelButtons);
+    button->SetY(buttonY);
+
+    button->SetOnClickFunction([game] { });
+
+    buttonY += button->GetHeight() + VMARGIN;
+
     // -- BUTTON EXIT --
     button = new ButtonMainMenu("EXIT", panelButtons);
     button->SetY(buttonY);
