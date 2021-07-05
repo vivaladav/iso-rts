@@ -120,4 +120,16 @@ void Game::ClearPlayers()
     mPlayers.clear();
 }
 
+
+Player * Game::GetPlayerByFaction(PlayerFaction faction) const
+{
+    for(Player * p : mPlayers)
+    {
+        if(p->GetFaction() == faction)
+            return p;
+    }
+
+    return nullptr;
+}
+
 } // namespace game

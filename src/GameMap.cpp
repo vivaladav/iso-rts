@@ -280,6 +280,33 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
     }
     else if(MapObjectId::PRACTICE_TARGET == objId)
         CreateObject(layerId, OBJ_PRACTICE_TARGET, nullptr, r0, c0, rows, cols);
+    else if(objId >= MapObjectId::UNIT_FIRST && objId <= MapObjectId::UNIT_LAST)
+    {
+        Player * p = nullptr;
+
+        unsigned int td = 0;
+
+        if(objId < MapObjectId::UNIT_1_P2)
+        {
+            p = mGame->GetPlayerByIndex(0);
+            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P1);
+        }
+        else if(objId < MapObjectId::UNIT_1_P3)
+        {
+            p = mGame->GetPlayerByIndex(1);
+            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P2);
+        }
+        else
+        {
+            p = mGame->GetPlayerByIndex(2);
+            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P3);
+        }
+
+        UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
+        const UnitData & data = p->GetAvailableUnitData(type);
+        const Cell2D dest(r0, c0);
+        CreateUnit(data, nullptr, dest, p);
+    }
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
@@ -853,7 +880,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     UpdateLinkedCells(player);
 
     // update visibility
-    Player * localPlayer = mGame->GetPlayerByIndex(0);
+    Player * localPlayer = mGame->GetLocalPlayer();
 
     if(player == localPlayer)
     {
@@ -1124,8 +1151,9 @@ void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D &
 
     mObjects.push_back(unit);
 
-    // update generator
-    gen->SetBusy(false);
+    // update generator, if any
+    if(gen)
+        gen->SetBusy(false);
 
     // update player
     player->SumUnits(1);
@@ -1452,7 +1480,7 @@ void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 {
     // if cell is not visible it's always Fog Of War
-    if(!mGame->GetPlayerByIndex(0)->IsCellVisible(ind))
+    if(!mGame->GetLocalPlayer()->IsCellVisible(ind))
         return FOG_OF_WAR;
 
     // scene cell

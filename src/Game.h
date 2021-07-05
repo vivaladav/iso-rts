@@ -63,6 +63,7 @@ public:
     int GetNumPlayers() const;
 
     Player * GetPlayerByIndex(unsigned int index) const;
+    Player * GetPlayerByFaction(PlayerFaction faction) const;
     Player * GetLocalPlayer() const;
 
     void SetLocalPlayerFaction(PlayerFaction faction);
