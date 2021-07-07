@@ -302,7 +302,7 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
             td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P3);
         }
 
-        UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
+        const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
         const UnitData & data = p->GetAvailableUnitData(type);
         const Cell2D dest(r0, c0);
         CreateUnit(data, nullptr, dest, p);
@@ -1149,7 +1149,9 @@ void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D &
 
     mIsoMap->GetLayer(OBJECTS)->AddObject(unit->GetIsoObject(), r, c);
 
+    // store unit in map list and in registry
     mObjects.push_back(unit);
+    mObjectsSet.insert(unit);
 
     // update generator, if any
     if(gen)
