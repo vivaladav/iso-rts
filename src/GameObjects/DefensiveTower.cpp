@@ -1,6 +1,7 @@
 #include "GameObjects/DefensiveTower.h"
 
 #include "GameData.h"
+#include "GameMap.h"
 #include "IsoObject.h"
 #include "Player.h"
 
@@ -15,6 +16,30 @@ DefensiveTower::DefensiveTower(int rows, int cols)
     SetStructure(true);
 
     SetImage();
+}
+
+void DefensiveTower::Update(float delta)
+{
+    CheckForEnemies();
+
+    // attacking other object
+    if(mTarget)
+    {
+        mTimerAttack -= delta;
+
+        // time to shoot!
+        if(mTimerAttack < 0.f)
+        {
+            // target still alive -> shoot
+            if(GetGameMap()->HasObject(mTarget))
+                Shoot();
+            // target destroyed -> clear pointer
+            else
+                mTarget = nullptr;
+
+            mTimerAttack = mTimeAttack;
+        }
+    }
 }
 
 void DefensiveTower::UpdateImage()
@@ -46,6 +71,57 @@ void DefensiveTower::SetImage()
 
     lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
     isoObj->SetTexture(tex);
+}
+
+void DefensiveTower::CheckForEnemies()
+{
+    const GameMap * gm = GetGameMap();
+
+    const int row = GetRow0();
+    const int col = GetCol0();
+
+    const int mapRows = gm->GetNumRows();
+    const int mapCols = gm->GetNumCols();
+
+    std::vector<GameObject *> objs;
+
+    // find all enemies in range
+    for(int i = 1; i <= mAttackRadius; ++i)
+    {
+        const int rTL = (row - i) > 0 ? (row - i) : 0;
+        const int rBR = (row + i) < mapRows ? (row + i) : (mapRows - 1);
+
+        const int cTL = (col - i) > 0 ?  (col - i) : 0;
+        const int cBR = (col + i) < mapCols ? (row + i) : (mapRows - 1);
+
+        for(int r = rTL; r <= rBR; ++r)
+        {
+            for(int c = cTL; c <= cBR; ++c)
+            {
+                const GameMapCell & cell = gm->GetCell(r, c);
+
+                if(cell.obj && cell.obj->GetOwner() != GetOwner())
+                    objs.push_back(cell.obj);
+            }
+        }
+    }
+
+    // no potential target
+    if(objs.empty())
+    {
+        mTarget = nullptr;
+        return ;
+    }
+
+    // chose target
+    // TODO more complex logic, for now just selecting 1st one
+    mTarget = objs.front();
+}
+
+void DefensiveTower::Shoot()
+{
+    // TEMP test
+    mTarget->SumHealth(-mWeaponDamage);
 }
 
 } // namespace game
