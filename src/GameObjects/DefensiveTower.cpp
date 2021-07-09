@@ -100,13 +100,13 @@ void DefensiveTower::CheckForEnemies()
             {
                 const GameMapCell & cell = gm->GetCell(r, c);
 
-                if(cell.obj && cell.obj->GetOwner() != GetOwner())
+                if(cell.obj && cell.obj->GetOwner() != nullptr && cell.obj->GetOwner() != GetOwner())
                     objs.push_back(cell.obj);
             }
         }
     }
 
-    // no potential target
+    // no potential target -> clear current
     if(objs.empty())
     {
         mTarget = nullptr;
