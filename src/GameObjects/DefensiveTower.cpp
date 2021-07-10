@@ -4,8 +4,14 @@
 #include "GameMap.h"
 #include "IsoObject.h"
 #include "Player.h"
+#include "Particles/DataParticleSingleLaser.h"
+#include "Particles/UpdaterSingleLaser.h"
+#include "Screens/ScreenGame.h"
 
+#include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
+
+#include <cmath>
 
 namespace game
 {
@@ -120,8 +126,78 @@ void DefensiveTower::CheckForEnemies()
 
 void DefensiveTower::Shoot()
 {
-    // TEMP test
-    mTarget->SumHealth(-mWeaponDamage);
+    using namespace lib::graphic;
+    // TODO calculate chance of hitting based on attack and defense attributes
+    // for now assuming it's always hit
+
+    const Player * owner = GetOwner();
+
+    // avoid to set an image when there's no owner set
+    if(nullptr == owner)
+        return ;
+
+    auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
+
+    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
+    Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
+
+    IsoObject * isoObj = GetIsoObject();
+    IsoObject * isoTarget = mTarget->GetIsoObject();
+
+    const float isoX = isoObj->GetX();
+    const float isoXC = isoObj->GetX() + isoObj->GetWidth() * 0.5f;
+    const float isoY = isoObj->GetY();
+    const float isoTargetX = isoTarget->GetX();
+    const float isoTargetY = isoTarget->GetY();
+    const float x0 = isoTargetX < isoX ? isoXC - 20.f : isoXC + 20.f;
+    const float y0 = isoTargetY < isoY ? isoY + 4 : isoY + 30;
+    const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
+    const float tY = isoTargetY + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
+    const float speed = 300.f;
+
+    const float rad2deg = 180.f / M_PI;
+    const float dy0 = tY - y0;
+    const float dx1 = tX - x0;
+    const float dy1 = dy0;
+    const float s = dy0 / sqrtf(dx1 * dx1 + dy1 * dy1);
+    const float as = asinf(s);
+    const double angleDeg = as * rad2deg;
+    double angle;
+
+    if(dx1 < 0.f)
+    {
+        // bottom left
+        if(dy1 > 0.f)
+            angle = 180.f - angleDeg;
+        // top left
+        else
+            angle = 180.f - angleDeg;
+    }
+    else
+    {
+        // bottom right
+        if(dy1 > 0.f)
+            angle = angleDeg;
+        // top right
+        else
+            angle = 360.f + angleDeg;
+    }
+
+    const DataParticleSingleLaser pd =
+    {
+        tex,
+        GetGameMap(),
+        mTarget,
+        angle,
+        x0,
+        y0,
+        tX,
+        tY,
+        speed,
+        mWeaponDamage
+    };
+
+    pu->AddParticle(pd);
 }
 
 } // namespace game

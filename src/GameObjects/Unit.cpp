@@ -125,7 +125,7 @@ void Unit::Shoot()
     const float y0 = isoObj->GetY();
     const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
-    const float speed = 350.f;
+    const float speed = 300.f;
 
     const float rad2deg = 180.f / M_PI;
     const float dy0 = tY - y0;

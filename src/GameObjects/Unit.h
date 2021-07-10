@@ -48,7 +48,7 @@ private:
     // weapon
     float mTimeAttack = 0.25f;
     float mTimerAttack = 0.f;
-    float mWeaponDamage = 50.f;
+    float mWeaponDamage = 40.f;
 
     GameObject * mTarget = nullptr;
 
