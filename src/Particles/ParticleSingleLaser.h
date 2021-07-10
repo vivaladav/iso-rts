@@ -23,10 +23,9 @@ public:
 
     float GetSpeed() const;
 
-    void Move(float delta);
+    void Update(float delta) override;
 
-    bool IsDone() const;
-    void OnDone();
+    void OnDone() override;
 
 private:
     void SetStartAndTarget(int x0, int y0, int tx, int ty);
@@ -60,7 +59,5 @@ inline float ParticleSingleLaser::GetTargetY() const { return mTargetY; }
 
 inline float ParticleSingleLaser::GetSpeed() const { return mSpeed; }
 inline void ParticleSingleLaser::SetSpeed(float vel) { mSpeed = vel; }
-
-inline bool ParticleSingleLaser::IsDone() const { return mDoneX && mDoneY; }
 
 } // namespace game

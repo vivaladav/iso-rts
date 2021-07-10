@@ -19,7 +19,7 @@ public:
 
     void AddParticle(const ParticleData & initData);
 
-    virtual void Update(float delta) = 0;
+    void Update(float delta);
 
     void Render();
 
@@ -28,6 +28,7 @@ private:
 
 protected:
     std::vector<Particle *> mActiveParticles;
+    std::vector<Particle *> mParticles;
 };
 
 // ==================== INLINE FUNCTIONS ====================

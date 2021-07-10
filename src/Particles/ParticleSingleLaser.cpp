@@ -71,11 +71,12 @@ void ParticleSingleLaser::SetStartAndTarget(int x0, int y0, int tx, int ty)
     // set initial position
     SetPosition(x, y);
 
+    // reset done flags
     mDoneX = false;
     mDoneY = false;
 }
 
-void ParticleSingleLaser::Move(float delta)
+void ParticleSingleLaser::Update(float delta)
 {
     const float speed = mSpeed * delta;
 
@@ -108,6 +109,10 @@ void ParticleSingleLaser::Move(float delta)
 
         SetY(posY);
     }
+
+    // DONE!
+    if(mDoneX && mDoneY)
+        SetDone();
 }
 
 void ParticleSingleLaser::OnDone()
@@ -117,7 +122,7 @@ void ParticleSingleLaser::OnDone()
         return ;
 
     // TODO check hit box
-    mTarget->SumHealth(-mDamage);
+    mTarget->Hit(mDamage);
 }
 
 } // namespace game
