@@ -130,6 +130,14 @@ enum SpriteIdSceneElements : unsigned int
     SPR_PRACTICE_TARGET1
 };
 
+// PARTICLES
+extern const char SpriteFileParticles[];
+
+enum SpriteIdParticles : unsigned int
+{
+    ID_PART_RECT_4x4
+};
+
 // STRUCTURES
 extern const char SpriteFileStructures[];
 

@@ -386,6 +386,14 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteFileIndicators, rectsInds);
 
+    // PARTICLES
+    const std::vector<lib::core::Rectd> rectsParticles
+    {
+        { 0, 0, 4, 4 }
+    };
+
+    tm->RegisterSprite(SpriteFileParticles, rectsParticles);
+
     // ROCKS
     const std::vector<lib::core::Rectd> rectsRocks
     {
