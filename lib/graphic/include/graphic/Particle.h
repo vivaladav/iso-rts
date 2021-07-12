@@ -19,10 +19,11 @@ public:
     virtual void Update(float delta) = 0;
 
     bool IsDone() const;
-    virtual void OnDone() = 0;
-
-protected:
+    void ClearDone();
     void SetDone();
+
+private:
+    virtual void OnDone() = 0;
 
 private:
     bool mActive = true;
@@ -40,7 +41,7 @@ inline bool Particle::IsActive() const { return mActive; }
 inline void Particle::SetActive(bool val) { mActive = val; }
 
 inline bool Particle::IsDone() const { return mDone; }
-
+inline void Particle::ClearDone() { mDone = false; }
 inline void Particle::SetDone()
 {
     mDone = true;

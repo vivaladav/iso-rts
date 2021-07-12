@@ -13,6 +13,14 @@ ParticlesUpdater::~ParticlesUpdater()
         delete p;
 }
 
+void ParticlesUpdater::AddParticle(const ParticleData & initData)
+{
+    Particle * p = CreateParticle(initData);
+    p->ClearDone();
+
+    mActiveParticles.push_back(p);
+}
+
 void ParticlesUpdater::Update(float delta)
 {
     auto it = mActiveParticles.begin();
@@ -23,7 +31,7 @@ void ParticlesUpdater::Update(float delta)
 
         p->Update(delta);
 
-        // reached target -> particle can be removed
+        // particle can be removed
         if(p->IsDone())
         {
             it = mActiveParticles.erase(it);

@@ -25,9 +25,9 @@ public:
 
     void Update(float delta) override;
 
+private:
     void OnDone() override;
 
-private:
     void SetStartAndTarget(int x0, int y0, int tx, int ty);
     void SetSpeed(float vel);
 

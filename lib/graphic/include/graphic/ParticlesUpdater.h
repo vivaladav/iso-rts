@@ -33,12 +33,5 @@ protected:
 
 // ==================== INLINE FUNCTIONS ====================
 
-inline void ParticlesUpdater::AddParticle(const ParticleData & initData)
-{
-    Particle * p = CreateParticle(initData);
-
-    mActiveParticles.push_back(p);
-}
-
 } // namespace graphic
 } // namespace lib
