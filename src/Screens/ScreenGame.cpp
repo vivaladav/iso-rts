@@ -17,6 +17,7 @@
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/StructureIndicator.h"
 #include "Indicators/WallIndicator.h"
+#include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewUnit.h"
@@ -586,9 +587,15 @@ void ScreenGame::InitSprites()
 
 void ScreenGame::InitParticlesSystem()
 {
-    // SINGlE LASER
-    auto u = new UpdaterSingleLaser;
-    mPartMan->RegisterUpdater(PU_SINGLE_LASER, u);
+    lib::graphic::ParticlesUpdater * updater;
+
+    // DAMAGE
+    updater = new UpdaterDamage;
+    mPartMan->RegisterUpdater(PU_DAMAGE, updater);
+
+    // SINGLE LASER
+    updater = new UpdaterSingleLaser;
+    mPartMan->RegisterUpdater(PU_SINGLE_LASER, updater);
 }
 
 void ScreenGame::CreateIsoMap()

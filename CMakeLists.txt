@@ -89,9 +89,14 @@ add_executable(
     src/Indicators/StructureIndicator.cpp
     src/Indicators/WallIndicator.h
     src/Indicators/WallIndicator.cpp
+    src/Particles/DataParticleDamage.h
     src/Particles/DataParticleSingleLaser.h
+    src/Particles/ParticleDamage.h
+    src/Particles/ParticleDamage.cpp
     src/Particles/ParticleSingleLaser.h
     src/Particles/ParticleSingleLaser.cpp
+    src/Particles/UpdaterDamage.h
+    src/Particles/UpdaterDamage.cpp
     src/Particles/UpdaterSingleLaser.h
     src/Particles/UpdaterSingleLaser.cpp
     src/Screens/Screen.h

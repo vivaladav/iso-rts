@@ -46,6 +46,7 @@ enum UnitType : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
 {
+    PU_DAMAGE,
     PU_SINGLE_LASER
 };
 
