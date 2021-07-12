@@ -14,13 +14,13 @@ PracticeTarget::PracticeTarget(int rows, int cols)
     SetStructure(true);
 
     SetImage();
+
+    SetObjColors();
 }
 
 void PracticeTarget::UpdateGraphics()
 {
     SetImage();
-
-    SetObjColors();
 }
 
 void PracticeTarget::SetImage()

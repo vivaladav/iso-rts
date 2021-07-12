@@ -44,4 +44,16 @@ void Blobs::SetImage()
     isoObj->SetTexture(tex);
 }
 
+void Blobs::SetObjColors()
+{
+    mObjColors.clear();
+
+    mObjColors.push_back(0xf9b8f9ff);
+    mObjColors.push_back(0xf589f5ff);
+    mObjColors.push_back(0xe16be1ff);
+    mObjColors.push_back(0xdb57dbff);
+    mObjColors.push_back(0xd742d7ff);
+    mObjColors.push_back(0xd22dd2ff);
+}
+
 } // namespace game

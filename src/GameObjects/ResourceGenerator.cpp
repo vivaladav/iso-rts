@@ -23,6 +23,8 @@ ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
 void ResourceGenerator::UpdateGraphics()
 {
     SetImage();
+
+    SetDefaultColors();
 }
 
 void ResourceGenerator::SetImage()

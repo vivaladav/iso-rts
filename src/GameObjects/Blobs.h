@@ -25,12 +25,15 @@ protected:
 private:
     void SetImage();
 
+    void SetObjColors();
+
 private:
     int mNum = 0;
 };
 
 inline Blobs::Blobs() : Collectable(GameObjectType::OBJ_BLOBS, 1, 1)
 {
+    SetObjColors();
 }
 
 inline int Blobs::GetNum() const { return mNum; }

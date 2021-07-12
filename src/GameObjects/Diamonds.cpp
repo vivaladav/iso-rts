@@ -44,4 +44,16 @@ void Diamonds::SetImage()
     isoObj->SetTexture(tex);
 }
 
+void Diamonds::SetObjColors()
+{
+    mObjColors.clear();
+
+    mObjColors.push_back(0xf9f4b8ff);
+    mObjColors.push_back(0xf5ed89ff);
+    mObjColors.push_back(0xe1d66bff);
+    mObjColors.push_back(0xdbd057ff);
+    mObjColors.push_back(0xd7ca42ff);
+    mObjColors.push_back(0xbdb128ff);
+}
+
 } // namespace game

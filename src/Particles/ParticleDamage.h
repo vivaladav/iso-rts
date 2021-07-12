@@ -22,6 +22,7 @@ public:
 private:
     void OnDone() override;
 
+    void SetScale(float scale);
     void SetStart(int x0, int y0);
 
 private:

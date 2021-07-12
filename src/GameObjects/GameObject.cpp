@@ -91,7 +91,7 @@ void GameObject::Hit(float damage)
 
     SumHealth(-damage);
 
-    const int numPart0 = 15 * mRows * mCols;
+    const int numPart0 = 20 * mRows * mCols;
     int numPart = numPart0;
 
     const int maxQuad = 4;
@@ -154,6 +154,11 @@ void GameObject::Hit(float damage)
 
     lib::utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
+    // random generator for scale
+    const int minScale = 1;
+    const int maxScale = 4;
+    lib::utilities::UniformDistribution genScale(minScale, maxScale);
+
     // random generator for color
     const int color0 = 0;
     const int colorN = mObjColors.size() - 1;
@@ -176,7 +181,9 @@ void GameObject::Hit(float damage)
 
             const unsigned int color = mObjColors[genColor.GetNextValue()];
 
-            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed, color);
+            const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
+
+            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed, scale, color);
 
             pu->AddParticle(data);
         }

@@ -25,12 +25,15 @@ protected:
 private:
     void SetImage();
 
+    void SetObjColors();
+
 private:
     int mNum = 0;
 };
 
 inline Diamonds::Diamonds() : Collectable(GameObjectType::OBJ_DIAMONDS, 1, 1)
 {
+    SetObjColors();
 }
 
 inline int Diamonds::GetNum() const { return mNum; }

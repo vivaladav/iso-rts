@@ -15,6 +15,7 @@ void ParticleDamage::SetData(const DataParticleDamage & data)
     SetRotation(data.angle);
     SetColor(data.color);
 
+    SetScale(data.scale);
     SetStart(data.x0, data.y0);
 
     mSpeed = data.speed;
@@ -24,6 +25,12 @@ void ParticleDamage::SetData(const DataParticleDamage & data)
 
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
+}
+
+void ParticleDamage::SetScale(float scale)
+{
+    RestoreOriginalSize();
+    Scale(scale);
 }
 
 void ParticleDamage::SetStart(int x0, int y0)
