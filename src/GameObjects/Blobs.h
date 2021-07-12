@@ -20,7 +20,7 @@ public:
     static const int MAX_UNITS = 4;
 
 protected:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
 private:
     void SetImage();

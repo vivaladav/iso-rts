@@ -17,9 +17,11 @@ SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
     SetImage();
 }
 
-void SceneObject::UpdateImage()
+void SceneObject::UpdateGraphics()
 {
     SetImage();
+
+    SetObjColors();
 }
 
 void SceneObject::SetImage()
@@ -36,6 +38,18 @@ void SceneObject::SetImage()
     auto tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex = tm->GetSprite(SpriteRocksFile, spriteId);
     isoObj->SetTexture(tex);
+}
+
+void SceneObject::SetObjColors()
+{
+    mObjColors.clear();
+
+    mObjColors.push_back(0xad9485ff);
+    mObjColors.push_back(0xa38776ff);
+    mObjColors.push_back(0x997966ff);
+    mObjColors.push_back(0x7a6152ff);
+    mObjColors.push_back(0x6b5548ff);
+    mObjColors.push_back(0x584a41ff);
 }
 
 } // namespace game

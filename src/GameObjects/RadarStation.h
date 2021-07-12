@@ -11,7 +11,7 @@ public:
     RadarStation(int rows, int cols);
 
 protected:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
     void OnLinkedChanged() override;
 

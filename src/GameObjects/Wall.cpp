@@ -22,7 +22,7 @@ void Wall::SetWallType(GameObjectType type)
 {
     mSubtypeInd = type - GameObjectType::OBJ_WALL_FIRST;
 
-    UpdateImage();
+    UpdateGraphics();
 }
 
 unsigned int Wall::GetCostEnergy(unsigned int level)
@@ -37,9 +37,11 @@ unsigned int Wall::GetCostMaterial(unsigned int level)
     return (level + 1) * cost0;
 }
 
-void Wall::UpdateImage()
+void Wall::UpdateGraphics()
 {
     SetImage();
+
+    SetDefaultColors();
 }
 
 void Wall::SetImage()

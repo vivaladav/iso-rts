@@ -11,7 +11,7 @@ public:
     Base(int rows, int cols);
 
 protected:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
 private:
     void SetImage();

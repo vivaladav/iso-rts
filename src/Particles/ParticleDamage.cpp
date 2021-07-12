@@ -13,6 +13,7 @@ void ParticleDamage::SetData(const DataParticleDamage & data)
 {
     SetTexture(data.tex);
     SetRotation(data.angle);
+    SetColor(data.color);
 
     SetStart(data.x0, data.y0);
 

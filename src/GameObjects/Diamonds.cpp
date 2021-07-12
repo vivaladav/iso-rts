@@ -20,7 +20,7 @@ void Diamonds::SetNum(int num)
     SetImage();
 }
 
-void Diamonds::UpdateImage()
+void Diamonds::UpdateGraphics()
 {
     SetImage();
 }

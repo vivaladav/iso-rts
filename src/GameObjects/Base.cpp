@@ -17,9 +17,11 @@ Base::Base(int rows, int cols)
     SetVisibilityLevel(1);
 }
 
-void Base::UpdateImage()
+void Base::UpdateGraphics()
 {
     SetImage();
+
+    SetDefaultColors();
 }
 
 void Base::SetImage()

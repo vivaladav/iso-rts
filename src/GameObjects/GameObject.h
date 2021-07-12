@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 namespace game
 {
 
@@ -220,9 +222,11 @@ public:
     virtual void Update(float delta);
 
 protected:
-    virtual void UpdateImage() = 0;
+    virtual void UpdateGraphics() = 0;
 
     virtual void OnLinkedChanged();
+
+    void SetDefaultColors();
 
     GameMap * GetGameMap() const;
     ScreenGame * GetScreen() const;
@@ -238,6 +242,8 @@ protected:
 protected:
     static const unsigned int COLOR_FOW;
     static const unsigned int COLOR_VIS;
+
+    std::vector<unsigned int> mObjColors;
 
 private:
     static unsigned int counter;

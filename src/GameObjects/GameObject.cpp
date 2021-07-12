@@ -3,6 +3,7 @@
 #include "GameData.h"
 #include "GameMapCell.h"
 #include "IsoObject.h"
+#include "Player.h"
 #include "Particles/DataParticleDamage.h"
 #include "Particles/UpdaterDamage.h"
 #include "Screens/ScreenGame.h"
@@ -25,6 +26,9 @@ GameObject::GameObject(GameObjectType type, int rows, int cols)
     , mObjId(++counter)
     , mType(type)
 {
+    // default colors to mark objects that haven't set any
+    mObjColors.push_back(0xFFFFFFFF);
+    mObjColors.push_back(0xFF00FFFF);
 }
 
 GameObject::~GameObject() { delete mIsoObj; }
@@ -37,14 +41,14 @@ void GameObject::SetSelected(bool val)
 
     mSelected = val;
 
-    UpdateImage();
+    UpdateGraphics();
 }
 
 void GameObject::SetVisible(bool val)
 {
     mVisible = val;
 
-    UpdateImage();
+    UpdateGraphics();
 }
 
 void GameObject::SetLinked(bool val)
@@ -78,7 +82,7 @@ void GameObject::SetOwner(Player * owner)
 
     mOwner = owner;
 
-    UpdateImage();
+    UpdateGraphics();
 }
 
 void GameObject::Hit(float damage)
@@ -150,6 +154,12 @@ void GameObject::Hit(float damage)
 
     lib::utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
+    // random generator for color
+    const int color0 = 0;
+    const int colorN = mObjColors.size() - 1;
+
+    lib::utilities::UniformDistribution genColor(color0, colorN);
+
     for(int q = 0; q < numQuad; ++q)
     {
         for(int p = 0; p < numPartQuad; ++p)
@@ -164,7 +174,9 @@ void GameObject::Hit(float damage)
 
             const float decSpeed = genDecSpeed.GetNextValue();
 
-            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed);
+            const unsigned int color = mObjColors[genColor.GetNextValue()];
+
+            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed, color);
 
             pu->AddParticle(data);
         }
@@ -179,5 +191,55 @@ void GameObject::Hit(float damage)
 void GameObject::Update(float) { }
 
 void GameObject::OnLinkedChanged() { }
+
+void GameObject::SetDefaultColors()
+{
+    // clear current colors
+    mObjColors.clear();
+
+    // assign new colors based on faction
+    Player * p = GetOwner();
+    const PlayerFaction faction = p != nullptr ? p->GetFaction() : NO_FACTION;
+
+    switch(faction)
+    {
+        case FACTION_1:
+            mObjColors.push_back(0xd9938cff);
+            mObjColors.push_back(0xcc6f66ff);
+            mObjColors.push_back(0xc04a3fff);
+            mObjColors.push_back(0xcc4133ff);
+            mObjColors.push_back(0x9a3b32ff);
+            mObjColors.push_back(0x86332cff);
+        break;
+
+        case FACTION_2:
+            mObjColors.push_back(0x8cd992ff);
+            mObjColors.push_back(0x66cc6eff);
+            mObjColors.push_back(0x3fc04aff);
+            mObjColors.push_back(0x33cc40ff);
+            mObjColors.push_back(0x329a3bff);
+            mObjColors.push_back(0x2c8633ff);
+        break;
+
+        case FACTION_3:
+            mObjColors.push_back(0x8cccd9ff);
+            mObjColors.push_back(0x66bbccff);
+            mObjColors.push_back(0x3faac0ff);
+            mObjColors.push_back(0x33b2ccff);
+            mObjColors.push_back(0x32899aff);
+            mObjColors.push_back(0x2c7786ff);
+        break;
+
+        // NO_FACTION
+        default:
+            mObjColors.push_back(0xccccccff);
+            mObjColors.push_back(0xb2b2b2ff);
+            mObjColors.push_back(0x999999ff);
+            mObjColors.push_back(0x808080ff);
+            mObjColors.push_back(0x666666ff);
+            mObjColors.push_back(0x595959ff);
+        break;
+    }
+}
 
 } // namespace game

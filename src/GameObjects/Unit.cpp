@@ -75,9 +75,11 @@ void Unit::Update(float delta)
     }
 }
 
-void Unit::UpdateImage()
+void Unit::UpdateGraphics()
 {
     SetImage();
+
+    SetDefaultColors();
 }
 
 void Unit::SetImage()

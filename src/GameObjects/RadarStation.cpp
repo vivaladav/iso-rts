@@ -20,9 +20,11 @@ RadarStation::RadarStation(int rows, int cols)
     SetVisibilityLevel(1);
 }
 
-void RadarStation::UpdateImage()
+void RadarStation::UpdateGraphics()
 {
     SetImage();
+
+    SetDefaultColors();
 }
 
 void RadarStation::OnLinkedChanged()

@@ -25,7 +25,7 @@ public:
     ResourceType GetResourceType() const;
 
 protected:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
 private:
     void SetImage();

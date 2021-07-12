@@ -13,7 +13,7 @@ public:
     void Update(float delta) override;
 
 protected:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
 private:
     void SetImage();

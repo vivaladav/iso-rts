@@ -33,7 +33,7 @@ public:
     void Update(float delta) override;
 
 private:
-    void UpdateImage() override;
+    void UpdateGraphics() override;
 
     void SetImage();
 
@@ -48,7 +48,7 @@ private:
     // weapon
     float mTimeAttack = 0.25f;
     float mTimerAttack = 0.f;
-    float mWeaponDamage = 40.f;
+    float mWeaponDamage = 20.f;
 
     GameObject * mTarget = nullptr;
 

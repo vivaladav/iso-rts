@@ -16,9 +16,11 @@ PracticeTarget::PracticeTarget(int rows, int cols)
     SetImage();
 }
 
-void PracticeTarget::UpdateImage()
+void PracticeTarget::UpdateGraphics()
 {
     SetImage();
+
+    SetObjColors();
 }
 
 void PracticeTarget::SetImage()
@@ -36,6 +38,18 @@ void PracticeTarget::SetImage()
 
     lib::graphic::Texture * tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
     isoObj->SetTexture(tex);
+}
+
+void PracticeTarget::SetObjColors()
+{
+    mObjColors.clear();
+
+    mObjColors.push_back(0xb2b2b2ff);
+    mObjColors.push_back(0xc06158ff);
+    mObjColors.push_back(0xa7483fff);
+    mObjColors.push_back(0x74423fff);
+    mObjColors.push_back(0x603c39ff);
+    mObjColors.push_back(0x503230ff);
 }
 
 } // namespace game

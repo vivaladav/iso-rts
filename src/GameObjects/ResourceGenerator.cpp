@@ -20,7 +20,7 @@ ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
     UpdateOutput();
 }
 
-void ResourceGenerator::UpdateImage()
+void ResourceGenerator::UpdateGraphics()
 {
     SetImage();
 }

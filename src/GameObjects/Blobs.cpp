@@ -20,7 +20,7 @@ void Blobs::SetNum(int num)
     SetImage();
 }
 
-void Blobs::UpdateImage()
+void Blobs::UpdateGraphics()
 {
     SetImage();
 }
