@@ -156,7 +156,7 @@ void GameObject::Hit(float damage)
 
     // random generator for scale
     const int minScale = 1;
-    const int maxScale = 4;
+    const int maxScale = 2;
     lib::utilities::UniformDistribution genScale(minScale, maxScale);
 
     // random generator for color
