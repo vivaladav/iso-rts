@@ -402,6 +402,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
 
             cell.walkable = false;
             cell.obj = obj;
+            cell.owner = owner;
 
             // update cell image
             UpdateCellType(ind, cell);
