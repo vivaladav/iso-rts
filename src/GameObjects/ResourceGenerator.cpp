@@ -104,7 +104,7 @@ void ResourceGenerator::SetImage()
 void ResourceGenerator::UpdateOutput()
 {
     if(ENERGY == mResType)
-        mOutput = 20;
+        mOutput = 30;
     else if(MATERIAL1 == mResType)
         mOutput = 2;
     // default
