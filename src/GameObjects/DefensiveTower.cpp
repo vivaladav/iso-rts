@@ -100,7 +100,7 @@ void DefensiveTower::CheckForEnemies()
         const int rBR = (row + i) < mapRows ? (row + i) : (mapRows - 1);
 
         const int cTL = (col - i) > 0 ?  (col - i) : 0;
-        const int cBR = (col + i) < mapCols ? (row + i) : (mapRows - 1);
+        const int cBR = (col + i) < mapCols ? (col + i) : (mapCols - 1);
 
         for(int r = rTL; r <= rBR; ++r)
         {
