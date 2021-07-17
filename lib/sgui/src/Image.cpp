@@ -34,6 +34,8 @@ Image::Image(graphic::Texture * tex, Widget * parent)
     RegisterRenderable(mImg);
 
     SetSize(mImg->GetWidth(), mImg->GetHeight());
+
+    mImg->SetPosition(GetScreenX(), GetScreenY());
 }
 
 Image::~Image()
