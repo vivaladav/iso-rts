@@ -164,7 +164,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     button->SetOnClickFunction([game]
     {
-        game->RequestNextActiveState(StateId::MAIN_MENU);
+        game->RequestNextActiveState(StateId::FACTION_SEL);
     });
 
     const int buttonBackW = button->GetWidth();
