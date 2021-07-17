@@ -30,6 +30,8 @@ public:
 
     void SetAttackTarget(GameObject * obj);
 
+    void SetActiveActionToDefault() override;
+
     void Update(float delta) override;
 
 private:
@@ -48,7 +50,7 @@ private:
     // weapon
     float mTimeAttack = 0.25f;
     float mTimerAttack = 0.f;
-    float mWeaponDamage = 15.f;
+    float mWeaponDamage = 10.f;
 
     GameObject * mTarget = nullptr;
 

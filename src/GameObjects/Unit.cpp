@@ -53,6 +53,8 @@ void Unit::IncreaseUnitLevel()
     SetImage();
 }
 
+void Unit::SetActiveActionToDefault() { SetActiveAction(MOVE); }
+
 void Unit::Update(float delta)
 {
     // attacking other object
@@ -68,7 +70,13 @@ void Unit::Update(float delta)
                 Shoot();
             // target destroyed -> clear pointer
             else
+            {
                 mTarget = nullptr;
+
+                // mark attack action as completed
+                GetScreen()->SetObjectActionCompleted(this);
+                SetCurrentAction(GameObjectActionId::IDLE);
+            }
 
             mTimerAttack = mTimeAttack;
         }

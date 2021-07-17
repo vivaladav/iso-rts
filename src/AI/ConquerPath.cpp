@@ -91,7 +91,7 @@ void ConquerPath::TransitionToMoveStep()
         mState = COMPLETED;
 
         // clear action data once the action is completed
-        mScreen->ClearObjectAction(mObj);
+        mScreen->SetObjectActionCompleted(mObj);
     }
 }
 

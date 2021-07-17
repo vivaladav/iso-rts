@@ -72,7 +72,7 @@ public:
     void CreateProgressBar(const Cell2D & cell, float time, Player * player,
                            const std::function<void()> & onCompleted);
 
-    void ClearObjectAction(GameObject * obj);
+    void SetObjectActionCompleted(GameObject * obj);
 
     lib::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 

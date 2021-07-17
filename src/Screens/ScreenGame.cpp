@@ -280,7 +280,7 @@ void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * pla
     });
 }
 
-void ScreenGame::ClearObjectAction(GameObject * obj)
+void ScreenGame::SetObjectActionCompleted(GameObject * obj)
 {
     auto it = mActiveObjActions.begin();
 
@@ -289,7 +289,15 @@ void ScreenGame::ClearObjectAction(GameObject * obj)
     {
         if(it->obj == obj)
         {
+            // remove pending action
             mActiveObjActions.erase(it);
+
+            // re-enable actions panel
+            mPanelObjActions->SetActionsEnabled(true);
+
+            // reset object's active action to default
+            obj->SetActiveActionToDefault();
+
             return ;
         }
 
@@ -733,10 +741,10 @@ void ScreenGame::CreateUI()
         // search selected object in active actions
         while(it != mActiveObjActions.end())
         {
-            if(it->obj == selObj)
-            {
-                GameObjectAction & act = *it;
+            GameObjectAction & act = *it;
 
+            if(act.obj == selObj)
+            {
                 const GameObjectType objType = act.obj->GetObjectType();
                 const GameObjectActionId objActId = act.actId;
 
@@ -748,8 +756,8 @@ void ScreenGame::CreateUI()
                     {
                         CancelProgressBar(act.actionCell);
 
-                        act.obj->SetActiveAction(GameObjectActionId::IDLE);
-                        act.obj->SetBusy(false);
+                        selObj->SetCurrentAction(GameObjectActionId::IDLE);
+                        selObj->SetBusy(false);
                     }
                 }
                 // object is a Unit
@@ -764,9 +772,20 @@ void ScreenGame::CreateUI()
                         mGameMap->AbortBuildWalls(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
                         mGameMap->AbortConquerStructure(act.actionCell, act.target);
+                    else if(objActId == GameObjectActionId::ATTACK)
+                    {
+                        auto unit = static_cast<Unit *>(selObj);
+                        unit->SetAttackTarget(nullptr);
+                    }
+
+                    selObj->SetCurrentAction(GameObjectActionId::IDLE);
                 }
 
                 mActiveObjActions.erase(it);
+
+                // re-enable actions
+                mPanelObjActions->SetActionsEnabled(true);
+                selObj->SetActiveActionToDefault();
 
                 break;
             }
@@ -943,6 +962,14 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     return ;
 
                 selUnit->SetAttackTarget(clickObj);
+
+                selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                selUnit->SetCurrentAction(GameObjectActionId::ATTACK);
+
+                // disable action buttons
+                mPanelObjActions->SetActionsEnabled(false);
+
+                mActiveObjActions.emplace_back(selUnit, GameObjectActionId::ATTACK);
             }
             else if(action == GameObjectActionId::CONQUER_CELL)
             {
@@ -966,7 +993,13 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                         // store active action
                         mActiveObjActions.emplace_back(selUnit, action);
 
-                        ClearSelection(player);
+                        // disable action buttons
+                        mPanelObjActions->SetActionsEnabled(false);
+
+                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                        selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
+
+                        ClearCellOverlays();
                     }
                 }
             }
@@ -987,17 +1020,25 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     // path available -> start building
                     if(!path.empty())
                     {
-                        auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
-                        wbp->SetPathCells(path);
-                        // only first level for now
-                        wbp->SetWallLevel(0);
-
-                        mGameMap->BuildWalls(wbp);
-
                         // store active action
                         mActiveObjActions.emplace_back(selUnit, action);
 
-                        ClearSelection(player);
+                        // disable action buttons
+                        mPanelObjActions->SetActionsEnabled(false);
+
+                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                        selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);
+
+                        // clear temporary overlay
+                        ClearCellOverlays();
+
+                        // setup build
+                        auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
+                        wbp->SetPathCells(path);
+                        // NOTE only level 0 for now
+                        wbp->SetWallLevel(0);
+
+                        mGameMap->BuildWalls(wbp);
                     }
                 }
             }
@@ -1214,23 +1255,30 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     // start create
     mGameMap->StartCreateUnit(data, gen, cell, player);
 
-    gen->SetActiveAction(GameObjectActionId::BUILD_UNIT);
+    gen->SetActiveAction(GameObjectActionId::IDLE);
+    gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
     pb->SetFunctionOnCompleted([this, cell, player, gen, data]
     {
-        gen->SetActiveAction(GameObjectActionId::IDLE);
+        gen->SetCurrentAction(GameObjectActionId::IDLE);
 
         mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
-        ClearObjectAction(gen);
+        SetObjectActionCompleted(gen);
     });
 
     // store active action
     mActiveObjActions.emplace_back(gen, GameObjectActionId::BUILD_UNIT, cell);
+
+    gen->SetActiveAction(GameObjectActionId::IDLE);
+    gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
+
+    // disable actions panel
+    mPanelObjActions->SetActionsEnabled(false);
 
     return true;
 }
@@ -1256,13 +1304,19 @@ bool ScreenGame::SetupStructureConquest(const Cell2D & start, const Cell2D & end
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
 
         // clear action data once the action is completed
-        ClearObjectAction(unit);
+        SetObjectActionCompleted(unit);
     });
 
     // store active action
     const GameMapCell & targetCell = mGameMap->GetCell(end.row, end.col);
 
     mActiveObjActions.emplace_back(unit, targetCell.obj, GameObjectActionId::CONQUER_STRUCTURE, start);
+
+    unit->SetActiveAction(GameObjectActionId::IDLE);
+    unit->SetCurrentAction(GameObjectActionId::CONQUER_STRUCTURE);
+
+    // disable actions panel
+    mPanelObjActions->SetActionsEnabled(false);
 
     return true;
 }
@@ -1285,11 +1339,19 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
         mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
 
         // clear action data once the action is completed
-        ClearObjectAction(unit);
+        SetObjectActionCompleted(unit);
     });
 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_DEF_TOWER, cellTarget);
+
+    // disable action buttons
+    mPanelObjActions->SetActionsEnabled(false);
+
+    unit->SetActiveAction(GameObjectActionId::IDLE);
+    unit->SetCurrentAction(GameObjectActionId::BUILD_DEF_TOWER);
+
+    ClearCellOverlays();
 
     return true;
 }
@@ -1334,6 +1396,8 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     mGameMap->MoveUnit(op);
 
     ClearCellOverlays();
+
+    mPanelObjActions->SetActionsEnabled(false);
 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::MOVE);
@@ -1643,6 +1707,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
             return ;
 
         SetupUnitMove(unit, selCell, target);
+
         return ;
     }
 
@@ -1659,10 +1724,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
 
     // object is adjacent -> try to interact
     if(mGameMap->AreObjectsAdjacent(unit, clickObj))
-    {
-        if(SetupStructureConquest(selCell, clickCell, player))
-            ClearSelection(player);
-    }
+        SetupStructureConquest(selCell, clickCell, player);
     // object is far -> move close and then try to interact
     else
     {
@@ -1676,8 +1738,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
         {
             const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-            if(SetupStructureConquest(currCell, clickCell, player))
-                ClearSelection(player);
+            SetupStructureConquest(currCell, clickCell, player);
         });
     }
 }
@@ -1696,10 +1757,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
 
         // unit is next to target cell -> try to build
         if(mGameMap->AreCellsAdjacent(cellUnit, clickCell))
-        {
-            if(SetupStructureBuilding(unit, clickCell, player, structure))
-                ClearSelection(player);
-        }
+            SetupStructureBuilding(unit, clickCell, player, structure);
         // unit is far -> move close then try to build
         else
         {
@@ -1721,8 +1779,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
             {
                 const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-                if(SetupStructureBuilding(unit, clickCell, player, structure))
-                    ClearSelection(player);
+                SetupStructureBuilding(unit, clickCell, player, structure);
 
                 // get rid of temporary indicator
                 if(mTempStructIndicator)

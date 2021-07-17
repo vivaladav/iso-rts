@@ -74,6 +74,12 @@ void ObjectActionButton::SetElements(VisualState state)
     auto tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex = nullptr;
 
+    const unsigned char alphaEn = 255;
+    const unsigned char alphaDis = 128;
+
+    mIcon->SetAlpha(alphaEn);
+    mShortcut->SetAlpha(alphaEn);
+
     switch(state)
     {
         case NORMAL:
@@ -100,6 +106,8 @@ void ObjectActionButton::SetElements(VisualState state)
         default:
             tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_DISABLED);
             mBody->SetTexture(tex);
+            mIcon->SetAlpha(alphaDis);
+            mShortcut->SetAlpha(alphaDis);
         break;
     }
 

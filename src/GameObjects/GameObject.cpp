@@ -195,6 +195,8 @@ void GameObject::Hit(float damage)
     }
 }
 
+void GameObject::SetActiveActionToDefault() { mActiveAction = IDLE; }
+
 void GameObject::Update(float) { }
 
 void GameObject::OnLinkedChanged() { }

@@ -42,6 +42,8 @@ public:
 
     void SetButtonFunction(Button btnId, const std::function<void()> & f);
 
+    void SetActionsEnabled(bool val);
+
 private:
     std::array<ObjectActionButton *, NUM_BUTTONS> mButtons;
 

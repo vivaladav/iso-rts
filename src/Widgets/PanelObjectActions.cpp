@@ -55,7 +55,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
             mButtons[BTN_CONQUER_CELL]->SetVisible(false);
             mButtons[BTN_BUILD_WALL]->SetVisible(false);
             mButtons[BTN_BUILD_STRUCT]->SetVisible(false);
-            mButtons[BTN_CANCEL]->SetVisible(true);
+
             // TODO handle upgrades
             mButtons[BTN_UPGRADE]->SetVisible(false);
         }
@@ -69,7 +69,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
             mButtons[BTN_CONQUER_CELL]->SetVisible(true);
             mButtons[BTN_BUILD_WALL]->SetVisible(true);
             mButtons[BTN_BUILD_STRUCT]->SetVisible(true);
-            mButtons[BTN_CANCEL]->SetVisible(true);
+
             // TODO handle upgrades
             mButtons[BTN_UPGRADE]->SetVisible(false);
         }
@@ -83,6 +83,9 @@ void PanelObjectActions::SetObject(GameObject * obj)
         }
         break;
     }
+
+    // cancel is always visible
+    mButtons[BTN_CANCEL]->SetVisible(true);
 
     // POSITION BUTTONS
     const int marginH = 15;
@@ -113,6 +116,12 @@ void PanelObjectActions::SetButtonFunction(Button btnId, const std::function<voi
 {
     if(btnId < NUM_BUTTONS)
         mButtons[btnId]->SetOnClickFunction(f);
+}
+
+void PanelObjectActions::SetActionsEnabled(bool val)
+{
+    for(unsigned int i = 0; i < static_cast<unsigned int>(BTN_CANCEL); ++i)
+        mButtons[i]->SetEnabled(val);
 }
 
 } // namespace game

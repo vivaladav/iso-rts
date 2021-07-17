@@ -218,6 +218,9 @@ public:
 
     GameObjectActionId GetActiveAction() const;
     void SetActiveAction(GameObjectActionId action);
+    virtual void SetActiveActionToDefault();
+    GameObjectActionId GetCurrentAction() const;
+    void SetCurrentAction(GameObjectActionId action);
 
     virtual void Update(float delta);
 
@@ -262,6 +265,7 @@ private:
     GameObjectType mType = OBJ_NULL;
 
     GameObjectActionId mActiveAction = IDLE;
+    GameObjectActionId mCurrAction = IDLE;
 
     unsigned int mRows = 1;
     unsigned int mCols = 1;
@@ -354,5 +358,7 @@ inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 
 inline GameObjectActionId GameObject::GetActiveAction() const { return mActiveAction; }
 inline void GameObject::SetActiveAction(GameObjectActionId action) { mActiveAction = action; }
+inline GameObjectActionId GameObject::GetCurrentAction() const { return mCurrAction; }
+inline void GameObject::SetCurrentAction(GameObjectActionId action) { mCurrAction = action; }
 
 } // namespace game

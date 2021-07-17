@@ -113,7 +113,7 @@ void WallBuildPath::InitNextBuild()
                 mState = COMPLETED;
 
                 // clear action data once the action is completed
-                mScreen->ClearObjectAction(mObj);
+                mScreen->SetObjectActionCompleted(mObj);
             }
         });
 
@@ -121,6 +121,9 @@ void WallBuildPath::InitNextBuild()
     }
 
     mState = FAILED;
+
+    // clear action data if action failed
+    mScreen->SetObjectActionCompleted(mObj);
 }
 
 void WallBuildPath::UpdatePathCost()
