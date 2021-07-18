@@ -85,12 +85,18 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     });
 
     // -- FACTION 1 --
-    // PANEL FACTION LOGO
     y = contentY0;
 
+    auto panelCol = new sgui::Widget(panelMain);
+    panelCol->SetPosition(x, y);
+    mColumns[FACTION_1] = panelCol;
+
+    x = 0;
+    y = 0;
+
+    // PANEL FACTION LOGO
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F1);
-    auto panelFaction = new sgui::Image(tex, panelMain);
-    panelFaction->SetPosition(x, y);
+    auto panelFaction = new sgui::Image(tex, panelCol);
 
     auto labelFactionName = new sgui::Label("Zulox", fntFaction, panelFaction);
     int labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
@@ -101,7 +107,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL STORY
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
-    auto panelTxt = new sgui::Image(tex, panelMain);
+    auto panelTxt = new sgui::Image(tex, panelCol);
     panelTxt->SetPosition(x, y);
 
     int txtX = marginTxt;
@@ -129,29 +135,36 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL ATTRIBUTES
 
-    int panelStatsH = AddPanelStats(x, y, { 8, 6, 10, 3 }, panelMain);
+    int panelStatsH = AddPanelStats(x, y, { 8, 6, 10, 3 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    mButtonsSelect[FACTION_1] = new ButtonDialogSelect(panelMain);
+    mButtonsSelect[FACTION_1] = new ButtonDialogSelect(panelCol);
 
     int btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_1]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_1]->SetPosition(btnX, y);
-
-    x += panelFaction->GetWidth() + marginFaction;
 
     mButtonsSelect[FACTION_1]->SetOnToggleFunction([this](bool checked)
     {
        HandleSelect(checked, FACTION_1);
     });
 
+
     // -- FACTION 2 --
-    // PANEL FACTION LOGO
+    x = panelCol->GetX() + panelFaction->GetWidth() + marginFaction;
     y = contentY0;
 
+    panelCol = new sgui::Widget(panelMain);
+    panelCol->SetPosition(x, y);
+    mColumns[FACTION_2] = panelCol;
+
+    // PANEL FACTION LOGO
+    x = 0;
+    y = 0;
+
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F2);
-    panelFaction = new sgui::Image(tex, panelMain);
+    panelFaction = new sgui::Image(tex, panelCol);
     panelFaction->SetPosition(x, y);
 
     labelFactionName = new sgui::Label("Domens", fntFaction, panelFaction);
@@ -163,7 +176,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL STORY
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
-    panelTxt = new sgui::Image(tex, panelMain);
+    panelTxt = new sgui::Image(tex, panelCol);
     panelTxt->SetPosition(x, y);
 
     txtX = marginTxt;
@@ -191,29 +204,37 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL ATTRIBUTES
 
-    panelStatsH = AddPanelStats(x, y, { 6, 9, 3, 8 }, panelMain);
+    panelStatsH = AddPanelStats(x, y, { 6, 9, 3, 8 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    mButtonsSelect[FACTION_2] = new ButtonDialogSelect(panelMain);
+    mButtonsSelect[FACTION_2] = new ButtonDialogSelect(panelCol);
 
     btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_2]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_2]->SetPosition(btnX, y);
-
-    x += panelFaction->GetWidth() + marginFaction;
 
     mButtonsSelect[FACTION_2]->SetOnToggleFunction([this](bool checked)
     {
        HandleSelect(checked, FACTION_2);
     });
 
+    x = panelFaction->GetWidth() + marginFaction;
+
     // -- FACTION 3 --
-    // PANEL FACTION LOGO
+    x = panelCol->GetX() + panelFaction->GetWidth() + marginFaction;
     y = contentY0;
 
+    panelCol = new sgui::Widget(panelMain);
+    panelCol->SetPosition(x, y);
+    mColumns[FACTION_3] = panelCol;
+
+    // PANEL FACTION LOGO
+    x = 0;
+    y = 0;
+
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F3);
-    panelFaction = new sgui::Image(tex, panelMain);
+    panelFaction = new sgui::Image(tex, panelCol);
     panelFaction->SetPosition(x, y);
 
     fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
@@ -226,7 +247,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL STORY
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_TXT);
-    panelTxt = new sgui::Image(tex, panelMain);
+    panelTxt = new sgui::Image(tex, panelCol);
     panelTxt->SetPosition(x, y);
 
     txtX = marginTxt;
@@ -255,12 +276,12 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     // PANEL ATTRIBUTES
 
-    panelStatsH = AddPanelStats(x, y, { 9, 6, 5, 6 }, panelMain);
+    panelStatsH = AddPanelStats(x, y, { 9, 6, 5, 6 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
     // BUTTON SELECT
-    mButtonsSelect[FACTION_3] = new ButtonDialogSelect(panelMain);
+    mButtonsSelect[FACTION_3] = new ButtonDialogSelect(panelCol);
 
     btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_3]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_3]->SetPosition(btnX, y);
@@ -449,6 +470,9 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
 
 void ScreenFactionSelection::HandleSelect(bool selected, PlayerFaction faction)
 {
+    const unsigned char alphaSel = 255;
+    const unsigned char alphaNot = 155;
+
     // deselecting
     if(!selected)
     {
@@ -458,6 +482,10 @@ void ScreenFactionSelection::HandleSelect(bool selected, PlayerFaction faction)
             mFaction = NO_FACTION;
 
             mButtonCont->SetEnabled(false);
+
+            // reset all alpha
+            for(unsigned int i = 0; i < NUM_FACTIONS; ++i)
+                mColumns[i]->SetAlpha(alphaSel);
         }
 
         return ;
@@ -477,6 +505,15 @@ void ScreenFactionSelection::HandleSelect(bool selected, PlayerFaction faction)
     // uncheck previously selected if any
     if(oldFaction != NO_FACTION)
         mButtonsSelect[oldFaction]->SetChecked(false);
+
+    // update alpha
+    for(unsigned int i = 0; i < NUM_FACTIONS; ++i)
+    {
+        if(i == faction)
+            mColumns[i]->SetAlpha(alphaSel);
+        else
+            mColumns[i]->SetAlpha(alphaNot);
+    }
 }
 
 } // namespace game

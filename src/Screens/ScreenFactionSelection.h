@@ -53,6 +53,7 @@ private:
     void HandleSelect(bool selected, PlayerFaction faction);
 
 private:
+    std::array<lib::sgui::Widget *, NUM_FACTIONS> mColumns;
     std::array<ButtonDialogSelect *, NUM_FACTIONS> mButtonsSelect;
 
     lib::graphic::Image * mBg = nullptr;
