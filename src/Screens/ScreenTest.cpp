@@ -14,6 +14,7 @@
 #include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
 #include <sgui/ButtonsGroup.h>
+#include <sgui/Image.h>
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
 
@@ -183,7 +184,7 @@ void ScreenTest::TestSGui()
     buttonY += button->GetHeight() + marginV;
 
     // testing change of Texture in graphic::Image
-    Image * img = new Image;
+    auto img = new lib::graphic::Image;
     Texture * tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
     img->SetTexture(tex);
     img->SetPosition(container->GetX(), buttonY);
@@ -255,6 +256,32 @@ void ScreenTest::TestSGui()
         mPb1->Reset();
         mPb2->Reset();
     });
+
+    // -- SET ALPHA --
+    int wY = button->GetY() + button->GetHeight() * 2;
+
+    auto container2 = new Widget;
+    container2->SetPosition(1300, wY);
+
+    label = new Label("SET ALPHA", font, container2);
+    wY = label->GetHeight() * 2;
+
+    button = new ButtonMainMenu("ALPHA 50%", container2);
+    button->SetY(wY);
+    button->SetOnClickFunction([container2]{ container2->SetAlpha(128); });
+
+    button = new ButtonMainMenu("ALPHA 100%", container2);
+    wY += button->GetHeight() * 2;
+    button->SetY(wY);
+    button->SetOnClickFunction([container2]{ container2->SetAlpha(255); });
+
+    // -- IMAGE IN PANEL --
+
+    auto container3 = new Widget;
+    container3->SetPosition(1000, 200);
+
+    tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
+    auto wimg = new lib::sgui::Image(tex, container3);
 }
 
 void ScreenTest::TestSprite()

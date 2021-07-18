@@ -60,6 +60,9 @@ public:
     int GetWidth() const;
     int GetHeight() const;
 
+    unsigned char GetAlpha() const;
+    void SetAlpha(unsigned char alpha);
+
     void SetCamera(graphic::Camera * cam);
 
 protected:
@@ -82,6 +85,9 @@ protected:
 
     void RegisterRenderable(graphic::Renderable * elem);
     void UnregisterRenderable(graphic::Renderable * elem);
+
+    unsigned int MixColorAndAlpha(unsigned int color) const;
+    unsigned char MixAlphaAndAlpha(unsigned char a) const;
 
 private:
     void SetScreenPosition(int x, int y);
@@ -117,6 +123,8 @@ private:
     int mWidth = 0;
     int mHeight = 0;
 
+    unsigned char mA = 255;
+
     bool mEnabled = true;
     bool mVisible = true;
     bool mMouseOver = false;
@@ -145,6 +153,25 @@ inline bool Widget::IsMouseOver() const { return mMouseOver; }
 
 inline int Widget::GetWidth() const { return mWidth; }
 inline int Widget::GetHeight() const { return mHeight; }
+
+inline unsigned char Widget::GetAlpha() const { return mA; }
+
+inline unsigned int Widget::MixColorAndAlpha(unsigned int color) const
+{
+    const unsigned char maxA = 255;
+    const unsigned int maskA = 0x000000FF;
+    const unsigned int maskRGB = 0xFFFFFF00;
+    const unsigned char a = (maskA & color) * mA / maxA;
+
+    return (maskRGB & color) + a;
+}
+
+inline unsigned char Widget::MixAlphaAndAlpha(unsigned char a) const
+{
+    const unsigned char maxA = 255;
+
+    return a * mA / maxA;
+}
 
 } // namespace sgui
 } // namespace lib

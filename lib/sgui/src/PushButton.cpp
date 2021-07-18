@@ -75,10 +75,17 @@ void PushButton::SetLabel(const char * text)
 
 void PushButton::SetLabelColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
+    a = MixAlphaAndAlpha(a);
+
     mCurrLabel->SetColor(r, g, b, a);
 }
 
-void PushButton::SetLabelColor(unsigned int color) { mCurrLabel->SetColor(color); }
+void PushButton::SetLabelColor(unsigned int color)
+{
+    color = MixColorAndAlpha(color);
+
+    mCurrLabel->SetColor(color);
+}
 
 void PushButton::SetLabelFont(graphic::Font * font)
 {

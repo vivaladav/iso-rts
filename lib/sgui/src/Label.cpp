@@ -38,10 +38,17 @@ Label::~Label()
 
 void Label::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
+    a = MixAlphaAndAlpha(a);
+
     mTxt->SetColor(r, g, b, a);
 }
 
-void Label::SetColor(unsigned int color) { mTxt->SetColor(color); }
+void Label::SetColor(unsigned int color)
+{
+    color = MixColorAndAlpha(color);
+
+    mTxt->SetColor(color);
+}
 
 void Label::SetText(const char * txt)
 {
@@ -62,7 +69,7 @@ void Label::SetText(const char * txt)
 
     CreateText();
 
-    SetColor(color);
+    mTxt->SetColor(color);
 }
 
 void Label::CreateText()

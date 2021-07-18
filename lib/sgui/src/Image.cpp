@@ -45,10 +45,17 @@ Image::~Image()
 
 void Image::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
+    a = MixAlphaAndAlpha(a);
+
     mImg->SetColor(r, g, b, a);
 }
 
-void Image::SetColor(unsigned int color) { mImg->SetColor(color); }
+void Image::SetColor(unsigned int color)
+{
+    color = MixColorAndAlpha(color);
+
+    mImg->SetColor(color);
+}
 
 void Image::LoadImage(const char * file)
 {

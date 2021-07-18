@@ -97,6 +97,23 @@ void Widget::SetVisible(bool val)
         mStage->HandleChildVisibleChanged(this);
 }
 
+void Widget::SetAlpha(unsigned char alpha)
+{
+    // nothing changed -> exit
+    if(alpha == mA)
+        return ;
+
+    mA = alpha;
+
+    // update graphic elements
+    for(auto elem : mRenderables)
+        elem->SetAlpha(alpha);
+
+    // propagate to sub-widgets
+    for(Widget * w : mWidgets)
+        w->SetAlpha(alpha);
+}
+
 void Widget::SetCamera(graphic::Camera * cam)
 {
     // same camera -> exit
