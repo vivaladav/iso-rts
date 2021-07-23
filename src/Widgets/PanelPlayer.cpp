@@ -97,27 +97,27 @@ void PanelPlayer::UpdateButtonConquer(const GameObject * obj)
 
 void PanelPlayer::SetFunctionCellConquest(const std::function<void()> & f)
 {
-    mButtonCellConquer->SetOnClickFunction(f);
+    mButtonCellConquer->AddOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionUnitMove(const std::function<void()> & f)
 {
-    mButtonUnitMove->SetOnClickFunction(f);
+    mButtonUnitMove->AddOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionNewUnit(const std::function<void()> & f)
 {
-    mButtonNewUnit->SetOnClickFunction(f);
+    mButtonNewUnit->AddOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionBuildWall(const std::function<void()> & f)
 {
-    mButtonBuildWall->SetOnClickFunction(f);
+    mButtonBuildWall->AddOnClickFunction(f);
 }
 
 void PanelPlayer::SetFunctionUnitsUpgrade(const std::function<void()> & f)
 {
-    mButtonUnitsUpgrade->SetOnClickFunction(f);
+    mButtonUnitsUpgrade->AddOnClickFunction(f);
 }
 
 std::string PanelPlayer::MakeStrValue(int value)

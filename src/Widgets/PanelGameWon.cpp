@@ -29,7 +29,7 @@ PanelGameWon::PanelGameWon(Game * game, lib::sgui::Widget * parent)
     // -- BUTTON MAIN MENU --
     ButtonMainMenu * button = new ButtonMainMenu("MAIN MENU", this);
 
-    button->SetOnClickFunction([game]
+    button->AddOnClickFunction([game]
     {
         game->RequestNextActiveState(StateId::MAIN_MENU);
     });

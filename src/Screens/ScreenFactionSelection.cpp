@@ -79,7 +79,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     const int posBackY = 0;
     btnBack->SetPosition(posBackX, posBackY);
 
-    btnBack->SetOnClickFunction([game]
+    btnBack->AddOnClickFunction([game]
     {
         game->RequestNextActiveState(StateId::MAIN_MENU);
     });
@@ -145,7 +145,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     int btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_1]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_1]->SetPosition(btnX, y);
 
-    mButtonsSelect[FACTION_1]->SetOnToggleFunction([this](bool checked)
+    mButtonsSelect[FACTION_1]->AddOnToggleFunction([this](bool checked)
     {
        HandleSelect(checked, FACTION_1);
     });
@@ -214,7 +214,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_2]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_2]->SetPosition(btnX, y);
 
-    mButtonsSelect[FACTION_2]->SetOnToggleFunction([this](bool checked)
+    mButtonsSelect[FACTION_2]->AddOnToggleFunction([this](bool checked)
     {
        HandleSelect(checked, FACTION_2);
     });
@@ -288,7 +288,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     x += panelFaction->GetWidth() + marginFaction;
 
-    mButtonsSelect[FACTION_3]->SetOnToggleFunction([this](bool checked)
+    mButtonsSelect[FACTION_3]->AddOnToggleFunction([this](bool checked)
     {
        HandleSelect(checked, FACTION_3);
     });
@@ -301,7 +301,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     const int posContY = panelMain->GetY() + panelMain->GetHeight();
     mButtonCont->SetPosition(posContX, posContY);
 
-    mButtonCont->SetOnClickFunction([this, game]
+    mButtonCont->AddOnClickFunction([this, game]
     {
         game->SetLocalPlayerFaction(mFaction);
         game->RequestNextActiveState(StateId::NEW_GAME);

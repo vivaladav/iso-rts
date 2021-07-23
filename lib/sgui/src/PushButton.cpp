@@ -15,8 +15,6 @@ namespace sgui
 
 PushButton::PushButton(Widget * parent)
     : Widget(parent)
-    , mOnClick([]{})
-    , mOnToggle([](bool){})
     , mFontLabel(Stage::Instance()->GetDefaultFont())
     , mBg(new graphic::DummyRenderable)
     , mLabel(new graphic::DummyRenderable)
@@ -122,7 +120,8 @@ void PushButton::SetChecked(bool val)
         mChecked = val;
         HandleCheckedChanged(mChecked);
 
-        mOnToggle(mChecked);
+        for(auto & f : mOnToggle)
+            f(mChecked);
     }
 }
 
@@ -135,11 +134,13 @@ void PushButton::Click()
 
         HandleCheckedChanged(mChecked);
 
-        mOnToggle(mChecked);
+        for(auto & f : mOnToggle)
+            f(mChecked);
     }
     // standard button
     else
-        mOnClick();
+        for(auto & f : mOnClick)
+            f();
 }
 
 void PushButton::SetCurrBg(graphic::Renderable * bg)

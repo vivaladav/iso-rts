@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace lib
 {
@@ -37,8 +38,8 @@ public:
 
     void Click();
 
-    void SetOnClickFunction(const std::function<void()> & f);
-    void SetOnToggleFunction(const std::function<void(bool)> & f);
+    void AddOnClickFunction(const std::function<void()> & f);
+    void AddOnToggleFunction(const std::function<void(bool)> & f);
 
     const std::string & GetText() const;
 
@@ -60,8 +61,8 @@ private:
 private:
     std::string mText;
 
-    std::function<void()> mOnClick;
-    std::function<void(bool)> mOnToggle;
+    std::vector<std::function<void()>> mOnClick;
+    std::vector<std::function<void(bool)>> mOnToggle;
 
     graphic::Font * mFontLabel = nullptr;
 
@@ -85,8 +86,14 @@ inline void PushButton::SetCheckable(bool val)
 }
 inline bool PushButton::IsChecked() const { return mChecked; }
 
-inline void PushButton::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }
-inline void PushButton::SetOnToggleFunction(const std::function<void(bool)> & f) { mOnToggle = f; }
+inline void PushButton::AddOnClickFunction(const std::function<void()> & f)
+{
+    mOnClick.push_back(f);
+}
+inline void PushButton::AddOnToggleFunction(const std::function<void(bool)> & f)
+{
+    mOnToggle.push_back(f);
+}
 
 inline const std::string & PushButton::GetText() const { return mText; }
 

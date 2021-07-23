@@ -132,7 +132,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         const int yc = mMapPreviews[0]->GetY() + mMapPreviews[0]->GetHeight() + marginMapV * 0.5f;
 
         mButtonNavL = new ButtonNavigation("<");
-        mButtonNavL->SetOnClickFunction([this]
+        mButtonNavL->AddOnClickFunction([this]
         {
             mStartMap -= mapsPerScreen;
             UpdateNavButtonsState();
@@ -141,7 +141,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         mButtonNavL->SetPosition(marginL, yc - mButtonNavL->GetHeight() * 0.5f);
 
         mButtonNavR = new ButtonNavigation(">");
-        mButtonNavR->SetOnClickFunction([this]
+        mButtonNavR->AddOnClickFunction([this]
         {
             mStartMap += mapsPerScreen;
             UpdateNavButtonsState();
@@ -162,7 +162,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // BUTTON BACK
     ButtonMainMenu * button = new ButtonMainMenu("BACK", panel);
 
-    button->SetOnClickFunction([game]
+    button->AddOnClickFunction([game]
     {
         game->RequestNextActiveState(StateId::FACTION_SEL);
     });
@@ -175,7 +175,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     mButtonStart->SetX(buttonBackW + marginButtonsH);
 
     // TODO proper selection of factions
-    mButtonStart->SetOnClickFunction([this, game]
+    mButtonStart->AddOnClickFunction([this, game]
     {
         const UnitsDataRegistry * unitsReg = mGame->GetUnitsRegistry();
 

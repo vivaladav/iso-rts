@@ -65,7 +65,7 @@ void ButtonsGroup::AddButton(PushButton * button)
 
     if(mExclusive)
     {
-        button->SetOnToggleFunction([this, buttonIndex](bool checked)
+        button->AddOnToggleFunction([this, buttonIndex](bool checked)
         {
             if(buttonIndex == mIndChecked)
                 return ;

@@ -154,7 +154,7 @@ void ScreenTest::TestSGui()
     label = new Label(font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
-    button->SetOnClickFunction([label]
+    button->AddOnClickFunction([label]
     {
         label->SetText("button 1 clicked");
         std::cout << "button 1 clicked" << std::endl;
@@ -163,7 +163,7 @@ void ScreenTest::TestSGui()
     button = new ButtonMainMenu("BUTTON 2", container);
     button->SetY(label->GetY() + marginV);
 
-    button->SetOnClickFunction([label]
+    button->AddOnClickFunction([label]
     {
         label->SetText("button 2 clicked");
         std::cout << "button 2 clicked" << std::endl;
@@ -190,7 +190,7 @@ void ScreenTest::TestSGui()
     img->SetPosition(container->GetX(), buttonY);
     mRenderables.emplace_back(img);
 
-    button->SetOnToggleFunction([img](bool checked)
+    button->AddOnToggleFunction([img](bool checked)
     {
         Texture * tex;
 
@@ -250,7 +250,7 @@ void ScreenTest::TestSGui()
 
     button = new ButtonMainMenu("RESET", container);
     button->SetPosition(mPb0->GetX(), mPb2->GetY() + mPb2->GetHeight() + marginbBars);
-    button->SetOnClickFunction([this]{
+    button->AddOnClickFunction([this]{
         mTimerPb = 0;
         mPb0->Reset();
         mPb1->Reset();
@@ -268,12 +268,12 @@ void ScreenTest::TestSGui()
 
     button = new ButtonMainMenu("ALPHA 50%", container2);
     button->SetY(wY);
-    button->SetOnClickFunction([container2]{ container2->SetAlpha(128); });
+    button->AddOnClickFunction([container2]{ container2->SetAlpha(128); });
 
     button = new ButtonMainMenu("ALPHA 100%", container2);
     wY += button->GetHeight() * 2;
     button->SetY(wY);
-    button->SetOnClickFunction([container2]{ container2->SetAlpha(255); });
+    button->AddOnClickFunction([container2]{ container2->SetAlpha(255); });
 
     // -- IMAGE IN PANEL --
 

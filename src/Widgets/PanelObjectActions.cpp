@@ -115,7 +115,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
 void PanelObjectActions::SetButtonFunction(Button btnId, const std::function<void()> & f)
 {
     if(btnId < NUM_BUTTONS)
-        mButtons[btnId]->SetOnClickFunction(f);
+        mButtons[btnId]->AddOnClickFunction(f);
 }
 
 void PanelObjectActions::SetActionsEnabled(bool val)

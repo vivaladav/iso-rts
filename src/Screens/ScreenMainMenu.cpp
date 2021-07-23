@@ -44,7 +44,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panelButtons);
 
-    button->SetOnClickFunction([game]
+    button->AddOnClickFunction([game]
     {
         game->RequestNextActiveState(StateId::FACTION_SEL);
     });
@@ -55,7 +55,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button = new ButtonMainMenu("SETTINGS", panelButtons);
     button->SetY(buttonY);
 
-    button->SetOnClickFunction([game] { });
+    button->AddOnClickFunction([game] { });
 
     buttonY += button->GetHeight() + VMARGIN;
 
@@ -63,7 +63,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button = new ButtonMainMenu("EXIT", panelButtons);
     button->SetY(buttonY);
 
-    button->SetOnClickFunction([game] { game->Exit(); });
+    button->AddOnClickFunction([game] { game->Exit(); });
 
     // position buttons panel
     const int centerX = 450;
@@ -77,7 +77,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     int buttonX = centerX - btnWishlist->GetWidth() * 0.5f;
     buttonY = screenH - 100 - btnWishlist->GetHeight();
 
-    btnWishlist->SetOnClickFunction([]
+    btnWishlist->AddOnClickFunction([]
     {
         lib::utilities::System sys;
         sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580?utm_campaign=game&utm_source=mainmenu");
@@ -95,7 +95,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_DISCORD, panelSocial);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
-    btnSocial->SetOnClickFunction([]
+    btnSocial->AddOnClickFunction([]
     {
         lib::utilities::System sys;
         sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
@@ -106,7 +106,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     btnSocial->SetX(socialX);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
-    btnSocial->SetOnClickFunction([]
+    btnSocial->AddOnClickFunction([]
     {
         lib::utilities::System sys;
         sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
@@ -117,7 +117,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     btnSocial->SetX(socialX);
     socialX += btnSocial->GetWidth() + socialMarginH;
 
-    btnSocial->SetOnClickFunction([]
+    btnSocial->AddOnClickFunction([]
     {
         lib::utilities::System sys;
         sys.OpenUrlInBrowser("https://twitter.com/vivaladev");
@@ -127,7 +127,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_LINKEDIN, panelSocial);
     btnSocial->SetX(socialX);
 
-    btnSocial->SetOnClickFunction([]
+    btnSocial->AddOnClickFunction([]
     {
         lib::utilities::System sys;
         sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");

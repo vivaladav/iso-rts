@@ -79,7 +79,7 @@ void DialogNewUnit::SetFunctionOnBuild(const std::function<void()> & f)
 
 void DialogNewUnit::SetFunctionOnClose(const std::function<void()> & f)
 {
-    mButtonClose->SetOnClickFunction(f);
+    mButtonClose->AddOnClickFunction(f);
 }
 
 void DialogNewUnit::UpdateSlots()

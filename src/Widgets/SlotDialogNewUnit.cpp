@@ -130,7 +130,7 @@ void SlotDialogNewUnit::SetButtonEnabled(bool enabled)
 
 void SlotDialogNewUnit::SetOnBuildFunction(const std::function<void()> & f)
 {
-    mButtonBuild->SetOnClickFunction(f);
+    mButtonBuild->AddOnClickFunction(f);
 }
 
 void SlotDialogNewUnit::HandlePositionChanged()
