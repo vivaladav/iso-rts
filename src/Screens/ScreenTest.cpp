@@ -223,6 +223,20 @@ void ScreenTest::TestSGui()
     bg->SetButtonEnabled(3, false);
     bg->SetButtonChecked(3, true);
 
+    label = new Label("1", font, container);
+    label->SetPosition(bg->GetX() + bg->GetWidth() * 1.1f,
+                       bg->GetY() + (bg->GetHeight() - label->GetHeight()) * 0.5f);
+
+    for(unsigned int n = 0; n < bg->GetNumButtons(); ++n)
+    {
+        PushButton * btn = bg->GetButton(n);
+        btn->AddOnToggleFunction([label, n](bool checked)
+        {
+            if(checked)
+                label->SetText(std::to_string(n + 1).c_str());
+        });
+    }
+
     // -- PROGRESS BAR --
     font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
 
