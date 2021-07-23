@@ -35,6 +35,7 @@ public:
     void SetButtonEnabled(unsigned int index, bool val);
 
     void AddButton(PushButton * button);
+    PushButton * GetButton(unsigned int ind) const;
 
     unsigned int GetNumButtons() const;
 
@@ -53,6 +54,14 @@ private:
 };
 
 inline int ButtonsGroup::GetIndexChecked() const{ return mIndChecked; }
+
+inline PushButton * ButtonsGroup::GetButton(unsigned int ind) const
+{
+    if(ind < mButtons.size())
+        return mButtons[ind];
+    else
+        return nullptr;
+}
 
 inline unsigned int ButtonsGroup::GetNumButtons() const { return mButtons.size(); }
 
