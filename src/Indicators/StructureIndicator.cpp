@@ -153,7 +153,8 @@ void StructureIndicator::UpdateImage()
     unsigned int index = 0;
 
     if(OBJ_DEF_TOWER == mStructure)
-        index = SpriteIdStructures::ID_STRUCT_TOWER_L1_F1 + mFaction;
+        index = SpriteIdStructures::ID_STRUCT_DTOWER_L1_F1 +
+                (mFaction * SpriteIdStructures::NUM_DTOWER_SPRITES_PER_FAC);
 
     SetTexture(tm->GetSprite(SpriteFileStructures, index));
     SetAlpha(102);

@@ -75,7 +75,9 @@ void DefensiveTower::SetImage()
     // set texture
     const unsigned int faction = owner->GetFaction();
 
-    const int ind = SpriteIdStructures::ID_STRUCT_TOWER_L1_F1 + faction;
+    const int ind = SpriteIdStructures::ID_STRUCT_DTOWER_L1_F1 +
+                    (faction * NUM_DTOWER_SPRITES_PER_FAC) +
+                    static_cast<int>(IsSelected());
 
     lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
     isoObj->SetTexture(tex);
