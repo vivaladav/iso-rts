@@ -157,6 +157,18 @@ enum SpriteIdStructures : unsigned int
     ID_STRUCT_DTOWER_L1_F2_SEL,
     ID_STRUCT_DTOWER_L1_F3,
     ID_STRUCT_DTOWER_L1_F3_SEL,
+    ID_STRUCT_DTOWER_L2_F1,
+    ID_STRUCT_DTOWER_L2_F1_SEL,
+    ID_STRUCT_DTOWER_L2_F2,
+    ID_STRUCT_DTOWER_L2_F2_SEL,
+    ID_STRUCT_DTOWER_L2_F3,
+    ID_STRUCT_DTOWER_L2_F3_SEL,
+    ID_STRUCT_DTOWER_L3_F1,
+    ID_STRUCT_DTOWER_L3_F1_SEL,
+    ID_STRUCT_DTOWER_L3_F2,
+    ID_STRUCT_DTOWER_L3_F2_SEL,
+    ID_STRUCT_DTOWER_L3_F3,
+    ID_STRUCT_DTOWER_L3_F3_SEL,
     // RADAR
     ID_STRUCT_RADAR_F1,
     ID_STRUCT_RADAR_F1_SEL,
@@ -169,6 +181,7 @@ enum SpriteIdStructures : unsigned int
     // special values
     NUM_BASE_SPRITES_PER_FAC = 2,
     NUM_DTOWER_SPRITES_PER_FAC = 2,
+    NUM_DTOWER_SPRITES_PER_LVL = 6,
     NUM_RADAR_SPRITES_PER_FAC = 2
 };
 
@@ -177,34 +190,34 @@ extern const char SpriteFileUnits[];
 
 enum SpriteIdUnits : unsigned int
 {
-    // faction 1
+    // unit 1
     SPR_UNIT_01_F1,
     SPR_UNIT_01_F1_SEL,
-    SPR_UNIT_02_F1,
-    SPR_UNIT_02_F1_SEL,
-    SPR_UNIT_03_F1,
-    SPR_UNIT_03_F1_SEL,
-
-    // faction 2
     SPR_UNIT_01_F2,
     SPR_UNIT_01_F2_SEL,
-    SPR_UNIT_02_F2,
-    SPR_UNIT_02_F2_SEL,
-    SPR_UNIT_03_F2,
-    SPR_UNIT_03_F2_SEL,
-
-    // faction 3
     SPR_UNIT_01_F3,
     SPR_UNIT_01_F3_SEL,
+
+    // unit 2
+    SPR_UNIT_02_F1,
+    SPR_UNIT_02_F1_SEL,
+    SPR_UNIT_02_F2,
+    SPR_UNIT_02_F2_SEL,
     SPR_UNIT_02_F3,
     SPR_UNIT_02_F3_SEL,
+
+    // unit 3
+    SPR_UNIT_03_F1,
+    SPR_UNIT_03_F1_SEL,
+    SPR_UNIT_03_F2,
+    SPR_UNIT_03_F2_SEL,
     SPR_UNIT_03_F3,
     SPR_UNIT_03_F3_SEL,
 
-    // difference between last and first IDs of faction 1
-    NUM_UNIT_SPRITES_PER_FACTION = SPR_UNIT_03_F1_SEL - SPR_UNIT_01_F1 + 1,
     // 2 sprites per unit: unselected and selected
-    NUM_UNIT_SPRITES_PER_TYPE = 2
+    NUM_UNIT_SPRITES_PER_FACTION = 2,
+    // 6 sprites per type 2 * 3 factions
+    NUM_UNIT_SPRITES_PER_TYPE = 6
 };
 
 // UNITS PARTICLES
