@@ -54,6 +54,12 @@ constexpr float TIME_UPG_UNIT = 1.f;
 constexpr float TIME_ENERGY_USE = 2.f;
 constexpr float TIME_AI_MOVE = 0.5f;
 
+constexpr int SCROLL_L = -1;
+constexpr int SCROLL_R = 1;
+constexpr int SCROLL_U = -1;
+constexpr int SCROLL_D = 1;
+constexpr int NO_SCROLL = 0;
+
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
     , mPartMan(new lib::graphic::ParticlesManager)
@@ -836,13 +842,37 @@ void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     if(key == KeyboardEvent::KEY_LEFT)
-        mCameraDirX = -1;
+    {
+        if(!mCameraMouseScrollX)
+        {
+            mCameraDirX = SCROLL_L;
+            mCameraKeyScrollX = true;
+        }
+    }
     else if(key == KeyboardEvent::KEY_RIGHT)
-        mCameraDirX = 1;
+    {
+        if(!mCameraMouseScrollX)
+        {
+            mCameraDirX = SCROLL_R;
+            mCameraKeyScrollX = true;
+        }
+    }
     else if(key == KeyboardEvent::KEY_UP)
-        mCameraDirY = -1;
+    {
+        if(!mCameraMouseScrollY)
+        {
+            mCameraDirY = SCROLL_U;
+            mCameraKeyScrollY = true;
+        }
+    }
     else if(key == KeyboardEvent::KEY_DOWN)
-        mCameraDirY = 1;
+    {
+        if(!mCameraMouseScrollY)
+        {
+            mCameraDirY = SCROLL_D;
+            mCameraKeyScrollY = true;
+        }
+    }
 }
 
 void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
@@ -861,15 +891,35 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
-    // ARROS -> move camera
+    // ARROWS -> move camera
     else if(key == KeyboardEvent::KEY_LEFT)
-        mCameraDirX = 0;
+    {
+        if(!mCameraMouseScrollX)
+            mCameraDirX = NO_SCROLL;
+
+        mCameraKeyScrollX = false;
+    }
     else if(key == KeyboardEvent::KEY_RIGHT)
-        mCameraDirX = 0;
+    {
+        if(!mCameraMouseScrollX)
+            mCameraDirX = NO_SCROLL;
+
+        mCameraKeyScrollX = false;
+    }
     else if(key == KeyboardEvent::KEY_UP)
-        mCameraDirY = 0;
+    {
+        if(!mCameraMouseScrollY)
+            mCameraDirY = NO_SCROLL;
+
+        mCameraKeyScrollY = false;
+    }
     else if(key == KeyboardEvent::KEY_DOWN)
-        mCameraDirY = 0;
+    {
+        if(!mCameraMouseScrollY)
+            mCameraDirY = NO_SCROLL;
+
+        mCameraKeyScrollY = false;
+    }
     // C -> recenter camera
     else if(key == KeyboardEvent::KEY_C)
         mCamera->ResetPosition();
@@ -1073,8 +1123,61 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
 void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
 {
-    const int worldX = mCamera->GetScreenToWorldX(event.GetX());
-    const int worldY = mCamera->GetScreenToWorldY(event.GetY());
+    const int screenX = event.GetX();
+    const int screenY = event.GetY();
+    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+
+    // -- handle scrolling --
+    const int scrollingMargin = 5;
+
+    if(screenX < scrollingMargin)
+    {
+        if(!mCameraKeyScrollX)
+        {
+            mCameraDirX = SCROLL_L;
+            mCameraMouseScrollX = true;
+        }
+    }
+    else if(screenX > (rendW - scrollingMargin))
+    {
+        if(!mCameraKeyScrollX)
+        {
+            mCameraDirX = SCROLL_R;
+            mCameraMouseScrollX = true;
+        }
+    }
+    else if(!mCameraKeyScrollX)
+    {
+        mCameraDirX = NO_SCROLL;
+        mCameraMouseScrollX = false;
+    }
+
+    if(screenY < scrollingMargin)
+    {
+        if(!mCameraKeyScrollY)
+        {
+            mCameraDirY = SCROLL_U;
+            mCameraMouseScrollY = true;
+        }
+    }
+    else if(screenY > (rendH - scrollingMargin))
+    {
+        if(!mCameraKeyScrollY)
+        {
+            mCameraDirY = SCROLL_D;
+            mCameraMouseScrollY = true;
+        }
+    }
+    else if(!mCameraKeyScrollY)
+    {
+        mCameraDirY = NO_SCROLL;
+        mCameraMouseScrollY = false;
+    }
+
+    // -- handle movement over cells --
+    const int worldX = mCamera->GetScreenToWorldX(screenX);
+    const int worldY = mCamera->GetScreenToWorldY(screenY);
 
     const Cell2D currCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
 

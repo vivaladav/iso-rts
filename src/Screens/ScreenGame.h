@@ -133,6 +133,10 @@ private:
 
     int mCameraDirX = 0;
     int mCameraDirY = 0;
+    bool mCameraKeyScrollX = false;
+    bool mCameraKeyScrollY = false;
+    bool mCameraMouseScrollX = false;
+    bool mCameraMouseScrollY = false;
 
     lib::graphic::ParticlesManager * mPartMan = nullptr;
 
