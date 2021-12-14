@@ -8,6 +8,7 @@
 #include "States/StateGame.h"
 #include "States/StateMainMenu.h"
 #include "States/StateNewGame.h"
+#include "States/StateSettings.h"
 #include "States/StateTest.h"
 
 #include <graphic/Font.h>
@@ -53,6 +54,7 @@ Game::Game(int argc, char * argv[])
     mStateMan->AddState(new StateGame(this));
     mStateMan->AddState(new StateTest(this));
     mStateMan->AddState(new StateMainMenu(this));
+    mStateMan->AddState(new StateSettings(this));
     mStateMan->AddState(new StateNewGame(this));
 
     mStateMan->RequestNextActiveState(StateId::MAIN_MENU);

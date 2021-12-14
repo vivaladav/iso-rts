@@ -1,6 +1,5 @@
 #include "States/StateFactionSelection.h"
 
-#include "Game.h"
 #include "Screens/ScreenFactionSelection.h"
 #include "States/StatesIds.h"
 

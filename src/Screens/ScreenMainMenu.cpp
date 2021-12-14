@@ -55,7 +55,10 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button = new ButtonMainMenu("SETTINGS", panelButtons);
     button->SetY(buttonY);
 
-    button->AddOnClickFunction([game] { });
+    button->AddOnClickFunction([game]
+    {
+        game->RequestNextActiveState(StateId::SETTINGS);
+    });
 
     buttonY += button->GetHeight() + VMARGIN;
 

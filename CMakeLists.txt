@@ -109,6 +109,8 @@ add_executable(
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenNewGame.h
     src/Screens/ScreenNewGame.cpp
+    src/Screens/ScreenSettings.h
+    src/Screens/ScreenSettings.cpp
     src/Screens/ScreenTest.h
     src/Screens/ScreenTest.cpp
     src/Screens/SharedScreenListener.h
@@ -123,6 +125,8 @@ add_executable(
     src/States/StateMainMenu.cpp
     src/States/StateNewGame.h
     src/States/StateNewGame.cpp
+    src/States/StateSettings.h
+    src/States/StateSettings.cpp
     src/States/StatesIds.h
     src/States/StateTest.h
     src/States/StateTest.cpp

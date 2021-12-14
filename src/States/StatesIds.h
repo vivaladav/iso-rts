@@ -9,6 +9,7 @@ enum StateId : int
     MAIN_MENU,
     FACTION_SEL,
     NEW_GAME,
+    SETTINGS,
     TEST,
 
     NUM_SCREENS // keep last
