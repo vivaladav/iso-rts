@@ -29,6 +29,7 @@ Player::Player(const char * name, int pid)
     mStats.emplace_back(Stat::DIAMONDS, 0);
     mStats.emplace_back(Stat::ENERGY, 0);
     mStats.emplace_back(Stat::MATERIAL, 0);
+    mStats.emplace_back(Stat::MONEY, 0);
 
     for(StatValue & val : mStats)
         val.SetMin(0);
@@ -37,6 +38,7 @@ Player::Player(const char * name, int pid)
     mStats[Stat::DIAMONDS].SetMax(100);
     mStats[Stat::ENERGY].SetMax(500);
     mStats[Stat::MATERIAL].SetMax(200);
+    mStats[Stat::MONEY].SetMax(99999999);
 }
 
 Player::~Player()

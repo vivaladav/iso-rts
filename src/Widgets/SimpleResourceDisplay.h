@@ -14,18 +14,16 @@ namespace game
 class DigitsDisplay;
 class ProgressBarResources;
 
-class ResourceDisplay : public lib::sgui::Widget
+class SimpleResourceDisplay : public lib::sgui::Widget
 {
 public:
-    ResourceDisplay(lib::graphic::Texture * icon, int digits, lib::sgui::Widget * parent);
+    SimpleResourceDisplay(lib::graphic::Texture * icon, int digits, lib::sgui::Widget * parent);
 
     void SetValue(int val);
-    void SetValueMinMax(int min, int max);
 
 private:
     lib::sgui::Image * mIcon = nullptr;
     DigitsDisplay * mDigits = nullptr;
-    ProgressBarResources * mBar = nullptr;
 };
 
 } // namespace game

@@ -38,6 +38,7 @@ public:
         DIAMONDS,
         ENERGY,
         MATERIAL,
+        MONEY,
 
         NUM_PSTATS,
 

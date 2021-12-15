@@ -11,7 +11,7 @@
 namespace game
 {
 
-ResourceDisplay::ResourceDisplay(lib::graphic::Texture * icon, lib::sgui::Widget * parent)
+ResourceDisplay::ResourceDisplay(lib::graphic::Texture * icon, int digits, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
     // ICON
@@ -24,7 +24,6 @@ ResourceDisplay::ResourceDisplay(lib::graphic::Texture * icon, lib::sgui::Widget
     const int x1 = iconW + marginH;
 
     // DIGITS
-    const int digits = 5;
     mDigits = new DigitsDisplay(digits, this);
     const int digitsW = mDigits->GetWidth();
     const int digitsH = mDigits->GetHeight();

@@ -111,8 +111,10 @@ ScreenGame::ScreenGame(Game * game)
         p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
 
         const int startMaterial = 50;
-
         p->GetStat(Player::Stat::MATERIAL).SetValue(startMaterial);
+
+        const int startMoney = 500;
+        p->GetStat(Player::Stat::MONEY).SetValue(startMoney);
 
         // temporary disable AI for development
 //        if(p->IsAI())
