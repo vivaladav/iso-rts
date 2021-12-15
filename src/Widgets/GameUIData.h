@@ -137,4 +137,24 @@ enum SpriteIdMainMenu : unsigned int
     NUM_MAIN_MENU_SPRITES
 };
 
+// RESOURCES BAR
+extern const char SpriteFileResourcesBar[];
+
+enum SpriteIdResourcesBar : unsigned int
+{
+    // BAR
+    IND_RESBAR_BG,
+
+    // MINI BAR
+    IND_RESBAR_MINIBAR_BG,
+    IND_RESBAR_MINIBAR_VAL,
+
+    // ICONS
+    IND_RESBAR_MONEY,
+    IND_RESBAR_ENERGY,
+    IND_RESBAR_MATERIAL,
+    IND_RESBAR_DIAMOND,
+    IND_RESBAR_BLOB
+};
+
 } // namespace game

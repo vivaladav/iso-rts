@@ -3,9 +3,7 @@
 #include "Widgets/DigitsDisplay.h"
 #include "Widgets/ProgressBarResources.h"
 
-#include <graphic/Image.h>
 #include <graphic/Texture.h>
-#include <graphic/TextureManager.h>
 #include <sgui/Image.h>
 
 #include <cmath>
@@ -13,7 +11,7 @@
 namespace game
 {
 
-ResourceDisplay::ResourceDisplay(const char * icon, lib::sgui::Widget * parent)
+ResourceDisplay::ResourceDisplay(lib::graphic::Texture * icon, lib::sgui::Widget * parent)
     : lib::sgui::Widget(parent)
 {
     // ICON

@@ -614,6 +614,26 @@ void ScreenGame::InitSprites()
     }
 
     tm->RegisterSprite(SpriteFileObjActionButton, rectsObjActButton);
+
+    // RESOURCES BAR
+    const std::vector<lib::core::Rectd> rectsResBar
+    {
+        // BAR
+        { 0, 0, 822, 50 },
+
+        // MINI BAR
+        { 0, 50, 54, 8 },
+        { 0, 58, 50, 4 },
+
+        // ICONS
+        { 54, 50, 22, 32 },
+        { 76, 50, 18, 32 },
+        { 94, 50, 24, 26 },
+        { 118, 50, 18, 30 },
+        { 136, 50, 26, 26 }
+    };
+
+    tm->RegisterSprite(SpriteFileResourcesBar, rectsResBar);
 }
 
 void ScreenGame::InitParticlesSystem()
