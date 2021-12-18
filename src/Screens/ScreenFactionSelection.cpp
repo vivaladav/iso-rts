@@ -50,6 +50,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     panelMain->SetPosition(pmX, pmY);
 
+    const unsigned int colorTitle = 0xedf5f7ff;
     const unsigned int colorHeader = 0xdbebf0ff;
     const unsigned int colorText = 0xb8d3e0ff;
 
@@ -68,7 +69,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 44, graphic::Font::NORMAL);
     sgui::Label * labelTitle = new sgui::Label("SELECT YOUR FACTION", fnt, panelMain);
     labelTitle->SetPosition(x, y);
-    labelTitle->SetColor(colorHeader);
+    labelTitle->SetColor(colorTitle);
 
     graphic::Font * fntFaction = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
     graphic::Font * fntTxt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
@@ -134,8 +135,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelTxt->GetHeight() + marginPanelsH;
 
     // PANEL ATTRIBUTES
-
-    int panelStatsH = AddPanelStats(x, y, { 8, 6, 10, 3 }, panelCol);
+    int panelStatsH = AddPanelStats(x, y, { 7, 6, 9, 3 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
@@ -203,8 +203,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelTxt->GetHeight() + marginPanelsH;
 
     // PANEL ATTRIBUTES
-
-    panelStatsH = AddPanelStats(x, y, { 6, 9, 3, 8 }, panelCol);
+    panelStatsH = AddPanelStats(x, y, { 6, 9, 3, 7 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
@@ -218,8 +217,6 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     {
        HandleSelect(checked, FACTION_2);
     });
-
-    x = panelFaction->GetWidth() + marginFaction;
 
     // -- FACTION 3 --
     x = panelCol->GetX() + panelFaction->GetWidth() + marginFaction;
@@ -275,8 +272,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     y += panelTxt->GetHeight() + marginPanelsH;
 
     // PANEL ATTRIBUTES
-
-    panelStatsH = AddPanelStats(x, y, { 9, 6, 5, 6 }, panelCol);
+    panelStatsH = AddPanelStats(x, y, { 9, 5, 5, 6 }, panelCol);
 
     y += panelStatsH + marginPanelsH;
 
@@ -285,8 +281,6 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     btnX = x + (panelFaction->GetWidth() - mButtonsSelect[FACTION_3]->GetWidth()) * 0.5f;
     mButtonsSelect[FACTION_3]->SetPosition(btnX, y);
-
-    x += panelFaction->GetWidth() + marginFaction;
 
     mButtonsSelect[FACTION_3]->AddOnToggleFunction([this](bool checked)
     {
@@ -341,16 +335,17 @@ void ScreenFactionSelection::InitSprites()
         { 1404, 0, 300, 370 },
 
         // ATTRIBUTES BAR
-        { 1103, 894, 10, 12 },
-        { 1114, 894, 10, 14 },
-        { 1125, 894, 10, 16 },
-        { 1136, 894, 10, 18 },
-        { 1147, 894, 10, 20 },
-        { 1158, 894, 10, 22 },
-        { 1169, 894, 10, 24 },
-        { 1180, 894, 10, 26 },
-        { 1191, 894, 10, 28 },
-        { 1202, 894, 10, 30 },
+        { 1103, 894, 187, 24 },
+        { 1103, 918, 187, 24 },
+        { 1103, 942, 187, 24 },
+        { 1103, 966, 187, 24 },
+        { 1103, 990, 187, 24 },
+        { 1404, 819, 187, 24 },
+        { 1404, 843, 187, 24 },
+        { 1404, 867, 187, 24 },
+        { 1404, 891, 187, 24 },
+        { 1404, 915, 187, 24 },
+        { 1404, 939, 187, 24 },
 
         // BACK BUTTON
         { 0, 971, 320, 50 },
@@ -387,7 +382,7 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
     auto panel = new sgui::Image(tex, parent);
     panel->SetPosition(x, y);
 
-    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
+    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Bold.ttf", 20, graphic::Font::NORMAL);
 
     const int marginHeaderB = 5;
     const int marginBlockB = 36;
@@ -430,33 +425,12 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
         contY += header0->GetHeight() + marginHeaderB;
 
         // stat bar
-        const int maxH = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PIP9)->GetHeight();
+        tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_BAR0 + stat);
 
-        int colorInd = attLevels - 1;
+        auto bar = new sgui::Image(tex, panelContent);
+        bar->SetPosition(contX, contY);
 
-        if(stat < treshPip[0])
-            colorInd = 0;
-        else if(stat < treshPip[1])
-            colorInd = 1;
-        else if(stat < treshPip[2])
-            colorInd = 2;
-
-        for(unsigned int p = 0; p < NUM_FSEL_PIPS; ++p)
-        {
-            tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PIP0 + p);
-            auto pip = new sgui::Image(tex, panelContent);
-            pip->SetPosition(contX, contY + maxH - pip->GetHeight());
-
-            if(p < stat)
-                pip->SetColor(colorPip[colorInd]);
-            else
-                pip->SetColor(colorPipOff);
-
-            contX += pip->GetWidth() * 2;
-        }
-
-        contX = 0;
-        contY += maxH + marginBlockB;
+        contY += bar->GetHeight() + marginBlockB;
     }
 
     // position content panel
