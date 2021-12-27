@@ -26,7 +26,7 @@ namespace game
 
 class CellProgressBar;
 class ConquestIndicator;
-class DialogNewUnit;
+class DialogNewElement;
 class GameMap;
 class GameObject;
 class IsoLayer;
@@ -144,7 +144,7 @@ private:
     std::vector<lib::sgui::Widget *> mWidgetsToDelete;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
-    DialogNewUnit * mDialogNewUnit = nullptr;
+    DialogNewElement * mDialogNewElement = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

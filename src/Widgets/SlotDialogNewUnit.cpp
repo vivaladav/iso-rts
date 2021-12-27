@@ -1,5 +1,6 @@
 #include "Widgets/SlotDialogNewUnit.h"
 
+/*
 #include "GameData.h"
 #include "GameObjects/UnitData.h"
 #include "Widgets/ButtonBuildNewUnit.h"
@@ -268,3 +269,4 @@ void SlotDialogNewUnit::SetStatValue(unsigned int index, unsigned int val)
 }
 
 } // namespace game
+*/

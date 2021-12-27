@@ -53,6 +53,7 @@ ButtonBuildNewUnit::~ButtonBuildNewUnit()
 
 void ButtonBuildNewUnit::SetElements(VisualState state)
 {
+    /*
     auto tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex = nullptr;
 
@@ -104,6 +105,7 @@ void ButtonBuildNewUnit::SetElements(VisualState state)
 
     // reset BG to make changes visible
     SetCurrBg(mBody);
+    */
 }
 
 void ButtonBuildNewUnit::HandlePositionChanged()

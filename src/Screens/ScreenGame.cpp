@@ -20,7 +20,7 @@
 #include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/CellProgressBar.h"
-#include "Widgets/DialogNewUnit.h"
+#include "Widgets/DialogNewElement.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
@@ -130,8 +130,8 @@ ScreenGame::ScreenGame(Game * game)
     // react to local player changes in stats
     localPlayer->SetOnResourcesChanged([this]
     {
-        if(mDialogNewUnit != nullptr)
-            mDialogNewUnit->UpdateSlots();
+//        if(mDialogNewElement != nullptr)
+//            mDialogNewElement->UpdateSlots();
     });
 
     // apply initial visibility to the game map
@@ -559,29 +559,55 @@ void ScreenGame::InitSprites()
     tm->RegisterSprite(SpriteWallsFile, rectsWall);
 
     // -- UI --
-    // NEW UNIT DIALOG
-    std::vector<lib::core::Rectd> rectsNewUnitDialog;
+    // NEW ELEMENT DIALOG
+    const std::vector<lib::core::Rectd> rectsNewElemDialog
+    {
+        // BACKGROUND
+        { 0, 0, 1106, 579 },
 
-    rectsNewUnitDialog.emplace_back(0, 0, 180, 375);
-    rectsNewUnitDialog.emplace_back(180, 0, 120, 375);
-    rectsNewUnitDialog.emplace_back(300, 0, 10, 375);
+        // PANELS
+        { 0, 580, 400, 38 },
+        { 401, 580, 400, 38 },
+        { 0, 619, 200, 223 },
+        { 201, 619, 200, 200 },
+        { 402, 619, 200, 200 },
+        { 603, 619, 200, 200 },
 
-    rectsNewUnitDialog.emplace_back(310, 0, 116, 41);
-    rectsNewUnitDialog.emplace_back(426, 0, 116, 41);
-    rectsNewUnitDialog.emplace_back(310, 41, 116, 41);
-    rectsNewUnitDialog.emplace_back(426, 41, 116, 41);
-    rectsNewUnitDialog.emplace_back(310, 82, 116, 41);
+        { 804, 661, 20, 80 },
+        { 804, 580, 20, 80 },
+        { 825, 661, 20, 80 },
+        { 825, 580, 20, 80 },
 
-    rectsNewUnitDialog.emplace_back(310, 123, 150, 180);
-    rectsNewUnitDialog.emplace_back(460, 82, 110, 100);
-    rectsNewUnitDialog.emplace_back(460, 182, 110, 180);
+        // ATTRIBUTES BAR
+        { 0, 843, 140, 18 },
+        { 141, 843, 140, 18 },
+        { 282, 843, 140, 18 },
+        { 423, 843, 140, 18 },
+        { 564, 843, 140, 18 },
+        { 705, 843, 140, 18 },
+        { 0, 862, 140, 18 },
+        { 141, 862, 140, 18 },
+        { 282, 862, 140, 18 },
+        { 423, 862, 140, 18 },
+        { 564, 862, 140, 18 },
 
-    rectsNewUnitDialog.emplace_back(310, 303, 4, 13);
-    rectsNewUnitDialog.emplace_back(314, 303, 8, 14);
-    rectsNewUnitDialog.emplace_back(322, 303, 11, 12);
-    rectsNewUnitDialog.emplace_back(333, 303, 10, 8);
+        // BUTTON CLOSE
+        { 846, 580, 100, 40 },
+        { 947, 580, 100, 40 },
+        { 846, 621, 100, 40 },
 
-    tm->RegisterSprite(SpriteFileNewUnitDialog, rectsNewUnitDialog);
+        // BUTTON BUILD
+        { 846, 662, 200, 40 },
+        { 846, 703, 200, 40 },
+        { 846, 744, 200, 40 },
+        { 846, 785, 200, 40 },
+
+        // ICONS
+        { 1048, 580, 9, 16 },
+        { 1058, 580, 13, 14 }
+    };
+
+    tm->RegisterSprite(SpriteFileNewElementDialog, rectsNewElemDialog);
 
     // OBJECT ACTION BUTTON
     std::vector<lib::core::Rectd> rectsObjActButton;
@@ -688,36 +714,35 @@ void ScreenGame::CreateUI()
     // create new unit
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT, [this, player]
     {
-        if(nullptr == mDialogNewUnit)
+        if(nullptr == mDialogNewElement)
         {
-            mDialogNewUnit = new DialogNewUnit(player);
+            mDialogNewElement = new DialogNewElement(player);
 
-            mDialogNewUnit->SetFunctionOnClose([this]
+            mDialogNewElement->SetFunctionOnClose([this]
             {
-                // schedule dialog deletion
-                mWidgetsToDelete.push_back(mDialogNewUnit);
-                mDialogNewUnit = nullptr;
+                ClearNewUnitDialog();
             });
 
-            mDialogNewUnit->SetFunctionOnBuild([this, player]
+            mDialogNewElement->SetFunctionOnBuild([this, player]
             {
-                const UnitType type = mDialogNewUnit->GetTypeToBuild();
-                SetupNewUnit(type, player->GetSelectedObject(), player);
+//                const UnitType type = mDialogNewElement->GetTypeToBuild();
+//                SetupNewUnit(type, player->GetSelectedObject(), player);
 
                 ClearNewUnitDialog();
             });
 
             // populate available units
-            const std::vector<UnitData> & unitsData = player->GetAvailableUnits();
+//            const std::vector<UnitData> & unitsData = player->GetAvailableUnits();
 
-            for(const UnitData & data : unitsData)
-                mDialogNewUnit->AddUnitSlot(data);
+//            for(const UnitData & data : unitsData)
+//                mDialogNewElement->AddUnitSlot(data);
 
             // position dialog
-            const int posX = mPanelObjActions->GetX();
-            const int posY = mPanelObjActions->GetY() - mDialogNewUnit->GetHeight();
+            const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+            const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
+            const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
 
-            mDialogNewUnit->SetPosition(posX, posY);
+            mDialogNewElement->SetPosition(posX, posY);
         }
     });
 
@@ -849,12 +874,12 @@ void ScreenGame::HidePanelObjActions()
 void ScreenGame::ClearNewUnitDialog()
 {
     // no dialog -> nothing to do
-    if(nullptr == mDialogNewUnit)
+    if(nullptr == mDialogNewElement)
         return ;
 
     // schedule dialog deletion
-    mWidgetsToDelete.push_back(mDialogNewUnit);
-    mDialogNewUnit = nullptr;
+    mWidgetsToDelete.push_back(mDialogNewElement);
+    mDialogNewElement = nullptr;
 }
 
 void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
