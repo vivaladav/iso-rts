@@ -19,11 +19,13 @@ public:
 
     void SetWidth(int w);
     void SetHeight(int h);
+    void SetSize(int w, int h);
 
     void MoveX(float delta);
     void MoveY(float delta);
 
     void ResetPosition();
+    void CenterToPoint(int x, int y);
 
     // conversion
     int GetScreenToWorldX(int x) const;
@@ -64,6 +66,11 @@ inline int Camera::GetHeight() const { return mHeight; }
 
 inline void Camera::SetWidth(int w) { mWidth = w; }
 inline void Camera::SetHeight(int h) { mHeight = h; }
+inline void Camera::SetSize(int w, int h)
+{
+    mWidth = w;
+    mHeight = h;
+}
 
 inline void Camera::ResetPosition()
 {

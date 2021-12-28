@@ -10,7 +10,6 @@ namespace graphic
 Camera * Camera::mDefault = nullptr;
 Camera * Camera::mDummy = nullptr;
 
-
 void Camera::MoveX(float delta)
 {
     mXf += delta;
@@ -22,6 +21,15 @@ void Camera::MoveY(float delta)
 {
     mYf += delta;
 
+    mYd = std::roundf(mYf);
+}
+
+void Camera::CenterToPoint(int x, int y)
+{
+    mXf = x - (mWidth * 0.5f);
+    mYf = y - (mHeight * 0.5f);
+
+    mXd = std::roundf(mXf);
     mYd = std::roundf(mYf);
 }
 
