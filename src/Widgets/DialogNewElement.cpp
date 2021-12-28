@@ -62,10 +62,18 @@ public:
         mShortcut = new Text(SHORTCUTS[index], font, true);
         mShortcut->SetColor(0xd5daddff);
 
+        // register graphic elements
+        RegisterRenderable(mBody);
         RegisterRenderable(mShortcut);
 
         // set initial visual state
         SetState(NORMAL);
+    }
+
+    ~ButtonSlot()
+    {
+        delete mBody;
+        delete mShortcut;
     }
 
 private:

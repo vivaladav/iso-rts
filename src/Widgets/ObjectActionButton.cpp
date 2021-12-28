@@ -60,9 +60,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
 ObjectActionButton::~ObjectActionButton()
 {
     delete mBody;
-
     delete mIcon;
-
     delete mShortcut;
 }
 
