@@ -7,12 +7,14 @@
 
 namespace lib
 {
-    namespace sgui { class Image; }
+    namespace sgui { class ButtonsGroup; }
 }
 
 namespace game
 {
 
+class ButtonClose;
+class ButtonSlot;
 class Player;
 
 enum UnitType : unsigned int;
@@ -30,7 +32,9 @@ private:
     void HandleKeyUp(lib::core::KeyboardEvent & event) override;
 
 private:
+    lib::sgui::ButtonsGroup * mSlots = nullptr;
 
+    ButtonClose * mButtonClose = nullptr;
 };
 
 } // namespace game

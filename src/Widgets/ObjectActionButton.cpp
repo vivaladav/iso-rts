@@ -3,7 +3,6 @@
 #include "Widgets/GameUIData.h"
 
 #include <core/event/KeyboardEvent.h>
-#include <graphic/Camera.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
@@ -27,8 +26,6 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
 
     RegisterRenderable(mBody);
     RegisterRenderable(mIcon);
-
-    SetCurrBg(mBody);
 
     // -- SET ICON TEXTURE --
     auto tm = TextureManager::Instance();
@@ -75,7 +72,6 @@ void ObjectActionButton::SetElements(VisualState state)
     lib::graphic::Texture * tex = nullptr;
 
     const unsigned char alphaEn = 255;
-    const unsigned char alphaDis = 128;
 
     mIcon->SetAlpha(alphaEn);
     mShortcut->SetAlpha(alphaEn);
@@ -104,10 +100,14 @@ void ObjectActionButton::SetElements(VisualState state)
 
         // disabled by default
         default:
+        {
             tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_DISABLED);
             mBody->SetTexture(tex);
+
+            const unsigned char alphaDis = 128;
             mIcon->SetAlpha(alphaDis);
             mShortcut->SetAlpha(alphaDis);
+        }
         break;
     }
 
@@ -146,7 +146,7 @@ void ObjectActionButton::HandlePositionChanged()
 
 void ObjectActionButton::OnRender()
 {
-    mBody->Render();
+    PushButton::OnRender();
 
     mIcon->Render();
 
