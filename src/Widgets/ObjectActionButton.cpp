@@ -64,7 +64,7 @@ ObjectActionButton::~ObjectActionButton()
     delete mShortcut;
 }
 
-void ObjectActionButton::SetElements(VisualState state)
+void ObjectActionButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
     auto tm = lib::graphic::TextureManager::Instance();
     lib::graphic::Texture * tex = nullptr;

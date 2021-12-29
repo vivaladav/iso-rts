@@ -168,28 +168,100 @@ void PushButton::HandlePositionChanged()
     PositionLabel();
 }
 
-void PushButton::PositionLabel()
+void PushButton::HandleStateEnabled()
 {
-    const int x = GetScreenX() + (GetWidth() - mCurrLabel->GetWidth()) * 0.5f;
-    const int y = GetScreenY() + (GetHeight() - mCurrLabel->GetHeight()) * 0.5f;
+    if(IsChecked())
+        SetState(CHECKED);
+    else
+        SetState(NORMAL);
+}
+void PushButton::HandleStateDisabled()
+{
+     SetState(DISABLED);
+}
 
-    mCurrLabel->SetPosition(x, y);
+void PushButton::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
+{
+    if(!IsEnabled())
+        return ;
+
+    HandleButtonDown();
+
+    event.SetConsumed();
 }
 
 void PushButton::HandleMouseButtonUp(core::MouseButtonEvent & event)
 {
-    event.SetConsumed();
+    if(!IsEnabled())
+        return ;
 
-    Click();
+    HandleButtonUp();
+
+    event.SetConsumed();
 }
 
-void PushButton::HandleCheckedChanged(bool) { }
+void PushButton::HandleMouseOver()
+{
+    if(!IsEnabled() || IsChecked())
+        return ;
+
+    SetState(MOUSE_OVER);
+}
+
+void PushButton::HandleMouseOut()
+{
+    if(!IsEnabled() || IsChecked())
+        return ;
+
+    SetState(NORMAL);
+}
+
+void PushButton::HandleCheckedChanged(bool checked)
+{
+    SetState(checked ? CHECKED : NORMAL);
+}
+
+void PushButton::OnStateChanged(VisualState state) { }
 
 void PushButton::OnRender()
 {
     mCurrBg->Render();
 
     mCurrLabel->Render();
+}
+
+void PushButton::HandleButtonDown()
+{
+    if(IsCheckable())
+        SetState(CHECKED);
+    else
+        SetState(PUSHED);
+}
+
+void PushButton::HandleButtonUp()
+{
+    // set default state then handle click
+    SetState(NORMAL);
+
+    Click();
+}
+
+void PushButton::SetState(VisualState state)
+{
+    if(mState == state)
+        return ;
+
+    mState = state;
+
+    OnStateChanged(state);
+}
+
+void PushButton::PositionLabel()
+{
+    const int x = GetScreenX() + (GetWidth() - mCurrLabel->GetWidth()) * 0.5f;
+    const int y = GetScreenY() + (GetHeight() - mCurrLabel->GetHeight()) * 0.5f;
+
+    mCurrLabel->SetPosition(x, y);
 }
 
 } // namespace sgui

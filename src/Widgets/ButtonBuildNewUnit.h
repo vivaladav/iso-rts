@@ -21,13 +21,13 @@ public:
                        lib::sgui::Widget * parent);
     ~ButtonBuildNewUnit();
 
-protected:
-    void SetElements(VisualState state) override;
 
 private:
     void HandlePositionChanged() override;
 
     void OnRender() override;
+
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
 
 private:
     lib::graphic::Image * mBody = nullptr;

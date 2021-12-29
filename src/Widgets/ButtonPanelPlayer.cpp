@@ -24,8 +24,7 @@ ButtonPanelPlayer::ButtonPanelPlayer(lib::sgui::Widget * parent)
                 0xFFFFFFFF,
                 0xFFFFFFFF,
                 0xFFFFFFFF
-            },
-            GameButton::NORMAL);
+            });
 
     auto fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 18, Font::BOLD);

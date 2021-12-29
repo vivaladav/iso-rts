@@ -77,7 +77,7 @@ public:
     }
 
 private:
-    void SetElements(VisualState state) override
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
     {
         auto tm = lib::graphic::TextureManager::Instance();
         lib::graphic::Texture * tex = nullptr;

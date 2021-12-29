@@ -27,8 +27,7 @@ ButtonMainMenu::ButtonMainMenu(const char * text, lib::sgui::Widget * parent)
                 0x99e5ffff,
                 0x8cd8f3ff,
                 0xf0f0a8ff
-            },
-            GameButton::NORMAL);
+            });
 
     auto fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 34, Font::NORMAL);

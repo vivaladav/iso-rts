@@ -15,20 +15,6 @@ namespace game
 class GameButton : public lib::sgui::PushButton
 {
 public:
-    enum VisualState : int
-    {
-        NORMAL = 0,
-        DISABLED,
-        MOUSE_OVER,
-        PUSHED,
-        CHECKED,
-
-        NUM_VISUAL_STATES,
-
-        NULL_STATE
-    };
-
-public:
     GameButton(lib::sgui::Widget * parent);
     GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
@@ -42,32 +28,17 @@ public:
 
 protected:
     void SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
-                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                 int state);
+                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor);
 
     void SetData(const char * spriteFile,
                  const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
-                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                 int state);
+                 const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor);
 
-    void HandleStateEnabled() override;
-    void HandleStateDisabled() override;
-
-    void HandleMouseButtonDown(lib::core::MouseButtonEvent & event) override;
-    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
-
-    void HandleMouseOver() override;
-    void HandleMouseOut() override;
-
-    void HandleCheckedChanged(bool checked) override;
-
-    void SetElements(int index);
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
 
 private:
     std::array<lib::graphic::Image *, NUM_VISUAL_STATES> mBackgrounds;
     std::array<unsigned int, NUM_VISUAL_STATES> mLabelsColor;
-
-    int mState = NULL_STATE;
 };
 
 } // namespace game

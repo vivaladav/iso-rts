@@ -18,7 +18,7 @@ GameButton::GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFil
                        lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
 {
-    SetData(bgFiles, labelsColor, NORMAL);
+    SetData(bgFiles, labelsColor);
 }
 
 GameButton::GameButton(const char * spriteFile,
@@ -27,7 +27,7 @@ GameButton::GameButton(const char * spriteFile,
                        lib::sgui::Widget * parent)
     : lib::sgui::PushButton(parent)
 {
-    SetData(spriteFile, spriteIds, labelsColor, NORMAL);
+    SetData(spriteFile, spriteIds, labelsColor);
 }
 
 GameButton::~GameButton()
@@ -37,8 +37,7 @@ GameButton::~GameButton()
 }
 
 void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
-                         const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                         int state)
+                         const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor)
 {
     // init background data
     for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
@@ -50,13 +49,12 @@ void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgF
     // init label data
     mLabelsColor = labelsColor;
 
-    SetElements(state);
+    SetState(NORMAL);
 }
 
 void GameButton::SetData(const char * spriteFile,
                          const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
-                         const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                         int state)
+                         const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor)
 {
     auto tm = lib::graphic::TextureManager::Instance();
 
@@ -71,78 +69,15 @@ void GameButton::SetData(const char * spriteFile,
     // init label data
     mLabelsColor = labelsColor;
 
-    SetElements(state);
+    // default state after setting data
+    SetState(NORMAL);
 }
 
-void GameButton::HandleStateEnabled()
+void GameButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    if(IsChecked())
-        SetElements(CHECKED);
-    else
-        SetElements(NORMAL);
-}
-void GameButton::HandleStateDisabled()
-{
-     SetElements(DISABLED);
-}
+    SetCurrBg(mBackgrounds[state]);
 
-void GameButton::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonDown(event);
-
-    if(!IsEnabled())
-        return ;
-
-    if(IsCheckable())
-        SetElements(CHECKED);
-    else
-        SetElements(PUSHED);
-}
-
-void GameButton::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonUp(event);
-
-    if(!IsEnabled())
-        return ;
-
-    if(IsCheckable())
-        SetElements(IsChecked() ? CHECKED : NORMAL);
-    else
-        SetElements(NORMAL);
-}
-
-void GameButton::HandleMouseOver()
-{
-    if(!IsEnabled() || IsChecked())
-        return ;
-
-    SetElements(MOUSE_OVER);
-}
-
-void GameButton::HandleMouseOut()
-{
-    if(!IsEnabled() || IsChecked())
-        return ;
-
-    SetElements(NORMAL);
-}
-
-void GameButton::HandleCheckedChanged(bool checked)
-{
-    SetElements(checked ? CHECKED : NORMAL);
-}
-
-void GameButton::SetElements(int index)
-{
-    if(mState == index)
-        return ;
-
-    mState = index;
-
-    SetCurrBg(mBackgrounds[index]);
-
-    SetLabelColor(mLabelsColor[index]);
+    SetLabelColor(mLabelsColor[state]);
 }
 
 } // namespace game

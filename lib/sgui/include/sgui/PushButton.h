@@ -21,6 +21,20 @@ namespace sgui
 class PushButton : public Widget
 {
 public:
+    enum VisualState : int
+    {
+        NORMAL = 0,
+        DISABLED,
+        MOUSE_OVER,
+        PUSHED,
+        CHECKED,
+
+        NUM_VISUAL_STATES,
+
+        NULL_STATE
+    };
+
+public:
     PushButton(Widget * parent = nullptr);
     ~PushButton();
 
@@ -47,13 +61,27 @@ protected:
     void SetCurrBg(graphic::Renderable * bg);
     void SetCurrLabel(graphic::Renderable * label);
 
-    void HandleMouseButtonUp(core::MouseButtonEvent & event) override;
+    void HandleStateEnabled() override;
+    void HandleStateDisabled() override;
+
+    void HandleMouseButtonDown(lib::core::MouseButtonEvent & event) override;
+    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
+
+    void HandleMouseOver() override;
+    void HandleMouseOut() override;
 
     void HandlePositionChanged() override;
 
     void OnRender() override;
 
+    void HandleButtonDown();
+    void HandleButtonUp();
+
     virtual void HandleCheckedChanged(bool checked);
+
+    virtual void OnStateChanged(VisualState state);
+
+    void SetState(VisualState state);
 
 private:
     void PositionLabel();
@@ -73,6 +101,8 @@ private:
     // pointers to the current active objects
     graphic::Renderable * mCurrBg = nullptr;
     graphic::Renderable * mCurrLabel = nullptr;
+
+    VisualState mState = NULL_STATE;
 
     bool mCheckable = false;
     bool mChecked = false;

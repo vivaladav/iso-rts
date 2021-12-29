@@ -51,7 +51,7 @@ ButtonBuildNewUnit::~ButtonBuildNewUnit()
     delete mShortcut;
 }
 
-void ButtonBuildNewUnit::SetElements(VisualState state)
+void ButtonBuildNewUnit::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
     /*
     auto tm = lib::graphic::TextureManager::Instance();

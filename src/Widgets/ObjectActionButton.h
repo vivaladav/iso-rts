@@ -36,10 +36,9 @@ public:
                        int shortcutKey, lib::sgui::Widget * parent);
     ~ObjectActionButton();
 
-protected:
-    void SetElements(VisualState state) override;
-
 private:
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
+
     void HandlePositionChanged() override;
 
     void OnRender() override;
