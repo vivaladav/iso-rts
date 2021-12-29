@@ -26,22 +26,43 @@ constexpr int NUM_SLOTS = 5;
 
 // ===== BUTTON CLOSE =====
 
-class ButtonClose : public GameButton
+class ButtonClose : public ShortcutButton
 {
 public:
     ButtonClose(lib::sgui::Widget * parent)
-        : GameButton(SpriteFileNewElementDialog,
+        : ShortcutButton(lib::core::KeyboardEvent::KEY_ESC, parent)
+        , mBody(new lib::graphic::Image)
+    {
+        // register graphic elements
+        RegisterRenderable(mBody);
+
+        // set initial visual state
+        SetState(NORMAL);
+    }
+
+    ~ButtonClose() { delete mBody; }
+
+private:
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
+    {
+        const unsigned int texIds[NUM_VISUAL_STATES] =
         {
             IND_NE_DIALOG_CLOSE_NORMAL,
-            IND_NE_DIALOG_CLOSE_NORMAL,
+            IND_NE_DIALOG_CLOSE_NORMAL,     // button can't be disabled
             IND_NE_DIALOG_CLOSE_OVER,
             IND_NE_DIALOG_CLOSE_PUSHED,
-            IND_NE_DIALOG_CLOSE_NORMAL
-        },
-        { 0, 0, 0, 0, 0 },
-        parent)
-    {
+            IND_NE_DIALOG_CLOSE_NORMAL,     // button can't be checked
+        };
+
+        auto tm = lib::graphic::TextureManager::Instance();
+        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        mBody->SetTexture(tex);
+        // reset BG to make changes visible
+        SetCurrBg(mBody);
     }
+
+private:
+    lib::graphic::Image * mBody = nullptr;
 };
 
 // ===== BUTTON SLOT =====
@@ -79,65 +100,39 @@ public:
 private:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override
     {
-        auto tm = lib::graphic::TextureManager::Instance();
-        lib::graphic::Texture * tex = nullptr;
-
-        const unsigned char alphaEn = 255;
-
-        mShortcut->SetAlpha(alphaEn);
-
-        switch(state)
+        const unsigned int texIds[NUM_VISUAL_STATES] =
         {
-            case NORMAL:
-                tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
-                mBody->SetTexture(tex);
-            break;
+            IND_NE_DIALOG_PANEL_NORMAL,
+            IND_NE_DIALOG_PANEL_DISABLED,
+            IND_NE_DIALOG_PANEL_OVER,
+            IND_NE_DIALOG_PANEL_SEL,
+            IND_NE_DIALOG_PANEL_SEL,
+        };
 
-            case MOUSE_OVER:
-                tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_OVER);
-                mBody->SetTexture(tex);
-            break;
-
-            case PUSHED:
-                tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_SEL);
-                mBody->SetTexture(tex);
-            break;
-
-            case CHECKED:
-                tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_SEL);
-                mBody->SetTexture(tex);
-            break;
-
-            // disabled by default
-            default:
-            {
-                tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_DISABLED);
-                mBody->SetTexture(tex);
-
-                const unsigned char alphaDis = 128;
-                mShortcut->SetAlpha(alphaDis);
-            }
-            break;
-        }
-
+        auto tm = lib::graphic::TextureManager::Instance();
+        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        mBody->SetTexture(tex);
         // reset BG to make changes visible
         SetCurrBg(mBody);
+
+        // update shortcut label alpha
+        const unsigned char alphaEn = 255;
+        const unsigned char alphaDis = 128;
+        const unsigned char alphaLabel = DISABLED == state ? alphaDis : alphaEn;
+        mShortcut->SetAlpha(alphaLabel);
     }
 
     void HandlePositionChanged() override
     {
         PushButton::HandlePositionChanged();
 
-        const int x = GetScreenX();
-        const int y = GetScreenY();
-
         // SHORTCUT
         const int shortBgX0 = 182;
         const int shortBgY0 = 182;
         const int shortBgSize = 14;
 
-        const int shortcutX = x + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
-        const int shortcutY = y + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
+        const int shortcutX = GetScreenX() + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
+        const int shortcutY = GetScreenY() + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
 
         mShortcut->SetPosition(shortcutX, shortcutY);
     }
@@ -212,17 +207,6 @@ void DialogNewElement::SetFunctionOnBuild(const std::function<void()> & f)
 void DialogNewElement::SetFunctionOnClose(const std::function<void()> & f)
 {
     mButtonClose->AddOnClickFunction(f);
-}
-
-void DialogNewElement::HandleKeyUp(lib::core::KeyboardEvent & event)
-{
-    // ESC -> close dialog
-    if(event.GetKey() == lib::core::KeyboardEvent::KEY_ESC)
-    {
-        mButtonClose->Click();
-
-        event.SetConsumed();
-    }
 }
 
 } // namespace game

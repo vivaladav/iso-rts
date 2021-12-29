@@ -66,51 +66,26 @@ ObjectActionButton::~ObjectActionButton()
 
 void ObjectActionButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = nullptr;
-
-    const unsigned char alphaEn = 255;
-
-    mIcon->SetAlpha(alphaEn);
-    mShortcut->SetAlpha(alphaEn);
-
-    switch(state)
+    const unsigned int texIds[NUM_VISUAL_STATES] =
     {
-        case NORMAL:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_NORMAL);
-            mBody->SetTexture(tex);
-        break;
+        IND_BUTTON_NORMAL,
+        IND_BUTTON_DISABLED,
+        IND_BUTTON_MOUSE_OVER,
+        IND_BUTTON_PUSHED,
+        IND_BUTTON_CHECKED,
+    };
 
-        case MOUSE_OVER:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_MOUSE_OVER);
-            mBody->SetTexture(tex);
-        break;
-
-        case PUSHED:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_PUSHED);
-            mBody->SetTexture(tex);
-        break;
-
-        case CHECKED:
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_CHECKED);
-            mBody->SetTexture(tex);
-        break;
-
-        // disabled by default
-        default:
-        {
-            tex = tm->GetSprite(SpriteFileObjActionButton, IND_BUTTON_DISABLED);
-            mBody->SetTexture(tex);
-
-            const unsigned char alphaDis = 128;
-            mIcon->SetAlpha(alphaDis);
-            mShortcut->SetAlpha(alphaDis);
-        }
-        break;
-    }
-
+    auto tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileObjActionButton, texIds[state]);
+    mBody->SetTexture(tex);
     // reset BG to make changes visible
     SetCurrBg(mBody);
+
+    // update shortcut label alpha
+    const unsigned char alphaEn = 255;
+    const unsigned char alphaDis = 128;
+    const unsigned char alphaLabel = DISABLED == state ? alphaDis : alphaEn;
+    mShortcut->SetAlpha(alphaLabel);
 }
 
 void ObjectActionButton::HandlePositionChanged()

@@ -29,9 +29,6 @@ public:
     void SetFunctionOnClose(const std::function<void()> & f);
 
 private:
-    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
-
-private:
     lib::sgui::ButtonsGroup * mSlots = nullptr;
 
     ButtonClose * mButtonClose = nullptr;
