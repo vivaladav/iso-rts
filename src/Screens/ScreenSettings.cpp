@@ -2,9 +2,7 @@
 
 #include "Game.h"
 #include "States/StatesIds.h"
-#include "Widgets/ButtonDialogBack.h"
-#include "Widgets/ButtonDialogContinue.h"
-#include "Widgets/ButtonDialogSelect.h"
+#include "Widgets/ButtonMainMenu.h"
 #include "Widgets/GameUIData.h"
 
 #include <graphic/Font.h>
@@ -39,7 +37,7 @@ ScreenSettings::ScreenSettings(Game * game)
 
     // BUTTON BACK
     const int marginButton = 10;
-    auto btnBack = new ButtonDialogBack;
+    auto btnBack = new ButtonMainMenu("BACK", nullptr);
     const int posBackX = screenW - btnBack->GetWidth() - marginButton;
     const int posBackY = screenH - btnBack->GetHeight() - marginButton;
     btnBack->SetPosition(posBackX, posBackY);
