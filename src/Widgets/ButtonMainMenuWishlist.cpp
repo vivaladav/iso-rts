@@ -62,7 +62,7 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
     RegisterRenderable(mText);
 
     // init to normal state
-    SetElements(NORMAL);
+    SetState(NORMAL);
 
     PositionElements();
 }
@@ -83,30 +83,6 @@ void ButtonMainMenuWishlist::HandlePositionChanged()
      PositionElements();
 }
 
-void ButtonMainMenuWishlist::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonDown(event);
-
-    SetElements(PUSHED);
-}
-
-void ButtonMainMenuWishlist::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonUp(event);
-
-    SetElements(NORMAL);
-}
-
-void ButtonMainMenuWishlist::HandleMouseOver()
-{
-    SetElements(MOUSE_OVER);
-}
-
-void ButtonMainMenuWishlist::HandleMouseOut()
-{
-    SetElements(NORMAL);
-}
-
 void ButtonMainMenuWishlist::OnRender()
 {
     lib::sgui::PushButton::OnRender();
@@ -115,17 +91,12 @@ void ButtonMainMenuWishlist::OnRender()
     mText->Render();
 }
 
-void ButtonMainMenuWishlist::SetElements(int index)
+void ButtonMainMenuWishlist::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    if(mState == index)
-        return ;
+    SetCurrBg(mBackgrounds[state]);
 
-    mState = index;
-
-    SetCurrBg(mBackgrounds[index]);
-
-    mIcon->SetColor(mLabelsColor[index]);
-    mText->SetColor(mLabelsColor[index]);
+    mIcon->SetColor(mLabelsColor[state]);
+    mText->SetColor(mLabelsColor[state]);
 }
 
 void ButtonMainMenuWishlist::PositionElements()

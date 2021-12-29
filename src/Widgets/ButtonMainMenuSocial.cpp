@@ -55,7 +55,7 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
     RegisterRenderable(mIcon);
 
     // init to normal state
-    SetElements(NORMAL);
+    SetState(NORMAL);
 
     PositionElements();
 }
@@ -75,30 +75,6 @@ void ButtonMainMenuSocial::HandlePositionChanged()
      PositionElements();
 }
 
-void ButtonMainMenuSocial::HandleMouseButtonDown(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonDown(event);
-
-    SetElements(PUSHED);
-}
-
-void ButtonMainMenuSocial::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
-{
-    PushButton::HandleMouseButtonUp(event);
-
-    SetElements(NORMAL);
-}
-
-void ButtonMainMenuSocial::HandleMouseOver()
-{
-    SetElements(MOUSE_OVER);
-}
-
-void ButtonMainMenuSocial::HandleMouseOut()
-{
-    SetElements(NORMAL);
-}
-
 void ButtonMainMenuSocial::OnRender()
 {
     lib::sgui::PushButton::OnRender();
@@ -106,16 +82,11 @@ void ButtonMainMenuSocial::OnRender()
     mIcon->Render();
 }
 
-void ButtonMainMenuSocial::SetElements(int index)
+void ButtonMainMenuSocial::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    if(mState == index)
-        return ;
+    SetCurrBg(mBackgrounds[state]);
 
-    mState = index;
-
-    SetCurrBg(mBackgrounds[index]);
-
-    mIcon->SetColor(mLabelsColor[index]);
+    mIcon->SetColor(mLabelsColor[state]);
 }
 
 void ButtonMainMenuSocial::PositionElements()

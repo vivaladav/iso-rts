@@ -23,35 +23,14 @@ public:
     ButtonMainMenuWishlist(lib::sgui::Widget * parent);
     ~ButtonMainMenuWishlist();
 
-protected:
+private:
     void HandlePositionChanged() override;
-
-    void HandleMouseButtonDown(lib::core::MouseButtonEvent & event) override;
-    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
-
-    void HandleMouseOver() override;
-    void HandleMouseOut() override;
 
     void OnRender() override;
 
-    void SetElements(int index);
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
 
-private:
     void PositionElements();
-
-private:
-    enum VisualState : int
-    {
-        NORMAL = 0,
-        DISABLED,
-        MOUSE_OVER,
-        PUSHED,
-        CHECKED,
-
-        NUM_VISUAL_STATES,
-
-        NULL_STATE
-    };
 
 private:
     std::array<lib::graphic::Image *, NUM_VISUAL_STATES> mBackgrounds;
@@ -59,8 +38,6 @@ private:
 
     lib::graphic::Image * mIcon = nullptr;
     lib::graphic::Text * mText = nullptr;
-
-    int mState = NULL_STATE;
 };
 
 } // namespace game
