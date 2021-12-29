@@ -250,6 +250,8 @@ bool Widget::IsScreenPointInside(int x, int y)
     return x > mScreenX && x < (mScreenX + mWidth) && y > mScreenY && y < (mScreenY + mHeight);
 }
 
+void Widget::HandlePositionChanged() { }
+
 void Widget::SetScreenPosition(int x, int y)
 {
     mScreenX = x;
@@ -257,8 +259,6 @@ void Widget::SetScreenPosition(int x, int y)
 
     HandlePositionChanged();
 }
-
-void Widget::HandlePositionChanged() { }
 
 void Widget::HandleStateEnabled() { }
 void Widget::HandleStateDisabled() { }

@@ -89,10 +89,10 @@ protected:
     unsigned int MixColorAndAlpha(unsigned int color) const;
     unsigned char MixAlphaAndAlpha(unsigned char a) const;
 
+    virtual void HandlePositionChanged();
+
 private:
     void SetScreenPosition(int x, int y);
-
-    virtual void HandlePositionChanged();
 
     void SetMouseOver();
     void SetMouseOut();
