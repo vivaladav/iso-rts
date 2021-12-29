@@ -6,7 +6,11 @@
 
 namespace lib
 {
-    namespace graphic { class Image; }
+    namespace graphic
+    {
+        class Image;
+        class Texture;
+    }
 }
 
 namespace game
@@ -37,8 +41,10 @@ protected:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
 
 private:
-    std::array<lib::graphic::Image *, NUM_VISUAL_STATES> mBackgrounds;
+    std::array<lib::graphic::Texture *, NUM_VISUAL_STATES> mBackgrounds;
     std::array<unsigned int, NUM_VISUAL_STATES> mLabelsColor;
+
+    lib::graphic::Image * mBody = nullptr;
 };
 
 } // namespace game
