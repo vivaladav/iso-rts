@@ -10,6 +10,7 @@
 
 #include <core/event/KeyboardEvent.h>
 #include <graphic/Camera.h>
+#include <graphic/DummyRenderable.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
@@ -66,6 +67,7 @@ private:
 };
 
 // ===== BUTTON BUILD =====
+
 class ButtonBuild : public ShortcutButton
 {
 public:
@@ -83,6 +85,11 @@ public:
         // register graphic elements
         RegisterRenderable(mBody);
         RegisterRenderable(mShortcut);
+
+        // LABEL
+        font = fm->GetFont("data/fonts/Lato-Regular.ttf", 19, Font::NORMAL);
+        SetLabelFont(font);
+        SetLabel("BUILD");
 
         // set initial visual state
         SetState(NORMAL);
@@ -125,7 +132,7 @@ private:
 
         // SHORTCUT
         const int shortBgX0 = 182;
-        const int shortBgY0 = 182;
+        const int shortBgY0 = 22;
         const int shortBgSize = 14;
 
         const int shortcutX = GetScreenX() + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
@@ -252,16 +259,102 @@ public:
     PanelAttribute(lib::sgui::Widget * parent)
         : lib::sgui::Widget(parent)
     {
-        using namespace lib::sgui;
+        using namespace lib::graphic;
 
-        auto tm = lib::graphic::TextureManager::Instance();
+        auto tm = TextureManager::Instance();
 
         // BACKGROUND
-        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_OFF);
-        mBg = new lib::graphic::Image(tex);
+        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_OFF);
+        mBg = new Image(tex);
         RegisterRenderable(mBg);
 
         SetSize(mBg->GetWidth(), mBg->GetHeight());
+
+        // LABEL
+        mLabel = new DummyRenderable;
+        RegisterRenderable(mLabel);
+
+        // VALUE BAR
+        mValueBar = new DummyRenderable;
+        RegisterRenderable(mValueBar);
+    }
+
+    ~PanelAttribute()
+    {
+        delete mBg;
+        delete mLabel;
+        delete mValueBar;
+    }
+
+    void ClearData()
+    {
+        using namespace lib::graphic;
+
+        // check if already cleared
+        if(!mHasData)
+            return ;
+
+        // BACKGROUND
+        auto tm = TextureManager::Instance();
+        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_OFF);
+        mBg->SetTexture(tex);
+
+        // LABEL
+        UnregisterRenderable(mLabel);
+        delete mLabel;
+        mLabel = new DummyRenderable;
+        RegisterRenderable(mLabel);
+
+        // VALUE BAR
+        UnregisterRenderable(mValueBar);
+        delete mValueBar;
+        mValueBar = new DummyRenderable;
+        RegisterRenderable(mValueBar);
+
+        // update data flag
+        mHasData = false;
+    }
+
+    void SetData(const char * txt, unsigned int val)
+    {
+        using namespace lib::graphic;
+
+        // BACKGROUND
+        auto tm = TextureManager::Instance();
+        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_ON);
+        mBg->SetTexture(tex);
+
+        // LABEL
+        auto fm = FontManager::Instance();
+
+        UnregisterRenderable(mLabel);
+        delete mLabel;
+
+        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
+        mLabel = new Text(txt, font);
+        mLabel->SetColor(0xf1f2f4ff);
+        RegisterRenderable(mLabel);
+
+        // VALUE BAR
+        if(!mHasData)
+        {
+            UnregisterRenderable(mValueBar);
+            delete mValueBar;
+            mValueBar = new Image;
+            RegisterRenderable(mValueBar);
+        }
+
+        const unsigned int maxVal = 10;
+
+        if(val > maxVal)
+            val = maxVal;
+
+        const unsigned int texId = IND_NE_DIALOG_BAR0 + val;
+        tex = tm->GetSprite(SpriteFileNewElementDialog, texId);
+        static_cast<Image *>(mValueBar)->SetTexture(tex);
+
+        // update data flag
+        mHasData = true;
     }
 
     void HandlePositionChanged() override
@@ -270,15 +363,33 @@ public:
         const int y0 = GetScreenY();
 
         mBg->SetPosition(x0, y0);
+
+        const int marginH = 10;
+
+        // LABEL
+        const int labelX = x0 + marginH;
+        const int labelY = y0 + (mBg->GetHeight() - mLabel->GetHeight()) * 0.5f;
+        mLabel->SetPosition(labelX, labelY);
+
+        // BAR
+        const int barX = x0 + mBg->GetWidth() - marginH - mValueBar->GetWidth();
+        const int barY = y0 + (mBg->GetHeight() - mValueBar->GetHeight()) * 0.5f;
+        mValueBar->SetPosition(barX, barY);
     }
 
     void OnRender() override
     {
         mBg->Render();
+        mLabel->Render();
+        mValueBar->Render();
     }
 
 private:
     lib::graphic::Image * mBg = nullptr;
+    lib::graphic::Renderable * mLabel = nullptr;
+    lib::graphic::Renderable * mValueBar = nullptr;
+
+    bool mHasData = false;
 };
 
 // ===== DIALOG NEW ELEMENT =====
