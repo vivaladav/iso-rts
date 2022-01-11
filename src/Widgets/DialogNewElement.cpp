@@ -358,12 +358,16 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(Player * player)
+DialogNewElement::DialogNewElement(Player * player, const char * title)
 //    : mPlayer(player)
 {
     using namespace lib::sgui;
 
+    auto fm = lib::graphic::FontManager::Instance();
     auto tm = lib::graphic::TextureManager::Instance();
+
+    const int marginL = 52;
+    const int marginT = 6;
 
     // BACKGROUND
     lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_BG);
@@ -372,6 +376,12 @@ DialogNewElement::DialogNewElement(Player * player)
     // CLOSE BUTTON
     mBtnClose = new ButtonClose(this);
     mBtnClose->SetX(imgBg->GetWidth() - mBtnClose->GetWidth());
+
+    // TITLE
+    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 28, lib::graphic::Font::NORMAL);
+    mTitle = new Label(title, font, this);
+    mTitle->SetColor(0xf1f2f4ff);
+    mTitle->SetPosition(marginL, marginT);
 
     // SLOTS
     mSlots = new ButtonsGroup(ButtonsGroup::HORIZONTAL, this);
@@ -383,9 +393,8 @@ DialogNewElement::DialogNewElement(Player * player)
         mSlots->AddButton(slot);
     }
 
-    const int slotsX0 = 52;
     const int slotsY0 = 66;
-    mSlots->SetPosition(slotsX0, slotsY0);
+    mSlots->SetPosition(marginL, slotsY0);
 
     const int slotsMarginBottom = 20;
 
@@ -393,10 +402,10 @@ DialogNewElement::DialogNewElement(Player * player)
     const int panelY0 = slotsY0 + mSlots->GetHeight() + slotsMarginBottom;
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_INFO);
     auto panelInfo = new Image(tex, this);
-    panelInfo->SetPosition(slotsX0, panelY0);
+    panelInfo->SetPosition(marginL, panelY0);
 
     // ATTRIBUTE PANELS
-    const int panelsX0 = slotsX0 + panelInfo->GetWidth();
+    const int panelsX0 = marginL + panelInfo->GetWidth();
     const int panelsY0 = panelY0;
     const int panelBorder = 1;
     int panelsX = panelsX0;

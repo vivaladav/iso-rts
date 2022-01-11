@@ -717,7 +717,7 @@ void ScreenGame::CreateUI()
     {
         if(nullptr == mDialogNewElement)
         {
-            mDialogNewElement = new DialogNewElement(player);
+            mDialogNewElement = new DialogNewElement(player, "CREATE NEW UNIT");
 
             mDialogNewElement->SetFunctionOnClose([this]
             {

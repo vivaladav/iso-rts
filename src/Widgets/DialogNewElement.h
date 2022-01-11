@@ -8,7 +8,11 @@
 
 namespace lib
 {
-    namespace sgui { class ButtonsGroup; }
+    namespace sgui
+    {
+        class ButtonsGroup;
+        class Label;
+    }
 }
 
 namespace game
@@ -25,7 +29,7 @@ enum UnitType : unsigned int;
 class DialogNewElement : public lib::sgui::Widget
 {
 public:
-    DialogNewElement(Player * player);
+    DialogNewElement(Player * player, const char * title);
 
     void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
@@ -38,6 +42,7 @@ private:
 private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
 
+    lib::sgui::Label * mTitle = nullptr;
     lib::sgui::ButtonsGroup * mSlots = nullptr;
 
     ButtonBuild * mBtnBuild = nullptr;
