@@ -83,10 +83,5 @@ void Image::HandlePositionChanged()
     mImg->SetPosition(GetScreenX(), GetScreenY());
 }
 
-void Image::OnRender()
-{
-    mImg->Render();
-}
-
 } // namespace sgui
 } // namespace lib

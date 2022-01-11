@@ -41,8 +41,6 @@ private:
 
     void HandlePositionChanged() override;
 
-    void OnRender() override;
-
 private:
     lib::graphic::Image * mBody = nullptr;
     lib::graphic::Image * mIcon = nullptr;

@@ -72,8 +72,6 @@ protected:
 
     void HandlePositionChanged() override;
 
-    void OnRender() override;
-
     void HandleButtonDown();
     void HandleButtonUp();
 

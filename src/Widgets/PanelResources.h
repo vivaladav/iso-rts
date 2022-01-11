@@ -23,8 +23,6 @@ public:
     ~PanelResources();
 
 private:
-    void OnRender() override;
-
     void HandlePositionChanged() override;
 
     void SetBg();

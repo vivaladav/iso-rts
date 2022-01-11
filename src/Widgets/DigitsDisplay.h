@@ -15,8 +15,6 @@ public:
     void SetValue(int val);
 
 private:
-    void OnRender() override;
-
     void HandlePositionChanged() override;
 
     void SetPositions();

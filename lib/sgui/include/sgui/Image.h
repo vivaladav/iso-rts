@@ -32,8 +32,6 @@ public:
 private:
     void HandlePositionChanged() override;
 
-    void OnRender() override;
-
 private:
     graphic::Renderable * mImg = nullptr;
 };

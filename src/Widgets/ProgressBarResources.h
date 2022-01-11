@@ -20,8 +20,6 @@ private:
 
     void HandleProgressUpdate() override;
 
-    void OnRender() override;
-
     void SetBarColor();
 
 private:

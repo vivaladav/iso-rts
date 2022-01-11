@@ -117,14 +117,5 @@ void ObjectActionButton::HandlePositionChanged()
    mShortcut->SetPosition(shortcutX, shortcutY);
 }
 
-void ObjectActionButton::OnRender()
-{
-    PushButton::OnRender();
-
-    mIcon->Render();
-
-    mShortcut->Render();
-}
-
 } // namespace game
 

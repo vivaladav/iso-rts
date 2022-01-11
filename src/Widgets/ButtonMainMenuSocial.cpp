@@ -22,35 +22,38 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
         0x8fdfefff,
         0xFFFFFFFF
     }
+    , mBody(new lib::graphic::Image)
 {
     using namespace lib::graphic;
 
     auto tm = TextureManager::Instance();
 
+    RegisterRenderable(mBody);
+
     // BACKGROUNDS
-    Texture * tex;
+//    ;
 
-    // normal
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_NORMAL);
-    mBackgrounds[NORMAL] = new Image(tex);
-    RegisterRenderable(mBackgrounds[NORMAL]);
+//    // normal
+//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_NORMAL);
+//    mBackgrounds[NORMAL] = new Image(tex);
+//    RegisterRenderable(mBackgrounds[NORMAL]);
 
-    // mouse over
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_OVER);
-    mBackgrounds[MOUSE_OVER] = new Image(tex);
-    RegisterRenderable(mBackgrounds[MOUSE_OVER]);
+//    // mouse over
+//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_OVER);
+//    mBackgrounds[MOUSE_OVER] = new Image(tex);
+//    RegisterRenderable(mBackgrounds[MOUSE_OVER]);
 
-    // pushed
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_PUSHED);
-    mBackgrounds[PUSHED] = new Image(tex);
-    RegisterRenderable(mBackgrounds[PUSHED]);
+//    // pushed
+//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_PUSHED);
+//    mBackgrounds[PUSHED] = new Image(tex);
+//    RegisterRenderable(mBackgrounds[PUSHED]);
 
-    // not handled cases
-    mBackgrounds[DISABLED] = nullptr;
-    mBackgrounds[CHECKED] = nullptr;
+//    // not handled cases
+//    mBackgrounds[DISABLED] = nullptr;
+//    mBackgrounds[CHECKED] = nullptr;
 
     // ICON
-    tex = tm->GetSprite(SpriteFileMainMenu, icon);
+    Texture * tex = tm->GetSprite(SpriteFileMainMenu, icon);
     mIcon = new Image(tex);
     RegisterRenderable(mIcon);
 
@@ -62,9 +65,6 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
 
 ButtonMainMenuSocial::~ButtonMainMenuSocial()
 {
-    for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
-        delete mBackgrounds[i];
-
     delete mIcon;
 }
 
@@ -75,16 +75,22 @@ void ButtonMainMenuSocial::HandlePositionChanged()
      PositionElements();
 }
 
-void ButtonMainMenuSocial::OnRender()
-{
-    lib::sgui::PushButton::OnRender();
-
-    mIcon->Render();
-}
-
 void ButtonMainMenuSocial::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    SetCurrBg(mBackgrounds[state]);
+    const unsigned int texIds[NUM_VISUAL_STATES] =
+    {
+        IND_MM_BTNS_NORMAL,
+        IND_MM_BTNS_NORMAL,     // button can't be disabled
+        IND_MM_BTNS_OVER,
+        IND_MM_BTNS_PUSHED,
+        IND_MM_BTNS_NORMAL,     // button can't be checked
+    };
+
+    auto tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    mBody->SetTexture(tex);
+    // reset BG to make changes visible
+    SetCurrBg(mBody);
 
     mIcon->SetColor(mLabelsColor[state]);
 }

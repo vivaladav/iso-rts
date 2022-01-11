@@ -401,16 +401,6 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
         "TECHNOLOGY"
     };
 
-    const int attLevels = 4;
-    const unsigned int colorPip[attLevels] =
-    {
-        0xf5a3a3ff,
-        0xf5daa3ff,
-        0xa6f2a6ff,
-        0xa3daf5ff
-    };
-    const int treshPip[attLevels] = { 4, 7, 9, 11 };
-
     const unsigned int colorPipOff = 0x365463ff;
 
     for(unsigned int i = 0; i < NUM_FACTION_STATS; ++i)

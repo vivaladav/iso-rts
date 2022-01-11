@@ -141,13 +141,6 @@ private:
         mShortcut->SetPosition(shortcutX, shortcutY);
     }
 
-    void OnRender() override
-    {
-        PushButton::OnRender();
-
-        mShortcut->Render();
-    }
-
 private:
     lib::graphic::Image * mBody = nullptr;
     lib::graphic::Text * mShortcut = nullptr;
@@ -223,13 +216,6 @@ private:
         const int shortcutY = GetScreenY() + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
 
         mShortcut->SetPosition(shortcutX, shortcutY);
-    }
-
-    void OnRender() override
-    {
-        PushButton::OnRender();
-
-        mShortcut->Render();
     }
 
 private:

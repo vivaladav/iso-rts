@@ -99,11 +99,6 @@ PanelResources::~PanelResources()
     delete mBg;
 }
 
-void PanelResources::OnRender()
-{
-    mBg->Render();
-}
-
 void PanelResources::SetBg()
 {
     // NOTE in the future this will chose the right bg based on the number of slots

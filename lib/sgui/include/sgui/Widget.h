@@ -91,13 +91,13 @@ protected:
 
     virtual void HandlePositionChanged();
 
+    virtual void OnRender();
+
 private:
     void SetScreenPosition(int x, int y);
 
     void SetMouseOver();
     void SetMouseOut();
-
-    virtual void OnRender();
 
     void HandleParentPositionChanged(int dx, int dy);
     void PropagateParentPositionChanged(int dx, int dy);

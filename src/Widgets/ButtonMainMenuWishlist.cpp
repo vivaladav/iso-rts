@@ -22,35 +22,16 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
         0x8fdfefff,
         0xFFFFFFFF
     }
+    , mBody(new lib::graphic::Image)
 {
     using namespace lib::graphic;
 
     auto tm = TextureManager::Instance();
 
-    // BACKGROUNDS
-    Texture * tex;
-
-    // normal
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_NORMAL);
-    mBackgrounds[NORMAL] = new Image(tex);
-    RegisterRenderable(mBackgrounds[NORMAL]);
-
-    // mouse over
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_OVER);
-    mBackgrounds[MOUSE_OVER] = new Image(tex);
-    RegisterRenderable(mBackgrounds[MOUSE_OVER]);
-
-    // pushed
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNW_PUSHED);
-    mBackgrounds[PUSHED] = new Image(tex);
-    RegisterRenderable(mBackgrounds[PUSHED]);
-
-    // not handled cases
-    mBackgrounds[DISABLED] = nullptr;
-    mBackgrounds[CHECKED] = nullptr;
+    RegisterRenderable(mBody);
 
     // ICON
-    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_ICON_STEAM);
+    Texture * tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_ICON_STEAM);
     mIcon = new Image(tex);
     RegisterRenderable(mIcon);
 
@@ -69,9 +50,7 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
 
 ButtonMainMenuWishlist::~ButtonMainMenuWishlist()
 {
-    for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
-        delete mBackgrounds[i];
-
+    delete mBody;
     delete mIcon;
     delete mText;
 }
@@ -83,17 +62,22 @@ void ButtonMainMenuWishlist::HandlePositionChanged()
      PositionElements();
 }
 
-void ButtonMainMenuWishlist::OnRender()
-{
-    lib::sgui::PushButton::OnRender();
-
-    mIcon->Render();
-    mText->Render();
-}
-
 void ButtonMainMenuWishlist::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
-    SetCurrBg(mBackgrounds[state]);
+    const unsigned int texIds[NUM_VISUAL_STATES] =
+    {
+        IND_MM_BTNW_NORMAL,
+        IND_MM_BTNW_NORMAL,     // button can't be disabled
+        IND_MM_BTNW_OVER,
+        IND_MM_BTNW_PUSHED,
+        IND_MM_BTNW_NORMAL,     // button can't be checked
+    };
+
+    auto tm = lib::graphic::TextureManager::Instance();
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    mBody->SetTexture(tex);
+    // reset BG to make changes visible
+    SetCurrBg(mBody);
 
     mIcon->SetColor(mLabelsColor[state]);
     mText->SetColor(mLabelsColor[state]);

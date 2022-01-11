@@ -223,13 +223,6 @@ void PushButton::HandleCheckedChanged(bool checked)
 
 void PushButton::OnStateChanged(VisualState state) { }
 
-void PushButton::OnRender()
-{
-    mCurrBg->Render();
-
-    mCurrLabel->Render();
-}
-
 void PushButton::HandleButtonDown()
 {
     if(IsCheckable())

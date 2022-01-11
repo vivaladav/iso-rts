@@ -91,10 +91,5 @@ void Label::HandlePositionChanged()
     mTxt->SetPosition(GetScreenX(), GetScreenY());
 }
 
-void Label::OnRender()
-{
-    mTxt->Render();
-}
-
 } // namespace sgui
 } // namespace lib

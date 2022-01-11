@@ -53,12 +53,6 @@ void ProgressBarResources::HandleProgressUpdate()
     SetBarColor();
 }
 
-void ProgressBarResources::OnRender()
-{
-    mBg->Render();
-    mBar->Render();
-}
-
 void ProgressBarResources::SetBarColor()
 {
     const float perc = GetValuePerc();

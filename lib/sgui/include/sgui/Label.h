@@ -34,8 +34,6 @@ private:
 
     void HandlePositionChanged() override;
 
-    void OnRender() override;
-
 private:
     std::string mStr;
 

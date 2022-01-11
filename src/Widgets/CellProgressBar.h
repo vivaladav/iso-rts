@@ -21,8 +21,6 @@ private:
 
     void HandleProgressUpdate() override;
 
-    void OnRender() override;
-
 private:
     lib::graphic::Image * mBg = nullptr;
     lib::graphic::Image * mBar = nullptr;

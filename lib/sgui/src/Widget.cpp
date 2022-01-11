@@ -252,6 +252,12 @@ bool Widget::IsScreenPointInside(int x, int y)
 
 void Widget::HandlePositionChanged() { }
 
+void Widget::OnRender()
+{
+    for(auto elem : mRenderables)
+        elem->Render();
+}
+
 void Widget::SetScreenPosition(int x, int y)
 {
     mScreenX = x;
@@ -295,8 +301,6 @@ void Widget::SetMouseOut()
 
     HandleMouseOut();
 }
-
-void Widget::OnRender() { }
 
 void Widget::HandleParentPositionChanged(int dx, int dy)
 {

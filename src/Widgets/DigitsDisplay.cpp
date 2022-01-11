@@ -101,12 +101,6 @@ void DigitsDisplay::SetValue(int val)
     SetPositions();
 }
 
-void DigitsDisplay::OnRender()
-{
-    mTxtZeros->Render();
-    mTxtDigits->Render();
-}
-
 void DigitsDisplay::HandlePositionChanged()
 {
     SetPositions();

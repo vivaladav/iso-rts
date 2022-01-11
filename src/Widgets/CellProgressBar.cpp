@@ -65,10 +65,4 @@ void CellProgressBar::HandleProgressUpdate()
     mBar->SetWidth(static_cast<int>(mBarW * perc / 100.f));
 }
 
-void CellProgressBar::OnRender()
-{
-    mBg->Render();
-    mBar->Render();
-}
-
 } // namespace game
