@@ -19,7 +19,6 @@ class ButtonCloseDialog : public lib::sgui::PushButton
 public:
     ButtonCloseDialog(lib::graphic::Texture * texIcon, int w, int h,
                       lib::sgui::Widget * parent);
-    ~ButtonCloseDialog();
 
 private:
     void HandlePositionChanged() override;

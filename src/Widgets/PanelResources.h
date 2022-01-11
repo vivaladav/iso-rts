@@ -20,7 +20,6 @@ class PanelResources : public lib::sgui::Widget
 {
 public:
     PanelResources(Player * player);
-    ~PanelResources();
 
 private:
     void HandlePositionChanged() override;

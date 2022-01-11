@@ -32,11 +32,6 @@ GameButton::GameButton(const char * spriteFile,
     SetData(spriteFile, spriteIds, labelsColor);
 }
 
-GameButton::~GameButton()
-{
-    delete mBody;
-}
-
 void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                          const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor)
 {

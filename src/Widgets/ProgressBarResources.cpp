@@ -28,12 +28,6 @@ ProgressBarResources::ProgressBarResources(float min, float max, lib::sgui::Widg
     SetBarColor();
 }
 
-ProgressBarResources::~ProgressBarResources()
-{
-    delete mBg;
-    delete mBar;
-}
-
 void ProgressBarResources::HandlePositionChanged()
 {
     const int x = GetScreenX();

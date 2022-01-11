@@ -42,12 +42,6 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, li
     mBarH = mBar->GetHeight();
 }
 
-CellProgressBar::~CellProgressBar()
-{
-    delete mBg;
-    delete mBar;
-}
-
 void CellProgressBar::HandlePositionChanged()
 {
     const int x = GetScreenX();

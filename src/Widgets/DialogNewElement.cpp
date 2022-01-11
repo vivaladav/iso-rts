@@ -41,8 +41,6 @@ public:
         SetState(NORMAL);
     }
 
-    ~ButtonClose() { delete mBody; }
-
 private:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override
     {
@@ -93,12 +91,6 @@ public:
 
         // set initial visual state
         SetState(NORMAL);
-    }
-
-    ~ButtonBuild()
-    {
-        delete mBody;
-        delete mShortcut;
     }
 
 private:
@@ -170,12 +162,6 @@ public:
 
         // set initial visual state
         SetState(NORMAL);
-    }
-
-    ~ButtonSlot()
-    {
-        delete mBody;
-        delete mShortcut;
     }
 
 private:
@@ -263,13 +249,6 @@ public:
         // VALUE BAR
         mValueBar = new DummyRenderable;
         RegisterRenderable(mValueBar);
-    }
-
-    ~PanelAttribute()
-    {
-        delete mBg;
-        delete mLabel;
-        delete mValueBar;
     }
 
     void ClearData()
@@ -450,11 +429,6 @@ DialogNewElement::DialogNewElement(Player * player)
     const int marginBtnTop = 15;
     const int btnY = lastPanel->GetY() + lastPanel->GetHeight() + marginBtnTop;
     mBtnBuild->SetPosition(btnX, btnY);
-}
-
-DialogNewElement::~DialogNewElement()
-{
-
 }
 
 void DialogNewElement::SetFunctionOnBuild(const std::function<void()> & f)

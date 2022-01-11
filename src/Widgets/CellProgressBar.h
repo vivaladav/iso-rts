@@ -14,7 +14,6 @@ class CellProgressBar : public lib::sgui::ProgressBar
 public:
     CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent = nullptr);
     CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent = nullptr);
-    ~CellProgressBar();
 
 private:
     void HandlePositionChanged() override;

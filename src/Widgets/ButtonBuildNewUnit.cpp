@@ -42,15 +42,6 @@ ButtonBuildNewUnit::ButtonBuildNewUnit(const char * shortcut,
     SetState(NORMAL);
 }
 
-ButtonBuildNewUnit::~ButtonBuildNewUnit()
-{
-    delete mBody;
-
-    delete mLabel;
-
-    delete mShortcut;
-}
-
 void ButtonBuildNewUnit::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
     /*

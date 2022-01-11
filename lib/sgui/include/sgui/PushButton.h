@@ -36,7 +36,6 @@ public:
 
 public:
     PushButton(Widget * parent = nullptr);
-    ~PushButton();
 
     void SetBackground(const char * file);
 

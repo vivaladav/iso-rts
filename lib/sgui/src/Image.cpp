@@ -38,11 +38,6 @@ Image::Image(graphic::Texture * tex, Widget * parent)
     mImg->SetPosition(GetScreenX(), GetScreenY());
 }
 
-Image::~Image()
-{
-    delete mImg;
-}
-
 void Image::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     a = MixAlphaAndAlpha(a);

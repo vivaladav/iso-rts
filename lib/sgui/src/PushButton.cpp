@@ -25,12 +25,6 @@ PushButton::PushButton(Widget * parent)
     RegisterRenderable(mLabel);
 }
 
-PushButton::~PushButton()
-{
-    delete mBg;
-    delete mLabel;
-}
-
 void PushButton::SetBackground(const char * file)
 {
     assert(file);

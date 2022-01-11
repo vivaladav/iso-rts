@@ -94,11 +94,6 @@ PanelResources::PanelResources(Player * player)
     blobs.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 }
 
-PanelResources::~PanelResources()
-{
-    delete mBg;
-}
-
 void PanelResources::SetBg()
 {
     // NOTE in the future this will chose the right bg based on the number of slots

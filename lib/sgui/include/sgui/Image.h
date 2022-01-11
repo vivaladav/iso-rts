@@ -22,7 +22,6 @@ public:
     Image(Widget * parent = nullptr);
     Image(const char * file, Widget * parent = nullptr);
     Image(graphic::Texture * tex, Widget * parent = nullptr);
-    ~Image();
 
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void SetColor(unsigned int color);

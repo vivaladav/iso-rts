@@ -21,7 +21,6 @@ class ButtonMainMenuWishlist : public lib::sgui::PushButton
 
 public:
     ButtonMainMenuWishlist(lib::sgui::Widget * parent);
-    ~ButtonMainMenuWishlist();
 
 private:
     void HandlePositionChanged() override;

@@ -31,11 +31,6 @@ Label::Label(const char * txt, graphic::Font * font, Widget * parent)
     CreateText();
 }
 
-Label::~Label()
-{
-    delete mTxt;
-}
-
 void Label::SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
     a = MixAlphaAndAlpha(a);

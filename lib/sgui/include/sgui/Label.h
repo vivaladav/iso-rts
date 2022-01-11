@@ -21,7 +21,6 @@ class Label : public Widget
 public:
     Label(graphic::Font * font, Widget * parent = nullptr);
     Label(const char * txt, graphic::Font * font, Widget * parent = nullptr);
-    ~Label();
 
     void SetColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
     void SetColor(unsigned int color);

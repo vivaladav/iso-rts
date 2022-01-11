@@ -48,13 +48,6 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
     PositionElements();
 }
 
-ButtonMainMenuWishlist::~ButtonMainMenuWishlist()
-{
-    delete mBody;
-    delete mIcon;
-    delete mText;
-}
-
 void ButtonMainMenuWishlist::HandlePositionChanged()
 {
      lib::sgui::PushButton::HandlePositionChanged();

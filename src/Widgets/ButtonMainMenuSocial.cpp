@@ -30,28 +30,6 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
 
     RegisterRenderable(mBody);
 
-    // BACKGROUNDS
-//    ;
-
-//    // normal
-//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_NORMAL);
-//    mBackgrounds[NORMAL] = new Image(tex);
-//    RegisterRenderable(mBackgrounds[NORMAL]);
-
-//    // mouse over
-//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_OVER);
-//    mBackgrounds[MOUSE_OVER] = new Image(tex);
-//    RegisterRenderable(mBackgrounds[MOUSE_OVER]);
-
-//    // pushed
-//    tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_BTNS_PUSHED);
-//    mBackgrounds[PUSHED] = new Image(tex);
-//    RegisterRenderable(mBackgrounds[PUSHED]);
-
-//    // not handled cases
-//    mBackgrounds[DISABLED] = nullptr;
-//    mBackgrounds[CHECKED] = nullptr;
-
     // ICON
     Texture * tex = tm->GetSprite(SpriteFileMainMenu, icon);
     mIcon = new Image(tex);
@@ -61,11 +39,6 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
     SetState(NORMAL);
 
     PositionElements();
-}
-
-ButtonMainMenuSocial::~ButtonMainMenuSocial()
-{
-    delete mIcon;
 }
 
 void ButtonMainMenuSocial::HandlePositionChanged()

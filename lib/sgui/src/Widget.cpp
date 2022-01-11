@@ -21,10 +21,15 @@ Widget::Widget(Widget * parent)
 
 Widget::~Widget()
 {
+    // remove itself from parent
     if(mParent)
         mParent->RemoveChild(this);
     else
         mStage->RemoveChild(this);
+
+    // delete renderables
+    for(auto elem : mRenderables)
+        delete elem;
 }
 
 void Widget::SetParent(Widget * parent)

@@ -34,7 +34,6 @@ public:
 public:
     ObjectActionButton(ActionIcon icon, const char * shortcut,
                        int shortcutKey, lib::sgui::Widget * parent);
-    ~ObjectActionButton();
 
 private:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override;

@@ -13,7 +13,6 @@ class ProgressBarResources : public lib::sgui::ProgressBar
 {
 public:
     ProgressBarResources(float min, float max, lib::sgui::Widget * parent = nullptr);
-    ~ProgressBarResources();
 
 private:
     void HandlePositionChanged() override;

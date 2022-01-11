@@ -57,13 +57,6 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     SetState(NORMAL);
 }
 
-ObjectActionButton::~ObjectActionButton()
-{
-    delete mBody;
-    delete mIcon;
-    delete mShortcut;
-}
-
 void ObjectActionButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =

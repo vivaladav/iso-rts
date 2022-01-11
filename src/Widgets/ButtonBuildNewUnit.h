@@ -19,8 +19,6 @@ class ButtonBuildNewUnit : public ShortcutButton
 public:
     ButtonBuildNewUnit(const char * shortcut, int shortcutKey,
                        lib::sgui::Widget * parent);
-    ~ButtonBuildNewUnit();
-
 
 private:
     void HandlePositionChanged() override;

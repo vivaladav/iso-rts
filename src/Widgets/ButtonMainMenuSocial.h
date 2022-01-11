@@ -17,7 +17,6 @@ class ButtonMainMenuSocial : public lib::sgui::PushButton
 
 public:
     ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget * parent);
-    ~ButtonMainMenuSocial();
 
 private:
     void HandlePositionChanged() override;

@@ -15,11 +15,6 @@ ButtonCloseDialog::ButtonCloseDialog(lib::graphic::Texture * texIcon, int w, int
     RegisterRenderable(mIcon);
 }
 
-ButtonCloseDialog::~ButtonCloseDialog()
-{
-    delete mIcon;
-}
-
 void ButtonCloseDialog::HandlePositionChanged()
 {
     const int x = GetScreenX();
