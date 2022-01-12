@@ -404,6 +404,96 @@ DialogNewElement::DialogNewElement(Player * player, const char * title)
     auto panelInfo = new Image(tex, this);
     panelInfo->SetPosition(marginL, panelY0);
 
+    const unsigned int colorHeader = 0xf1f2f4ff;
+    const unsigned int colorText = 0xa9afbcff;
+
+    auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, lib::graphic::Font::NORMAL);
+    auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, lib::graphic::Font::NORMAL);
+
+    const int marginPanelXY0 = 15;
+    const int marginPanelBlock = 35;
+    const int marginPanelIconH = 10;
+    const int marginPanelIconV = 5;
+    const int marginPanelIconBlock = 85;
+    const int marginPanelDataV = 10;
+
+    // header category
+    auto headerCat = new Label("CATEGORY", fontHeader, panelInfo);
+    headerCat->SetColor(colorHeader);
+    headerCat->SetPosition(marginPanelXY0, marginPanelXY0);
+
+    int contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelIconV;
+
+    // text category
+    mLabelCategory = new Label("TOWER", fontText, panelInfo);
+    mLabelCategory->SetColor(colorText);
+    mLabelCategory->SetPosition(marginPanelXY0, contY);
+
+    contY += mLabelCategory->GetHeight() + marginPanelBlock;
+
+    // header cost
+    headerCat = new Label("COST", fontHeader, panelInfo);
+    headerCat->SetColor(colorHeader);
+    headerCat->SetPosition(marginPanelXY0, contY);
+
+    contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelIconV;
+
+    // data cost 1
+    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_ENERGY);
+    auto imgIcon = new Image(tex, panelInfo);
+    imgIcon->SetPosition(marginPanelXY0, contY);
+
+    int contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
+
+    mLabelsCost[0] = new Label("-", fontText, panelInfo);
+    mLabelsCost[0]->SetColor(colorText);
+    contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[0]->GetHeight()) * 0.5f;
+    mLabelsCost[0]->SetPosition(contX, contY);
+
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconBlock;
+    contY = imgIcon->GetY();
+
+    // data cost 2
+    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_MATERIAL);
+    imgIcon = new Image(tex, panelInfo);
+    imgIcon->SetPosition(contX, contY);
+
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
+
+    mLabelsCost[1] = new Label("-", fontText, panelInfo);
+    mLabelsCost[1]->SetColor(colorText);
+    contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[1]->GetHeight()) * 0.5f;
+    mLabelsCost[1]->SetPosition(contX, contY);
+
+    contY = mLabelsCost[1]->GetY() + mLabelsCost[1]->GetHeight() + marginPanelDataV;
+
+    // data cost 3
+    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_DIAMOND);
+    imgIcon = new Image(tex, panelInfo);
+    imgIcon->SetPosition(marginPanelXY0, contY);
+
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
+
+    mLabelsCost[2] = new Label("-", fontText, panelInfo);
+    mLabelsCost[2]->SetColor(colorText);
+    contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[2]->GetHeight()) * 0.5f;
+    mLabelsCost[2]->SetPosition(contX, contY);
+
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconBlock;
+    contY = imgIcon->GetY();
+
+    // data cost 4
+    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_BLOB);
+    imgIcon = new Image(tex, panelInfo);
+    imgIcon->SetPosition(contX, contY);
+
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
+
+    mLabelsCost[3] = new Label("-", fontText, panelInfo);
+    mLabelsCost[3]->SetColor(colorText);
+    contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[3]->GetHeight()) * 0.5f;
+    mLabelsCost[3]->SetPosition(contX, contY);
+
     // ATTRIBUTE PANELS
     const int panelsX0 = marginL + panelInfo->GetWidth();
     const int panelsY0 = panelY0;

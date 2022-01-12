@@ -604,8 +604,10 @@ void ScreenGame::InitSprites()
         { 603, 820, 200, 40 },
 
         // ICONS
-        { 1047, 580, 9, 16 },
-        { 1057, 580, 13, 14 }
+        { 1047, 580, 16, 16 },
+        { 1064, 580, 16, 16 },
+        { 1047, 597, 16, 16 },
+        { 1064, 597, 16, 16 }
     };
 
     tm->RegisterSprite(SpriteFileNewElementDialog, rectsNewElemDialog);
