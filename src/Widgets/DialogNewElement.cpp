@@ -27,6 +27,69 @@ namespace game
 
 constexpr int NUM_SLOTS = 5;
 
+class ImageButton : public lib::sgui::PushButton
+{
+public:
+    ImageButton(const std::array<unsigned int, NUM_VISUAL_STATES> & texIds,
+                const char * spriteFile, lib::sgui::Widget * parent)
+        : lib::sgui::PushButton(parent)
+        , mBody(new lib::graphic::Image)
+    {
+        RegisterRenderable(mBody);
+
+        for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
+        {
+            auto tm = lib::graphic::TextureManager::Instance();
+            mTexs[i] = tm->GetSprite(spriteFile, texIds[i]);
+        }
+
+        // set initial visual state
+        SetState(NORMAL);
+    }
+private:
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
+    {
+        mBody->SetTexture(mTexs[state]);
+        // reset BG to make changes visible
+        SetCurrBg(mBody);
+    }
+
+private:
+    std::array<lib::graphic::Texture *, NUM_VISUAL_STATES> mTexs;
+
+    lib::graphic::Image * mBody = nullptr;
+};
+
+// ===== BUTTON LEFT =====
+class ButtonLeft : public ImageButton
+{
+public:
+    ButtonLeft(lib::sgui::Widget * parent)
+        : ImageButton({ IND_NE_DIALOG_LEFT_NORMAL,
+                        IND_NE_DIALOG_LEFT_DISABLED,
+                        IND_NE_DIALOG_LEFT_OVER,
+                        IND_NE_DIALOG_LEFT_PUSHED,
+                        IND_NE_DIALOG_LEFT_NORMAL },
+                        SpriteFileNewElementDialog, parent)
+    {
+    }
+};
+
+// ===== BUTTON RIGHT =====
+class ButtonRight : public ImageButton
+{
+public:
+    ButtonRight(lib::sgui::Widget * parent)
+        : ImageButton({ IND_NE_DIALOG_RIGHT_NORMAL,
+                        IND_NE_DIALOG_RIGHT_DISABLED,
+                        IND_NE_DIALOG_RIGHT_OVER,
+                        IND_NE_DIALOG_RIGHT_PUSHED,
+                        IND_NE_DIALOG_RIGHT_NORMAL },
+                        SpriteFileNewElementDialog, parent)
+    {
+    }
+};
+
 // ===== BUTTON CLOSE =====
 
 class ButtonClose : public ShortcutButton
@@ -65,6 +128,8 @@ private:
 private:
     lib::graphic::Image * mBody = nullptr;
 };
+
+
 
 // ===== BUTTON BUILD =====
 
@@ -461,7 +526,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
 
         slot->AddOnToggleFunction([this, i](bool checked)
         {
-            ShowData(mFirstElem + i);
+            if(checked)
+                ShowData(mFirstElem + i);
         });
 
         mSlots->AddButton(slot);
@@ -470,9 +536,43 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const int slotsY0 = 66;
     mSlots->SetPosition(marginL, slotsY0);
 
-    const int slotsMarginBottom = 20;
+    const int marginButtonsLR = 10;
+
+    const int numData = data.size();
+
+    mBtnLeft = new ButtonLeft(this);
+    const int posLX = mSlots->GetX() - mBtnLeft->GetWidth() - marginButtonsLR;
+    const int posLY = mSlots->GetY() + (mSlots->GetHeight() - mBtnLeft->GetHeight()) * 0.5f;
+    mBtnLeft->SetPosition(posLX, posLY);
+    mBtnLeft->SetEnabled(false);
+
+    mBtnLeft->AddOnClickFunction([this]
+    {
+       mFirstElem -= NUM_SLOTS;
+       UpdateSlots();
+
+       mBtnLeft->SetEnabled(mFirstElem > 0);
+       mBtnRight->SetEnabled(true);
+    });
+
+    mBtnRight = new ButtonRight(this);
+    const int posRX = mSlots->GetX() + mSlots->GetWidth() + marginButtonsLR;
+    const int posRY = mSlots->GetY() + (mSlots->GetHeight() - mBtnRight->GetHeight()) * 0.5f;
+    mBtnRight->SetPosition(posRX, posRY);
+    mBtnRight->SetEnabled(numData > NUM_SLOTS);
+
+    mBtnRight->AddOnClickFunction([this, numData]
+    {
+       mFirstElem += NUM_SLOTS;
+       UpdateSlots();
+
+       mBtnLeft->SetEnabled(true);
+       mBtnRight->SetEnabled(mFirstElem + NUM_SLOTS < numData);
+    });
 
     // INFO PANEL
+    const int slotsMarginBottom = 20;
+
     const int panelY0 = slotsY0 + mSlots->GetHeight() + slotsMarginBottom;
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_INFO);
     auto panelInfo = new Image(tex, this);
@@ -617,7 +717,6 @@ void DialogNewElement::SetFunctionOnClose(const std::function<void()> & f)
     mBtnClose->AddOnClickFunction(f);
 }
 
-
 int DialogNewElement::GetSelectedIndex() const
 {
     return mFirstElem + mSlots->GetIndexChecked();
@@ -626,7 +725,7 @@ int DialogNewElement::GetSelectedIndex() const
 void DialogNewElement::UpdateSlots()
 {
     const int numData = mData.size();
-    const int leftData = numData - (mFirstElem * NUM_SLOTS);
+    const int leftData = numData - mFirstElem;
     const int limitData = leftData < NUM_SLOTS ? leftData : NUM_SLOTS;
 
     auto tm = lib::graphic::TextureManager::Instance();
@@ -643,8 +742,10 @@ void DialogNewElement::UpdateSlots()
         slot->SetImage(tex);
 
         // check first
-        slot->SetChecked(0 == i);
+        slot->SetChecked(false);
     }
+
+    mSlots->GetButton(0)->SetChecked(true);
 
     for(int i = limitData; i < NUM_SLOTS; ++i)
     {

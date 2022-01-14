@@ -20,6 +20,8 @@ namespace game
 
 class ButtonBuild;
 class ButtonClose;
+class ButtonLeft;
+class ButtonRight;
 class ButtonSlot;
 class PanelAttribute;
 class Player;
@@ -63,6 +65,8 @@ private:
 
     ButtonBuild * mBtnBuild = nullptr;
     ButtonClose * mBtnClose = nullptr;
+    ButtonLeft * mBtnLeft = nullptr;
+    ButtonRight * mBtnRight = nullptr;
 
     int mFirstElem = 0;
 };
