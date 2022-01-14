@@ -22,8 +22,8 @@ namespace lib
 namespace game
 {
 
+class ObjectsDataRegistry;
 class Player;
-class UnitsDataRegistry;
 
 enum PlayerFaction : unsigned int;
 enum StateId : int;
@@ -54,7 +54,7 @@ public:
     Difficulty GetDifficulty() const;
     void SetDifficulty(Difficulty level);
 
-    const UnitsDataRegistry * GetUnitsRegistry() const;
+    const ObjectsDataRegistry * GetObjectsRegistry() const;
 
     // -- players --
     Player * AddPlayer(const char * name, int pid);
@@ -85,7 +85,7 @@ private:
     lib::sgui::Stage * mStage = nullptr;
     lib::graphic::Font * mFontGui = nullptr;
 
-    UnitsDataRegistry * mUnitsRegistry = nullptr;
+    ObjectsDataRegistry * mObjsRegistry = nullptr;
 
     Difficulty mDiff = EASY;
 
@@ -116,7 +116,7 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 inline Difficulty Game::GetDifficulty() const { return mDiff; }
 inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
 
-inline const UnitsDataRegistry * Game::GetUnitsRegistry() const { return mUnitsRegistry; }
+inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }
 

@@ -66,6 +66,10 @@ add_executable(
     src/GameObjects/GameObject.h
     src/GameObjects/GameObject.cpp
     src/GameObjects/GameObjectAction.h
+    src/GameObjects/ObjectData.h
+    src/GameObjects/ObjectData.cpp
+    src/GameObjects/ObjectsDataRegistry.h
+    src/GameObjects/ObjectsDataRegistry.cpp
     src/GameObjects/PracticeTarget.h
     src/GameObjects/PracticeTarget.cpp
     src/GameObjects/RadarStation.h
@@ -76,9 +80,6 @@ add_executable(
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
-    src/GameObjects/UnitData.h
-    src/GameObjects/UnitsDataRegistry.h
-    src/GameObjects/UnitsDataRegistry.cpp
     src/GameObjects/Wall.h
     src/GameObjects/Wall.cpp
     src/Indicators/ConquestIndicator.h

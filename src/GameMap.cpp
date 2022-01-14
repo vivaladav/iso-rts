@@ -16,6 +16,7 @@
 #include "GameObjects/DefensiveTower.h"
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
+#include "GameObjects/ObjectData.h"
 #include "GameObjects/PracticeTarget.h"
 #include "GameObjects/RadarStation.h"
 #include "GameObjects/ResourceGenerator.h"
@@ -29,6 +30,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <string>
 #include <unordered_set>
 #include <vector>
@@ -301,9 +303,9 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         }
 
         const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
-        const UnitData & data = p->GetAvailableUnitData(type);
+        const ObjectData & data = p->GetAvailableUnit(type);
         const Cell2D dest(r0, c0);
-        CreateUnit(data, nullptr, dest, p);
+        CreateUnit(data, type,  nullptr, dest, p);
     }
 }
 
@@ -334,9 +336,9 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     GameObject * obj = nullptr;
 
     if(OBJ_RES_GEN_ENERGY == objId)
-        obj = new ResourceGenerator(ResourceType::ENERGY, rows, cols);
+        obj = new ResourceGenerator(ResourceType::RES_ENERGY, rows, cols);
     else if(OBJ_RES_GEN_MATERIAL1 == objId)
-        obj = new ResourceGenerator(ResourceType::MATERIAL1, rows, cols);
+        obj = new ResourceGenerator(ResourceType::RES_MATERIAL1, rows, cols);
     else if(OBJ_BASE == objId)
     {
         obj = new Base(rows, cols);
@@ -373,6 +375,12 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)
         obj  = new Blobs;
+    // this should never happen
+    else
+    {
+        std::cerr << "[ERR] GameMap::CreateObject - unknown obj id: " << objId << std::endl;
+        return nullptr;
+    }
 
     // assign owner
     obj->SetOwner(owner);
@@ -891,7 +899,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     }
 }
 
-bool GameMap::CanCreateUnit(const UnitData & data, GameObject * gen, Player * player)
+bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player)
 {
     // generator is not owned by the player
     if(gen->GetOwner() != player)
@@ -906,8 +914,10 @@ bool GameMap::CanCreateUnit(const UnitData & data, GameObject * gen, Player * pl
        return false;
 
     // check if player has enough resources
-    if(data.costEnergy > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
-       data.costMaterial > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
+    if(data.costs[RES_ENERGY] > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
+       data.costs[RES_MATERIAL1] > player->GetStat(Player::Stat::MATERIAL).GetIntValue() ||
+       data.costs[RES_DIAMONDS] > player->GetStat(Player::Stat::DIAMONDS).GetIntValue() ||
+       data.costs[RES_BLOBS] > player->GetStat(Player::Stat::BLOBS).GetIntValue())
         return false;
 
     // check if there's at least 1 free cell where to place the new unit
@@ -1109,14 +1119,16 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
     return Cell2D(-1, -1);
 }
 
-void GameMap::StartCreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const int ind = dest.row * mCols + dest.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->GetStat(Player::Stat::ENERGY).SumValue(-data.costEnergy);
-    player->GetStat(Player::Stat::MATERIAL).SumValue(-data.costMaterial);
+    player->GetStat(Player::Stat::ENERGY).SumValue(-data.costs[RES_ENERGY]);
+    player->GetStat(Player::Stat::MATERIAL).SumValue(-data.costs[RES_MATERIAL1]);
+    player->GetStat(Player::Stat::DIAMONDS).SumValue(-data.costs[RES_DIAMONDS]);
+    player->GetStat(Player::Stat::BLOBS).SumValue(-data.costs[RES_BLOBS]);
 
     // mark cell as changing
     gcell.changing = true;
@@ -1125,7 +1137,7 @@ void GameMap::StartCreateUnit(const UnitData & data, GameObject * gen, const Cel
     gen->SetBusy(true);
 }
 
-void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::CreateUnit(const ObjectData & data, UnitType type, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(dest.row);
     const unsigned int c = static_cast<unsigned int>(dest.col);
@@ -1133,7 +1145,7 @@ void GameMap::CreateUnit(const UnitData & data, GameObject * gen, const Cell2D &
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(data, 1, 1);
+    Unit * unit = new Unit(data, type, 1, 1);
     unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
 

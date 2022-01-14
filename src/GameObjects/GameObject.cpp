@@ -1,5 +1,6 @@
 #include "GameObject.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "GameMapCell.h"
 #include "IsoObject.h"

@@ -1,6 +1,6 @@
 #include "CellProgressBar.h"
 
-#include "Player.h"
+#include "GameConstants.h"
 
 #include <graphic/Camera.h>
 #include <graphic/Image.h>

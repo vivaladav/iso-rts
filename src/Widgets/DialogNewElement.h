@@ -24,15 +24,24 @@ class ButtonSlot;
 class PanelAttribute;
 class Player;
 
+struct ObjectData;
+
 enum UnitType : unsigned int;
 
 class DialogNewElement : public lib::sgui::Widget
 {
 public:
-    DialogNewElement(Player * player, const char * title);
+    DialogNewElement(const std::vector<ObjectData> & data, Player * player, const char * title);
 
     void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
+
+    int GetSelectedIndex() const;
+
+private:
+    void UpdateSlots();
+
+    void ShowData(int ind);
 
 private:
     static const int PANELS_ATT_ROWS = 6;
@@ -45,6 +54,8 @@ private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
     std::array<lib::sgui::Label *, NUM_COSTS> mLabelsCost;
 
+    const std::vector<ObjectData> & mData;
+
     lib::sgui::Label * mTitle = nullptr;
     lib::sgui::ButtonsGroup * mSlots = nullptr;
 
@@ -52,6 +63,8 @@ private:
 
     ButtonBuild * mBtnBuild = nullptr;
     ButtonClose * mBtnClose = nullptr;
+
+    int mFirstElem = 0;
 };
 
 } // namespace game

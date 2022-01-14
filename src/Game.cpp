@@ -2,7 +2,7 @@
 
 #include "GameConstants.h"
 #include "Player.h"
-#include "GameObjects/UnitsDataRegistry.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "States/StatesIds.h"
 #include "States/StateFactionSelection.h"
 #include "States/StateGame.h"
@@ -34,7 +34,7 @@ Game::Game(int argc, char * argv[])
         "data/maps/40x40-01.map",
         "data/maps/60x60-01.map"
     }
-    , mUnitsRegistry(new UnitsDataRegistry)
+    , mObjsRegistry(new ObjectsDataRegistry)
     , mLocalFaction(NO_FACTION)
 {
     using namespace lib::graphic;
@@ -70,7 +70,7 @@ Game::Game(int argc, char * argv[])
 
 Game::~Game()
 {
-    delete mUnitsRegistry;
+    delete mObjsRegistry;
 
     ClearPlayers();
 

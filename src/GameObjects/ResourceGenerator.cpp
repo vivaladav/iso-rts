@@ -1,5 +1,6 @@
 #include "GameObjects/ResourceGenerator.h"
 
+#include "GameConstants.h"
 #include "IsoObject.h"
 #include "Player.h"
 
@@ -42,7 +43,7 @@ void ResourceGenerator::SetImage()
 
     const Player * owner = GetOwner();
 
-    if(ENERGY == mResType)
+    if(RES_ENERGY == mResType)
     {
         // not visible
         if(!IsVisible())
@@ -67,7 +68,7 @@ void ResourceGenerator::SetImage()
             }
         }
     }
-    else if(MATERIAL1 == mResType)
+    else if(RES_MATERIAL1 == mResType)
     {
         // not visible
         if(!IsVisible())
@@ -103,9 +104,9 @@ void ResourceGenerator::SetImage()
 
 void ResourceGenerator::UpdateOutput()
 {
-    if(ENERGY == mResType)
+    if(RES_ENERGY == mResType)
         mOutput = 30;
-    else if(MATERIAL1 == mResType)
+    else if(RES_MATERIAL1 == mResType)
         mOutput = 2;
     // default
     else

@@ -1,7 +1,7 @@
 #include "Screens/ScreenTest.h"
 
 #include "Game.h"
-#include "Player.h"
+#include "GameConstants.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"

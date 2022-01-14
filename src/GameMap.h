@@ -23,7 +23,7 @@ class WallBuildPath;
 
 struct Cell2D;
 struct GameMapCell;
-struct UnitData;
+struct ObjectData;
 
 enum GameObjectType : unsigned int;
 enum UnitType : unsigned int;
@@ -103,10 +103,10 @@ public:
     void ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
-    bool CanCreateUnit(const UnitData & data, GameObject * gen, Player * player);
+    bool CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
-    void StartCreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player);
-    void CreateUnit(const UnitData & data, GameObject * gen, const Cell2D & dest, Player * player);
+    void StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
+    void CreateUnit(const ObjectData & data, UnitType type, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade
     bool CanUpgradeUnit(GameObject * obj, Player * player);

@@ -7,7 +7,7 @@
 namespace game
 {
 
-struct UnitData;
+struct ObjectData;
 
 enum UnitType : unsigned int
 {
@@ -21,7 +21,7 @@ enum UnitType : unsigned int
 class Unit : public GameObject
 {
 public:
-    Unit(const UnitData & data, int rows, int cols);
+    Unit(const ObjectData &data, UnitType type, int rows, int cols);
 
     UnitType GetUnitType() const;
 

@@ -2,7 +2,7 @@
 
 #include "Screen.h"
 
-#include "Player.h"
+#include "GameConstants.h"
 
 #include <array>
 #include <vector>

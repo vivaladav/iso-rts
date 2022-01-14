@@ -1,5 +1,6 @@
 #include "Indicators/StructureIndicator.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"

@@ -719,7 +719,8 @@ void ScreenGame::CreateUI()
     {
         if(nullptr == mDialogNewElement)
         {
-            mDialogNewElement = new DialogNewElement(player, "CREATE NEW UNIT");
+            const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
+            mDialogNewElement = new DialogNewElement(unitsData, player, "CREATE NEW UNIT");
 
             mDialogNewElement->SetFunctionOnClose([this]
             {
@@ -728,17 +729,11 @@ void ScreenGame::CreateUI()
 
             mDialogNewElement->SetFunctionOnBuild([this, player]
             {
-//                const UnitType type = mDialogNewElement->GetTypeToBuild();
-//                SetupNewUnit(type, player->GetSelectedObject(), player);
+                const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
+                SetupNewUnit(type, player->GetSelectedObject(), player);
 
                 ClearNewUnitDialog();
             });
-
-            // populate available units
-//            const std::vector<UnitData> & unitsData = player->GetAvailableUnits();
-
-//            for(const UnitData & data : unitsData)
-//                mDialogNewElement->AddUnitSlot(data);
 
             // position dialog
             const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
@@ -1419,7 +1414,7 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
 
 bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
 {
-    const UnitData & data = player->GetAvailableUnitData(type);
+    const ObjectData & data = player->GetAvailableUnit(type);
 
     // check if create is possible
     if(!mGameMap->CanCreateUnit(data, gen, player))
@@ -1442,11 +1437,11 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, data]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, data, type]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(data, gen, cell, player);
+        mGameMap->CreateUnit(data, type, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         SetObjectActionCompleted(gen);

@@ -1,6 +1,6 @@
 #include "GameMapCell.h"
 
-#include "Player.h"
+#include "GameConstants.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 

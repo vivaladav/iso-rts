@@ -2,7 +2,7 @@
 
 #include "Cell2D.h"
 #include "StatValue.h"
-#include "GameObjects/UnitData.h"
+#include "GameObjects/ObjectData.h"
 
 #include <functional>
 #include <string>
@@ -17,17 +17,8 @@ class PlayerAI;
 class ResourceGenerator;
 
 enum ResourceType : unsigned int;
-
-enum PlayerFaction : unsigned int
-{
-    FACTION_1,
-    FACTION_2,
-    FACTION_3,
-
-    NUM_FACTIONS,
-
-    NO_FACTION
-};
+enum PlayerFaction : unsigned int;
+enum UnitType : unsigned int;
 
 class Player
 {
@@ -85,9 +76,9 @@ public:
     void SumTotalUnitsLevel(int val);
 
     // available units
-    void AddAvailableUnit(const UnitData & data);
-    const std::vector<UnitData> & GetAvailableUnits() const;
-    const UnitData & GetAvailableUnitData(UnitType type) const;
+    void AddAvailableUnit(const ObjectData & data);
+    const std::vector<ObjectData> & GetAvailableUnits() const;
+    const ObjectData & GetAvailableUnit(UnitType type) const;
 
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;
@@ -116,7 +107,7 @@ private:
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
 
-    std::vector<UnitData> mAvailableUnits;
+    std::vector<ObjectData> mAvailableUnits;
 
     std::string mName;
 
@@ -198,10 +189,8 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
-// available units
-inline void Player::AddAvailableUnit(const UnitData & data) { mAvailableUnits.push_back(data); }
-inline const std::vector<UnitData> & Player::GetAvailableUnits() const { return mAvailableUnits; }
-inline const UnitData & Player::GetAvailableUnitData(UnitType type) const { return mAvailableUnits[type]; }
+inline const std::vector<ObjectData> & Player::GetAvailableUnits() const { return mAvailableUnits; }
+inline const ObjectData & Player::GetAvailableUnit(UnitType type) const { return mAvailableUnits[type]; }
 
 inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
 inline bool Player::HasSelectedObject() const { return mSelObj != nullptr; }

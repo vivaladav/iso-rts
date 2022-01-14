@@ -1,9 +1,10 @@
 #include "Screens/ScreenNewGame.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "Player.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/Unit.h"
-#include "GameObjects/UnitsDataRegistry.h"
 #include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
@@ -177,7 +178,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // TODO proper selection of factions
     mButtonStart->AddOnClickFunction([this, game]
     {
-        const UnitsDataRegistry * unitsReg = mGame->GetUnitsRegistry();
+        const ObjectsDataRegistry * unitsReg = mGame->GetObjectsRegistry();
 
         // create human player
         const PlayerFaction pf = game->GetLocalPlayerFaction();
@@ -186,10 +187,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->SetFaction(pf);
 
         // assign initial available units
-        p->AddAvailableUnit(unitsReg->GetData(UNIT_1));
-        p->AddAvailableUnit(unitsReg->GetData(UNIT_2));
+        const std::vector<ObjectData> & units = unitsReg->GetUnits(pf);
+        p->AddAvailableUnit(units[UNIT_1]);
+        p->AddAvailableUnit(units[UNIT_2]);
         // TODO temporary for testing. In the future start only with 2 types
-        p->AddAvailableUnit(unitsReg->GetData(UNIT_3));
+        p->AddAvailableUnit(units[UNIT_3]);
 
         // create AI players
         const char * strPlayers[] =
@@ -210,17 +212,19 @@ ScreenNewGame::ScreenNewGame(Game * game)
         for(int i = 0; i < mCpuPlayers; ++i)
         {
             const int playerId = i + 1;
+            const PlayerFaction facAI = factions[indFaction];
 
             p = game->AddPlayer(strPlayers[i], playerId);
-            p->SetFaction(factions[indFaction]);
+            p->SetFaction(facAI);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
 
             // assign initial available units
-            p->AddAvailableUnit(unitsReg->GetData(UNIT_1));
-            p->AddAvailableUnit(unitsReg->GetData(UNIT_2));
+            const std::vector<ObjectData> & unitsAI = unitsReg->GetUnits(facAI);
+            p->AddAvailableUnit(unitsAI[UNIT_1]);
+            p->AddAvailableUnit(unitsAI[UNIT_2]);
             // TODO temporary for testing. In the future start only with 2 types
-            p->AddAvailableUnit(unitsReg->GetData(UNIT_3));
+            p->AddAvailableUnit(unitsAI[UNIT_3]);
 
             ++indFaction;
 

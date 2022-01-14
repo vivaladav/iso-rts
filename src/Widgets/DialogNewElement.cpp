@@ -1,8 +1,8 @@
 #include "Widgets/DialogNewElement.h"
 
 #include "Player.h"
+#include "GameObjects/ObjectData.h"
 #include "GameObjects/Unit.h"
-#include "GameObjects/UnitData.h"
 #include "Widgets/ButtonCloseDialog.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -19,6 +19,8 @@
 #include <sgui/ButtonsGroup.h>
 #include <sgui/Image.h>
 #include <sgui/Label.h>
+
+#include <cassert>
 
 namespace game
 {
@@ -151,6 +153,10 @@ public:
 
         SetCheckable(true);
 
+        // image
+        mImage = new DummyRenderable;
+
+        // shortcut
         auto fm = FontManager::Instance();
         auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 11, Font::NORMAL);
         mShortcut = new Text(SHORTCUTS[index], font, true);
@@ -158,10 +164,44 @@ public:
 
         // register graphic elements
         RegisterRenderable(mBody);
+        RegisterRenderable(mImage);
         RegisterRenderable(mShortcut);
 
         // set initial visual state
         SetState(NORMAL);
+    }
+
+    void ClearImage()
+    {
+        if(!mHasImg)
+            return;
+
+        UnregisterRenderable(mImage);
+        delete mImage;
+
+        mImage = new lib::graphic::DummyRenderable;
+        RegisterRenderable(mImage);
+
+        mHasImg = false;
+    }
+
+    void SetImage(lib::graphic::Texture * tex)
+    {
+        if(!mHasImg)
+        {
+            UnregisterRenderable(mImage);
+            delete mImage;
+
+            mImage = new lib::graphic::Image;
+            RegisterRenderable(mImage);
+        }
+
+        static_cast<lib::graphic::Image *>(mImage)->SetTexture(tex);
+
+        mHasImg = true;
+
+        // reset positions
+        HandlePositionChanged();
     }
 
 private:
@@ -187,11 +227,19 @@ private:
         const unsigned char alphaDis = 128;
         const unsigned char alphaLabel = DISABLED == state ? alphaDis : alphaEn;
         mShortcut->SetAlpha(alphaLabel);
+
+        // image - same alpha as label
+        mImage->SetAlpha(alphaLabel);
     }
 
     void HandlePositionChanged() override
     {
         PushButton::HandlePositionChanged();
+
+        // IMAGE
+        const int imgX = GetScreenX() + (GetWidth() - mImage->GetWidth()) * 0.5f;
+        const int imgY = GetScreenY() + (GetHeight() - mImage->GetHeight()) * 0.5f;
+        mImage->SetPosition(imgX, imgY);
 
         // SHORTCUT
         const int shortBgX0 = 182;
@@ -209,7 +257,10 @@ private:
     static const char * SHORTCUTS[NUM_SLOTS];
 
     lib::graphic::Image * mBody = nullptr;
+    lib::graphic::Renderable * mImage = nullptr;
     lib::graphic::Text * mShortcut = nullptr;
+
+    bool mHasImg = false;
 };
 
 const int ButtonSlot::KEYS[NUM_SLOTS] = {
@@ -320,6 +371,9 @@ public:
 
         // update data flag
         mHasData = true;
+
+        // reset positions
+        HandlePositionChanged();
     }
 
     void HandlePositionChanged() override
@@ -358,10 +412,13 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(Player * player, const char * title)
+DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, Player * player, const char * title)
+    : mData(data)
 //    : mPlayer(player)
 {
     using namespace lib::sgui;
+
+    assert(!data.empty());
 
     auto fm = lib::graphic::FontManager::Instance();
     auto tm = lib::graphic::TextureManager::Instance();
@@ -389,6 +446,11 @@ DialogNewElement::DialogNewElement(Player * player, const char * title)
     for(int i = 0; i < NUM_SLOTS; ++i)
     {
         auto slot = new ButtonSlot(i);
+
+        slot->AddOnToggleFunction([this, i](bool checked)
+        {
+            ShowData(mFirstElem + i);
+        });
 
         mSlots->AddButton(slot);
     }
@@ -425,7 +487,7 @@ DialogNewElement::DialogNewElement(Player * player, const char * title)
     int contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelIconV;
 
     // text category
-    mLabelCategory = new Label("TOWER", fontText, panelInfo);
+    mLabelCategory = new Label("-", fontText, panelInfo);
     mLabelCategory->SetColor(colorText);
     mLabelCategory->SetPosition(marginPanelXY0, contY);
 
@@ -465,7 +527,7 @@ DialogNewElement::DialogNewElement(Player * player, const char * title)
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[1]->GetHeight()) * 0.5f;
     mLabelsCost[1]->SetPosition(contX, contY);
 
-    contY = mLabelsCost[1]->GetY() + mLabelsCost[1]->GetHeight() + marginPanelDataV;
+    contY = imgIcon->GetY() + imgIcon->GetHeight() + marginPanelDataV;
 
     // data cost 3
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_DIAMOND);
@@ -528,6 +590,9 @@ DialogNewElement::DialogNewElement(Player * player, const char * title)
     const int marginBtnTop = 15;
     const int btnY = lastPanel->GetY() + lastPanel->GetHeight() + marginBtnTop;
     mBtnBuild->SetPosition(btnX, btnY);
+
+    // finally show data
+    UpdateSlots();
 }
 
 void DialogNewElement::SetFunctionOnBuild(const std::function<void()> & f)
@@ -538,6 +603,66 @@ void DialogNewElement::SetFunctionOnBuild(const std::function<void()> & f)
 void DialogNewElement::SetFunctionOnClose(const std::function<void()> & f)
 {
     mBtnClose->AddOnClickFunction(f);
+}
+
+
+int DialogNewElement::GetSelectedIndex() const
+{
+    return mFirstElem + mSlots->GetIndexChecked();
+}
+
+void DialogNewElement::UpdateSlots()
+{
+    const int numData = mData.size();
+    const int leftData = numData - (mFirstElem * NUM_SLOTS);
+    const int limitData = leftData < NUM_SLOTS ? leftData : NUM_SLOTS;
+
+    auto tm = lib::graphic::TextureManager::Instance();
+
+    for(int i = 0; i < limitData; ++i)
+    {
+        ButtonSlot * slot = static_cast<ButtonSlot *>(mSlots->GetButton(i));
+        slot->SetEnabled(true);
+
+        const int indData = mFirstElem + i;
+        const ObjectData & data = mData[indData];
+
+        auto tex = tm->GetSprite(data.iconFile, data.iconTexId);
+        slot->SetImage(tex);
+
+        // check first
+        slot->SetChecked(0 == i);
+    }
+
+    for(int i = limitData; i < NUM_SLOTS; ++i)
+    {
+        ButtonSlot * slot = static_cast<ButtonSlot *>(mSlots->GetButton(i));
+        slot->ClearImage();
+        slot->SetEnabled(false);
+    }
+}
+
+void DialogNewElement::ShowData(int ind)
+{
+    assert(ind < mData.size());
+
+    const ObjectData & data = mData[ind];
+
+    // CLASS
+    mLabelCategory->SetText(ObjectData::STR_CLASS[data.objClass]);
+
+    // COSTS
+    for(int i = 0; i < NUM_COSTS; ++i)
+        mLabelsCost[i]->SetText(std::to_string(data.costs[i]).c_str());
+
+    // STATS
+    const int numStats = data.stats.size();
+
+    for(int i = 0; i < numStats; ++i)
+        mPanelsAtt[i]->SetData(ObjectData::STR_STAT[i], data.stats[i]);
+
+    for(int i = numStats; i < NUM_PANELS_ATT; ++i)
+        mPanelsAtt[i]->ClearData();
 }
 
 } // namespace game

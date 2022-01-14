@@ -5,7 +5,7 @@
 #include "GameMap.h"
 #include "IsoObject.h"
 #include "Player.h"
-#include "GameObjects/UnitData.h"
+#include "GameObjects/ObjectData.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
@@ -18,18 +18,13 @@
 namespace game
 {
 
-Unit::Unit(const UnitData & data, int rows, int cols)
+Unit::Unit(const ObjectData & data, UnitType type, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
-    , mUnitType(data.type)
+    , mUnitType(type)
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);
-    mStats[USTAT_ENERGY] = data.statEnergy;
-    mStats[USTAT_RESISTANCE] = data.statResistance;
-    mStats[USTAT_ATTACK] = data.statAttack;
-    mStats[USTAT_SPEED] = data.statSpeed;
-    mStats[USTAT_CONSTRUCTION] = data.statConstruction;
-    mStats[USTAT_CONQUEST] = data.statConquest;
+    mStats = data.stats;
 
     // TODO translate stats into actual values, ex.: speed = 5 -> SetSpeed(2.f)
 
@@ -38,7 +33,7 @@ Unit::Unit(const UnitData & data, int rows, int cols)
 
     // set actual speed
     const float maxSpeed = 10.f;
-    const float speed = maxSpeed * static_cast<float>(mStats[USTAT_SPEED]) / maxStatVal;
+    const float speed = maxSpeed * static_cast<float>(mStats[OSTAT_SPEED]) / maxStatVal;
     SetSpeed(speed);
 
     SetVisibilityLevel(1);

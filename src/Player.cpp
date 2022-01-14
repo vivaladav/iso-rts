@@ -1,10 +1,12 @@
 #include "Player.h"
 
 #include "Cell2D.h"
+#include "GameConstants.h"
 #include "GameMapCell.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
+#include "GameObjects/ObjectData.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Unit.h"
 
@@ -86,7 +88,7 @@ int Player::GetEnergyUse() const
 void Player::UpdateResources()
 {
     // energy
-    const int energyProd = GetResourceProduction(ResourceType::ENERGY);
+    const int energyProd = GetResourceProduction(ResourceType::RES_ENERGY);
     const int energyUsed = GetEnergyUse();
     const int energyDiff = energyProd - energyUsed;
 
@@ -99,7 +101,7 @@ void Player::UpdateResources()
     }
 
     // material 1
-    const int materialProd = GetResourceProduction(ResourceType::MATERIAL1);
+    const int materialProd = GetResourceProduction(ResourceType::RES_MATERIAL1);
 
     if(materialProd != 0)
     {
@@ -143,6 +145,8 @@ void Player::SumUnits(int val)
 
     mOnNumUnitsChanged(mNumUnits);
 }
+
+void Player::AddAvailableUnit(const ObjectData & data) { mAvailableUnits.push_back(data); }
 
 void Player::ClearSelectedObject()
 {

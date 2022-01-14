@@ -5,15 +5,7 @@
 namespace game
 {
 
-enum ResourceType : unsigned int
-{
-    ENERGY,
-    MATERIAL1,
-
-    NUM_RESOURCES,
-
-    INVALID
-};
+enum ResourceType : unsigned int;
 
 class ResourceGenerator : public GameObject
 {
@@ -33,7 +25,7 @@ private:
     void UpdateOutput();
 
 private:
-    ResourceType mResType = INVALID;
+    ResourceType mResType;
 
     int mOutput = 0;
 };
