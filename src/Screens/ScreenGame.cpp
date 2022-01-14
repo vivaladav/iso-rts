@@ -569,7 +569,7 @@ void ScreenGame::InitSprites()
         // PANELS
         { 0, 580, 400, 38 },
         { 401, 580, 400, 38 },
-        { 846, 580, 200, 223 },
+        { 804, 580, 200, 223 },
         { 0, 619, 200, 200 },
         { 201, 619, 200, 200 },
         { 402, 619, 200, 200 },
@@ -593,9 +593,9 @@ void ScreenGame::InitSprites()
         { 564, 880, 140, 18 },
 
         // BUTTON CLOSE
-        { 804, 820, 100, 40 },
-        { 905, 820, 100, 40 },
-        { 1006, 820, 100, 40 },
+        { 1005, 580, 100, 40 },
+        { 1005, 621, 100, 40 },
+        { 1005, 662, 100, 40 },
 
         // BUTTON BUILD
         { 0, 820, 200, 40 },
@@ -604,10 +604,22 @@ void ScreenGame::InitSprites()
         { 603, 820, 200, 40 },
 
         // ICONS
-        { 1047, 580, 16, 16 },
-        { 1064, 580, 16, 16 },
-        { 1047, 597, 16, 16 },
-        { 1064, 597, 16, 16 }
+        { 804, 804, 16, 16 },
+        { 821, 804, 16, 16 },
+        { 804, 821, 16, 16 },
+        { 821, 821, 16, 16 },
+
+        // BUTTON LEFT
+        { 1107, 0, 20, 80 },
+        { 1107, 81, 20, 80 },
+        { 1107, 162, 20, 80 },
+        { 1107, 243, 20, 80 },
+
+        // BUTTON RIGHT
+        { 1107, 324, 20, 80 },
+        { 1107, 405, 20, 80 },
+        { 1107, 486, 20, 80 },
+        { 1107, 567, 20, 80 }
     };
 
     tm->RegisterSprite(SpriteFileNewElementDialog, rectsNewElemDialog);
@@ -720,7 +732,7 @@ void ScreenGame::CreateUI()
         if(nullptr == mDialogNewElement)
         {
             const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
-            mDialogNewElement = new DialogNewElement(unitsData, player, "CREATE NEW UNIT");
+            mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT");
 
             mDialogNewElement->SetFunctionOnClose([this]
             {

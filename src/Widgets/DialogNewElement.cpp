@@ -98,6 +98,7 @@ public:
 private:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override
     {
+        // BACKGROUND
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
             IND_NE_DIALOG_BUILD_NORMAL,
@@ -112,6 +113,18 @@ private:
         mBody->SetTexture(tex);
         // reset BG to make changes visible
         SetCurrBg(mBody);
+
+        // LABEL
+        const unsigned int colorLabel[NUM_VISUAL_STATES] =
+        {
+            0xe3e6e8ff,
+            0x454f54ff,
+            0xf1f2f4ff,
+            0xabb4baff,
+            0xc2c2a3ff
+        };
+
+        SetLabelColor(colorLabel[state]);
 
         // update shortcut label alpha
         const unsigned char alphaEn = 255;
@@ -412,9 +425,8 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, Player * player, const char * title)
+DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title)
     : mData(data)
-//    : mPlayer(player)
 {
     using namespace lib::sgui;
 

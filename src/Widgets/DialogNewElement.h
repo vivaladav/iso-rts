@@ -31,7 +31,7 @@ enum UnitType : unsigned int;
 class DialogNewElement : public lib::sgui::Widget
 {
 public:
-    DialogNewElement(const std::vector<ObjectData> & data, Player * player, const char * title);
+    DialogNewElement(const std::vector<ObjectData> & data, const char * title);
 
     void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
