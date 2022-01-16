@@ -1,11 +1,11 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Structure.h"
 
 namespace game
 {
 
-class Wall : public GameObject
+class Wall : public Structure
 {
 public:
     Wall(GameObjectType subtype, int rows, int cols);

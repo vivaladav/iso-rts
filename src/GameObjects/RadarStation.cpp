@@ -10,9 +10,8 @@ namespace game
 {
 
 RadarStation::RadarStation(int rows, int cols)
-    : GameObject(OBJ_RADAR_STATION, rows, cols)
+    : Structure(OBJ_RADAR_STATION, rows, cols)
 {
-    SetStructure(true);
     SetCanBeConquered(true);
 
     SetImage();

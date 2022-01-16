@@ -10,11 +10,9 @@ namespace game
 {
 
 Wall::Wall(GameObjectType subtype, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_WALL, rows, cols)
+    : Structure(GameObjectType::OBJ_WALL, rows, cols)
     , mSubtypeInd(subtype - GameObjectType::OBJ_WALL_FIRST)
 {
-    SetStructure(true);
-
     SetImage();
 }
 

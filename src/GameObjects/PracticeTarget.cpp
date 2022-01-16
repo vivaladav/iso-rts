@@ -9,10 +9,8 @@ namespace game
 {
 
 PracticeTarget::PracticeTarget(int rows, int cols)
-    : GameObject(GameObjectType::OBJ_PRACTICE_TARGET, rows, cols)
+    : Structure(GameObjectType::OBJ_PRACTICE_TARGET, rows, cols)
 {
-    SetStructure(true);
-
     SetImage();
 
     SetObjColors();

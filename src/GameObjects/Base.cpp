@@ -10,10 +10,8 @@ namespace game
 {
 
 Base::Base(int rows, int cols)
-    : GameObject(GameObjectType::OBJ_BASE, rows, cols)
+    : Structure(GameObjectType::OBJ_BASE, rows, cols)
 {
-    SetStructure(true);
-
     SetVisibilityLevel(1);
 }
 

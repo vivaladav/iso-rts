@@ -10,10 +10,9 @@ namespace game
 {
 
 ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
-    : GameObject(OBJ_RES_GEN, rows, cols)
+    : Structure(OBJ_RES_GEN, rows, cols)
     , mResType(type)
 {
-    SetStructure(true);
     SetCanBeConquered(true);
 
     SetImage();

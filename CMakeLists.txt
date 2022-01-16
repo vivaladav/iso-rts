@@ -78,6 +78,7 @@ add_executable(
     src/GameObjects/ResourceGenerator.cpp
     src/GameObjects/SceneObject.h
     src/GameObjects/SceneObject.cpp
+    src/GameObjects/Structure.h
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
     src/GameObjects/Wall.h

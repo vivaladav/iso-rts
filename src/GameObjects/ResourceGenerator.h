@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Structure.h"
 
 namespace game
 {
 
 enum ResourceType : unsigned int;
 
-class ResourceGenerator : public GameObject
+class ResourceGenerator : public Structure
 {
 public:
     ResourceGenerator(ResourceType type, int rows, int cols);

@@ -17,10 +17,8 @@ namespace game
 {
 
 DefensiveTower::DefensiveTower(int rows, int cols)
-    : GameObject(GameObjectType::OBJ_DEF_TOWER, rows, cols)
+    : Structure(GameObjectType::OBJ_DEF_TOWER, rows, cols)
 {
-    SetStructure(true);
-
     SetImage();
 }
 
