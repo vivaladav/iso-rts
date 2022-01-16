@@ -24,28 +24,28 @@ void ObjectsDataRegistry::InitUnits()
     // unit 1
     data1.emplace_back
     (
-        std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 4, 1, 1, 1, 4, 2, 2, 5, 6, 6 },
+        std::vector<int>{ 15, 15, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_01_F1,
-        OCU_GENERIC
+        OCU_WORKER
     );
 
     // unit 2
     data1.emplace_back
     (
-        std::vector<int>{ 1, 4, 3, 2, 5, 6, 1, 8, 9, 9, 9 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 5, 5, 4, 5, 3, 3, 2, 6, 1, 4 },
+        std::vector<int>{ 20, 20, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_02_F1,
-        OCU_GENERIC
+        OCU_SOLDIER
     );
 
     // unit 3
     data1.emplace_back
     (
-        std::vector<int>{ 1, 3, 3, 4, 5, 1, 1, 8, 9, 2, 7 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 6, 5, 2, 5, 3, 4, 5, 5, 3, 3, 4 },
+        std::vector<int>{ 40, 40, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_03_F1,
         OCU_GENERIC
@@ -57,28 +57,28 @@ void ObjectsDataRegistry::InitUnits()
     // unit 1
     data2.emplace_back
     (
-        std::vector<int>{ 1, 2, 3, 4, 1, 6, 7, 8, 1, 2, 3 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 4, 1, 1, 1, 4, 2, 2, 5, 6, 6 },
+        std::vector<int>{ 15, 15, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_01_F2,
-        OCU_GENERIC
+        OCU_WORKER
     );
 
     // unit 2
     data2.emplace_back
     (
-        std::vector<int>{ 1, 2, 9, 4, 5, 2, 7, 8, 9, 1, 2 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 5, 5, 4, 5, 3, 3, 2, 6, 1, 4 },
+        std::vector<int>{ 20, 20, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_02_F2,
-        OCU_GENERIC
+        OCU_SOLDIER
     );
 
     // unit 3
     data2.emplace_back
     (
-        std::vector<int>{ 1, 9, 3, 4, 2, 6, 7, 8, 1, 3, 5 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 6, 5, 2, 5, 3, 4, 5, 5, 3, 3, 4 },
+        std::vector<int>{ 40, 40, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_03_F2,
         OCU_GENERIC
@@ -90,28 +90,28 @@ void ObjectsDataRegistry::InitUnits()
     // unit 1
     data3.emplace_back
     (
-        std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 4, 1, 1, 1, 4, 2, 2, 5, 6, 6 },
+        std::vector<int>{ 15, 15, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_01_F3,
-        OCU_GENERIC
+        OCU_WORKER
     );
 
     // unit 2
     data3.emplace_back
     (
-        std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 4, 5, 5, 4, 5, 3, 3, 2, 6, 1, 4 },
+        std::vector<int>{ 20, 20, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_02_F3,
-        OCU_GENERIC
+        OCU_SOLDIER
     );
 
     // unit 3
     data3.emplace_back
     (
-        std::vector<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9 },
-        std::vector<int>{ 10, 10, 0, 0 },
+        std::vector<int>{ 6, 5, 2, 5, 3, 4, 5, 5, 3, 3, 4 },
+        std::vector<int>{ 40, 40, 0, 0 },
         SpriteFileUnits,
         SPR_UNIT_03_F3,
         OCU_GENERIC
