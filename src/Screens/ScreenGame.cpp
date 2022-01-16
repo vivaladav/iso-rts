@@ -737,7 +737,7 @@ void ScreenGame::CreateUI()
 
         mDialogNewElement->SetFunctionOnClose([this]
         {
-            ClearNewUnitDialog();
+            ClearNewElemDialog();
         });
 
         mDialogNewElement->SetFunctionOnBuild([this, player]
@@ -745,14 +745,13 @@ void ScreenGame::CreateUI()
             const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
             SetupNewUnit(type, player->GetSelectedObject(), player);
 
-            ClearNewUnitDialog();
+            ClearNewElemDialog();
         });
 
         // position dialog
         const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
         const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
         const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
-
         mDialogNewElement->SetPosition(posX, posY);
     });
 
@@ -763,7 +762,30 @@ void ScreenGame::CreateUI()
 //        auto unit = static_cast<Unit *>(player->GetSelectedObject());
 //        unit->SetActiveAction(GameObjectActionId::BUILD_DEF_TOWER);
 
+        if(mDialogNewElement != nullptr)
+            return ;
 
+        const std::vector<ObjectData> & unitsData = player->GetAvailableStructures();
+        mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW STRUCTURE", player);
+
+        mDialogNewElement->SetFunctionOnClose([this]
+        {
+            ClearNewElemDialog();
+        });
+
+        mDialogNewElement->SetFunctionOnBuild([this, player]
+        {
+//            const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
+//            SetupNewUnit(type, player->GetSelectedObject(), player);
+
+            ClearNewElemDialog();
+        });
+
+        // position dialog
+        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
+        const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
+        mDialogNewElement->SetPosition(posX, posY);
 
         ClearCellOverlays();
     });
@@ -883,7 +905,7 @@ void ScreenGame::HidePanelObjActions()
     mPanelObjActions->SetVisible(false);
 }
 
-void ScreenGame::ClearNewUnitDialog()
+void ScreenGame::ClearNewElemDialog()
 {
     // no dialog -> nothing to do
     if(nullptr == mDialogNewElement)
@@ -1330,7 +1352,7 @@ void ScreenGame::ClearSelection(Player * player)
 
     ClearCellOverlays();
 
-    ClearNewUnitDialog();
+    ClearNewElemDialog();
 }
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
@@ -1451,11 +1473,11 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, data, type]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, data]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(data, type, gen, cell, player);
+        mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         SetObjectActionCompleted(gen);

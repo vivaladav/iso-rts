@@ -4,6 +4,7 @@
 #include "GameConstants.h"
 #include "Player.h"
 #include "GameObjects/ObjectsDataRegistry.h"
+#include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 #include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
@@ -178,7 +179,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // TODO proper selection of factions
     mButtonStart->AddOnClickFunction([this, game]
     {
-        const ObjectsDataRegistry * unitsReg = mGame->GetObjectsRegistry();
+        const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
 
         // create human player
         const PlayerFaction pf = game->GetLocalPlayerFaction();
@@ -186,12 +187,16 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->SetLocal(true);
         p->SetFaction(pf);
 
+        // assign initial available structures
+        p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_TARGET));
+        p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR));
+        p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_DEF_TOWER));
+
         // assign initial available units
-        const std::vector<ObjectData> & units = unitsReg->GetUnits(pf);
-        p->AddAvailableUnit(units[UNIT_1]);
-        p->AddAvailableUnit(units[UNIT_2]);
+        p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_1));
+        p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_2));
         // TODO temporary for testing. In the future start only with 2 types
-        p->AddAvailableUnit(units[UNIT_3]);
+        p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_3));
 
         // create AI players
         const char * strPlayers[] =
@@ -219,12 +224,16 @@ ScreenNewGame::ScreenNewGame(Game * game)
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
 
+            // assign initial available structures
+            p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_TARGET));
+            p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR));
+            p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_DEF_TOWER));
+
             // assign initial available units
-            const std::vector<ObjectData> & unitsAI = unitsReg->GetUnits(facAI);
-            p->AddAvailableUnit(unitsAI[UNIT_1]);
-            p->AddAvailableUnit(unitsAI[UNIT_2]);
+            p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_1));
+            p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_2));
             // TODO temporary for testing. In the future start only with 2 types
-            p->AddAvailableUnit(unitsAI[UNIT_3]);
+            p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_3));
 
             ++indFaction;
 

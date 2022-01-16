@@ -18,7 +18,9 @@ enum ObjClass : unsigned int
     OCU_SOLDIER,
     OCU_WORKER,
 
-    NUM_OBJ_CLASSES
+    NUM_OBJ_CLASSES,
+
+    OC_NULL
 };
 
 enum ObjStatId : unsigned int
@@ -48,12 +50,14 @@ struct ObjectData
 {
     ObjectData(const std::vector<int> & sts,
                const std::vector<int> & cst,
-               const char * file, unsigned int texId, ObjClass oc)
+               const char * file, unsigned int texId,
+               ObjClass oc, unsigned int type)
         : stats(sts)
         , costs(cst)
         , iconFile(file)
         , iconTexId(texId)
         , objClass(oc)
+        , objType(type)
     {
     }
 
@@ -65,8 +69,12 @@ struct ObjectData
 
     ObjClass objClass;
 
+    unsigned int objType;
+
     static const char * STR_CLASS[NUM_OBJ_CLASSES];
     static const char * STR_STAT[NUM_TOT_OBJ_STATS];
+
+    static const ObjectData NullObj;
 };
 
 } // namespace game

@@ -18,6 +18,7 @@ class ResourceGenerator;
 
 enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
+enum StructureType : unsigned int;
 enum UnitType : unsigned int;
 
 class Player
@@ -77,6 +78,11 @@ public:
     int GetTotalUnitsLevel() const;
     void SumTotalUnitsLevel(int val);
 
+    // available structures
+    void AddAvailableStructure(const ObjectData & data);
+    const std::vector<ObjectData> & GetAvailableStructures() const;
+    const ObjectData & GetAvailableStructure(StructureType type) const;
+
     // available units
     void AddAvailableUnit(const ObjectData & data);
     const std::vector<ObjectData> & GetAvailableUnits() const;
@@ -109,6 +115,7 @@ private:
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
 
+    std::vector<ObjectData> mAvailableStructures;
     std::vector<ObjectData> mAvailableUnits;
 
     std::string mName;
@@ -191,8 +198,15 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
-inline const std::vector<ObjectData> & Player::GetAvailableUnits() const { return mAvailableUnits; }
-inline const ObjectData & Player::GetAvailableUnit(UnitType type) const { return mAvailableUnits[type]; }
+inline const std::vector<ObjectData> & Player::GetAvailableStructures() const
+{
+    return mAvailableStructures;
+}
+
+inline const std::vector<ObjectData> & Player::GetAvailableUnits() const
+{
+    return mAvailableUnits;
+}
 
 inline GameObject * Player::GetSelectedObject() const { return mSelObj; }
 inline bool Player::HasSelectedObject() const { return mSelObj != nullptr; }

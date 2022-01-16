@@ -18,9 +18,9 @@
 namespace game
 {
 
-Unit::Unit(const ObjectData & data, UnitType type, int rows, int cols)
+Unit::Unit(const ObjectData & data, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
-    , mUnitType(type)
+    , mUnitType(static_cast<UnitType>(data.objType))
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);

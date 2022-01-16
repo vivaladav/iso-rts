@@ -114,8 +114,8 @@ enum GameObjectType : unsigned int
     OBJ_WALL_INTE,
     OBJ_WALL_CROSS,
 
-    OBJ_PRACTICE_TARGET,
     OBJ_DEF_TOWER,
+    OBJ_PRACTICE_TARGET,
     OBJ_RADAR_STATION,
 
     NUM_GAME_OBJECT_TYPES,

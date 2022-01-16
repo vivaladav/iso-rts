@@ -305,7 +305,7 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
         const ObjectData & data = p->GetAvailableUnit(type);
         const Cell2D dest(r0, c0);
-        CreateUnit(data, type,  nullptr, dest, p);
+        CreateUnit(data, nullptr, dest, p);
     }
 }
 
@@ -1137,7 +1137,7 @@ void GameMap::StartCreateUnit(const ObjectData & data, GameObject * gen, const C
     gen->SetBusy(true);
 }
 
-void GameMap::CreateUnit(const ObjectData & data, UnitType type, GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(dest.row);
     const unsigned int c = static_cast<unsigned int>(dest.col);
@@ -1145,7 +1145,7 @@ void GameMap::CreateUnit(const ObjectData & data, UnitType type, GameObject * ge
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(data, type, 1, 1);
+    Unit * unit = new Unit(data, 1, 1);
     unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
 

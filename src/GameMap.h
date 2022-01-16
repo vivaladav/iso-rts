@@ -106,7 +106,7 @@ public:
     bool CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
     void StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
-    void CreateUnit(const ObjectData & data, UnitType type, GameObject * gen, const Cell2D & dest, Player * player);
+    void CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade
     bool CanUpgradeUnit(GameObject * obj, Player * player);

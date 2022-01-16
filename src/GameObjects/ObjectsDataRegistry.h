@@ -4,36 +4,29 @@
 #include "ObjectData.h"
 
 #include <array>
-#include <vector>
+#include <unordered_map>
 
 namespace game
 {
+
+enum StructureType : unsigned int;
+enum UnitType : unsigned int;
 
 class ObjectsDataRegistry
 {
 public:
     ObjectsDataRegistry();
 
-    const std::vector<ObjectData> & GetStructures(PlayerFaction f) const;
-    const std::vector<ObjectData> & GetUnits(PlayerFaction f) const;
+    const ObjectData & GetStructure(PlayerFaction f, StructureType type) const;
+    const ObjectData & GetUnit(PlayerFaction f, UnitType type) const;
 
 private:
     void InitStructures();
     void InitUnits();
 
 private:
-    std::array<std::vector<ObjectData>, NUM_FACTIONS> mStructures;
-    std::array<std::vector<ObjectData>, NUM_FACTIONS> mUnits;
+    std::array<std::unordered_map<StructureType, ObjectData>, NUM_FACTIONS> mStructures;
+    std::array<std::unordered_map<UnitType, ObjectData>, NUM_FACTIONS> mUnits;
 };
-
-inline const std::vector<ObjectData> & ObjectsDataRegistry::GetStructures(PlayerFaction f) const
-{
-    return mStructures[f];
-}
-
-inline const std::vector<ObjectData> & ObjectsDataRegistry::GetUnits(PlayerFaction f) const
-{
-    return mUnits[f];
-}
 
 } // namespace game

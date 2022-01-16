@@ -164,7 +164,37 @@ void Player::SumUnits(int val)
     mOnNumUnitsChanged(mNumUnits);
 }
 
-void Player::AddAvailableUnit(const ObjectData & data) { mAvailableUnits.push_back(data); }
+void Player::AddAvailableStructure(const ObjectData & data)
+{
+    mAvailableStructures.emplace_back(data);
+}
+
+const ObjectData & Player::GetAvailableStructure(StructureType type) const
+{
+    for(const ObjectData & data : mAvailableStructures)
+    {
+        if(data.objType == type)
+            return data;
+    }
+
+    return ObjectData::NullObj;
+}
+
+void Player::AddAvailableUnit(const ObjectData & data)
+{
+    mAvailableUnits.emplace_back(data);
+}
+
+const ObjectData & Player::GetAvailableUnit(UnitType type) const
+{
+    for(const ObjectData & data : mAvailableUnits)
+    {
+        if(data.objType == type)
+            return data;
+    }
+
+    return ObjectData::NullObj;
+}
 
 void Player::ClearSelectedObject()
 {

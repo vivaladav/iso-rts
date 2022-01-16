@@ -15,13 +15,15 @@ enum UnitType : unsigned int
     UNIT_2,
     UNIT_3,
 
-    NUM_UNIT_TYPES
+    NUM_UNIT_TYPES,
+
+    UNIT_NULL
 };
 
 class Unit : public GameObject
 {
 public:
-    Unit(const ObjectData &data, UnitType type, int rows, int cols);
+    Unit(const ObjectData &data, int rows, int cols);
 
     UnitType GetUnitType() const;
 
