@@ -505,7 +505,7 @@ void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // take player's energy
-    player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
+    player->SumResource(Player::Stat::ENERGY, -COST_CONQUEST_CELL);
 
     // mark cell as changing
     gcell.changing = true;
@@ -687,10 +687,10 @@ void GameMap::StartBuildWall(const Cell2D & cell, Player * player, unsigned int 
 
     // take player's material
     const int costEne = Wall::GetCostEnergy(level);
-    player->GetStat(Player::Stat::ENERGY).SumValue(-costEne);
+    player->SumResource(Player::Stat::ENERGY, -costEne);
 
     const int costMat = Wall::GetCostMaterial(level);
-    player->GetStat(Player::Stat::MATERIAL).SumValue(-costMat);
+    player->SumResource(Player::Stat::MATERIAL, -costMat);
 
     // mark cell as changing
     gcell.changing = true;
@@ -806,7 +806,7 @@ bool GameMap::CanConquerStructure(const Cell2D & start, const Cell2D & end, Play
 void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
 {
     // take player's energy
-    player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_RES_GEN);
+    player->SumResource(Player::Stat::ENERGY, -COST_CONQUEST_RES_GEN);
 
     // mark start as changing
     const int ind0 = start.row * mCols + start.col;
@@ -1125,10 +1125,10 @@ void GameMap::StartCreateUnit(const ObjectData & data, GameObject * gen, const C
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->GetStat(Player::Stat::ENERGY).SumValue(-data.costs[RES_ENERGY]);
-    player->GetStat(Player::Stat::MATERIAL).SumValue(-data.costs[RES_MATERIAL1]);
-    player->GetStat(Player::Stat::DIAMONDS).SumValue(-data.costs[RES_DIAMONDS]);
-    player->GetStat(Player::Stat::BLOBS).SumValue(-data.costs[RES_BLOBS]);
+    player->SumResource(Player::Stat::ENERGY, -data.costs[RES_ENERGY]);
+    player->SumResource(Player::Stat::MATERIAL, -data.costs[RES_MATERIAL1]);
+    player->SumResource(Player::Stat::DIAMONDS, -data.costs[RES_DIAMONDS]);
+    player->SumResource(Player::Stat::BLOBS, -data.costs[RES_BLOBS]);
 
     // mark cell as changing
     gcell.changing = true;
@@ -1218,7 +1218,7 @@ void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)
     const Unit * unit = static_cast<Unit *>(obj);
     const int unitLevel = unit->GetUnitLevel();
     const int cost = -COST_UNIT_UPGRADE[unitLevel];
-    player->GetStat(Player::Stat::ENERGY).SumValue(cost);
+    player->SumResource(Player::Stat::ENERGY, cost);
 
     // mark cell as changing
     gcell.changing = true;

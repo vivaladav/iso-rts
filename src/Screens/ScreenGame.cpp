@@ -109,13 +109,13 @@ ScreenGame::ScreenGame(Game * game)
 
         // add start resources
         const int startEnergy = 400;
-        p->GetStat(Player::Stat::ENERGY).SetValue(startEnergy);
+        p->SumResource(Player::Stat::ENERGY, startEnergy);
 
         const int startMaterial = 50;
-        p->GetStat(Player::Stat::MATERIAL).SetValue(startMaterial);
+        p->SumResource(Player::Stat::MATERIAL, startMaterial);
 
         const int startMoney = 500;
-        p->GetStat(Player::Stat::MONEY).SetValue(startMoney);
+        p->SumResource(Player::Stat::MONEY, startMoney);
 
         // temporary disable AI for development
 //        if(p->IsAI())
@@ -729,39 +729,41 @@ void ScreenGame::CreateUI()
     // create new unit
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT, [this, player]
     {
-        if(nullptr == mDialogNewElement)
+        if(mDialogNewElement != nullptr)
+            return ;
+
+        const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
+        mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT", player);
+
+        mDialogNewElement->SetFunctionOnClose([this]
         {
-            const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
-            mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT", player);
+            ClearNewUnitDialog();
+        });
 
-            mDialogNewElement->SetFunctionOnClose([this]
-            {
-                ClearNewUnitDialog();
-            });
+        mDialogNewElement->SetFunctionOnBuild([this, player]
+        {
+            const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
+            SetupNewUnit(type, player->GetSelectedObject(), player);
 
-            mDialogNewElement->SetFunctionOnBuild([this, player]
-            {
-                const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
-                SetupNewUnit(type, player->GetSelectedObject(), player);
+            ClearNewUnitDialog();
+        });
 
-                ClearNewUnitDialog();
-            });
+        // position dialog
+        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
+        const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
 
-            // position dialog
-            const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-            const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
-            const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
-
-            mDialogNewElement->SetPosition(posX, posY);
-        }
+        mDialogNewElement->SetPosition(posX, posY);
     });
 
     // UNIT ACTIONS
     // build structure
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this, player]
     {
-        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObjectActionId::BUILD_DEF_TOWER);
+//        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+//        unit->SetActiveAction(GameObjectActionId::BUILD_DEF_TOWER);
+
+
 
         ClearCellOverlays();
     });
@@ -1016,13 +1018,13 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     {
         if(event.IsModShiftDown())
         {
-            p->GetStat(Player::Stat::ENERGY).SumValue(100);
-            p->GetStat(Player::Stat::MATERIAL).SumValue(50);
+            p->SumResource(Player::Stat::ENERGY, 100);
+            p->SumResource(Player::Stat::MATERIAL, 50);
         }
         else if(event.IsModCtrlDown())
         {
-            p->GetStat(Player::Stat::ENERGY).SumValue(-50);
-            p->GetStat(Player::Stat::MATERIAL).SumValue(-50);
+            p->SumResource(Player::Stat::ENERGY, -50);
+            p->SumResource(Player::Stat::MATERIAL, -50);
         }
     }
 }

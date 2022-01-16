@@ -71,6 +71,24 @@ void Player::RemVisibilityToAll()
     }
 }
 
+void Player::SumResource(Stat sid, int val)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    mStats[sid].SumValue(val);
+
+    mOnResourcesChanged();
+}
+
+void Player::AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    mStats[sid].AddOnValueChanged(f);
+}
+
 void Player::SumCells(int val)
 {
     mNumCells += val;

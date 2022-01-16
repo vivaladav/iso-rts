@@ -37,61 +37,61 @@ PanelResources::PanelResources(Player * player)
     const int numDigits = 5;
 
     // MONEY
-    StatValue & money = player->GetStat(Player::Stat::MONEY);
+    const StatValue & money = player->GetStat(Player::Stat::MONEY);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MONEY);
     auto srd = new SimpleResourceDisplay(tex, numDigitsMoney, this);
     srd->SetValue(money.GetIntValue());
     srd->SetPosition(slotX + (slotW - srd->GetWidth()) * 0.5f, (GetHeight() - srd->GetHeight()) * 0.5f);
 
-    money.AddOnValueChanged([srd](const StatValue * val) { srd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::MONEY, [srd](const StatValue * val) { srd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
     // ENERGY
-    StatValue & energy = player->GetStat(Player::Stat::ENERGY);
+    const StatValue & energy = player->GetStat(Player::Stat::ENERGY);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_ENERGY);
     auto rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(energy.GetIntMin(), energy.GetIntMax());
     rd->SetValue(energy.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    energy.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::ENERGY, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
     // MATERIAL
-    StatValue & material = player->GetStat(Player::Stat::MATERIAL);
+    const StatValue & material = player->GetStat(Player::Stat::MATERIAL);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MATERIAL);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(material.GetIntMin(), material.GetIntMax());
     rd->SetValue(material.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    material.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::MATERIAL, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
     // DIAMONDS
-    StatValue & diamonds = player->GetStat(Player::Stat::DIAMONDS);
+    const StatValue & diamonds = player->GetStat(Player::Stat::DIAMONDS);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_DIAMOND);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(diamonds.GetIntMin(), diamonds.GetIntMax());
     rd->SetValue(diamonds.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    diamonds.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 
     slotX += slotW;
 
     // BLOB
-    StatValue & blobs = player->GetStat(Player::Stat::BLOBS);
+    const StatValue & blobs = player->GetStat(Player::Stat::BLOBS);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_BLOB);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(blobs.GetIntMin(), blobs.GetIntMax());
     rd->SetValue(blobs.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    blobs.AddOnValueChanged([rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::BLOBS, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
 }
 
 void PanelResources::SetBg()

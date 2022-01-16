@@ -59,8 +59,10 @@ public:
     void SetBaseCell(const Cell2D & cell);
 
     // stats
-    StatValue & GetStat(Stat sid);
+    const StatValue & GetStat(Stat sid);
+    void SumResource(Stat sid, int val);
     void SetOnResourcesChanged(const std::function<void()> & f);
+    void AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f);
 
     int GetNumCells() const;
     void SumCells(int val);
@@ -164,7 +166,7 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 inline const Cell2D & Player::GetBaseCell() const { return mHomeCell; }
 inline void Player::SetBaseCell(const Cell2D & cell) { mHomeCell = cell; }
 
-inline StatValue & Player::GetStat(Stat sid)
+inline const StatValue & Player::GetStat(Stat sid)
 {
     if(sid < NUM_PSTATS)
         return mStats[sid];
