@@ -131,8 +131,8 @@ ScreenGame::ScreenGame(Game * game)
     // react to local player changes in stats
     localPlayer->SetOnResourcesChanged([this]
     {
-//        if(mDialogNewElement != nullptr)
-//            mDialogNewElement->UpdateSlots();
+        if(mDialogNewElement != nullptr)
+            mDialogNewElement->CheckBuild();
     });
 
     // apply initial visibility to the game map
@@ -732,7 +732,7 @@ void ScreenGame::CreateUI()
         if(nullptr == mDialogNewElement)
         {
             const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
-            mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT");
+            mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT", player);
 
             mDialogNewElement->SetFunctionOnClose([this]
             {

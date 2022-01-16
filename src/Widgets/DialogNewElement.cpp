@@ -1,5 +1,6 @@
 #include "Widgets/DialogNewElement.h"
 
+#include "GameConstants.h"
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/Unit.h"
@@ -128,8 +129,6 @@ private:
 private:
     lib::graphic::Image * mBody = nullptr;
 };
-
-
 
 // ===== BUTTON BUILD =====
 
@@ -490,8 +489,9 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title)
+DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player *player)
     : mData(data)
+    , mPlayer(player)
 {
     using namespace lib::sgui;
 
@@ -527,7 +527,11 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
         slot->AddOnToggleFunction([this, i](bool checked)
         {
             if(checked)
-                ShowData(mFirstElem + i);
+            {
+                const int ind = mFirstElem + i;
+                ShowData(ind);
+                CheckBuild(ind);
+            }
         });
 
         mSlots->AddButton(slot);
@@ -707,6 +711,12 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     UpdateSlots();
 }
 
+void DialogNewElement::CheckBuild()
+{
+    const int ind = GetSelectedIndex();
+    CheckBuild(ind);
+}
+
 void DialogNewElement::SetFunctionOnBuild(const std::function<void()> & f)
 {
     mBtnBuild->AddOnClickFunction(f);
@@ -776,6 +786,18 @@ void DialogNewElement::ShowData(int ind)
 
     for(int i = numStats; i < NUM_PANELS_ATT; ++i)
         mPanelsAtt[i]->ClearData();
+}
+
+void DialogNewElement::CheckBuild(int ind)
+{
+    const std::vector<int> & costs = mData[ind].costs;
+
+    const bool allowed = mPlayer->GetStat(Player::ENERGY).GetIntValue() >= costs[RES_ENERGY] &&
+                         mPlayer->GetStat(Player::MATERIAL).GetIntValue() >= costs[RES_MATERIAL1] &&
+                         mPlayer->GetStat(Player::DIAMONDS).GetIntValue() >= costs[RES_DIAMONDS] &&
+                         mPlayer->GetStat(Player::BLOBS).GetIntValue() >= costs[RES_BLOBS];
+
+    mBtnBuild->SetEnabled(allowed);
 }
 
 } // namespace game

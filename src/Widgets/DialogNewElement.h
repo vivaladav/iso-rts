@@ -33,7 +33,9 @@ enum UnitType : unsigned int;
 class DialogNewElement : public lib::sgui::Widget
 {
 public:
-    DialogNewElement(const std::vector<ObjectData> & data, const char * title);
+    DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player);
+
+    void CheckBuild();
 
     void SetFunctionOnBuild(const std::function<void()> & f);
     void SetFunctionOnClose(const std::function<void()> & f);
@@ -44,6 +46,8 @@ private:
     void UpdateSlots();
 
     void ShowData(int ind);
+
+    void CheckBuild(int ind);
 
 private:
     static const int PANELS_ATT_ROWS = 6;
@@ -67,6 +71,8 @@ private:
     ButtonClose * mBtnClose = nullptr;
     ButtonLeft * mBtnLeft = nullptr;
     ButtonRight * mBtnRight = nullptr;
+
+    Player * mPlayer = nullptr;
 
     int mFirstElem = 0;
 };
