@@ -4,13 +4,11 @@
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/Unit.h"
-#include "Widgets/ButtonCloseDialog.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/ShortcutButton.h"
 
 #include <core/event/KeyboardEvent.h>
-#include <graphic/Camera.h>
 #include <graphic/DummyRenderable.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
