@@ -87,7 +87,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_RADAR,
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
-                   SpriteFileStructures, ID_STRUCT_RADAR_F1,
+                   SpriteFileStructures, ID_STRUCT_RADAR_F2,
                    OCS_RADAR, STRUCT_RADAR, 2, 2)
     );
 
@@ -97,7 +97,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_DEF_TOWER,
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
-                   SpriteFileStructures, ID_STRUCT_DTOWER_L1_F1,
+                   SpriteFileStructures, ID_STRUCT_DTOWER_L1_F2,
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
     );
 
@@ -120,7 +120,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_RADAR,
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
-                   SpriteFileStructures, ID_STRUCT_RADAR_F1,
+                   SpriteFileStructures, ID_STRUCT_RADAR_F3,
                    OCS_RADAR, STRUCT_RADAR, 2, 2)
     );
 
@@ -130,7 +130,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_DEF_TOWER,
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
-                   SpriteFileStructures, ID_STRUCT_DTOWER_L1_F1,
+                   SpriteFileStructures, ID_STRUCT_DTOWER_L1_F3,
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
     );
 }
