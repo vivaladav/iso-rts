@@ -42,6 +42,7 @@ class WallIndicator;
 
 enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
+enum StructureType : unsigned int;
 enum UnitType : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
@@ -101,7 +102,7 @@ private:
 
     bool SetupNewUnit(UnitType type, GameObject * gen, Player * player);
     bool SetupStructureConquest(const Cell2D & start, const Cell2D & end, Player * player);
-    bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player, GameObjectType structure);
+    bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);
     void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & onCompleted = []{});
@@ -109,10 +110,10 @@ private:
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell, GameObjectType structure);
+    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
-    void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell, GameObjectType structure);
+    void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
 
     void ClearCellOverlays();
 
@@ -123,7 +124,7 @@ private:
     std::vector<int> mProgressBarsToDelete;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
-    std::unordered_map<GameObjectType, StructureIndicator *> mStructIndicators;
+    std::unordered_map<StructureType, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
 

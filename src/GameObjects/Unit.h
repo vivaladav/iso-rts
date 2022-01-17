@@ -9,6 +9,8 @@ namespace game
 
 struct ObjectData;
 
+enum StructureType : unsigned int;
+
 enum UnitType : unsigned int
 {
     UNIT_1,
@@ -36,6 +38,10 @@ public:
 
     void Update(float delta) override;
 
+    void ClearStructureToBuild();
+    void SetStructureToBuild(StructureType type);
+    StructureType GetStructureToBuild() const;
+
 private:
     void UpdateGraphics() override;
 
@@ -57,6 +63,8 @@ private:
     GameObject * mTarget = nullptr;
 
     UnitType mUnitType;
+
+    StructureType mStructToBuild;
 };
 
 inline UnitType Unit::GetUnitType() const { return mUnitType; }
@@ -64,6 +72,9 @@ inline UnitType Unit::GetUnitType() const { return mUnitType; }
 inline int Unit::GetUnitLevel() const { return mLevel; }
 
 inline void Unit::SetAttackTarget(GameObject * obj) { mTarget = obj; }
+
+inline void Unit::SetStructureToBuild(StructureType type) { mStructToBuild = type; }
+inline StructureType Unit::GetStructureToBuild() const { return mStructToBuild; }
 
 } // namespace game
 

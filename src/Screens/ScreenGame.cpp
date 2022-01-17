@@ -742,7 +742,7 @@ void ScreenGame::CreateUI()
 
         mDialogNewElement->SetFunctionOnBuild([this, player]
         {
-            const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
+            const auto type = static_cast<UnitType>(mDialogNewElement->GetSelectedData().objType);
             SetupNewUnit(type, player->GetSelectedObject(), player);
 
             ClearNewElemDialog();
@@ -750,7 +750,7 @@ void ScreenGame::CreateUI()
 
         // position dialog
         const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-        const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
+        const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
         const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
         mDialogNewElement->SetPosition(posX, posY);
     });
@@ -759,9 +759,6 @@ void ScreenGame::CreateUI()
     // build structure
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this, player]
     {
-//        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-//        unit->SetActiveAction(GameObjectActionId::BUILD_DEF_TOWER);
-
         if(mDialogNewElement != nullptr)
             return ;
 
@@ -775,15 +772,18 @@ void ScreenGame::CreateUI()
 
         mDialogNewElement->SetFunctionOnBuild([this, player]
         {
-//            const UnitType type = static_cast<UnitType>(mDialogNewElement->GetSelectedIndex());
-//            SetupNewUnit(type, player->GetSelectedObject(), player);
+            auto unit = static_cast<Unit *>(player->GetSelectedObject());
+            unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
+
+            const auto stype = static_cast<StructureType>(mDialogNewElement->GetSelectedData().objType);
+            unit->SetStructureToBuild(stype);
 
             ClearNewElemDialog();
         });
 
         // position dialog
         const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-        const int posX =(rendW - mDialogNewElement->GetWidth()) * 0.5f;
+        const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
         const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
         mDialogNewElement->SetPosition(posX, posY);
 
@@ -1201,8 +1201,8 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
                     }
                 }
             }
-            else if (action == GameObjectActionId::BUILD_DEF_TOWER)
-                HandleUnitBuildStructureOnMouseUp(selUnit, clickCell, GameObjectType::OBJ_DEF_TOWER);
+            else if (action == GameObjectActionId::BUILD_STRUCTURE)
+                HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
         }
     }
     // no object currently selected
@@ -1294,8 +1294,8 @@ void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
             HandleUnitConquestOnMouseMove(selUnit, currCell);
         else if(action == GameObjectActionId::BUILD_WALL)
             HandleUnitBuildWallOnMouseMove(selUnit, currCell);
-        else if(action == GameObjectActionId::BUILD_DEF_TOWER)
-            HandleUnitBuildStructureOnMouseMove(selUnit, currCell, GameObjectType::OBJ_DEF_TOWER);
+        else if(action == GameObjectActionId::BUILD_STRUCTURE)
+            HandleUnitBuildStructureOnMouseMove(selUnit, currCell);
     }
 
     // update previous cell before exit
@@ -1533,21 +1533,24 @@ bool ScreenGame::SetupStructureConquest(const Cell2D & start, const Cell2D & end
     return true;
 }
 
-bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player, GameObjectType structure)
+bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player)
 {
+    const StructureType st = unit->GetStructureToBuild();
+    const ObjectData & data = player->GetAvailableStructure(st);
+
     // check if building is possible
-    if(!mGameMap->CanBuildStructure(cellTarget, player, structure))
+    if(!mGameMap->CanBuildStructure(cellTarget, player, data))
         return false;
 
-    mGameMap->StartBuildStructure(cellTarget, player, structure);
+    mGameMap->StartBuildStructure(cellTarget, player, data);
 
     // create and init progress bar
     // TODO get time from unit
     CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, structure]
+    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, data]
     {
-        mGameMap->BuildStructure(cellTarget, player, structure);
+        mGameMap->BuildStructure(cellTarget, player, data);
         mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
 
         // clear action data once the action is completed
@@ -1555,13 +1558,14 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     });
 
     // store active action
-    mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_DEF_TOWER, cellTarget);
+    mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_STRUCTURE, cellTarget);
 
     // disable action buttons
     mPanelObjActions->SetActionsEnabled(false);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
-    unit->SetCurrentAction(GameObjectActionId::BUILD_DEF_TOWER);
+    unit->SetCurrentAction(GameObjectActionId::BUILD_STRUCTURE);
+    unit->ClearStructureToBuild();
 
     ClearCellOverlays();
 
@@ -1831,7 +1835,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
 }
 
-void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell, GameObjectType structure)
+void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
 
@@ -1848,8 +1852,8 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
     const int nextDist = 1;
 
     if((std::abs(unit->GetRow0() - currCell.row) > nextDist ||
-       std::abs(unit->GetCol0() - currCell.col) > nextDist) &&
-        !mGameMap->IsAnyNeighborCellWalkable(currCell.row, currCell.col))
+        std::abs(unit->GetCol0() - currCell.col) > nextDist) &&
+       !mGameMap->IsAnyNeighborCellWalkable(currCell.row, currCell.col))
         return ;
 
     // check if there's a path between unit and destination
@@ -1863,25 +1867,48 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
     Player * player = GetGame()->GetLocalPlayer();
 
     // get an indicator
+    const StructureType st = unit->GetStructureToBuild();
+
     StructureIndicator * ind = nullptr;
-    auto it = mStructIndicators.find(structure);
+    auto it = mStructIndicators.find(st);
 
     if(it != mStructIndicators.end())
         ind = it->second;
     else
     {
-        ind = new StructureIndicator(structure);
-        mStructIndicators.emplace(structure, ind);
+        const ObjectData & data = player->GetAvailableStructure(st);
+        ind = new StructureIndicator(data);
+        mStructIndicators.emplace(st, ind);
     }
 
     // add indicator to layer
     layer->AddObject(ind, currCell.row, currCell.col);
 
     // set visibility
-    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
-    const bool currVisible = player->IsCellVisible(currInd);
-    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
-    const bool showIndicator = currVisible && currWalkable;
+    const int indRows = ind->GetRows();
+    const int indCols = ind->GetCols();
+    const int r0 = currCell.row >= indRows ? 1 + currCell.row - indRows : 0;
+    const int c0 = currCell.col >= indCols ? 1 + currCell.col - indCols : 0;
+
+    bool showIndicator = true;
+
+    for(int r = r0; r <= currCell.row; ++r)
+    {
+        const int idx0 = r * mGameMap->GetNumCols();
+
+        for(int c = c0; c <= currCell.col; ++c)
+        {
+            const int idx = idx0 + c;
+
+            showIndicator = player->IsCellVisible(idx) && mGameMap->IsCellWalkable(idx);
+
+            if(!showIndicator)
+                break;
+        }
+
+        if(!showIndicator)
+            break;
+    }
 
     layer->SetObjectVisible(ind, showIndicator);
 
@@ -1955,7 +1982,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
     }
 }
 
-void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell, GameObjectType structure)
+void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell)
 {
     const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
 
@@ -1967,31 +1994,55 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
         const GameMapCell * gmc = unit->GetCell();
         const Cell2D cellUnit(gmc->row, gmc->col);
 
-        // unit is next to target cell -> try to build
-        if(mGameMap->AreCellsAdjacent(cellUnit, clickCell))
-            SetupStructureBuilding(unit, clickCell, player, structure);
+        const StructureType st = unit->GetStructureToBuild();
+        const ObjectData & data = player->GetAvailableStructure(st);
+
+        // if unit is next to any target cell -> try to build
+        const int indRows = data.rows;
+        const int indCols = data.cols;
+        const int r0 = clickCell.row >= indRows ? 1 + clickCell.row - indRows : 0;
+        const int c0 = clickCell.col >= indCols ? 1 + clickCell.col - indCols : 0;
+
+        bool next2Target = false;
+
+        for(int r = r0; r <= clickCell.row; ++r)
+        {
+            for(int c = c0; c <= clickCell.col; ++c)
+            {
+                next2Target = mGameMap->AreCellsAdjacent(cellUnit, {r, c});
+
+                if(next2Target)
+                    break;
+            }
+
+            if(next2Target)
+                break;
+        }
+
+        if(next2Target)
+            SetupStructureBuilding(unit, clickCell, player);
         // unit is far -> move close then try to build
         else
         {
-            Cell2D target = mGameMap->GetAdjacentMoveTarget(cellUnit, clickCell, clickCell);
+            Cell2D target = mGameMap->GetAdjacentMoveTarget(cellUnit, {r0, c0}, clickCell);
 
             // failed to find a suitable target
             if(-1 == target.row || -1 == target.col)
                 return ;
 
             // add temporary indicator for tower
-            mTempStructIndicator = new StructureIndicator(structure);
+            mTempStructIndicator = new StructureIndicator(data);
             mTempStructIndicator->SetFaction(player->GetFaction());
 
             IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS);
             layer->AddObject(mTempStructIndicator, clickCell.row, clickCell.col);
 
             // move
-            SetupUnitMove(unit, cellUnit, target, [this, unit, clickCell, player, structure]
+            SetupUnitMove(unit, cellUnit, target, [this, unit, clickCell, player]
             {
                 const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-                SetupStructureBuilding(unit, clickCell, player, structure);
+                SetupStructureBuilding(unit, clickCell, player);
 
                 // get rid of temporary indicator
                 if(mTempStructIndicator)

@@ -41,6 +41,7 @@ public:
     void SetFunctionOnClose(const std::function<void()> & f);
 
     int GetSelectedIndex() const;
+    const ObjectData & GetSelectedData() const;
 
 private:
     void UpdateSlots();

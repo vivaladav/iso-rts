@@ -145,8 +145,8 @@ enum GameObjectActionId : unsigned int
     CONQUER_CELL,
     CONQUER_STRUCTURE,
     ATTACK,
+    BUILD_STRUCTURE,
     BUILD_WALL,
-    BUILD_DEF_TOWER,
 
     NUM_OBJ_ACTIONS
 };

@@ -571,44 +571,76 @@ bool GameMap::AbortCellConquest(GameObject * obj)
     return false;
 }
 
-bool GameMap::CanBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+bool GameMap::CanBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
 
     // out of bounds
-    if(!(r < mRows && c < mCols))
+    if((data.rows - 1) > r || (data.cols - 1) > c || r >= mRows || c >= mCols)
         return false;
 
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
+    // check costs
+    const bool costOk = player->GetStat(Player::ENERGY).GetIntValue() >= data.costs[RES_ENERGY] &&
+                        player->GetStat(Player::MATERIAL).GetIntValue() >= data.costs[RES_MATERIAL1] &&
+                        player->GetStat(Player::DIAMONDS).GetIntValue() >= data.costs[RES_DIAMONDS] &&
+                        player->GetStat(Player::BLOBS).GetIntValue() >= data.costs[RES_BLOBS];
 
-    // already changing
-    if(gcell.changing)
+    if(!costOk)
         return false;
 
-    // cell is full
-    if(!gcell.walkable)
-        return false;
+    // check cells
+    const unsigned int r0 = 1 + cell.row - data.rows;
+    const unsigned int c0 = 1 + cell.col - data.cols;
 
-    // TODO check cost
+    for(int r = r0; r <= cell.row; ++r)
+    {
+        const int idx0 = r * mCols;
+
+        for(int c = c0; c <= cell.col; ++c)
+        {
+            const int idx = idx0 + c;
+            const GameMapCell & gcell = mCells[idx];
+
+            // already changing or occupied
+            if(gcell.changing || !gcell.walkable)
+                return false;
+        }
+    }
 
     return true;
 }
 
-void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
 {
-    const int ind = cell.row * mCols + cell.col;
-    GameMapCell & gcell = mCells[ind];
-
-    // TODO take player's material
-    //player->GetStat(Player::Stat::ENERGY).SumValue(-COST_CONQUEST_CELL);
-
     // mark cell as changing
-    gcell.changing = true;
+    const unsigned int r0 = 1 + cell.row - data.rows;
+    const unsigned int c0 = 1 + cell.col - data.cols;
+
+    for(int r = r0; r <= cell.row; ++r)
+    {
+        const int idx0 = r * mCols;
+
+        for(int c = c0; c <= cell.col; ++c)
+        {
+            const int idx = idx0 + c;
+            GameMapCell & gcell = mCells[idx];
+            gcell.changing = true;
+        }
+    }
+
+    // make player pay
+    if(data.costs[RES_ENERGY] > 0)
+        player->SumResource(Player::ENERGY, -data.costs[RES_ENERGY]);
+    if(data.costs[RES_MATERIAL1] > 0)
+        player->SumResource(Player::MATERIAL, -data.costs[RES_MATERIAL1]);
+    if(data.costs[RES_DIAMONDS] > 0)
+        player->SumResource(Player::DIAMONDS, -data.costs[RES_DIAMONDS]);
+    if(data.costs[RES_BLOBS] > 0)
+        player->SumResource(Player::BLOBS, -data.costs[RES_BLOBS]);
 }
 
-void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectType structure)
+void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
 {
     // check if cell was of another faction
     const int ind = cell.row * mCols + cell.col;
@@ -632,7 +664,9 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     UpdateLinkedCells(player);
 
     // add object wall
-    CreateObject(OBJECTS, structure, player, cell.row, cell.col, 1, 1);
+    const GameObjectType got = Structure::StructureToGameObject(static_cast<StructureType>(data.objType));
+
+    CreateObject(OBJECTS, got, player, cell.row, cell.col, data.rows, data.cols);
 
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);

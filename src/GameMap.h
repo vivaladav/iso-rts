@@ -85,9 +85,9 @@ public:
     bool AbortCellConquest(GameObject * obj);
 
     // structure building
-    bool CanBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
-    void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
-    void BuildStructure(const Cell2D & cell, Player * player, GameObjectType structure);
+    bool CanBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
+    void StartBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
+    void BuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
 
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player, unsigned int level);

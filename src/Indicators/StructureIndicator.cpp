@@ -4,6 +4,7 @@
 #include "GameData.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
+#include "GameObjects/ObjectData.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -21,11 +22,16 @@
 namespace game
 {
 
-StructureIndicator::StructureIndicator(GameObjectType structure)
-    : IsoObject(1, 1)
+StructureIndicator::StructureIndicator(const ObjectData & data)
+    : IsoObject(data.rows, data.cols)
     , mFaction(NO_FACTION)
-    , mStructure(structure)
 {
+    auto tm = lib::graphic::TextureManager::Instance();
+
+    SetTexture(tm->GetSprite(data.iconFile, data.iconTexId));
+
+    const int alpha = 100;
+    SetAlpha(alpha);
 }
 
 void StructureIndicator::SetFaction(PlayerFaction faction)
@@ -34,8 +40,6 @@ void StructureIndicator::SetFaction(PlayerFaction faction)
         return ;
 
     mFaction = faction;
-
-    UpdateImage();
 
     UpdateCostColor();
 }
@@ -142,23 +146,6 @@ void StructureIndicator::CreateCostData()
 
     if(nullptr == mIconMaterial)
         mIconMaterial = new Image("data/img/icon_material_cost.png");
-}
-
-void StructureIndicator::UpdateImage()
-{
-    using namespace lib::graphic;
-
-    auto tm = TextureManager::Instance();
-
-    // upate object body
-    unsigned int index = 0;
-
-    if(OBJ_DEF_TOWER == mStructure)
-        index = SpriteIdStructures::ID_STRUCT_DTOWER_L1_F1 +
-                (mFaction * SpriteIdStructures::NUM_DTOWER_SPRITES_PER_FAC);
-
-    SetTexture(tm->GetSprite(SpriteFileStructures, index));
-    SetAlpha(102);
 }
 
 void StructureIndicator::UpdateCostColor()

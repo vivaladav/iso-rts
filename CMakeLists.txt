@@ -79,6 +79,7 @@ add_executable(
     src/GameObjects/SceneObject.h
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Structure.h
+    src/GameObjects/Structure.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
     src/GameObjects/Wall.h

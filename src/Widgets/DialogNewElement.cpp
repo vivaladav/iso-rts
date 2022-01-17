@@ -730,6 +730,11 @@ int DialogNewElement::GetSelectedIndex() const
     return mFirstElem + mSlots->GetIndexChecked();
 }
 
+const ObjectData & DialogNewElement::GetSelectedData() const
+{
+    return mData[GetSelectedIndex()];
+}
+
 void DialogNewElement::UpdateSlots()
 {
     const int numData = mData.size();

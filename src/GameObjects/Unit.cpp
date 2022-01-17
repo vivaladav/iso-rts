@@ -6,6 +6,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
+#include "GameObjects/Structure.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
@@ -21,6 +22,7 @@ namespace game
 Unit::Unit(const ObjectData & data, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))
+    , mStructToBuild(STRUCT_NULL)
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);
@@ -77,6 +79,8 @@ void Unit::Update(float delta)
         }
     }
 }
+
+void Unit::ClearStructureToBuild() { mStructToBuild = STRUCT_NULL; }
 
 void Unit::UpdateGraphics()
 {

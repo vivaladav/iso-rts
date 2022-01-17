@@ -14,13 +14,14 @@ namespace lib
 namespace game
 {
 
-enum GameObjectType : unsigned int;
+struct ObjectData;
+
 enum PlayerFaction : unsigned int;
 
 class StructureIndicator : public IsoObject
 {
 public:
-    StructureIndicator(GameObjectType structure);
+    StructureIndicator(const ObjectData & data);
 
     void SetCost(float energy, float material);
     void ShowCost(bool val);
@@ -32,7 +33,6 @@ public:
 private:
     void CreateCostData();
 
-    void UpdateImage();
     void UpdateCostColor();
 
 private:
@@ -45,8 +45,6 @@ private:
     PlayerFaction mFaction;
     float mCostEnergy = 0.f;
     float mCostMaterial = 0.f;
-
-    GameObjectType mStructure;
 };
 
 } // namespace game
