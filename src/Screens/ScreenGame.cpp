@@ -1085,12 +1085,10 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         GameObject * selObj = player->GetSelectedObject();
         const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
 
-        // select another own object
-        if(isClickObjOwn && clickObj != selObj)
+        // clear selection when clicking on selected object again
+        if(clickObj == selObj)
         {
             ClearSelection(player);
-            SelectObject(clickObj, player);
-
             return ;
         }
 
@@ -1103,16 +1101,25 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
             if(action == GameObjectActionId::MOVE)
             {
-                const bool diffClick = selCell != clickCell;
+                // select another own object
+                if(isClickObjOwn && clickObj != selObj)
+                {
+                    ClearSelection(player);
+                    SelectObject(clickObj, player);
+                }
+                else
+                {
+                    const bool diffClick = selCell != clickCell;
 
-                // try to move only if clicked on a different cell
-                if(diffClick)
-                    HandleUnitMoveOnMouseUp(selUnit, clickCell);
+                    // try to move only if clicked on a different cell
+                    if(diffClick)
+                        HandleUnitMoveOnMouseUp(selUnit, clickCell);
+                }
             }
             if(action == GameObjectActionId::ATTACK)
             {
                 // clicked on nothing
-                if(isClickObjOwn || nullptr == clickObj)
+                if(nullptr == clickObj)
                     return ;
 
                 selUnit->SetAttackTarget(clickObj);
@@ -1198,6 +1205,15 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             }
             else if (action == GameObjectActionId::BUILD_STRUCTURE)
                 HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
+        }
+        else
+        {
+            // select another own object
+            if(isClickObjOwn && clickObj != selObj)
+            {
+                ClearSelection(player);
+                SelectObject(clickObj, player);
+            }
         }
     }
     // no object currently selected
