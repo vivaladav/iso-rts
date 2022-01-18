@@ -78,8 +78,6 @@ public:
     lib::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 
 private:
-    void InitSprites();
-
     void InitParticlesSystem();
 
     void CreateIsoMap();

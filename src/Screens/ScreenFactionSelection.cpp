@@ -30,8 +30,6 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 {
     using namespace lib;
 
-    InitSprites();
-
     const int screenW = graphic::Renderer::Instance()->GetWidth();
 
     mBg = new graphic::Image("data/img/space_bg.jpg");
@@ -316,56 +314,6 @@ void ScreenFactionSelection::Update(float update)
 void ScreenFactionSelection::Render()
 {
     mBg->Render();
-}
-
-void ScreenFactionSelection::InitSprites()
-{
-    // NOTE this code will need to be moved to a dedicated screen to init data on start
-    auto tm = lib::graphic::TextureManager::Instance();
-
-    // CELLS
-    std::vector<lib::core::Rectd> rects
-    {
-        // PANELS
-        { 0, 0, 1102, 970 },
-        { 1103, 0, 300, 260 },
-        { 1103, 261, 300, 260 },
-        { 1103, 522, 300, 260 },
-        { 1103, 783, 300, 110 },
-        { 1404, 0, 300, 370 },
-
-        // ATTRIBUTES BAR
-        { 1103, 894, 187, 24 },
-        { 1103, 918, 187, 24 },
-        { 1103, 942, 187, 24 },
-        { 1103, 966, 187, 24 },
-        { 1103, 990, 187, 24 },
-        { 1404, 819, 187, 24 },
-        { 1404, 843, 187, 24 },
-        { 1404, 867, 187, 24 },
-        { 1404, 891, 187, 24 },
-        { 1404, 915, 187, 24 },
-        { 1404, 939, 187, 24 },
-
-        // BACK BUTTON
-        { 0, 971, 320, 50 },
-        { 321, 971, 320, 50 },
-        { 642, 971, 320, 50 },
-
-        // SELECT BUTTON
-        { 1404, 615, 250, 50 },
-        { 1404, 666, 250, 50 },
-        { 1404, 717, 250, 50 },
-        { 1404, 768, 250, 50 },
-
-        // CONTINUE BUTTON
-        { 1404, 371, 300, 60 },
-        { 1404, 432, 300, 60 },
-        { 1404, 493, 300, 60 },
-        { 1404, 554, 300, 60 }
-    };
-
-    tm->RegisterSprite(SpriteFileFactionSelection, rects);
 }
 
 int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,

@@ -5,6 +5,7 @@ namespace game
 
 enum StateId : int
 {
+    INIT,
     GAME,
     MAIN_MENU,
     FACTION_SEL,

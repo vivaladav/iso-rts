@@ -17,9 +17,6 @@ public:
     void Render() override;
 
 private:
-    void InitSprites();
-
-private:
     lib::graphic::Image * mBg = nullptr;
 };
 

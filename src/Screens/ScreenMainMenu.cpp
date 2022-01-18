@@ -26,8 +26,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     using namespace lib::graphic;
     using namespace lib::sgui;
 
-    InitSprites();
-
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
     Widget * panelButtons = new Widget;
@@ -167,42 +165,6 @@ void ScreenMainMenu::Update(float update)
 void ScreenMainMenu::Render()
 {
     mBg->Render();
-}
-
-void ScreenMainMenu::InitSprites()
-{
-    // NOTE this code will need to be moved to a dedicated screen to init data on start
-    auto tm = lib::graphic::TextureManager::Instance();
-
-    // CELLS
-    std::vector<lib::core::Rectd> rectsMainMenu
-    {
-        // PRIMARY BUTTON
-        { 0, 0, 360, 70 },
-        { 0, 70, 360, 70 },
-        { 0, 140, 360, 70 },
-        { 0, 210, 360, 70 },
-        { 0, 280, 360, 70 },
-
-        // WISHLIST BUTTON
-        { 0, 350, 285, 50 },
-        { 0, 400, 285, 50 },
-        { 0, 450, 285, 50 },
-
-        // SOCIAL BUTTON
-        { 285, 350, 90, 50 },
-        { 285, 400, 90, 50 },
-        { 285, 450, 90, 50 },
-
-        // ICONS
-        { 0, 500, 32, 24 },
-        { 32, 500, 32, 24 },
-        { 64, 500, 30, 24 },
-        { 94, 500, 34, 24 },
-        { 128, 500, 24, 24 }
-    };
-
-    tm->RegisterSprite(SpriteFileMainMenu, rectsMainMenu);
 }
 
 } // namespace game

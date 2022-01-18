@@ -6,6 +6,7 @@
 #include "States/StatesIds.h"
 #include "States/StateFactionSelection.h"
 #include "States/StateGame.h"
+#include "States/StateInit.h"
 #include "States/StateMainMenu.h"
 #include "States/StateNewGame.h"
 #include "States/StateSettings.h"
@@ -52,12 +53,13 @@ Game::Game(int argc, char * argv[])
 
     mStateMan->AddState(new StateFactionSelection(this));
     mStateMan->AddState(new StateGame(this));
-    mStateMan->AddState(new StateTest(this));
+    mStateMan->AddState(new StateInit(this));
     mStateMan->AddState(new StateMainMenu(this));
-    mStateMan->AddState(new StateSettings(this));
     mStateMan->AddState(new StateNewGame(this));
+    mStateMan->AddState(new StateSettings(this));
+    mStateMan->AddState(new StateTest(this));
 
-    mStateMan->RequestNextActiveState(StateId::MAIN_MENU);
+    mStateMan->RequestNextActiveState(StateId::INIT);
 
     // -- SGUI Stage --
     mStage = lib::sgui::Stage::Create();

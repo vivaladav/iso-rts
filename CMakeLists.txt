@@ -108,6 +108,8 @@ add_executable(
     src/Screens/ScreenFactionSelection.cpp
     src/Screens/ScreenGame.h
     src/Screens/ScreenGame.cpp
+    src/Screens/ScreenInit.h
+    src/Screens/ScreenInit.cpp
     src/Screens/ScreenMainMenu.h
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenNewGame.h
@@ -124,6 +126,8 @@ add_executable(
     src/States/StateFactionSelection.cpp
     src/States/StateGame.h
     src/States/StateGame.cpp
+    src/States/StateInit.h
+    src/States/StateInit.cpp
     src/States/StateMainMenu.h
     src/States/StateMainMenu.cpp
     src/States/StateNewGame.h

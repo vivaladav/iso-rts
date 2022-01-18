@@ -45,8 +45,6 @@ private:
     };
 
 private:
-    void InitSprites();
-
     int AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
                       lib::sgui::Widget * parent);
 
