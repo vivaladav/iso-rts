@@ -761,14 +761,18 @@ void ScreenGame::CreateUI()
         const std::vector<ObjectData> & unitsData = player->GetAvailableStructures();
         mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW STRUCTURE", player);
 
-        mDialogNewElement->SetFunctionOnClose([this]
+        // set unit's action to idle while dialog is open
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(GameObjectActionId::IDLE);
+
+        mDialogNewElement->SetFunctionOnClose([this, unit]
         {
+            unit->SetActiveActionToDefault();
             ClearNewElemDialog();
         });
 
-        mDialogNewElement->SetFunctionOnBuild([this, player]
+        mDialogNewElement->SetFunctionOnBuild([this, unit]
         {
-            auto unit = static_cast<Unit *>(player->GetSelectedObject());
             unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
 
             const auto stype = static_cast<StructureType>(mDialogNewElement->GetSelectedData().objType);
