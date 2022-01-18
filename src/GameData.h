@@ -163,6 +163,7 @@ enum SpriteIdStructures : unsigned int
     ID_STRUCT_DTOWER_L3_F3_SEL,
     // PRACTICE TARGET
     ID_PRACTICE_TARGET,
+    ID_PRACTICE_TARGET_SEL,
     // RADAR
     ID_STRUCT_RADAR_F1,
     ID_STRUCT_RADAR_F1_SEL,

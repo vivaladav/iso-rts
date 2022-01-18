@@ -475,6 +475,7 @@ void ScreenGame::InitSprites()
 
         // practice target
         { 576, 343, 96, 48 },
+        { 672, 343, 96, 48 },
 
         // radar
         { 0, 553, 192, 119 },
