@@ -440,14 +440,6 @@ void ScreenGame::InitSprites()
 
     tm->RegisterSprite(SpriteRocksFile, rectsRocks);
 
-    // SCENE ELEMENTS
-    const std::vector<lib::core::Rectd> rectsSceneElements
-    {
-        { 0, 0, 96, 48 }
-    };
-
-    tm->RegisterSprite(SpriteFileSceneElements, rectsSceneElements);
-
     // STRUCTURES
     const std::vector<lib::core::Rectd> rectsStructures
     {
@@ -480,6 +472,9 @@ void ScreenGame::InitSprites()
         { 288, 469, 96, 84 },
         { 384, 469, 96, 84 },
         { 480, 469, 96, 84 },
+
+        // practice target
+        { 576, 343, 96, 48 },
 
         // radar
         { 0, 553, 192, 119 },

@@ -44,7 +44,7 @@ void ObjectsDataRegistry::InitStructures()
     (   STRUCT_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
-                   SpriteFileSceneElements, SPR_PRACTICE_TARGET1,
+                   SpriteFileStructures, ID_PRACTICE_TARGET,
                    OCS_TARGET, STRUCT_TARGET, 1, 1)
     );
 
@@ -77,7 +77,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
-                   SpriteFileSceneElements, SPR_PRACTICE_TARGET1,
+                   SpriteFileStructures, ID_PRACTICE_TARGET,
                    OCS_TARGET, STRUCT_TARGET, 1, 1)
     );
 
@@ -110,7 +110,7 @@ void ObjectsDataRegistry::InitStructures()
         STRUCT_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
-                   SpriteFileSceneElements, SPR_PRACTICE_TARGET1,
+                   SpriteFileStructures, ID_PRACTICE_TARGET,
                    OCS_TARGET, STRUCT_TARGET, 1, 1)
     );
 

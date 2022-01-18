@@ -122,14 +122,6 @@ enum SpriteRocksId : unsigned int
     ROCKS_CROSS
 };
 
-// SCENE ELEMENTS
-extern const char SpriteFileSceneElements[];
-
-enum SpriteIdSceneElements : unsigned int
-{
-    SPR_PRACTICE_TARGET1
-};
-
 // PARTICLES
 extern const char SpriteFileParticles[];
 
@@ -169,6 +161,8 @@ enum SpriteIdStructures : unsigned int
     ID_STRUCT_DTOWER_L3_F2_SEL,
     ID_STRUCT_DTOWER_L3_F3,
     ID_STRUCT_DTOWER_L3_F3_SEL,
+    // PRACTICE TARGET
+    ID_PRACTICE_TARGET,
     // RADAR
     ID_STRUCT_RADAR_F1,
     ID_STRUCT_RADAR_F1_SEL,

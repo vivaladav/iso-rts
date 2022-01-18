@@ -31,10 +31,10 @@ void PracticeTarget::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     // set texture
-    const unsigned int spriteId = SpriteIdSceneElements::SPR_PRACTICE_TARGET1;
+    const unsigned int spriteId = ID_PRACTICE_TARGET;
     auto tm = lib::graphic::TextureManager::Instance();
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, spriteId);
     isoObj->SetTexture(tex);
 }
 
