@@ -227,6 +227,10 @@ void PushButton::HandleButtonDown()
 
 void PushButton::HandleButtonUp()
 {
+    // do not uncheck if exclusive (in button group)
+    if(mExclusive && mChecked)
+        return ;
+
     // set default state then handle click
     SetState(NORMAL);
 

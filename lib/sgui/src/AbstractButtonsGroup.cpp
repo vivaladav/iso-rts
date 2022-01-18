@@ -48,6 +48,7 @@ void AbstractButtonsGroup::AddButton(PushButton * button)
 
     // if mutually exclusive group button is checkable
     button->SetCheckable(mExclusive);
+    button->SetExclusive(mExclusive);
 
     if(mExclusive)
     {

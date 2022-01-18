@@ -48,6 +48,8 @@ public:
     void SetCheckable(bool val);
     bool IsChecked() const;
     void SetChecked(bool val);
+    bool IsExclusive() const;
+    void SetExclusive(bool val);
 
     void Click();
 
@@ -103,6 +105,7 @@ private:
 
     bool mCheckable = false;
     bool mChecked = false;
+    bool mExclusive = false;
 };
 
 inline bool PushButton::IsCheckable() const { return mCheckable; }
@@ -112,6 +115,9 @@ inline void PushButton::SetCheckable(bool val)
     mChecked = false;
 }
 inline bool PushButton::IsChecked() const { return mChecked; }
+
+inline bool PushButton::IsExclusive() const { return mExclusive; }
+inline void PushButton::SetExclusive(bool val) { mExclusive = val; }
 
 inline void PushButton::AddOnClickFunction(const std::function<void()> & f)
 {
