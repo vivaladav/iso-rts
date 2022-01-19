@@ -395,6 +395,10 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     obj->SetGameMap(this);
     obj->SetScreen(mScreenGame);
 
+    // add generator to player
+    if(owner != nullptr && obj->GetObjectType() == OBJ_RES_GEN)
+        owner->AddResourceGenerator(ind0, static_cast<ResourceGenerator *>(obj));
+
     // store object in map list and in registry
     mObjects.push_back(obj);
     mObjectsSet.insert(obj);
@@ -660,15 +664,16 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
 
     // reset cell's changing flag
     gcell.changing = false;
-    // propagate effects of conquest
-    UpdateInfluencedCells(cell.row, cell.col);
-
-    UpdateLinkedCells(player);
 
     // add object wall
     const GameObjectType got = Structure::StructureToGameObject(static_cast<StructureType>(data.objType));
 
     CreateObject(OBJECTS, got, player, cell.row, cell.col, data.rows, data.cols);
+
+    // propagate effects of conquest
+    UpdateInfluencedCells(cell.row, cell.col);
+
+    UpdateLinkedCells(player);
 
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);

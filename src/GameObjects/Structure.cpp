@@ -14,6 +14,7 @@ GameObjectType Structure::StructureToGameObject(StructureType st)
         OBJ_RADAR_STATION,
         OBJ_RES_GEN_ENERGY,
         OBJ_RES_GEN_MATERIAL1,
+        OBJ_RES_GEN_ENERGY_SOLAR,
         OBJ_PRACTICE_TARGET,
         OBJ_WALL
     };

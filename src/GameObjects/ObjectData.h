@@ -9,6 +9,7 @@ enum ObjClass : unsigned int
 {
     // STRUCTURES
     OCS_BASE,
+    OCS_GENERATOR,
     OCS_RADAR,
     OCS_TARGET,
     OCS_TOWER,

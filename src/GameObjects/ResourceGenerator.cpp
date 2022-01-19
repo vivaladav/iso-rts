@@ -79,7 +79,7 @@ void ResourceGenerator::UpdateOutput()
     else if(RESG_MATERIAL == mTypeGen)
         mOutput = 2;
     else if(RESG_ENERGY_SOLAR == mTypeGen)
-        mOutput = 4;
+        mOutput = 10;
     // default
     else
         mOutput = 1;

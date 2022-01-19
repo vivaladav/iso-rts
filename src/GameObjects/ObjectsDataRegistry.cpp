@@ -68,6 +68,16 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
     );
 
+    // solar panel
+    data1.emplace
+    (
+        STRUCT_RES_GEN_SOLAR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F1,
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+    );
+
     // -- FACTION 2 --
     std::unordered_map<StructureType, ObjectData> & data2 = mStructures[FACTION_2];
 
@@ -101,6 +111,16 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
     );
 
+    // solar panel
+    data2.emplace
+    (
+        STRUCT_RES_GEN_SOLAR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F2,
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+    );
+
     // -- FACTION 3 --
     std::unordered_map<StructureType, ObjectData> & data3 = mStructures[FACTION_3];
 
@@ -132,6 +152,16 @@ void ObjectsDataRegistry::InitStructures()
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F3,
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
+    );
+
+    // solar panel
+    data3.emplace
+    (
+        STRUCT_RES_GEN_SOLAR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F3,
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
     );
 }
 

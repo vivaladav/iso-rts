@@ -12,6 +12,7 @@ enum StructureType : unsigned int
     STRUCT_RADAR,
     STRUCT_RES_GEN_ENERGY,
     STRUCT_RES_GEN_MATERIAL,
+    STRUCT_RES_GEN_SOLAR,
     STRUCT_TARGET,
     STRUCT_WALL,
 
