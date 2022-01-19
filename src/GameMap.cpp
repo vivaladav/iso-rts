@@ -911,7 +911,9 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
 
     // update player
     player->SumCells(1);
-    player->AddResourceGenerator(ind, static_cast<ResourceGenerator *>(gcell1.obj));
+
+    if(gcell1.obj->GetObjectType() == OBJ_RES_GEN)
+        player->AddResourceGenerator(ind, gcell1.GetResourceGenerator());
 
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
