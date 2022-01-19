@@ -1,6 +1,7 @@
 #include "GameObjects/ResourceGenerator.h"
 
 #include "GameConstants.h"
+#include "GameData.h"
 #include "IsoObject.h"
 #include "Player.h"
 
@@ -9,9 +10,10 @@
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(ResourceType type, int rows, int cols)
+ResourceGenerator::ResourceGenerator(ResourceGeneratorType typeGen, ResourceType typeRes, int rows, int cols)
     : Structure(OBJ_RES_GEN, rows, cols)
-    , mResType(type)
+    , mTypeGen(typeGen)
+    , mTypeRes(typeRes)
 {
     SetCanBeConquered(true);
 
@@ -31,8 +33,6 @@ void ResourceGenerator::SetImage()
 {
     auto * tm = lib::graphic::TextureManager::Instance();
 
-    lib::graphic::Texture * tex = nullptr;
-
     IsoObject * isoObj = GetIsoObject();
 
     if(IsVisible())
@@ -41,72 +41,45 @@ void ResourceGenerator::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     const Player * owner = GetOwner();
+    const unsigned int faction = owner ? owner->GetFaction() : NO_FACTION;
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    if(RES_ENERGY == mResType)
+    unsigned int texId = 0;
+
+    if(RESG_ENERGY == mTypeGen)
     {
-        // not visible
-        if(!IsVisible())
-            tex = tm->GetTexture("data/img/energy_source.png");
-        // visible
+        if(faction != NO_FACTION && IsVisible())
+            texId = ID_STRUCT_GEN_ENERGY_F1 + (faction * NUM_ENE_GEN_SPRITES_PER_FAC) + sel;
         else
-        {
-            if(nullptr == owner)
-                tex = tm->GetTexture("data/img/energy_source.png");
-            else
-            {
-                const unsigned int faction = owner->GetFaction();
-
-                const char * filesFactions[] =
-                {
-                    "data/img/energy_source-f1.png",
-                    "data/img/energy_source-f2.png",
-                    "data/img/energy_source-f3.png"
-                };
-
-                tex = tm->GetTexture(filesFactions[faction]);
-            }
-        }
+            texId = ID_STRUCT_GEN_ENERGY;
     }
-    else if(RES_MATERIAL1 == mResType)
+    else if(RESG_MATERIAL == mTypeGen)
     {
-        // not visible
-        if(!IsVisible())
-            tex = tm->GetTexture("data/img/material_source.png");
-        // visible
+        if(faction != NO_FACTION && IsVisible())
+            texId = ID_STRUCT_GEN_MATERIAL_F1 + (faction * NUM_MAT_GEN_SPRITES_PER_FAC) + sel;
         else
-        {
-            GetIsoObject()->SetColor(COLOR_VIS);
-
-            if(nullptr == owner)
-                tex = tm->GetTexture("data/img/material_source.png");
-            else
-            {
-                const unsigned int faction = owner->GetFaction();
-
-                const char * filesFactions[] =
-                {
-                    "data/img/material_source-f1.png",
-                    "data/img/material_source-f2.png",
-                    "data/img/material_source-f3.png"
-                };
-
-                tex = tm->GetTexture(filesFactions[faction]);
-            }
-        }
+            texId = ID_STRUCT_GEN_MATERIAL;
     }
-    // unknown resource type
-    else
-        tex = tm->GetTexture("data/img/obj_null.png");
+    else if(RESG_ENERGY_SOLAR == mTypeGen)
+    {
+        if(faction != NO_FACTION && IsVisible())
+            texId = ID_STRUCT_SOLAR_PANEL_F1 + (faction * NUM_SOLAR_PANEL_SPRITES_PER_FAC) + sel;
+        else
+            texId = ID_STRUCT_SOLAR_PANEL;
+    }
 
+    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
     isoObj->SetTexture(tex);
 }
 
 void ResourceGenerator::UpdateOutput()
 {
-    if(RES_ENERGY == mResType)
+    if(RESG_ENERGY == mTypeGen)
         mOutput = 30;
-    else if(RES_MATERIAL1 == mResType)
+    else if(RESG_MATERIAL == mTypeGen)
         mOutput = 2;
+    else if(RESG_ENERGY_SOLAR == mTypeGen)
+        mOutput = 4;
     // default
     else
         mOutput = 1;

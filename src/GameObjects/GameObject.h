@@ -15,6 +15,7 @@ enum class MapObjectId : unsigned int
     // ENERGY SOURCES
     GEN_ENERGY = 2000,
     GEN_MATERIAL1,
+    GEN_ENERGY_SOLAR,
 
     // STRUCTURES
     RADAR_STATION = 3000,
@@ -73,6 +74,7 @@ enum GameObjectType : unsigned int
 
     OBJ_RES_GEN,
     OBJ_RES_GEN_ENERGY,
+    OBJ_RES_GEN_ENERGY_SOLAR,
     OBJ_RES_GEN_MATERIAL1,
 
     OBJ_UNIT,

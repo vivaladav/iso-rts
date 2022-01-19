@@ -5,12 +5,22 @@
 namespace game
 {
 
+enum ResourceGeneratorType : unsigned int
+{
+    RESG_ENERGY,
+    RESG_ENERGY_SOLAR,
+    RESG_MATERIAL,
+
+    NUM_RES_GEN_TYPES
+};
+
 enum ResourceType : unsigned int;
+
 
 class ResourceGenerator : public Structure
 {
 public:
-    ResourceGenerator(ResourceType type, int rows, int cols);
+    ResourceGenerator(ResourceGeneratorType typeGen, ResourceType typeRes, int rows, int cols);
 
     int GetOutput() const;
 
@@ -25,14 +35,15 @@ private:
     void UpdateOutput();
 
 private:
-    ResourceType mResType;
+    ResourceGeneratorType mTypeGen;
+    ResourceType mTypeRes;
 
     int mOutput = 0;
 };
 
 inline int ResourceGenerator::GetOutput() const { return mOutput; }
 
-inline ResourceType ResourceGenerator::GetResourceType() const { return mResType; }
+inline ResourceType ResourceGenerator::GetResourceType() const { return mTypeRes; }
 
 } // namespace game
 

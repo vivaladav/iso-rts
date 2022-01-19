@@ -336,9 +336,11 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     GameObject * obj = nullptr;
 
     if(OBJ_RES_GEN_ENERGY == objId)
-        obj = new ResourceGenerator(ResourceType::RES_ENERGY, rows, cols);
+        obj = new ResourceGenerator(RESG_ENERGY, ResourceType::RES_ENERGY, rows, cols);
     else if(OBJ_RES_GEN_MATERIAL1 == objId)
-        obj = new ResourceGenerator(ResourceType::RES_MATERIAL1, rows, cols);
+        obj = new ResourceGenerator(RESG_MATERIAL, ResourceType::RES_MATERIAL1, rows, cols);
+    else if(OBJ_RES_GEN_ENERGY_SOLAR == objId)
+        obj = new ResourceGenerator(RESG_ENERGY_SOLAR, ResourceType::RES_ENERGY, rows, cols);
     else if(OBJ_BASE == objId)
     {
         obj = new Base(rows, cols);
