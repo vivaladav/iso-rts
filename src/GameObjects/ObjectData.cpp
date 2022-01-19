@@ -23,6 +23,7 @@ const char * ObjectData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "FIRE RATE",
     "FIRE POWER",
     "FIRE ACCURACY",
+    "FIRE RANGE",
     "REGENERATION",
     "RESISTANCE",
     "SHIELD",
