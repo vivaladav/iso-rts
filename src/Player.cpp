@@ -41,6 +41,12 @@ Player::Player(const char * name, int pid)
     mStats[Stat::ENERGY].SetMax(500);
     mStats[Stat::MATERIAL].SetMax(200);
     mStats[Stat::MONEY].SetMax(99999999);
+
+    // init vectors of resource generators
+    mResGenerators.insert({ RES_ENERGY, {} });
+    mResGenerators.insert({ RES_MATERIAL1, {} });
+    mResGenerators.insert({ RES_DIAMONDS, {} });
+    mResGenerators.insert({ RES_BLOBS, {} });
 }
 
 Player::~Player()
@@ -223,35 +229,51 @@ void Player::SetSelectedObject(GameObject * obj)
     mSelObj->SetSelected(true);
 }
 
-void Player::AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen)
+void Player::AddResourceGenerator(ResourceGenerator * gen)
 {
-    mResGenerators.insert({cellId, gen});
+    const ResourceType type = gen->GetResourceType();
+
+    mResGenerators[type].push_back(gen);
 }
 
-void Player::RemoveResourceGenerator(unsigned int cellId)
+void Player::RemoveResourceGenerator(ResourceGenerator * gen)
 {
-    auto it = mResGenerators.find(cellId);
+    const ResourceType type = gen->GetResourceType();
+    std::vector<ResourceGenerator *> & generators = mResGenerators[type];
 
-    if(it != mResGenerators.end())
-        mResGenerators.erase(it);
+    auto it = generators.begin();
+
+    while(it != generators.end())
+    {
+        if(*it == gen)
+        {
+            generators.erase(it);
+            return ;
+        }
+        else
+            ++it;
+    }
 }
 
 int Player::GetResourceProduction(ResourceType type) const
 {
-    int energy = 0;
+    int res = 0;
 
-    for(auto it : mResGenerators)
+    auto it = mResGenerators.find(type);
+
+    // can't find resource type
+    if(mResGenerators.end() == it)
+        return 0;
+
+    const std::vector<ResourceGenerator *> & generators = it->second;
+
+    for(const ResourceGenerator * resGen : generators)
     {
-        const ResourceGenerator * resGen = it.second;
-
-        assert(resGen->GetCell() != nullptr);
-
-        if(resGen->GetResourceType() == type &&
-           resGen->GetCell()->linked)
-            energy += resGen->GetOutput();
+        if(resGen->GetCell()->linked)
+              res += resGen->GetOutput();
     }
 
-    return energy;
+    return res;
 }
 
 } // namespace game

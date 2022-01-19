@@ -397,7 +397,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
 
     // add generator to player
     if(owner != nullptr && obj->GetObjectType() == OBJ_RES_GEN)
-        owner->AddResourceGenerator(ind0, static_cast<ResourceGenerator *>(obj));
+        owner->AddResourceGenerator(static_cast<ResourceGenerator *>(obj));
 
     // store object in map list and in registry
     mObjects.push_back(obj);
@@ -920,7 +920,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     player->SumCells(1);
 
     if(gcell1.obj->GetObjectType() == OBJ_RES_GEN)
-        player->AddResourceGenerator(ind, gcell1.GetResourceGenerator());
+        player->AddResourceGenerator(gcell1.GetResourceGenerator());
 
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;

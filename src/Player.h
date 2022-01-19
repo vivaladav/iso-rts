@@ -93,8 +93,8 @@ public:
     void SetSelectedObject(GameObject * obj);
     bool HasSelectedObject() const;
 
-    void AddResourceGenerator(unsigned int cellId, ResourceGenerator * gen);
-    void RemoveResourceGenerator(unsigned int cellId);
+    void AddResourceGenerator(ResourceGenerator * gen);
+    void RemoveResourceGenerator(ResourceGenerator * gen);
 
     int GetResourceProduction(ResourceType type) const;
     void UpdateResources();
@@ -124,7 +124,7 @@ private:
     std::function<void(int)> mOnNumUnitsChanged;
     std::function<void()> mOnResourcesChanged;
 
-    std::unordered_map<unsigned int, ResourceGenerator *> mResGenerators;
+    std::unordered_map<ResourceType, std::vector<ResourceGenerator *>> mResGenerators;
 
     PlayerAI * mAI = nullptr;
 
