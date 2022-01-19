@@ -1,9 +1,11 @@
 #include "CellProgressBar.h"
 
 #include "GameConstants.h"
+#include "GameData.h"
 
 #include <graphic/Camera.h>
 #include <graphic/Image.h>
+#include <graphic/TextureManager.h>
 
 namespace game
 {
@@ -24,17 +26,19 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, li
     // CellProgressBar is part of the game scene
     SetCamera(Camera::GetDefaultCamera());
 
-    mBg = new Image("data/img/cell_bar_bg.png");
+    auto tm = TextureManager::Instance();
+
+    // background
+    Texture * tex = tm->GetSprite(SpriteFileCellBar, IND_CELL_BAR_BG);
+    mBg = new Image(tex);
     RegisterRenderable(mBg);
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
-    if(FACTION_1 == faction)
-        mBar = new Image("data/img/cell_bar-p1.png");
-    else if(FACTION_2 == faction)
-        mBar = new Image("data/img/cell_bar-p2.png");
-    else
-        mBar = new Image("data/img/cell_bar-p3.png");
+    // bar
+    const unsigned int texId = IND_CELL_BAR_F1 + faction;
+    tex = tm->GetSprite(SpriteFileCellBar, texId);
+    mBar = new Image(tex);
 
     RegisterRenderable(mBar);
 

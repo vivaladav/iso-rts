@@ -132,6 +132,21 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteFileCells, rects);
     });
 
+    // CELL BAR
+    mJobs.emplace_back([tm]
+    {
+        const std::vector<lib::core::Rectd> rects
+        {
+            { 0, 0, 52, 8 },
+            { 0, 9, 50, 6 },
+            { 0, 16, 50, 6 },
+            { 0, 23, 50, 6 },
+            { 0, 30, 50, 6 },
+        };
+
+        tm->RegisterSprite(SpriteFileCellBar, rects);
+    });
+
     // COLLECTIBLES
     mJobs.emplace_back([tm]
     {
