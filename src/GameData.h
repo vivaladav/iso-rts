@@ -36,18 +36,6 @@ enum SpriteIdCells : unsigned int
 
 };
 
-// CELL BAR
-extern const char SpriteFileCellBar[];
-
-enum SpriteIdCellBar : unsigned int
-{
-    IND_CELL_BAR_BG,
-    IND_CELL_BAR_F1,
-    IND_CELL_BAR_F2,
-    IND_CELL_BAR_F3,
-    IND_CELL_BAR_F4
-};
-
 // COLLECTIBLES
 extern const char SpriteCollectiblesFile[];
 

@@ -171,6 +171,22 @@ enum SpriteIdMainMenu : unsigned int
     NUM_MAIN_MENU_SPRITES
 };
 
+// MAP UI
+extern const char SpriteFileMapUI[];
+
+enum SpriteIdMapUI : unsigned int
+{
+    // CELL PROGRESS BAR
+    IND_CELL_BAR_BG,
+    IND_CELL_BAR_F1,
+    IND_CELL_BAR_F2,
+    IND_CELL_BAR_F3,
+    IND_CELL_BAR_F4,
+    // ICON COSTS
+    IND_ICON_CELL_ENERGY,
+    IND_ICON_CELL_MATERIAL
+};
+
 // RESOURCES BAR
 extern const char SpriteFileResourcesBar[];
 

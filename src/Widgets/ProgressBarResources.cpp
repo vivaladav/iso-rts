@@ -1,9 +1,11 @@
 #include "ProgressBarResources.h"
 
+#include "GameUIData.h"
 #include "Player.h"
 
 #include <graphic/Camera.h>
 #include <graphic/Image.h>
+#include <graphic/TextureManager.h>
 
 namespace game
 {
@@ -13,14 +15,16 @@ ProgressBarResources::ProgressBarResources(float min, float max, lib::sgui::Widg
 {
     using namespace  lib::graphic;
 
+    auto * tm = TextureManager::Instance();
+
     // background
-    mBg = new Image("data/img/UI/progress_bar-resources-bg.png");
+    mBg = new Image(tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MINIBAR_BG));
     RegisterRenderable(mBg);
 
     SetSize(mBg->GetWidth(), mBg->GetHeight());
 
     // bar
-    mBar = new Image("data/img/UI/progress_bar-resources-bar.png");
+    mBar = new Image(tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MINIBAR_VAL));
     RegisterRenderable(mBar);
     mBarW = mBar->GetWidth();
     mBarH = mBar->GetHeight();

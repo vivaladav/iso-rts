@@ -153,8 +153,6 @@ add_executable(
     src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonNavigation.h
     src/Widgets/ButtonNavigation.cpp
-    src/Widgets/ButtonPanelPlayer.h
-    src/Widgets/ButtonPanelPlayer.cpp
     src/Widgets/ButtonUnitsSelector.h
     src/Widgets/ButtonUnitsSelector.cpp
     src/Widgets/ButtonsPanel.h
@@ -179,8 +177,6 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelObjectActions.h
     src/Widgets/PanelObjectActions.cpp
-    src/Widgets/PanelPlayer.h
-    src/Widgets/PanelPlayer.cpp
     src/Widgets/PanelResources.h
     src/Widgets/PanelResources.cpp
     src/Widgets/ProgressBarResources.h

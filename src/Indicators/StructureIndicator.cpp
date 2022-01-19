@@ -1,10 +1,10 @@
 #include "Indicators/StructureIndicator.h"
 
 #include "GameConstants.h"
-#include "GameData.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/ObjectData.h"
+#include "Widgets/GameUIData.h"
 
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
@@ -122,6 +122,8 @@ void StructureIndicator::CreateCostData()
     FontManager * fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
 
+    auto tm = lib::graphic::TextureManager::Instance();
+
     // ENERGY
     delete mTxtCostEnergy;
 
@@ -132,7 +134,7 @@ void StructureIndicator::CreateCostData()
     mTxtCostEnergy->SetColor(mColorCost);
 
     if(nullptr == mIconEnergy)
-        mIconEnergy = new Image("data/img/icon_energy_cost.png");
+        mIconEnergy = new Image(tm->GetSprite(SpriteFileMapUI, IND_ICON_CELL_ENERGY));
 
     // MATERIAL
     delete mTxtCostMaterial;
@@ -145,7 +147,7 @@ void StructureIndicator::CreateCostData()
     mTxtCostMaterial->SetColor(mColorCost);
 
     if(nullptr == mIconMaterial)
-        mIconMaterial = new Image("data/img/icon_material_cost.png");
+        mIconMaterial = new Image(tm->GetSprite(SpriteFileMapUI, IND_ICON_CELL_MATERIAL));
 }
 
 void StructureIndicator::UpdateCostColor()

@@ -1,7 +1,7 @@
 #include "CellProgressBar.h"
 
 #include "GameConstants.h"
-#include "GameData.h"
+#include "Widgets/GameUIData.h"
 
 #include <graphic/Camera.h>
 #include <graphic/Image.h>
@@ -29,7 +29,7 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, li
     auto tm = TextureManager::Instance();
 
     // background
-    Texture * tex = tm->GetSprite(SpriteFileCellBar, IND_CELL_BAR_BG);
+    Texture * tex = tm->GetSprite(SpriteFileMapUI, IND_CELL_BAR_BG);
     mBg = new Image(tex);
     RegisterRenderable(mBg);
 
@@ -37,7 +37,7 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, li
 
     // bar
     const unsigned int texId = IND_CELL_BAR_F1 + faction;
-    tex = tm->GetSprite(SpriteFileCellBar, texId);
+    tex = tm->GetSprite(SpriteFileMapUI, texId);
     mBar = new Image(tex);
 
     RegisterRenderable(mBar);

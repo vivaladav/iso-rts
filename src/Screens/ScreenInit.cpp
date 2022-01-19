@@ -132,19 +132,23 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteFileCells, rects);
     });
 
-    // CELL BAR
+    // MAP UI
     mJobs.emplace_back([tm]
     {
         const std::vector<lib::core::Rectd> rects
         {
+            // cell progress bar
             { 0, 0, 52, 8 },
             { 0, 9, 50, 6 },
             { 0, 16, 50, 6 },
             { 0, 23, 50, 6 },
             { 0, 30, 50, 6 },
+            // icons cost
+            { 0, 37, 8, 14 },
+            { 9, 37, 11, 12 }
         };
 
-        tm->RegisterSprite(SpriteFileCellBar, rects);
+        tm->RegisterSprite(SpriteFileMapUI, rects);
     });
 
     // COLLECTIBLES
@@ -495,14 +499,14 @@ ScreenInit::ScreenInit(Game * game)
             // BAR
             { 0, 0, 822, 50 },
             // MINI BAR
-            { 0, 50, 54, 8 },
-            { 0, 58, 50, 4 },
+            { 0, 51, 54, 8 },
+            { 0, 60, 50, 4 },
             // ICONS
-            { 54, 50, 22, 32 },
-            { 76, 50, 18, 32 },
-            { 94, 50, 24, 26 },
-            { 118, 50, 18, 30 },
-            { 136, 50, 26, 26 }
+            { 55, 51, 22, 32 },
+            { 78, 51, 18, 32 },
+            { 97, 51, 24, 26 },
+            { 122, 51, 18, 30 },
+            { 141, 51, 26, 26 }
         };
 
         tm->RegisterSprite(SpriteFileResourcesBar, rects);
