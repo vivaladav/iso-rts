@@ -16,7 +16,6 @@ enum ResourceGeneratorType : unsigned int
 
 enum ResourceType : unsigned int;
 
-
 class ResourceGenerator : public Structure
 {
 public:

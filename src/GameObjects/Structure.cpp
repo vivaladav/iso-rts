@@ -15,6 +15,10 @@ GameObjectType Structure::StructureToGameObject(StructureType st)
         OBJ_RES_GEN_ENERGY,
         OBJ_RES_GEN_MATERIAL1,
         OBJ_RES_GEN_ENERGY_SOLAR,
+        OBJ_RES_STORAGE_ENERGY,
+        OBJ_RES_STORAGE_MATERIAL,
+        OBJ_RES_STORAGE_DIAMONDS,
+        OBJ_RES_STORAGE_BLOBS,
         OBJ_PRACTICE_TARGET,
         OBJ_WALL
     };

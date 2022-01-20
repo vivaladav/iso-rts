@@ -8,6 +8,7 @@ const char * ObjectData::STR_CLASS[NUM_OBJ_CLASSES] =
     "BASE",
     "GENERATOR",
     "RADAR",
+    "STORAGE",
     "TARGET",
     "TOWER",
 

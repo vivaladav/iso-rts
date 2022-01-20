@@ -20,6 +20,7 @@
 #include "GameObjects/PracticeTarget.h"
 #include "GameObjects/RadarStation.h"
 #include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/ResourceStorage.h"
 #include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
@@ -270,6 +271,14 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         CreateObject(layerId, OBJ_RES_GEN_ENERGY, nullptr, r0, c0, rows, cols);
     else if(MapObjectId::GEN_MATERIAL1 == objId)
         CreateObject(layerId, OBJ_RES_GEN_MATERIAL1, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::STORAGE_ENERGY == objId)
+        CreateObject(layerId, OBJ_RES_STORAGE_ENERGY, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::STORAGE_MATERIAL == objId)
+        CreateObject(layerId, OBJ_RES_STORAGE_MATERIAL, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::STORAGE_DIAMONDS == objId)
+        CreateObject(layerId, OBJ_RES_STORAGE_DIAMONDS, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::STORAGE_BLOBS == objId)
+        CreateObject(layerId, OBJ_RES_STORAGE_BLOBS, nullptr, r0, c0, rows, cols);
     else if(MapObjectId::RADAR_STATION == objId)
         CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
     else if(objId >= MapObjectId::MOUNTAIN_FIRST && objId <= MapObjectId::MOUNTAIN_LAST)
@@ -377,6 +386,14 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)
         obj  = new Blobs;
+    else if(OBJ_RES_STORAGE_ENERGY == objId)
+        obj = new ResourceStorage(RES_ENERGY, 1, 1);
+    else if(OBJ_RES_STORAGE_MATERIAL == objId)
+        obj = new ResourceStorage(RES_MATERIAL1, 1, 1);
+    else if(OBJ_RES_STORAGE_DIAMONDS == objId)
+        obj = new ResourceStorage(RES_DIAMONDS, 1, 1);
+    else if(OBJ_RES_STORAGE_BLOBS == objId)
+        obj = new ResourceStorage(RES_BLOBS, 1, 1);
     // this should never happen
     else
     {
@@ -1592,6 +1609,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 void GameMap::UpdateLinkedCells(Player * player)
 {
     std::unordered_set<GameObject *> objs;
+    std::unordered_map<GameObject *, bool> objsLink;
 
     // CLEAR ALL LINKED STATUS
     for(GameMapCell & cell : mCells)
@@ -1610,7 +1628,7 @@ void GameMap::UpdateLinkedCells(Player * player)
     {
         DelPlayerObjVisibility(obj, player);
 
-        obj->SetLinked(false);
+        objsLink.insert({obj, false});
     }
 
     // FIND LINKED CELLS
@@ -1629,9 +1647,9 @@ void GameMap::UpdateLinkedCells(Player * player)
         GameMapCell & currCell = mCells[currInd];
         currCell.linked = true;
 
-        // notify current object
+        // mark object as linked
         if(currCell.obj != nullptr)
-            currCell.obj->SetLinked(true);
+            objsLink[currCell.obj] = true;
 
         // add TOP
         unsigned int r = currCell.row - 1;
@@ -1680,6 +1698,10 @@ void GameMap::UpdateLinkedCells(Player * player)
         // add current to done
         done.insert(currInd);
     }
+
+    // UPDATE LINK STATUS
+    for(GameObject * obj : objs)
+        obj->SetLinked(objsLink[obj]);
 
     // UPDATE INFLUENCE
     for(unsigned int ind : done)

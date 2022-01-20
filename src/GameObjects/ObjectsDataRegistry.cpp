@@ -78,6 +78,46 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
     );
 
+    // storage energy
+    data1.emplace
+    (
+        STRUCT_RES_STO_ENERGY,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F1,
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+    );
+
+    // storage material
+    data1.emplace
+    (
+        STRUCT_RES_STO_MATERIAL,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F1,
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+    );
+
+    // storage diamonds
+    data1.emplace
+    (
+        STRUCT_RES_STO_DIAMONDS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F1,
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+    );
+
+    // storage blobs
+    data1.emplace
+    (
+        STRUCT_RES_STO_BLOBS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F1,
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
+    );
+
     // -- FACTION 2 --
     std::unordered_map<StructureType, ObjectData> & data2 = mStructures[FACTION_2];
 
@@ -121,6 +161,46 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
     );
 
+    // storage energy
+    data2.emplace
+    (
+        STRUCT_RES_STO_ENERGY,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F2,
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+    );
+
+    // storage material
+    data2.emplace
+    (
+        STRUCT_RES_STO_MATERIAL,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F2,
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+    );
+
+    // storage diamonds
+    data2.emplace
+    (
+        STRUCT_RES_STO_DIAMONDS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F2,
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+    );
+
+    // storage blobs
+    data2.emplace
+    (
+        STRUCT_RES_STO_BLOBS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F2,
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
+    );
+
     // -- FACTION 3 --
     std::unordered_map<StructureType, ObjectData> & data3 = mStructures[FACTION_3];
 
@@ -162,6 +242,46 @@ void ObjectsDataRegistry::InitStructures()
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F3,
                    OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+    );
+
+    // storage energy
+    data3.emplace
+    (
+        STRUCT_RES_STO_ENERGY,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F3,
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+    );
+
+    // storage material
+    data3.emplace
+    (
+        STRUCT_RES_STO_MATERIAL,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F3,
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+    );
+
+    // storage diamonds
+    data3.emplace
+    (
+        STRUCT_RES_STO_DIAMONDS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F3,
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+    );
+
+    // storage blobs
+    data3.emplace
+    (
+        STRUCT_RES_STO_BLOBS,
+        ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F3,
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
     );
 }
 

@@ -76,6 +76,8 @@ add_executable(
     src/GameObjects/RadarStation.cpp
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
+    src/GameObjects/ResourceStorage.h
+    src/GameObjects/ResourceStorage.cpp
     src/GameObjects/SceneObject.h
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Structure.h

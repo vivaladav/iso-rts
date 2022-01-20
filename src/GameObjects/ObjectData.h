@@ -11,6 +11,7 @@ enum ObjClass : unsigned int
     OCS_BASE,
     OCS_GENERATOR,
     OCS_RADAR,
+    OCS_STORAGE,
     OCS_TARGET,
     OCS_TOWER,
 

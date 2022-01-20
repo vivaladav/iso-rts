@@ -55,7 +55,14 @@ PanelResources::PanelResources(Player * player)
     rd->SetValue(energy.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::ENERGY, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::ENERGY, [rd](const StatValue * val)
+    {
+        rd->SetValue(val->GetIntValue());
+    });
+    player->AddOnResourceRangeChanged(Player::Stat::ENERGY, [rd](const StatValue * val)
+    {
+        rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
+    });
 
     slotX += slotW;
 
@@ -67,7 +74,14 @@ PanelResources::PanelResources(Player * player)
     rd->SetValue(material.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::MATERIAL, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::MATERIAL, [rd](const StatValue * val)
+    {
+        rd->SetValue(val->GetIntValue());
+    });
+    player->AddOnResourceRangeChanged(Player::Stat::MATERIAL, [rd](const StatValue * val)
+    {
+        rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
+    });
 
     slotX += slotW;
 
@@ -79,7 +93,14 @@ PanelResources::PanelResources(Player * player)
     rd->SetValue(diamonds.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val)
+    {
+        rd->SetValue(val->GetIntValue());
+    });
+    player->AddOnResourceRangeChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val)
+    {
+        rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
+    });
 
     slotX += slotW;
 
@@ -91,7 +112,14 @@ PanelResources::PanelResources(Player * player)
     rd->SetValue(blobs.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::BLOBS, [rd](const StatValue * val) { rd->SetValue(val->GetIntValue()); });
+    player->AddOnResourceChanged(Player::Stat::BLOBS, [rd](const StatValue * val)
+    {
+        rd->SetValue(val->GetIntValue());
+    });
+    player->AddOnResourceRangeChanged(Player::Stat::BLOBS, [rd](const StatValue * val)
+    {
+        rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
+    });
 }
 
 void PanelResources::SetBg()
