@@ -21,14 +21,19 @@ void ProgressBar::SetMinMax(float min, float max)
     mMin = min;
     mMax = max;
 
+    // clamp value
+    if(min > mValue)
+        mValue = min;
+    if(max < mValue)
+        mValue = max;
+
+    // update value
+    mCompleted = false;
     SetValue(mValue);
 }
 
 void ProgressBar::SetValue(float progress)
 {
-    if(mCompleted)
-        return ;
-
     if(progress < mMin)
         mValue = mMin;
     else if(progress > mMax)
@@ -57,9 +62,6 @@ void ProgressBar::IncValue(float val)
 
 void ProgressBar::SetValuePerc(float perc)
 {
-    if(mCompleted)
-        return ;
-
     if(perc < 0.f)
         perc = 0.f;
     else if(perc > 100.f)
