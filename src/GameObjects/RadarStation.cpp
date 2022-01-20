@@ -28,6 +28,8 @@ void RadarStation::UpdateGraphics()
 
 void RadarStation::OnLinkedChanged()
 {
+    GameObject::OnLinkedChanged();
+
     const int maxVis = 12;
     SetVisibilityLevel(maxVis * static_cast<int>(IsLinked()));
 }
