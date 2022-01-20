@@ -87,12 +87,34 @@ void Player::SumResource(Stat sid, int val)
     mOnResourcesChanged();
 }
 
+void Player::SumResourceMax(Stat sid, int val)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    const int max = mStats[sid].GetIntMax();
+    int newMax = max + val;
+
+    if(newMax < 0)
+        newMax = 0;
+
+    mStats[sid].SetMax(newMax);
+}
+
 void Player::AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f)
 {
     if(sid >= NUM_PSTATS)
         return ;
 
     mStats[sid].AddOnValueChanged(f);
+}
+
+void Player::AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    mStats[sid].AddOnRangeChanged(f);
 }
 
 void Player::SumCells(int val)

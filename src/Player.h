@@ -62,8 +62,10 @@ public:
     // stats
     const StatValue & GetStat(Stat sid);
     void SumResource(Stat sid, int val);
+    void SumResourceMax(Stat sid, int val);
     void SetOnResourcesChanged(const std::function<void()> & f);
     void AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f);
+    void AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f);
 
     int GetNumCells() const;
     void SumCells(int val);
@@ -138,9 +140,6 @@ private:
 
     int mNumCells = 0;
     int mTotCellsLevel = 0;
-    int mEnergy = 0;
-    int mMaterial1 = 0;
-    int mDiamonds = 0;
     int mNumUnits = 0;
     int mTotUnitsLevel = 0;
 

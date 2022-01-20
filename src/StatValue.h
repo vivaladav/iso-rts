@@ -34,13 +34,16 @@ public:
     void SumValue(float val);
 
     void AddOnValueChanged(const std::function<void(const StatValue *)> & f);
+    void AddOnRangeChanged(const std::function<void(const StatValue *)> & f);
     void ClearCallbacks();
 
 private:
-    void NotifyObservers();
+    void NotifyObserversValue();
+    void NotifyObserversRange();
 
 private:
-    std::vector<std::function<void(const StatValue *)>> mCallbacks;
+    std::vector<std::function<void(const StatValue *)>> mCallbacksVal;
+    std::vector<std::function<void(const StatValue *)>> mCallbacksRange;
 
     unsigned int mId = 0;
 
@@ -66,46 +69,23 @@ inline float StatValue::GetFloatMin() const { return mMin.f; }
 inline int StatValue::GetIntMax() const { return mMax.d; }
 inline float StatValue::GetFloatMax() const { return mMax.f; }
 
-inline void StatValue::SetMin(int min)
-{
-    mMin.d = min;
-
-    if(mData.d < mMin.d)
-        mData.d = mMin.d;
-}
-
-inline void StatValue::SetMin(float min)
-{
-    mMin.f = min;
-
-    if(mData.f < mMin.f)
-        mData.f = mMin.f;
-}
-
-inline void StatValue::SetMax(int max)
-{
-    mMax.d = max;
-
-    if(mData.d > mMax.d)
-        mData.d = mMax.d;
-}
-
-inline void StatValue::SetMax(float max)
-{
-    mMax.f = max;
-
-    if(mData.f > mMax.f)
-        mData.f = mMax.f;
-}
-
 inline int StatValue::GetIntValue() const { return mData.d; }
 inline float StatValue::GetFloatValue() const { return mData.f; }
 
 inline void StatValue::AddOnValueChanged(const std::function<void(const StatValue *)> & f)
 {
-    mCallbacks.push_back(f);
+    mCallbacksVal.push_back(f);
 }
 
-inline void StatValue::ClearCallbacks() { mCallbacks.clear(); }
+inline void StatValue::AddOnRangeChanged(const std::function<void(const StatValue *)> & f)
+{
+    mCallbacksRange.push_back(f);
+}
+
+inline void StatValue::ClearCallbacks()
+{
+    mCallbacksVal.clear();
+    mCallbacksRange.clear();
+}
 
 } // namespace game

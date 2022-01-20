@@ -22,6 +22,58 @@ StatValue::StatValue(unsigned int statId, float val)
 {
 }
 
+void StatValue::SetMin(int min)
+{
+    mMin.d = min;
+
+    if(mData.d < mMin.d)
+    {
+        mData.d = mMin.d;
+        NotifyObserversValue();
+    }
+
+    NotifyObserversRange();
+}
+
+void StatValue::SetMin(float min)
+{
+    mMin.f = min;
+
+    if(mData.f < mMin.f)
+    {
+        mData.f = mMin.f;
+        NotifyObserversValue();
+    }
+
+    NotifyObserversRange();
+}
+
+void StatValue::SetMax(int max)
+{
+    mMax.d = max;
+
+    if(mData.d > mMax.d)
+    {
+        mData.d = mMax.d;
+        NotifyObserversValue();
+    }
+
+    NotifyObserversRange();
+}
+
+void StatValue::SetMax(float max)
+{
+    mMax.f = max;
+
+    if(mData.f > mMax.f)
+    {
+        mData.f = mMax.f;
+        NotifyObserversValue();
+    }
+
+    NotifyObserversRange();
+}
+
 void StatValue::SetValue(int val)
 {
     // same value -> exit
@@ -30,7 +82,7 @@ void StatValue::SetValue(int val)
 
     mData.d = val;
 
-    NotifyObservers();
+    NotifyObserversValue();
 }
 
 void StatValue::SetValue(float val)
@@ -43,7 +95,7 @@ void StatValue::SetValue(float val)
 
     mData.d = val;
 
-    NotifyObservers();
+    NotifyObserversValue();
 }
 
 void StatValue::SumValue(int val)
@@ -56,7 +108,7 @@ void StatValue::SumValue(int val)
     else if(mData.d > mMax.d)
         mData.d = mMax.d;
 
-    NotifyObservers();
+    NotifyObserversValue();
 }
 
 void StatValue::SumValue(float val)
@@ -69,12 +121,18 @@ void StatValue::SumValue(float val)
     else if(mData.f > mMax.f)
         mData.f = mMax.f;
 
-    NotifyObservers();
+    NotifyObserversValue();
 }
 
-void StatValue::NotifyObservers()
+void StatValue::NotifyObserversValue()
 {
-    for(auto & f : mCallbacks)
+    for(auto & f : mCallbacksVal)
+        f(this);
+}
+
+void StatValue::NotifyObserversRange()
+{
+    for(auto & f : mCallbacksRange)
         f(this);
 }
 
