@@ -12,6 +12,7 @@ add_library(
     include/sgui/ProgressBar.h
     include/sgui/PushButton.h
     include/sgui/Stage.h
+    include/sgui/TextArea.h
     include/sgui/WidgetContainer.h
     include/sgui/Widget.h
     src/AbstractButtonsGroup.cpp
@@ -21,6 +22,7 @@ add_library(
     src/ProgressBar.cpp
     src/PushButton.cpp
     src/Stage.cpp
+    src/TextArea.cpp
     src/Widget.cpp
     src/WidgetContainer.cpp
 )

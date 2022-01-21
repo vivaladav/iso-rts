@@ -26,11 +26,11 @@ public:
 
     core::Sized GetTextSize(const char * text);
 
+    TTF_Font * GetSysFont() const;
+
 private:
     Font(const char * file, int size, int style);
     ~Font();
-
-    TTF_Font * GetSysFont() const;
 
 private:
     TTF_Font * mSysFont = nullptr;
@@ -39,8 +39,6 @@ private:
 
     // Only FontManager can create/destroy a Font
     friend class FontManager;
-    // Text needs to access system data
-    friend class Text;
 };
 
 inline bool Font::IsValid() const { return mSysFont != nullptr; }

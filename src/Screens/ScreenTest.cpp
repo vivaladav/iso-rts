@@ -17,6 +17,7 @@
 #include <sgui/Image.h>
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
+#include <sgui/TextArea.h>
 
 #include <iostream>
 
@@ -183,23 +184,34 @@ void ScreenTest::TestSGui()
 
     buttonY += button->GetHeight() + marginV;
 
-    // testing change of Texture in graphic::Image
-    auto img = new lib::graphic::Image;
-    Texture * tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
-    img->SetTexture(tex);
-    img->SetPosition(container->GetX(), buttonY);
-    mRenderables.emplace_back(img);
+    // -- TEXT AREA --
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    label = new Label("TEXT AREA", font, container);
+    label->SetY(buttonY);
 
-    button->AddOnToggleFunction([img](bool checked)
+    buttonY += label->GetHeight() * 1.5f;
+
+    button = new ButtonMainMenu("CHANGE TEXT", container);
+    button->SetY(label->GetY() + marginV);
+
+    buttonY += button->GetHeight() * 1.5f;
+
+    auto tm = TextureManager::Instance();
+    auto borders = new lib::sgui::Image(tm->GetTexture("data/img/test/text_area.png"), container);
+    borders->SetPosition(0, buttonY);
+
+    const int taW = 400;
+    const int taH = 300;
+    const char * text = "This is a pretty long text.(NN)\n\nOver multiple lines, well, at least 4 and I bet that "
+                        "this line will wrap at some point before the newline.(N)\nHere it is the end!";
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    auto ta = new TextArea(taW, taH, text, font, container);
+    ta->SetY(buttonY);
+    ta->SetColor(0x99FFAAFF);
+
+    button->AddOnClickFunction([ta]
     {
-        Texture * tex;
-
-        if(checked)
-            tex = TextureManager::Instance()->GetTexture("data/img/base-f1-sel.png");
-        else
-            tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
-
-        img->SetTexture(tex);
+        ta->SetText("Text changed after pushing a button. All good so far. Also NO newline in this case!");
     });
 
     // -- BUTTONS GROUP --
@@ -288,14 +300,6 @@ void ScreenTest::TestSGui()
     wY += button->GetHeight() * 2;
     button->SetY(wY);
     button->AddOnClickFunction([container2]{ container2->SetAlpha(255); });
-
-    // -- IMAGE IN PANEL --
-
-    auto container3 = new Widget;
-    container3->SetPosition(1000, 200);
-
-    tex = TextureManager::Instance()->GetTexture("data/img/base-f1.png");
-    auto wimg = new lib::sgui::Image(tex, container3);
 }
 
 void ScreenTest::TestSprite()
