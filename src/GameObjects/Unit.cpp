@@ -19,6 +19,13 @@
 namespace game
 {
 
+const char * Unit::TITLES[NUM_UNIT_TYPES] =
+{
+    "WORKER",
+    "SOLDIER",
+    "GENERIC"
+};
+
 Unit::Unit(const ObjectData & data, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))

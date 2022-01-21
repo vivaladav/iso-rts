@@ -45,7 +45,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, STRUCT_TARGET, 1, 1)
+                   OCS_TARGET, STRUCT_TARGET, 1, 1,
+                   Structure::TITLES[STRUCT_TARGET])
     );
 
     // radar
@@ -55,7 +56,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F1,
-                   OCS_RADAR, STRUCT_RADAR, 2, 2)
+                   OCS_RADAR, STRUCT_RADAR, 2, 2,
+                   Structure::TITLES[STRUCT_RADAR])
     );
 
     // defensive tower
@@ -65,7 +67,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F1,
-                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
+                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_DEF_TOWER])
     );
 
     // solar panel
@@ -75,7 +78,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F1,
-                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1,
+                   Structure::TITLES[STRUCT_RES_GEN_SOLAR])
     );
 
     // storage energy
@@ -85,7 +89,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F1,
-                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_ENERGY])
     );
 
     // storage material
@@ -95,7 +100,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F1,
-                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_MATERIAL])
     );
 
     // storage diamonds
@@ -105,7 +111,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F1,
-                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS])
     );
 
     // storage blobs
@@ -115,7 +122,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F1,
-                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_BLOBS])
     );
 
     // -- FACTION 2 --
@@ -128,7 +136,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, STRUCT_TARGET, 1, 1)
+                   OCS_TARGET, STRUCT_TARGET, 1, 1,
+                   Structure::TITLES[STRUCT_TARGET])
     );
 
     // radar
@@ -138,7 +147,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F2,
-                   OCS_RADAR, STRUCT_RADAR, 2, 2)
+                   OCS_RADAR, STRUCT_RADAR, 2, 2,
+                   Structure::TITLES[STRUCT_RADAR])
     );
 
     // defensive tower
@@ -148,7 +158,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F2,
-                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
+                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_DEF_TOWER])
     );
 
     // solar panel
@@ -158,7 +169,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F2,
-                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1,
+                   Structure::TITLES[STRUCT_RES_GEN_SOLAR])
     );
 
     // storage energy
@@ -168,7 +180,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F2,
-                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_ENERGY])
     );
 
     // storage material
@@ -178,7 +191,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F2,
-                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_MATERIAL])
     );
 
     // storage diamonds
@@ -188,7 +202,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F2,
-                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS])
     );
 
     // storage blobs
@@ -198,7 +213,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F2,
-                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_BLOBS])
     );
 
     // -- FACTION 3 --
@@ -211,7 +227,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, STRUCT_TARGET, 1, 1)
+                   OCS_TARGET, STRUCT_TARGET, 1, 1,
+                   Structure::TITLES[STRUCT_TARGET])
     );
 
     // radar
@@ -221,7 +238,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F3,
-                   OCS_RADAR, STRUCT_RADAR, 2, 2)
+                   OCS_RADAR, STRUCT_RADAR, 2, 2,
+                   Structure::TITLES[STRUCT_RADAR])
     );
 
     // defensive tower
@@ -231,7 +249,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F3,
-                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1)
+                   OCS_TOWER, STRUCT_DEF_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_DEF_TOWER])
     );
 
     // solar panel
@@ -241,7 +260,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F3,
-                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1)
+                   OCS_GENERATOR, STRUCT_RES_GEN_SOLAR, 1, 1,
+                   Structure::TITLES[STRUCT_RES_GEN_SOLAR])
     );
 
     // storage energy
@@ -251,7 +271,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F3,
-                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_ENERGY, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_ENERGY])
     );
 
     // storage material
@@ -261,7 +282,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F3,
-                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_MATERIAL, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_MATERIAL])
     );
 
     // storage diamonds
@@ -271,7 +293,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F3,
-                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_DIAMONDS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS])
     );
 
     // storage blobs
@@ -281,7 +304,8 @@ void ObjectsDataRegistry::InitStructures()
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F3,
-                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1)
+                   OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1,
+                   Structure::TITLES[STRUCT_RES_STO_BLOBS])
     );
 }
 
@@ -290,17 +314,6 @@ void ObjectsDataRegistry::InitUnits()
     // -- FACTION 1 --
     std::unordered_map<UnitType, ObjectData> & data1 = mUnits[FACTION_1];
 
-    /*
-    OSTAT_ENERGY,
-    OSTAT_VIEW_RADIUS,
-    OSTAT_FIRE_RATE,
-    OSTAT_FIRE_POWER,
-    OSTAT_FIRE_ACCURACY,
-    OSTAT_FIRE_RANGE,
-    OSTAT_REGENERATION,
-    OSTAT_RESISTANCE,
-    OSTAT_SHIELD,
-    */
     // unit 1
     data1.emplace
     (
@@ -308,7 +321,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
                    std::vector<int>{ 15, 15, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F1,
-                   OCU_WORKER, UNIT_1, 1, 1)
+                   OCU_WORKER, UNIT_1, 1, 1,
+                   Unit::TITLES[UNIT_1])
     );
 
     // unit 2
@@ -318,7 +332,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
                    std::vector<int>{ 20, 20, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F1,
-                   OCU_SOLDIER, UNIT_2, 1, 1)
+                   OCU_SOLDIER, UNIT_2, 1, 1,
+                   Unit::TITLES[UNIT_2])
     );
 
     // unit 3
@@ -328,7 +343,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
                    std::vector<int>{ 40, 40, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F1,
-                   OCU_GENERIC, UNIT_3, 1, 1)
+                   OCU_GENERIC, UNIT_3, 1, 1,
+                   Unit::TITLES[UNIT_3])
 
     );
 
@@ -342,7 +358,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
                    std::vector<int>{ 15, 15, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F2,
-                   OCU_WORKER, UNIT_1, 1, 1)
+                   OCU_WORKER, UNIT_1, 1, 1,
+                   Unit::TITLES[UNIT_1])
     );
 
     // unit 2
@@ -352,7 +369,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
                    std::vector<int>{ 20, 20, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F2,
-                   OCU_SOLDIER, UNIT_2, 1, 1)
+                   OCU_SOLDIER, UNIT_2, 1, 1,
+                   Unit::TITLES[UNIT_2])
     );
 
     // unit 3
@@ -362,7 +380,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
                    std::vector<int>{ 40, 40, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F2,
-                   OCU_GENERIC, UNIT_3, 1, 1)
+                   OCU_GENERIC, UNIT_3, 1, 1,
+                   Unit::TITLES[UNIT_3])
     );
 
     // -- FACTION 3 --
@@ -375,7 +394,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
                    std::vector<int>{ 15, 15, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F3,
-                   OCU_WORKER, UNIT_1, 1, 1)
+                   OCU_WORKER, UNIT_1, 1, 1,
+                   Unit::TITLES[UNIT_1])
     );
 
     // unit 2
@@ -385,7 +405,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
                    std::vector<int>{ 20, 20, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F3,
-                   OCU_SOLDIER, UNIT_2, 1, 1)
+                   OCU_SOLDIER, UNIT_2, 1, 1,
+                   Unit::TITLES[UNIT_2])
     );
 
     // unit 3
@@ -395,7 +416,8 @@ void ObjectsDataRegistry::InitUnits()
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
                    std::vector<int>{ 40, 40, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F3,
-                   OCU_GENERIC, UNIT_3, 1, 1)
+                   OCU_GENERIC, UNIT_3, 1, 1,
+                   Unit::TITLES[UNIT_3])
     );
 }
 

@@ -55,7 +55,8 @@ struct ObjectData
                const std::vector<int> & cst,
                const char * file, unsigned int texId,
                ObjClass oc, unsigned int type,
-               unsigned int rs, unsigned int cs)
+               unsigned int rs, unsigned int cs,
+               const char * tit)
         : stats(sts)
         , costs(cst)
         , iconFile(file)
@@ -64,6 +65,7 @@ struct ObjectData
         , objType(type)
         , rows(rs)
         , cols(cs)
+        , title(tit)
     {
     }
 
@@ -79,6 +81,8 @@ struct ObjectData
 
     unsigned int rows;
     unsigned int cols;
+
+    const char * title;
 
     static const char * STR_CLASS[NUM_OBJ_CLASSES];
     static const char * STR_STAT[NUM_TOT_OBJ_STATS];

@@ -34,6 +34,8 @@ public:
 
 public:
     static GameObjectType StructureToGameObject(StructureType st);
+
+    static const char * TITLES[NUM_STRUCT_TYPES];
 };
 
 inline Structure::Structure(GameObjectType type, int rows, int cols)

@@ -58,6 +58,8 @@ public:
 
     const std::string & GetText() const;
 
+    VisualState GetState() const;
+
 protected:
     void SetCurrBg(graphic::Renderable * bg);
     void SetCurrLabel(graphic::Renderable * label);
@@ -129,6 +131,8 @@ inline void PushButton::AddOnToggleFunction(const std::function<void(bool)> & f)
 }
 
 inline const std::string & PushButton::GetText() const { return mText; }
+
+inline PushButton::VisualState PushButton::GetState() const { return mState; }
 
 } // namespace sgui
 } // namespace lib

@@ -34,6 +34,6 @@ const char * ObjectData::STR_STAT[NUM_TOT_OBJ_STATS] =
 };
 
 const ObjectData ObjectData::NullObj(std::vector<int>{}, std::vector<int>{},
-                                     nullptr, 0, OC_NULL, -1, 0, 0);
+                                     nullptr, 0, OC_NULL, -1, 0, 0, nullptr);
 
 } // namespace game

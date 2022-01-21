@@ -5,6 +5,22 @@
 namespace game
 {
 
+const char * Structure::TITLES[NUM_STRUCT_TYPES] =
+{
+    "BASE",
+    "DEFENSIVE TOWER",
+    "RADAR STATION",
+    "ENERGY GENERATOR",
+    "MATERIAL GENERATOR",
+    "SOLAR PANELS",
+    "ENERGY STORAGE",
+    "MATERIAL STORAGE",
+    "DIAMONDS STORAGE",
+    "BLOBS STORAGE",
+    "PRACTICE TARGET",
+    "WALL"
+};
+
 GameObjectType Structure::StructureToGameObject(StructureType st)
 {
     static const GameObjectType types[NUM_STRUCT_TYPES] =

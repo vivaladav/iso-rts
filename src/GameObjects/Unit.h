@@ -42,6 +42,9 @@ public:
     void SetStructureToBuild(StructureType type);
     StructureType GetStructureToBuild() const;
 
+public:
+    static const char * TITLES[NUM_UNIT_TYPES];
+
 private:
     void UpdateGraphics() override;
 

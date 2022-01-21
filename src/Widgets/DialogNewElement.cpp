@@ -228,6 +228,9 @@ public:
 
         SetCheckable(true);
 
+        // title
+        mTitle = new DummyRenderable;
+
         // image
         mImage = new DummyRenderable;
 
@@ -239,6 +242,7 @@ public:
 
         // register graphic elements
         RegisterRenderable(mBody);
+        RegisterRenderable(mTitle);
         RegisterRenderable(mImage);
         RegisterRenderable(mShortcut);
 
@@ -246,37 +250,61 @@ public:
         SetState(NORMAL);
     }
 
-    void ClearImage()
+    void ClearData()
     {
-        if(!mHasImg)
+        // already no data -> exit
+        if(!mHasData)
             return;
 
+        // title
+        UnregisterRenderable(mTitle);
+        delete mTitle;
+
+        mTitle = new lib::graphic::DummyRenderable;
+        RegisterRenderable(mTitle);
+
+        // image
         UnregisterRenderable(mImage);
         delete mImage;
 
         mImage = new lib::graphic::DummyRenderable;
         RegisterRenderable(mImage);
 
-        mHasImg = false;
+        // clear flag
+        mHasData = false;
     }
 
-    void SetImage(lib::graphic::Texture * tex)
+    void SetData(const char * title, lib::graphic::Texture * texImg)
     {
-        if(!mHasImg)
+        using namespace lib::graphic;
+
+        // title
+        UnregisterRenderable(mTitle);
+        delete mTitle;
+
+        auto fm = FontManager::Instance();
+        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
+        mTitle = new lib::graphic::Text(title, font);
+        RegisterRenderable(mTitle);
+
+        // image
+        if(!mHasData)
         {
             UnregisterRenderable(mImage);
             delete mImage;
 
-            mImage = new lib::graphic::Image;
+            mImage = new Image;
             RegisterRenderable(mImage);
         }
 
-        static_cast<lib::graphic::Image *>(mImage)->SetTexture(tex);
+        static_cast<Image *>(mImage)->SetTexture(texImg);
 
-        mHasImg = true;
+        mHasData = true;
 
         // reset positions
         HandlePositionChanged();
+
+        OnStateChanged(GetState());
     }
 
 private:
@@ -297,6 +325,18 @@ private:
         // reset BG to make changes visible
         SetCurrBg(mBody);
 
+        // set title color
+        const unsigned int colorTitle[NUM_VISUAL_STATES] =
+        {
+            0xc6cad2ff,
+            0x687183ff,
+            0xc9cdd4ff,
+            0xc6c99cff,
+            0xc6c99cff
+        };
+
+        mTitle->SetColor(colorTitle[state]);
+
         // update shortcut label alpha
         const unsigned char alphaEn = 255;
         const unsigned char alphaDis = 128;
@@ -311,9 +351,16 @@ private:
     {
         PushButton::HandlePositionChanged();
 
+        // TITLE
+        const int titleBlockH = 50;
+        const int titleX = GetScreenX() + (GetWidth() - mTitle->GetWidth()) * 0.5f;
+        const int titleY = GetScreenY() + (titleBlockH - mTitle->GetHeight()) * 0.5f;
+        mTitle->SetPosition(titleX, titleY);
+
         // IMAGE
+        const int imageBlockH = GetHeight() - titleBlockH;
         const int imgX = GetScreenX() + (GetWidth() - mImage->GetWidth()) * 0.5f;
-        const int imgY = GetScreenY() + (GetHeight() - mImage->GetHeight()) * 0.5f;
+        const int imgY = GetScreenY() + titleBlockH + (imageBlockH - mImage->GetHeight()) * 0.5f;
         mImage->SetPosition(imgX, imgY);
 
         // SHORTCUT
@@ -332,10 +379,11 @@ private:
     static const char * SHORTCUTS[NUM_SLOTS];
 
     lib::graphic::Image * mBody = nullptr;
+    lib::graphic::Renderable * mTitle = nullptr;
     lib::graphic::Renderable * mImage = nullptr;
     lib::graphic::Text * mShortcut = nullptr;
 
-    bool mHasImg = false;
+    bool mHasData = false;
 };
 
 const int ButtonSlot::KEYS[NUM_SLOTS] = {
@@ -752,7 +800,7 @@ void DialogNewElement::UpdateSlots()
         const ObjectData & data = mData[indData];
 
         auto tex = tm->GetSprite(data.iconFile, data.iconTexId);
-        slot->SetImage(tex);
+        slot->SetData(data.title, tex);
 
         // check first
         slot->SetChecked(false);
@@ -763,7 +811,7 @@ void DialogNewElement::UpdateSlots()
     for(int i = limitData; i < NUM_SLOTS; ++i)
     {
         ButtonSlot * slot = static_cast<ButtonSlot *>(mSlots->GetButton(i));
-        slot->ClearImage();
+        slot->ClearData();
         slot->SetEnabled(false);
     }
 }
