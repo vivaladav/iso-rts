@@ -16,6 +16,7 @@
 #include <sgui/Image.h>
 #include <sgui/Label.h>
 #include <sgui/Stage.h>
+#include <sgui/TextArea.h>
 
 #include <cmath>
 #include <iostream>
@@ -111,24 +112,13 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     int txtX = marginTxt;
     int txtY = marginTxt;
+    const int txtW = panelTxt->GetWidth() - (marginTxt * 2);
+    const int txtH = panelTxt->GetHeight() - marginTxt;
 
-    auto labelStory = new sgui::Label("Trained warriors and expert",
-                                      fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("weapon makers. They hate the",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("Domens.", fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
+    const char * desc1 = "Trained warriors and expert weapon makers. They hate the Domens.";
+    auto txtArea = new sgui::TextArea(txtW, txtH, desc1, fntTxt, panelTxt);
+    txtArea->SetPosition(txtX, txtY);
+    txtArea->SetColor(colorText);
 
     y += panelTxt->GetHeight() + marginPanelsH;
 
@@ -180,23 +170,10 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     txtX = marginTxt;
     txtY = marginTxt;
 
-    labelStory = new sgui::Label("Masters of engineering and",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("science. Long time enemies of",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("the Zulox.", fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
+    const char * desc2 = "Masters of engineering and science. Long time enemies of the Zulox.";
+    txtArea = new sgui::TextArea(txtW, txtH, desc2, fntTxt, panelTxt);
+    txtArea->SetPosition(txtX, txtY);
+    txtArea->SetColor(colorText);
 
     y += panelTxt->GetHeight() + marginPanelsH;
 
@@ -248,24 +225,10 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     txtX = marginTxt;
     txtY = marginTxt;
 
-    labelStory = new sgui::Label("Great explorers and very",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("versatile. They have never",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
-
-    txtY += labelStory->GetHeight();
-
-    labelStory = new sgui::Label("fought other factions until now.",
-                                 fntTxt, panelTxt);
-    labelStory->SetPosition(txtX, txtY);
-    labelStory->SetColor(colorText);
+    const char * desc3 = "Great explorers and very versatile. They have never fought other factions until now.";
+    txtArea = new sgui::TextArea(txtW, txtH, desc3, fntTxt, panelTxt);
+    txtArea->SetPosition(txtX, txtY);
+    txtArea->SetColor(colorText);
 
     y += panelTxt->GetHeight() + marginPanelsH;
 
