@@ -12,6 +12,7 @@ namespace lib
     {
         class ButtonsGroup;
         class Label;
+        class TextArea;
     }
 }
 
@@ -51,7 +52,7 @@ private:
     void CheckBuild(int ind);
 
 private:
-    static const int PANELS_ATT_ROWS = 6;
+    static const int PANELS_ATT_ROWS = 7;
     static const int PANELS_ATT_COLS = 2;
     static const int NUM_PANELS_ATT = PANELS_ATT_ROWS * PANELS_ATT_COLS;
 
@@ -66,7 +67,8 @@ private:
     lib::sgui::Label * mTitle = nullptr;
     lib::sgui::ButtonsGroup * mSlots = nullptr;
 
-    lib::sgui::Label * mLabelCategory = nullptr;
+    lib::sgui::TextArea * mDescription = nullptr;
+    lib::sgui::Label * mCategory = nullptr;
 
     ButtonBuild * mBtnBuild = nullptr;
     ButtonClose * mBtnClose = nullptr;

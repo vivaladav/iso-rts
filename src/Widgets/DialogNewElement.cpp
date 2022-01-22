@@ -18,13 +18,14 @@
 #include <sgui/ButtonsGroup.h>
 #include <sgui/Image.h>
 #include <sgui/Label.h>
+#include <sgui/TextArea.h>
 
 #include <cassert>
 
 namespace game
 {
 
-constexpr int NUM_SLOTS = 5;
+constexpr int NUM_SLOTS = 6;
 
 class ImageButton : public lib::sgui::PushButton
 {
@@ -392,10 +393,11 @@ const int ButtonSlot::KEYS[NUM_SLOTS] = {
                                             lib::core::KeyboardEvent::KEY_3,
                                             lib::core::KeyboardEvent::KEY_4,
                                             lib::core::KeyboardEvent::KEY_5,
+                                            lib::core::KeyboardEvent::KEY_6
                                         };
 
 
-const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "2", "3", "4", "5" };
+const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "2", "3", "4", "5", "6" };
 
 // ===== ATTRIBUTE PANEL =====
 
@@ -546,8 +548,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     auto fm = lib::graphic::FontManager::Instance();
     auto tm = lib::graphic::TextureManager::Instance();
 
-    const int marginL = 52;
-    const int marginT = 6;
+    const int marginL = 40;
+    const int marginT = 8;
 
     // BACKGROUND
     lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_BG);
@@ -583,7 +585,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
         mSlots->AddButton(slot);
     }
 
-    const int slotsY0 = 66;
+    const int slotsY0 = 65;
     mSlots->SetPosition(marginL, slotsY0);
 
     const int marginButtonsLR = 10;
@@ -621,7 +623,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     });
 
     // INFO PANEL
-    const int slotsMarginBottom = 20;
+    const int slotsMarginBottom = 15;
 
     const int panelY0 = slotsY0 + mSlots->GetHeight() + slotsMarginBottom;
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_INFO);
@@ -634,33 +636,52 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, lib::graphic::Font::NORMAL);
     auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, lib::graphic::Font::NORMAL);
 
-    const int marginPanelXY0 = 15;
-    const int marginPanelBlock = 35;
-    const int marginPanelIconH = 10;
+    const int marginPanelXY0 = 10;
+    const int marginPanelBlock = 20;
+    const int marginPanelIconH = 5;
     const int marginPanelIconV = 5;
     const int marginPanelIconBlock = 85;
-    const int marginPanelDataV = 10;
+    const int marginPanelDataV = 5;
+
+    // header DESCRIPTION
+    auto headerDesc = new Label("DESCRIPTION", fontHeader, panelInfo);
+    headerDesc->SetColor(colorHeader);
+    headerDesc->SetPosition(marginPanelXY0, marginPanelXY0);
+
+    int contY = headerDesc->GetY() + headerDesc->GetHeight() + marginPanelDataV;
+
+    // description text area
+    const int areaW = panelInfo->GetWidth() - (2 * marginPanelXY0);
+    const int areaH = 85;
+    mDescription = new TextArea(areaW, areaH, "Test text, over one line probably.\n"
+                                              "Second line that will finish into a third "
+                                              "one or maybe not, we'll see.\n"
+                                              "Fourth and last.", fontText, panelInfo);
+    mDescription->SetColor(colorText);
+    mDescription->SetPosition(marginPanelXY0, contY);
+
+    contY += mDescription->GetHeight() + marginPanelBlock;
 
     // header category
     auto headerCat = new Label("CATEGORY", fontHeader, panelInfo);
     headerCat->SetColor(colorHeader);
-    headerCat->SetPosition(marginPanelXY0, marginPanelXY0);
+    headerCat->SetPosition(marginPanelXY0, contY);
 
-    int contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelIconV;
+    contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelDataV;
 
     // text category
-    mLabelCategory = new Label("-", fontText, panelInfo);
-    mLabelCategory->SetColor(colorText);
-    mLabelCategory->SetPosition(marginPanelXY0, contY);
+    mCategory = new Label("-", fontText, panelInfo);
+    mCategory->SetColor(colorText);
+    mCategory->SetPosition(marginPanelXY0, contY);
 
-    contY += mLabelCategory->GetHeight() + marginPanelBlock;
+    contY += mCategory->GetHeight() + marginPanelBlock;
 
     // header cost
     headerCat = new Label("COST", fontHeader, panelInfo);
     headerCat->SetColor(colorHeader);
     headerCat->SetPosition(marginPanelXY0, contY);
 
-    contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelIconV;
+    contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelDataV;
 
     // data cost 1
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_ENERGY);
@@ -689,12 +710,13 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[1]->GetHeight()) * 0.5f;
     mLabelsCost[1]->SetPosition(contX, contY);
 
-    contY = imgIcon->GetY() + imgIcon->GetHeight() + marginPanelDataV;
+    contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconBlock;
+    contY = imgIcon->GetY();
 
     // data cost 3
     tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_DIAMOND);
     imgIcon = new Image(tex, panelInfo);
-    imgIcon->SetPosition(marginPanelXY0, contY);
+    imgIcon->SetPosition(contX, contY);
 
     contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
 
@@ -823,7 +845,7 @@ void DialogNewElement::ShowData(int ind)
     const ObjectData & data = mData[ind];
 
     // CLASS
-    mLabelCategory->SetText(ObjectData::STR_CLASS[data.objClass]);
+    mCategory->SetText(ObjectData::STR_CLASS[data.objClass]);
 
     // COSTS
     for(int i = 0; i < NUM_COSTS; ++i)
