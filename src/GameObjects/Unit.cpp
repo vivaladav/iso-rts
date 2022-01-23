@@ -26,6 +26,13 @@ const char * Unit::TITLES[NUM_UNIT_TYPES] =
     "GENERIC"
 };
 
+const char * Unit::DESCRIPTIONS[NUM_UNIT_TYPES] =
+{
+    "A basic worker unit.\nIt is specialized in construction and conquest.",
+    "A basic soldier unit.\nUseful for defense and exploration.",
+    "A slow, but versatile unit."
+};
+
 Unit::Unit(const ObjectData & data, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))

@@ -653,10 +653,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     // description text area
     const int areaW = panelInfo->GetWidth() - (2 * marginPanelXY0);
     const int areaH = 85;
-    mDescription = new TextArea(areaW, areaH, "Test text, over one line probably.\n"
-                                              "Second line that will finish into a third "
-                                              "one or maybe not, we'll see.\n"
-                                              "Fourth and last.", fontText, panelInfo);
+    mDescription = new TextArea(areaW, areaH, fontText, panelInfo);
     mDescription->SetColor(colorText);
     mDescription->SetPosition(marginPanelXY0, contY);
 
@@ -843,6 +840,9 @@ void DialogNewElement::ShowData(int ind)
     assert(ind < mData.size());
 
     const ObjectData & data = mData[ind];
+
+    // DESCRIPTION
+    mDescription->SetText(data.description);
 
     // CLASS
     mCategory->SetText(ObjectData::STR_CLASS[data.objClass]);

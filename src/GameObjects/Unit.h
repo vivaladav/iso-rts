@@ -44,6 +44,7 @@ public:
 
 public:
     static const char * TITLES[NUM_UNIT_TYPES];
+    static const char * DESCRIPTIONS[NUM_UNIT_TYPES];
 
 private:
     void UpdateGraphics() override;
