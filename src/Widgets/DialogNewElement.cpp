@@ -14,6 +14,7 @@
 #include <graphic/FontManager.h>
 #include <graphic/Image.h>
 #include <graphic/Text.h>
+#include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
 #include <sgui/ButtonsGroup.h>
 #include <sgui/Image.h>
@@ -229,21 +230,25 @@ public:
 
         SetCheckable(true);
 
-        // title
-        mTitle = new DummyRenderable;
+        auto fm = FontManager::Instance();
 
-        // image
+        // TITLE
+        auto tm = lib::graphic::TextureManager::Instance();
+        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
+        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
+        mTitle = new lib::sgui::TextArea(tex->GetWidth(), TITLE_H, font, this);
+        mTitle->setTextAlignment(lib::sgui::TextArea::ALIGN_H_CENTER, lib::sgui::TextArea::ALIGN_V_CENTER);
+
+        // IMAGE
         mImage = new DummyRenderable;
 
-        // shortcut
-        auto fm = FontManager::Instance();
-        auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 11, Font::NORMAL);
+        // SHORTCUT
+        font = fm->GetFont("data/fonts/Lato-Bold.ttf", 12, Font::NORMAL);
         mShortcut = new Text(SHORTCUTS[index], font, true);
         mShortcut->SetColor(0xd5daddff);
 
         // register graphic elements
         RegisterRenderable(mBody);
-        RegisterRenderable(mTitle);
         RegisterRenderable(mImage);
         RegisterRenderable(mShortcut);
 
@@ -258,11 +263,7 @@ public:
             return;
 
         // title
-        UnregisterRenderable(mTitle);
-        delete mTitle;
-
-        mTitle = new lib::graphic::DummyRenderable;
-        RegisterRenderable(mTitle);
+        mTitle->ClearText();
 
         // image
         UnregisterRenderable(mImage);
@@ -280,13 +281,7 @@ public:
         using namespace lib::graphic;
 
         // title
-        UnregisterRenderable(mTitle);
-        delete mTitle;
-
-        auto fm = FontManager::Instance();
-        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
-        mTitle = new lib::graphic::Text(title, font);
-        RegisterRenderable(mTitle);
+        mTitle->SetText(title);
 
         // image
         if(!mHasData)
@@ -352,16 +347,13 @@ private:
     {
         PushButton::HandlePositionChanged();
 
-        // TITLE
-        const int titleBlockH = 50;
-        const int titleX = GetScreenX() + (GetWidth() - mTitle->GetWidth()) * 0.5f;
-        const int titleY = GetScreenY() + (titleBlockH - mTitle->GetHeight()) * 0.5f;
-        mTitle->SetPosition(titleX, titleY);
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
 
         // IMAGE
-        const int imageBlockH = GetHeight() - titleBlockH;
-        const int imgX = GetScreenX() + (GetWidth() - mImage->GetWidth()) * 0.5f;
-        const int imgY = GetScreenY() + titleBlockH + (imageBlockH - mImage->GetHeight()) * 0.5f;
+        const int imageBlockH = GetHeight() - TITLE_H;
+        const int imgX = x0 + (GetWidth() - mImage->GetWidth()) * 0.5f;
+        const int imgY = y0 + TITLE_H + (imageBlockH - mImage->GetHeight()) * 0.5f;
         mImage->SetPosition(imgX, imgY);
 
         // SHORTCUT
@@ -369,8 +361,8 @@ private:
         const int shortBgY0 = 182;
         const int shortBgSize = 14;
 
-        const int shortcutX = GetScreenX() + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
-        const int shortcutY = GetScreenY() + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
+        const int shortcutX = x0 + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
+        const int shortcutY = y0 + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
 
         mShortcut->SetPosition(shortcutX, shortcutY);
     }
@@ -378,9 +370,11 @@ private:
 private:
     static const int KEYS[NUM_SLOTS];
     static const char * SHORTCUTS[NUM_SLOTS];
+    static const int TITLE_H = 50;
 
+private:
     lib::graphic::Image * mBody = nullptr;
-    lib::graphic::Renderable * mTitle = nullptr;
+    lib::sgui::TextArea * mTitle = nullptr;
     lib::graphic::Renderable * mImage = nullptr;
     lib::graphic::Text * mShortcut = nullptr;
 
