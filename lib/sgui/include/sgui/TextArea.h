@@ -43,6 +43,7 @@ public:
     void setTextAlignmentHorizontal(Alignment horiz);
     void setTextAlignmentVertical(Alignment vert);
 
+    void ClearText();
     const std::string & GetText() const;
     void SetText(const char * txt);
 

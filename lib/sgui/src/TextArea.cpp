@@ -62,6 +62,17 @@ void TextArea::SetColor(unsigned int color)
         txt->SetColor(color);
 }
 
+void TextArea::ClearText()
+{
+    for(lib::graphic::Renderable * txt : mTxtLines)
+    {
+        UnregisterRenderable(txt);
+        delete txt;
+    }
+
+    mTxtLines.clear();
+}
+
 void TextArea::SetText(const char * txt)
 {
     assert(txt);
@@ -72,13 +83,7 @@ void TextArea::SetText(const char * txt)
     if(t == mStr)
         return ;
 
-    for(lib::graphic::Renderable * txt : mTxtLines)
-    {
-        UnregisterRenderable(txt);
-        delete txt;
-    }
-
-    mTxtLines.clear();
+    ClearText();
 
     mStr = t;
 
