@@ -214,6 +214,33 @@ void ScreenTest::TestSGui()
         ta->SetText("Text changed after pushing a button. All good so far. Also NO newline in this case!");
     });
 
+    ButtonsGroup * bgAlignH = new ButtonsGroup(ButtonsGroup::HORIZONTAL, container);
+    bgAlignH->AddButton(new ButtonUnitsSelector("L"));
+    bgAlignH->AddButton(new ButtonUnitsSelector("C"));
+    bgAlignH->AddButton(new ButtonUnitsSelector("R"));
+    bgAlignH->SetButtonChecked(0, true);
+    bgAlignH->SetPosition(ta->GetX(), ta->GetY() + ta->GetHeight());
+
+    bgAlignH->SetFunctionOnToggle([ta](unsigned int ind, bool checked)
+    {
+       if(checked)
+           ta->setTextAlignmentHorizontal(static_cast<TextArea::Alignment>(ind));
+    });
+
+    ButtonsGroup * bgAlignV = new ButtonsGroup(ButtonsGroup::HORIZONTAL, container);
+    bgAlignV->AddButton(new ButtonUnitsSelector("T"));
+    bgAlignV->AddButton(new ButtonUnitsSelector("C"));
+    bgAlignV->AddButton(new ButtonUnitsSelector("B"));
+    bgAlignV->SetButtonChecked(0, true);
+    bgAlignV->SetPosition(ta->GetX() + ta->GetWidth() - bgAlignV->GetWidth(),
+                          ta->GetY() + ta->GetHeight());
+
+    bgAlignV->SetFunctionOnToggle([ta](unsigned int ind, bool checked)
+    {
+       if(checked)
+           ta->setTextAlignmentVertical(static_cast<TextArea::Alignment>(ind + TextArea::ALIGN_V_TOP));
+    });
+
     // -- BUTTONS GROUP --
     font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
 

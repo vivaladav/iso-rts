@@ -182,14 +182,59 @@ void TextArea::AddEmptyLine(int h)
 
 void TextArea::HandlePositionChanged()
 {
-    int x = GetScreenX();
-    int y = GetScreenY();
+    const int x0 = GetScreenX();
+    const int y0 = GetScreenY();
 
-    for(lib::graphic::Renderable * txt : mTxtLines)
+    int x = x0;
+    int y = y0;
+
+    // set starting Y based on vertical alignment
+    if(ALIGN_V_CENTER == mAlignV || ALIGN_V_BOTTOM == mAlignV)
     {
-        txt->SetPosition(x, y);
+        int totH = 0;
 
-        y += txt->GetHeight();
+        for(lib::graphic::Renderable * txt : mTxtLines)
+            totH += txt->GetHeight();
+
+        if(ALIGN_V_CENTER == mAlignV)
+            y = y0 + (GetHeight() - totH) * 0.5f;
+        // ALIGN_V_BOTTOM
+        else
+            y = y0 + GetHeight() - totH;
+    }
+
+    // set positions based on horizontal alignment
+    if(ALIGN_H_LEFT == mAlignH)
+    {
+        for(lib::graphic::Renderable * txt : mTxtLines)
+        {
+            txt->SetPosition(x, y);
+
+            y += txt->GetHeight();
+        }
+    }
+    else if(ALIGN_H_CENTER == mAlignH)
+    {
+        for(lib::graphic::Renderable * txt : mTxtLines)
+        {
+            x = x0 + (GetWidth() - txt->GetWidth()) * 0.5f;
+
+            txt->SetPosition(x, y);
+
+            y += txt->GetHeight();
+        }
+    }
+    // ALIGN_H_RIGHT
+    else
+    {
+        for(lib::graphic::Renderable * txt : mTxtLines)
+        {
+            x = x0 + GetWidth() - txt->GetWidth();
+
+            txt->SetPosition(x, y);
+
+            y += txt->GetHeight();
+        }
     }
 }
 
