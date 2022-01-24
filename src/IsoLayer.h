@@ -51,6 +51,7 @@ public:
 
     bool IsVisible() const;
     void SetVisible(bool val);
+    void SetRenderingCells(unsigned int r0, unsigned int c0, unsigned int r1, unsigned int c1);
     void Render();
 
     void MoveObjectsPosition(int deltaX, int deltaY);
@@ -80,6 +81,11 @@ private:
 
     const IsoMap * mMap = nullptr;
 
+    unsigned int mRenderingR0 = 0;
+    unsigned int mRenderingR1 = 0;
+    unsigned int mRenderingC0 = 0;
+    unsigned int mRenderingC1 = 0;
+
     bool mVisible = true;
 };
 
@@ -96,5 +102,20 @@ inline bool IsoLayer::IsVisible() const { return mVisible; }
  * @param val Visibility status (TRUE or FALSE)
  */
 inline void IsoLayer::SetVisible(bool val) { mVisible = val; }
+
+inline void IsoLayer::SetRenderingCells(unsigned int r0, unsigned int c0,
+                                        unsigned int r1, unsigned int c1)
+{
+    // nothing has changed
+    if(mRenderingR0 == r0 && mRenderingR1 == r1 && mRenderingC0 == c0 && mRenderingC1 == c1)
+        return ;
+
+    mRenderingR0 = r0;
+    mRenderingR1 = r1;
+    mRenderingC0 = c0;
+    mRenderingC1 = c1;
+
+    UpdateRenderList();
+}
 
 } // namespace game

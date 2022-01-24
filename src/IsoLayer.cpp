@@ -303,16 +303,13 @@ void IsoLayer::UpdateRenderList()
 {
     mRenderList.clear();
 
-    // TODO optimze this to check only cells in camera frame
-
-    const int rows = mMap->GetNumRows();
     const int cols = mMap->GetNumCols();
 
-    for(int r = 0; r < rows; ++r)
+    for(int r = mRenderingR0; r < mRenderingR1; ++r)
     {
         const int ind0 = r * cols;
 
-        for(int c = 0; c < cols; ++c)
+        for(int c = mRenderingC0; c < mRenderingC1; ++c)
         {
             const int ind = ind0 + c;
 

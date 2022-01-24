@@ -56,6 +56,11 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
     mRows = rows;
     mCols = cols;
 
+    mRenderingR0 = 0;
+    mRenderingC0 = 0;
+    mRenderingR1 = rows;
+    mRenderingC1 = cols;
+
     const int mapSize = rows * cols;
 
     mMap.reserve(mapSize);
@@ -142,14 +147,58 @@ void IsoMap::SetOrigin(int x, int y)
         layer->MoveObjectsPosition(deltaX, deltaY);
 }
 
+// NOTE Calling this method before the map size is set has NO effect
+void IsoMap::SetVisibleArea(int x, int y, int w, int h)
+{
+    // TOP LEFT
+    Cell2D TL = CellFromScreenPoint(x, y);
+
+    if(TL.col < 0)
+        TL.col = 0;
+
+    mRenderingC0 = TL.col;
+
+    // TOP RIGHT
+    Cell2D TR = CellFromScreenPoint(x + w, y);
+
+    if(TR.row < 0)
+        TR.row = 0;
+
+    mRenderingR0 = TR.row;
+
+    // BOTTOM LEFT
+    Cell2D BL = CellFromScreenPoint(x, y + h);
+
+    ++BL.row;
+
+    if(BL.row > mRows)
+        BL.row = mRows;
+
+    mRenderingR1 = BL.row;
+
+    // BOTTOM RIGHT
+    Cell2D BR = CellFromScreenPoint(x + w, y + h);
+
+    ++BR.col;
+
+    if(BR.col > mCols)
+        BR.col = mCols;
+
+    mRenderingC1 = BR.col;
+
+    // UPDATE LAYERS
+    for(IsoLayer * layer : mLayersRenderList)
+        layer->SetRenderingCells(mRenderingR0, mRenderingC0, mRenderingR1, mRenderingC1);
+}
+
 /// Renders all the cells in the map and on top of that all the IsoLayers.
 void IsoMap::Render()
 {
-    for(unsigned int r = 0; r < mRows; ++r)
+    for(unsigned int r = mRenderingR0; r < mRenderingR1; ++r)
     {
         const unsigned int indb = r * mCols;
 
-        for(unsigned int c = 0; c < mCols; ++c)
+        for(unsigned int c = mRenderingC0; c < mRenderingC1; ++c)
         {
             const unsigned int ind = indb + c;
 

@@ -96,6 +96,14 @@ ScreenGame::ScreenGame(Game * game)
     const int mapH = mIsoMap->GetHeight();
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
+    mIsoMap->SetVisibleArea(mCamera->GetX(), mCamera->GetY(),
+                            mCamera->GetWidth(), mCamera->GetHeight());
+
+    mCamera->SetFunctionOnMove([this]
+    {
+        mIsoMap->SetVisibleArea(mCamera->GetX(), mCamera->GetY(),
+                                mCamera->GetWidth(), mCamera->GetHeight());
+    });
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
@@ -643,20 +651,27 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
 
         mCameraKeyScrollY = false;
     }
-    // B -> center camera on own base
+    // SHIFT + B -> center camera on own base
     else if(key == KeyboardEvent::KEY_B)
     {
-        const Player * p = GetGame()->GetLocalPlayer();
-        const Cell2D & cell = p->GetBaseCell();
-        const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
-        const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
-        const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
+        if(event.IsModShiftDown())
+        {
+            const Player * p = GetGame()->GetLocalPlayer();
+            const Cell2D & cell = p->GetBaseCell();
+            const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
+            const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
+            const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
-        mCamera->CenterToPoint(cX, cY);
+            mCamera->CenterToPoint(cX, cY);
+        }
     }
-    // C -> recenter camera
+    // SHIFT + C -> recenter camera
     else if(key == KeyboardEvent::KEY_C)
-        mCamera->ResetPosition();
+    {
+        if(event.IsModShiftDown())
+            mCamera->ResetPosition();
+
+    }
     // DEBUG: ALT + U -> toggle UI
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {

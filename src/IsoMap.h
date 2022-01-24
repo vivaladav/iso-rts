@@ -47,6 +47,7 @@ public:
 
     void SetOrigin(int x, int y);
 
+    void SetVisibleArea(int x, int y, int w, int h);
     void Render();
 
     Cell2D CellFromScreenPoint(int x, int y) const;
@@ -64,6 +65,11 @@ private:
 private:
     unsigned int mRows = 0;
     unsigned int mCols = 0;
+
+    unsigned int mRenderingR0 = 0;
+    unsigned int mRenderingR1 = 0;
+    unsigned int mRenderingC0 = 0;
+    unsigned int mRenderingC1 = 0;
 
     int mX0 = 0;
     int mRenderX0 = 0;
