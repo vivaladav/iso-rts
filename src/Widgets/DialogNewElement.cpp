@@ -244,7 +244,7 @@ public:
 
         // SHORTCUT
         font = fm->GetFont("data/fonts/Lato-Bold.ttf", 12, Font::NORMAL);
-        mShortcut = new Text(SHORTCUTS[index], font, true);
+        mShortcut = new Text(SHORTCUTS[index], font, false);
         mShortcut->SetColor(0xd5daddff);
 
         // register graphic elements
@@ -391,7 +391,7 @@ const int ButtonSlot::KEYS[NUM_SLOTS] = {
                                         };
 
 
-const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "2", "3", "4", "5", "6" };
+const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "1", "1", "4", "5", "6" };
 
 // ===== ATTRIBUTE PANEL =====
 
@@ -859,12 +859,27 @@ void DialogNewElement::CheckBuild(int ind)
 {
     const std::vector<int> & costs = mData[ind].costs;
 
-    const bool allowed = mPlayer->GetStat(Player::ENERGY).GetIntValue() >= costs[RES_ENERGY] &&
-                         mPlayer->GetStat(Player::MATERIAL).GetIntValue() >= costs[RES_MATERIAL1] &&
-                         mPlayer->GetStat(Player::DIAMONDS).GetIntValue() >= costs[RES_DIAMONDS] &&
-                         mPlayer->GetStat(Player::BLOBS).GetIntValue() >= costs[RES_BLOBS];
+    const bool SPEND[NUM_COSTS] =
+    {
+        mPlayer->GetStat(Player::ENERGY).GetIntValue() >= costs[RES_ENERGY],
+        mPlayer->GetStat(Player::MATERIAL).GetIntValue() >= costs[RES_MATERIAL1],
+        mPlayer->GetStat(Player::DIAMONDS).GetIntValue() >= costs[RES_DIAMONDS],
+        mPlayer->GetStat(Player::BLOBS).GetIntValue() >= costs[RES_BLOBS]
+    };
 
+    const bool allowed =  SPEND[0] && SPEND[1] && SPEND[2] && SPEND[3];
+
+    // enable BUILD button
     mBtnBuild->SetEnabled(allowed);
+
+    // set color of costs
+    for(unsigned int i = 0; i < NUM_COSTS; ++i)
+    {
+        const unsigned int COLORS[] = { 0xe08585ff, 0x5cd666ff};
+        const int ind = static_cast<int>(SPEND[i]);
+
+        mLabelsCost[i]->SetColor(COLORS[ind]);
+    }
 }
 
 } // namespace game
