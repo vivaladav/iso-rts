@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 namespace lib
 {
 namespace graphic
@@ -8,7 +10,7 @@ namespace graphic
 class Camera
 {
 public:
-    Camera() = default;
+    Camera();
     Camera(int w, int h);
 
     // camera data
@@ -23,6 +25,8 @@ public:
 
     void MoveX(float delta);
     void MoveY(float delta);
+
+    void SetFunctionOnMove(const std::function<void ()> &f);
 
     void ResetPosition();
     void CenterToPoint(int x, int y);
@@ -42,6 +46,8 @@ public:
     static void DestroyDummyCamera();
 
 private:
+    std::function<void()> mFuncOnMove;
+
     static Camera * mDummy;
     static Camera * mDefault;
 
@@ -52,12 +58,6 @@ private:
     int mWidth = 0;
     int mHeight = 0;
 };
-
-inline Camera::Camera(int w, int h)
-    : mWidth(w)
-    , mHeight(h)
-{
-}
 
 inline int Camera::GetX() const { return mXd; }
 inline int Camera::GetY() const { return mYd; }
@@ -72,13 +72,9 @@ inline void Camera::SetSize(int w, int h)
     mHeight = h;
 }
 
-inline void Camera::ResetPosition()
+inline void Camera::SetFunctionOnMove(const std::function<void()> & f)
 {
-    mXf = 0.f;
-    mYf = 0.f;
-
-    mXd = 0;
-    mYd = 0;
+    mFuncOnMove = f;
 }
 
 inline int Camera::GetScreenToWorldX(int x) const { return x + mXd; }
