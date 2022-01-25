@@ -51,6 +51,9 @@ public:
     virtual void Render();
 
 private:
+    virtual void OnPositionChanged();
+
+private:
     lib::graphic::Image * mImg = nullptr;
 
     IsoLayer * mLayer = nullptr;
