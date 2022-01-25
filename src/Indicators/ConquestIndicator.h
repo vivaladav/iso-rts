@@ -2,7 +2,7 @@
 
 #include "IsoObject.h"
 
-namespace lib { namespace graphic { class Text; } }
+namespace lib { namespace graphic { class Renderable; } }
 
 namespace game
 {
@@ -24,11 +24,14 @@ public:
 private:
     void CreateLabelCost();
 
-private:
-    lib::graphic::Text * mTxtCost = nullptr;
-    unsigned int mColorCost = 0;
+    void OnPositionChanged() override;
 
-    float mCost = 0.f;
+private:
+    lib::graphic::Renderable * mTxtDummy = nullptr;
+    lib::graphic::Renderable * mTxtCost = nullptr;
+    lib::graphic::Renderable * mCurrTxt = nullptr;
+
+    float mCost = -1.f;
 };
 
 } // namespace game

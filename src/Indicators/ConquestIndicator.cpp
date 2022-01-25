@@ -3,6 +3,7 @@
 #include "GameData.h"
 #include "Player.h"
 
+#include <graphic/DummyRenderable.h>
 #include <graphic/Font.h>
 #include <graphic/FontManager.h>
 #include <graphic/TextureManager.h>
@@ -18,9 +19,10 @@ namespace game
 
 ConquestIndicator::ConquestIndicator()
     : IsoObject(1, 1)
+    , mTxtDummy(new lib::graphic::DummyRenderable)
+    , mTxtCost(new lib::graphic::DummyRenderable)
+    , mCurrTxt(mTxtDummy)
 {
-    // init cost label
-    SetCost(0);
 }
 
 void ConquestIndicator::SetFaction(PlayerFaction faction)
@@ -34,12 +36,6 @@ void ConquestIndicator::SetFaction(PlayerFaction faction)
     Texture * tex = tm->GetSprite(SpriteFileIndicators, indSprite);
 
     SetTexture(tex);
-
-    // update cost label
-    mColorCost = 0xE5E5E5FF;
-
-    if(mTxtCost)
-        mTxtCost->SetColor(mColorCost);
 }
 
 void ConquestIndicator::SetCost(float val)
@@ -60,47 +56,51 @@ void ConquestIndicator::SetCost(float val)
 void ConquestIndicator::ShowCost(bool val)
 {
     if(val)
-    {
-        if(nullptr == mTxtCost)
-            CreateLabelCost();
-    }
+        mCurrTxt = mTxtCost;
     else
-    {
-        delete mTxtCost;
-        mTxtCost = nullptr;
-    }
+        mCurrTxt = mTxtDummy;
 }
 
 void ConquestIndicator::Render()
 {
     IsoObject::Render();
 
-    if(mTxtCost)
-    {
-        // position label
-        const int x = GetX() + (GetWidth() - mTxtCost->GetWidth()) * 0.5f;
-        const int y = GetY() + (GetHeight() - mTxtCost->GetHeight()) * 0.5f;
-        mTxtCost->SetPosition(x, y);
-
-        mTxtCost->Render();
-    }
+    mCurrTxt->Render();
 }
 
 void ConquestIndicator::CreateLabelCost()
 {
     using namespace lib::graphic;
 
-    // create label
-    FontManager * fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
+    const bool curr = mCurrTxt == mTxtCost;
 
     delete mTxtCost;
 
-    std::ostringstream s;
-    s << std::fixed << std::setprecision(1) << mCost;
+    // create label
+    const unsigned int color = 0xE5E5E5FF;
 
+    std::ostringstream s;
+    s << std::fixed << std::setprecision(1) << mCost;   
+
+    FontManager * fm = FontManager::Instance();
+    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
     mTxtCost = new Text(s.str().c_str(), font);
-    mTxtCost->SetColor(mColorCost);
+    mTxtCost->SetColor(color);
+
+    OnPositionChanged();
+
+    if(curr)
+        mCurrTxt = mTxtCost;
+}
+
+void ConquestIndicator::OnPositionChanged()
+{
+    // position label
+    const int x = GetX() + (GetWidth() - mTxtCost->GetWidth()) * 0.5f;
+    const int y = GetY() + (GetHeight() - mTxtCost->GetHeight()) * 0.5f;
+
+    mTxtDummy->SetPosition(x, y);
+    mTxtCost->SetPosition(x, y);
 }
 
 } // namespace game
