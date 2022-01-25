@@ -11,6 +11,10 @@ namespace game
 PracticeTarget::PracticeTarget(int rows, int cols)
     : Structure(GameObjectType::OBJ_PRACTICE_TARGET, rows, cols)
 {
+    const float health = 1000.f;
+    SetMaxHealth(health);
+    SetHealth(health);
+
     SetImage();
 
     SetObjColors();
