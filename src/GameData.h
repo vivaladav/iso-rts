@@ -130,6 +130,25 @@ enum SpriteIdParticles : unsigned int
     ID_PART_RECT_4x4
 };
 
+// SCENE ELEMENTS
+extern const char SpriteFileSceneElements[];
+
+enum SpriteIdSceneElements : unsigned int
+{
+    ID_SCENE_MOUNTAIN_L,
+    ID_SCENE_MOUNTAIN_T,
+    ID_SCENE_MOUNTAIN_B,
+    ID_SCENE_MOUNTAIN_R,
+    ID_SCENE_MOUNTAIN_1,
+    ID_SCENE_MOUNTAIN_2,
+    ID_SCENE_MOUNTAIN_3,
+    ID_SCENE_MOUNTAIN_4,
+    ID_SCENE_MOUNTAIN_5,
+    ID_SCENE_MOUNTAIN_6,
+    ID_SCENE_MOUNTAIN_7,
+    ID_SCENE_MOUNTAIN_8
+};
+
 // STRUCTURES
 extern const char SpriteFileStructures[];
 

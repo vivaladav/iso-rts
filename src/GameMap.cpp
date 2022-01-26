@@ -281,6 +281,12 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         CreateObject(layerId, OBJ_RES_STORAGE_BLOBS, nullptr, r0, c0, rows, cols);
     else if(MapObjectId::RADAR_STATION == objId)
         CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
+    else if(objId >= MapObjectId::MOUNTAINS_FIRST && objId <= MapObjectId::MOUNTAINS_LAST)
+    {
+        const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAINS_FIRST);
+
+        CreateObject(layerId, OBJ_MOUNTAINS_FIRST + objInd, nullptr, r0, c0, rows, cols);
+    }
     else if(objId >= MapObjectId::MOUNTAIN_FIRST && objId <= MapObjectId::MOUNTAIN_LAST)
     {
         const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
@@ -376,6 +382,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new RadarStation(rows, cols);
     else if(OBJ_PRACTICE_TARGET == objId)
         obj = new PracticeTarget(rows, cols);
+    else if(objId >= OBJ_MOUNTAINS_FIRST && objId <= OBJ_MOUNTAINS_LAST)
+        obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_ROCKS_FIRST && objId <= OBJ_ROCKS_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)

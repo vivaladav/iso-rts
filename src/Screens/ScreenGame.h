@@ -115,6 +115,8 @@ private:
 
     void ClearCellOverlays();
 
+    void CenterCameraOverPlayerBase();
+
 private:
     std::vector<Player *> mAiPlayers;
 

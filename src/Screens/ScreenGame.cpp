@@ -146,6 +146,9 @@ ScreenGame::ScreenGame(Game * game)
 
     // UI
     CreateUI();
+
+    // set initial camera position
+    CenterCameraOverPlayerBase();
 }
 
 ScreenGame::~ScreenGame()
@@ -655,15 +658,7 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     else if(key == KeyboardEvent::KEY_B)
     {
         if(event.IsModShiftDown())
-        {
-            const Player * p = GetGame()->GetLocalPlayer();
-            const Cell2D & cell = p->GetBaseCell();
-            const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
-            const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
-            const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
-
-            mCamera->CenterToPoint(cX, cY);
-        }
+            CenterCameraOverPlayerBase();
     }
     // SHIFT + C -> recenter camera
     else if(key == KeyboardEvent::KEY_C)
@@ -1742,6 +1737,17 @@ void ScreenGame::ClearCellOverlays()
     // delete move indicator
     delete mMoveInd;
     mMoveInd = nullptr;
+}
+
+void ScreenGame::CenterCameraOverPlayerBase()
+{
+    const Player * p = GetGame()->GetLocalPlayer();
+    const Cell2D & cell = p->GetBaseCell();
+    const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
+    const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
+    const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
+
+    mCamera->CenterToPoint(cX, cY);
 }
 
 } // namespace game

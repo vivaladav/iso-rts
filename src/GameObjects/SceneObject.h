@@ -19,7 +19,7 @@ private:
     void SetObjColors();
 
 private:
-    int mSubtypeInd = 0;
+    int mSubtype = 0;
 };
 
 } // namespace game

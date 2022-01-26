@@ -249,6 +249,29 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteRocksFile, rects);
     });
 
+    // SCENE ELEMENTS
+    mJobs.emplace_back([tm]
+    {
+        const std::vector<lib::core::Rectd> rects
+        {
+            // mountains
+            { 0, 0, 192, 134 },
+            { 193, 0, 192, 108 },
+            { 386, 0, 192, 131 },
+            { 579, 0, 192, 130 },
+            { 0, 135, 192, 134 },
+            { 193, 135, 192, 130 },
+            { 386, 135, 192, 132 },
+            { 579, 135, 192, 134 },
+            { 0, 270, 192, 132 },
+            { 193, 270, 192, 134 },
+            { 386, 270, 192, 131 },
+            { 579, 270, 192, 134 }
+        };
+
+        tm->RegisterSprite(SpriteFileSceneElements, rects);
+    });
+
     // STRUCTURES
     mJobs.emplace_back([tm]
     {

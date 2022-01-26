@@ -10,7 +10,7 @@ namespace game
 
 SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
     : GameObject(GameObjectType::OBJ_SCENE_OBJECT, rows, cols)
-    , mSubtypeInd(subtype - GameObjectType::OBJ_ROCKS_FIRST)
+    , mSubtype(subtype)
 {
     SetStructure(true);
 
@@ -34,9 +34,26 @@ void SceneObject::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     // set texture
-    const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + mSubtypeInd;
     auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteRocksFile, spriteId);
+
+    lib::graphic::Texture * tex = nullptr;
+
+    if(mSubtype >= OBJ_ROCKS_FIRST && mSubtype <= OBJ_ROCKS_LAST)
+    {
+        const unsigned int ind = (mSubtype - OBJ_ROCKS_FIRST);
+        const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + ind;
+        tex = tm->GetSprite(SpriteRocksFile, spriteId);
+    }
+    else if(mSubtype >= OBJ_MOUNTAINS_FIRST && mSubtype <= OBJ_MOUNTAINS_LAST)
+    {
+        const unsigned int ind = (mSubtype - OBJ_MOUNTAINS_FIRST);
+        const unsigned int spriteId = SpriteIdSceneElements::ID_SCENE_MOUNTAIN_L + ind;
+        tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
+    }
+    // this should never happen
+    else
+        return ;
+
     isoObj->SetTexture(tex);
 }
 
