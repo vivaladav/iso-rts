@@ -759,22 +759,21 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
             const GameObjectActionId action = selUnit->GetActiveAction();
 
+            // select another own object when not attacking
+            if(action != GameObjectActionId::ATTACK && isClickObjOwn && clickObj != selObj)
+            {
+                ClearSelection(player);
+                SelectObject(clickObj, player);
+                return ;
+            }
+
             if(action == GameObjectActionId::MOVE)
             {
-                // select another own object
-                if(isClickObjOwn && clickObj != selObj)
-                {
-                    ClearSelection(player);
-                    SelectObject(clickObj, player);
-                }
-                else
-                {
-                    const bool diffClick = selCell != clickCell;
+                const bool diffClick = selCell != clickCell;
 
-                    // try to move only if clicked on a different cell
-                    if(diffClick)
-                        HandleUnitMoveOnMouseUp(selUnit, clickCell);
-                }
+                // try to move only if clicked on a different cell
+                if(diffClick)
+                    HandleUnitMoveOnMouseUp(selUnit, clickCell);
             }
             if(action == GameObjectActionId::ATTACK)
             {
@@ -866,6 +865,7 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
             else if (action == GameObjectActionId::BUILD_STRUCTURE)
                 HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
         }
+        // selected object is not a unit
         else
         {
             // select another own object
@@ -1034,6 +1034,10 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     mPanelObjActions->SetVisible(true);
 
     player->SetSelectedObject(obj);
+
+    // check actions panel status
+    const bool idle = obj->GetCurrentAction() == IDLE;
+    mPanelObjActions->SetActionsEnabled(idle);
 }
 
 void ScreenGame::UpdateAI(float delta)
@@ -1288,6 +1292,9 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::MOVE);
+
+    unit->SetActiveAction(GameObjectActionId::IDLE);
+    unit->SetCurrentAction(GameObjectActionId::MOVE);
 }
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
