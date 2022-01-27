@@ -733,6 +733,9 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
         return ;
     }
 
+    // DEBUG
+    std::cout << "CLICK: " << clickCell.row << "," << clickCell.col << std::endl;
+
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
     GameObject * clickObj = clickGameCell.obj;
     const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
