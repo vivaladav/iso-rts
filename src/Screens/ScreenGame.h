@@ -134,6 +134,10 @@ private:
 
     int mCameraDirX = 0;
     int mCameraDirY = 0;
+    int mCameraLimitL = 0;
+    int mCameraLimitR = 0;
+    int mCameraLimitT = 0;
+    int mCameraLimitB = 0;
     bool mCameraKeyScrollX = false;
     bool mCameraKeyScrollY = false;
     bool mCameraMouseScrollX = false;

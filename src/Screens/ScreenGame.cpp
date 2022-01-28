@@ -105,6 +105,21 @@ ScreenGame::ScreenGame(Game * game)
                                 mCamera->GetWidth(), mCamera->GetHeight());
     });
 
+    // set camera limits
+    const lib::core::Pointd2D p0 = mIsoMap->GetCellPosition(0, 0);
+    const lib::core::Pointd2D p1 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, 0);
+    const lib::core::Pointd2D p2 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, mIsoMap->GetNumCols() - 1);
+    const lib::core::Pointd2D p3 = mIsoMap->GetCellPosition(0, mIsoMap->GetNumCols() - 1);
+    const int tileW = mIsoMap->GetTileWidth();
+    const int tileH = mIsoMap->GetTileHeight();
+    const int marginCameraH = tileW;
+    const int marginCameraV = tileH * 2;
+
+    mCameraLimitL = p1.x - marginCameraH;
+    mCameraLimitR = p3.x + tileW + marginCameraH - rendW;
+    mCameraLimitT = p0.y - marginCameraV;
+    mCameraLimitB = p2.y + tileH + marginCameraV - rendH;
+
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 
@@ -193,11 +208,47 @@ void ScreenGame::Update(float delta)
     // -- UPDATE CAMERA --
     const float cameraSpeed = 400.f;
 
-    if(mCameraDirX != 0)
-        mCamera->MoveX(mCameraDirX * cameraSpeed * delta);
+    const float movX = mCameraDirX * cameraSpeed * delta;
 
-    if(mCameraDirY != 0)
-        mCamera->MoveY(mCameraDirY * cameraSpeed * delta);
+    if(mCameraDirX < 0)
+    {
+        const int newX = static_cast<int>(movX - 0.5f) + mCamera->GetX();
+
+        if(newX < mCameraLimitL)
+            mCamera->SetX(mCameraLimitL);
+        else
+            mCamera->MoveX(movX);
+    }
+    else if(mCameraDirX > 0)
+    {
+        const int newX = static_cast<int>(movX + 0.5f) + mCamera->GetX();
+
+        if(newX > mCameraLimitR)
+            mCamera->SetX(mCameraLimitR);
+        else
+            mCamera->MoveX(movX);
+    }
+
+    const float movY = mCameraDirY * cameraSpeed * delta;
+
+    if(mCameraDirY < 0)
+    {
+        const int newY = static_cast<int>(movY - 0.5f) + mCamera->GetY();
+
+        if(newY < mCameraLimitT)
+            mCamera->SetY(mCameraLimitT);
+        else
+            mCamera->MoveY(movY);
+    }
+    else if(mCameraDirY > 0)
+    {
+        const int newY = static_cast<int>(movY + 0.5f) + mCamera->GetY();
+
+        if(newY > mCameraLimitB)
+            mCamera->SetY(mCameraLimitB);
+        else
+            mCamera->MoveY(movY);
+    }
 
     // -- PARTICLES --
     mPartMan->Update(delta);
@@ -659,13 +710,6 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     {
         if(event.IsModShiftDown())
             CenterCameraOverPlayerBase();
-    }
-    // SHIFT + C -> recenter camera
-    else if(key == KeyboardEvent::KEY_C)
-    {
-        if(event.IsModShiftDown())
-            mCamera->ResetPosition();
-
     }
     // DEBUG: ALT + U -> toggle UI
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
