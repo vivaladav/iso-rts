@@ -30,6 +30,9 @@ public:
 
     void ResetPosition();
     void CenterToPoint(int x, int y);
+    void SetPosition(int x, int y);
+    void SetX(int x);
+    void SetY(int y);
 
     // conversion
     int GetScreenToWorldX(int x) const;

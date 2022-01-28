@@ -62,6 +62,47 @@ void Camera::CenterToPoint(int x, int y)
     mFuncOnMove();
 }
 
+void Camera::SetPosition(int x, int y)
+{
+    // same position -> do nothing
+    if(mXd == x && mYd == y)
+        return ;
+
+    mXd = x;
+    mYd = y;
+
+    mXf = static_cast<float>(x);
+    mYf = static_cast<float>(y);
+
+    mFuncOnMove();
+}
+
+void Camera::SetX(int x)
+{
+    // same position -> do nothing
+    if(mXd == x)
+        return ;
+
+    mXd = x;
+
+    mXf = static_cast<float>(x);
+
+    mFuncOnMove();
+}
+
+void Camera::SetY(int y)
+{
+    // same position -> do nothing
+    if(mYd == y)
+        return ;
+
+    mYd = y;
+
+    mYf = static_cast<float>(y);
+
+    mFuncOnMove();
+}
+
 void Camera::CreateDefaultCamera()
 {
     if(nullptr == mDefault)
