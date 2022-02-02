@@ -366,6 +366,8 @@ void ScreenGame::SetObjectActionCompleted(GameObject * obj)
 
             // reset object's active action to default
             obj->SetActiveActionToDefault();
+            // reset current action to idle
+            obj->SetCurrentAction(IDLE);
 
             return ;
         }
