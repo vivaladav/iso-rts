@@ -19,6 +19,7 @@
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterSingleLaser.h"
+#include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameUIData.h"
@@ -35,6 +36,7 @@
 #include <graphic/ParticlesManager.h>
 #include <graphic/Renderer.h>
 #include <graphic/TextureManager.h>
+#include <sgui/ButtonsGroup.h>
 #include <sgui/Stage.h>
 
 #include <algorithm>
@@ -381,6 +383,66 @@ lib::graphic::ParticlesUpdater * ScreenGame::GetParticleUpdater(ParticlesUpdater
     return mPartMan->GetUpdater(updaterId);
 }
 
+void ScreenGame::ClearSelection(Player * player)
+{
+    GameObject * selObj = player->GetSelectedObject();
+
+    if(selObj != nullptr)
+        HidePanelObjActions();
+
+    player->ClearSelectedObject();
+
+    mPanelObjActions->ClearObject();
+    mPanelObjActions->SetVisible(false);
+
+    ClearCellOverlays();
+
+    ClearNewElemDialog();
+}
+
+void ScreenGame::SelectObject(GameObject * obj, Player * player)
+{
+    obj->SetSelected(true);
+
+    // update quick selection buttons when selected unit
+    if(obj->GetObjectType() == OBJ_UNIT)
+    {
+        const int numButtons = mGroupQuickUnitSel->GetNumButtons();
+
+        for(int i = 0; i < numButtons; ++i)
+        {
+            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
+            Unit * unit = b->GetUnit();
+
+            if(unit == obj)
+            {
+                b->SetChecked(true);
+                break;
+            }
+        }
+    }
+
+    mPanelObjActions->SetObject(obj);
+    mPanelObjActions->SetVisible(true);
+    mPanelObjActions->SetFocus();
+
+    player->SetSelectedObject(obj);
+
+    // check actions panel status
+    const bool idle = obj->GetCurrentAction() == IDLE;
+    mPanelObjActions->SetActionsEnabled(idle);
+}
+
+void ScreenGame::CenterCameraOverObject(GameObject * obj)
+{
+    const GameMapCell * cell = obj->GetCell();
+    const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell->row, cell->col);
+    const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
+    const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
+
+    mCamera->CenterToPoint(cX, cY);
+}
+
 void ScreenGame::InitParticlesSystem()
 {
     lib::graphic::ParticlesUpdater * updater;
@@ -417,6 +479,7 @@ void ScreenGame::CreateLayers()
 void ScreenGame::CreateUI()
 {
     const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
 
     Player * player = GetGame()->GetLocalPlayer();
 
@@ -603,6 +666,39 @@ void ScreenGame::CreateUI()
             }
             else
                 ++it;
+        }
+    });
+
+    // CREATE QUICK UNIT SELECTION BUTTONS
+    mGroupQuickUnitSel = new lib::sgui::ButtonsGroup(lib::sgui::ButtonsGroup::HORIZONTAL);
+
+    const int numButtons = player->GetMaxUnits();
+
+    for(int i = 0; i < numButtons; ++i)
+    {
+        auto b = new ButtonQuickUnitSelection(this);
+        mGroupQuickUnitSel->AddButton(b);
+    }
+
+    const int groupX = (rendW - mGroupQuickUnitSel->GetWidth()) * 0.5f;
+    const int groupY = rendH - mGroupQuickUnitSel->GetHeight();
+    mGroupQuickUnitSel->SetPosition(groupX, groupY);
+
+    player->SetOnNumUnitsChanged([this, player]
+    {
+        const int numUnits = player->GetNumUnits();
+        const int maxUnits = player->GetMaxUnits();
+
+        for(int i = 0; i < numUnits; ++i)
+        {
+            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
+            b->SetUnit(player->GetUnit(i));
+        }
+
+        for(int i = numUnits; i < maxUnits; ++i)
+        {
+            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
+            b->ClearUnit();
         }
     });
 }
@@ -1055,38 +1151,6 @@ void ScreenGame::UpdateProgressBars(float delta)
             mProgressBars.erase(it);
         }
     }
-}
-
-void ScreenGame::ClearSelection(Player * player)
-{
-    GameObject * selObj = player->GetSelectedObject();
-
-    if(selObj != nullptr)
-        HidePanelObjActions();
-
-    player->ClearSelectedObject();
-
-    mPanelObjActions->ClearObject();
-    mPanelObjActions->SetVisible(false);
-
-    ClearCellOverlays();
-
-    ClearNewElemDialog();
-}
-
-void ScreenGame::SelectObject(GameObject * obj, Player * player)
-{
-    obj->SetSelected(true);
-
-    mPanelObjActions->SetObject(obj);
-    mPanelObjActions->SetVisible(true);
-    mPanelObjActions->SetFocus();
-
-    player->SetSelectedObject(obj);
-
-    // check actions panel status
-    const bool idle = obj->GetCurrentAction() == IDLE;
-    mPanelObjActions->SetActionsEnabled(idle);
 }
 
 void ScreenGame::UpdateAI(float delta)

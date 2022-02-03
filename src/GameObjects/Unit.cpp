@@ -105,7 +105,6 @@ void Unit::UpdateGraphics()
 
 void Unit::SetImage()
 {
-
     const Player * owner = GetOwner();
 
     // avoid to set an image when there's no owner set

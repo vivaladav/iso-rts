@@ -181,11 +181,14 @@ ScreenNewGame::ScreenNewGame(Game * game)
     {
         const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
 
+        const int MAX_UNITS0 = 5;
+
         // create human player
         const PlayerFaction pf = game->GetLocalPlayerFaction();
         Player * p = game->AddPlayer("PLAYER 1", 0);
         p->SetLocal(true);
         p->SetFaction(pf);
+        p->SetMaxUnits(MAX_UNITS0);
 
         // assign initial available structures
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_ENERGY));
@@ -226,6 +229,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
             p = game->AddPlayer(strPlayers[i], playerId);
             p->SetFaction(facAI);
+            p->SetMaxUnits(MAX_UNITS0);
             auto * ai = new PlayerAI(p);
             p->SetAI(ai);
 

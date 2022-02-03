@@ -15,6 +15,7 @@ namespace game
 class GameObject;
 class PlayerAI;
 class ResourceGenerator;
+class Unit;
 
 enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
@@ -43,6 +44,13 @@ public:
 
     PlayerFaction GetFaction() const;
     void SetFaction(PlayerFaction faction);
+
+    unsigned int GetMaxUnits() const;
+    void SetMaxUnits(int val);
+    unsigned int GetNumUnits() const;
+    void AddUnit(Unit * unit);
+    void RemoveUnit(Unit * unit);
+    Unit * GetUnit(unsigned int index);
 
     // visibility map
     void InitVisibility(int rows, int cols);
@@ -73,9 +81,7 @@ public:
 
     int GetEnergyUse() const;
 
-    int GetNumUnits() const;
-    void SumUnits(int val);
-    void SetOnNumUnitsChanged(const std::function<void(int)> & f);
+    void SetOnNumUnitsChanged(const std::function<void()> & f);
 
     int GetTotalUnitsLevel() const;
     void SumTotalUnitsLevel(int val);
@@ -112,6 +118,8 @@ public:
     void SetLocal(bool val);
 
 private:
+    std::vector<Unit *> mUnits;
+
     std::vector<int> mVisMap;
 
     std::vector<StatValue> mStats;
@@ -123,7 +131,7 @@ private:
     std::string mName;
 
     std::function<void(int)> mOnNumCellsChanged;
-    std::function<void(int)> mOnNumUnitsChanged;
+    std::function<void()> mOnNumUnitsChanged;
     std::function<void()> mOnResourcesChanged;
 
     std::unordered_map<ResourceType, std::vector<ResourceGenerator *>> mResGenerators;
@@ -142,12 +150,17 @@ private:
     int mTotCellsLevel = 0;
     int mNumUnits = 0;
     int mTotUnitsLevel = 0;
+    unsigned int mMaxUnits = 0;
 
     bool mLocal = false;
 };
 
 inline PlayerFaction Player::GetFaction() const { return mFaction; }
 inline void Player::SetFaction(PlayerFaction faction) { mFaction = faction; }
+
+inline unsigned int Player::GetMaxUnits() const { return mMaxUnits; }
+inline void Player::SetMaxUnits(int val) { mMaxUnits = val; }
+inline unsigned int Player::GetNumUnits() const { return mUnits.size(); }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {
@@ -188,8 +201,7 @@ inline void Player::SetOnNumCellsChanged(const std::function<void(int)> & f)
     mOnNumCellsChanged = f;
 }
 
-inline int Player::GetNumUnits() const { return  mNumUnits; }
-inline void Player::SetOnNumUnitsChanged(const std::function<void(int)> &f)
+inline void Player::SetOnNumUnitsChanged(const std::function<void()> & f)
 {
     mOnNumUnitsChanged = f;
 }

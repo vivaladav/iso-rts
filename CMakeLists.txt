@@ -155,6 +155,8 @@ add_executable(
     src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonNavigation.h
     src/Widgets/ButtonNavigation.cpp
+    src/Widgets/ButtonQuickUnitSelection.h
+    src/Widgets/ButtonQuickUnitSelection.cpp
     src/Widgets/ButtonUnitsSelector.h
     src/Widgets/ButtonUnitsSelector.cpp
     src/Widgets/ButtonsPanel.h

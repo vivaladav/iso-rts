@@ -11,14 +11,18 @@
 
 namespace lib
 {
+    namespace ai { class Pathfinder; }
     namespace graphic
     {
         class Camera;
         class ParticlesManager;
         class ParticlesUpdater;
     }
-    namespace ai { class Pathfinder; }
-    namespace sgui { class Widget; }
+    namespace sgui
+    {
+        class ButtonsGroup;
+        class Widget;
+    }
 }
 
 namespace game
@@ -77,6 +81,11 @@ public:
 
     lib::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 
+    void ClearSelection(Player * player);
+    void SelectObject(GameObject * obj, Player * player);
+
+    void CenterCameraOverObject(GameObject * obj);
+
 private:
     void InitParticlesSystem();
 
@@ -89,9 +98,6 @@ private:
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
-
-    void ClearSelection(Player * player);
-    void SelectObject(GameObject * obj, Player * player);
 
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
@@ -150,6 +156,7 @@ private:
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
+    lib::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

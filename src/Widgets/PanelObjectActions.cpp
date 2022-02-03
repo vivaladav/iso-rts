@@ -104,7 +104,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
     // update position
     const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
     const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
-    const int marginB = 50;
+    const int marginB = 100;
 
     const int panelX = (rendW - GetWidth()) * 0.5f;
     const int panelY = rendH - GetHeight() - marginB;

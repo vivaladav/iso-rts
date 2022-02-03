@@ -973,6 +973,10 @@ bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * 
     if(gen->GetOwner() != player)
         return false;
 
+    // already has enough units
+    if(player->GetNumUnits() == player->GetMaxUnits())
+        return false;
+
     // only base can generate units (for now)
     if(gen->GetObjectType() != OBJ_BASE)
         return false;
@@ -1237,7 +1241,7 @@ void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D
         gen->SetBusy(false);
 
     // update player
-    player->SumUnits(1);
+    player->AddUnit(unit);
     player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
 
     // update visibility map
@@ -1850,7 +1854,13 @@ void GameMap::DestroyObject(GameObject * obj)
     Player * localPlayer = mGame->GetLocalPlayer();
 
     if(obj->GetOwner() == localPlayer)
+    {
         DelPlayerObjVisibility(obj, localPlayer);
+
+        // remove unit from player
+        if(obj->GetObjectType() == OBJ_UNIT)
+            localPlayer->RemoveUnit(static_cast<Unit *>(obj));
+    }
 
     // generic cells update
     for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)

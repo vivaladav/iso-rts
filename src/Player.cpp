@@ -23,7 +23,7 @@ Player::Player(const char * name, int pid)
     : mDummyStat(INVALID_STAT, 0)
     , mName(name)
     , mOnNumCellsChanged([](int){})
-    , mOnNumUnitsChanged([](int){})
+    , mOnNumUnitsChanged([](){})
     , mOnResourcesChanged([](){})
     , mPlayerId(pid)
 {
@@ -52,6 +52,43 @@ Player::Player(const char * name, int pid)
 Player::~Player()
 {
     delete mAI;
+}
+
+void Player::AddUnit(Unit * unit)
+{
+    if(mUnits.size() == mMaxUnits)
+        return ;
+
+    mUnits.push_back(unit);
+
+    mOnNumUnitsChanged();
+}
+
+void Player::RemoveUnit(Unit * unit)
+{
+    auto it = mUnits.begin();
+
+    while(it != mUnits.end())
+    {
+        if(*it == unit)
+        {
+            mUnits.erase(it);
+
+            mOnNumUnitsChanged();
+
+            return ;
+        }
+        else
+            ++it;
+    }
+}
+
+Unit * Player::GetUnit(unsigned int index)
+{
+    if(index < mUnits.size())
+        return mUnits[index];
+    else
+        return nullptr;
 }
 
 void Player::InitVisibility(int rows, int cols)
@@ -183,13 +220,6 @@ void Player::HandleCollectable(GameObject * obj)
 
     // notify collection
     static_cast<Collectable *>(obj)->Collected();
-}
-
-void Player::SumUnits(int val)
-{
-    mNumUnits += val;
-
-    mOnNumUnitsChanged(mNumUnits);
 }
 
 void Player::AddAvailableStructure(const ObjectData & data)
