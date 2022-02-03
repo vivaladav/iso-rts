@@ -17,6 +17,7 @@
 #include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
 #include <sgui/ButtonsGroup.h>
+#include <sgui/ImageButton.h>
 #include <sgui/Image.h>
 #include <sgui/Label.h>
 #include <sgui/TextArea.h>
@@ -28,41 +29,8 @@ namespace game
 
 constexpr int NUM_SLOTS = 6;
 
-class ImageButton : public lib::sgui::PushButton
-{
-public:
-    ImageButton(const std::array<unsigned int, NUM_VISUAL_STATES> & texIds,
-                const char * spriteFile, lib::sgui::Widget * parent)
-        : lib::sgui::PushButton(parent)
-        , mBody(new lib::graphic::Image)
-    {
-        RegisterRenderable(mBody);
-
-        for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
-        {
-            auto tm = lib::graphic::TextureManager::Instance();
-            mTexs[i] = tm->GetSprite(spriteFile, texIds[i]);
-        }
-
-        // set initial visual state
-        SetState(NORMAL);
-    }
-private:
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
-    {
-        mBody->SetTexture(mTexs[state]);
-        // reset BG to make changes visible
-        SetCurrBg(mBody);
-    }
-
-private:
-    std::array<lib::graphic::Texture *, NUM_VISUAL_STATES> mTexs;
-
-    lib::graphic::Image * mBody = nullptr;
-};
-
 // ===== BUTTON LEFT =====
-class ButtonLeft : public ImageButton
+class ButtonLeft : public lib::sgui::ImageButton
 {
 public:
     ButtonLeft(lib::sgui::Widget * parent)
@@ -77,7 +45,7 @@ public:
 };
 
 // ===== BUTTON RIGHT =====
-class ButtonRight : public ImageButton
+class ButtonRight : public lib::sgui::ImageButton
 {
 public:
     ButtonRight(lib::sgui::Widget * parent)

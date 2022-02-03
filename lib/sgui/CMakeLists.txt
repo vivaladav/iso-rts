@@ -8,6 +8,7 @@ add_library(
     include/sgui/AbstractButtonsGroup.h
     include/sgui/ButtonsGroup.h
     include/sgui/Image.h
+    include/sgui/ImageButton.h
     include/sgui/Label.h
     include/sgui/ProgressBar.h
     include/sgui/PushButton.h
@@ -18,6 +19,7 @@ add_library(
     src/AbstractButtonsGroup.cpp
     src/ButtonsGroup.cpp
     src/Image.cpp
+    src/ImageButton.cpp
     src/Label.cpp
     src/ProgressBar.cpp
     src/PushButton.cpp
