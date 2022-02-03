@@ -30,6 +30,14 @@ Widget::~Widget()
     // delete renderables
     for(auto elem : mRenderables)
         delete elem;
+
+    // clear focus
+    if(HasFocus())
+    {
+        ClearFocus();
+
+        Stage::Instance()->SetFocus();
+    }
 }
 
 void Widget::SetParent(Widget * parent)
@@ -91,6 +99,9 @@ void Widget::SetVisible(bool val)
         return ;
 
     mVisible = val;
+
+    if(!val)
+        ClearFocus();
 
     if(mParent)
     {

@@ -29,6 +29,10 @@ public:
     void MoveChildToBack(Widget * w);
     void MoveChildToFront(Widget * w);
 
+    void ClearFocus();
+    void SetFocus();
+    bool HasFocus() const;
+
 protected:
     void AddChild(Widget * w);
     void RemoveChild(Widget * w);
@@ -45,11 +49,18 @@ protected:
 
     void PropagateRender();
 
+    void PropagateFocus();
+
 protected:
     std::vector<Widget *> mWidgets;
+
+private:
+    bool mFocus = false;
 };
 
 inline int WidgetContainer::GetNumChildren() const { return mWidgets.size(); }
+
+inline bool WidgetContainer::HasFocus() const { return mFocus; }
 
 } // namespace sgui
 } // namespace lib

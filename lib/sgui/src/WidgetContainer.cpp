@@ -3,6 +3,7 @@
 #include "core/event/KeyboardEvent.h"
 #include "core/event/MouseButtonEvent.h"
 #include "core/event/MouseMotionEvent.h"
+#include "sgui/Stage.h"
 #include "sgui/Widget.h"
 
 #include <algorithm>
@@ -63,6 +64,32 @@ void WidgetContainer::MoveChildToFront(Widget * w)
 
     // add widget to front
     mWidgets.push_back(w);
+}
+
+void WidgetContainer::ClearFocus()
+{
+    // update flag and propagate
+    mFocus = false;
+
+    for(Widget * w : mWidgets)
+        w->ClearFocus();
+}
+
+void WidgetContainer::SetFocus()
+{
+    // already has focus -> exit
+    if(mFocus)
+        return;
+
+    // first clear focus for all widgets
+    auto stage = Stage::Instance();
+    stage->ClearFocus();
+
+    // update flag and propagate
+    mFocus = true;
+
+    for(Widget * w : mWidgets)
+        w->PropagateFocus();
 }
 
 void WidgetContainer::AddChild(Widget * w)
@@ -168,7 +195,8 @@ void WidgetContainer::PropagateKeyDown(core::KeyboardEvent & event)
         {
             w->PropagateKeyDown(event);
 
-            w->HandleKeyDown(event);
+            if(w->HasFocus())
+                w->HandleKeyDown(event);
 
             // stop propagation if event is consumed
             if(event.IsConsumed())
@@ -187,7 +215,8 @@ void WidgetContainer::PropagateKeyUp(core::KeyboardEvent & event)
         {
             w->PropagateKeyUp(event);
 
-            w->HandleKeyUp(event);
+            if(w->HasFocus())
+                w->HandleKeyUp(event);
 
             // stop propagation if event is consumed
             if(event.IsConsumed())
@@ -206,6 +235,14 @@ void WidgetContainer::PropagateRender()
             w->PropagateRender();
         }
     }
+}
+
+void WidgetContainer::PropagateFocus()
+{
+    mFocus = true;
+
+    for(Widget * w : mWidgets)
+        w->PropagateFocus();
 }
 
 
