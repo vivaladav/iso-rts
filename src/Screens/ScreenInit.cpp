@@ -563,6 +563,24 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteFileResourcesBar, rects);
     });
 
+    // QUICK UNIT SELECTION
+    mJobs.emplace_back([tm]
+    {
+        const std::vector<lib::core::Rectd> rects
+        {
+            // BUTTON BG
+            { 0, 0, 192, 60 },
+            { 193, 0, 192, 60 },
+            { 0, 61, 192, 60 },
+            { 193, 61, 192, 60 },
+            { 0, 122, 192, 60 },
+            // ICONS
+            { 193, 122, 24, 24 },
+            { 218, 122, 26, 26 }
+        };
+
+        tm->RegisterSprite(SpriteFileUnitQuickSel, rects);
+    });
 
     // FINAL JOB - move to next screen
     // NOTE keep last

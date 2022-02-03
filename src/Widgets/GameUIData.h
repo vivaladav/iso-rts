@@ -203,4 +203,22 @@ enum SpriteIdResourcesBar : unsigned int
     IND_RESBAR_BLOB
 };
 
+// UNIT QUICK SELECTION
+extern const char SpriteFileUnitQuickSel[];
+
+enum SpriteIdUnitQuickSel : unsigned int
+{
+    // BUTTON BG
+    IND_UQS_BG_NORMAL,
+    IND_UQS_BG_DISABLED,
+    IND_UQS_BG_MOUSE_OVER,
+    IND_UQS_BG_PUSHED,
+    IND_UQS_BG_CHECKED,
+
+    // ICONS
+    IND_UQS_ICON_ENERGY,
+    IND_UQS_ICON_HEALTH
+};
+
+
 } // namespace game
