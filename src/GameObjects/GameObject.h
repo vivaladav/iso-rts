@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 
 namespace game
@@ -253,7 +254,18 @@ public:
     GameObjectType GetObjectType() const;
 
     float GetHealth() const;
+    float GetMaxHealth() const;
+    void SetMaxHealth(float max);
+    void SetHealth(float val);
     void SumHealth(float val);
+
+    float GetEnergy() const;
+    void SetEnergy(float val);
+    void SumEnergy(float val);
+    float GetMaxEnergy() const;
+    void SetMaxEnergy(float val);
+
+    void SetOnValuesChanged(const std::function<void()> & f);
 
     float GetSpeed() const;
 
@@ -281,8 +293,6 @@ protected:
     void SetStructure(bool val);
     void SetCanBeConquered(bool val);
 
-    void SetHealth(float health);
-    void SetMaxHealth(float max);
     void SetSpeed(float speed);
 
 protected:
@@ -295,6 +305,8 @@ private:
     static unsigned int counter;
 
 private:
+    std::function<void()> mOnValuesChanged;
+
     IsoObject * mIsoObj = nullptr;
 
     unsigned int mObjId;
@@ -315,6 +327,8 @@ private:
 
     int mVisLevel = 0;
 
+    float mMaxEnergy = 100.f;
+    float mEnergy = 100.f;
     float mMaxHealth = 100.f;
     float mHealth = 100.f;
     float mSpeed = 0.f;
@@ -386,15 +400,53 @@ inline void GameObject::SetStructure(bool val) { mStructure = val; }
 inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
 
 inline float GameObject::GetHealth() const { return mHealth; }
+inline float GameObject::GetMaxHealth() const { return mMaxHealth; }
+inline void GameObject::SetMaxHealth(float max) { mMaxHealth = max; }
+inline void GameObject::SetHealth(float val)
+{
+    mHealth = val;
+
+    if(mHealth > mMaxHealth)
+        mHealth = mMaxHealth;
+
+    mOnValuesChanged();
+}
 inline void GameObject::SumHealth(float val)
 {
     mHealth += val;
 
     if(mHealth > mMaxHealth)
         mHealth = mMaxHealth;
+
+    mOnValuesChanged();
 }
-inline void GameObject::SetHealth(float health) { mHealth = health; }
-inline void GameObject::SetMaxHealth(float max) { mMaxHealth = max; }
+
+inline float GameObject::GetEnergy() const { return mEnergy; }
+inline void GameObject::SetEnergy(float val)
+{
+    mEnergy = val;
+
+    if(mEnergy > mMaxEnergy)
+        mEnergy = mMaxEnergy;
+
+    mOnValuesChanged();
+}
+inline void GameObject::SumEnergy(float val)
+{
+    mEnergy += val;
+
+    if(mEnergy > mMaxEnergy)
+        mEnergy = mMaxEnergy;
+
+    mOnValuesChanged();
+}
+inline float GameObject::GetMaxEnergy() const { return mMaxEnergy; }
+inline void GameObject::SetMaxEnergy(float val) { mMaxEnergy = val; }
+
+inline void GameObject::SetOnValuesChanged(const std::function<void()> & f)
+{
+    mOnValuesChanged = f;
+}
 
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }

@@ -22,7 +22,7 @@ public:
     ImageButton(const std::array<unsigned int, NUM_VISUAL_STATES> & texIds,
                 const char * spriteFile, lib::sgui::Widget * parent);
 
-private:
+protected:
     void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
 
 private:

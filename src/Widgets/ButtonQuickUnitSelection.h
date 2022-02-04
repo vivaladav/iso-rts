@@ -4,12 +4,17 @@
 
 namespace lib
 {
-    namespace graphic { class Image; }
+    namespace graphic
+    {
+        class Image;
+        class Text;
+    }
 }
 
 namespace game
 {
 
+class DigitsDisplay;
 class ScreenGame;
 class Unit;
 
@@ -23,17 +28,26 @@ public:
     void SetUnit(Unit * unit);
 
 private:
+    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
+
     void HandlePositionChanged() override;
 
     void HandleKeyDown(lib::core::KeyboardEvent & event) override;
     void HandleKeyUp(lib::core::KeyboardEvent & event) override;
+
+    void UpdateValues();
 
 private:
     Unit * mUnit = nullptr;
 
     ScreenGame * mScreenGame = nullptr;
 
-    lib::graphic::Image * mIcon = nullptr;
+    lib::graphic::Text * mShortcut = nullptr;
+    lib::graphic::Image * mImgUnit = nullptr;
+    lib::graphic::Image * mIconEnergy = nullptr;
+    DigitsDisplay * mDisplayEnergy = nullptr;
+    lib::graphic::Image * mIconHealth = nullptr;
+    DigitsDisplay * mDisplayHealth = nullptr;
 
     int mShortcutKey = -1;
 };

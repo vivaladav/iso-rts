@@ -24,6 +24,7 @@ unsigned int GameObject::counter = 0;
 
 GameObject::GameObject(GameObjectType type, int rows, int cols)
     : mIsoObj(new IsoObject(rows, cols))
+    , mOnValuesChanged([](){})
     , mObjId(++counter)
     , mType(type)
 {

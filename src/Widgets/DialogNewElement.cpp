@@ -212,7 +212,7 @@ public:
 
         // SHORTCUT
         font = fm->GetFont("data/fonts/Lato-Bold.ttf", 12, Font::NORMAL);
-        mShortcut = new Text(SHORTCUTS[index], font, false);
+        mShortcut = new Text(SHORTCUTS[index], font);
         mShortcut->SetColor(0xd5daddff);
 
         // register graphic elements
@@ -359,7 +359,7 @@ const int ButtonSlot::KEYS[NUM_SLOTS] = {
                                         };
 
 
-const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "1", "1", "4", "5", "6" };
+const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "2", "3", "4", "5", "6" };
 
 // ===== ATTRIBUTE PANEL =====
 
