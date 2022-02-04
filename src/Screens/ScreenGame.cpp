@@ -421,6 +421,14 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
             }
         }
     }
+    // not a unit
+    else
+    {
+        const int checked = mGroupQuickUnitSel->GetIndexChecked();
+
+        if(checked != -1)
+            mGroupQuickUnitSel->GetButton(checked)->SetChecked(false);
+    }
 
     mPanelObjActions->SetObject(obj);
     mPanelObjActions->SetVisible(true);

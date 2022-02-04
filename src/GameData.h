@@ -291,7 +291,7 @@ enum SpriteIdUnits : unsigned int
     // 2 sprites per unit: unselected and selected
     NUM_UNIT_SPRITES_PER_FACTION = 2,
     // 6 sprites per type 2 * 3 factions
-    NUM_UNIT_SPRITES_PER_TYPE = 6
+    NUM_UNIT_SPRITES_PER_TYPE = SPR_UNIT_02_F1 - SPR_UNIT_01_F1
 };
 
 // UNITS PARTICLES

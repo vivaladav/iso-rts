@@ -1,6 +1,5 @@
 #include "ButtonQuickUnitSelection.h"
 
-#include "GameData.h"
 #include "GameUIData.h"
 #include "Player.h"
 #include "GameObjects/Unit.h"
@@ -78,9 +77,8 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     const unsigned int faction = owner->GetFaction();
     const UnitType type = unit->GetUnitType();
 
-    const unsigned int texInd = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
-                                (NUM_UNIT_SPRITES_PER_TYPE * type);
-    lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
+    const unsigned int texInd = IND_UQS_UNIT1_F1 + (NUM_UQS_UNIT_SPRITE_PER_FACTION * faction) + type;
+    lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnitQuickSel, texInd);
 
     mIcon->SetTexture(tex);
 
