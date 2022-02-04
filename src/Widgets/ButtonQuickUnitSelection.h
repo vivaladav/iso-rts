@@ -16,14 +16,17 @@ class Unit;
 class ButtonQuickUnitSelection : public lib::sgui::ImageButton
 {
 public:
-    ButtonQuickUnitSelection(ScreenGame * sg, lib::sgui::Widget * parent = nullptr);
+    ButtonQuickUnitSelection(int index, ScreenGame * sg, lib::sgui::Widget * parent = nullptr);
 
     void ClearUnit();
     Unit * GetUnit() const;
     void SetUnit(Unit * unit);
 
 private:
-    void HandlePositionChanged();
+    void HandlePositionChanged() override;
+
+    void HandleKeyDown(lib::core::KeyboardEvent & event) override;
+    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
 
 private:
     Unit * mUnit = nullptr;
@@ -31,6 +34,8 @@ private:
     ScreenGame * mScreenGame = nullptr;
 
     lib::graphic::Image * mIcon = nullptr;
+
+    int mShortcutKey = -1;
 };
 
 inline Unit * ButtonQuickUnitSelection::GetUnit() const { return mUnit; }

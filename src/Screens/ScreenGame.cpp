@@ -432,7 +432,7 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 
     mPanelObjActions->SetObject(obj);
     mPanelObjActions->SetVisible(true);
-    mPanelObjActions->SetFocus();
+    lib::sgui::Stage::Instance()->SetFocus();
 
     player->SetSelectedObject(obj);
 
@@ -684,7 +684,7 @@ void ScreenGame::CreateUI()
 
     for(int i = 0; i < numButtons; ++i)
     {
-        auto b = new ButtonQuickUnitSelection(this);
+        auto b = new ButtonQuickUnitSelection(i, this);
         mGroupQuickUnitSel->AddButton(b);
     }
 

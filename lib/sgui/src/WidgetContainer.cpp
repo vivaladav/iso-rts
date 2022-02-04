@@ -77,10 +77,6 @@ void WidgetContainer::ClearFocus()
 
 void WidgetContainer::SetFocus()
 {
-    // already has focus -> exit
-    if(mFocus)
-        return;
-
     // first clear focus for all widgets
     auto stage = Stage::Instance();
     stage->ClearFocus();

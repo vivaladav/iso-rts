@@ -5,6 +5,7 @@
 #include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 
+#include <core/event/KeyboardEvent.h>
 #include <graphic/Image.h>
 #include <graphic/Texture.h>
 #include <graphic/TextureManager.h>
@@ -12,18 +13,46 @@
 namespace game
 {
 
-ButtonQuickUnitSelection::ButtonQuickUnitSelection(ScreenGame * sg, lib::sgui::Widget * parent)
-    : lib::sgui::ImageButton({ SpriteIdUnitQuickSel::IND_UQS_BG_NORMAL,
-                               SpriteIdUnitQuickSel::IND_UQS_BG_DISABLED,
-                               SpriteIdUnitQuickSel::IND_UQS_BG_MOUSE_OVER,
-                               SpriteIdUnitQuickSel::IND_UQS_BG_PUSHED,
-                               SpriteIdUnitQuickSel::IND_UQS_BG_CHECKED },
-                             SpriteFileUnitQuickSel, parent)
-    , mScreenGame(sg)
+const std::array<unsigned int, lib::sgui::PushButton::NUM_VISUAL_STATES> TEX_IDS =
 {
+    SpriteIdUnitQuickSel::IND_UQS_BG_NORMAL,
+    SpriteIdUnitQuickSel::IND_UQS_BG_DISABLED,
+    SpriteIdUnitQuickSel::IND_UQS_BG_MOUSE_OVER,
+    SpriteIdUnitQuickSel::IND_UQS_BG_PUSHED,
+    SpriteIdUnitQuickSel::IND_UQS_BG_CHECKED
+};
+
+const int MAX_BUTTONS = 10;
+
+const int KEYS[MAX_BUTTONS] =
+{
+    lib::core::KeyboardEvent::KEY_1,
+    lib::core::KeyboardEvent::KEY_2,
+    lib::core::KeyboardEvent::KEY_3,
+    lib::core::KeyboardEvent::KEY_4,
+    lib::core::KeyboardEvent::KEY_5,
+    lib::core::KeyboardEvent::KEY_6,
+    lib::core::KeyboardEvent::KEY_7,
+    lib::core::KeyboardEvent::KEY_8,
+    lib::core::KeyboardEvent::KEY_9,
+    lib::core::KeyboardEvent::KEY_0
+};
+
+const char * KEYS_STR[MAX_BUTTONS] =
+{
+    "1", "2", "3", "4", "5",
+    "6", "7", "8", "9", "0"
+};
+
+ButtonQuickUnitSelection::ButtonQuickUnitSelection(int index, ScreenGame * sg, lib::sgui::Widget * parent)
+    : lib::sgui::ImageButton(TEX_IDS, SpriteFileUnitQuickSel, parent)
+    , mScreenGame(sg)
+    , mShortcutKey(KEYS[index])
+{
+    // button disabled by default as it has no unit assigned yet
     SetEnabled(false);
 
-
+    // handle button checked
     AddOnToggleFunction([this](bool checked)
     {
         if(!checked)
@@ -106,4 +135,23 @@ void ButtonQuickUnitSelection::HandlePositionChanged()
     }
 }
 
+void ButtonQuickUnitSelection::HandleKeyDown(lib::core::KeyboardEvent & event)
+{
+    if(event.GetKey() == mShortcutKey)
+    {
+        HandleButtonDown();
+
+        event.SetConsumed();
+    }
+}
+
+void ButtonQuickUnitSelection::HandleKeyUp(lib::core::KeyboardEvent & event)
+{
+    if(event.GetKey() == mShortcutKey)
+    {
+        HandleButtonUp();
+
+        event.SetConsumed();
+    }
+}
 } // namespace game
