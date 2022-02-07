@@ -17,6 +17,7 @@ enum ObjClass : unsigned int
 
     // UNITS
     OCU_GENERIC,
+    OCU_SCOUT,
     OCU_SOLDIER,
     OCU_WORKER,
 

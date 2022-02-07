@@ -13,6 +13,7 @@ const char * ObjectData::STR_CLASS[NUM_OBJ_CLASSES] =
     "TOWER",
 
     "GENERIC",
+    "SCOUT",
     "SOLDIER",
     "WORKER"
 };

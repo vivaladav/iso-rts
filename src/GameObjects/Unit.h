@@ -16,6 +16,7 @@ enum UnitType : unsigned int
     UNIT_1,
     UNIT_2,
     UNIT_3,
+    UNIT_4,
 
     NUM_UNIT_TYPES,
 

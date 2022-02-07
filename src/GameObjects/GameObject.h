@@ -67,12 +67,15 @@ enum class MapObjectId : unsigned int
     UNIT_1_P1 = 5100,
     UNIT_2_P1,
     UNIT_3_P1,
+    UNIT_4_P1,
     UNIT_1_P2 = 5200,
     UNIT_2_P2,
     UNIT_3_P2,
+    UNIT_4_P2,
     UNIT_1_P3 = 5300,
     UNIT_2_P3,
     UNIT_3_P3,
+    UNIT_4_P3,
 
     // RANGE LIMITS
     MOUNTAIN_FIRST = MOUNTAIN_ROW_END_L_1,
@@ -80,7 +83,7 @@ enum class MapObjectId : unsigned int
     MOUNTAINS_FIRST = MOUNTAINS_L,
     MOUNTAINS_LAST = MOUNTAINS_8,
     UNIT_FIRST = UNIT_1_P1,
-    UNIT_LAST = UNIT_3_P3,
+    UNIT_LAST = UNIT_4_P3,
 
     // COUNTERS
     UNITS_PER_FACTION = UNIT_3_P1 - UNIT_1_P1 + 1,

@@ -205,6 +205,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_2));
         // TODO temporary for testing. In the future start only with 2 types
         p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_3));
+        p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_4));
 
         // create AI players
         const char * strPlayers[] =
@@ -248,6 +249,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
             p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_2));
             // TODO temporary for testing. In the future start only with 2 types
             p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_3));
+            p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_4));
 
             ++indFaction;
 

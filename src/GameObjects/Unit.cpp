@@ -23,14 +23,16 @@ const char * Unit::TITLES[NUM_UNIT_TYPES] =
 {
     "WORKER",
     "SOLDIER",
-    "GENERIC"
+    "GENERIC",
+    "SCOUT"
 };
 
 const char * Unit::DESCRIPTIONS[NUM_UNIT_TYPES] =
 {
     "A basic worker unit.\nIt is specialized in construction and conquest.",
     "A basic soldier unit.\nUseful for defense and exploration.",
-    "A slow, but versatile unit."
+    "A slow, but versatile unit.",
+    "A light and fast unit ideal for exploring, but not for fighting."
 };
 
 Unit::Unit(const ObjectData & data, int rows, int cols)

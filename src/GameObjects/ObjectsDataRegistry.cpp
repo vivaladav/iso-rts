@@ -375,6 +375,19 @@ void ObjectsDataRegistry::InitUnits()
 
     );
 
+    // unit 4
+    data1.emplace
+    (
+        UNIT_4,
+        ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                   std::vector<int>{ 30, 30, 0, 0 },
+                   SpriteFileUnits, SPR_UNIT_04_F1,
+                   OCU_SCOUT, UNIT_4, 1, 1,
+                   Unit::TITLES[UNIT_4],
+                   Unit::DESCRIPTIONS[UNIT_4])
+
+    );
+
     // -- FACTION 2 --
     std::unordered_map<UnitType, ObjectData> & data2 = mUnits[FACTION_2];
 
@@ -414,6 +427,19 @@ void ObjectsDataRegistry::InitUnits()
                    Unit::DESCRIPTIONS[UNIT_3])
     );
 
+    // unit 4
+    data2.emplace
+    (
+        UNIT_4,
+        ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                   std::vector<int>{ 30, 30, 0, 0 },
+                   SpriteFileUnits, SPR_UNIT_04_F2,
+                   OCU_SCOUT, UNIT_4, 1, 1,
+                   Unit::TITLES[UNIT_4],
+                   Unit::DESCRIPTIONS[UNIT_4])
+
+    );
+
     // -- FACTION 3 --
     std::unordered_map<UnitType, ObjectData> & data3 = mUnits[FACTION_3];
 
@@ -451,6 +477,19 @@ void ObjectsDataRegistry::InitUnits()
                    OCU_GENERIC, UNIT_3, 1, 1,
                    Unit::TITLES[UNIT_3],
                    Unit::DESCRIPTIONS[UNIT_3])
+    );
+
+    // unit 4
+    data3.emplace
+    (
+        UNIT_4,
+        ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                   std::vector<int>{ 30, 30, 0, 0 },
+                   SpriteFileUnits, SPR_UNIT_04_F3,
+                   OCU_SCOUT, UNIT_4, 1, 1,
+                   Unit::TITLES[UNIT_4],
+                   Unit::DESCRIPTIONS[UNIT_4])
+
     );
 }
 
