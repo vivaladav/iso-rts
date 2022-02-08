@@ -26,7 +26,7 @@
 #include "GameObjects/Wall.h"
 #include "Screens/ScreenGame.h"
 
-#include <utilities/UniformDistribution.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 #include <algorithm>
 #include <cassert>

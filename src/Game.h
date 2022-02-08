@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/Application.h>
+#include <sgl/core/Application.h>
 
 #include <string>
 #include <vector>

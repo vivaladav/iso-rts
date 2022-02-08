@@ -11,8 +11,8 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
 
-#include <graphic/Texture.h>
-#include <graphic/TextureManager.h>
+#include <sgl/graphic/Texture.h>
+#include <sgl/graphic/TextureManager.h>
 
 #include <cmath>
 

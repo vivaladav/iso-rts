@@ -9,8 +9,8 @@
 #include "Particles/UpdaterDamage.h"
 #include "Screens/ScreenGame.h"
 
-#include <graphic/TextureManager.h>
-#include <utilities/UniformDistribution.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 #include <cmath>
 

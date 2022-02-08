@@ -4,7 +4,7 @@
 #include "GameMap.h"
 #include "GameObjects/Diamonds.h"
 
-#include <utilities/UniformDistribution.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 namespace game
 {

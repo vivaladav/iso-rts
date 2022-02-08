@@ -2,13 +2,13 @@
 
 #include "Widgets/GameUIData.h"
 
-#include <core/event/KeyboardEvent.h>
-#include <graphic/Camera.h>
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/Image.h>
-#include <graphic/Text.h>
-#include <graphic/TextureManager.h>
+#include <sgl/core/event/KeyboardEvent.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Text.h>
+#include <sgl/graphic/TextureManager.h>
 
 #include <cassert>
 

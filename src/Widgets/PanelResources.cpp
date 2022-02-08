@@ -5,12 +5,12 @@
 #include "Widgets/SimpleResourceDisplay.h"
 #include "Widgets/GameUIData.h"
 
-#include <graphic/Camera.h>
-#include <graphic/Image.h>
-#include <graphic/Texture.h>
-#include <graphic/TextureManager.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Texture.h>
+#include <sgl/graphic/TextureManager.h>
 
-#include <sgui/Image.h>
+#include <sgl/sgui/Image.h>
 
 namespace game
 {

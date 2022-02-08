@@ -1,6 +1,6 @@
 #include "ButtonsPanel.h"
 
-#include <core/event/MouseButtonEvent.h>
+#include <sgl/core/event/MouseButtonEvent.h>
 
 namespace game
 {

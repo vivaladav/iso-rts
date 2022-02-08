@@ -13,13 +13,13 @@
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/MapPreview.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/Renderer.h>
-#include <sgui/ButtonsGroup.h>
-#include <sgui/Label.h>
-#include <sgui/PushButton.h>
-#include <sgui/Stage.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/sgui/ButtonsGroup.h>
+#include <sgl/sgui/Label.h>
+#include <sgl/sgui/PushButton.h>
+#include <sgl/sgui/Stage.h>
 
 #include <iostream>
 #include <string>

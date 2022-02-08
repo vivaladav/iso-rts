@@ -1,10 +1,10 @@
 #include "Widgets/DigitsDisplay.h"
 
-#include <graphic/Camera.h>
-#include <graphic/DummyRenderable.h>
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/Text.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/DummyRenderable.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Text.h>
 
 #include <sstream>
 

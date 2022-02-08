@@ -2,7 +2,7 @@
 
 #include "GameMapCell.h"
 
-#include <ai/IPathMap.h>
+#include <sgl/ai/IPathMap.h>
 
 #include <functional>
 #include <unordered_set>

@@ -12,15 +12,15 @@
 #include "States/StateSettings.h"
 #include "States/StateTest.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/GraphicConstants.h>
-#include <graphic/Image.h>
-#include <graphic/Renderer.h>
-#include <graphic/TextureManager.h>
-#include <graphic/Window.h>
-#include <sgui/Stage.h>
-#include <utilities/StateManager.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/GraphicConstants.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/graphic/Window.h>
+#include <sgl/sgui/Stage.h>
+#include <sgl/utilities/StateManager.h>
 
 #include <iostream>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <graphic/Particle.h>
+#include <sgl/graphic/Particle.h>
 
 namespace game
 {

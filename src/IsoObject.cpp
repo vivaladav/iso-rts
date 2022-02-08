@@ -2,7 +2,7 @@
 
 #include "IsoLayer.h"
 
-#include <graphic/Image.h>
+#include <sgl/graphic/Image.h>
 
 namespace game
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <core/event/KeyboardEventListener.h>
-#include <core/event/MouseEventListener.h>
+#include <sgl/core/event/KeyboardEventListener.h>
+#include <sgl/core/event/MouseEventListener.h>
 
 namespace game
 {

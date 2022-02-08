@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "GameObjects/Unit.h"
 
-#include <utilities/LoadedDie.h>
+#include <sgl/utilities/LoadedDie.h>
 
 #include <algorithm>
 #include <iostream>

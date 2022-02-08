@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/Point.h>
+#include <sgl/core/Point.h>
 
 #include <string>
 #include <vector>

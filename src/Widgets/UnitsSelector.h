@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgui/ButtonsGroup.h>
+#include <sgl/sgui/ButtonsGroup.h>
 
 namespace game
 {

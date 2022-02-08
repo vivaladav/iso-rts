@@ -5,15 +5,15 @@
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/GameUIData.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/Image.h>
-#include <graphic/Renderer.h>
-#include <graphic/Texture.h>
-#include <graphic/TextureManager.h>
-#include <sgui/Image.h>
-#include <sgui/Label.h>
-#include <sgui/Stage.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/Texture.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/Image.h>
+#include <sgl/sgui/Label.h>
+#include <sgl/sgui/Stage.h>
 
 namespace game
 {

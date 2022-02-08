@@ -5,13 +5,13 @@
 #include "States/StatesIds.h"
 #include "Widgets/GameUIData.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/Image.h>
-#include <graphic/Renderer.h>
-#include <graphic/TextureManager.h>
-#include <sgui/Label.h>
-#include <sgui/Stage.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/Label.h>
+#include <sgl/sgui/Stage.h>
 
 #include <cmath>
 #include <sstream>

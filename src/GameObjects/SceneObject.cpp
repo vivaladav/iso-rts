@@ -3,7 +3,7 @@
 #include "GameData.h"
 #include "IsoObject.h"
 
-#include <graphic/TextureManager.h>
+#include <sgl/graphic/TextureManager.h>
 
 namespace game
 {

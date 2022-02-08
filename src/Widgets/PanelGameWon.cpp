@@ -4,9 +4,9 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <sgui/Label.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/sgui/Label.h>
 
 namespace game
 {

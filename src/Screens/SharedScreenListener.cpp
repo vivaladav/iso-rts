@@ -4,9 +4,9 @@
 #include "Screens/Screen.h"
 #include "States/StatesIds.h"
 
-#include <core/event/ApplicationEvent.h>
-#include <core/event/KeyboardEvent.h>
-#include <graphic/Window.h>
+#include <sgl/core/event/ApplicationEvent.h>
+#include <sgl/core/event/KeyboardEvent.h>
+#include <sgl/graphic/Window.h>
 
 namespace game
 {

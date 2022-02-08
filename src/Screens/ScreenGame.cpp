@@ -28,16 +28,16 @@
 #include "Widgets/PanelGameWon.h"
 #include "Widgets/PanelResources.h"
 
-#include <ai/Pathfinder.h>
-#include <core/event/KeyboardEvent.h>
-#include <core/event/MouseButtonEvent.h>
-#include <core/event/MouseMotionEvent.h>
-#include <graphic/Camera.h>
-#include <graphic/ParticlesManager.h>
-#include <graphic/Renderer.h>
-#include <graphic/TextureManager.h>
-#include <sgui/ButtonsGroup.h>
-#include <sgui/Stage.h>
+#include <sgl/ai/Pathfinder.h>
+#include <sgl/core/event/KeyboardEvent.h>
+#include <sgl/core/event/MouseButtonEvent.h>
+#include <sgl/core/event/MouseMotionEvent.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/ParticlesManager.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/ButtonsGroup.h>
+#include <sgl/sgui/Stage.h>
 
 #include <algorithm>
 #include <cstdlib>

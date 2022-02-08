@@ -1,7 +1,7 @@
 #include "ButtonNavigation.h"
 
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
 
 namespace game
 {

@@ -3,8 +3,8 @@
 #include "Widgets/DigitsDisplay.h"
 #include "Widgets/ProgressBarResources.h"
 
-#include <graphic/Texture.h>
-#include <sgui/Image.h>
+#include <sgl/graphic/Texture.h>
+#include <sgl/sgui/Image.h>
 
 #include <cmath>
 

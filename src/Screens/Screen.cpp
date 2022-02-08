@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Screens/SharedScreenListener.h"
 
-#include <graphic/Camera.h>
+#include <sgl/graphic/Camera.h>
 
 namespace game
 {

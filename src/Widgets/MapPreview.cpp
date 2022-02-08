@@ -3,12 +3,12 @@
 #include "IsoMap.h"
 #include "MapLoader.h"
 
-#include "core/event/MouseButtonEvent.h"
-#include "graphic/Font.h"
-#include "graphic/FontManager.h"
-#include "graphic/Image.h"
-#include "graphic/Renderer.h"
-#include "graphic/Text.h"
+#include <sgl/core/event/MouseButtonEvent.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/Text.h>
 
 #include <sstream>
 

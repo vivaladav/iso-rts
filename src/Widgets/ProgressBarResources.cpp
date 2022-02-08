@@ -3,9 +3,9 @@
 #include "GameUIData.h"
 #include "Player.h"
 
-#include <graphic/Camera.h>
-#include <graphic/Image.h>
-#include <graphic/TextureManager.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/TextureManager.h>
 
 namespace game
 {

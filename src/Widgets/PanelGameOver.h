@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgui/Widget.h>
+#include <sgl/sgui/Widget.h>
 
 namespace game
 {

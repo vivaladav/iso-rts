@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgui/PushButton.h>
+#include <sgl/sgui/PushButton.h>
 
 namespace lib
 {

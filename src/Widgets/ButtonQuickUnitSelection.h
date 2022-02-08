@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgui/ImageButton.h>
+#include <sgl/sgui/ImageButton.h>
 
 namespace lib
 {

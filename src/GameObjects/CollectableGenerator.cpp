@@ -2,7 +2,7 @@
 
 #include "GameMap.h"
 
-#include <utilities/UniformDistribution.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 namespace game
 {

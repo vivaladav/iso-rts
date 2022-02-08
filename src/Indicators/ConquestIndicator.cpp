@@ -3,11 +3,11 @@
 #include "GameData.h"
 #include "Player.h"
 
-#include <graphic/DummyRenderable.h>
-#include <graphic/Font.h>
-#include <graphic/FontManager.h>
-#include <graphic/TextureManager.h>
-#include <graphic/Text.h>
+#include <sgl/graphic/DummyRenderable.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/graphic/Text.h>
 
 #include <cmath>
 #include <iomanip>
