@@ -11,6 +11,7 @@ Code here on GitHub is usually updated once a month, when I publish a new dev lo
 
 ## Follow the development
 If you want to influence the development and to know more about what's happening behind the scenes, join the official Discord server:
+
 [![Join us on Discord](https://cdn.akamai.steamstatic.com/steam/apps/1607580/extras/join_discord.png?t=1643724257)](https://discord.gg/pdEPr7efQX)
 
 You can also follow all the less frequent updates on social media:
