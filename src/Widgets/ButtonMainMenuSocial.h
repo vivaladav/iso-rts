@@ -4,7 +4,7 @@
 
 #include <array>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Image; }
 }
@@ -12,24 +12,24 @@ namespace lib
 namespace game
 {
 
-class ButtonMainMenuSocial : public lib::sgui::PushButton
+class ButtonMainMenuSocial : public sgl::sgui::PushButton
 {
 
 public:
-    ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget * parent);
+    ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget * parent);
 
 private:
     void HandlePositionChanged() override;
 
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
 
     void PositionElements();
 
 private:
     std::array<unsigned int, NUM_VISUAL_STATES> mLabelsColor;
 
-    lib::graphic::Image * mBody = nullptr;
-    lib::graphic::Image * mIcon = nullptr;
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Image * mIcon = nullptr;
 };
 
 } // namespace game

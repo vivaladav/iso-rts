@@ -36,9 +36,9 @@ void PracticeTarget::SetImage()
 
     // set texture
     const unsigned int spriteId = ID_PRACTICE_TARGET + static_cast<unsigned int>(IsSelected());
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, spriteId);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, spriteId);
     isoObj->SetTexture(tex);
 }
 

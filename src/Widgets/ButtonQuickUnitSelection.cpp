@@ -19,7 +19,7 @@
 namespace game
 {
 
-const std::array<unsigned int, lib::sgui::PushButton::NUM_VISUAL_STATES> TEX_IDS =
+const std::array<unsigned int, sgl::sgui::PushButton::NUM_VISUAL_STATES> TEX_IDS =
 {
     SpriteIdUnitQuickSel::IND_UQS_BG_NORMAL,
     SpriteIdUnitQuickSel::IND_UQS_BG_DISABLED,
@@ -32,16 +32,16 @@ const int MAX_BUTTONS = 10;
 
 const int KEYS[MAX_BUTTONS] =
 {
-    lib::core::KeyboardEvent::KEY_1,
-    lib::core::KeyboardEvent::KEY_2,
-    lib::core::KeyboardEvent::KEY_3,
-    lib::core::KeyboardEvent::KEY_4,
-    lib::core::KeyboardEvent::KEY_5,
-    lib::core::KeyboardEvent::KEY_6,
-    lib::core::KeyboardEvent::KEY_7,
-    lib::core::KeyboardEvent::KEY_8,
-    lib::core::KeyboardEvent::KEY_9,
-    lib::core::KeyboardEvent::KEY_0
+    sgl::core::KeyboardEvent::KEY_1,
+    sgl::core::KeyboardEvent::KEY_2,
+    sgl::core::KeyboardEvent::KEY_3,
+    sgl::core::KeyboardEvent::KEY_4,
+    sgl::core::KeyboardEvent::KEY_5,
+    sgl::core::KeyboardEvent::KEY_6,
+    sgl::core::KeyboardEvent::KEY_7,
+    sgl::core::KeyboardEvent::KEY_8,
+    sgl::core::KeyboardEvent::KEY_9,
+    sgl::core::KeyboardEvent::KEY_0
 };
 
 const char * KEYS_STR[MAX_BUTTONS] =
@@ -50,15 +50,15 @@ const char * KEYS_STR[MAX_BUTTONS] =
     "6", "7", "8", "9", "0"
 };
 
-ButtonQuickUnitSelection::ButtonQuickUnitSelection(int index, ScreenGame * sg, lib::sgui::Widget * parent)
-    : lib::sgui::ImageButton(TEX_IDS, SpriteFileUnitQuickSel, parent)
+ButtonQuickUnitSelection::ButtonQuickUnitSelection(int index, ScreenGame * sg, sgl::sgui::Widget * parent)
+    : sgl::sgui::ImageButton(TEX_IDS, SpriteFileUnitQuickSel, parent)
     , mScreenGame(sg)
     , mShortcutKey(KEYS[index])
 {
     // create shortcut label
-    auto fm = lib::graphic::FontManager::Instance();
-    auto fontShortcut = fm->GetFont("data/fonts/Lato-Regular.ttf", 12, lib::graphic::Font::NORMAL);
-    mShortcut = new lib::graphic::Text(KEYS_STR[index], fontShortcut);
+    auto fm = sgl::graphic::FontManager::Instance();
+    auto fontShortcut = fm->GetFont("data/fonts/Lato-Regular.ttf", 12, sgl::graphic::Font::NORMAL);
+    mShortcut = new sgl::graphic::Text(KEYS_STR[index], fontShortcut);
     RegisterRenderable(mShortcut);
 
     // handle button checked
@@ -118,7 +118,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     if(unit == mUnit)
         return ;
 
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     // set unit
     mUnit = unit;
@@ -126,7 +126,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     // update icon
     if(nullptr == mImgUnit)
     {
-        mImgUnit = new lib::graphic::Image;
+        mImgUnit = new sgl::graphic::Image;
         RegisterRenderable(mImgUnit);
     }
 
@@ -135,7 +135,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     const UnitType type = unit->GetUnitType();
 
     const unsigned int texInd = IND_UQS_UNIT1_F1 + (NUM_UQS_UNIT_SPRITE_PER_FACTION * faction) + type;
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileUnitQuickSel, texInd);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileUnitQuickSel, texInd);
 
     mImgUnit->SetTexture(tex);
 
@@ -147,7 +147,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     if(nullptr == mIconEnergy)
     {
         tex = tm->GetSprite(SpriteFileUnitQuickSel, IND_UQS_ICON_ENERGY);
-        mIconEnergy = new lib::graphic::Image(tex);
+        mIconEnergy = new sgl::graphic::Image(tex);
         RegisterRenderable(mIconEnergy);
 
         mDisplayEnergy = new DigitsDisplay(digits, digitsFontSize, suffix, this);
@@ -157,7 +157,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     if(nullptr == mIconHealth)
     {
         tex = tm->GetSprite(SpriteFileUnitQuickSel, IND_UQS_ICON_HEALTH);
-        mIconHealth = new lib::graphic::Image(tex);
+        mIconHealth = new sgl::graphic::Image(tex);
         RegisterRenderable(mIconHealth);
 
         mDisplayHealth = new DigitsDisplay(digits, digitsFontSize, suffix, this);
@@ -177,9 +177,9 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     HandlePositionChanged();
 }
 
-void ButtonQuickUnitSelection::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void ButtonQuickUnitSelection::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
-    lib::sgui::ImageButton::OnStateChanged(state);
+    sgl::sgui::ImageButton::OnStateChanged(state);
 
     const unsigned int colorsShortcut[NUM_VISUAL_STATES] =
     {
@@ -195,7 +195,7 @@ void ButtonQuickUnitSelection::OnStateChanged(lib::sgui::PushButton::VisualState
 
 void ButtonQuickUnitSelection::HandlePositionChanged()
 {
-    lib::sgui::ImageButton::HandlePositionChanged();
+    sgl::sgui::ImageButton::HandlePositionChanged();
 
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();
@@ -244,7 +244,7 @@ void ButtonQuickUnitSelection::HandlePositionChanged()
     mDisplayHealth->SetPosition(digitsHeX, digitsHeY);
 }
 
-void ButtonQuickUnitSelection::HandleKeyDown(lib::core::KeyboardEvent & event)
+void ButtonQuickUnitSelection::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     if(event.GetKey() == mShortcutKey)
     {
@@ -254,7 +254,7 @@ void ButtonQuickUnitSelection::HandleKeyDown(lib::core::KeyboardEvent & event)
     }
 }
 
-void ButtonQuickUnitSelection::HandleKeyUp(lib::core::KeyboardEvent & event)
+void ButtonQuickUnitSelection::HandleKeyUp(sgl::core::KeyboardEvent & event)
 {
     if(event.GetKey() == mShortcutKey)
     {

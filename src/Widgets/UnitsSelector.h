@@ -5,10 +5,10 @@
 namespace game
 {
 
-class UnitsSelector : public lib::sgui::ButtonsGroup
+class UnitsSelector : public sgl::sgui::ButtonsGroup
 {
 public:
-    UnitsSelector(lib::sgui::Widget * parent = nullptr);
+    UnitsSelector(sgl::sgui::Widget * parent = nullptr);
 };
 
 } // namespace game

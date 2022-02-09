@@ -30,10 +30,10 @@ namespace game
 constexpr int NUM_SLOTS = 6;
 
 // ===== BUTTON LEFT =====
-class ButtonLeft : public lib::sgui::ImageButton
+class ButtonLeft : public sgl::sgui::ImageButton
 {
 public:
-    ButtonLeft(lib::sgui::Widget * parent)
+    ButtonLeft(sgl::sgui::Widget * parent)
         : ImageButton({ IND_NE_DIALOG_LEFT_NORMAL,
                         IND_NE_DIALOG_LEFT_DISABLED,
                         IND_NE_DIALOG_LEFT_OVER,
@@ -45,10 +45,10 @@ public:
 };
 
 // ===== BUTTON RIGHT =====
-class ButtonRight : public lib::sgui::ImageButton
+class ButtonRight : public sgl::sgui::ImageButton
 {
 public:
-    ButtonRight(lib::sgui::Widget * parent)
+    ButtonRight(sgl::sgui::Widget * parent)
         : ImageButton({ IND_NE_DIALOG_RIGHT_NORMAL,
                         IND_NE_DIALOG_RIGHT_DISABLED,
                         IND_NE_DIALOG_RIGHT_OVER,
@@ -64,9 +64,9 @@ public:
 class ButtonClose : public ShortcutButton
 {
 public:
-    ButtonClose(lib::sgui::Widget * parent)
-        : ShortcutButton(lib::core::KeyboardEvent::KEY_ESC, parent)
-        , mBody(new lib::graphic::Image)
+    ButtonClose(sgl::sgui::Widget * parent)
+        : ShortcutButton(sgl::core::KeyboardEvent::KEY_ESC, parent)
+        , mBody(new sgl::graphic::Image)
     {
         // register graphic elements
         RegisterRenderable(mBody);
@@ -76,7 +76,7 @@ public:
     }
 
 private:
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
@@ -87,15 +87,15 @@ private:
             IND_NE_DIALOG_CLOSE_NORMAL,     // button can't be checked
         };
 
-        auto tm = lib::graphic::TextureManager::Instance();
-        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        auto tm = sgl::graphic::TextureManager::Instance();
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
         // reset BG to make changes visible
         SetCurrBg(mBody);
     }
 
 private:
-    lib::graphic::Image * mBody = nullptr;
+    sgl::graphic::Image * mBody = nullptr;
 };
 
 // ===== BUTTON BUILD =====
@@ -103,11 +103,11 @@ private:
 class ButtonBuild : public ShortcutButton
 {
 public:
-    ButtonBuild(lib::sgui::Widget * parent)
-        : ShortcutButton(lib::core::KeyboardEvent::KEY_B, parent)
-        , mBody(new lib::graphic::Image)
+    ButtonBuild(sgl::sgui::Widget * parent)
+        : ShortcutButton(sgl::core::KeyboardEvent::KEY_B, parent)
+        , mBody(new sgl::graphic::Image)
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         auto fm = FontManager::Instance();
         auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 11, Font::NORMAL);
@@ -128,7 +128,7 @@ public:
     }
 
 private:
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
     {
         // BACKGROUND
         const unsigned int texIds[NUM_VISUAL_STATES] =
@@ -140,8 +140,8 @@ private:
             IND_NE_DIALOG_BUILD_PUSHED,
         };
 
-        auto tm = lib::graphic::TextureManager::Instance();
-        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        auto tm = sgl::graphic::TextureManager::Instance();
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
         // reset BG to make changes visible
         SetCurrBg(mBody);
@@ -181,8 +181,8 @@ private:
     }
 
 private:
-    lib::graphic::Image * mBody = nullptr;
-    lib::graphic::Text * mShortcut = nullptr;
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Text * mShortcut = nullptr;
 };
 
 // ===== BUTTON SLOT =====
@@ -192,20 +192,20 @@ class ButtonSlot : public ShortcutButton
 public:
     ButtonSlot(int index)
         : ShortcutButton(KEYS[index], nullptr)
-        , mBody(new lib::graphic::Image)
+        , mBody(new sgl::graphic::Image)
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         SetCheckable(true);
 
         auto fm = FontManager::Instance();
 
         // TITLE
-        auto tm = lib::graphic::TextureManager::Instance();
-        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
+        auto tm = sgl::graphic::TextureManager::Instance();
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
         auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
-        mTitle = new lib::sgui::TextArea(tex->GetWidth(), TITLE_H, font, this);
-        mTitle->setTextAlignment(lib::sgui::TextArea::ALIGN_H_CENTER, lib::sgui::TextArea::ALIGN_V_CENTER);
+        mTitle = new sgl::sgui::TextArea(tex->GetWidth(), TITLE_H, font, this);
+        mTitle->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_CENTER, sgl::sgui::TextArea::ALIGN_V_CENTER);
 
         // IMAGE
         mImage = new DummyRenderable;
@@ -237,16 +237,16 @@ public:
         UnregisterRenderable(mImage);
         delete mImage;
 
-        mImage = new lib::graphic::DummyRenderable;
+        mImage = new sgl::graphic::DummyRenderable;
         RegisterRenderable(mImage);
 
         // clear flag
         mHasData = false;
     }
 
-    void SetData(const char * title, lib::graphic::Texture * texImg)
+    void SetData(const char * title, sgl::graphic::Texture * texImg)
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         // title
         mTitle->SetText(title);
@@ -272,7 +272,7 @@ public:
     }
 
 private:
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
@@ -283,8 +283,8 @@ private:
             IND_NE_DIALOG_PANEL_SEL,
         };
 
-        auto tm = lib::graphic::TextureManager::Instance();
-        lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        auto tm = sgl::graphic::TextureManager::Instance();
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
         // reset BG to make changes visible
         SetCurrBg(mBody);
@@ -341,21 +341,21 @@ private:
     static const int TITLE_H = 50;
 
 private:
-    lib::graphic::Image * mBody = nullptr;
-    lib::sgui::TextArea * mTitle = nullptr;
-    lib::graphic::Renderable * mImage = nullptr;
-    lib::graphic::Text * mShortcut = nullptr;
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::sgui::TextArea * mTitle = nullptr;
+    sgl::graphic::Renderable * mImage = nullptr;
+    sgl::graphic::Text * mShortcut = nullptr;
 
     bool mHasData = false;
 };
 
 const int ButtonSlot::KEYS[NUM_SLOTS] = {
-                                            lib::core::KeyboardEvent::KEY_1,
-                                            lib::core::KeyboardEvent::KEY_2,
-                                            lib::core::KeyboardEvent::KEY_3,
-                                            lib::core::KeyboardEvent::KEY_4,
-                                            lib::core::KeyboardEvent::KEY_5,
-                                            lib::core::KeyboardEvent::KEY_6
+                                            sgl::core::KeyboardEvent::KEY_1,
+                                            sgl::core::KeyboardEvent::KEY_2,
+                                            sgl::core::KeyboardEvent::KEY_3,
+                                            sgl::core::KeyboardEvent::KEY_4,
+                                            sgl::core::KeyboardEvent::KEY_5,
+                                            sgl::core::KeyboardEvent::KEY_6
                                         };
 
 
@@ -363,13 +363,13 @@ const char * ButtonSlot::SHORTCUTS[NUM_SLOTS] = { "1", "2", "3", "4", "5", "6" }
 
 // ===== ATTRIBUTE PANEL =====
 
-class PanelAttribute : public lib::sgui::Widget
+class PanelAttribute : public sgl::sgui::Widget
 {
 public:
-    PanelAttribute(lib::sgui::Widget * parent)
-        : lib::sgui::Widget(parent)
+    PanelAttribute(sgl::sgui::Widget * parent)
+        : sgl::sgui::Widget(parent)
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         auto tm = TextureManager::Instance();
 
@@ -391,7 +391,7 @@ public:
 
     void ClearData()
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         // check if already cleared
         if(!mHasData)
@@ -420,7 +420,7 @@ public:
 
     void SetData(const char * txt, unsigned int val)
     {
-        using namespace lib::graphic;
+        using namespace sgl::graphic;
 
         // BACKGROUND
         auto tm = TextureManager::Instance();
@@ -491,9 +491,9 @@ public:
     }
 
 private:
-    lib::graphic::Image * mBg = nullptr;
-    lib::graphic::Renderable * mLabel = nullptr;
-    lib::graphic::Renderable * mValueBar = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
+    sgl::graphic::Renderable * mLabel = nullptr;
+    sgl::graphic::Renderable * mValueBar = nullptr;
 
     bool mHasData = false;
 };
@@ -503,18 +503,18 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     : mData(data)
     , mPlayer(player)
 {
-    using namespace lib::sgui;
+    using namespace sgl::sgui;
 
     assert(!data.empty());
 
-    auto fm = lib::graphic::FontManager::Instance();
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto fm = sgl::graphic::FontManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     const int marginL = 40;
     const int marginT = 8;
 
     // BACKGROUND
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_BG);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_BG);
     auto imgBg = new Image(tex, this);
 
     // CLOSE BUTTON
@@ -522,7 +522,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     mBtnClose->SetX(imgBg->GetWidth() - mBtnClose->GetWidth());
 
     // TITLE
-    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 28, lib::graphic::Font::NORMAL);
+    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 28, sgl::graphic::Font::NORMAL);
     mTitle = new Label(title, font, this);
     mTitle->SetColor(0xf1f2f4ff);
     mTitle->SetPosition(marginL, marginT);
@@ -595,8 +595,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const unsigned int colorHeader = 0xf1f2f4ff;
     const unsigned int colorText = 0xa9afbcff;
 
-    auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, lib::graphic::Font::NORMAL);
-    auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, lib::graphic::Font::NORMAL);
+    auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, sgl::graphic::Font::NORMAL);
+    auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, sgl::graphic::Font::NORMAL);
 
     const int marginPanelXY0 = 10;
     const int marginPanelBlock = 20;
@@ -770,7 +770,7 @@ void DialogNewElement::UpdateSlots()
     const int leftData = numData - mFirstElem;
     const int limitData = leftData < NUM_SLOTS ? leftData : NUM_SLOTS;
 
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     for(int i = 0; i < limitData; ++i)
     {

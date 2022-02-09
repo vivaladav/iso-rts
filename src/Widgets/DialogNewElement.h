@@ -6,7 +6,7 @@
 #include <functional>
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace sgui
     {
@@ -31,7 +31,7 @@ struct ObjectData;
 
 enum UnitType : unsigned int;
 
-class DialogNewElement : public lib::sgui::Widget
+class DialogNewElement : public sgl::sgui::Widget
 {
 public:
     DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player);
@@ -60,15 +60,15 @@ private:
 
 private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
-    std::array<lib::sgui::Label *, NUM_COSTS> mLabelsCost;
+    std::array<sgl::sgui::Label *, NUM_COSTS> mLabelsCost;
 
     const std::vector<ObjectData> & mData;
 
-    lib::sgui::Label * mTitle = nullptr;
-    lib::sgui::ButtonsGroup * mSlots = nullptr;
+    sgl::sgui::Label * mTitle = nullptr;
+    sgl::sgui::ButtonsGroup * mSlots = nullptr;
 
-    lib::sgui::TextArea * mDescription = nullptr;
-    lib::sgui::Label * mCategory = nullptr;
+    sgl::sgui::TextArea * mDescription = nullptr;
+    sgl::sgui::Label * mCategory = nullptr;
 
     ButtonBuild * mBtnBuild = nullptr;
     ButtonClose * mBtnClose = nullptr;

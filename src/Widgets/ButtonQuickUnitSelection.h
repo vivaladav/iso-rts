@@ -2,7 +2,7 @@
 
 #include <sgl/sgui/ImageButton.h>
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -18,22 +18,22 @@ class DigitsDisplay;
 class ScreenGame;
 class Unit;
 
-class ButtonQuickUnitSelection : public lib::sgui::ImageButton
+class ButtonQuickUnitSelection : public sgl::sgui::ImageButton
 {
 public:
-    ButtonQuickUnitSelection(int index, ScreenGame * sg, lib::sgui::Widget * parent = nullptr);
+    ButtonQuickUnitSelection(int index, ScreenGame * sg, sgl::sgui::Widget * parent = nullptr);
 
     void ClearUnit();
     Unit * GetUnit() const;
     void SetUnit(Unit * unit);
 
 private:
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
 
     void HandlePositionChanged() override;
 
-    void HandleKeyDown(lib::core::KeyboardEvent & event) override;
-    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
+    void HandleKeyDown(sgl::core::KeyboardEvent & event) override;
+    void HandleKeyUp(sgl::core::KeyboardEvent & event) override;
 
     void UpdateValues();
 
@@ -42,11 +42,11 @@ private:
 
     ScreenGame * mScreenGame = nullptr;
 
-    lib::graphic::Text * mShortcut = nullptr;
-    lib::graphic::Image * mImgUnit = nullptr;
-    lib::graphic::Image * mIconEnergy = nullptr;
+    sgl::graphic::Text * mShortcut = nullptr;
+    sgl::graphic::Image * mImgUnit = nullptr;
+    sgl::graphic::Image * mIconEnergy = nullptr;
     DigitsDisplay * mDisplayEnergy = nullptr;
-    lib::graphic::Image * mIconHealth = nullptr;
+    sgl::graphic::Image * mIconHealth = nullptr;
     DigitsDisplay * mDisplayHealth = nullptr;
 
     int mShortcutKey = -1;

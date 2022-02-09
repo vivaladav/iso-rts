@@ -10,17 +10,17 @@
 
 namespace game
 {
-void SharedScreenListener::OnApplicationQuit(lib::core::ApplicationEvent & event)
+void SharedScreenListener::OnApplicationQuit(sgl::core::ApplicationEvent & event)
 {
     mScreen->GetGame()->Exit();
 
     event.SetConsumed();
 }
 
-void SharedScreenListener::OnKeyUp(lib::core::KeyboardEvent & event)
+void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
 {
-    using namespace lib::core;
-    using namespace lib::graphic;
+    using namespace sgl::core;
+    using namespace sgl::graphic;
 
     const int key = event.GetKey();
 

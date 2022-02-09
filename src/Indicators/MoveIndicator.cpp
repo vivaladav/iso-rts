@@ -29,7 +29,7 @@ MoveIndicator::MoveIndicator()
 
 void MoveIndicator::SetIndicatorType(IndicatorType type)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     if(type == mType)
         return ;
@@ -59,7 +59,7 @@ void MoveIndicator::SetIndicatorType(IndicatorType type)
 
 void MoveIndicator::SetCost(float val)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // (almost) same cost as current -> do nothing
     const float minDelta = 0.1f;

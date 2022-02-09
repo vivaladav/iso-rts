@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -19,17 +19,17 @@ namespace game
 
 class IsoMap;
 
-class MapPreview : public lib::sgui::Widget
+class MapPreview : public sgl::sgui::Widget
 {
 public:
-    MapPreview(const std::string & file, lib::sgui::Widget * parent = nullptr);
+    MapPreview(const std::string & file, sgl::sgui::Widget * parent = nullptr);
 
     void SetSelected(bool val);
 
     void SetOnClickFunction(const std::function<void()> & f);
 
 private:
-    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
+    void HandleMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
     void HandlePositionChanged() override;
 
     void OnRender() override;
@@ -39,10 +39,10 @@ private:
 
     IsoMap * mIsoMap = nullptr;
 
-    lib::graphic::Image * mBg = nullptr;
-    lib::graphic::Image * mBgSel = nullptr;
-    lib::graphic::Image * mBgUnsel = nullptr;
-    lib::graphic::Text * mLabelSize = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mBgSel = nullptr;
+    sgl::graphic::Image * mBgUnsel = nullptr;
+    sgl::graphic::Text * mLabelSize = nullptr;
 };
 
 inline void MapPreview::SetOnClickFunction(const std::function<void()> & f) { mOnClick = f; }

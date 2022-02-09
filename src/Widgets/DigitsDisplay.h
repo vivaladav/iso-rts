@@ -4,16 +4,16 @@
 
 #include <string>
 
-namespace lib  { namespace graphic  { class Renderable; } }
+namespace sgl  { namespace graphic  { class Renderable; } }
 
 namespace game
 {
 
-class DigitsDisplay : public lib::sgui::Widget
+class DigitsDisplay : public sgl::sgui::Widget
 {
 public:
-    DigitsDisplay(int digits, lib::sgui::Widget * parent);
-    DigitsDisplay(int digits, int fontSize, const std::string & suffix, lib::sgui::Widget * parent);
+    DigitsDisplay(int digits, sgl::sgui::Widget * parent);
+    DigitsDisplay(int digits, int fontSize, const std::string & suffix, sgl::sgui::Widget * parent);
 
     void SetFontSize(int val);
     void SetSuffix(const std::string & suffix);
@@ -35,8 +35,8 @@ private:
 
     int mFontSize = 19;
 
-    lib::graphic::Renderable * mTxtZeros = nullptr;
-    lib::graphic::Renderable * mTxtDigits = nullptr;
+    sgl::graphic::Renderable * mTxtZeros = nullptr;
+    sgl::graphic::Renderable * mTxtDigits = nullptr;
 };
 
 } // namespace game

@@ -8,9 +8,9 @@ namespace game
 class GameMap;
 class GameObject;
 
-struct DataParticleSingleLaser : public lib::graphic::ParticleData
+struct DataParticleSingleLaser : public sgl::graphic::ParticleData
 {
-    DataParticleSingleLaser(lib::graphic::Texture * t, GameMap * gm, GameObject * obj, double ang,
+    DataParticleSingleLaser(sgl::graphic::Texture * t, GameMap * gm, GameObject * obj, double ang,
                             float x, float y, float tx, float ty, float sp, float dmg)
         : ParticleData(t)
         , map(gm)

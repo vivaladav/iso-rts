@@ -179,12 +179,12 @@ void WallIndicator::Render()
 
 void WallIndicator::CreateCostData()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     FontManager * fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
 
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // ENERGY
     delete mTxtCostEnergy;
@@ -207,7 +207,7 @@ void WallIndicator::CreateCostData()
 
 void WallIndicator::UpdateImage()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     auto tm = TextureManager::Instance();
 

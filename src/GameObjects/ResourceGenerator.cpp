@@ -31,7 +31,7 @@ void ResourceGenerator::UpdateGraphics()
 
 void ResourceGenerator::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     IsoObject * isoObj = GetIsoObject();
 
@@ -68,7 +68,7 @@ void ResourceGenerator::SetImage()
             texId = ID_STRUCT_SOLAR_PANEL;
     }
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
     isoObj->SetTexture(tex);
 }
 

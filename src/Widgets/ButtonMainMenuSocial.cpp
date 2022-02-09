@@ -12,8 +12,8 @@
 namespace game
 {
 
-ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
+ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget * parent)
+    : sgl::sgui::PushButton(parent)
     , mLabelsColor
     {
         0xd6ebf5ff,
@@ -22,9 +22,9 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
         0x8fdfefff,
         0xFFFFFFFF
     }
-    , mBody(new lib::graphic::Image)
+    , mBody(new sgl::graphic::Image)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     auto tm = TextureManager::Instance();
 
@@ -43,12 +43,12 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, lib::sgui::Widget 
 
 void ButtonMainMenuSocial::HandlePositionChanged()
 {
-     lib::sgui::PushButton::HandlePositionChanged();
+     sgl::sgui::PushButton::HandlePositionChanged();
 
      PositionElements();
 }
 
-void ButtonMainMenuSocial::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void ButtonMainMenuSocial::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -59,8 +59,8 @@ void ButtonMainMenuSocial::OnStateChanged(lib::sgui::PushButton::VisualState sta
         IND_MM_BTNS_NORMAL,     // button can't be checked
     };
 
-    auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    auto tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
     mBody->SetTexture(tex);
     // reset BG to make changes visible
     SetCurrBg(mBody);

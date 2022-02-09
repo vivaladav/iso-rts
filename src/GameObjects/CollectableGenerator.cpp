@@ -23,7 +23,7 @@ CollectableGenerator::~CollectableGenerator()
 void CollectableGenerator::ResetTimer()
 {
     // randomize generation time between min and max
-    lib::utilities::UniformDistribution ran(mTimeMin, mTimeMax);
+    sgl::utilities::UniformDistribution ran(mTimeMin, mTimeMax);
 
     mTimeRegen = ran.GetNextValue();
     mTimerRegen = mTimeRegen;

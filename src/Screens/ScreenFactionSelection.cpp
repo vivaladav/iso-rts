@@ -29,7 +29,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     : Screen(game)
     , mFaction(NO_FACTION)
 {
-    using namespace lib;
+    using namespace sgl;
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
 
@@ -265,7 +265,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
 ScreenFactionSelection::~ScreenFactionSelection()
 {
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 
     delete mBg;
 }
@@ -280,9 +280,9 @@ void ScreenFactionSelection::Render()
 }
 
 int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
-                                           lib::sgui::Widget * parent)
+                                           sgl::sgui::Widget * parent)
 {
-    using namespace lib;
+    using namespace sgl;
 
     const unsigned int colorHeader = 0xdbebf0ff;
 

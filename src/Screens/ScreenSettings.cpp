@@ -21,7 +21,7 @@ namespace game
 ScreenSettings::ScreenSettings(Game * game)
     : Screen(game)
 {
-    using namespace lib;
+    using namespace sgl;
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
@@ -43,7 +43,7 @@ ScreenSettings::ScreenSettings(Game * game)
 
 ScreenSettings::~ScreenSettings()
 {
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 
     delete mBg;
 }

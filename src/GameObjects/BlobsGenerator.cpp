@@ -30,7 +30,7 @@ void BlobsGenerator::OnGeneration()
     auto blobs = static_cast<Blobs *>(obj);
 
     // set number of Blobs in cell
-    lib::utilities::UniformDistribution ran(Blobs::MIN_UNITS, Blobs::MAX_UNITS);
+    sgl::utilities::UniformDistribution ran(Blobs::MIN_UNITS, Blobs::MAX_UNITS);
     const int num = ran.GetNextValue();
     blobs->SetNum(num);
 

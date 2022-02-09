@@ -11,16 +11,16 @@
 namespace game
 {
 
-DigitsDisplay::DigitsDisplay(int digits, lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+DigitsDisplay::DigitsDisplay(int digits, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
     , mDigits(digits)
 {
     SetValue(0);
 }
 
 DigitsDisplay::DigitsDisplay(int digits, int fontSize, const std::string & suffix,
-                             lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+                             sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
     , mDigits(digits)
     , mSuffix(suffix)
     , mFontSize(fontSize)
@@ -63,7 +63,7 @@ void DigitsDisplay::SetValue(int val)
 
 void DigitsDisplay::UpdateDigits(bool force)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     int val = mValue;
 
@@ -89,7 +89,7 @@ void DigitsDisplay::UpdateDigits(bool force)
 
     auto fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", mFontSize, Font::NORMAL);
-    lib::core::Sized size = font->GetTextSize(ss.str().c_str());
+    sgl::core::Sized size = font->GetTextSize(ss.str().c_str());
 
     // create zeroes
     const int digitsZero = mDigits - digitsVal;

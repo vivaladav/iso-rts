@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace lib { namespace graphic { class Image; } }
+namespace sgl { namespace graphic { class Image; } }
 
 namespace game
 {
@@ -28,8 +28,8 @@ public:
     int GetNumRows() const;
     int GetNumCols() const;
 
-    lib::core::Pointd2D GetCellPosition(unsigned int r, unsigned int c) const;
-    lib::core::Pointd2D GetCellPosition(unsigned int index) const;
+    sgl::core::Pointd2D GetCellPosition(unsigned int r, unsigned int c) const;
+    sgl::core::Pointd2D GetCellPosition(unsigned int index) const;
 
     void SetTiles(const std::vector<std::string> & files);
     void SetTiles(const char * texFile, int numSprites);
@@ -81,8 +81,8 @@ private:
 
     // maps
     std::vector<unsigned int> mMap;
-    std::vector<lib::graphic::Image *> mTiles;
-    std::vector<lib::core::Pointd2D> mTilePositions;
+    std::vector<sgl::graphic::Image *> mTiles;
+    std::vector<sgl::core::Pointd2D> mTilePositions;
 
     // layers
     std::vector<IsoLayer *> mLayers;
@@ -98,7 +98,7 @@ private:
  * @param c Column index of the cell
  * @return A Point2D struct containing the (x,y) coordinates of the cell
  */
-inline lib::core::Pointd2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
+inline sgl::core::Pointd2D IsoMap::GetCellPosition(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
     return GetCellPosition(ind);

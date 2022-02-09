@@ -6,7 +6,7 @@
 namespace game
 {
 
-ButtonNavigation::ButtonNavigation(const char * text, lib::sgui::Widget * parent)
+ButtonNavigation::ButtonNavigation(const char * text, sgl::sgui::Widget * parent)
     : GameButton({
                     "data/img/buttons/navigation-01.png",
                     "data/img/buttons/navigation-02.png",
@@ -23,7 +23,7 @@ ButtonNavigation::ButtonNavigation(const char * text, lib::sgui::Widget * parent
                  },
                  parent)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // set label font
     auto fm = FontManager::Instance();

@@ -11,11 +11,11 @@
 namespace game
 {
 
-PanelGameWon::PanelGameWon(Game * game, lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+PanelGameWon::PanelGameWon(Game * game, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
+    using namespace sgl::graphic;
+    using namespace sgl::sgui;
 
     FontManager * fm = FontManager::Instance();
 

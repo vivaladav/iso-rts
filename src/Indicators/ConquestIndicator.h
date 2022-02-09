@@ -2,7 +2,7 @@
 
 #include "IsoObject.h"
 
-namespace lib { namespace graphic { class Renderable; } }
+namespace sgl { namespace graphic { class Renderable; } }
 
 namespace game
 {
@@ -27,9 +27,9 @@ private:
     void OnPositionChanged() override;
 
 private:
-    lib::graphic::Renderable * mTxtDummy = nullptr;
-    lib::graphic::Renderable * mTxtCost = nullptr;
-    lib::graphic::Renderable * mCurrTxt = nullptr;
+    sgl::graphic::Renderable * mTxtDummy = nullptr;
+    sgl::graphic::Renderable * mTxtCost = nullptr;
+    sgl::graphic::Renderable * mCurrTxt = nullptr;
 
     float mCost = -1.f;
 };

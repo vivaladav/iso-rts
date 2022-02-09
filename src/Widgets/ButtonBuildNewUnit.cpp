@@ -16,11 +16,11 @@ namespace game
 {
 
 ButtonBuildNewUnit::ButtonBuildNewUnit(const char * shortcut,
-                                       int shortcutKey, lib::sgui::Widget * parent)
+                                       int shortcutKey, sgl::sgui::Widget * parent)
     : ShortcutButton(shortcutKey, parent)
-    , mBody(new lib::graphic::Image)
+    , mBody(new sgl::graphic::Image)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // background
     RegisterRenderable(mBody);
@@ -42,11 +42,11 @@ ButtonBuildNewUnit::ButtonBuildNewUnit(const char * shortcut,
     SetState(NORMAL);
 }
 
-void ButtonBuildNewUnit::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void ButtonBuildNewUnit::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
     /*
-    auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = nullptr;
+    auto tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = nullptr;
 
     mShortcut->SetColor(0xd5daddff);
 

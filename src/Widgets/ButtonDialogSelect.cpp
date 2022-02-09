@@ -8,7 +8,7 @@
 namespace game
 {
 
-ButtonDialogSelect::ButtonDialogSelect(lib::sgui::Widget * parent)
+ButtonDialogSelect::ButtonDialogSelect(sgl::sgui::Widget * parent)
     : GameButton(SpriteFileFactionSelection,
                 {
                     IND_FSEL_SEL_NORMAL,
@@ -26,7 +26,7 @@ ButtonDialogSelect::ButtonDialogSelect(lib::sgui::Widget * parent)
                  },
                  parent)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     SetCheckable(true);
 

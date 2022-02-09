@@ -6,7 +6,7 @@
 namespace game
 {
 
-lib::graphic::Particle * UpdaterSingleLaser::CreateParticle(const lib::graphic::ParticleData & initData)
+sgl::graphic::Particle * UpdaterSingleLaser::CreateParticle(const sgl::graphic::ParticleData & initData)
 {
     ParticleSingleLaser * p = nullptr;
 

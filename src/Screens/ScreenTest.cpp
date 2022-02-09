@@ -29,7 +29,7 @@ const float TIME_PB = 4.f;
 ScreenTest::ScreenTest(Game * game)
     : Screen(game)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     game->SetClearColor(0x22, 0x22, 0x22, 0xFF);
 
@@ -100,10 +100,10 @@ ScreenTest::ScreenTest(Game * game)
 
 ScreenTest::~ScreenTest()
 {
-    for(lib::graphic::TexturedRenderable * r : mRenderables)
+    for(sgl::graphic::TexturedRenderable * r : mRenderables)
         delete r;
 
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenTest::Update(float delta)
@@ -122,11 +122,11 @@ void ScreenTest::Update(float delta)
 
 void ScreenTest::Render()
 {
-    for(lib::graphic::TexturedRenderable * r : mRenderables)
+    for(sgl::graphic::TexturedRenderable * r : mRenderables)
         r->Render();
 }
 
-void ScreenTest::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
+void ScreenTest::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 {
     std::cout << "Mouse clicked - button: " << event.GetButton()
               << " - pos: " << event.GetX() << " , " << event.GetY() << std::endl;
@@ -134,8 +134,8 @@ void ScreenTest::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
 
 void ScreenTest::TestSGui()
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
+    using namespace sgl::graphic;
+    using namespace sgl::sgui;
 
     const int marginV = 50;
 
@@ -197,7 +197,7 @@ void ScreenTest::TestSGui()
     buttonY += button->GetHeight() * 1.5f;
 
     auto tm = TextureManager::Instance();
-    auto borders = new lib::sgui::Image(tm->GetTexture("data/img/test/text_area.png"), container);
+    auto borders = new sgl::sgui::Image(tm->GetTexture("data/img/test/text_area.png"), container);
     borders->SetPosition(0, buttonY);
 
     const int taW = 400;
@@ -331,11 +331,11 @@ void ScreenTest::TestSGui()
 
 void ScreenTest::TestSprite()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     auto tm = TextureManager::Instance();
 
-    const std::vector<lib::core::Rectd> rects
+    const std::vector<sgl::core::Rectd> rects
     {
         { 0, 0, 40, 40 },
         { 40, 0, 40, 40 },
@@ -391,7 +391,7 @@ void ScreenTest::TestSprite()
 
 void ScreenTest::TestRotation()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     Image * img = nullptr;
 

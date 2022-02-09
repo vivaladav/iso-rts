@@ -5,8 +5,8 @@
 namespace game
 {
 
-UnitsSelector::UnitsSelector(lib::sgui::Widget * parent)
-    : lib::sgui::ButtonsGroup(lib::sgui::ButtonsGroup::HORIZONTAL, parent)
+UnitsSelector::UnitsSelector(sgl::sgui::Widget * parent)
+    : sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL, parent)
 {
     AddButton(new ButtonUnitsSelector("1"));
     AddButton(new ButtonUnitsSelector("2"));

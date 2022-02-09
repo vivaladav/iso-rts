@@ -119,15 +119,15 @@ void Unit::SetImage()
                                 (NUM_UNIT_SPRITES_PER_TYPE * mUnitType) +
                                  static_cast<unsigned int>(IsSelected());
 
-    auto * tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
+    auto * tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 
     GetIsoObject()->SetTexture(tex);
 }
 
 void Unit::Shoot()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 

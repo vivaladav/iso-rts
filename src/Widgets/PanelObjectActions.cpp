@@ -15,7 +15,7 @@ namespace game
 
 PanelObjectActions::PanelObjectActions()
 {
-    using namespace lib::core;
+    using namespace sgl::core;
 
     SetResizePolicy(ResizePolicy::DYNAMIC);
 
@@ -102,8 +102,8 @@ void PanelObjectActions::SetObject(GameObject * obj)
     }
 
     // update position
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
     const int marginB = 100;
 
     const int panelX = (rendW - GetWidth()) * 0.5f;

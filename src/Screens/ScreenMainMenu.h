@@ -2,7 +2,7 @@
 
 #include "Screen.h"
 
-namespace lib { namespace graphic { class Image; } }
+namespace sgl { namespace graphic { class Image; } }
 
 namespace game
 {
@@ -17,7 +17,7 @@ public:
     void Render() override;
 
 private:
-    lib::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
 };
 
 } // namespace game

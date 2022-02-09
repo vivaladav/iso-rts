@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Image; }
     namespace sgui { class Label; }
@@ -16,7 +16,7 @@ namespace game
 
 class Player;
 
-class PanelResources : public lib::sgui::Widget
+class PanelResources : public sgl::sgui::Widget
 {
 public:
     PanelResources(Player * player);
@@ -27,7 +27,7 @@ private:
     void SetBg();
 
 private:
-    lib::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
 };
 
 } // namespace game

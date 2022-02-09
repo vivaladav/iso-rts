@@ -9,7 +9,7 @@ namespace game
 class Game;
 class SharedScreenListener;
 
-class Screen : public lib::core::KeyboardEventListener , public lib::core::MouseEventListener
+class Screen : public sgl::core::KeyboardEventListener , public sgl::core::MouseEventListener
 {
 public:
     Screen(Game * game);

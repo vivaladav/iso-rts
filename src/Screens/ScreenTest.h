@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class TexturedRenderable; }
 }
@@ -23,7 +23,7 @@ public:
     void Update(float delta) override;
     void Render() override;
 
-    void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
+    void OnMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
 
 private:
     void TestSGui();
@@ -31,7 +31,7 @@ private:
     void TestRotation();
 
 private:
-    std::vector<lib::graphic::TexturedRenderable *> mRenderables;
+    std::vector<sgl::graphic::TexturedRenderable *> mRenderables;
 
     CellProgressBar * mPb0 = nullptr;
     CellProgressBar * mPb1 = nullptr;

@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace sgui
     {
@@ -40,12 +40,12 @@ private:
     int mMapSelInd = -1;
     unsigned int mStartMap = 0;
 
-    lib::sgui::Label * mLabelMaps = nullptr;
+    sgl::sgui::Label * mLabelMaps = nullptr;
 
-    lib::sgui::PushButton * mButtonStart = nullptr;
+    sgl::sgui::PushButton * mButtonStart = nullptr;
 
-    lib::sgui::PushButton * mButtonNavL = nullptr;
-    lib::sgui::PushButton * mButtonNavR = nullptr;
+    sgl::sgui::PushButton * mButtonNavL = nullptr;
+    sgl::sgui::PushButton * mButtonNavR = nullptr;
 
     Game * mGame = nullptr;
 

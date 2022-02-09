@@ -10,18 +10,18 @@
 namespace game
 {
 
-CellProgressBar::CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent)
+CellProgressBar::CellProgressBar(PlayerFaction faction, sgl::sgui::Widget * parent)
     : CellProgressBar(faction, 0, 100.f, parent)
 {
-    SetCamera(lib::graphic::Camera::GetDefaultCamera());
+    SetCamera(sgl::graphic::Camera::GetDefaultCamera());
 
     HandleProgressUpdate();
 }
 
-CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent)
-    : lib::sgui::ProgressBar(min, max, parent)
+CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent)
+    : sgl::sgui::ProgressBar(min, max, parent)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // CellProgressBar is part of the game scene
     SetCamera(Camera::GetDefaultCamera());

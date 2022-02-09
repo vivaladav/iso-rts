@@ -30,7 +30,7 @@ void DiamondsGenerator::OnGeneration()
     auto diamonds = static_cast<Diamonds *>(obj);
 
     // set number of diamonds in cell
-    lib::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
+    sgl::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
     const int num = ran.GetNextValue();
     diamonds->SetNum(num);
 

@@ -8,16 +8,16 @@
 namespace game
 {
 
-GameButton::GameButton(lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
-    , mBody(new lib::graphic::Image)
+GameButton::GameButton(sgl::sgui::Widget * parent)
+    : sgl::sgui::PushButton(parent)
+    , mBody(new sgl::graphic::Image)
 {
     RegisterRenderable(mBody);
 }
 
 GameButton::GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                        const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                       lib::sgui::Widget * parent)
+                       sgl::sgui::Widget * parent)
     : GameButton(parent)
 {
     SetData(bgFiles, labelsColor);
@@ -26,7 +26,7 @@ GameButton::GameButton(const std::array<const char *, NUM_VISUAL_STATES> & bgFil
 GameButton::GameButton(const char * spriteFile,
                        const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
                        const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor,
-                       lib::sgui::Widget * parent)
+                       sgl::sgui::Widget * parent)
     : GameButton(parent)
 {
     SetData(spriteFile, spriteIds, labelsColor);
@@ -35,7 +35,7 @@ GameButton::GameButton(const char * spriteFile,
 void GameButton::SetData(const std::array<const char *, NUM_VISUAL_STATES> & bgFiles,
                          const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor)
 {
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // init background data
     for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
@@ -51,7 +51,7 @@ void GameButton::SetData(const char * spriteFile,
                          const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
                          const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor)
 {
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // init background data
     for(unsigned int i = 0; i < NUM_VISUAL_STATES; ++i)
@@ -64,7 +64,7 @@ void GameButton::SetData(const char * spriteFile,
     SetState(NORMAL);
 }
 
-void GameButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void GameButton::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
     // refresh body
     mBody->SetTexture(mBackgrounds[state]);

@@ -44,7 +44,7 @@ void Wall::UpdateGraphics()
 
 void Wall::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     IsoObject * isoObj = GetIsoObject();
 
@@ -64,7 +64,7 @@ void Wall::SetImage()
 
     const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mSubtypeInd + (faction * NUM_OBJS_WALL);
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteWallsFile, ind);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteWallsFile, ind);
     isoObj->SetTexture(tex);
 }
 

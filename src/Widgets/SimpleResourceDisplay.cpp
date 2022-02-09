@@ -11,11 +11,11 @@
 namespace game
 {
 
-SimpleResourceDisplay::SimpleResourceDisplay(lib::graphic::Texture * icon, int digits, lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+SimpleResourceDisplay::SimpleResourceDisplay(sgl::graphic::Texture * icon, int digits, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
 {
     // ICON
-    mIcon = new lib::sgui::Image(icon, this);
+    mIcon = new sgl::sgui::Image(icon, this);
     const int iconW = mIcon->GetWidth();
     const int iconH = mIcon->GetHeight();
 

@@ -2,7 +2,7 @@
 
 #include <sgl/sgui/PushButton.h>
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -14,14 +14,14 @@ namespace lib
 namespace game
 {
 
-class ShortcutButton : public lib::sgui::PushButton
+class ShortcutButton : public sgl::sgui::PushButton
 {
 public:
-    ShortcutButton(int shortcutKey, lib::sgui::Widget * parent);
+    ShortcutButton(int shortcutKey, sgl::sgui::Widget * parent);
 
 protected:
-    void HandleKeyDown(lib::core::KeyboardEvent & event) override;
-    void HandleKeyUp(lib::core::KeyboardEvent & event) override;
+    void HandleKeyDown(sgl::core::KeyboardEvent & event) override;
+    void HandleKeyUp(sgl::core::KeyboardEvent & event) override;
 
 private:
     int mShortcutKey = -1;

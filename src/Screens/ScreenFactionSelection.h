@@ -7,7 +7,7 @@
 #include <array>
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Image; }
 
@@ -46,15 +46,15 @@ private:
 
 private:
     int AddPanelStats(int x, int y, const std::array<int, NUM_FACTION_STATS> & stats,
-                      lib::sgui::Widget * parent);
+                      sgl::sgui::Widget * parent);
 
     void HandleSelect(bool selected, PlayerFaction faction);
 
 private:
-    std::array<lib::sgui::Widget *, NUM_FACTIONS> mColumns;
+    std::array<sgl::sgui::Widget *, NUM_FACTIONS> mColumns;
     std::array<ButtonDialogSelect *, NUM_FACTIONS> mButtonsSelect;
 
-    lib::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
 
     ButtonDialogContinue * mButtonCont = nullptr;
 

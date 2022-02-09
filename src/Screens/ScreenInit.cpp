@@ -25,15 +25,15 @@ ScreenInit::ScreenInit(Game * game)
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
     // -- BACKGROUND --
-    mBg = new lib::graphic::Image("data/img/space_bg.jpg");
+    mBg = new sgl::graphic::Image("data/img/space_bg.jpg");
 
     // == SETUP JOBS ==
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // MAIN MENU
     mJobs.emplace_back([tm]
     {
-        std::vector<lib::core::Rectd> rects
+        std::vector<sgl::core::Rectd> rects
         {
             // PRIMARY BUTTON
             { 0, 0, 360, 70 },
@@ -63,7 +63,7 @@ ScreenInit::ScreenInit(Game * game)
     // FACTION SELECTION
     mJobs.emplace_back([tm]
     {
-        std::vector<lib::core::Rectd> rects
+        std::vector<sgl::core::Rectd> rects
         {
             // PANELS
             { 0, 0, 1102, 970 },
@@ -113,7 +113,7 @@ ScreenInit::ScreenInit(Game * game)
         int x = 0;
         int y = 0;
 
-        std::vector<lib::core::Rectd> rects;
+        std::vector<sgl::core::Rectd> rects;
         rects.reserve(indRows * indCols);
 
         for(int r = 0; r < indRows; ++r)
@@ -135,7 +135,7 @@ ScreenInit::ScreenInit(Game * game)
     // MAP UI
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // cell progress bar
             { 0, 0, 52, 8 },
@@ -154,7 +154,7 @@ ScreenInit::ScreenInit(Game * game)
     // COLLECTIBLES
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // diamonds
             { 0, 0, 96, 51 },
@@ -182,7 +182,7 @@ ScreenInit::ScreenInit(Game * game)
         int x = 0;
         int y = 0;
 
-        std::vector<lib::core::Rectd> rects;
+        std::vector<sgl::core::Rectd> rects;
         rects.reserve(indRows * indCols);
 
         for(int r = 0; r < indRows; ++r)
@@ -210,7 +210,7 @@ ScreenInit::ScreenInit(Game * game)
     // PARTICLES
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             { 0, 0, 4, 4 }
         };
@@ -221,7 +221,7 @@ ScreenInit::ScreenInit(Game * game)
     // ROCKS
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // row 0
             { 0, 0, 96, 51 },
@@ -252,7 +252,7 @@ ScreenInit::ScreenInit(Game * game)
     // SCENE ELEMENTS
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // mountains
             { 0, 0, 192, 134 },
@@ -275,7 +275,7 @@ ScreenInit::ScreenInit(Game * game)
     // STRUCTURES
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // base lvl 1
             { 0, 0, 288, 163 },
@@ -380,7 +380,7 @@ ScreenInit::ScreenInit(Game * game)
     // UNITS
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // unit 1
             { 0, 0, 96, 58 },
@@ -418,7 +418,7 @@ ScreenInit::ScreenInit(Game * game)
     // UNIT PARTICLES
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rectsUnitsPart
+        const std::vector<sgl::core::Rectd> rectsUnitsPart
         {
             { 0, 0, 10, 2 },
             { 0, 2, 10, 2 },
@@ -439,7 +439,7 @@ ScreenInit::ScreenInit(Game * game)
         int x = 0;
         int y = 0;
 
-        std::vector<lib::core::Rectd> rects;
+        std::vector<sgl::core::Rectd> rects;
         rects.reserve(indRows * indCols);
 
         for(int r = 0; r < indRows; ++r)
@@ -460,7 +460,7 @@ ScreenInit::ScreenInit(Game * game)
     // NEW ELEMENT DIALOG
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // BACKGROUND
             { 0, 0, 1280, 610 },
@@ -516,7 +516,7 @@ ScreenInit::ScreenInit(Game * game)
     // OBJECT ACTION BUTTON
     mJobs.emplace_back([tm]
     {
-        std::vector<lib::core::Rectd> rects;
+        std::vector<sgl::core::Rectd> rects;
 
         // button bg
         int indCols = 5;
@@ -552,7 +552,7 @@ ScreenInit::ScreenInit(Game * game)
     // RESOURCES BAR
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // BAR
             { 0, 0, 822, 50 },
@@ -573,7 +573,7 @@ ScreenInit::ScreenInit(Game * game)
     // QUICK UNIT SELECTION
     mJobs.emplace_back([tm]
     {
-        const std::vector<lib::core::Rectd> rects
+        const std::vector<sgl::core::Rectd> rects
         {
             // BUTTON BG
             { 0, 0, 192, 60 },
@@ -610,10 +610,10 @@ ScreenInit::ScreenInit(Game * game)
     });
 
     // INIT STATUS LABEL
-    auto fm = lib::graphic::FontManager::Instance();
-    lib::graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, lib::graphic::Font::NORMAL);
+    auto fm = sgl::graphic::FontManager::Instance();
+    sgl::graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
 
-    mLabelStatus = new lib::sgui::Label(font);
+    mLabelStatus = new sgl::sgui::Label(font);
     mLabelStatus->SetColor(0xEEEEEEFF);
     UpdateStatus();
 }
@@ -622,7 +622,7 @@ ScreenInit::~ScreenInit()
 {
     delete mBg;
 
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenInit::Update(float update)
@@ -649,8 +649,8 @@ void ScreenInit::UpdateStatus()
     mLabelStatus->SetText(ss.str().c_str());
 
     // update position
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
     const int x = (rendW - mLabelStatus->GetWidth()) * 0.5f;
     const int y = rendH - (mLabelStatus->GetHeight() * 2.f);
     mLabelStatus->SetPosition(x, y);

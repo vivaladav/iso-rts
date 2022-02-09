@@ -5,9 +5,9 @@
 namespace game
 {
 
-struct DataParticleDamage : public lib::graphic::ParticleData
+struct DataParticleDamage : public sgl::graphic::ParticleData
 {
-    DataParticleDamage(lib::graphic::Texture * t, double ang, float x, float y,
+    DataParticleDamage(sgl::graphic::Texture * t, double ang, float x, float y,
                        float vx, float vy, float sp, float ds, float sc, unsigned int col)
         : ParticleData(t)
         , angle(ang)

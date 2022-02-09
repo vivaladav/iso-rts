@@ -8,13 +8,13 @@ namespace game
 
 class Screen;
 
-class SharedScreenListener : public lib::core::ApplicationEventListener, public lib::core::KeyboardEventListener
+class SharedScreenListener : public sgl::core::ApplicationEventListener, public sgl::core::KeyboardEventListener
 {
 public:
     SharedScreenListener(Screen * parent);
 
-    void OnApplicationQuit(lib::core::ApplicationEvent & event) override;
-    void OnKeyUp(lib::core::KeyboardEvent & event) override;
+    void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
+    void OnKeyUp(sgl::core::KeyboardEvent & event) override;
 
 private:
     Screen * mScreen = nullptr;

@@ -8,7 +8,7 @@ namespace game
 class ButtonNavigation : public GameButton
 {
 public:
-    ButtonNavigation(const char * text, lib::sgui::Widget * parent = nullptr);
+    ButtonNavigation(const char * text, sgl::sgui::Widget * parent = nullptr);
 };
 
 } // namespace game

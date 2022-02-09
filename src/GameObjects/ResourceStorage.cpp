@@ -54,7 +54,7 @@ void ResourceStorage::OnLinkedChanged()
 
 void ResourceStorage::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     IsoObject * isoObj = GetIsoObject();
 
@@ -98,7 +98,7 @@ void ResourceStorage::SetImage()
             texId = ID_STRUCT_STORAGE_BLOBS;
     }
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
     isoObj->SetTexture(tex);
 }
 

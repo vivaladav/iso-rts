@@ -38,8 +38,8 @@ void Blobs::SetImage()
     // assign texture
     const int spriteId = SpriteCollectiblesId::BLOBS_1 + (mNum - 1);
 
-    auto * tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteCollectiblesFile, spriteId);
+    auto * tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteCollectiblesFile, spriteId);
 
     isoObj->SetTexture(tex);
 }

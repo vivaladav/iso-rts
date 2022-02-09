@@ -2,7 +2,7 @@
 
 #include "Widgets/ShortcutButton.h"
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -18,19 +18,19 @@ class ButtonBuildNewUnit : public ShortcutButton
 {
 public:
     ButtonBuildNewUnit(const char * shortcut, int shortcutKey,
-                       lib::sgui::Widget * parent);
+                       sgl::sgui::Widget * parent);
 
 private:
     void HandlePositionChanged() override;
 
     void OnRender() override;
 
-    void OnStateChanged(lib::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
 
 private:
-    lib::graphic::Image * mBody = nullptr;
-    lib::graphic::Text * mLabel = nullptr;
-    lib::graphic::Text * mShortcut = nullptr;
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Text * mLabel = nullptr;
+    sgl::graphic::Text * mShortcut = nullptr;
 };
 
 } // namespace game

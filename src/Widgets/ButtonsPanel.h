@@ -5,17 +5,17 @@
 namespace game
 {
 
-class ButtonsPanel : public lib::sgui::Widget
+class ButtonsPanel : public sgl::sgui::Widget
 {
 public:
-    ButtonsPanel(lib::sgui::Widget * parent);
+    ButtonsPanel(sgl::sgui::Widget * parent);
 
 private:
-    void HandleMouseButtonUp(lib::core::MouseButtonEvent & event) override;
+    void HandleMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
 };
 
-inline ButtonsPanel::ButtonsPanel(lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+inline ButtonsPanel::ButtonsPanel(sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
 {
 }
 

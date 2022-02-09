@@ -55,7 +55,7 @@ void DefensiveTower::UpdateGraphics()
 
 void DefensiveTower::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     IsoObject * isoObj = GetIsoObject();
 
@@ -77,7 +77,7 @@ void DefensiveTower::SetImage()
                     (faction * NUM_DTOWER_SPRITES_PER_FAC) +
                     static_cast<int>(IsSelected());
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
     isoObj->SetTexture(tex);
 }
 
@@ -128,7 +128,7 @@ void DefensiveTower::CheckForEnemies()
 
 void DefensiveTower::Shoot()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 

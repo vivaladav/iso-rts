@@ -8,7 +8,7 @@ namespace game
 class ButtonDialogSelect : public GameButton
 {
 public:
-    ButtonDialogSelect(lib::sgui::Widget * parent = nullptr);
+    ButtonDialogSelect(sgl::sgui::Widget * parent = nullptr);
 };
 
 } // namespace game

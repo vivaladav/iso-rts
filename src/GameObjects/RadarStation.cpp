@@ -36,7 +36,7 @@ void RadarStation::OnLinkedChanged()
 
 void RadarStation::SetImage()
 {
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
     IsoObject * isoObj = GetIsoObject();
 
@@ -60,7 +60,7 @@ void RadarStation::SetImage()
                  static_cast<int>(IsSelected());
     }
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
     isoObj->SetTexture(tex);
 }
 

@@ -5,7 +5,7 @@
 #include <array>
 #include <functional>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Image; }
 }
@@ -16,7 +16,7 @@ namespace game
 class GameObject;
 class ObjectActionButton;
 
-class PanelObjectActions : public lib::sgui::Widget
+class PanelObjectActions : public sgl::sgui::Widget
 {
 public:
     enum Button

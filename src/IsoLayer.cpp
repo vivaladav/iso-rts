@@ -249,9 +249,9 @@ void IsoLayer::RepositionObject(IsoObject * obj)
     PositionObject(obj, obj->GetRow(), obj->GetCol());
 }
 
-lib::core::Pointd2D IsoLayer::GetObjectPosition(const IsoObject * obj, unsigned int r, unsigned int c) const
+sgl::core::Pointd2D IsoLayer::GetObjectPosition(const IsoObject * obj, unsigned int r, unsigned int c) const
 {
-    const lib::core::Pointd2D cellPos = mMap->GetCellPosition(r, c);
+    const sgl::core::Pointd2D cellPos = mMap->GetCellPosition(r, c);
     const int cellH = mMap->GetTileHeight();
 
     const int x0 = cellPos.x + cellH;
@@ -260,14 +260,14 @@ lib::core::Pointd2D IsoLayer::GetObjectPosition(const IsoObject * obj, unsigned 
     const int imgW0 = obj->GetCols() * cellH;
     const int imgH = obj->GetHeight();
 
-    return lib::core::Pointd2D(x0 - imgW0, y0 - imgH);
+    return sgl::core::Pointd2D(x0 - imgW0, y0 - imgH);
 }
 
 // ==================== PRIVATE METHODS ====================
 
 void IsoLayer::PositionObject(IsoObject * obj, unsigned int r, unsigned int c)
 {
-    const lib::core::Pointd2D pos = GetObjectPosition(obj, r, c);
+    const sgl::core::Pointd2D pos = GetObjectPosition(obj, r, c);
 
     obj->SetPosition(pos.x, pos.y);
 }

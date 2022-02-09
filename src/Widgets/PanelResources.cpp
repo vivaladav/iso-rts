@@ -16,7 +16,7 @@ namespace game
 {
 
 PanelResources::PanelResources(Player * player)
-    : mBg(new lib::graphic::Image)
+    : mBg(new sgl::graphic::Image)
 {
     RegisterRenderable(mBg);
 
@@ -30,8 +30,8 @@ PanelResources::PanelResources(Player * player)
 
     int slotX = x0;
 
-    auto * tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = nullptr;
+    auto * tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = nullptr;
 
     const int numDigitsMoney = 8;
     const int numDigits = 5;
@@ -125,9 +125,9 @@ PanelResources::PanelResources(Player * player)
 void PanelResources::SetBg()
 {
     // NOTE in the future this will chose the right bg based on the number of slots
-    auto * tm = lib::graphic::TextureManager::Instance();
+    auto * tm = sgl::graphic::TextureManager::Instance();
 
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_BG);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_BG);
 
     mBg->SetTexture(tex);
 

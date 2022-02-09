@@ -23,7 +23,7 @@ ButtonUnitsSelector::ButtonUnitsSelector(const char * text)
                  },
                  nullptr)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // set label font
     auto fm = FontManager::Instance();

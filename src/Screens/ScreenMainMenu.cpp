@@ -23,8 +23,8 @@ namespace game
 ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(game)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
+    using namespace sgl::graphic;
+    using namespace sgl::sgui;
 
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
@@ -33,11 +33,11 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     int buttonY = 0;
     const int VMARGIN = 30;
 
-    const int screenW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int screenH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int screenW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int screenH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     // -- BACKGROUND --
-    mBg = new lib::graphic::Image("data/img/main_menu_bg.png");
+    mBg = new sgl::graphic::Image("data/img/main_menu_bg.png");
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panelButtons);
@@ -80,7 +80,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnWishlist->AddOnClickFunction([]
     {
-        lib::utilities::System sys;
+        sgl::utilities::System sys;
         sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580?utm_campaign=game&utm_source=mainmenu");
     });
 
@@ -98,7 +98,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        lib::utilities::System sys;
+        sgl::utilities::System sys;
         sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
     });
 
@@ -109,7 +109,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        lib::utilities::System sys;
+        sgl::utilities::System sys;
         sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
     });
 
@@ -120,7 +120,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        lib::utilities::System sys;
+        sgl::utilities::System sys;
         sys.OpenUrlInBrowser("https://twitter.com/vivaladev");
     });
 
@@ -130,7 +130,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        lib::utilities::System sys;
+        sgl::utilities::System sys;
         sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");
     });
 
@@ -153,7 +153,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
 ScreenMainMenu::~ScreenMainMenu()
 {
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 
     delete mBg;
 }

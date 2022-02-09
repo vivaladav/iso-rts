@@ -10,7 +10,7 @@ class GameObject;
 
 struct DataParticleDamage;
 
-class ParticleDamage : public lib::graphic::Particle
+class ParticleDamage : public sgl::graphic::Particle
 {
 public:
     void SetData(const DataParticleDamage & data);

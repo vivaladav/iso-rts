@@ -8,7 +8,7 @@
 namespace game
 {
 
-ButtonDialogContinue::ButtonDialogContinue(lib::sgui::Widget * parent)
+ButtonDialogContinue::ButtonDialogContinue(sgl::sgui::Widget * parent)
     : GameButton(SpriteFileFactionSelection,
                 {
                     IND_FSEL_CONTINUE_NORMAL,
@@ -26,7 +26,7 @@ ButtonDialogContinue::ButtonDialogContinue(lib::sgui::Widget * parent)
                  },
                  parent)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // set label font
     auto fm = FontManager::Instance();

@@ -15,12 +15,12 @@ namespace game
 {
 
 ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
-                                       int shortcutKey, lib::sgui::Widget * parent)
+                                       int shortcutKey, sgl::sgui::Widget * parent)
     : ShortcutButton(shortcutKey, parent)
-    , mBody(new lib::graphic::Image)
-    , mIcon(new lib::graphic::Image)
+    , mBody(new sgl::graphic::Image)
+    , mIcon(new sgl::graphic::Image)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     assert(icon < NUM_ACTION_ICONS);
 
@@ -57,7 +57,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     SetState(NORMAL);
 }
 
-void ObjectActionButton::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void ObjectActionButton::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -68,8 +68,8 @@ void ObjectActionButton::OnStateChanged(lib::sgui::PushButton::VisualState state
         IND_BUTTON_CHECKED,
     };
 
-    auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileObjActionButton, texIds[state]);
+    auto tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileObjActionButton, texIds[state]);
     mBody->SetTexture(tex);
     // reset BG to make changes visible
     SetCurrBg(mBody);

@@ -34,9 +34,9 @@ void SceneObject::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     // set texture
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
-    lib::graphic::Texture * tex = nullptr;
+    sgl::graphic::Texture * tex = nullptr;
 
     if(mSubtype >= OBJ_ROCKS_FIRST && mSubtype <= OBJ_ROCKS_LAST)
     {

@@ -2,7 +2,7 @@
 
 #include "IsoObject.h"
 
-namespace lib { namespace graphic { class Text; } }
+namespace sgl { namespace graphic { class Text; } }
 
 namespace game
 {
@@ -33,7 +33,7 @@ private:
     static float const COST_UNKNOWN;
 
 private:
-    lib::graphic::Text * mTxtCost = nullptr;
+    sgl::graphic::Text * mTxtCost = nullptr;
     unsigned int mColorCost = 0;
 
     float mCost = COST_UNKNOWN;

@@ -2,7 +2,7 @@
 
 #include "IsoObject.h"
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -54,10 +54,10 @@ private:
         WB_INVALID
     };
 
-    lib::graphic::Image * mIconEnergy = nullptr;
-    lib::graphic::Text * mTxtCostEnergy = nullptr;
-    lib::graphic::Image * mIconMaterial = nullptr;
-    lib::graphic::Text * mTxtCostMaterial = nullptr;
+    sgl::graphic::Image * mIconEnergy = nullptr;
+    sgl::graphic::Text * mTxtCostEnergy = nullptr;
+    sgl::graphic::Image * mIconMaterial = nullptr;
+    sgl::graphic::Text * mTxtCostMaterial = nullptr;
     unsigned int mColorCost = 0xFFFFFFFF;
 
     PlayerFaction mFaction;

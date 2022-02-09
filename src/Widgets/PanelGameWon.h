@@ -7,10 +7,10 @@ namespace game
 
 class Game;
 
-class PanelGameWon : public lib::sgui::Widget
+class PanelGameWon : public sgl::sgui::Widget
 {
 public:
-    PanelGameWon(Game * game, lib::sgui::Widget * parent = nullptr);
+    PanelGameWon(Game * game, sgl::sgui::Widget * parent = nullptr);
 };
 
 } // namespace game

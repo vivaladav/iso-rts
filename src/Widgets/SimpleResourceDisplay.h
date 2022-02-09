@@ -2,7 +2,7 @@
 
 #include <sgl/sgui/Widget.h>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Texture; }
     namespace sgui { class Image; }
@@ -14,15 +14,15 @@ namespace game
 class DigitsDisplay;
 class ProgressBarResources;
 
-class SimpleResourceDisplay : public lib::sgui::Widget
+class SimpleResourceDisplay : public sgl::sgui::Widget
 {
 public:
-    SimpleResourceDisplay(lib::graphic::Texture * icon, int digits, lib::sgui::Widget * parent);
+    SimpleResourceDisplay(sgl::graphic::Texture * icon, int digits, sgl::sgui::Widget * parent);
 
     void SetValue(int val);
 
 private:
-    lib::sgui::Image * mIcon = nullptr;
+    sgl::sgui::Image * mIcon = nullptr;
     DigitsDisplay * mDigits = nullptr;
 };
 

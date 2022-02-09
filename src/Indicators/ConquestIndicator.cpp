@@ -19,15 +19,15 @@ namespace game
 
 ConquestIndicator::ConquestIndicator()
     : IsoObject(1, 1)
-    , mTxtDummy(new lib::graphic::DummyRenderable)
-    , mTxtCost(new lib::graphic::DummyRenderable)
+    , mTxtDummy(new sgl::graphic::DummyRenderable)
+    , mTxtCost(new sgl::graphic::DummyRenderable)
     , mCurrTxt(mTxtDummy)
 {
 }
 
 void ConquestIndicator::SetFaction(PlayerFaction faction)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // upate object body
     const unsigned int indSprite = IND_CONQUEST_F1 + faction;
@@ -70,7 +70,7 @@ void ConquestIndicator::Render()
 
 void ConquestIndicator::CreateLabelCost()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     const bool curr = mCurrTxt == mTxtCost;
 

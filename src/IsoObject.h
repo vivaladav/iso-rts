@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -41,7 +41,7 @@ public:
     int GetWidth() const;
     int GetHeight() const;
 
-    void SetTexture(lib::graphic::Texture * tex);
+    void SetTexture(sgl::graphic::Texture * tex);
     void SetAlpha(unsigned char alpha);
     void SetColor(unsigned int color);
 
@@ -54,7 +54,7 @@ private:
     virtual void OnPositionChanged();
 
 private:
-    lib::graphic::Image * mImg = nullptr;
+    sgl::graphic::Image * mImg = nullptr;
 
     IsoLayer * mLayer = nullptr;
 

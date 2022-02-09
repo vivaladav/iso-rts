@@ -15,11 +15,11 @@
 namespace game
 {
 
-MapPreview::MapPreview(const std::string & file, lib::sgui::Widget * parent)
-    : lib::sgui::Widget(parent)
+MapPreview::MapPreview(const std::string & file, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
     , mOnClick([]{})
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     // -- BACKGROUND --
     mBgUnsel = new Image("data/img/map_preview_bg.png");
@@ -61,7 +61,7 @@ void MapPreview::SetSelected(bool val)
         mBg = mBgUnsel;
 }
 
-void MapPreview::HandleMouseButtonUp(lib::core::MouseButtonEvent & event)
+void MapPreview::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
 {
     event.SetConsumed();
 
@@ -96,7 +96,7 @@ void MapPreview::OnRender()
 {
     mBg->Render();
 
-    auto * renderer = lib::graphic::Renderer::Instance();
+    auto * renderer = sgl::graphic::Renderer::Instance();
 
     const int x0 = mBg->GetX() + 1;
     const int y0 = mBg->GetY() + 1;

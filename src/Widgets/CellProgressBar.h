@@ -2,18 +2,18 @@
 
 #include <sgl/sgui/ProgressBar.h>
 
-namespace lib { namespace graphic { class Image; } }
+namespace sgl { namespace graphic { class Image; } }
 
 namespace game
 {
 
 enum PlayerFaction : unsigned int;
 
-class CellProgressBar : public lib::sgui::ProgressBar
+class CellProgressBar : public sgl::sgui::ProgressBar
 {
 public:
-    CellProgressBar(PlayerFaction faction, lib::sgui::Widget * parent = nullptr);
-    CellProgressBar(PlayerFaction faction, float min, float max, lib::sgui::Widget * parent = nullptr);
+    CellProgressBar(PlayerFaction faction, sgl::sgui::Widget * parent = nullptr);
+    CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent = nullptr);
 
 private:
     void HandlePositionChanged() override;
@@ -21,8 +21,8 @@ private:
     void HandleProgressUpdate() override;
 
 private:
-    lib::graphic::Image * mBg = nullptr;
-    lib::graphic::Image * mBar = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mBar = nullptr;
 
     int mBarW;
     int mBarH;

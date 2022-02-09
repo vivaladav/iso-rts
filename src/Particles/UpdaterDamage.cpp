@@ -6,7 +6,7 @@
 namespace game
 {
 
-lib::graphic::Particle * UpdaterDamage::CreateParticle(const lib::graphic::ParticleData & initData)
+sgl::graphic::Particle * UpdaterDamage::CreateParticle(const sgl::graphic::ParticleData & initData)
 {
     ParticleDamage * p = nullptr;
 

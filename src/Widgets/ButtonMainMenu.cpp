@@ -8,10 +8,10 @@
 namespace game
 {
 
-ButtonMainMenu::ButtonMainMenu(const char * text, lib::sgui::Widget * parent)
+ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
     : GameButton(parent)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     SetData(SpriteFileMainMenu,
             {

@@ -28,7 +28,7 @@ namespace game
 {
 
 Game::Game(int argc, char * argv[])
-    : lib::core::Application(argc, argv)
+    : sgl::core::Application(argc, argv)
     , mMapFiles
     {
         "data/maps/20x20-empty.map",
@@ -39,7 +39,7 @@ Game::Game(int argc, char * argv[])
     , mObjsRegistry(new ObjectsDataRegistry)
     , mLocalFaction(NO_FACTION)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     mWin = Window::Create("Virtueror - v. 0.0.1", 1600, 900);
     mRenderer = Renderer::Create(mWin);
@@ -50,7 +50,7 @@ Game::Game(int argc, char * argv[])
     FontManager * fm = FontManager::Create();
 
     // -- State Manager --
-    mStateMan = new lib::utilities::StateManager;
+    mStateMan = new sgl::utilities::StateManager;
 
     mStateMan->AddState(new StateFactionSelection(this));
     mStateMan->AddState(new StateGame(this));
@@ -63,7 +63,7 @@ Game::Game(int argc, char * argv[])
     mStateMan->RequestNextActiveState(StateId::INIT);
 
     // -- SGUI Stage --
-    mStage = lib::sgui::Stage::Create();
+    mStage = sgl::sgui::Stage::Create();
     AddKeyboardListener(mStage);
     AddMouseListener(mStage);
 
@@ -79,12 +79,12 @@ Game::~Game()
 
     delete mStateMan;
 
-    lib::sgui::Stage::Destroy();
+    sgl::sgui::Stage::Destroy();
 
-    lib::graphic::FontManager::Destroy();
+    sgl::graphic::FontManager::Destroy();
 
-    lib::graphic::Renderer::Destroy();
-    lib::graphic::Window::Destroy();
+    sgl::graphic::Renderer::Destroy();
+    sgl::graphic::Window::Destroy();
 }
 
 void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }

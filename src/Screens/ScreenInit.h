@@ -5,7 +5,7 @@
 #include <functional>
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace graphic { class Image; }
     namespace sgui { class Label; }
@@ -27,8 +27,8 @@ private:
     void UpdateStatus();
 
 private:
-    lib::graphic::Image * mBg = nullptr;
-    lib::sgui::Label * mLabelStatus = nullptr;
+    sgl::graphic::Image * mBg = nullptr;
+    sgl::sgui::Label * mLabelStatus = nullptr;
 
     std::vector<std::function<void()>> mJobs;
     unsigned int mCurrJob = 0;

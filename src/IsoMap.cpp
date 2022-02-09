@@ -38,7 +38,7 @@ IsoMap::IsoMap(int rows, int cols, int tileW)
 /// Destructor, deletes Images used for the tiles and IsoLayers.
 IsoMap::~IsoMap()
 {
-    for(lib::graphic::Image * img : mTiles)
+    for(sgl::graphic::Image * img : mTiles)
         delete img;
 
     // -- IsoLayers --
@@ -67,7 +67,7 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
     mMap.assign(mapSize, 0);
 
     mTilePositions.reserve(mapSize);
-    mTilePositions.assign(mapSize, lib::core::Pointd2D());
+    mTilePositions.assign(mapSize, sgl::core::Pointd2D());
 
     // update layers
     for(IsoLayer * layer : mLayers)
@@ -82,13 +82,13 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
  * @param index Position index in the map. Identifies the cell
  * @return A Point2D struct containing the (x,y) coordinates of the cell
  */
-lib::core::Pointd2D IsoMap::GetCellPosition(unsigned int index) const
+sgl::core::Pointd2D IsoMap::GetCellPosition(unsigned int index) const
 {
     if(index < mTilePositions.size())
         return mTilePositions[index];
     else
     {
-        const lib::core::Pointd2D p(-1, -1);
+        const sgl::core::Pointd2D p(-1, -1);
         return p;
     }
 }
@@ -101,7 +101,7 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
 {
     for(const std::string & file : files)
     {
-        auto * img = new lib::graphic::Image(file.c_str());
+        auto * img = new sgl::graphic::Image(file.c_str());
 
         mTiles.emplace_back(img);
     }
@@ -111,11 +111,11 @@ void IsoMap::SetTiles(const std::vector<std::string> & files)
 
 void IsoMap::SetTiles(const char * texFile, int numSprites)
 {
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     for(int i = 0; i < numSprites; ++i)
     {
-        auto * img = new lib::graphic::Image(tm->GetSprite(texFile, i));
+        auto * img = new sgl::graphic::Image(tm->GetSprite(texFile, i));
 
         mTiles.emplace_back(img);
     }
@@ -202,9 +202,9 @@ void IsoMap::Render()
         {
             const unsigned int ind = indb + c;
 
-            lib::graphic::Image * img = mTiles[mMap[ind]];
+            sgl::graphic::Image * img = mTiles[mMap[ind]];
 
-            const lib::core::Pointd2D & p = mTilePositions[ind];
+            const sgl::core::Pointd2D & p = mTilePositions[ind];
 
             img->SetPosition(p.x, p.y);
             img->Render();
@@ -348,7 +348,7 @@ void IsoMap::UpdateTilePositions()
         {
             const unsigned int ind = indb + c;
 
-            lib::core::Pointd2D & p = mTilePositions[ind];
+            sgl::core::Pointd2D & p = mTilePositions[ind];
 
             // x =  (h * c)   -   (h * r)   = h * (c - r)
             // y = (h/2 * c)  +  (h/2 * r)  = h/2 * (c + r)

@@ -12,8 +12,8 @@
 namespace game
 {
 
-ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
+ButtonMainMenuWishlist::ButtonMainMenuWishlist(sgl::sgui::Widget * parent)
+    : sgl::sgui::PushButton(parent)
     , mLabelsColor
     {
         0xd6ebf5ff,
@@ -22,9 +22,9 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
         0x8fdfefff,
         0xFFFFFFFF
     }
-    , mBody(new lib::graphic::Image)
+    , mBody(new sgl::graphic::Image)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     auto tm = TextureManager::Instance();
 
@@ -50,12 +50,12 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(lib::sgui::Widget * parent)
 
 void ButtonMainMenuWishlist::HandlePositionChanged()
 {
-     lib::sgui::PushButton::HandlePositionChanged();
+     sgl::sgui::PushButton::HandlePositionChanged();
 
      PositionElements();
 }
 
-void ButtonMainMenuWishlist::OnStateChanged(lib::sgui::PushButton::VisualState state)
+void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::PushButton::VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -66,8 +66,8 @@ void ButtonMainMenuWishlist::OnStateChanged(lib::sgui::PushButton::VisualState s
         IND_MM_BTNW_NORMAL,     // button can't be checked
     };
 
-    auto tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    auto tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
     mBody->SetTexture(tex);
     // reset BG to make changes visible
     SetCurrBg(mBody);

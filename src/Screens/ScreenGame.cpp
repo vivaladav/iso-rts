@@ -64,8 +64,8 @@ constexpr int NO_SCROLL = 0;
 
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
-    , mPartMan(new lib::graphic::ParticlesManager)
-    , mPathfinder(new lib::ai::Pathfinder)
+    , mPartMan(new sgl::graphic::ParticlesManager)
+    , mPathfinder(new sgl::ai::Pathfinder)
     , mPrevCell(-1, -1)
     , mTimerEnergy(TIME_ENERGY_USE)
     , mTimerAI(TIME_AI_MOVE)
@@ -74,10 +74,10 @@ ScreenGame::ScreenGame(Game * game)
 
     game->AddKeyboardListener(this);
 
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
-    mCamera = lib::graphic::Camera::GetDefaultCamera();
+    mCamera = sgl::graphic::Camera::GetDefaultCamera();
     mCamera->SetSize(rendW, rendH);
 
     InitParticlesSystem();
@@ -108,10 +108,10 @@ ScreenGame::ScreenGame(Game * game)
     });
 
     // set camera limits
-    const lib::core::Pointd2D p0 = mIsoMap->GetCellPosition(0, 0);
-    const lib::core::Pointd2D p1 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, 0);
-    const lib::core::Pointd2D p2 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, mIsoMap->GetNumCols() - 1);
-    const lib::core::Pointd2D p3 = mIsoMap->GetCellPosition(0, mIsoMap->GetNumCols() - 1);
+    const sgl::core::Pointd2D p0 = mIsoMap->GetCellPosition(0, 0);
+    const sgl::core::Pointd2D p1 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, 0);
+    const sgl::core::Pointd2D p2 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, mIsoMap->GetNumCols() - 1);
+    const sgl::core::Pointd2D p3 = mIsoMap->GetCellPosition(0, mIsoMap->GetNumCols() - 1);
     const int tileW = mIsoMap->GetTileWidth();
     const int tileH = mIsoMap->GetTileHeight();
     const int marginCameraH = tileW;
@@ -188,7 +188,7 @@ ScreenGame::~ScreenGame()
 
     GetGame()->ClearPlayers();
 
-    auto stage = lib::sgui::Stage::Instance();
+    auto stage = sgl::sgui::Stage::Instance();
 
     stage->ClearWidgets();
     // make sure to reset stage visibility in case it was off before exit
@@ -291,8 +291,8 @@ void ScreenGame::Render()
 
 void ScreenGame::GameOver()
 {
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     auto panel = new PanelGameOver(GetGame());
 
@@ -304,8 +304,8 @@ void ScreenGame::GameOver()
 
 void ScreenGame::GameWon()
 {
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     auto panel = new PanelGameWon(GetGame());
 
@@ -378,7 +378,7 @@ void ScreenGame::SetObjectActionCompleted(GameObject * obj)
     }
 }
 
-lib::graphic::ParticlesUpdater * ScreenGame::GetParticleUpdater(ParticlesUpdaterId updaterId)
+sgl::graphic::ParticlesUpdater * ScreenGame::GetParticleUpdater(ParticlesUpdaterId updaterId)
 {
     return mPartMan->GetUpdater(updaterId);
 }
@@ -432,7 +432,7 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 
     mPanelObjActions->SetObject(obj);
     mPanelObjActions->SetVisible(true);
-    lib::sgui::Stage::Instance()->SetFocus();
+    sgl::sgui::Stage::Instance()->SetFocus();
 
     player->SetSelectedObject(obj);
 
@@ -444,7 +444,7 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 void ScreenGame::CenterCameraOverObject(GameObject * obj)
 {
     const GameMapCell * cell = obj->GetCell();
-    const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell->row, cell->col);
+    const sgl::core::Pointd2D pos = mIsoMap->GetCellPosition(cell->row, cell->col);
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
@@ -453,7 +453,7 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
 
 void ScreenGame::InitParticlesSystem()
 {
-    lib::graphic::ParticlesUpdater * updater;
+    sgl::graphic::ParticlesUpdater * updater;
 
     // DAMAGE
     updater = new UpdaterDamage;
@@ -486,8 +486,8 @@ void ScreenGame::CreateLayers()
 
 void ScreenGame::CreateUI()
 {
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     Player * player = GetGame()->GetLocalPlayer();
 
@@ -523,7 +523,7 @@ void ScreenGame::CreateUI()
         });
 
         // position dialog
-        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
         const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
         const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
         mDialogNewElement->SetPosition(posX, posY);
@@ -561,7 +561,7 @@ void ScreenGame::CreateUI()
         });
 
         // position dialog
-        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
         const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
         const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
         mDialogNewElement->SetPosition(posX, posY);
@@ -678,7 +678,7 @@ void ScreenGame::CreateUI()
     });
 
     // CREATE QUICK UNIT SELECTION BUTTONS
-    mGroupQuickUnitSel = new lib::sgui::ButtonsGroup(lib::sgui::ButtonsGroup::HORIZONTAL);
+    mGroupQuickUnitSel = new sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL);
 
     const int numButtons = player->GetMaxUnits();
 
@@ -728,9 +728,9 @@ void ScreenGame::ClearNewElemDialog()
     mDialogNewElement = nullptr;
 }
 
-void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
+void ScreenGame::OnKeyDown(sgl::core::KeyboardEvent & event)
 {
-    using namespace lib::core;
+    using namespace sgl::core;
 
     const int key = event.GetKey();
 
@@ -768,9 +768,9 @@ void ScreenGame::OnKeyDown(lib::core::KeyboardEvent & event)
     }
 }
 
-void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
+void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 {
-    using namespace lib::core;
+    using namespace sgl::core;
 
     const int key = event.GetKey();
 
@@ -822,7 +822,7 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     // DEBUG: ALT + U -> toggle UI
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
     {
-        auto stage = lib::sgui::Stage::Instance();
+        auto stage = sgl::sgui::Stage::Instance();
         stage->SetVisible(!stage->IsVisible());
     }
     // DEBUG: SHIFT/CTRL + V -> add/remove visibility to whole map
@@ -855,14 +855,14 @@ void ScreenGame::OnKeyUp(lib::core::KeyboardEvent & event)
     }
 }
 
-void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
+void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 {
     // no interaction while game is paused
     if(mPaused)
         return ;
 
     // handle only LEFT click
-    if(event.GetButton() != lib::core::MouseEvent::BUTTON_LEFT)
+    if(event.GetButton() != sgl::core::MouseEvent::BUTTON_LEFT)
         return ;
 
     Player * player = GetGame()->GetLocalPlayer();
@@ -1036,12 +1036,12 @@ void ScreenGame::OnMouseButtonUp(lib::core::MouseButtonEvent & event)
     }
 }
 
-void ScreenGame::OnMouseMotion(lib::core::MouseMotionEvent & event)
+void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
 {
     const int screenX = event.GetX();
     const int screenY = event.GetY();
-    const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = lib::graphic::Renderer::Instance()->GetHeight();
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     // -- handle scrolling --
     const int scrollingMargin = 5;
@@ -1395,7 +1395,7 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
                                const std::function<void()> & onCompleted)
 {
     const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col,
-                                            lib::ai::Pathfinder::ALL_OPTIONS);
+                                            sgl::ai::Pathfinder::ALL_OPTIONS);
 
     // empty path -> exit
     if(path.empty())
@@ -1468,7 +1468,7 @@ void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
         // show path cost when destination is visible
         const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
                                                 currCell.row, currCell.col,
-                                                lib::ai::Pathfinder::ALL_OPTIONS);
+                                                sgl::ai::Pathfinder::ALL_OPTIONS);
 
         ObjectPath op(unit, mIsoMap, mGameMap, this);
         op.SetPathCells(path);
@@ -1658,7 +1658,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
     // check if there's a path between unit and destination
     const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
                                             currCell.row, currCell.col,
-                                            lib::ai::Pathfinder::ALL_OPTIONS);
+                                            sgl::ai::Pathfinder::ALL_OPTIONS);
 
     if(path.empty())
         layer->ClearObjects();
@@ -1874,7 +1874,7 @@ void ScreenGame::CenterCameraOverPlayerBase()
 {
     const Player * p = GetGame()->GetLocalPlayer();
     const Cell2D & cell = p->GetBaseCell();
-    const lib::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
+    const sgl::core::Pointd2D pos = mIsoMap->GetCellPosition(cell.row, cell.col);
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 

@@ -24,7 +24,7 @@ void ObjectPath::InitNextMoveStep()
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const lib::core::Pointd2D target = layerObj->GetObjectPosition(isoObj, nextRow, nextCol);
+    const sgl::core::Pointd2D target = layerObj->GetObjectPosition(isoObj, nextRow, nextCol);
     mTargetX = target.x;
     mTargetY = target.y;
 

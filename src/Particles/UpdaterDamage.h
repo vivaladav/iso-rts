@@ -5,10 +5,10 @@
 namespace game
 {
 
-class UpdaterDamage : public lib::graphic::ParticlesUpdater
+class UpdaterDamage : public sgl::graphic::ParticlesUpdater
 {
 private:
-    lib::graphic::Particle * CreateParticle(const lib::graphic::ParticleData & initData) override;
+    sgl::graphic::Particle * CreateParticle(const sgl::graphic::ParticleData & initData) override;
 };
 
 } // namespace game

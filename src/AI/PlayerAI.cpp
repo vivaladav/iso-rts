@@ -237,7 +237,7 @@ AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
         std::cout << "ACTION " << aid << " - prob: " << prob << std::endl;
     }
 
-    lib::utilities::LoadedDie die(probs);
+    sgl::utilities::LoadedDie die(probs);
 
     return actions[die.GetNextValue()];
 }
@@ -500,7 +500,7 @@ Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
         }
     }
 
-    lib::utilities::LoadedDie die(probs);
+    sgl::utilities::LoadedDie die(probs);
 
     return dest[die.GetNextValue()];
 }

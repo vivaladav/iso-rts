@@ -16,13 +16,13 @@ namespace game
 {
 
 ShortcutButton::ShortcutButton(int shortcutKey,
-                               lib::sgui::Widget * parent)
-    : lib::sgui::PushButton(parent)
+                               sgl::sgui::Widget * parent)
+    : sgl::sgui::PushButton(parent)
     , mShortcutKey(shortcutKey)
 {
 }
 
-void ShortcutButton::HandleKeyDown(lib::core::KeyboardEvent & event)
+void ShortcutButton::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     if(event.GetKey() == mShortcutKey)
     {
@@ -32,7 +32,7 @@ void ShortcutButton::HandleKeyDown(lib::core::KeyboardEvent & event)
     }
 }
 
-void ShortcutButton::HandleKeyUp(lib::core::KeyboardEvent & event)
+void ShortcutButton::HandleKeyUp(sgl::core::KeyboardEvent & event)
 {
     if(event.GetKey() == mShortcutKey)
     {

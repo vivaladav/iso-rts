@@ -89,7 +89,7 @@ void GameObject::SetOwner(Player * owner)
 
 void GameObject::Hit(float damage)
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     SumHealth(-damage);
 
@@ -106,7 +106,7 @@ void GameObject::Hit(float damage)
     if(mHealth > 0.f)
     {
         const int quad0 = 0;
-        lib::utilities::UniformDistribution genQuad(quad0, maxQuad - 1);
+        sgl::utilities::UniformDistribution genQuad(quad0, maxQuad - 1);
 
         ang0 += angInc * genQuad.GetNextValue();
     }
@@ -136,10 +136,10 @@ void GameObject::Hit(float damage)
     // random generator of rotation angle
     const int minRot = 0;
     const int maxRot = 360;
-    lib::utilities::UniformDistribution genRot(minRot, maxRot);
+    sgl::utilities::UniformDistribution genRot(minRot, maxRot);
 
     // random generator for velocity direction
-    lib::utilities::UniformDistribution genVel(static_cast<int>(ang0), static_cast<int>(ang1));
+    sgl::utilities::UniformDistribution genVel(static_cast<int>(ang0), static_cast<int>(ang1));
 
     const float deg2rad = M_PI / 180.f;
 
@@ -147,25 +147,25 @@ void GameObject::Hit(float damage)
     const int minSpeed = 100;
     const int maxSpeed = 300;
 
-    lib::utilities::UniformDistribution genSpeed(minSpeed, maxSpeed);
+    sgl::utilities::UniformDistribution genSpeed(minSpeed, maxSpeed);
 
     // random generator for decay speed
 
     const int minDecSpeed = 250;
     const int maxDecSpeed = 500;
 
-    lib::utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
+    sgl::utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
     // random generator for scale
     const int minScale = 1;
     const int maxScale = 2;
-    lib::utilities::UniformDistribution genScale(minScale, maxScale);
+    sgl::utilities::UniformDistribution genScale(minScale, maxScale);
 
     // random generator for color
     const int color0 = 0;
     const int colorN = mObjColors.size() - 1;
 
-    lib::utilities::UniformDistribution genColor(color0, colorN);
+    sgl::utilities::UniformDistribution genColor(color0, colorN);
 
     for(int q = 0; q < numQuad; ++q)
     {

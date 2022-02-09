@@ -10,7 +10,7 @@ class GameObject;
 
 struct DataParticleSingleLaser;
 
-class ParticleSingleLaser : public lib::graphic::Particle
+class ParticleSingleLaser : public sgl::graphic::Particle
 {
 public:
     void SetData(const DataParticleSingleLaser & data);

@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace ai { class Pathfinder; }
     namespace graphic
@@ -64,10 +64,10 @@ public:
     void Update(float delta) override;
     void Render() override;
 
-    void OnKeyDown(lib::core::KeyboardEvent & event) override;
-    void OnKeyUp(lib::core::KeyboardEvent & event) override;
-    void OnMouseButtonUp(lib::core::MouseButtonEvent & event) override;
-    void OnMouseMotion(lib::core::MouseMotionEvent & event) override;
+    void OnKeyDown(sgl::core::KeyboardEvent & event) override;
+    void OnKeyUp(sgl::core::KeyboardEvent & event) override;
+    void OnMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
+    void OnMouseMotion(sgl::core::MouseMotionEvent & event) override;
 
     void GameOver();
     void GameWon();
@@ -79,7 +79,7 @@ public:
 
     void SetObjectActionCompleted(GameObject * obj);
 
-    lib::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
+    sgl::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 
     void ClearSelection(Player * player);
     void SelectObject(GameObject * obj, Player * player);
@@ -136,7 +136,7 @@ private:
 
     std::vector<GameObjectAction> mActiveObjActions;
 
-    lib::graphic::Camera * mCamera = nullptr;
+    sgl::graphic::Camera * mCamera = nullptr;
 
     int mCameraDirX = 0;
     int mCameraDirY = 0;
@@ -149,19 +149,19 @@ private:
     bool mCameraMouseScrollX = false;
     bool mCameraMouseScrollY = false;
 
-    lib::graphic::ParticlesManager * mPartMan = nullptr;
+    sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --
-    std::vector<lib::sgui::Widget *> mWidgetsToDelete;
+    std::vector<sgl::sgui::Widget *> mWidgetsToDelete;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
-    lib::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
+    sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
 
-    lib::ai::Pathfinder * mPathfinder = nullptr;
+    sgl::ai::Pathfinder * mPathfinder = nullptr;
 
     MoveIndicator * mMoveInd = nullptr;
 

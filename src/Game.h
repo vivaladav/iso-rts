@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-namespace lib
+namespace sgl
 {
     namespace graphic
     {
@@ -37,7 +37,7 @@ enum Difficulty : unsigned int
     NUM_DIFFICULTIES
 };
 
-class Game : public lib::core::Application
+class Game : public sgl::core::Application
 {
 public:
     Game(int argc, char * argv[]);
@@ -77,13 +77,13 @@ private:
     std::vector<Player *> mPlayers;
     unsigned int mCurrMap = 0;
 
-    lib::graphic::Renderer * mRenderer = nullptr;
-    lib::graphic::Window * mWin = nullptr;
+    sgl::graphic::Renderer * mRenderer = nullptr;
+    sgl::graphic::Window * mWin = nullptr;
 
-    lib::utilities::StateManager * mStateMan = nullptr;
+    sgl::utilities::StateManager * mStateMan = nullptr;
 
-    lib::sgui::Stage * mStage = nullptr;
-    lib::graphic::Font * mFontGui = nullptr;
+    sgl::sgui::Stage * mStage = nullptr;
+    sgl::graphic::Font * mFontGui = nullptr;
 
     ObjectsDataRegistry * mObjsRegistry = nullptr;
 

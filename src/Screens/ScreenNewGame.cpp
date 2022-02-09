@@ -43,8 +43,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
 {
-    using namespace lib::graphic;
-    using namespace lib::sgui;
+    using namespace sgl::graphic;
+    using namespace sgl::sgui;
 
     game->SetClearColor(0x0F, 0x0F, 0x0F, 0x0F);
 
@@ -130,7 +130,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // MAP NAVIGATION BUTTONS
     if(numMaps > mapsPerScreen)
     {
-        const int rendW = lib::graphic::Renderer::Instance()->GetWidth();
+        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
         const int yc = mMapPreviews[0]->GetY() + mMapPreviews[0]->GetHeight() + marginMapV * 0.5f;
 
         mButtonNavL = new ButtonNavigation("<");
@@ -272,7 +272,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
 ScreenNewGame::~ScreenNewGame()
 {
-    lib::sgui::Stage::Instance()->ClearWidgets();
+    sgl::sgui::Stage::Instance()->ClearWidgets();
 }
 
 void ScreenNewGame::Update(float update)

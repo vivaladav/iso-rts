@@ -10,10 +10,10 @@
 namespace game
 {
 
-ProgressBarResources::ProgressBarResources(float min, float max, lib::sgui::Widget * parent)
-    : lib::sgui::ProgressBar(min, max, parent)
+ProgressBarResources::ProgressBarResources(float min, float max, sgl::sgui::Widget * parent)
+    : sgl::sgui::ProgressBar(min, max, parent)
 {
-    using namespace  lib::graphic;
+    using namespace  sgl::graphic;
 
     auto * tm = TextureManager::Instance();
 

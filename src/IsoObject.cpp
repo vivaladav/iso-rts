@@ -8,7 +8,7 @@ namespace game
 {
 
 IsoObject::IsoObject(int rows, int cols)
-    : mImg(new lib::graphic::Image)
+    : mImg(new sgl::graphic::Image)
     , mRows(rows)
     , mCols(cols)
 {
@@ -44,7 +44,7 @@ void IsoObject::SetY(int y)
 int IsoObject::GetWidth() const { return mImg->GetWidth(); }
 int IsoObject::GetHeight() const { return mImg->GetHeight(); }
 
-void IsoObject::SetTexture(lib::graphic::Texture * tex)
+void IsoObject::SetTexture(sgl::graphic::Texture * tex)
 {
     mImg->SetTexture(tex);
 

@@ -30,7 +30,7 @@ enum UnitType : unsigned int;
 enum class MapObjectId : unsigned int;
 
 /// Class that handles most of the logic of what happens on the game map.
-class GameMap : public lib::ai::IPathMap
+class GameMap : public sgl::ai::IPathMap
 {
 public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);

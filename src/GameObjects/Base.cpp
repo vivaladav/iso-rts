@@ -43,8 +43,8 @@ void Base::SetImage()
                                 (faction * NUM_BASE_SPRITES_PER_FAC) +
                                 static_cast<int>(IsSelected());
 
-    auto * tm = lib::graphic::TextureManager::Instance();
-    lib::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
+    auto * tm = sgl::graphic::TextureManager::Instance();
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
 
     isoObj->SetTexture(tex);
 }

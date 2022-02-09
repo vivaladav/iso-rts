@@ -26,7 +26,7 @@ StructureIndicator::StructureIndicator(const ObjectData & data)
     : IsoObject(data.rows, data.cols)
     , mFaction(NO_FACTION)
 {
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     SetTexture(tm->GetSprite(data.iconFile, data.iconTexId));
 
@@ -117,12 +117,12 @@ void StructureIndicator::Render()
 
 void StructureIndicator::CreateCostData()
 {
-    using namespace lib::graphic;
+    using namespace sgl::graphic;
 
     FontManager * fm = FontManager::Instance();
     Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
 
-    auto tm = lib::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // ENERGY
     delete mTxtCostEnergy;

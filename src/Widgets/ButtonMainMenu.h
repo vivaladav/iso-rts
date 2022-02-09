@@ -8,7 +8,7 @@ namespace game
 class ButtonMainMenu : public GameButton
 {
 public:
-    ButtonMainMenu(const char * text, lib::sgui::Widget * parent);
+    ButtonMainMenu(const char * text, sgl::sgui::Widget * parent);
 };
 
 } // namespace game
