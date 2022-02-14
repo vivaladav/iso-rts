@@ -1,6 +1,7 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
+#include "Version.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonMainMenuSocial.h"
@@ -142,12 +143,16 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // VERSION LABEL
     auto fm = FontManager::Instance();
-    Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
+    Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
 
-    auto labelVer = new Label("v. 0.0.1", fnt);
+    const std::string strVersion = std::string(VERSION) + std::string(" | ") +
+                                   std::string(VERSION_BRANCH) + std::string("-") +
+                                   std::string(VERSION_SHORT_HASH);
+    auto labelVer = new Label(strVersion.c_str(), fnt);
     labelVer->SetColor(0xb2b2b2ff);
-    const int labelX = screenW - labelVer->GetWidth() - 40;
-    const int labelY = screenH - labelVer->GetHeight() - 10;
+    const int marginLabel = 10;
+    const int labelX = screenW - labelVer->GetWidth() - marginLabel;
+    const int labelY = screenH - labelVer->GetHeight() - marginLabel;
     labelVer->SetPosition(labelX, labelY);
 }
 

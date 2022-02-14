@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(virtueror LANGUAGES CXX)
+project(virtueror LANGUAGES CXX VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -212,3 +212,10 @@ target_link_libraries(
 # copy data to build directory when CMake is executed
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data/)
 file(COPY ${CMAKE_SOURCE_DIR}/data/ DESTINATION ${CMAKE_BINARY_DIR}/data/)
+
+# update version when CMake is executed
+set(VERSION_SCRIPT_DIR "${PROJECT_SOURCE_DIR}/scripts")
+set(VERSION_SCRIPT "${VERSION_SCRIPT_DIR}/update_version.sh")
+message("PROJECT VERSION: ${CMAKE_PROJECT_VERSION}")
+execute_process(COMMAND ${VERSION_SCRIPT} ${CMAKE_PROJECT_VERSION}
+                WORKING_DIRECTORY ${VERSION_SCRIPT_DIR})
