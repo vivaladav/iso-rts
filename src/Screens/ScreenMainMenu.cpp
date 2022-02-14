@@ -147,6 +147,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     const std::string strVersion = std::string(VERSION) + std::string(" | ") +
                                    std::string(VERSION_BRANCH) + std::string("-") +
+                                   std::string(VERSION_NUM) + std::string("-") +
                                    std::string(VERSION_SHORT_HASH);
     auto labelVer = new Label(strVersion.c_str(), fnt);
     labelVer->SetColor(0xb2b2b2ff);
