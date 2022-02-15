@@ -87,6 +87,52 @@ void GameObject::SetOwner(Player * owner)
     UpdateGraphics();
 }
 
+inline void GameObject::SetHealth(float val)
+{
+    const float oldH = mHealth;
+
+    mHealth = val;
+
+    if(mHealth > mMaxHealth)
+        mHealth = mMaxHealth;
+    else if(mHealth < 0.f)
+        mHealth = 0.f;
+
+    const float minDelta = 0.01f;
+    const float diff = std::fabs(mHealth - oldH);
+
+    if(diff > minDelta)
+        mOnValuesChanged();
+}
+
+inline void GameObject::SumHealth(float val)
+{
+    SetHealth(mHealth + val);
+}
+
+void GameObject::SetEnergy(float val)
+{
+    const float oldEn = mEnergy;
+
+    mEnergy = val;
+
+    if(mEnergy > mMaxEnergy)
+        mEnergy = mMaxEnergy;
+    else if(mEnergy < 0.f)
+        mEnergy = 0.f;
+
+    const float minDelta = 0.01f;
+    const float diff = std::fabs(mEnergy - oldEn);
+
+    if(diff > minDelta)
+        mOnValuesChanged();
+}
+
+void GameObject::SumEnergy(float val)
+{
+    SetEnergy(mEnergy + val);
+}
+
 void GameObject::Hit(float damage)
 {
     using namespace sgl::graphic;

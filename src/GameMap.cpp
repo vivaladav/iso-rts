@@ -1377,9 +1377,12 @@ bool GameMap::MoveUnit(ObjectPath * path)
 
     // start path
     path->Start();
-    mPaths.emplace_back(path);
+    const bool started = path->GetState() == ObjectPath::RUNNING;
 
-    return true;
+    if(started)
+        mPaths.emplace_back(path);
+
+    return started;
 }
 
 bool GameMap::AbortMove(GameObject * obj)

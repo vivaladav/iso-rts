@@ -43,6 +43,9 @@ public:
     void SetStructureToBuild(StructureType type);
     StructureType GetStructureToBuild() const;
 
+    bool HasEnergyForAction(GameObjectActionId action);
+    void ConsumeEnergy(GameObjectActionId action);
+
 public:
     static const char * TITLES[NUM_UNIT_TYPES];
     static const char * DESCRIPTIONS[NUM_UNIT_TYPES];

@@ -405,44 +405,8 @@ inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
 inline float GameObject::GetHealth() const { return mHealth; }
 inline float GameObject::GetMaxHealth() const { return mMaxHealth; }
 inline void GameObject::SetMaxHealth(float max) { mMaxHealth = max; }
-inline void GameObject::SetHealth(float val)
-{
-    mHealth = val;
-
-    if(mHealth > mMaxHealth)
-        mHealth = mMaxHealth;
-
-    mOnValuesChanged();
-}
-inline void GameObject::SumHealth(float val)
-{
-    mHealth += val;
-
-    if(mHealth > mMaxHealth)
-        mHealth = mMaxHealth;
-
-    mOnValuesChanged();
-}
 
 inline float GameObject::GetEnergy() const { return mEnergy; }
-inline void GameObject::SetEnergy(float val)
-{
-    mEnergy = val;
-
-    if(mEnergy > mMaxEnergy)
-        mEnergy = mMaxEnergy;
-
-    mOnValuesChanged();
-}
-inline void GameObject::SumEnergy(float val)
-{
-    mEnergy += val;
-
-    if(mEnergy > mMaxEnergy)
-        mEnergy = mMaxEnergy;
-
-    mOnValuesChanged();
-}
 inline float GameObject::GetMaxEnergy() const { return mMaxEnergy; }
 inline void GameObject::SetMaxEnergy(float val) { mMaxEnergy = val; }
 

@@ -6,6 +6,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
+#include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 
 #include <cmath>
@@ -32,6 +33,41 @@ void ObjectPath::InitNextMoveStep()
     mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
 
     ++mNextCell;
+}
+
+void ObjectPath::Start()
+{
+    // do nothing if already started
+    if(mState != READY)
+        return ;
+
+    mNextCell = 1;
+
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+
+    // check if next destination is walkable
+    const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
+
+    bool canMove = nextCell.walkable;
+
+    if(mObj->GetObjectType() == OBJ_UNIT)
+        canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
+
+    if(canMove)
+    {
+        mState = RUNNING;
+
+        InitNextMoveStep();
+    }
+    else
+    {
+        mState = FAILED;
+
+        // clear action data once the action is completed
+        mScreen->SetObjectActionCompleted(mObj);
+    }
 }
 
 void ObjectPath::Update(float delta)
@@ -118,10 +154,18 @@ void ObjectPath::Update(float delta)
 
         mGameMap->ApplyVisibility(player);
 
+        if(mObj->GetObjectType() == OBJ_UNIT)
+            static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
+
         // handle next step or termination
         if(ABORTING == mState)
+        {
             mState = ABORTED;
-        if(mNextCell < mCells.size())
+
+            // clear action data once the action is completed
+            mScreen->SetObjectActionCompleted(mObj);
+        }
+        else if(mNextCell < mCells.size())
         {
             const unsigned int nextInd = mCells[mNextCell];
             const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
@@ -130,10 +174,20 @@ void ObjectPath::Update(float delta)
             // check if next destination is walkable
             const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
 
-            if(nextCell.walkable)
+            bool canMove = nextCell.walkable;
+
+            if(mObj->GetObjectType() == OBJ_UNIT)
+                canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
+
+            if(canMove)
                 InitNextMoveStep();
             else
+            {
                 mState = FAILED;
+
+                // clear action data once the action is completed
+                mScreen->SetObjectActionCompleted(mObj);
+            }
         }
         else
         {

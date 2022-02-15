@@ -70,7 +70,12 @@ void Unit::SetActiveActionToDefault() { SetActiveAction(MOVE); }
 
 void Unit::Update(float delta)
 {
-    // attacking other object
+    // UPDATE ENERGY
+    // TODO recover energy based on attributes
+    if(GetEnergy() < GetMaxEnergy())
+        SumEnergy(0.1f);
+
+    // ATTACKING OTHER OBJECTS
     if(mTarget)
     {
         mTimerAttack -= delta;
@@ -97,6 +102,18 @@ void Unit::Update(float delta)
 }
 
 void Unit::ClearStructureToBuild() { mStructToBuild = STRUCT_NULL; }
+
+void Unit::ConsumeEnergy(GameObjectActionId action)
+{
+    // TODO proper energy usage based on action and attributes
+    SumEnergy(-5.f);
+}
+
+bool Unit::HasEnergyForAction(GameObjectActionId action)
+{
+    // TODO proper energy usage based on action and attributes
+    return GetEnergy() >= 10.f;
+}
 
 void Unit::UpdateGraphics()
 {

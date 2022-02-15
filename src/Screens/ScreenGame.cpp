@@ -1405,7 +1405,11 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     op->SetPathCells(path);
     op->SetOnCompleted(onCompleted);
 
-    mGameMap->MoveUnit(op);
+    const bool res = mGameMap->MoveUnit(op);
+
+    // movement failed
+    if(!res)
+        return ;
 
     ClearCellOverlays();
 

@@ -97,19 +97,6 @@ inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells)
 
 inline void ObjectPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
 
-inline void ObjectPath::Start()
-{
-    // do nothing if already started
-    if(mState != READY)
-        return ;
-
-    mState = RUNNING;
-
-    mNextCell = 1;
-
-    InitNextMoveStep();
-}
-
 inline void ObjectPath::Abort()
 {
     mState = ABORTING;
