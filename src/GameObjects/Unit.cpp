@@ -154,6 +154,9 @@ void Unit::Shoot()
     if(nullptr == owner)
         return ;
 
+    // consume energy
+    ConsumeEnergy(ATTACK);
+
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
     const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
