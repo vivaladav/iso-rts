@@ -1291,17 +1291,14 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     return true;
 }
 
-bool ScreenGame::SetupStructureConquest(const Cell2D & start, const Cell2D & end, Player * player)
+bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player)
 {
     // check if conquest is possible
-    if(!mGameMap->CanConquerStructure(start, end, player))
+    if(!mGameMap->CanConquerStructure(unit, end, player))
         return false;
 
     // start conquest
     mGameMap->StartConquerStructure(start, end, player);
-
-    const GameMapCell & unitCell = mGameMap->GetCell(start.row, start.col);
-    GameObject * unit = unitCell.obj;
 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
@@ -1310,6 +1307,8 @@ bool ScreenGame::SetupStructureConquest(const Cell2D & start, const Cell2D & end
     {
         mGameMap->ConquerStructure(start, end, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
+
+        unit->ConsumeEnergy(CONQUER_STRUCTURE);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
@@ -1766,7 +1765,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
 
     // object is adjacent -> try to interact
     if(mGameMap->AreObjectsAdjacent(unit, clickObj))
-        SetupStructureConquest(selCell, clickCell, player);
+        SetupStructureConquest(unit, selCell, clickCell, player);
     // object is far -> move close and then try to interact
     else
     {
@@ -1780,7 +1779,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
         {
             const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-            SetupStructureConquest(currCell, clickCell, player);
+            SetupStructureConquest(unit, currCell, clickCell, player);
         });
     }
 }

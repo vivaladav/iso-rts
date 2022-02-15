@@ -827,24 +827,21 @@ bool GameMap::AbortBuildWalls(GameObject * obj)
     return false;
 }
 
-bool GameMap::CanConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
+bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * player)
 {
-    const unsigned int r0 = static_cast<unsigned int>(start.row);
-    const unsigned int c0 = static_cast<unsigned int>(start.col);
     const unsigned int r1 = static_cast<unsigned int>(end.row);
     const unsigned int c1 = static_cast<unsigned int>(end.col);
 
-    const int ind0 = r0 * mCols + c0;
-    GameMapCell & gcell0 = mCells[ind0];
-
-    const Unit * unit = gcell0.GetUnit();
-
-    // start has no unit
+    // no unit
     if(nullptr == unit)
         return false;
 
     // not player's unit
     if(unit->GetOwner() != player)
+        return false;
+
+    // unit doesn't have enough energy
+    if(!unit->HasEnergyForAction(CONQUER_STRUCTURE))
         return false;
 
     const int ind1 = r1 * mCols + c1;

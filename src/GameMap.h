@@ -19,6 +19,7 @@ class IsoMap;
 class ObjectPath;
 class Player;
 class ScreenGame;
+class Unit;
 class WallBuildPath;
 
 struct Cell2D;
@@ -97,7 +98,7 @@ public:
     bool AbortBuildWalls(GameObject * obj);
 
     // structure conquest
-    bool CanConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
+    bool CanConquerStructure(Unit * unit, const Cell2D & end, Player * player);
     void StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
     void AbortConquerStructure(const Cell2D & unitCell, GameObject * target);
     void ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
