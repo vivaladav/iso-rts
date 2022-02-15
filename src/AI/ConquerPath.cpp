@@ -67,6 +67,23 @@ void ConquerPath::InitNextConquest()
         return ;
     }
 
+    if(mObj->GetObjectType() == OBJ_UNIT)
+    {
+        if(!static_cast<Unit *>(mObj)->HasEnergyForAction(CONQUER_CELL))
+        {
+            mState = FAILED;
+
+            // clear action data once the action is completed
+            mScreen->SetObjectActionCompleted(mObj);
+
+            // clear indicators
+            IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+            layerOverlay->ClearObjects();
+
+            return ;
+        }
+    }
+
     // start conquest
     mGameMap->StartConquerCell(nextCell, player);
 
@@ -75,6 +92,9 @@ void ConquerPath::InitNextConquest()
     mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player, [this, nextCell, player]
     {
         mGameMap->ConquerCell(nextCell, player);
+
+        if(mObj->GetObjectType() == OBJ_UNIT)
+            static_cast<Unit *>(mObj)->ConsumeEnergy(CONQUER_CELL);
 
         TransitionToMoveStep();
     });
@@ -85,7 +105,33 @@ void ConquerPath::TransitionToMoveStep()
     ++mNextCell;
 
     if(mNextCell < mCells.size())
-        InitNextMoveStep();
+    {
+        const unsigned int nextInd = mCells[mNextCell];
+        const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+        const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+
+        // check if next destination is walkable
+        const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
+
+        bool canMove = nextCell.walkable;
+
+        if(mObj->GetObjectType() == OBJ_UNIT)
+            canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
+
+        if(canMove)
+            InitNextMoveStep();
+        else
+        {
+            mState = FAILED;
+
+            // clear action data once the action is completed
+            mScreen->SetObjectActionCompleted(mObj);
+
+            // clear indicators
+            IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+            layerOverlay->ClearObjects();
+        }
+    }
     else
     {
         mState = COMPLETED;
@@ -136,9 +182,7 @@ void ConquerPath::FinishAbortion()
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-
-    for(unsigned int i = mNextCell; i < mConquestIndicators.size(); ++i)
-        layerOverlay->ClearObject(mConquestIndicators[i]);
+    layerOverlay->ClearObjects();
 
     // set new state
     mState = ABORTED;
@@ -255,6 +299,9 @@ void ConquerPath::Update(float delta)
         mGameMap->AddPlayerObjVisibility(mObj, player);
 
         mGameMap->ApplyVisibility(player);
+
+        if(mObj->GetObjectType() == OBJ_UNIT)
+            static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
 
         // init next step
         if(ABORTING == mState)

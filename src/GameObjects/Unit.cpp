@@ -112,7 +112,7 @@ void Unit::ConsumeEnergy(GameObjectActionId action)
 bool Unit::HasEnergyForAction(GameObjectActionId action)
 {
     // TODO proper energy usage based on action and attributes
-    return GetEnergy() >= 10.f;
+    return GetEnergy() >= 5.f;
 }
 
 void Unit::UpdateGraphics()

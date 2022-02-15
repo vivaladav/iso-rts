@@ -523,8 +523,8 @@ bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
     if(gcell.owner == player)
         return false;
 
-    // check if player has enough energy
-    if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::ENERGY).GetIntValue())
+    // check if unit has enough energy
+    if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
         return false;
 
     return true;
@@ -536,7 +536,7 @@ void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
     GameMapCell & gcell = mCells[ind];
 
     // take player's energy
-    player->SumResource(Player::Stat::ENERGY, -COST_CONQUEST_CELL);
+    player->SumResource(Player::Stat::MATERIAL, -COST_CONQUEST_CELL);
 
     // mark cell as changing
     gcell.changing = true;
