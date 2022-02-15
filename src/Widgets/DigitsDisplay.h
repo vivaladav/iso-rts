@@ -15,6 +15,8 @@ public:
     DigitsDisplay(int digits, sgl::sgui::Widget * parent);
     DigitsDisplay(int digits, int fontSize, const std::string & suffix, sgl::sgui::Widget * parent);
 
+    void SetColorZeros(unsigned int color);
+    void SetColorDigits(unsigned int color);
     void SetFontSize(int val);
     void SetSuffix(const std::string & suffix);
     void SetValue(int val);
@@ -34,6 +36,9 @@ private:
     int mNumZeros = -1;
 
     int mFontSize = 19;
+
+    unsigned int mColorZeros = 0x454f54FF;
+    unsigned int mColorDigits = 0xE3E6e8FF;
 
     sgl::graphic::Renderable * mTxtZeros = nullptr;
     sgl::graphic::Renderable * mTxtDigits = nullptr;

@@ -28,6 +28,28 @@ DigitsDisplay::DigitsDisplay(int digits, int fontSize, const std::string & suffi
     SetValue(0);
 }
 
+void DigitsDisplay::SetColorZeros(unsigned int color)
+{
+    if(color == mColorZeros)
+        return ;
+
+    mColorZeros = color;
+
+    if(mTxtZeros)
+        mTxtZeros->SetColor(mColorZeros);
+}
+
+void DigitsDisplay::SetColorDigits(unsigned int color)
+{
+    if(color == mColorDigits)
+        return ;
+
+    mColorDigits = color;
+
+    if(mTxtDigits)
+        mTxtDigits->SetColor(mColorDigits);
+}
+
 void DigitsDisplay::SetFontSize(int val)
 {
     // same size already set
@@ -117,7 +139,7 @@ void DigitsDisplay::UpdateDigits(bool force)
                 mTxtZeros = new Text(str.c_str(), font, true);
             }
 
-            mTxtZeros->SetColor(0x454f54FF);
+            mTxtZeros->SetColor(mColorZeros);
 
             SetSize(size.w, mTxtZeros->GetHeight());
         }
@@ -138,7 +160,7 @@ void DigitsDisplay::UpdateDigits(bool force)
         const std::string str = std::to_string(mValue) + mSuffix;
 
         mTxtDigits = new Text(str.c_str(), font, true);
-        mTxtDigits->SetColor(0xE3E6e8FF);
+        mTxtDigits->SetColor(mColorDigits);
 
         SetSize(size.w, mTxtDigits->GetHeight());
     }
