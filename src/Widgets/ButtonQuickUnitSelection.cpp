@@ -266,13 +266,35 @@ void ButtonQuickUnitSelection::HandleKeyUp(sgl::core::KeyboardEvent & event)
 
 void ButtonQuickUnitSelection::UpdateValues()
 {
+    const int NUM_TRESH = 4;
+    const int tresholds[NUM_TRESH] = { 21, 51, 81, 101 };
+    const unsigned int colors[NUM_TRESH] = { 0xf28d8dff, 0xf2c98dff, 0x8de1f2ff, 0x8df295ff };
+
     // energy
     const int energy = std::roundf(mUnit->GetEnergy() * 100.f / mUnit->GetMaxEnergy());
     mDisplayEnergy->SetValue(energy);
 
+    for(int i = 0; i < NUM_TRESH; ++i)
+    {
+        if(energy < tresholds[i])
+        {
+            mDisplayEnergy->SetColorDigits(colors[i]);
+            break;
+        }
+    }
+
     // health
     const int health = std::roundf(mUnit->GetHealth() * 100.f / mUnit->GetMaxHealth());
     mDisplayHealth->SetValue(health);
+
+    for(int i = 0; i < NUM_TRESH; ++i)
+    {
+        if(health < tresholds[i])
+        {
+            mDisplayHealth->SetColorDigits(colors[i]);
+            break;
+        }
+    }
 }
 
 } // namespace game
