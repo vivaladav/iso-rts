@@ -52,6 +52,7 @@ void ObjectPath::Start()
 
     bool canMove = nextCell.walkable;
 
+    // TODO remove check if mObj is changed into mUnit like for other paths
     if(mObj->GetObjectType() == OBJ_UNIT)
         canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
 
@@ -154,6 +155,7 @@ void ObjectPath::Update(float delta)
 
         mGameMap->ApplyVisibility(player);
 
+        // TODO remove check if mObj is changed into mUnit like for other paths
         if(mObj->GetObjectType() == OBJ_UNIT)
             static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
 
@@ -176,6 +178,7 @@ void ObjectPath::Update(float delta)
 
             bool canMove = nextCell.walkable;
 
+            // TODO remove check if mObj is changed into mUnit like for other paths
             if(mObj->GetObjectType() == OBJ_UNIT)
                 canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
 

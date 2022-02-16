@@ -7,9 +7,9 @@ namespace game
 
 class ConquestIndicator;
 class GameMap;
-class GameObject;
 class IsoMap;
 class ScreenGame;
+class Unit;
 
 class ConquerPath
 {
@@ -28,10 +28,10 @@ public:
     };
 
 public:
-    ConquerPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg);
+    ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg);
     ~ConquerPath();
 
-    GameObject * GetObject() const;
+    Unit * GetUnit() const;
 
     ConquerState GetState() const;
 
@@ -61,7 +61,7 @@ private:
 
     std::vector<ConquestIndicator *> mConquestIndicators;
 
-    GameObject * mObj = nullptr;
+    Unit * mUnit = nullptr;
 
     IsoMap * mIsoMap = nullptr;
     GameMap * mGameMap = nullptr;
@@ -84,12 +84,12 @@ private:
     float mCost = 0.f;
 };
 
-inline ConquerPath::ConquerPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
+inline ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
+    : mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
 {
 }
 
-inline GameObject * ConquerPath::GetObject() const { return mObj; }
+inline Unit * ConquerPath::GetUnit() const { return mUnit; }
 
 inline ConquerPath::ConquerState ConquerPath::GetState() const { return mState; }
 

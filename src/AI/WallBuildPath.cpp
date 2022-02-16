@@ -28,7 +28,7 @@ void WallBuildPath::CreateIndicators()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
-    Player * player = mObj->GetOwner();
+    Player * player = mUnit->GetOwner();
 
     const PlayerFaction faction = player->GetFaction();
 
@@ -66,21 +66,18 @@ void WallBuildPath::InitNextBuild()
 {
     mState = BUILDING;
 
-    if(mObj->GetObjectType() == OBJ_UNIT)
+    if(!mUnit->HasEnergyForAction(BUILD_WALL))
     {
-        if(!static_cast<Unit *>(mObj)->HasEnergyForAction(BUILD_WALL))
-        {
-            mState = FAILED;
+        mState = FAILED;
 
-            // clear indicators
-            IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-            layerOverlay->ClearObjects();
+        // clear indicators
+        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+        layerOverlay->ClearObjects();
 
-            // clear action data
-            mScreen->SetObjectActionCompleted(mObj);
+        // clear action data
+        mScreen->SetObjectActionCompleted(mUnit);
 
-            return ;
-        }
+        return ;
     }
 
     while(mNextCell < mCells.size())
@@ -90,7 +87,7 @@ void WallBuildPath::InitNextBuild()
         const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
         const Cell2D nextCell(nextRow, nextCol);
 
-        Player * player = mObj->GetOwner();
+        Player * player = mUnit->GetOwner();
 
         IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
@@ -122,8 +119,7 @@ void WallBuildPath::InitNextBuild()
         {
             mGameMap->BuildWall(nextCell, player, blockType);
 
-            if(mObj->GetObjectType() == OBJ_UNIT)
-                static_cast<Unit *>(mObj)->ConsumeEnergy(BUILD_WALL);
+            mUnit->ConsumeEnergy(BUILD_WALL);
 
             ++mNextCell;
 
@@ -134,7 +130,7 @@ void WallBuildPath::InitNextBuild()
                 mState = COMPLETED;
 
                 // clear action data once the action is completed
-                mScreen->SetObjectActionCompleted(mObj);
+                mScreen->SetObjectActionCompleted(mUnit);
             }
         });
 
@@ -144,7 +140,7 @@ void WallBuildPath::InitNextBuild()
     mState = FAILED;
 
     // clear action data if action failed
-    mScreen->SetObjectActionCompleted(mObj);
+    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 void WallBuildPath::UpdatePathCost()

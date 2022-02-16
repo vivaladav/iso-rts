@@ -592,7 +592,7 @@ bool GameMap::AbortCellConquest(GameObject * obj)
 {
     for(auto path : mConquerPaths)
     {
-        if(path->GetObject() == obj)
+        if(path->GetUnit() == obj)
         {
             path->Abort();
             return true;
@@ -821,7 +821,7 @@ bool GameMap::AbortBuildWalls(GameObject * obj)
 {
     for(auto path : mWallBuildPaths)
     {
-        if(path->GetObject() == obj)
+        if(path->GetUnit() == obj)
         {
             path->Abort();
             return true;

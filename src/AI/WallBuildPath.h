@@ -9,9 +9,9 @@ namespace game
 
 class WallIndicator;
 class GameMap;
-class GameObject;
 class IsoMap;
 class ScreenGame;
+class Unit;
 
 class WallBuildPath
 {
@@ -29,10 +29,10 @@ public:
     };
 
 public:
-    WallBuildPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg);
+    WallBuildPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg);
     ~WallBuildPath();
 
-    GameObject * GetObject() const;
+    Unit * GetUnit() const;
 
     BuildState GetState() const;
 
@@ -67,7 +67,7 @@ private:
 
     std::vector<WallIndicator *> mIndicators;
 
-    GameObject * mObj = nullptr;
+    Unit * mUnit = nullptr;
 
     IsoMap * mIsoMap = nullptr;
     GameMap * mGameMap = nullptr;
@@ -93,12 +93,12 @@ private:
     unsigned int mLevel = 0;
 };
 
-inline WallBuildPath::WallBuildPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
+inline WallBuildPath::WallBuildPath(Unit *unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
+    : mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
 {
 }
 
-inline GameObject * WallBuildPath::GetObject() const { return mObj; }
+inline Unit * WallBuildPath::GetUnit() const { return mUnit; }
 
 inline WallBuildPath::BuildState WallBuildPath::GetState() const { return mState; }
 

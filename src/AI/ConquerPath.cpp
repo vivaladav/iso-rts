@@ -27,7 +27,7 @@ void ConquerPath::CreateIndicators()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
-    Player * player = mObj->GetOwner();
+    Player * player = mUnit->GetOwner();
 
     const PlayerFaction faction = player->GetFaction();
 
@@ -57,7 +57,7 @@ void ConquerPath::InitNextConquest()
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
     const Cell2D nextCell(nextRow, nextCol);
 
-    Player * player = mObj->GetOwner();
+    Player * player = mUnit->GetOwner();
 
     // check if conquest is possible
     if(!mGameMap->CanConquerCell(nextCell, player))
@@ -67,21 +67,18 @@ void ConquerPath::InitNextConquest()
         return ;
     }
 
-    if(mObj->GetObjectType() == OBJ_UNIT)
+    if(!mUnit->HasEnergyForAction(CONQUER_CELL))
     {
-        if(!static_cast<Unit *>(mObj)->HasEnergyForAction(CONQUER_CELL))
-        {
-            mState = FAILED;
+        mState = FAILED;
 
-            // clear action data once the action is completed
-            mScreen->SetObjectActionCompleted(mObj);
+        // clear action data once the action is completed
+        mScreen->SetObjectActionCompleted(mUnit);
 
-            // clear indicators
-            IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-            layerOverlay->ClearObjects();
+        // clear indicators
+        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+        layerOverlay->ClearObjects();
 
-            return ;
-        }
+        return ;
     }
 
     // start conquest
@@ -93,8 +90,7 @@ void ConquerPath::InitNextConquest()
     {
         mGameMap->ConquerCell(nextCell, player);
 
-        if(mObj->GetObjectType() == OBJ_UNIT)
-            static_cast<Unit *>(mObj)->ConsumeEnergy(CONQUER_CELL);
+        mUnit->ConsumeEnergy(CONQUER_CELL);
 
         TransitionToMoveStep();
     });
@@ -113,10 +109,7 @@ void ConquerPath::TransitionToMoveStep()
         // check if next destination is walkable
         const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
 
-        bool canMove = nextCell.walkable;
-
-        if(mObj->GetObjectType() == OBJ_UNIT)
-            canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
+        bool canMove = nextCell.walkable && mUnit->HasEnergyForAction(MOVE);
 
         if(canMove)
             InitNextMoveStep();
@@ -125,7 +118,7 @@ void ConquerPath::TransitionToMoveStep()
             mState = FAILED;
 
             // clear action data once the action is completed
-            mScreen->SetObjectActionCompleted(mObj);
+            mScreen->SetObjectActionCompleted(mUnit);
 
             // clear indicators
             IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -137,7 +130,7 @@ void ConquerPath::TransitionToMoveStep()
         mState = COMPLETED;
 
         // clear action data once the action is completed
-        mScreen->SetObjectActionCompleted(mObj);
+        mScreen->SetObjectActionCompleted(mUnit);
     }
 }
 
@@ -145,7 +138,7 @@ void ConquerPath::InitNextMoveStep()
 {
     mState = MOVING;
 
-    const IsoObject * isoObj = mObj->GetIsoObject();
+    const IsoObject * isoObj = mUnit->GetIsoObject();
     const IsoLayer * layerObj = isoObj->GetLayer();
 
     mObjX = isoObj->GetX();
@@ -158,8 +151,8 @@ void ConquerPath::InitNextMoveStep()
     mTargetX = target.x;
     mTargetY = target.y;
 
-    mVelX = (mTargetX - mObjX) * mObj->GetSpeed();
-    mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
+    mVelX = (mTargetX - mObjX) * mUnit->GetSpeed();
+    mVelY = (mTargetY - mObjY) * mUnit->GetSpeed();
 }
 
 void ConquerPath::UpdatePathCost()
@@ -261,7 +254,7 @@ void ConquerPath::Update(float delta)
         --todo;
 
     // position object
-    IsoObject * isoObj = mObj->GetIsoObject();
+    IsoObject * isoObj = mUnit->GetIsoObject();
     isoObj->SetX(static_cast<int>(std::roundf(mObjX)));
     isoObj->SetY(static_cast<int>(std::roundf(mObjY)));
 
@@ -273,9 +266,9 @@ void ConquerPath::Update(float delta)
         layerOverlay->ClearObject(mConquestIndicators[mNextCell - 1]);
 
         // handle object movement in maps
-        Player * player = mObj->GetOwner();
+        Player * player = mUnit->GetOwner();
 
-        mGameMap->DelPlayerObjVisibility(mObj, player);
+        mGameMap->DelPlayerObjVisibility(mUnit, player);
 
         const unsigned int targetInd = mCells[mNextCell];
         const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
@@ -291,17 +284,16 @@ void ConquerPath::Update(float delta)
         }
 
         // handle moving object
-        IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
-        layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
+        IsoLayer * layer = mUnit->GetIsoObject()->GetLayer();
+        layer->MoveObject(mUnit->GetRow0(), mUnit->GetCol0(), targetRow, targetCol, false);
 
-        mGameMap->MoveObjToCell(mObj, targetRow, targetCol);
+        mGameMap->MoveObjToCell(mUnit, targetRow, targetCol);
 
-        mGameMap->AddPlayerObjVisibility(mObj, player);
+        mGameMap->AddPlayerObjVisibility(mUnit, player);
 
         mGameMap->ApplyVisibility(player);
 
-        if(mObj->GetObjectType() == OBJ_UNIT)
-            static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
+        mUnit->ConsumeEnergy(MOVE);
 
         // init next step
         if(ABORTING == mState)
