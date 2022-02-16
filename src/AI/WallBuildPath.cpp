@@ -7,6 +7,7 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
+#include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
@@ -65,6 +66,23 @@ void WallBuildPath::InitNextBuild()
 {
     mState = BUILDING;
 
+    if(mObj->GetObjectType() == OBJ_UNIT)
+    {
+        if(!static_cast<Unit *>(mObj)->HasEnergyForAction(BUILD_WALL))
+        {
+            mState = FAILED;
+
+            // clear indicators
+            IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+            layerOverlay->ClearObjects();
+
+            // clear action data
+            mScreen->SetObjectActionCompleted(mObj);
+
+            return ;
+        }
+    }
+
     while(mNextCell < mCells.size())
     {
         const unsigned int nextInd = mCells[mNextCell];
@@ -78,7 +96,7 @@ void WallBuildPath::InitNextBuild()
 
         const int indexInd = mNextCell - 1;
 
-        // check if conquest is possible
+        // check if building is possible
         if(!mGameMap->CanBuildWall(nextCell, player, mLevel))
         {
             // remove current indicator
@@ -89,7 +107,7 @@ void WallBuildPath::InitNextBuild()
             continue;
         }
 
-        // start conquest
+        // start building
         mGameMap->StartBuildWall(nextCell, player, mLevel);
 
         // clear indicator before starting construction
@@ -103,6 +121,9 @@ void WallBuildPath::InitNextBuild()
                                    [this, nextCell, player, blockType]
         {
             mGameMap->BuildWall(nextCell, player, blockType);
+
+            if(mObj->GetObjectType() == OBJ_UNIT)
+                static_cast<Unit *>(mObj)->ConsumeEnergy(BUILD_WALL);
 
             ++mNextCell;
 
@@ -147,11 +168,7 @@ void WallBuildPath::FinishAbortion()
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-
-    for(unsigned int i = mNextCell; i < mIndicators.size(); ++i)
-        layerOverlay->ClearObject(mIndicators[i]);
-
-    //layerOverlay->ClearObjects();
+    layerOverlay->ClearObjects();
 
     // set new state
     mState = ABORTED;
