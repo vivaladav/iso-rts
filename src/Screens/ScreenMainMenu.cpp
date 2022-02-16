@@ -149,7 +149,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
                                    std::string(VERSION_BRANCH) + std::string("-") +
                                    std::string(VERSION_NUM) + std::string("-") +
                                    std::string(VERSION_SHORT_HASH);
-    auto labelVer = new TextArea(200, 50, strVersion.c_str(), fnt);
+    auto labelVer = new TextArea(250, 50, strVersion.c_str(), fnt);
     labelVer->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_RIGHT,
                                sgl::sgui::TextArea::ALIGN_V_BOTTOM);
     labelVer->SetColor(0xb2b2b2ff);
