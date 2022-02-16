@@ -38,6 +38,7 @@ add_executable(
     src/Player.cpp
     src/StatValue.h
     src/StatValue.cpp
+    src/Version.h
     src/AI/ActionAI.h
     src/AI/ConquerPath.h
     src/AI/ConquerPath.cpp
