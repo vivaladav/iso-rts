@@ -1334,7 +1334,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     const ObjectData & data = player->GetAvailableStructure(st);
 
     // check if building is possible
-    if(!mGameMap->CanBuildStructure(cellTarget, player, data))
+    if(!mGameMap->CanBuildStructure(unit, cellTarget, player, data))
         return false;
 
     mGameMap->StartBuildStructure(cellTarget, player, data);
@@ -1347,6 +1347,8 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     {
         mGameMap->BuildStructure(cellTarget, player, data);
         mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
+
+        unit->ConsumeEnergy(BUILD_STRUCTURE);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);

@@ -602,7 +602,7 @@ bool GameMap::AbortCellConquest(GameObject * obj)
     return false;
 }
 
-bool GameMap::CanBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
+bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, const ObjectData & data)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
@@ -618,6 +618,10 @@ bool GameMap::CanBuildStructure(const Cell2D & cell, Player * player, const Obje
                         player->GetStat(Player::BLOBS).GetIntValue() >= data.costs[RES_BLOBS];
 
     if(!costOk)
+        return false;
+
+    // check unit's energy
+    if(!unit->HasEnergyForAction(BUILD_STRUCTURE))
         return false;
 
     // check cells
