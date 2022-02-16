@@ -35,6 +35,18 @@ const char * Unit::DESCRIPTIONS[NUM_UNIT_TYPES] =
     "A light and fast unit ideal for exploring, but not for fighting."
 };
 
+const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
+{
+    0.f,    // IDLE
+    0.f,    // BUILD_UNIT
+    2.f,    // MOVE,
+    5.f,    // CONQUER_CELL,
+    10.f,   // CONQUER_STRUCTURE,
+    1.f,    // ATTACK,
+    20.f,   // BUILD_STRUCTURE,
+    10.f    // BUILD_WALL,
+};
+
 Unit::Unit(const ObjectData & data, int rows, int cols)
     : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))
@@ -105,14 +117,19 @@ void Unit::ClearStructureToBuild() { mStructToBuild = STRUCT_NULL; }
 
 void Unit::ConsumeEnergy(GameObjectActionId action)
 {
-    // TODO proper energy usage based on action and attributes
-    SumEnergy(-5.f);
+    if(action < NUM_OBJ_ACTIONS)
+       SumEnergy(-ACTION_COSTS[action]);
 }
 
 bool Unit::HasEnergyForAction(GameObjectActionId action)
 {
-    // TODO proper energy usage based on action and attributes
-    return GetEnergy() >= 5.f;
+    if(action < NUM_OBJ_ACTIONS)
+    {
+        const float diff = GetEnergy() - ACTION_COSTS[action];
+        return diff >= 0.f;
+    }
+    else
+        return false;
 }
 
 void Unit::UpdateGraphics()
