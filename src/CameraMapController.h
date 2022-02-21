@@ -1,7 +1,5 @@
 #pragma once
 
-#include <sgl/graphic/Camera.h>
-
 namespace sgl
 {
     namespace core
@@ -9,15 +7,19 @@ namespace sgl
         class KeyboardEvent;
         class MouseMotionEvent;
     }
+
+    namespace graphic { class Camera; }
 }
 
 namespace game
 {
 
-class CameraMap : public sgl::graphic::Camera
+class CameraMapController
 {
 public:
-    CameraMap(int viewW, int viewH);
+    CameraMapController(sgl::graphic::Camera * cam);
+
+    sgl::graphic::Camera * GetCamera() const;
 
     void SetLimits(int l, int r, int t, int b);
 
@@ -30,20 +32,29 @@ public:
     void Update(float delta);
 
 private:
+    sgl::graphic::Camera * mCamera = nullptr;
+
     float mSpeed;
+
     int mDirX;
     int mDirY;
     int mLimitL;
     int mLimitR;
     int mLimitT;
     int mLimitB;
+
     bool mKeyScrollX = false;
     bool mKeyScrollY = false;
     bool mMouseScrollX = false;
     bool mMouseScrollY = false;
 };
 
-inline void CameraMap::SetLimits(int l, int r, int t, int b)
+inline sgl::graphic::Camera * CameraMapController::GetCamera() const
+{
+    return mCamera;
+}
+
+inline void CameraMapController::SetLimits(int l, int r, int t, int b)
 {
     mLimitL = l;
     mLimitR = r;
@@ -51,6 +62,6 @@ inline void CameraMap::SetLimits(int l, int r, int t, int b)
     mLimitB = b;
 }
 
-inline void CameraMap::SetSpeed(float val) { mSpeed = val; }
+inline void CameraMapController::SetSpeed(float val) { mSpeed = val; }
 
 } // namespace game

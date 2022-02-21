@@ -14,7 +14,6 @@ namespace sgl
     namespace ai { class Pathfinder; }
     namespace graphic
     {
-        class Camera;
         class ParticlesManager;
         class ParticlesUpdater;
     }
@@ -28,6 +27,7 @@ namespace sgl
 namespace game
 {
 
+class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
 class DialogNewElement;
@@ -136,18 +136,7 @@ private:
 
     std::vector<GameObjectAction> mActiveObjActions;
 
-    sgl::graphic::Camera * mCamera = nullptr;
-
-    int mCameraDirX = 0;
-    int mCameraDirY = 0;
-    int mCameraLimitL = 0;
-    int mCameraLimitR = 0;
-    int mCameraLimitT = 0;
-    int mCameraLimitB = 0;
-    bool mCameraKeyScrollX = false;
-    bool mCameraKeyScrollY = false;
-    bool mCameraMouseScrollX = false;
-    bool mCameraMouseScrollY = false;
+    CameraMapController * mCamController = nullptr;
 
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 

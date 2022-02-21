@@ -1,7 +1,8 @@
-#include "CameraMap.h"
+#include "CameraMapController.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseMotionEvent.h>
+#include <sgl/graphic/Camera.h>
 
 #include <limits>
 
@@ -15,8 +16,8 @@ constexpr int SCROLL_U = -1;
 constexpr int SCROLL_D = 1;
 constexpr int NO_SCROLL = 0;
 
-CameraMap::CameraMap(int viewW, int viewH)
-    : sgl::graphic::Camera(viewW, viewH)
+CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
+    : mCamera(cam)
     , mSpeed(DEF_SPEED)
     , mDirX(NO_SCROLL)
     , mDirY(NO_SCROLL)
@@ -27,7 +28,7 @@ CameraMap::CameraMap(int viewW, int viewH)
 {
 }
 
-void CameraMap::HandleKeyDown(sgl::core::KeyboardEvent & event)
+void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;
 
@@ -67,7 +68,7 @@ void CameraMap::HandleKeyDown(sgl::core::KeyboardEvent & event)
     }
 }
 
-void CameraMap::HandleKeyUp(sgl::core::KeyboardEvent & event)
+void CameraMapController::HandleKeyUp(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;
 
@@ -103,7 +104,7 @@ void CameraMap::HandleKeyUp(sgl::core::KeyboardEvent & event)
     }
 }
 
-void CameraMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
+void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
 {
     const int screenX = event.GetX();
     const int screenY = event.GetY();
@@ -118,7 +119,7 @@ void CameraMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
             mMouseScrollX = true;
         }
     }
-    else if(screenX > (GetWidth() - scrollingMargin))
+    else if(screenX > (mCamera->GetWidth() - scrollingMargin))
     {
         if(!mKeyScrollX)
         {
@@ -140,7 +141,7 @@ void CameraMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
             mMouseScrollY = true;
         }
     }
-    else if(screenY > (GetHeight() - scrollingMargin))
+    else if(screenY > (mCamera->GetHeight() - scrollingMargin))
     {
         if(!mKeyScrollY)
         {
@@ -155,28 +156,28 @@ void CameraMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
     }
 }
 
-void CameraMap::Update(float delta)
+void CameraMapController::Update(float delta)
 {
     // HORIZONTAL
     const float movX = mDirX * mSpeed * delta;
 
     if(mDirX < 0)
     {
-        const int newX = static_cast<int>(movX - 0.5f) + GetX();
+        const int newX = static_cast<int>(movX - 0.5f) + mCamera->GetX();
 
         if(newX < mLimitL)
-            SetX(mLimitL);
+            mCamera->SetX(mLimitL);
         else
-            MoveX(movX);
+            mCamera->MoveX(movX);
     }
     else if(mDirX > 0)
     {
-        const int newX = static_cast<int>(movX + 0.5f) + GetX();
+        const int newX = static_cast<int>(movX + 0.5f) + mCamera->GetX();
 
         if(newX > mLimitR)
-            SetX(mLimitR);
+            mCamera->SetX(mLimitR);
         else
-            MoveX(movX);
+            mCamera->MoveX(movX);
     }
 
     // VERTICAL
@@ -184,21 +185,21 @@ void CameraMap::Update(float delta)
 
     if(mDirY < 0)
     {
-        const int newY = static_cast<int>(movY - 0.5f) + GetY();
+        const int newY = static_cast<int>(movY - 0.5f) + mCamera->GetY();
 
         if(newY < mLimitT)
-            SetY(mLimitT);
+            mCamera->SetY(mLimitT);
         else
-            MoveY(movY);
+            mCamera->MoveY(movY);
     }
     else if(mDirY > 0)
     {
-        const int newY = static_cast<int>(movY + 0.5f) + GetY();
+        const int newY = static_cast<int>(movY + 0.5f) + mCamera->GetY();
 
         if(newY > mLimitB)
-            SetY(mLimitB);
+            mCamera->SetY(mLimitB);
         else
-            MoveY(movY);
+            mCamera->MoveY(movY);
     }
 }
 

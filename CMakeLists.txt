@@ -16,8 +16,8 @@ add_subdirectory(lib)
 add_executable(
     game
     src/main.cpp
-    src/CameraMap.h
-    src/CameraMap.cpp
+    src/CameraMapController.h
+    src/CameraMapController.cpp
     src/Cell2D.h
     src/Game.h
     src/Game.cpp

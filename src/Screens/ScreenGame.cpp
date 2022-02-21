@@ -1,5 +1,6 @@
 ﻿#include "Screens/ScreenGame.h"
 
+#include "CameraMapController.h"
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameData.h"
@@ -56,12 +57,6 @@ constexpr float TIME_UPG_UNIT = 1.f;
 constexpr float TIME_ENERGY_USE = 2.f;
 constexpr float TIME_AI_MOVE = 0.5f;
 
-constexpr int SCROLL_L = -1;
-constexpr int SCROLL_R = 1;
-constexpr int SCROLL_U = -1;
-constexpr int SCROLL_D = 1;
-constexpr int NO_SCROLL = 0;
-
 ScreenGame::ScreenGame(Game * game)
     : Screen(game)
     , mPartMan(new sgl::graphic::ParticlesManager)
@@ -77,8 +72,9 @@ ScreenGame::ScreenGame(Game * game)
     const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
     const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
 
-    mCamera = sgl::graphic::Camera::GetDefaultCamera();
-    mCamera->SetSize(rendW, rendH);
+    auto cam = sgl::graphic::Camera::GetDefaultCamera();
+    cam->SetSize(rendW, rendH);
+    mCamController = new CameraMapController(cam);
 
     InitParticlesSystem();
 
@@ -98,13 +94,12 @@ ScreenGame::ScreenGame(Game * game)
     const int mapH = mIsoMap->GetHeight();
 
     mIsoMap->SetOrigin(rendW * 0.5, (rendH - mapH) * 0.5);
-    mIsoMap->SetVisibleArea(mCamera->GetX(), mCamera->GetY(),
-                            mCamera->GetWidth(), mCamera->GetHeight());
+    mIsoMap->SetVisibleArea(cam->GetX(), cam->GetY(), cam->GetWidth(), cam->GetHeight());
 
-    mCamera->SetFunctionOnMove([this]
+    cam->SetFunctionOnMove([this]
     {
-        mIsoMap->SetVisibleArea(mCamera->GetX(), mCamera->GetY(),
-                                mCamera->GetWidth(), mCamera->GetHeight());
+        auto cam = mCamController->GetCamera();
+        mIsoMap->SetVisibleArea(cam->GetX(), cam->GetY(), cam->GetWidth(), cam->GetHeight());
     });
 
     // set camera limits
@@ -117,10 +112,12 @@ ScreenGame::ScreenGame(Game * game)
     const int marginCameraH = tileW;
     const int marginCameraV = tileH * 2;
 
-    mCameraLimitL = p1.x - marginCameraH;
-    mCameraLimitR = p3.x + tileW + marginCameraH - rendW;
-    mCameraLimitT = p0.y - marginCameraV;
-    mCameraLimitB = p2.y + tileH + marginCameraV - rendH;
+    const int cameraL = p1.x - marginCameraH;
+    const int cameraR = p3.x + tileW + marginCameraH - rendW;
+    const int cameraT = p0.y - marginCameraV;
+    const int cameraB = p2.y + tileH + marginCameraV - rendH;
+
+    mCamController->SetLimits(cameraL, cameraR, cameraT, cameraB);
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
@@ -186,6 +183,8 @@ ScreenGame::~ScreenGame()
     delete mIsoMap;
     delete mGameMap;
 
+    delete mCamController;
+
     GetGame()->ClearPlayers();
 
     auto stage = sgl::sgui::Stage::Instance();
@@ -207,50 +206,8 @@ void ScreenGame::Update(float delta)
     if(mPaused)
         return ;
 
-    // -- UPDATE CAMERA --
-    const float cameraSpeed = 400.f;
-
-    const float movX = mCameraDirX * cameraSpeed * delta;
-
-    if(mCameraDirX < 0)
-    {
-        const int newX = static_cast<int>(movX - 0.5f) + mCamera->GetX();
-
-        if(newX < mCameraLimitL)
-            mCamera->SetX(mCameraLimitL);
-        else
-            mCamera->MoveX(movX);
-    }
-    else if(mCameraDirX > 0)
-    {
-        const int newX = static_cast<int>(movX + 0.5f) + mCamera->GetX();
-
-        if(newX > mCameraLimitR)
-            mCamera->SetX(mCameraLimitR);
-        else
-            mCamera->MoveX(movX);
-    }
-
-    const float movY = mCameraDirY * cameraSpeed * delta;
-
-    if(mCameraDirY < 0)
-    {
-        const int newY = static_cast<int>(movY - 0.5f) + mCamera->GetY();
-
-        if(newY < mCameraLimitT)
-            mCamera->SetY(mCameraLimitT);
-        else
-            mCamera->MoveY(movY);
-    }
-    else if(mCameraDirY > 0)
-    {
-        const int newY = static_cast<int>(movY + 0.5f) + mCamera->GetY();
-
-        if(newY > mCameraLimitB)
-            mCamera->SetY(mCameraLimitB);
-        else
-            mCamera->MoveY(movY);
-    }
+    // -- CAMERA --
+    mCamController->Update(delta);
 
     // -- PARTICLES --
     mPartMan->Update(delta);
@@ -448,7 +405,7 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
-    mCamera->CenterToPoint(cX, cY);
+    mCamController->GetCamera()->CenterToPoint(cX, cY);
 }
 
 void ScreenGame::InitParticlesSystem()
@@ -730,48 +687,17 @@ void ScreenGame::ClearNewElemDialog()
 
 void ScreenGame::OnKeyDown(sgl::core::KeyboardEvent & event)
 {
-    using namespace sgl::core;
-
-    const int key = event.GetKey();
-
-    if(key == KeyboardEvent::KEY_LEFT)
-    {
-        if(!mCameraMouseScrollX)
-        {
-            mCameraDirX = SCROLL_L;
-            mCameraKeyScrollX = true;
-        }
-    }
-    else if(key == KeyboardEvent::KEY_RIGHT)
-    {
-        if(!mCameraMouseScrollX)
-        {
-            mCameraDirX = SCROLL_R;
-            mCameraKeyScrollX = true;
-        }
-    }
-    else if(key == KeyboardEvent::KEY_UP)
-    {
-        if(!mCameraMouseScrollY)
-        {
-            mCameraDirY = SCROLL_U;
-            mCameraKeyScrollY = true;
-        }
-    }
-    else if(key == KeyboardEvent::KEY_DOWN)
-    {
-        if(!mCameraMouseScrollY)
-        {
-            mCameraDirY = SCROLL_D;
-            mCameraKeyScrollY = true;
-        }
-    }
+    mCamController->HandleKeyDown(event);
 }
 
 void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;
 
+    // CAMERA
+    mCamController->HandleKeyUp(event);
+
+    // GAME
     const int key = event.GetKey();
 
     Player * p = GetGame()->GetLocalPlayer();
@@ -783,35 +709,6 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
-    }
-    // ARROWS -> move camera
-    else if(key == KeyboardEvent::KEY_LEFT)
-    {
-        if(!mCameraMouseScrollX)
-            mCameraDirX = NO_SCROLL;
-
-        mCameraKeyScrollX = false;
-    }
-    else if(key == KeyboardEvent::KEY_RIGHT)
-    {
-        if(!mCameraMouseScrollX)
-            mCameraDirX = NO_SCROLL;
-
-        mCameraKeyScrollX = false;
-    }
-    else if(key == KeyboardEvent::KEY_UP)
-    {
-        if(!mCameraMouseScrollY)
-            mCameraDirY = NO_SCROLL;
-
-        mCameraKeyScrollY = false;
-    }
-    else if(key == KeyboardEvent::KEY_DOWN)
-    {
-        if(!mCameraMouseScrollY)
-            mCameraDirY = NO_SCROLL;
-
-        mCameraKeyScrollY = false;
     }
     // SHIFT + B -> center camera on own base
     else if(key == KeyboardEvent::KEY_B)
@@ -867,8 +764,9 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 
     Player * player = GetGame()->GetLocalPlayer();
 
-    const int worldX = mCamera->GetScreenToWorldX(event.GetX());
-    const int worldY = mCamera->GetScreenToWorldY(event.GetY());
+    auto cam = mCamController->GetCamera();
+    const int worldX = cam->GetScreenToWorldX(event.GetX());
+    const int worldY = cam->GetScreenToWorldY(event.GetY());
 
     const Cell2D clickCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
     const bool insideMap = mIsoMap->IsCellInside(clickCell);
@@ -1038,61 +936,12 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 
 void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
 {
-    const int screenX = event.GetX();
-    const int screenY = event.GetY();
-    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
+    // CAMERA
+    mCamController->HandleMouseMotion(event);
 
-    // -- handle scrolling --
-    const int scrollingMargin = 5;
-
-    if(screenX < scrollingMargin)
-    {
-        if(!mCameraKeyScrollX)
-        {
-            mCameraDirX = SCROLL_L;
-            mCameraMouseScrollX = true;
-        }
-    }
-    else if(screenX > (rendW - scrollingMargin))
-    {
-        if(!mCameraKeyScrollX)
-        {
-            mCameraDirX = SCROLL_R;
-            mCameraMouseScrollX = true;
-        }
-    }
-    else if(!mCameraKeyScrollX)
-    {
-        mCameraDirX = NO_SCROLL;
-        mCameraMouseScrollX = false;
-    }
-
-    if(screenY < scrollingMargin)
-    {
-        if(!mCameraKeyScrollY)
-        {
-            mCameraDirY = SCROLL_U;
-            mCameraMouseScrollY = true;
-        }
-    }
-    else if(screenY > (rendH - scrollingMargin))
-    {
-        if(!mCameraKeyScrollY)
-        {
-            mCameraDirY = SCROLL_D;
-            mCameraMouseScrollY = true;
-        }
-    }
-    else if(!mCameraKeyScrollY)
-    {
-        mCameraDirY = NO_SCROLL;
-        mCameraMouseScrollY = false;
-    }
-
-    // -- handle movement over cells --
-    const int worldX = mCamera->GetScreenToWorldX(screenX);
-    const int worldY = mCamera->GetScreenToWorldY(screenY);
+    auto cam = mCamController->GetCamera();
+    const int worldX = cam->GetScreenToWorldX(event.GetX());
+    const int worldY = cam->GetScreenToWorldY(event.GetY());
 
     const Cell2D currCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
 
@@ -1883,7 +1732,7 @@ void ScreenGame::CenterCameraOverPlayerBase()
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
-    mCamera->CenterToPoint(cX, cY);
+    mCamController->GetCamera()->CenterToPoint(cX, cY);
 }
 
 } // namespace game
