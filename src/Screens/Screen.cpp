@@ -15,7 +15,9 @@ Screen::Screen(Game * game)
     mGame->AddApplicationListener(mSharedListener);
     mGame->AddKeyboardListener(mSharedListener);
 
-    sgl::graphic::Camera::GetDefaultCamera()->ResetPosition();
+    auto cam = sgl::graphic::Camera::GetDefaultCamera();
+    cam->ClearFunctionOnMove();
+    cam->ResetPosition();
 }
 
 Screen::~Screen()
