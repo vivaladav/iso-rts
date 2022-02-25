@@ -20,6 +20,7 @@
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterSingleLaser.h"
+#include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
@@ -665,6 +666,15 @@ void ScreenGame::CreateUI()
             auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
             b->ClearUnit();
         }
+    });
+
+    // MINIMAP
+    mButtonMinimap = new ButtonMinimap;
+    mButtonMinimap->SetX(rendW - mButtonMinimap->GetWidth());
+
+    mButtonMinimap->AddOnClickFunction([]
+    {
+
     });
 }
 

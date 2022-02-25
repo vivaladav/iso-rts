@@ -27,6 +27,7 @@ namespace sgl
 namespace game
 {
 
+class ButtonMinimap;
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
@@ -146,6 +147,7 @@ private:
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
     sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
+    ButtonMinimap * mButtonMinimap = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

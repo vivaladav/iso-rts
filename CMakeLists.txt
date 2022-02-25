@@ -156,6 +156,8 @@ add_executable(
     src/Widgets/ButtonMainMenuSocial.cpp
     src/Widgets/ButtonMainMenuWishlist.h
     src/Widgets/ButtonMainMenuWishlist.cpp
+    src/Widgets/ButtonMinimap.h
+    src/Widgets/ButtonMinimap.cpp
     src/Widgets/ButtonNavigation.h
     src/Widgets/ButtonNavigation.cpp
     src/Widgets/ButtonQuickUnitSelection.h
