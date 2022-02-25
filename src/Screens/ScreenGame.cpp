@@ -679,7 +679,7 @@ void ScreenGame::CreateUI()
         mMiniMap->SetVisible(true);
     });
 
-    mMiniMap = new MiniMap;
+    mMiniMap = new MiniMap(mIsoMap->GetNumRows(), mIsoMap->GetNumCols());
     mMiniMap->SetVisible(false);
     mMiniMap->SetX(rendW - mMiniMap->GetWidth());
 
