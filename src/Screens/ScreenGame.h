@@ -36,6 +36,7 @@ class GameMap;
 class GameObject;
 class IsoLayer;
 class IsoMap;
+class MiniMap;
 class MoveIndicator;
 class PanelObjectActions;
 class PanelResources;
@@ -148,6 +149,7 @@ private:
     DialogNewElement * mDialogNewElement = nullptr;
     sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
     ButtonMinimap * mButtonMinimap = nullptr;
+    MiniMap * mMiniMap = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;

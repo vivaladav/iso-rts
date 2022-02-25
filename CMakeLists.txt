@@ -178,6 +178,8 @@ add_executable(
     src/Widgets/GameUIData.cpp
     src/Widgets/MapPreview.h
     src/Widgets/MapPreview.cpp
+    src/Widgets/MiniMap.h
+    src/Widgets/MiniMap.cpp
     src/Widgets/ObjectActionButton.h
     src/Widgets/ObjectActionButton.cpp
     src/Widgets/PanelGameOver.h

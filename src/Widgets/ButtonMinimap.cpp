@@ -5,6 +5,7 @@
 namespace game
 
 {
+
 const std::array<unsigned int, sgl::sgui::PushButton::NUM_VISUAL_STATES> texIds =
 {
     IND_MINIMAP_BUTTON_NORMAL,

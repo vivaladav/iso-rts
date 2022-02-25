@@ -25,6 +25,7 @@
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
@@ -672,9 +673,20 @@ void ScreenGame::CreateUI()
     mButtonMinimap = new ButtonMinimap;
     mButtonMinimap->SetX(rendW - mButtonMinimap->GetWidth());
 
-    mButtonMinimap->AddOnClickFunction([]
+    mButtonMinimap->AddOnClickFunction([this]
     {
+        mButtonMinimap->SetVisible(false);
+        mMiniMap->SetVisible(true);
+    });
 
+    mMiniMap = new MiniMap;
+    mMiniMap->SetVisible(false);
+    mMiniMap->SetX(rendW - mMiniMap->GetWidth());
+
+    mMiniMap->AddFunctionOnClose([this]
+    {
+        mButtonMinimap->SetVisible(true);
+        mMiniMap->SetVisible(false);
     });
 }
 
