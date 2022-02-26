@@ -5,12 +5,11 @@
 namespace sgl
 {
     namespace graphic { class Image; }
+    namespace sgui { class ImageButton; }
 }
 
 namespace game
 {
-
-class ButtonCloseMiniMap;
 
 class MiniMap : public sgl::sgui::Widget
 {
@@ -26,7 +25,12 @@ private:
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Image * mMapBg = nullptr;
 
-    ButtonCloseMiniMap * mButtonClose = nullptr;
+    sgl::sgui::ImageButton * mButtonClose = nullptr;
+
+    sgl::sgui::ImageButton * mButtonL = nullptr;
+    sgl::sgui::ImageButton * mButtonR = nullptr;
+    sgl::sgui::ImageButton * mButtonU = nullptr;
+    sgl::sgui::ImageButton * mButtonD = nullptr;
 
     int mRows = 0;
     int mCols = 0;
