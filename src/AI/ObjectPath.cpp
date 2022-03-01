@@ -146,13 +146,8 @@ void ObjectPath::Update(float delta)
         }
 
         // handle moving object
-        IsoLayer * layer = mObj->GetIsoObject()->GetLayer();
-        layer->MoveObject(mObj->GetRow0(), mObj->GetCol0(), targetRow, targetCol, false);
-
         mGameMap->MoveObjToCell(mObj, targetRow, targetCol);
-
         mGameMap->AddPlayerObjVisibility(mObj, player);
-
         mGameMap->ApplyVisibility(player);
 
         // TODO remove check if mObj is changed into mUnit like for other paths

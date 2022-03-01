@@ -284,13 +284,8 @@ void ConquerPath::Update(float delta)
         }
 
         // handle moving object
-        IsoLayer * layer = mUnit->GetIsoObject()->GetLayer();
-        layer->MoveObject(mUnit->GetRow0(), mUnit->GetCol0(), targetRow, targetCol, false);
-
         mGameMap->MoveObjToCell(mUnit, targetRow, targetCol);
-
         mGameMap->AddPlayerObjVisibility(mUnit, player);
-
         mGameMap->ApplyVisibility(player);
 
         mUnit->ConsumeEnergy(MOVE);

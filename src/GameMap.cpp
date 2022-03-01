@@ -1810,6 +1810,10 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     if(mCells[ind0].obj != obj)
         return false;
 
+    // move object in iso map
+    IsoLayer * layer = obj->GetIsoObject()->GetLayer();
+    layer->MoveObject(obj->GetRow0(), obj->GetCol0(), row, col, false);
+
     // remove object from current cell
     mCells[ind0].obj = nullptr;
     mCells[ind0].walkable = true;
