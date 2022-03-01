@@ -3,6 +3,7 @@
 #include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Image.h>
+#include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/sgui/ImageButton.h>
@@ -96,6 +97,9 @@ MiniMap::MiniMap(int rows, int cols)
 {
     using namespace sgl;
 
+    // init elements data
+    mElementsMap.assign(mRows * mCols, nullptr);
+
     // BACKGROUND
     auto tm = graphic::TextureManager::Instance();
     auto tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_BG);
@@ -106,17 +110,21 @@ MiniMap::MiniMap(int rows, int cols)
 
     // MAP AREA
     const int maxSize = 200;
+    const int maxCells = maxSize / MAP_SCALE;
     const int mapW0 = cols * MAP_SCALE;
     const int mapH0 = rows * MAP_SCALE;
     const bool mapBiggerThanW = mapW0 > maxSize;
     const bool mapBiggerThanH = mapH0 > maxSize;
-    const int mapW = mapBiggerThanW ? maxSize : mapW0;
-    const int mapH = mapBiggerThanH ? maxSize : mapH0;
+    mMapW = mapBiggerThanW ? maxSize : mapW0;
+    mMapH = mapBiggerThanH ? maxSize : mapH0;
+
+    mR1 = mapBiggerThanW ? maxCells : mMapH / MAP_SCALE;
+    mC1 = mapBiggerThanH ? maxCells : mMapW / MAP_SCALE;
 
     tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_BG);
     mMapBg = new graphic::Image(tex);
-    mMapBg->SetWidth(mapW);
-    mMapBg->SetHeight(mapH);
+    mMapBg->SetWidth(mMapW);
+    mMapBg->SetHeight(mMapH);
     RegisterRenderable(mMapBg);
 
     // BUTTON LEFT
@@ -156,6 +164,47 @@ void MiniMap::AddFunctionOnClose(const std::function<void()> & f)
     mButtonClose->AddOnClickFunction(f);
 }
 
+void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction faction)
+{
+    using namespace sgl;
+
+    const int r1 = r0 - rows;
+    const int c1 = c0 - cols;
+
+    // check no cell is covered
+    for(int r = r0; r >= r1; --r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = c0; c >= c1; --c)
+        {
+            const int ind = ind0 + c;
+
+            // found existing element
+            if(mElementsMap[ind])
+                return ;
+        }
+    }
+
+    auto tm = graphic::TextureManager::Instance();
+    auto tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_ELEM);
+    auto img = new sgl::graphic::Image(tex);
+
+    for(int r = r0; r >= r1; --r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = c0; c >= c1; --c)
+        {
+            const int ind = ind0 + c;
+
+            mElementsMap[ind] = img;
+        }
+    }
+
+    mElementsRenderingList.push_back(img);
+}
+
 void MiniMap::HandlePositionChanged()
 {
     const int x0 = GetScreenX();
@@ -165,9 +214,23 @@ void MiniMap::HandlePositionChanged()
     mBg->SetPosition(x0 ,y0);
 
     // MAP
-    const int mapX = x0 + (GetWidth() - mMapBg->GetWidth()) * 0.5f;
-    const int mapY = y0 + (GetHeight() - mMapBg->GetHeight()) * 0.5f;
-    mMapBg->SetPosition(mapX, mapY);
+    mMapX = x0 + (GetWidth() - mMapBg->GetWidth()) * 0.5f;
+    mMapY = y0 + (GetHeight() - mMapBg->GetHeight()) * 0.5f;
+    mMapBg->SetPosition(mMapX, mMapY);
+}
+
+void MiniMap::OnRender()
+{
+    sgl::sgui::Widget::OnRender();
+
+    auto renderer = sgl::graphic::Renderer::Instance();
+
+    renderer->SetClipping(mMapX, mMapY, mMapW, mMapH);
+
+    for(auto elem : mElementsRenderingList)
+        elem->Render();
+
+    renderer->ClearClipping();
 }
 
 } // namespace game
