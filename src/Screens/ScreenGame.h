@@ -88,6 +88,8 @@ public:
 
     void CenterCameraOverObject(GameObject * obj);
 
+    MiniMap * GetMiniMap() const;
+
 private:
     void InitParticlesSystem();
 
@@ -167,5 +169,7 @@ private:
 
     bool mPaused = false;
 };
+
+inline MiniMap * ScreenGame::GetMiniMap() const { return mMiniMap; }
 
 } // namespace game

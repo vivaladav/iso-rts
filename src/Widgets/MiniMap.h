@@ -14,6 +14,26 @@ namespace game
 
 enum PlayerFaction : unsigned int;
 
+struct MiniMapElem
+{
+    MiniMapElem(int r, int c, int rs, int cs,
+                PlayerFaction f, sgl::graphic::Image * i)
+        : r0(r)
+        , c0(c)
+        , rows(rs)
+        , cols(cs)
+        , faction(f)
+        , img(i)
+    {}
+
+    int r0;
+    int c0;
+    int rows;
+    int cols;
+    PlayerFaction faction;
+    sgl::graphic::Image * img;
+};
+
 class MiniMap : public sgl::sgui::Widget
 {
 public:
@@ -22,15 +42,18 @@ public:
     void AddFunctionOnClose(const std::function<void()> & f);
 
     void AddElement(int r0, int c0, int rows, int cols, PlayerFaction faction);
+    void MoveElement(int startRow, int startCol, int endRow, int endCol);
 
 private:
+    void PositionImage(sgl::graphic::Image * elem, int tlRow, int tlCol);
+
     void HandlePositionChanged() override;
 
     void OnRender() override;
 
 private:
-    std::vector<sgl::graphic::Image *> mElementsMap;
-    std::vector<sgl::graphic::Image *> mElementsRenderingList;
+    std::vector<MiniMapElem *> mElementsMap;
+    std::vector<MiniMapElem *> mElementsRenderingList;
 
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Image * mMapBg = nullptr;

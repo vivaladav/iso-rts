@@ -187,20 +187,21 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
         }
     }
 
+    // create and setup image
     auto tm = graphic::TextureManager::Instance();
     auto tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_ELEM);
     auto img = new sgl::graphic::Image(tex);
     img->SetCamera(GetCamera());
-
-    const int imgX = mMapX + c1 * MAP_SCALE;
-    const int imgY = mMapY + r1 * MAP_SCALE;
-    img->SetPosition(imgX, imgY);
-
     img->SetWidth(cols * MAP_SCALE);
     img->SetHeight(rows * MAP_SCALE);
 
+    PositionImage(img, r1, c1);
+
     const unsigned int color = faction != NO_FACTION ? PLAYER_COLOR[faction] : 0xA6A6A6FF;
     img->SetColor(color);
+
+    // create and store element
+    auto elem = new MiniMapElem(r0, c0, rows, cols, faction, img);
 
     for(int r = r0; r >= r1; --r)
     {
@@ -210,11 +211,62 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
         {
             const int ind = ind0 + c;
 
-            mElementsMap[ind] = img;
+            mElementsMap[ind] = elem;
         }
     }
 
-    mElementsRenderingList.push_back(img);
+    mElementsRenderingList.push_back(elem);
+}
+
+void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
+{
+    const int indElem = startRow * mCols + startCol;
+    MiniMapElem * elem = mElementsMap[indElem];
+
+    if(nullptr == elem)
+        return ;
+
+    // free cells occupied by elem
+    const int tlR0 = startRow - elem->rows + 1;
+    const int tlC0 = startCol - elem->cols + 1;
+
+    for(int r = startRow; r >= tlR0; --r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = startCol; c >= tlC0; --c)
+        {
+            const int ind = ind0 + c;
+
+            mElementsMap[ind] = nullptr;
+        }
+    }
+
+    // store elem in new cells
+    const int tlR1 = endRow - elem->rows + 1;
+    const int tlC1 = endCol - elem->cols + 1;
+
+    for(int r = endRow; r >= tlR1; --r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = endCol; c >= tlC1; --c)
+        {
+            const int ind = ind0 + c;
+
+            mElementsMap[ind] = elem;
+        }
+    }
+
+    // move image
+    PositionImage(elem->img, tlR1, tlC1);
+}
+
+void MiniMap::PositionImage(sgl::graphic::Image * elem, int tlRow, int tlCol)
+{
+    const int imgX = mMapX + tlCol * MAP_SCALE;
+    const int imgY = mMapY + tlRow * MAP_SCALE;
+    elem->SetPosition(imgX, imgY);
 }
 
 void MiniMap::HandlePositionChanged()
@@ -240,7 +292,7 @@ void MiniMap::OnRender()
     renderer->SetClipping(mMapX, mMapY, mMapW, mMapH);
 
     for(auto elem : mElementsRenderingList)
-        elem->Render();
+        elem->img->Render();
 
     renderer->ClearClipping();
 }

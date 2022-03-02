@@ -25,6 +25,7 @@
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/MiniMap.h"
 
 #include <sgl/utilities/UniformDistribution.h>
 
@@ -1831,6 +1832,10 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     // object is not in its cell !?
     if(mCells[ind0].obj != obj)
         return false;
+
+    // update minimap
+    MiniMap * mm = mScreenGame->GetMiniMap();
+    mm->MoveElement(obj->GetRow0(), obj->GetCol0(), row, col);
 
     // move object in iso map
     IsoLayer * layer = obj->GetIsoObject()->GetLayer();
