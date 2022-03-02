@@ -1194,10 +1194,9 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
 
         const GameMapCell & cellStruct = mGameMap->GetCell(end.row, end.col);
         const GameObject * objStruct = cellStruct.obj;
-        const int rows = objStruct->GetRows();
-        const int cols = objStruct->GetCols();
 
-        mMiniMap->AddElement(end.row, end.col, rows, cols, player->GetFaction());
+        mMiniMap->AddElement(objStruct->GetRow0(), objStruct->GetCol0(),
+                             objStruct->GetRows(), objStruct->GetCols(), player->GetFaction());
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
