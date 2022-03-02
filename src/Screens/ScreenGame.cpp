@@ -691,7 +691,7 @@ void ScreenGame::CreateUI()
 
     auto objs = mGameMap->GetVisibleObjects(0, 0, mIsoMap->GetNumRows(), mIsoMap->GetNumCols());
 
-    for(auto obj : objs)
+    for(GameObject * obj : objs)
     {
         const Player * p = obj->GetOwner();
         const PlayerFaction faction = p != nullptr ? p->GetFaction() : NO_FACTION;
@@ -1156,6 +1156,8 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
         mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
+        mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, player->GetFaction());
+
         SetObjectActionCompleted(gen);
     });
 
@@ -1189,6 +1191,13 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
 
         unit->ConsumeEnergy(CONQUER_STRUCTURE);
+
+        const GameMapCell & cellStruct = mGameMap->GetCell(end.row, end.col);
+        const GameObject * objStruct = cellStruct.obj;
+        const int rows = objStruct->GetRows();
+        const int cols = objStruct->GetCols();
+
+        mMiniMap->AddElement(end.row, end.col, rows, cols, player->GetFaction());
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);

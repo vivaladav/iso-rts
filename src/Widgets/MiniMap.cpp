@@ -89,7 +89,7 @@ public:
 
 // ========== MINI MAP ==========
 
-const int MAP_SCALE = 2;
+const int MAP_SCALE = 3;
 
 MiniMap::MiniMap(int rows, int cols)
     : sgl::sgui::Widget(nullptr)
@@ -110,7 +110,7 @@ MiniMap::MiniMap(int rows, int cols)
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // MAP AREA
-    const int maxSize = 200;
+    const int maxSize = 204;
     const int maxCells = maxSize / MAP_SCALE;
     const int mapW0 = cols * MAP_SCALE;
     const int mapH0 = rows * MAP_SCALE;
@@ -129,7 +129,7 @@ MiniMap::MiniMap(int rows, int cols)
     RegisterRenderable(mMapBg);
 
     // BUTTON LEFT
-    const int marginButtonsDir = 7;
+    const int marginButtonsDir = 6;
     mButtonL = new ButtonMoveLeft(this);
     mButtonL->SetEnabled(false);
     mButtonL->SetPosition(marginButtonsDir, (GetHeight() - mButtonL->GetHeight()) * 0.5f);
@@ -169,8 +169,8 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
 {
     using namespace sgl;
 
-    const int r1 = r0 - rows;
-    const int c1 = c0 - cols;
+    const int r1 = r0 - rows + 1;
+    const int c1 = c0 - cols + 1;
 
     // check no cell is covered
     for(int r = r0; r >= r1; --r)
