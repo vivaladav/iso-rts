@@ -1,5 +1,6 @@
 #include "Widgets/MiniMap.h"
 
+#include "GameConstants.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Image.h>
@@ -189,6 +190,17 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
     auto tm = graphic::TextureManager::Instance();
     auto tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_ELEM);
     auto img = new sgl::graphic::Image(tex);
+    img->SetCamera(GetCamera());
+
+    const int imgX = mMapX + c1 * MAP_SCALE;
+    const int imgY = mMapY + r1 * MAP_SCALE;
+    img->SetPosition(imgX, imgY);
+
+    img->SetWidth(cols * MAP_SCALE);
+    img->SetHeight(rows * MAP_SCALE);
+
+    const unsigned int color = faction != NO_FACTION ? PLAYER_COLOR[faction] : 0xA6A6A6FF;
+    img->SetColor(color);
 
     for(int r = r0; r >= r1; --r)
     {

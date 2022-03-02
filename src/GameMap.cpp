@@ -68,6 +68,28 @@ GameMap::~GameMap()
         delete cp;
 }
 
+std::vector<GameObject *> GameMap::GetVisibleObjects(int r0, int c0,
+                                                     int r1, int c1) const
+{
+    std::vector<GameObject *> objs;
+
+    for(GameObject * obj : mObjects)
+    {
+        if(!obj->IsVisible())
+            continue;
+
+        const int r = obj->GetRow0();
+        const int c = obj->GetCol0();
+
+        if(r < r0 || c < c0 || r > r1 || c > c1)
+            continue;
+
+        objs.push_back(obj);
+    }
+
+    return objs;
+}
+
 bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;

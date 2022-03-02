@@ -39,6 +39,8 @@ public:
 
     bool HasObject(unsigned int r, unsigned int c) const;
 
+    std::vector<GameObject *> GetVisibleObjects(int r0, int c0, int r1, int c1) const;
+
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
     bool IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const;

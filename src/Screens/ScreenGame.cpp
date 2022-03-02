@@ -688,6 +688,15 @@ void ScreenGame::CreateUI()
         mButtonMinimap->SetVisible(true);
         mMiniMap->SetVisible(false);
     });
+
+    auto objs = mGameMap->GetVisibleObjects(0, 0, mIsoMap->GetNumRows(), mIsoMap->GetNumCols());
+
+    for(auto obj : objs)
+    {
+        const Player * p = obj->GetOwner();
+        const PlayerFaction faction = p != nullptr ? p->GetFaction() : NO_FACTION;
+        mMiniMap->AddElement(obj->GetRow0(), obj->GetCol0(), obj->GetRows(), obj->GetCols(), faction);
+    }
 }
 
 void ScreenGame::HidePanelObjActions()
