@@ -101,7 +101,23 @@ ScreenGame::ScreenGame(Game * game)
     cam->SetFunctionOnMove([this]
     {
         auto cam = mCamController->GetCamera();
-        mIsoMap->SetVisibleArea(cam->GetX(), cam->GetY(), cam->GetWidth(), cam->GetHeight());
+        const int camX0 = cam->GetX();
+        const int camY0 = cam->GetY();
+        const int camW = cam->GetWidth();
+        const int camH = cam->GetHeight();
+        const int camX1 = camX0 + camW;
+        const int camY1 = camY0 + camH;
+
+        // update map
+        mIsoMap->SetVisibleArea(camX0, camY0, camW, camH);
+
+        // update MiniMap
+        Cell2D cellTL = mIsoMap->CellFromScreenPoint(camX0, camY0);
+        Cell2D cellTR = mIsoMap->CellFromScreenPoint(camX1, camY0);
+        Cell2D cellBL = mIsoMap->CellFromScreenPoint(camX0, camY1);
+        Cell2D cellBR = mIsoMap->CellFromScreenPoint(camX1, camY1);
+
+        mMiniMap->SetCameraCells(cellTL, cellTR, cellBL, cellBR);
     });
 
     // set camera limits

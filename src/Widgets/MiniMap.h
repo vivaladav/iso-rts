@@ -1,5 +1,7 @@
 #include <sgl/sgui/Widget.h>
 
+#include "Cell2D.h"
+
 #include <functional>
 #include <vector>
 
@@ -48,6 +50,8 @@ public:
     void AddElement(int r0, int c0, int rows, int cols, PlayerFaction faction);
     void MoveElement(int startRow, int startCol, int endRow, int endCol);
 
+    void SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D & bl, const Cell2D & br);
+
 private:
     void PositionElement(MiniMapElem * elem);
 
@@ -70,6 +74,12 @@ private:
     sgl::sgui::ImageButton * mButtonR = nullptr;
     sgl::sgui::ImageButton * mButtonU = nullptr;
     sgl::sgui::ImageButton * mButtonD = nullptr;
+
+    sgl::graphic::Image * mCameraCornerTL = nullptr;
+    sgl::graphic::Image * mCameraCornerTR = nullptr;
+    sgl::graphic::Image * mCameraCornerBL = nullptr;
+    sgl::graphic::Image * mCameraCornerBR = nullptr;
+
 
     int mRows = 0;
     int mCols = 0;

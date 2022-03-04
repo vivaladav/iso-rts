@@ -134,6 +134,24 @@ MiniMap::MiniMap(int rows, int cols)
               << " - MAP: " << rows << "x" << cols
               << " - SIZE: " << mMapW << "x" << mMapH << std::endl;
 
+    // CAMERA CORNERS
+    sgl::graphic::Camera * cam = GetCamera();
+    tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_CAMERA_TL);
+    mCameraCornerTL = new graphic::Image(tex);
+    mCameraCornerTL->SetCamera(cam);
+
+    tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_CAMERA_TR);
+    mCameraCornerTR = new graphic::Image(tex);
+    mCameraCornerTR->SetCamera(cam);
+
+    tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_CAMERA_BL);
+    mCameraCornerBL = new graphic::Image(tex);
+    mCameraCornerBL->SetCamera(cam);
+
+    tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_CAMERA_BR);
+    mCameraCornerBR = new graphic::Image(tex);
+    mCameraCornerBR->SetCamera(cam);
+
     // BUTTON LEFT
     const int marginButtonsDir = 6;
     mButtonL = new ButtonMoveLeft(this);
@@ -265,6 +283,29 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
     PositionElement(elem);
 }
 
+void MiniMap::SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D & bl, const Cell2D & br)
+{
+    // iso TL -> mm BL
+    const int blX = mMapX + tl.col * MAP_SCALE + MAP_SCALE * 0.5f;
+    const int blY = mMapY + tl.row * MAP_SCALE + (MAP_SCALE - mCameraCornerBL->GetHeight()) * 0.5f;
+    mCameraCornerBL->SetPosition(blX, blY);
+
+    // iso BL -> mm BR
+    const int brX = mMapX + bl.col * MAP_SCALE + (MAP_SCALE - mCameraCornerBR->GetWidth()) * 0.5f;
+    const int brY = mMapY + bl.row * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerBR->GetHeight();
+    mCameraCornerBR->SetPosition(brX, brY);
+
+    // iso BR -> mm TR
+    const int trX = mMapX + br.col * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerTR->GetWidth();
+    const int trY = mMapY + br.row * MAP_SCALE + (MAP_SCALE - mCameraCornerTR->GetHeight()) * 0.5f;
+    mCameraCornerTR->SetPosition(trX, trY);
+
+    // iso TR -> mm TL
+    const int tlX = mMapX + tr.col * MAP_SCALE + (MAP_SCALE - mCameraCornerTL->GetWidth()) * 0.5f;
+    const int tlY = mMapY + tr.row * MAP_SCALE + MAP_SCALE * 0.5f;
+    mCameraCornerTL->SetPosition(tlX, tlY);
+}
+
 void MiniMap::PositionElement(MiniMapElem * elem)
 {
     const int imgX = mMapX + (elem->tlC - mC0) * MAP_SCALE;
@@ -302,8 +343,15 @@ void MiniMap::OnRender()
 
     renderer->SetClipping(mMapX, mMapY, mMapW, mMapH);
 
+    // map elements
     for(auto elem : mElementsRenderingList)
         elem->img->Render();
+
+    // camera corners
+    mCameraCornerTL->Render();
+    mCameraCornerTR->Render();
+    mCameraCornerBL->Render();
+    mCameraCornerBR->Render();
 
     renderer->ClearClipping();
 }
