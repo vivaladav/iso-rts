@@ -44,6 +44,7 @@ class MiniMap : public sgl::sgui::Widget
 {
 public:
     MiniMap(int rows, int cols);
+    ~MiniMap();
 
     void AddFunctionOnClose(const std::function<void()> & f);
 

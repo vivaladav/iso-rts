@@ -182,6 +182,19 @@ MiniMap::MiniMap(int rows, int cols)
     mButtonClose->SetPosition(btnX, btnY);
 }
 
+MiniMap::~MiniMap()
+{
+    // delete elements
+    for(auto elem : mElementsRenderingList)
+        delete elem;
+
+    // delete camera corners
+    delete mCameraCornerTL;
+    delete mCameraCornerTR;
+    delete mCameraCornerBL;
+    delete mCameraCornerBR;
+}
+
 void MiniMap::AddFunctionOnClose(const std::function<void()> & f)
 {
     mButtonClose->AddOnClickFunction(f);
