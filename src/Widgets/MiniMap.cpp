@@ -9,6 +9,8 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/sgui/ImageButton.h>
 
+#include <iostream>
+
 namespace game
 {
 
@@ -128,28 +130,30 @@ MiniMap::MiniMap(int rows, int cols)
     mMapBg->SetHeight(mMapH);
     RegisterRenderable(mMapBg);
 
+    std::cout << "MINIMAP - TL: " << mR0 << "," << mC0 << " - BR: " << mR1 << "," << mC1
+              << " - MAP: " << rows << "x" << cols
+              << " - SIZE: " << mMapW << "x" << mMapH << std::endl;
+
     // BUTTON LEFT
     const int marginButtonsDir = 6;
     mButtonL = new ButtonMoveLeft(this);
-    mButtonL->SetEnabled(false);
     mButtonL->SetPosition(marginButtonsDir, (GetHeight() - mButtonL->GetHeight()) * 0.5f);
 
     // BUTTON UP
     mButtonU = new ButtonMoveUp(this);
-    mButtonU->SetEnabled(false);
     mButtonU->SetPosition((GetWidth() - mButtonU->GetWidth()) * 0.5f, marginButtonsDir);
 
     // BUTTON RIGHT
     mButtonR = new ButtonMoveRight(this);
-    mButtonR->SetEnabled(false);
     mButtonR->SetPosition(GetWidth() - marginButtonsDir - mButtonR->GetWidth(),
                           (GetHeight() - mButtonR->GetHeight()) * 0.5f);
 
     // BUTTON DOWN
     mButtonD= new ButtonMoveDown(this);
-    mButtonD->SetEnabled(false);
     mButtonD->SetPosition((GetWidth() - mButtonD->GetWidth()) * 0.5f,
                           GetHeight() - marginButtonsDir - mButtonD->GetHeight());
+
+    UpdateAreaButtons();
 
     // CLOSE BUTTON
     const int marginButton = 5;
@@ -195,13 +199,13 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
     img->SetWidth(cols * MAP_SCALE);
     img->SetHeight(rows * MAP_SCALE);
 
-    PositionImage(img, r1, c1);
-
     const unsigned int color = faction != NO_FACTION ? PLAYER_COLOR[faction] : 0xA6A6A6FF;
     img->SetColor(color);
 
     // create and store element
-    auto elem = new MiniMapElem(r0, c0, rows, cols, faction, img);
+    auto elem = new MiniMapElem(r0, c0, r1, c1, faction, img);
+
+    PositionElement(elem);
 
     for(int r = r0; r >= r1; --r)
     {
@@ -227,14 +231,11 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
         return ;
 
     // free cells occupied by elem
-    const int tlR0 = startRow - elem->rows + 1;
-    const int tlC0 = startCol - elem->cols + 1;
-
-    for(int r = startRow; r >= tlR0; --r)
+    for(int r = elem->brR; r >= elem->tlR; --r)
     {
         const int ind0 = r * mCols;
 
-        for(int c = startCol; c >= tlC0; --c)
+        for(int c = elem->brC; c >= elem->tlC; --c)
         {
             const int ind = ind0 + c;
 
@@ -243,14 +244,16 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
     }
 
     // store elem in new cells
-    const int tlR1 = endRow - elem->rows + 1;
-    const int tlC1 = endCol - elem->cols + 1;
+    elem->brR = endRow;
+    elem->brC = endCol;
+    elem->tlR = endRow - elem->rows + 1;
+    elem->tlC = endCol - elem->cols + 1;
 
-    for(int r = endRow; r >= tlR1; --r)
+    for(int r = elem->brR; r >= elem->tlR; --r)
     {
         const int ind0 = r * mCols;
 
-        for(int c = endCol; c >= tlC1; --c)
+        for(int c = elem->brC; c >= elem->tlC; --c)
         {
             const int ind = ind0 + c;
 
@@ -259,14 +262,22 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
     }
 
     // move image
-    PositionImage(elem->img, tlR1, tlC1);
+    PositionElement(elem);
 }
 
-void MiniMap::PositionImage(sgl::graphic::Image * elem, int tlRow, int tlCol)
+void MiniMap::PositionElement(MiniMapElem * elem)
 {
-    const int imgX = mMapX + tlCol * MAP_SCALE;
-    const int imgY = mMapY + tlRow * MAP_SCALE;
-    elem->SetPosition(imgX, imgY);
+    const int imgX = mMapX + (elem->tlC - mC0) * MAP_SCALE;
+    const int imgY = mMapY + (elem->tlR - mR0) * MAP_SCALE;
+    elem->img->SetPosition(imgX, imgY);
+}
+
+void MiniMap::UpdateAreaButtons()
+{
+    mButtonU->SetEnabled(mR0 > 0);
+    mButtonD->SetEnabled(mR1 < mRows);
+    mButtonL->SetEnabled(mC0 > 0);
+    mButtonR->SetEnabled(mC1 < mCols);
 }
 
 void MiniMap::HandlePositionChanged()

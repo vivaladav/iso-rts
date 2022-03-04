@@ -16,18 +16,22 @@ enum PlayerFaction : unsigned int;
 
 struct MiniMapElem
 {
-    MiniMapElem(int r, int c, int rs, int cs,
+    MiniMapElem(int r0, int c0, int r1, int c1,
                 PlayerFaction f, sgl::graphic::Image * i)
-        : r0(r)
-        , c0(c)
-        , rows(rs)
-        , cols(cs)
+        : brR(r0)
+        , brC(c0)
+        , tlR(r1)
+        , tlC(c1)
+        , rows(r0 - r1 + 1)
+        , cols(c0 - c1 + 1)
         , faction(f)
         , img(i)
     {}
 
-    int r0;
-    int c0;
+    int brR;
+    int brC;
+    int tlR;
+    int tlC;
     int rows;
     int cols;
     PlayerFaction faction;
@@ -45,7 +49,9 @@ public:
     void MoveElement(int startRow, int startCol, int endRow, int endCol);
 
 private:
-    void PositionImage(sgl::graphic::Image * elem, int tlRow, int tlCol);
+    void PositionElement(MiniMapElem * elem);
+
+    void UpdateAreaButtons();
 
     void HandlePositionChanged() override;
 
