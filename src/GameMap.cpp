@@ -827,7 +827,12 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     UpdateLinkedCells(player);
 
     // add object wall
-    CreateObject(OBJECTS, planned, player, cell.row, cell.col, 1, 1);
+    const int rows = 1;
+    const int cols = 1;
+    CreateObject(OBJECTS, planned, player, cell.row, cell.col, rows, cols);
+
+    // update minimap
+    mScreenGame->GetMiniMap()->AddElement(cell.row, cell.col, rows, cols, player->GetFaction());
 
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);
@@ -1934,6 +1939,9 @@ void GameMap::DestroyObject(GameObject * obj)
     IsoObject * isoObj = obj->GetIsoObject();
     IsoLayer * layer = isoObj->GetLayer();
     layer->ClearObject(isoObj);
+
+    // remove object from mini map
+    mScreenGame->GetMiniMap()->RemoveElement(obj->GetRow0(), obj->GetCol0());
 
     // finally delete the object
     delete obj;

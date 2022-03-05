@@ -174,7 +174,6 @@ void GameObject::Hit(float damage)
     const unsigned int texInd = SpriteIdParticles::ID_PART_RECT_4x4;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileParticles, texInd);
 
-
     IsoObject * isoObj = GetIsoObject();
     const float objXC = isoObj->GetX() + isoObj->GetWidth() * 0.5f;
     const float objYC = isoObj->GetY() + isoObj->GetHeight() * 0.5f;
@@ -196,10 +195,8 @@ void GameObject::Hit(float damage)
     sgl::utilities::UniformDistribution genSpeed(minSpeed, maxSpeed);
 
     // random generator for decay speed
-
     const int minDecSpeed = 250;
     const int maxDecSpeed = 500;
-
     sgl::utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
     // random generator for scale

@@ -1254,6 +1254,8 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
         unit->ConsumeEnergy(BUILD_STRUCTURE);
 
+        mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, player->GetFaction());
+
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
     });
