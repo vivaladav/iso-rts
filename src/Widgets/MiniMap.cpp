@@ -1,6 +1,7 @@
 #include "Widgets/MiniMap.h"
 
 #include "GameConstants.h"
+#include "Screens/ScreenGame.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/MouseButtonEvent.h>
@@ -95,8 +96,9 @@ public:
 
 const int MAP_SCALE = 3;
 
-MiniMap::MiniMap(int rows, int cols)
+MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     : sgl::sgui::Widget(nullptr)
+    , mScreen(screen)
     , mRows(rows)
     , mCols(cols)
 {
@@ -511,6 +513,18 @@ void MiniMap::HandleMouseButtonDown(sgl::core::MouseButtonEvent & event)
 void MiniMap::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
 {
     event.SetConsumed();
+
+    const int x = event.GetX();
+    const int y = event.GetY();
+
+    // click is within the map area
+    if(x > mMapX && x < (mMapX + mMapW) && y > mMapY &&  y < (mMapY + mMapH))
+    {
+        const int col = mC0 + (x - mMapX) / MAP_SCALE;
+        const int row = mR0 + (y - mMapY) / MAP_SCALE;
+
+        mScreen->CenterCameraOverCell(row, col);
+    }
 }
 
 void MiniMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)

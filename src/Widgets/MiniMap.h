@@ -14,6 +14,8 @@ namespace sgl
 namespace game
 {
 
+class ScreenGame;
+
 enum PlayerFaction : unsigned int;
 
 struct MiniMapElem
@@ -43,7 +45,7 @@ struct MiniMapElem
 class MiniMap : public sgl::sgui::Widget
 {
 public:
-    MiniMap(int rows, int cols);
+    MiniMap(int rows, int cols, ScreenGame * screen);
     ~MiniMap();
 
     void AddFunctionOnClose(const std::function<void()> & f);
@@ -73,6 +75,8 @@ private:
 private:
     std::vector<MiniMapElem *> mElementsMap;
     std::vector<MiniMapElem *> mElementsRenderingList;
+
+    ScreenGame * mScreen = nullptr;
 
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Image * mMapBg = nullptr;

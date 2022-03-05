@@ -75,7 +75,6 @@ public:
     void GameWon();
 
     void CancelProgressBar(const Cell2D & cell);
-
     void CreateProgressBar(const Cell2D & cell, float time, Player * player,
                            const std::function<void()> & onCompleted);
 
@@ -86,6 +85,7 @@ public:
     void ClearSelection(Player * player);
     void SelectObject(GameObject * obj, Player * player);
 
+    void CenterCameraOverCell(int row, int col);
     void CenterCameraOverObject(GameObject * obj);
 
     MiniMap * GetMiniMap() const;

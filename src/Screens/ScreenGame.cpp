@@ -416,14 +416,19 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     mPanelObjActions->SetActionsEnabled(idle);
 }
 
-void ScreenGame::CenterCameraOverObject(GameObject * obj)
+void ScreenGame::CenterCameraOverCell(int row, int col)
 {
-    const GameMapCell * cell = obj->GetCell();
-    const sgl::core::Pointd2D pos = mIsoMap->GetCellPosition(cell->row, cell->col);
+    const sgl::core::Pointd2D pos = mIsoMap->GetCellPosition(row, col);
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
     mCamController->GetCamera()->CenterToPoint(cX, cY);
+}
+
+void ScreenGame::CenterCameraOverObject(GameObject * obj)
+{
+    const GameMapCell * cell = obj->GetCell();
+    CenterCameraOverCell(cell->row, cell->col);
 }
 
 void ScreenGame::InitParticlesSystem()
@@ -695,7 +700,7 @@ void ScreenGame::CreateUI()
         mMiniMap->SetVisible(true);
     });
 
-    mMiniMap = new MiniMap(mIsoMap->GetNumRows(), mIsoMap->GetNumCols());
+    mMiniMap = new MiniMap(mIsoMap->GetNumRows(), mIsoMap->GetNumCols(), this);
     mMiniMap->SetVisible(false);
     mMiniMap->SetX(rendW - mMiniMap->GetWidth());
 
