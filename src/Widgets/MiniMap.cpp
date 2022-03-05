@@ -334,6 +334,47 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
     mElementsRenderingList.push_back(elem);
 }
 
+void MiniMap::RemoveElement(int r0, int c0)
+{
+    const int ind0 = r0 * mCols + c0;
+    MiniMapElem * elem = mElementsMap[ind0];
+
+    // nothing here
+    if(nullptr == elem)
+        return ;
+
+    // free cells occupied by elem
+    for(int r = elem->brR; r >= elem->tlR; --r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = elem->brC; c >= elem->tlC; --c)
+        {
+            const int ind = ind0 + c;
+
+            mElementsMap[ind] = nullptr;
+        }
+    }
+
+    // remove from rendering
+    auto it = mElementsRenderingList.begin();
+
+    while(it != mElementsRenderingList.end())
+    {
+        if(*it == elem)
+        {
+            mElementsRenderingList.erase(it);
+            break;
+        }
+        else
+            ++it;
+    }
+
+    // delete element
+    // TODO reuse elements
+    delete elem;
+}
+
 void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
 {
     const int indElem = startRow * mCols + startCol;

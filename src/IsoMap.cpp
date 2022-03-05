@@ -150,6 +150,9 @@ void IsoMap::SetOrigin(int x, int y)
 // NOTE Calling this method before the map size is set has NO effect
 void IsoMap::SetVisibleArea(int x, int y, int w, int h)
 {
+    const int x1 = x + w;
+    const int y1 = y + h;
+
     // TOP LEFT
     Cell2D TL = CellFromScreenPoint(x, y);
 
@@ -159,7 +162,7 @@ void IsoMap::SetVisibleArea(int x, int y, int w, int h)
     mRenderingC0 = TL.col;
 
     // TOP RIGHT
-    Cell2D TR = CellFromScreenPoint(x + w, y);
+    Cell2D TR = CellFromScreenPoint(x1, y);
 
     if(TR.row < 0)
         TR.row = 0;
@@ -167,7 +170,7 @@ void IsoMap::SetVisibleArea(int x, int y, int w, int h)
     mRenderingR0 = TR.row;
 
     // BOTTOM LEFT
-    Cell2D BL = CellFromScreenPoint(x, y + h);
+    Cell2D BL = CellFromScreenPoint(x, y1);
 
     ++BL.row;
 
@@ -177,7 +180,7 @@ void IsoMap::SetVisibleArea(int x, int y, int w, int h)
     mRenderingR1 = BL.row;
 
     // BOTTOM RIGHT
-    Cell2D BR = CellFromScreenPoint(x + w, y + h);
+    Cell2D BR = CellFromScreenPoint(x1, y1);
 
     ++BR.col;
 

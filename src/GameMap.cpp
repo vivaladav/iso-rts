@@ -260,11 +260,25 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
     // update visibility if status changed
     if(visible != go->IsVisible())
     {
+        Player * objPlayer = go->GetOwner();
+        MiniMap * mm = mScreenGame->GetMiniMap();
+
         // hide objects if not visited or not a structure
         if(!visible && (!go->IsVisited() || !go->IsStructure()))
+        {
             layer->SetObjectVisible(obj, false);
+
+            if(objPlayer != nullptr && mm != nullptr)
+                mm->RemoveElement(go->GetRow0(), go->GetCol0());
+        }
         else
+        {
             layer->SetObjectVisible(obj, true);
+
+            if(objPlayer != nullptr && mm != nullptr)
+                mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(),
+                               objPlayer->GetFaction());
+        }
 
         go->SetVisible(visible);
     }

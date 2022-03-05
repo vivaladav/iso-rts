@@ -49,6 +49,7 @@ public:
     void AddFunctionOnClose(const std::function<void()> & f);
 
     void AddElement(int r0, int c0, int rows, int cols, PlayerFaction faction);
+    void RemoveElement(int r0, int c0);
     void MoveElement(int startRow, int startCol, int endRow, int endCol);
 
     void SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D & bl, const Cell2D & br);
