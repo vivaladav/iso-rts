@@ -100,7 +100,7 @@ ScreenGame::ScreenGame(Game * game)
 
     cam->SetFunctionOnMove([this]
     {
-        auto cam = mCamController->GetCamera();
+        const sgl::graphic::Camera * cam = mCamController->GetCamera();
         const int camX0 = cam->GetX();
         const int camY0 = cam->GetY();
         const int camW = cam->GetWidth();
@@ -422,7 +422,7 @@ void ScreenGame::CenterCameraOverCell(int row, int col)
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
-    mCamController->GetCamera()->CenterToPoint(cX, cY);
+    mCamController->CenterCameraToPoint(cX, cY);
 }
 
 void ScreenGame::CenterCameraOverObject(GameObject * obj)
@@ -816,7 +816,7 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 
     Player * player = GetGame()->GetLocalPlayer();
 
-    auto cam = mCamController->GetCamera();
+    const sgl::graphic::Camera * cam = mCamController->GetCamera();
     const int worldX = cam->GetScreenToWorldX(event.GetX());
     const int worldY = cam->GetScreenToWorldY(event.GetY());
 
@@ -991,7 +991,7 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
     // CAMERA
     mCamController->HandleMouseMotion(event);
 
-    auto cam = mCamController->GetCamera();
+    const sgl::graphic::Camera * cam = mCamController->GetCamera();
     const int worldX = cam->GetScreenToWorldX(event.GetX());
     const int worldY = cam->GetScreenToWorldY(event.GetY());
 
@@ -1794,7 +1794,7 @@ void ScreenGame::CenterCameraOverPlayerBase()
     const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
-    mCamController->GetCamera()->CenterToPoint(cX, cY);
+    mCamController->CenterCameraToPoint(cX, cY);
 }
 
 } // namespace game

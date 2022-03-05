@@ -28,6 +28,28 @@ CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
 {
 }
 
+void CameraMapController::CenterCameraToPoint(int x, int y)
+{
+    const int hw = mCamera->GetWidth() * 0.5f;
+    const int hh = mCamera->GetHeight() * 0.5f;
+    const int cameraX0 = x - hw;
+    const int cameraY0 = y - hh;
+
+    // clamp X
+    if(cameraX0 < mLimitL)
+        x = mLimitL + hw;
+    else if(cameraX0 > mLimitR)
+        x = mLimitR + hw;
+
+    // clamp Y
+    if(cameraY0 < mLimitT)
+        y = mLimitT + hh;
+    else if(cameraY0 > mLimitB)
+        y = mLimitB + hh;
+
+    mCamera->CenterToPoint(x, y);
+}
+
 void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;

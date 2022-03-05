@@ -19,11 +19,13 @@ class CameraMapController
 public:
     CameraMapController(sgl::graphic::Camera * cam);
 
-    sgl::graphic::Camera * GetCamera() const;
+    const sgl::graphic::Camera * GetCamera() const;
 
     void SetLimits(int l, int r, int t, int b);
 
     void SetSpeed(float val);
+
+    void CenterCameraToPoint(int x, int y);
 
     void HandleKeyDown(sgl::core::KeyboardEvent & event);
     void HandleKeyUp(sgl::core::KeyboardEvent & event);
@@ -49,7 +51,7 @@ private:
     bool mMouseScrollY = false;
 };
 
-inline sgl::graphic::Camera * CameraMapController::GetCamera() const
+inline const sgl::graphic::Camera * CameraMapController::GetCamera() const
 {
     return mCamera;
 }
