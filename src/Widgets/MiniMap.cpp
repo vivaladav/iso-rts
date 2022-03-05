@@ -12,8 +12,6 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/sgui/ImageButton.h>
 
-#include <iostream>
-
 namespace game
 {
 
@@ -116,7 +114,7 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // MAP AREA
-    const int maxSize = 204;
+    const int maxSize = 240;
     const int maxCells = (maxSize / MAP_SCALE) - 1;
     const int mapW0 = cols * MAP_SCALE;
     const int mapH0 = rows * MAP_SCALE;
@@ -133,10 +131,6 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     mMapBg->SetWidth(mMapW);
     mMapBg->SetHeight(mMapH);
     RegisterRenderable(mMapBg);
-
-    std::cout << "MINIMAP - TL: " << mR0 << "," << mC0 << " - BR: " << mR1 << "," << mC1
-              << " - MAP: " << mRows << "x" << mCols
-              << " - SIZE: " << mMapW << "x" << mMapH << std::endl;
 
     // CAMERA CORNERS
     sgl::graphic::Camera * cam = GetCamera();
@@ -160,7 +154,7 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     mMapMove = mRows * 0.25f;
 
     // BUTTON LEFT
-    const int marginButtonsDir = 6;
+    const int marginButtonsDir = 5;
     mButtonL = new ButtonMoveLeft(this);
     mButtonL->SetPosition(marginButtonsDir, (GetHeight() - mButtonL->GetHeight()) * 0.5f);
 
