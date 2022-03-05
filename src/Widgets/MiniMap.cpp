@@ -3,6 +3,8 @@
 #include "GameConstants.h"
 #include "Widgets/GameUIData.h"
 
+#include <sgl/core/event/MouseButtonEvent.h>
+#include <sgl/core/event/MouseMotionEvent.h>
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/Texture.h>
@@ -113,7 +115,7 @@ MiniMap::MiniMap(int rows, int cols)
 
     // MAP AREA
     const int maxSize = 204;
-    const int maxCells = maxSize / MAP_SCALE;
+    const int maxCells = (maxSize / MAP_SCALE) - 1;
     const int mapW0 = cols * MAP_SCALE;
     const int mapH0 = rows * MAP_SCALE;
     const bool mapBiggerThanW = mapW0 > maxSize;
@@ -121,8 +123,8 @@ MiniMap::MiniMap(int rows, int cols)
     mMapW = mapBiggerThanW ? maxSize : mapW0;
     mMapH = mapBiggerThanH ? maxSize : mapH0;
 
-    mR1 = mapBiggerThanW ? maxCells : mMapH / MAP_SCALE;
-    mC1 = mapBiggerThanH ? maxCells : mMapW / MAP_SCALE;
+    mR1 = mapBiggerThanW ? maxCells : (mMapH / MAP_SCALE) - 1;
+    mC1 = mapBiggerThanH ? maxCells : (mMapW / MAP_SCALE) - 1;
 
     tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_BG);
     mMapBg = new graphic::Image(tex);
@@ -131,7 +133,7 @@ MiniMap::MiniMap(int rows, int cols)
     RegisterRenderable(mMapBg);
 
     std::cout << "MINIMAP - TL: " << mR0 << "," << mC0 << " - BR: " << mR1 << "," << mC1
-              << " - MAP: " << rows << "x" << cols
+              << " - MAP: " << mRows << "x" << mCols
               << " - SIZE: " << mMapW << "x" << mMapH << std::endl;
 
     // CAMERA CORNERS
@@ -152,24 +154,103 @@ MiniMap::MiniMap(int rows, int cols)
     mCameraCornerBR = new graphic::Image(tex);
     mCameraCornerBR->SetCamera(cam);
 
+    // set camera move to 25% of map
+    mMapMove = mRows * 0.25f;
+
     // BUTTON LEFT
     const int marginButtonsDir = 6;
     mButtonL = new ButtonMoveLeft(this);
     mButtonL->SetPosition(marginButtonsDir, (GetHeight() - mButtonL->GetHeight()) * 0.5f);
 
+    mButtonL->AddOnClickFunction([this]
+    {
+        // update map columns
+        int inc = mMapMove;
+
+        if(mC0 - inc < 0)
+            inc = mC0;
+
+        mC0 -= inc;
+        mC1 -= inc;
+
+        // reposition elements
+        const int incX = inc * MAP_SCALE;
+        MoveContentHorizontal(incX);
+
+        // update buttons
+        UpdateAreaButtons();
+    });
+
     // BUTTON UP
     mButtonU = new ButtonMoveUp(this);
     mButtonU->SetPosition((GetWidth() - mButtonU->GetWidth()) * 0.5f, marginButtonsDir);
+
+    mButtonU->AddOnClickFunction([this]
+    {
+        // update map columns
+        int inc = mMapMove;
+
+        if(mR0 - inc < 0)
+            inc = mR0;
+
+        mR0 -= inc;
+        mR1 -= inc;
+
+        // reposition elements
+        const int incY = inc * MAP_SCALE;
+        MoveContentVertical(incY);
+
+        // update buttons
+        UpdateAreaButtons();
+    });
 
     // BUTTON RIGHT
     mButtonR = new ButtonMoveRight(this);
     mButtonR->SetPosition(GetWidth() - marginButtonsDir - mButtonR->GetWidth(),
                           (GetHeight() - mButtonR->GetHeight()) * 0.5f);
 
+    mButtonR->AddOnClickFunction([this]
+    {
+        // update map columns
+        int inc = mMapMove;
+
+        if(mC1 + inc >= mCols)
+            inc = mCols - mC1 - 1;
+
+        mC0 += inc;
+        mC1 += inc;
+
+        // reposition elements
+        const int incX = -inc * MAP_SCALE;
+        MoveContentHorizontal(incX);
+
+        // update buttons
+        UpdateAreaButtons();
+    });
+
     // BUTTON DOWN
-    mButtonD= new ButtonMoveDown(this);
+    mButtonD = new ButtonMoveDown(this);
     mButtonD->SetPosition((GetWidth() - mButtonD->GetWidth()) * 0.5f,
                           GetHeight() - marginButtonsDir - mButtonD->GetHeight());
+
+    mButtonD->AddOnClickFunction([this]
+    {
+        // update map columns
+        int inc = mMapMove;
+
+        if(mR1 + inc >= mRows)
+            inc = mRows - mR1 - 1;
+
+        mR0 += inc;
+        mR1 += inc;
+
+        // reposition elements
+        const int incY = -inc * MAP_SCALE;
+        MoveContentVertical(incY);
+
+        // update buttons
+        UpdateAreaButtons();
+    });
 
     UpdateAreaButtons();
 
@@ -298,24 +379,27 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
 
 void MiniMap::SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D & bl, const Cell2D & br)
 {
+    const int x0 = mMapX - mC0 * MAP_SCALE;
+    const int y0 = mMapY - mR0 * MAP_SCALE;
+
     // iso TL -> mm BL
-    const int blX = mMapX + tl.col * MAP_SCALE + MAP_SCALE * 0.5f;
-    const int blY = mMapY + tl.row * MAP_SCALE + (MAP_SCALE - mCameraCornerBL->GetHeight()) * 0.5f;
+    const int blX = x0 + tl.col * MAP_SCALE + MAP_SCALE * 0.5f;
+    const int blY = y0 + tl.row * MAP_SCALE + (MAP_SCALE - mCameraCornerBL->GetHeight()) * 0.5f;
     mCameraCornerBL->SetPosition(blX, blY);
 
     // iso BL -> mm BR
-    const int brX = mMapX + bl.col * MAP_SCALE + (MAP_SCALE - mCameraCornerBR->GetWidth()) * 0.5f;
-    const int brY = mMapY + bl.row * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerBR->GetHeight();
+    const int brX = x0 + bl.col * MAP_SCALE + (MAP_SCALE - mCameraCornerBR->GetWidth()) * 0.5f;
+    const int brY = y0 + bl.row * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerBR->GetHeight();
     mCameraCornerBR->SetPosition(brX, brY);
 
     // iso BR -> mm TR
-    const int trX = mMapX + br.col * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerTR->GetWidth();
-    const int trY = mMapY + br.row * MAP_SCALE + (MAP_SCALE - mCameraCornerTR->GetHeight()) * 0.5f;
+    const int trX = x0 + br.col * MAP_SCALE + MAP_SCALE * 0.5f - mCameraCornerTR->GetWidth();
+    const int trY = y0 + br.row * MAP_SCALE + (MAP_SCALE - mCameraCornerTR->GetHeight()) * 0.5f;
     mCameraCornerTR->SetPosition(trX, trY);
 
     // iso TR -> mm TL
-    const int tlX = mMapX + tr.col * MAP_SCALE + (MAP_SCALE - mCameraCornerTL->GetWidth()) * 0.5f;
-    const int tlY = mMapY + tr.row * MAP_SCALE + MAP_SCALE * 0.5f;
+    const int tlX = x0 + tr.col * MAP_SCALE + (MAP_SCALE - mCameraCornerTL->GetWidth()) * 0.5f;
+    const int tlY = y0 + tr.row * MAP_SCALE + MAP_SCALE * 0.5f;
     mCameraCornerTL->SetPosition(tlX, tlY);
 }
 
@@ -326,12 +410,42 @@ void MiniMap::PositionElement(MiniMapElem * elem)
     elem->img->SetPosition(imgX, imgY);
 }
 
+void MiniMap::MoveContentHorizontal(int val)
+{
+    for(auto elem : mElementsRenderingList)
+    {
+        sgl::graphic::Image * img = elem->img;
+        img->SetX(img->GetX() + val);
+    }
+
+    // reposition camera view
+    mCameraCornerBL->SetX(mCameraCornerBL->GetX() + val);
+    mCameraCornerBR->SetX(mCameraCornerBR->GetX() + val);
+    mCameraCornerTL->SetX(mCameraCornerTL->GetX() + val);
+    mCameraCornerTR->SetX(mCameraCornerTR->GetX() + val);
+}
+
+void MiniMap::MoveContentVertical(int val)
+{
+    for(auto elem : mElementsRenderingList)
+    {
+        sgl::graphic::Image * img = elem->img;
+        img->SetY(img->GetY() + val);
+    }
+
+    // reposition camera view
+    mCameraCornerBL->SetY(mCameraCornerBL->GetY() + val);
+    mCameraCornerBR->SetY(mCameraCornerBR->GetY() + val);
+    mCameraCornerTL->SetY(mCameraCornerTL->GetY() + val);
+    mCameraCornerTR->SetY(mCameraCornerTR->GetY() + val);
+}
+
 void MiniMap::UpdateAreaButtons()
 {
     mButtonU->SetEnabled(mR0 > 0);
-    mButtonD->SetEnabled(mR1 < mRows);
+    mButtonD->SetEnabled(mR1 < (mRows - 1));
     mButtonL->SetEnabled(mC0 > 0);
-    mButtonR->SetEnabled(mC1 < mCols);
+    mButtonR->SetEnabled(mC1 < (mCols - 1));
 }
 
 void MiniMap::HandlePositionChanged()
@@ -346,6 +460,21 @@ void MiniMap::HandlePositionChanged()
     mMapX = x0 + (GetWidth() - mMapBg->GetWidth()) * 0.5f;
     mMapY = y0 + (GetHeight() - mMapBg->GetHeight()) * 0.5f;
     mMapBg->SetPosition(mMapX, mMapY);
+}
+
+void MiniMap::HandleMouseButtonDown(sgl::core::MouseButtonEvent & event)
+{
+    event.SetConsumed();
+}
+
+void MiniMap::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
+{
+    event.SetConsumed();
+}
+
+void MiniMap::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
+{
+    event.SetConsumed();
 }
 
 void MiniMap::OnRender()

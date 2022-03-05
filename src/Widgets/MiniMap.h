@@ -56,9 +56,16 @@ public:
 private:
     void PositionElement(MiniMapElem * elem);
 
+    void MoveContentHorizontal(int val);
+    void MoveContentVertical(int val);
+
     void UpdateAreaButtons();
 
     void HandlePositionChanged() override;
+
+    void HandleMouseButtonDown(sgl::core::MouseButtonEvent & event) override;
+    void HandleMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
+    void HandleMouseMotion(sgl::core::MouseMotionEvent & event) override;
 
     void OnRender() override;
 
@@ -94,6 +101,8 @@ private:
     int mMapY = 0;
     int mMapW = 0;
     int mMapH = 0;
+
+    int mMapMove = 0;
 };
 
 } // namespace game
