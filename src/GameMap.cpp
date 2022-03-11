@@ -275,9 +275,21 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
         {
             layer->SetObjectVisible(obj, true);
 
-            if(objPlayer != nullptr && mm != nullptr)
-                mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(),
-                               objPlayer->GetFaction());
+            if(mm != nullptr)
+            {
+                if(objPlayer != nullptr)
+                {
+                    const PlayerFaction faction = objPlayer->GetFaction();
+                    const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+                    mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(), type, faction);
+                }
+                else
+                {
+                    const MiniMap::MiniMapElemType type = go->CanBeConquered() ? MiniMap::MME_CONQUERABLE : MiniMap::MME_SCENE;
+                    mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(),
+                                   type, NO_FACTION);
+                }
+            }
         }
 
         go->SetVisible(visible);
@@ -832,7 +844,9 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     CreateObject(OBJECTS, planned, player, cell.row, cell.col, rows, cols);
 
     // update minimap
-    mScreenGame->GetMiniMap()->AddElement(cell.row, cell.col, rows, cols, player->GetFaction());
+    const PlayerFaction faction = player->GetFaction();
+    const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+    mScreenGame->GetMiniMap()->AddElement(cell.row, cell.col, rows, cols, type, faction);
 
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);

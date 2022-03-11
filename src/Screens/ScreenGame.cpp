@@ -715,8 +715,19 @@ void ScreenGame::CreateUI()
     for(GameObject * obj : objs)
     {
         const Player * p = obj->GetOwner();
-        const PlayerFaction faction = p != nullptr ? p->GetFaction() : NO_FACTION;
-        mMiniMap->AddElement(obj->GetRow0(), obj->GetCol0(), obj->GetRows(), obj->GetCols(), faction);
+        PlayerFaction faction = NO_FACTION;
+        MiniMap::MiniMapElemType type = MiniMap::MME_SCENE;
+
+        if(p != nullptr)
+        {
+            faction = p->GetFaction();
+            type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+        }
+        else if(obj->CanBeConquered())
+            type = MiniMap::MME_CONQUERABLE;
+
+        mMiniMap->AddElement(obj->GetRow0(), obj->GetCol0(), obj->GetRows(), obj->GetCols(),
+                             type, faction);
     }
 }
 
@@ -1177,7 +1188,10 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
         mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
-        mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, player->GetFaction());
+        const PlayerFaction faction = player->GetFaction();
+        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+
+        mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
 
         SetObjectActionCompleted(gen);
     });
@@ -1216,8 +1230,11 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         const GameMapCell & cellStruct = mGameMap->GetCell(end.row, end.col);
         const GameObject * objStruct = cellStruct.obj;
 
+        const PlayerFaction faction = player->GetFaction();
+        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+
         mMiniMap->AddElement(objStruct->GetRow0(), objStruct->GetCol0(),
-                             objStruct->GetRows(), objStruct->GetCols(), player->GetFaction());
+                             objStruct->GetRows(), objStruct->GetCols(), type, faction);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
@@ -1259,7 +1276,10 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
         unit->ConsumeEnergy(BUILD_STRUCTURE);
 
-        mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, player->GetFaction());
+        const PlayerFaction faction = player->GetFaction();
+        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+
+        mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, type, faction);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);

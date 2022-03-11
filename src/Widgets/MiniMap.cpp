@@ -1,6 +1,5 @@
 #include "Widgets/MiniMap.h"
 
-#include "GameConstants.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/GameUIData.h"
 
@@ -93,6 +92,15 @@ public:
 // ========== MINI MAP ==========
 
 const int MAP_SCALE = 3;
+
+const unsigned int MINIMAP_COLORS[MiniMap::NUM_MM_ELEM_TYPES] =
+{
+    0xdb5757ff,
+    0x57db62ff,
+    0x57badbff,
+    0xb2b2b2ff,
+    0x604739ff
+};
 
 MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     : sgl::sgui::Widget(nullptr)
@@ -277,7 +285,7 @@ void MiniMap::AddFunctionOnClose(const std::function<void()> & f)
     mButtonClose->AddOnClickFunction(f);
 }
 
-void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction faction)
+void MiniMap::AddElement(int r0, int c0, int rows, int cols, MiniMapElemType type, PlayerFaction faction)
 {
     using namespace sgl;
 
@@ -307,11 +315,11 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, PlayerFaction facti
     img->SetWidth(cols * MAP_SCALE);
     img->SetHeight(rows * MAP_SCALE);
 
-    const unsigned int color = faction != NO_FACTION ? PLAYER_COLOR[faction] : 0xA6A6A6FF;
+    const unsigned int color = MINIMAP_COLORS[type];
     img->SetColor(color);
 
     // create and store element
-    auto elem = new MiniMapElem(r0, c0, r1, c1, faction, img);
+    auto elem = new MiniMapElem(r0, c0, r1, c1, type, faction, img);
 
     PositionElement(elem);
 
