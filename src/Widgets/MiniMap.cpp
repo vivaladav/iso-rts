@@ -338,6 +338,27 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, MiniMapElemType typ
     mElementsRenderingList.push_back(elem);
 }
 
+void MiniMap::UpdateElement(int r0, int c0, int rows, int cols, MiniMapElemType type, PlayerFaction faction)
+{
+    const int ind0 = r0 * mCols + c0;
+    MiniMapElem * elem = mElementsMap[ind0];
+
+    // nothing here
+    if(nullptr == elem)
+        return ;
+
+    // wrong size?
+    if(elem->rows != rows || elem->cols != cols)
+        return ;
+
+    const unsigned int color = MINIMAP_COLORS[type];
+    elem->img->SetColor(color);
+
+    elem->type = type;
+
+    elem->faction = faction;
+}
+
 void MiniMap::RemoveElement(int r0, int c0)
 {
     const int ind0 = r0 * mCols + c0;

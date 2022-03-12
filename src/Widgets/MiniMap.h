@@ -39,6 +39,7 @@ public:
     void AddFunctionOnClose(const std::function<void()> & f);
 
     void AddElement(int r0, int c0, int rows, int cols, MiniMapElemType type, PlayerFaction faction);
+    void UpdateElement(int r0, int c0, int rows, int cols, MiniMapElemType type, PlayerFaction faction);
     void RemoveElement(int r0, int c0);
     void MoveElement(int startRow, int startCol, int endRow, int endCol);
 

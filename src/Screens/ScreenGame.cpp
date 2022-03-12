@@ -1233,8 +1233,8 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         const PlayerFaction faction = player->GetFaction();
         const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
 
-        mMiniMap->AddElement(objStruct->GetRow0(), objStruct->GetCol0(),
-                             objStruct->GetRows(), objStruct->GetCols(), type, faction);
+        mMiniMap->UpdateElement(objStruct->GetRow0(), objStruct->GetCol0(),
+                                objStruct->GetRows(), objStruct->GetCols(), type, faction);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
