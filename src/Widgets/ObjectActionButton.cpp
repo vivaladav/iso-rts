@@ -77,8 +77,11 @@ void ObjectActionButton::OnStateChanged(sgl::sgui::PushButton::VisualState state
     // update shortcut label alpha
     const unsigned char alphaEn = 255;
     const unsigned char alphaDis = 128;
-    const unsigned char alphaLabel = DISABLED == state ? alphaDis : alphaEn;
-    mShortcut->SetAlpha(alphaLabel);
+    const unsigned char alphaCont = DISABLED == state ? alphaDis : alphaEn;
+    mShortcut->SetAlpha(alphaCont);
+
+    // icon
+    mIcon->SetAlpha(alphaCont);
 }
 
 void ObjectActionButton::HandlePositionChanged()

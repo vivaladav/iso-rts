@@ -156,14 +156,14 @@ ScreenInit::ScreenInit(Game * game)
             { 303, 136, 16, 60 },
             { 287, 198, 16, 60 },
             { 303, 198, 16, 60 },
-            { 320, 136, 15, 52 },
-            { 336, 136, 15, 52 },
-            { 320, 198, 15, 52 },
-            { 336, 198, 15, 52 },
-            { 159, 308, 13, 25 },
-            { 173, 308, 13, 25 },
-            { 187, 308, 25, 13 },
-            { 187, 322, 25, 13 },
+            { 320, 136, 16, 60 },
+            { 336, 136, 16, 60 },
+            { 320, 198, 16, 60 },
+            { 336, 198, 16, 60 },
+            { 159, 308, 14, 26 },
+            { 174, 308, 14, 26 },
+            { 189, 308, 26, 14 },
+            { 189, 323, 26, 14 },
             // MINIMAP BUTTON
             { 0, 287, 52, 52 },
             { 53, 287, 52, 52 },
@@ -558,35 +558,24 @@ ScreenInit::ScreenInit(Game * game)
     // OBJECT ACTION BUTTON
     mJobs.emplace_back([tm]
     {
-        std::vector<sgl::core::Rectd> rects;
-
-        // button bg
-        int indCols = 5;
-        int indW = 64;
-        int indH = 64;
-        int x = 0;
-        int y = 0;
-
-        for(int c = 0; c < indCols; ++c)
+        const std::vector<sgl::core::Rectd> rects
         {
-            rects.emplace_back(x, y, indW, indH);
-            x += indW;
-        }
-
-        y += indH;
-
-        // icons
-        indCols = 8;
-        indW = 48;
-        indH = 48;
-
-        x = 0;
-
-        for(int c = 0; c < indCols; ++c)
-        {
-            rects.emplace_back(x, y, indW, indH);
-            x += indW;
-        }
+            // BUTTON
+            { 0, 0, 64, 64 },
+            { 65, 0, 64, 64 },
+            { 130, 0, 64, 64 },
+            { 195, 0, 64, 64 },
+            { 260, 0, 64, 64 },
+            // ICONS
+            { 0, 65, 48, 48 },
+            { 49, 65, 48, 48 },
+            { 98, 65, 48, 48 },
+            { 147, 65, 48, 48 },
+            { 196, 65, 48, 48 },
+            { 245, 65, 48, 48 },
+            { 294, 65, 48, 48 },
+            { 343, 65, 48, 48 }
+        };
 
         tm->RegisterSprite(SpriteFileObjActionButton, rects);
     });

@@ -593,7 +593,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     panelInfo->SetPosition(marginL, panelY0);
 
     const unsigned int colorHeader = 0xf1f2f4ff;
-    const unsigned int colorText = 0xa9afbcff;
+    const unsigned int colorText = 0xb6c0c9ff;
 
     auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, sgl::graphic::Font::NORMAL);
     auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, sgl::graphic::Font::NORMAL);
