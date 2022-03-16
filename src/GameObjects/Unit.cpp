@@ -39,12 +39,13 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
 {
     0.f,    // IDLE
     0.f,    // BUILD_UNIT
-    2.f,    // MOVE,
-    5.f,    // CONQUER_CELL,
-    10.f,   // CONQUER_STRUCTURE,
-    1.f,    // ATTACK,
-    20.f,   // BUILD_STRUCTURE,
-    10.f    // BUILD_WALL,
+    2.f,    // MOVE
+    5.f,    // CONQUER_CELL
+    10.f,   // CONQUER_STRUCTURE
+    1.f,    // ATTACK
+    20.f,   // BUILD_STRUCTURE
+    10.f,   // BUILD_WALL
+    0.f     // TOGGLE_GATE
 };
 
 Unit::Unit(const ObjectData & data, int rows, int cols)

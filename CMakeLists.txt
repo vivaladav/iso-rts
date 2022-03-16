@@ -89,6 +89,8 @@ add_executable(
     src/GameObjects/Unit.cpp
     src/GameObjects/Wall.h
     src/GameObjects/Wall.cpp
+    src/GameObjects/WallGate.h
+    src/GameObjects/WallGate.cpp
     src/Indicators/ConquestIndicator.h
     src/Indicators/ConquestIndicator.cpp
     src/Indicators/MoveIndicator.h

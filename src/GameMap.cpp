@@ -24,6 +24,7 @@
 #include "GameObjects/SceneObject.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
+#include "GameObjects/WallGate.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/MiniMap.h"
 
@@ -437,6 +438,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)
         obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);
+    else if(objId >= OBJ_WALL_GATE_FIRST && objId <= OBJ_WALL_GATE_LAST)
+        obj = new WallGate(static_cast<GameObjectType>(objId), rows, cols);
     else if(OBJ_DEF_TOWER == objId)
         obj = new DefensiveTower(rows, cols);
     else if(OBJ_DIAMONDS == objId)

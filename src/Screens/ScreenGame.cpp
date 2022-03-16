@@ -14,6 +14,7 @@
 #include "AI/PlayerAI.h"
 #include "AI/WallBuildPath.h"
 #include "GameObjects/Unit.h"
+#include "GameObjects/WallGate.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/StructureIndicator.h"
@@ -583,6 +584,29 @@ void ScreenGame::CreateUI()
         unit->SetActiveAction(GameObjectActionId::MOVE);
 
         ClearCellOverlays();
+    });
+
+    // WALL GATE
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_OPEN_GATE, [this, player]
+    {
+        auto gate = static_cast<WallGate *>(player->GetSelectedObject());
+        gate->Toggle();
+
+        mPanelObjActions->SetObject(gate);
+
+        // reset focus as buttons will change
+        sgl::sgui::Stage::Instance()->SetFocus();
+    });
+
+    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CLOSE_GATE, [this, player]
+    {
+        auto gate = static_cast<WallGate *>(player->GetSelectedObject());
+        gate->Toggle();
+
+        mPanelObjActions->SetObject(gate);
+
+        // reset focus as buttons will change
+        sgl::sgui::Stage::Instance()->SetFocus();
     });
 
     // GENERIC ACTIONS

@@ -617,8 +617,10 @@ ScreenInit::ScreenInit(Game * game)
             { 147, 65, 48, 48 },
             { 196, 65, 48, 48 },
             { 245, 65, 48, 48 },
-            { 294, 65, 48, 48 },
-            { 343, 65, 48, 48 }
+            { 0, 114, 48, 48 },
+            { 49, 114, 48, 48 },
+            { 98, 114, 48, 48 },
+            { 147, 114, 48, 48 }
         };
 
         tm->RegisterSprite(SpriteFileObjActionButton, rects);

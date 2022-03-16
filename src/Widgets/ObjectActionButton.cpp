@@ -40,6 +40,8 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
         IND_BUTTON_ICON_BUILD_WALL,
         IND_BUTTON_ICON_BUILD_STRUCT,
         IND_BUTTON_ICON_UPGRADE,
+        IND_BUTTON_ICON_OPEN_GATE,
+        IND_BUTTON_ICON_CLOSE_GATE,
         IND_BUTTON_ICON_CANCEL
     };
 

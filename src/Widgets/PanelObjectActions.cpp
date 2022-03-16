@@ -2,6 +2,7 @@
 
 #include "GameObjects/Base.h"
 #include "GameObjects/Unit.h"
+#include "GameObjects/WallGate.h"
 #include "Widgets/ObjectActionButton.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -27,6 +28,8 @@ PanelObjectActions::PanelObjectActions()
     mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", KeyboardEvent::KEY_W, this);
     mButtons[BTN_BUILD_STRUCT] = new ObjectActionButton(ObjectActionButton::BUILD_STRUCT, "B", KeyboardEvent::KEY_B, this);
     mButtons[BTN_UPGRADE] = new ObjectActionButton(ObjectActionButton::UPGRADE, "U", KeyboardEvent::KEY_U, this);
+    mButtons[BTN_OPEN_GATE] = new ObjectActionButton(ObjectActionButton::OPEN_GATE, "G", KeyboardEvent::KEY_G, this);
+    mButtons[BTN_CLOSE_GATE] = new ObjectActionButton(ObjectActionButton::CLOSE_GATE, "G", KeyboardEvent::KEY_G, this);
     mButtons[BTN_CANCEL] = new ObjectActionButton(ObjectActionButton::CANCEL, "X", KeyboardEvent::KEY_X, this);
 }
 
@@ -44,26 +47,26 @@ void PanelObjectActions::SetObject(GameObject * obj)
 {
     mObj = obj;
 
+    // reset all buttons
+    for(ObjectActionButton * btn : mButtons)
+        btn->SetVisible(false);
+
+    // cancel is always visible
+    mButtons[BTN_CANCEL]->SetVisible(true);
+
     // ENABLE BUTTONS
     switch(mObj->GetObjectType())
     {
         case GameObjectType::OBJ_BASE:
         {
             mButtons[BTN_BUILD_UNIT]->SetVisible(true);
-            mButtons[BTN_MOVE]->SetVisible(false);
-            mButtons[BTN_ATTACK]->SetVisible(false);
-            mButtons[BTN_CONQUER_CELL]->SetVisible(false);
-            mButtons[BTN_BUILD_WALL]->SetVisible(false);
-            mButtons[BTN_BUILD_STRUCT]->SetVisible(false);
 
             // TODO handle upgrades
-            mButtons[BTN_UPGRADE]->SetVisible(false);
         }
         break;
 
         case GameObjectType::OBJ_UNIT:
         {
-            mButtons[BTN_BUILD_UNIT]->SetVisible(false);
             mButtons[BTN_MOVE]->SetVisible(true);
             mButtons[BTN_ATTACK]->SetVisible(true);
             mButtons[BTN_CONQUER_CELL]->SetVisible(true);
@@ -71,21 +74,27 @@ void PanelObjectActions::SetObject(GameObject * obj)
             mButtons[BTN_BUILD_STRUCT]->SetVisible(true);
 
             // TODO handle upgrades
-            mButtons[BTN_UPGRADE]->SetVisible(false);
+        }
+        break;
+
+        case GameObjectType::OBJ_WALL_GATE:
+        {
+            auto gate = static_cast<WallGate *>(mObj);
+
+            if(gate->IsOpen())
+                mButtons[BTN_CLOSE_GATE]->SetVisible(true);
+            else
+                mButtons[BTN_OPEN_GATE]->SetVisible(true);
         }
         break;
 
         // object not supported -> hide all buttons
         default:
         {
-            for(ObjectActionButton * btn : mButtons)
-                btn->SetVisible(false);
+            mButtons[BTN_CANCEL]->SetVisible(false);
         }
         break;
     }
-
-    // cancel is always visible
-    mButtons[BTN_CANCEL]->SetVisible(true);
 
     // POSITION BUTTONS
     const int marginH = 15;

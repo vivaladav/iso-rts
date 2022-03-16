@@ -55,7 +55,7 @@ GameObjectType Structure::StructureToGameObject(StructureType st)
         OBJ_RES_STORAGE_BLOBS,
         OBJ_PRACTICE_TARGET,
         OBJ_WALL,
-        OBJ_WALL_GATE
+        OBJ_WALL_GATE_FIRST
     };
 
     return types[st];

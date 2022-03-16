@@ -28,6 +28,8 @@ public:
         BTN_BUILD_WALL,
         BTN_BUILD_STRUCT,
         BTN_UPGRADE,
+        BTN_OPEN_GATE,
+        BTN_CLOSE_GATE,
         BTN_CANCEL,
 
         NUM_BUTTONS

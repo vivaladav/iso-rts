@@ -26,6 +26,8 @@ public:
         BUILD_WALL,
         BUILD_STRUCT,
         UPGRADE,
+        OPEN_GATE,
+        CLOSE_GATE,
         CANCEL,
 
         NUM_ACTION_ICONS
