@@ -195,6 +195,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_MATERIAL));
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_DIAMONDS));
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_BLOBS));
+        p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_WALL_GATE));
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_DEF_TOWER));
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_GEN_SOLAR));
         p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR));
@@ -239,6 +240,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_MATERIAL));
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_DIAMONDS));
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_BLOBS));
+            p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_WALL_GATE));
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_DEF_TOWER));
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR));
             p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_GEN_SOLAR));

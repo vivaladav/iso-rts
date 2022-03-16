@@ -134,6 +134,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
     );
 
+    // wall gate
+    data1.emplace
+    (
+        STRUCT_WALL_GATE,
+        ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileWalls, WALL_GATE_L1_F1_HORIZ_CLOSED,
+                   OCS_WALL_GATE, STRUCT_WALL_GATE, 1, 1,
+                   Structure::TITLES[STRUCT_WALL_GATE],
+                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
+    );
+
     // -- FACTION 2 --
     std::unordered_map<StructureType, ObjectData> & data2 = mStructures[FACTION_2];
 
@@ -233,6 +245,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
     );
 
+    // wall gate
+    data2.emplace
+    (
+        STRUCT_WALL_GATE,
+        ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileWalls, WALL_GATE_L1_F2_HORIZ_CLOSED,
+                   OCS_WALL_GATE, STRUCT_WALL_GATE, 1, 1,
+                   Structure::TITLES[STRUCT_WALL_GATE],
+                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
+    );
+
     // -- FACTION 3 --
     std::unordered_map<StructureType, ObjectData> & data3 = mStructures[FACTION_3];
 
@@ -330,6 +354,18 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_STORAGE, STRUCT_RES_STO_BLOBS, 1, 1,
                    Structure::TITLES[STRUCT_RES_STO_BLOBS],
                    Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
+    );
+
+    // wall gate
+    data3.emplace
+    (
+        STRUCT_WALL_GATE,
+        ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
+                   std::vector<int>{ 100, 100, 0, 0 },
+                   SpriteFileWalls, WALL_GATE_L1_F3_HORIZ_CLOSED,
+                   OCS_WALL_GATE, STRUCT_WALL_GATE, 1, 1,
+                   Structure::TITLES[STRUCT_WALL_GATE],
+                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
     );
 }
 

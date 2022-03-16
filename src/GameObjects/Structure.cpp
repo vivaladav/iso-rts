@@ -18,7 +18,8 @@ const char * Structure::TITLES[NUM_STRUCT_TYPES] =
     "DIAMONDS STORAGE",
     "BLOBS STORAGE",
     "PRACTICE TARGET",
-    "WALL"
+    "WALL",
+    "GATE"
 };
 
 const char * Structure::DESCRIPTIONS[NUM_STRUCT_TYPES] =
@@ -34,7 +35,8 @@ const char * Structure::DESCRIPTIONS[NUM_STRUCT_TYPES] =
     "Storage unit that can contain 150 units of diamonds.",
     "Storage unit that can contain 100 units of blobs.",
     "A practice target.\nIt can be used to train your units and to improve their attack skills.",
-    "A defensive wall."
+    "A defensive wall.",
+    "A gate that can be controlled to open a passage through a defensive wall."
 };
 
 GameObjectType Structure::StructureToGameObject(StructureType st)
@@ -52,7 +54,8 @@ GameObjectType Structure::StructureToGameObject(StructureType st)
         OBJ_RES_STORAGE_DIAMONDS,
         OBJ_RES_STORAGE_BLOBS,
         OBJ_PRACTICE_TARGET,
-        OBJ_WALL
+        OBJ_WALL,
+        OBJ_WALL_GATE
     };
 
     return types[st];

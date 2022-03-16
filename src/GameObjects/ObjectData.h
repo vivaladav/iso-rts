@@ -14,6 +14,7 @@ enum ObjClass : unsigned int
     OCS_STORAGE,
     OCS_TARGET,
     OCS_TOWER,
+    OCS_WALL_GATE,
 
     // UNITS
     OCU_GENERIC,

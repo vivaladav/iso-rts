@@ -320,7 +320,7 @@ enum SpriteIdUnitsParticles : unsigned int
 };
 
 // WALLS
-extern const char SpriteWallsFile[];
+extern const char SpriteFileWalls[];
 
 enum SpriteWallsId : unsigned int
 {
@@ -361,7 +361,37 @@ enum SpriteWallsId : unsigned int
     WALL_L1_F3_INTS,
     WALL_L1_F3_INTW,
     WALL_L1_F3_INTE,
-    WALL_L1_F3_CROSS
+    WALL_L1_F3_CROSS,
+
+    // gate level 1 faction 1
+    WALL_GATE_L1_F1_HORIZ_CLOSED,
+    WALL_GATE_L1_F1_HORIZ_CLOSED_SEL,
+    WALL_GATE_L1_F1_HORIZ_OPEN,
+    WALL_GATE_L1_F1_HORIZ_OPEN_SEL,
+    WALL_GATE_L1_F1_VERT_CLOSED,
+    WALL_GATE_L1_F1_VERT_CLOSED_SEL,
+    WALL_GATE_L1_F1_VERT_OPEN,
+    WALL_GATE_L1_F1_VERT_OPEN_SEL,
+
+    // gate level 1 faction 2
+    WALL_GATE_L1_F2_HORIZ_CLOSED,
+    WALL_GATE_L1_F2_HORIZ_CLOSED_SEL,
+    WALL_GATE_L1_F2_HORIZ_OPEN,
+    WALL_GATE_L1_F2_HORIZ_OPEN_SEL,
+    WALL_GATE_L1_F2_VERT_CLOSED,
+    WALL_GATE_L1_F2_VERT_CLOSED_SEL,
+    WALL_GATE_L1_F2_VERT_OPEN,
+    WALL_GATE_L1_F2_VERT_OPEN_SEL,
+
+    // gate level 1 faction 3
+    WALL_GATE_L1_F3_HORIZ_CLOSED,
+    WALL_GATE_L1_F3_HORIZ_CLOSED_SEL,
+    WALL_GATE_L1_F3_HORIZ_OPEN,
+    WALL_GATE_L1_F3_HORIZ_OPEN_SEL,
+    WALL_GATE_L1_F3_VERT_CLOSED,
+    WALL_GATE_L1_F3_VERT_CLOSED_SEL,
+    WALL_GATE_L1_F3_VERT_OPEN,
+    WALL_GATE_L1_F3_VERT_OPEN_SEL
 };
 
 } // namespace game

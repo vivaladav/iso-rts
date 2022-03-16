@@ -19,6 +19,7 @@ enum StructureType : unsigned int
     STRUCT_RES_STO_BLOBS,
     STRUCT_TARGET,
     STRUCT_WALL,
+    STRUCT_WALL_GATE,
 
     NUM_STRUCT_TYPES,
 

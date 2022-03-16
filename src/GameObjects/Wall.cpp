@@ -64,7 +64,7 @@ void Wall::SetImage()
 
     const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mSubtypeInd + (faction * NUM_OBJS_WALL);
 
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteWallsFile, ind);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);
     isoObj->SetTexture(tex);
 }
 
