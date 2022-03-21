@@ -749,15 +749,16 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     // add object wall
     const GameObjectType got = Structure::StructureToGameObject(static_cast<StructureType>(data.objType));
 
-    CreateObject(OBJECTS2, got, player, cell.row, cell.col, data.rows, data.cols);
+    GameObject * obj = CreateObject(OBJECTS2, got, player, cell.row, cell.col, data.rows, data.cols);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
 
     UpdateLinkedCells(player);
 
-    // update this wall type and the ones surrounding it
-    UpdateWalls(cell);
+    // update surrounding walls if building an object that can connect
+    if(obj->GetObjectType() == OBJ_DEF_TOWER || obj->GetObjectType() == OBJ_WALL_GATE)
+        UpdateWalls(cell);
 
     // update visibility map if local player
     if(player == mGame->GetPlayerByIndex(0))
@@ -2284,23 +2285,29 @@ void GameMap::UpdateWall(const Cell2D & cell)
 {
     GameObject * obj = GetCell(cell.row, cell.col).objTop;
 
-    // no wall here
-    if(nullptr == obj || obj->GetObjectType() != OBJ_WALL)
+    // no wall or gate here
+    if(nullptr == obj || (obj->GetObjectType() != OBJ_WALL && obj->GetObjectType() != OBJ_WALL_GATE))
         return ;
 
-    Wall * w = static_cast<Wall *>(obj);
-
     const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).objTop : nullptr;
-    const bool wallN = objN && (objN->GetObjectType() == OBJ_WALL || objN->GetObjectType() == OBJ_DEF_TOWER);
+    const bool wallN = objN && (objN->GetObjectType() == OBJ_WALL ||
+                                objN->GetObjectType() == OBJ_DEF_TOWER ||
+                                objN->GetObjectType() == OBJ_WALL_GATE);
 
     const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).objTop : nullptr;
-    const bool wallS = objS && (objS->GetObjectType() == OBJ_WALL || objS->GetObjectType() == OBJ_DEF_TOWER);
+    const bool wallS = objS && (objS->GetObjectType() == OBJ_WALL ||
+                                objS->GetObjectType() == OBJ_DEF_TOWER ||
+                                objS->GetObjectType() == OBJ_WALL_GATE);
 
     const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).objTop : nullptr;
-    const bool wallW = objW && (objW->GetObjectType() == OBJ_WALL || objW->GetObjectType() == OBJ_DEF_TOWER);
+    const bool wallW = objW && (objW->GetObjectType() == OBJ_WALL ||
+                                objW->GetObjectType() == OBJ_DEF_TOWER ||
+                                objW->GetObjectType() == OBJ_WALL_GATE);
 
     const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).objTop : nullptr;
-    const bool wallE = objE && (objE->GetObjectType() == OBJ_WALL || objE->GetObjectType() == OBJ_DEF_TOWER);
+    const bool wallE = objE && (objE->GetObjectType() == OBJ_WALL ||
+                                objE->GetObjectType() == OBJ_DEF_TOWER ||
+                                objE->GetObjectType() == OBJ_WALL_GATE);
 
     enum Flags
     {
@@ -2338,53 +2345,81 @@ void GameMap::UpdateWall(const Cell2D & cell)
                      WEST * static_cast<int>(wallW) +
                      EAST * static_cast<int>(wallE);
 
-    switch(conf)
+    if(obj->GetObjectType() == OBJ_WALL)
     {
-        case HORIZ_1:
-        case HORIZ_2:
-        case HORIZ_3:
-            w->SetWallType(OBJ_WALL_HORIZ);
-        break;
+        auto wall = static_cast<Wall *>(obj);
 
-        case VERT_1:
-        case VERT_2:
-        case VERT_3:
-            w->SetWallType(OBJ_WALL_VERT);
-        break;
+        switch(conf)
+        {
+            case HORIZ_1:
+            case HORIZ_2:
+            case HORIZ_3:
+                wall->SetWallType(OBJ_WALL_HORIZ);
+            break;
 
-        case TL:
-            w->SetWallType(OBJ_WALL_TL);
-        break;
-        case TR:
-            w->SetWallType(OBJ_WALL_TR);
-        break;
-        case BL:
-            w->SetWallType(OBJ_WALL_BL);
-        break;
-        case BR:
-            w->SetWallType(OBJ_WALL_BR);
-        break;
+            case VERT_1:
+            case VERT_2:
+            case VERT_3:
+                wall->SetWallType(OBJ_WALL_VERT);
+            break;
 
-        case INTN:
-            w->SetWallType(OBJ_WALL_INTN);
-        break;
-        case INTS:
-            w->SetWallType(OBJ_WALL_INTS);
-        break;
-        case INTW:
-            w->SetWallType(OBJ_WALL_INTW);
-        break;
-        case INTE:
-            w->SetWallType(OBJ_WALL_INTE);
-        break;
+            case TL:
+                wall->SetWallType(OBJ_WALL_TL);
+            break;
+            case TR:
+                wall->SetWallType(OBJ_WALL_TR);
+            break;
+            case BL:
+                wall->SetWallType(OBJ_WALL_BL);
+            break;
+            case BR:
+                wall->SetWallType(OBJ_WALL_BR);
+            break;
 
-        case CROSS:
-            w->SetWallType(OBJ_WALL_CROSS);
-        break;
+            case INTN:
+                wall->SetWallType(OBJ_WALL_INTN);
+            break;
+            case INTS:
+                wall->SetWallType(OBJ_WALL_INTS);
+            break;
+            case INTW:
+                wall->SetWallType(OBJ_WALL_INTW);
+            break;
+            case INTE:
+                wall->SetWallType(OBJ_WALL_INTE);
+            break;
 
-        default:
-            // do nothing for any other case
-        break;
+            case CROSS:
+                wall->SetWallType(OBJ_WALL_CROSS);
+            break;
+
+            default:
+                // do nothing for any other case
+            break;
+        }
+    }
+    else if(obj->GetObjectType() == OBJ_WALL_GATE)
+    {
+        auto gate = static_cast<WallGate *>(obj);
+
+        switch(conf)
+        {
+            case HORIZ_1:
+            case HORIZ_2:
+            case HORIZ_3:
+                gate->SetGateType(OBJ_WALL_GATE_HORIZ);
+            break;
+
+            case VERT_1:
+            case VERT_2:
+            case VERT_3:
+                gate->SetGateType(OBJ_WALL_GATE_VERT);
+            break;
+
+            default:
+                // do nothing for any other case
+            break;
+        }
     }
 }
 
