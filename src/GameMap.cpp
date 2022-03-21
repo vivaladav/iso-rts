@@ -126,7 +126,7 @@ void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
 bool GameMap::IsCellObjectVisited(unsigned int cellInd) const
 {
     if(cellInd < mRows * mCols)
-        return mCells[cellInd].obj && mCells[cellInd].obj->IsVisited();
+        return mCells[cellInd].objTop && mCells[cellInd].objTop->IsVisited();
     else
         return false;
 }
@@ -394,7 +394,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     GameMapCell & gcell = mCells[ind0];
 
     // cell is already full
-    if(gcell.obj)
+    if(gcell.objTop)
         return nullptr;
 
     // create game object
@@ -492,7 +492,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
             GameMapCell & cell = mCells[ind];
 
             cell.walkable = false;
-            cell.obj = obj;
+            cell.objTop = obj;
             cell.owner = owner;
 
             // update cell image
@@ -911,11 +911,11 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
     GameMapCell & gcell1 = mCells[ind1];
 
     // end is empty
-    if(nullptr == gcell1.obj)
+    if(nullptr == gcell1.objTop)
         return false;
 
     // target object can't be conquered
-    if(!gcell1.obj->CanBeConquered())
+    if(!gcell1.objTop->CanBeConquered())
         return false;
 
     // player already owns the res gen
@@ -940,7 +940,7 @@ void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Pl
 
     // mark object cells as changing
     const int ind1 = end.row * mCols + end.col;
-    GameObject * obj = mCells[ind1].obj;
+    GameObject * obj = mCells[ind1].objTop;
 
     for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
     {
@@ -981,7 +981,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
 
-    GameObject * obj = gcell1.obj;
+    GameObject * obj = gcell1.objTop;
 
     // assign owner to cells
     for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
@@ -1004,7 +1004,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     // update player
     player->SumCells(1);
 
-    if(gcell1.obj->GetObjectType() == OBJ_RES_GEN)
+    if(gcell1.objTop->GetObjectType() == OBJ_RES_GEN)
         player->AddResourceGenerator(gcell1.GetResourceGenerator());
 
     // reset start changing flag
@@ -1286,7 +1286,7 @@ void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D
     unit->SetScreen(mScreenGame);
 
     // update cell
-    gcell.obj = unit;
+    gcell.objTop = unit;
     gcell.walkable = false;
     gcell.changing = false;
 
@@ -1432,7 +1432,7 @@ bool GameMap::MoveUnit(ObjectPath * path)
     const int ind = obj->GetRow0() * mCols + obj->GetCol0();
 
     // object is not in its cell !?
-    if(mCells[ind].obj != obj)
+    if(mCells[ind].objTop != obj)
         return false;
 
     // start path
@@ -1524,6 +1524,42 @@ Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targe
     }
 
     return GetClosestCell(start, walkalbes);
+}
+
+bool GameMap::MoveObjectDown(GameObject * obj)
+{
+    const unsigned int ind = (obj->GetRow0() * mCols) + obj->GetCol0();
+    GameMapCell & gc = mCells[ind];
+
+    if(obj != gc.objTop)
+        return false;
+
+    if(gc.objBottom)
+        return false;
+
+    // move object
+    gc.objBottom = gc.objTop;
+    gc.objTop = nullptr;
+
+    return true;
+}
+
+bool GameMap::MoveObjectUp(GameObject * obj)
+{
+    const unsigned int ind = (obj->GetRow0() * mCols) + obj->GetCol0();
+    GameMapCell & gc = mCells[ind];
+
+    if(obj != gc.objBottom)
+        return false;
+
+    if(gc.objTop)
+        return false;
+
+    // move object
+    gc.objTop = gc.objBottom;
+    gc.objBottom = nullptr;
+
+    return true;
 }
 
 void GameMap::CheckGameEnd()
@@ -1693,8 +1729,8 @@ void GameMap::UpdateLinkedCells(Player * player)
         {
             cell.linked = false;
 
-            if(cell.obj != nullptr)
-                objs.insert(cell.obj);
+            if(cell.objTop != nullptr)
+                objs.insert(cell.objTop);
         }
     }
 
@@ -1723,8 +1759,8 @@ void GameMap::UpdateLinkedCells(Player * player)
         currCell.linked = true;
 
         // mark object as linked
-        if(currCell.obj != nullptr)
-            objsLink[currCell.obj] = true;
+        if(currCell.objTop != nullptr)
+            objsLink[currCell.objTop] = true;
 
         // add TOP
         unsigned int r = currCell.row - 1;
@@ -1835,7 +1871,7 @@ void GameMap::UpdateInfluencedCells(int row, int col)
             GameMapCell & gc = mCells[ind];
 
             // not walkable empty cell
-            if(!gc.walkable && nullptr == gc.obj)
+            if(!gc.walkable && nullptr == gc.objTop)
                 continue;
 
             // update map of influence
@@ -1866,7 +1902,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     const int ind0 = obj->GetRow0() * mCols + obj->GetCol0();
 
     // object is not in its cell !?
-    if(mCells[ind0].obj != obj)
+    if(mCells[ind0].objTop != obj)
         return false;
 
     // update minimap
@@ -1878,7 +1914,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     layer->MoveObject(obj->GetRow0(), obj->GetCol0(), row, col, false);
 
     // remove object from current cell
-    mCells[ind0].obj = nullptr;
+    mCells[ind0].objTop = nullptr;
     mCells[ind0].walkable = true;
 
     // add object to new cell
@@ -1886,7 +1922,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
 
     obj->SetCell(&mCells[ind1]);
 
-    mCells[ind1].obj = obj;
+    mCells[ind1].objTop = obj;
     mCells[ind1].walkable = false;
 
     return true;
@@ -1945,7 +1981,7 @@ void GameMap::DestroyObject(GameObject * obj)
             GameMapCell & cell = mCells[ind];
 
             cell.walkable = true;
-            cell.obj = nullptr;
+            cell.objTop = nullptr;
 
             // update cell image
             UpdateCellType(ind, cell);
@@ -2246,7 +2282,7 @@ void GameMap::UpdateWalls(const Cell2D & center)
 
 void GameMap::UpdateWall(const Cell2D & cell)
 {
-    GameObject * obj = GetCell(cell.row, cell.col).obj;
+    GameObject * obj = GetCell(cell.row, cell.col).objTop;
 
     // no wall here
     if(nullptr == obj || obj->GetObjectType() != OBJ_WALL)
@@ -2254,16 +2290,16 @@ void GameMap::UpdateWall(const Cell2D & cell)
 
     Wall * w = static_cast<Wall *>(obj);
 
-    const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).obj : nullptr;
+    const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).objTop : nullptr;
     const bool wallN = objN && (objN->GetObjectType() == OBJ_WALL || objN->GetObjectType() == OBJ_DEF_TOWER);
 
-    const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).obj : nullptr;
+    const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).objTop : nullptr;
     const bool wallS = objS && (objS->GetObjectType() == OBJ_WALL || objS->GetObjectType() == OBJ_DEF_TOWER);
 
-    const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).obj : nullptr;
+    const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).objTop : nullptr;
     const bool wallW = objW && (objW->GetObjectType() == OBJ_WALL || objW->GetObjectType() == OBJ_DEF_TOWER);
 
-    const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).obj : nullptr;
+    const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).objTop : nullptr;
     const bool wallE = objE && (objE->GetObjectType() == OBJ_WALL || objE->GetObjectType() == OBJ_DEF_TOWER);
 
     enum Flags

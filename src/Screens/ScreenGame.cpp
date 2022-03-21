@@ -591,6 +591,9 @@ void ScreenGame::CreateUI()
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
         gate->Toggle();
 
+        // move object down in game map
+        mGameMap->MoveObjectDown(gate);
+
         // move to iso layer 1
         mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS2, MapLayers::OBJECTS1);
 
@@ -606,6 +609,9 @@ void ScreenGame::CreateUI()
         // close gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
         gate->Toggle();
+
+        // move object up in game map
+        mGameMap->MoveObjectUp(gate);
 
         // move to iso layer 2
         mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS1, MapLayers::OBJECTS2);
@@ -882,7 +888,12 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
     std::cout << "CLICK: " << clickCell.row << "," << clickCell.col << std::endl;
 
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
-    GameObject * clickObj = clickGameCell.obj;
+    GameObject * clickObj = clickGameCell.objTop;
+
+    // check if there's a lower object when top is empty
+    if(nullptr == clickObj)
+        clickObj = clickGameCell.objBottom;
+
     const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
 
     if(hasSelected)
@@ -1260,7 +1271,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         unit->ConsumeEnergy(CONQUER_STRUCTURE);
 
         const GameMapCell & cellStruct = mGameMap->GetCell(end.row, end.col);
-        const GameObject * objStruct = cellStruct.obj;
+        const GameObject * objStruct = cellStruct.objTop;
 
         const PlayerFaction faction = player->GetFaction();
         const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
@@ -1275,7 +1286,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     // store active action
     const GameMapCell & targetCell = mGameMap->GetCell(end.row, end.col);
 
-    mActiveObjActions.emplace_back(unit, targetCell.obj, GameObjectActionId::CONQUER_STRUCTURE, start);
+    mActiveObjActions.emplace_back(unit, targetCell.objTop, GameObjectActionId::CONQUER_STRUCTURE, start);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::CONQUER_STRUCTURE);
@@ -1700,7 +1711,7 @@ void ScreenGame::HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell)
     Player * player = GetGame()->GetLocalPlayer();
 
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
-    const GameObject * clickObj = clickGameCell.obj;
+    const GameObject * clickObj = clickGameCell.objTop;
     const bool clickVisited = clickObj && clickObj->IsVisited();
 
     // destination never visited (hence not visible as well) -> try to move close

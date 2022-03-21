@@ -58,7 +58,8 @@ struct GameMapCell
     PlayerFaction influencer;
 
     Player * owner = nullptr;
-    GameObject * obj = nullptr;
+    GameObject * objBottom = nullptr;
+    GameObject * objTop = nullptr;
 
     CellTypes currType = EMPTY;
     CellTypes basicType = EMPTY;

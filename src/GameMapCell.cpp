@@ -18,28 +18,28 @@ GameMapCell::GameMapCell()
 
 Unit * GameMapCell::GetUnit() const
 {
-    if(obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_UNIT)
-        return static_cast<Unit *>(obj);
+    if(objTop != nullptr && objTop->GetObjectType() == GameObjectType::OBJ_UNIT)
+        return static_cast<Unit *>(objTop);
     else
         return nullptr;
 }
 
 bool GameMapCell::HasUnit() const
 {
-    return obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_UNIT;
+    return objTop != nullptr && objTop->GetObjectType() == GameObjectType::OBJ_UNIT;
 }
 
 ResourceGenerator * GameMapCell::GetResourceGenerator() const
 {
-    if(obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_RES_GEN)
-        return static_cast<ResourceGenerator *>(obj);
+    if(objTop != nullptr && objTop->GetObjectType() == GameObjectType::OBJ_RES_GEN)
+        return static_cast<ResourceGenerator *>(objTop);
     else
         return nullptr;
 }
 
 bool GameMapCell::HasResourceGenerator() const
 {
-    return obj != nullptr && obj->GetObjectType() == GameObjectType::OBJ_RES_GEN;
+    return objTop != nullptr && objTop->GetObjectType() == GameObjectType::OBJ_RES_GEN;
 }
 
 } // namespace game

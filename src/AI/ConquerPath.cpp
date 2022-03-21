@@ -276,11 +276,11 @@ void ConquerPath::Update(float delta)
         const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
 
         // collect collectable object, if any
-        if(targetCell.walkable && targetCell.obj != nullptr)
+        if(targetCell.walkable && targetCell.objTop != nullptr)
         {
-            player->HandleCollectable(targetCell.obj);
+            player->HandleCollectable(targetCell.objTop);
 
-            mGameMap->RemoveAndDestroyObject(targetCell.obj);
+            mGameMap->RemoveAndDestroyObject(targetCell.objTop);
         }
 
         // handle moving object

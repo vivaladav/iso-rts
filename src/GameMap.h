@@ -126,6 +126,10 @@ public:
     Cell2D GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const;
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
+
+    bool MoveObjectDown(GameObject * obj);
+    bool MoveObjectUp(GameObject * obj);
+
     unsigned int GetNumRows() const;
     unsigned int GetNumCols() const;
 
@@ -201,7 +205,7 @@ inline bool GameMap::HasObject(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
 
-    return ind < mCells.size() && mCells[ind].obj != nullptr;
+    return ind < mCells.size() && mCells[ind].objTop != nullptr;
 }
 
 inline bool GameMap::IsCellWalkable(unsigned int cellInd) const

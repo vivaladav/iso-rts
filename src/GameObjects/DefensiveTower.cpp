@@ -108,8 +108,8 @@ void DefensiveTower::CheckForEnemies()
             {
                 const GameMapCell & cell = gm->GetCell(r, c);
 
-                if(cell.obj && cell.obj->GetOwner() != nullptr && cell.obj->GetOwner() != GetOwner())
-                    objs.push_back(cell.obj);
+                if(cell.objTop && cell.objTop->GetOwner() != nullptr && cell.objTop->GetOwner() != GetOwner())
+                    objs.push_back(cell.objTop);
             }
         }
     }
