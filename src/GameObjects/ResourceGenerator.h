@@ -10,6 +10,7 @@ enum ResourceGeneratorType : unsigned int
     RESG_ENERGY,
     RESG_ENERGY_SOLAR,
     RESG_MATERIAL,
+    RESG_MATERIAL_EXTRACTOR,
 
     NUM_RES_GEN_TYPES
 };

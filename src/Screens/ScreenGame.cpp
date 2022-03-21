@@ -844,11 +844,15 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         {
             p->SumResource(Player::Stat::ENERGY, 100);
             p->SumResource(Player::Stat::MATERIAL, 50);
+            p->SumResource(Player::Stat::BLOBS, 10);
+            p->SumResource(Player::Stat::DIAMONDS, 10);
         }
         else if(event.IsModCtrlDown())
         {
             p->SumResource(Player::Stat::ENERGY, -50);
             p->SumResource(Player::Stat::MATERIAL, -50);
+            p->SumResource(Player::Stat::BLOBS, -10);
+            p->SumResource(Player::Stat::DIAMONDS, -10);
         }
     }
 }

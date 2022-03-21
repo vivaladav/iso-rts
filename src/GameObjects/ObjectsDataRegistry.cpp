@@ -74,6 +74,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
     );
 
+    // material extractor
+    data1.emplace
+    (
+        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 10, 10 },
+                   SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F1,
+                   OCS_GENERATOR, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
+                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
+                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
+    );
+
     // solar panel
     data1.emplace
     (
@@ -185,6 +197,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
     );
 
+    // material extractor
+    data2.emplace
+    (
+        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 10, 10 },
+                   SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F2,
+                   OCS_GENERATOR, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
+                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
+                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
+    );
+
     // solar panel
     data2.emplace
     (
@@ -294,6 +318,18 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_TOWER, STRUCT_DEF_TOWER, 1, 1,
                    Structure::TITLES[STRUCT_DEF_TOWER],
                    Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
+    );
+
+    // material extractor
+    data3.emplace
+    (
+        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
+                   std::vector<int>{ 150, 150, 10, 10 },
+                   SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F3,
+                   OCS_GENERATOR, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
+                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
+                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
     );
 
     // solar panel

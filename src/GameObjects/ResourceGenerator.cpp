@@ -67,6 +67,13 @@ void ResourceGenerator::SetImage()
         else
             texId = ID_STRUCT_SOLAR_PANEL;
     }
+    else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)
+    {
+        if(faction != NO_FACTION && IsVisible())
+            texId = ID_MATERIAL_EXTRACTOR_F1 + (faction * NUM_MATERIAL_EXTRACTOR_SPRITES_PER_FAC) + sel;
+        else
+            texId = ID_MATERIAL_EXTRACTOR;
+    }
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
     isoObj->SetTexture(tex);
@@ -77,9 +84,11 @@ void ResourceGenerator::UpdateOutput()
     if(RESG_ENERGY == mTypeGen)
         mOutput = 30;
     else if(RESG_MATERIAL == mTypeGen)
-        mOutput = 2;
+        mOutput = 6;
     else if(RESG_ENERGY_SOLAR == mTypeGen)
         mOutput = 10;
+    else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)
+        mOutput = 2;
     // default
     else
         mOutput = 1;
