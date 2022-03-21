@@ -16,11 +16,12 @@ constexpr unsigned int PLAYER_COLOR[] =
     0xdb57dbff
 };
 
-enum MapLayers
+enum MapLayers : unsigned int
 {
     CELL_OVERLAYS1,
     CELL_OVERLAYS2,
-    OBJECTS,
+    OBJECTS1,
+    OBJECTS2,
     CELL_OVERLAYS3,
 
     NUM_LAYERS,

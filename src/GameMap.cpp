@@ -749,7 +749,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     // add object wall
     const GameObjectType got = Structure::StructureToGameObject(static_cast<StructureType>(data.objType));
 
-    CreateObject(OBJECTS, got, player, cell.row, cell.col, data.rows, data.cols);
+    CreateObject(OBJECTS2, got, player, cell.row, cell.col, data.rows, data.cols);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -844,7 +844,7 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     // add object wall
     const int rows = 1;
     const int cols = 1;
-    CreateObject(OBJECTS, planned, player, cell.row, cell.col, rows, cols);
+    CreateObject(OBJECTS2, planned, player, cell.row, cell.col, rows, cols);
 
     // update minimap
     const PlayerFaction faction = player->GetFaction();
@@ -1290,7 +1290,7 @@ void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D
     gcell.walkable = false;
     gcell.changing = false;
 
-    mIsoMap->GetLayer(OBJECTS)->AddObject(unit->GetIsoObject(), r, c);
+    mIsoMap->GetLayer(OBJECTS2)->AddObject(unit->GetIsoObject(), r, c);
 
     // store unit in map list and in registry
     mObjects.push_back(unit);

@@ -457,11 +457,9 @@ void ScreenGame::CreateIsoMap()
 void ScreenGame::CreateLayers()
 {
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS1);
-
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS2);
-
-    mIsoMap->CreateLayer(MapLayers::OBJECTS);
-
+    mIsoMap->CreateLayer(MapLayers::OBJECTS1);
+    mIsoMap->CreateLayer(MapLayers::OBJECTS2);
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS3);
 }
 
@@ -589,9 +587,14 @@ void ScreenGame::CreateUI()
     // WALL GATE
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_OPEN_GATE, [this, player]
     {
+        // open gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
         gate->Toggle();
 
+        // move to iso layer 1
+        mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS2, MapLayers::OBJECTS1);
+
+        // update panel actions
         mPanelObjActions->SetObject(gate);
 
         // reset focus as buttons will change
@@ -600,9 +603,14 @@ void ScreenGame::CreateUI()
 
     mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CLOSE_GATE, [this, player]
     {
+        // close gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
         gate->Toggle();
 
+        // move to iso layer 2
+        mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS1, MapLayers::OBJECTS2);
+
+        // update panel actions
         mPanelObjActions->SetObject(gate);
 
         // reset focus as buttons will change
@@ -1793,7 +1801,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
             mTempStructIndicator = new StructureIndicator(data);
             mTempStructIndicator->SetFaction(player->GetFaction());
 
-            IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS);
+            IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS2);
             layer->AddObject(mTempStructIndicator, clickCell.row, clickCell.col);
 
             // move
@@ -1806,7 +1814,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
                 // get rid of temporary indicator
                 if(mTempStructIndicator)
                 {
-                    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS);
+                    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS2);
                     layer->ClearObject(mTempStructIndicator);
 
                     delete mTempStructIndicator;

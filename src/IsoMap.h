@@ -12,6 +12,7 @@ namespace game
 {
 
 class IsoLayer;
+class IsoObject;
 
 struct Cell2D;
 
@@ -58,6 +59,8 @@ public:
     IsoLayer * CreateLayer(unsigned int layerId);
     IsoLayer * GetLayer(unsigned int layerId) const;
     void SetLayerVisible(unsigned int layerId, bool visible);
+
+    bool ChangeObjectLayer(IsoObject * obj, unsigned int src, unsigned int dst);
 
 private:
     void UpdateTilePositions();

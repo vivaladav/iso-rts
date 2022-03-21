@@ -2,6 +2,7 @@
 
 #include "Cell2D.h"
 #include "IsoLayer.h"
+#include "IsoObject.h"
 
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/TextureManager.h>
@@ -329,6 +330,30 @@ void IsoMap::SetLayerVisible(unsigned int layerId, bool visible)
             }
         }
     }
+}
+
+bool IsoMap::ChangeObjectLayer(IsoObject * obj, unsigned int src, unsigned int dst)
+{
+    // same layer -> nothing to do
+    if(src == dst)
+        return true;
+
+    // find layers
+    IsoLayer * layerSrc = GetLayer(src);
+
+    if(nullptr == layerSrc)
+        return false;
+
+    IsoLayer * layerDst = GetLayer(dst);
+
+    if(nullptr == layerDst)
+        return false;
+
+    // move object
+    layerSrc->ClearObject(obj);
+    const bool res = layerDst->AddObject(obj, obj->GetRow(), obj->GetCol());
+
+    return res;
 }
 
 // ==================== PRIVATE METHODS ====================
