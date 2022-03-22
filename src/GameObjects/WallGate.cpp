@@ -17,8 +17,11 @@ WallGate::WallGate(GameObjectType subtype, int rows, int cols)
     SetImage();
 }
 
-void WallGate::Toggle()
+bool WallGate::Toggle()
 {
+    if(!IsLinked())
+        return false;
+
     // toggle open value
     mOpen = !mOpen;
 
@@ -28,6 +31,8 @@ void WallGate::Toggle()
 
     // update image
     SetImage();
+
+    return true;
 }
 
 void WallGate::SetGateType(GameObjectType type)

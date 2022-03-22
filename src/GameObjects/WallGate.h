@@ -11,7 +11,7 @@ public:
     WallGate(GameObjectType subtype, int rows, int cols);
 
     bool IsOpen() const;
-    void Toggle();
+    bool Toggle();
 
     void SetGateType(GameObjectType type);
 

@@ -589,7 +589,10 @@ void ScreenGame::CreateUI()
     {
         // open gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
-        gate->Toggle();
+        const bool res = gate->Toggle();
+
+        if(!res)
+            return ;
 
         // move object down in game map
         mGameMap->MoveObjectDown(gate);
@@ -608,7 +611,10 @@ void ScreenGame::CreateUI()
     {
         // close gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
-        gate->Toggle();
+        const bool res = gate->Toggle();
+
+        if(!res)
+            return ;
 
         // move object up in game map
         mGameMap->MoveObjectUp(gate);
