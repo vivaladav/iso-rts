@@ -217,34 +217,39 @@ ScreenInit::ScreenInit(Game * game)
     // INDICATORS
     mJobs.emplace_back([tm]
     {
-        const int indRows = 4;
-        const int indCols = 6;
-        const int indW = 96;
-        const int indH = 48;
-        int x = 0;
-        int y = 0;
-
-        std::vector<sgl::core::Rectd> rects;
-        rects.reserve(indRows * indCols);
-
-        for(int r = 0; r < indRows; ++r)
+        const std::vector<sgl::core::Rectd> rects
         {
-            for(int c = 0; c < indCols; ++c)
-            {
-                rects.emplace_back(x, y, indW, indH);
-
-                if(rects.size() == NUM_IND_SPRITES)
-                    break;
-
-                x += indW;
-            }
-
-            if(rects.size() == NUM_IND_SPRITES)
-                break;
-
-            x = 0;
-            y += indH;
-        }
+            // wall indicators
+            { 0, 0, 96, 48 },
+            { 97, 0, 96, 48 },
+            { 194, 0, 96, 48 },
+            { 291, 0, 96, 48 },
+            { 388, 0, 96, 48 },
+            { 485, 0, 96, 48 },
+            { 0, 49, 96, 48 },
+            { 97, 49, 96, 48 },
+            { 194, 49, 96, 48 },
+            { 291, 49, 96, 48 },
+            { 388, 49, 96, 48 },
+            { 485, 49, 96, 48 },
+            { 0, 98, 96, 48 },
+            { 97, 98, 96, 48 },
+            { 194, 98, 96, 48 },
+            { 291, 98, 96, 48 },
+            { 388, 98, 96, 48 },
+            { 485, 98, 96, 48 },
+            { 0, 147, 96, 48 },
+            // move indicator
+            { 97, 147, 96, 48 },
+            // conquest indicator
+            { 194, 147, 96, 48 },
+            { 291, 147, 96, 48 },
+            { 388, 147, 96, 48 },
+            // attack range indicator
+            { 485, 147, 96, 48 },
+            { 0, 196, 96, 48 },
+            { 97, 196, 96, 48 }
+        };
 
         tm->RegisterSprite(SpriteFileIndicators, rects);
     });

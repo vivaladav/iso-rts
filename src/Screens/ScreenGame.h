@@ -27,6 +27,7 @@ namespace sgl
 namespace game
 {
 
+class AttackRangeIndicator;
 class ButtonMinimap;
 class CameraMapController;
 class CellProgressBar;
@@ -136,6 +137,7 @@ private:
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::unordered_map<StructureType, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
+    std::vector<AttackRangeIndicator *> mAttIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
 
     std::vector<GameObjectAction> mActiveObjActions;

@@ -20,9 +20,10 @@ enum MapLayers : unsigned int
 {
     CELL_OVERLAYS1,
     CELL_OVERLAYS2,
+    CELL_OVERLAYS3,
     OBJECTS1,
     OBJECTS2,
-    CELL_OVERLAYS3,
+    CELL_OVERLAYS4,
 
     NUM_LAYERS,
 };

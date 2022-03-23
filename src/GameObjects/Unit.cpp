@@ -57,6 +57,11 @@ Unit::Unit(const ObjectData & data, int rows, int cols)
     mStats.resize(NUM_UNIT_STATS);
     mStats = data.stats;
 
+    // set attack range converting attribute
+    const int maxAttVal = 10;
+    const int attRanges[maxAttVal] = { 2, 3, 4, 5, 6, 8, 9, 10, 11, 13 };
+    mAttackRange = attRanges[mStats[OSTAT_FIRE_RANGE]];
+
     // TODO translate stats into actual values, ex.: speed = 5 -> SetSpeed(2.f)
 
     // SET CONCRETE ATTRIBUTES
@@ -77,6 +82,16 @@ void Unit::IncreaseUnitLevel()
 
     ++mLevel;
     SetImage();
+}
+
+bool Unit::SetAttackTarget(GameObject * obj)
+{
+   if(nullptr == obj || !IsTargetInRange(obj) || !obj->IsVisible() || obj == this)
+       return false;
+
+    mTarget = obj;
+
+    return true;
 }
 
 void Unit::SetActiveActionToDefault() { SetActiveAction(MOVE); }
@@ -138,6 +153,20 @@ void Unit::UpdateGraphics()
     SetImage();
 
     SetDefaultColors();
+}
+
+bool Unit::IsTargetInRange(GameObject * obj) const
+{
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            if(std::abs(GetRow0() - r) <= mAttackRange && std::abs(GetCol0() - c) <= mAttackRange)
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void Unit::SetImage()

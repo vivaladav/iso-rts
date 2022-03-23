@@ -15,6 +15,7 @@
 #include "AI/WallBuildPath.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/WallGate.h"
+#include "Indicators/AttackRangeIndicator.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/StructureIndicator.h"
@@ -187,6 +188,9 @@ ScreenGame::ScreenGame(Game * game)
 ScreenGame::~ScreenGame()
 {
     delete mPartMan;
+
+    for(auto ind : mAttIndicators)
+        delete ind;
 
     for(auto ind : mConquestIndicators)
         delete ind;
@@ -458,9 +462,10 @@ void ScreenGame::CreateLayers()
 {
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS1);
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS2);
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS3);
     mIsoMap->CreateLayer(MapLayers::OBJECTS1);
     mIsoMap->CreateLayer(MapLayers::OBJECTS2);
-    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS3);
+    mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS4);
 }
 
 void ScreenGame::CreateUI()
@@ -564,6 +569,55 @@ void ScreenGame::CreateUI()
         unit->SetActiveAction(GameObjectActionId::ATTACK);
 
         ClearCellOverlays();
+
+        // show attack range overlay
+        const int range = unit->GetAttackRange();
+
+        IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
+
+        const int rows = mIsoMap->GetNumRows();
+        const int cols = mIsoMap->GetNumCols();
+        const int rowTL = unit->GetRow1() - range > 0 ? unit->GetRow1() - range : 0;
+        const int colTL = unit->GetCol1() - range > 0 ? unit->GetCol1() - range : 0;
+        const int rowBR = unit->GetRow0() + range < rows ? unit->GetRow0() + range : rows - 1;
+        const int colBR = unit->GetCol0() + range < cols ? unit->GetCol0() + range : cols - 1;
+
+        const int neededInd = (rowBR - rowTL + 1) * (colBR - colTL + 1);
+        const int existingInd = mAttIndicators.size();
+        const int missingInd = neededInd - existingInd;
+
+        // create missing indicators
+        if(missingInd > 0)
+        {
+            for(int i = 0; i < missingInd; ++i)
+                mAttIndicators.push_back(new AttackRangeIndicator);
+        }
+
+        // init needed indicators
+        const PlayerFaction faction = unit->GetOwner()->GetFaction();
+
+        for(unsigned int i = 0; i < neededInd; ++i)
+        {
+            mAttIndicators[i]->SetVisible(true);
+            mAttIndicators[i]->SetFaction(faction);
+        }
+
+        // hide other indicators
+        const int existingInd2 = mAttIndicators.size();
+
+        for(int i = neededInd; i < existingInd2; ++i)
+            mAttIndicators[i]->SetVisible(false);
+
+        int ind = 0;
+
+        for(int r = rowTL; r <= rowBR; ++r)
+        {
+            for(int c = colTL; c <= colBR; ++c)
+            {
+                if(r != unit->GetRow0() || c != unit->GetCol0())
+                    layer->AddObject(mAttIndicators[ind++], r, c);
+            }
+        }
     });
 
     // conquer
@@ -682,7 +736,7 @@ void ScreenGame::CreateUI()
                     else if(objActId == GameObjectActionId::ATTACK)
                     {
                         auto unit = static_cast<Unit *>(selObj);
-                        unit->SetAttackTarget(nullptr);
+                        unit->ClearAttackTarget();
                     }
 
                     selObj->SetCurrentAction(GameObjectActionId::IDLE);
@@ -947,7 +1001,10 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
                 if(nullptr == clickObj)
                     return ;
 
-                selUnit->SetAttackTarget(clickObj);
+                const bool res = selUnit->SetAttackTarget(clickObj);
+
+                if(!res)
+                    return ;
 
                 selUnit->SetActiveAction(GameObjectActionId::IDLE);
                 selUnit->SetCurrentAction(GameObjectActionId::ATTACK);
@@ -1625,7 +1682,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
 
 void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell)
 {
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS4);
 
     // clear any current indicator
     layer->ClearObjects();
@@ -1852,6 +1909,9 @@ void ScreenGame::ClearCellOverlays()
     layer->ClearObjects();
 
     layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
+    layer->ClearObjects();
+
+    layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS4);
     layer->ClearObjects();
 
     // delete move indicator

@@ -33,7 +33,9 @@ public:
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
 
-    void SetAttackTarget(GameObject * obj);
+    int GetAttackRange() const;
+    void ClearAttackTarget();
+    bool SetAttackTarget(GameObject * obj);
 
     void SetActiveActionToDefault() override;
 
@@ -53,6 +55,8 @@ public:
 private:
     void UpdateGraphics() override;
 
+    bool IsTargetInRange(GameObject * obj) const;
+
     void SetImage();
 
     void Shoot();
@@ -67,6 +71,7 @@ private:
     float mTimeAttack = 0.25f;
     float mTimerAttack = 0.f;
     float mWeaponDamage = 10.f;
+    int mAttackRange = 1;
 
     GameObject * mTarget = nullptr;
 
@@ -79,8 +84,8 @@ inline UnitType Unit::GetUnitType() const { return mUnitType; }
 
 inline int Unit::GetUnitLevel() const { return mLevel; }
 
-inline void Unit::SetAttackTarget(GameObject * obj) { mTarget = obj; }
-
+inline int Unit::GetAttackRange() const { return mAttackRange; }
+inline void Unit::ClearAttackTarget() { mTarget = nullptr; }
 inline void Unit::SetStructureToBuild(StructureType type) { mStructToBuild = type; }
 inline StructureType Unit::GetStructureToBuild() const { return mStructToBuild; }
 
