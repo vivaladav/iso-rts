@@ -443,7 +443,10 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     else if(objId >= OBJ_WALL_GATE_FIRST && objId <= OBJ_WALL_GATE_LAST)
         obj = new WallGate(static_cast<GameObjectType>(objId), rows, cols);
     else if(OBJ_DEF_TOWER == objId)
-        obj = new DefensiveTower(rows, cols);
+    {
+        const ObjectData & data = owner->GetAvailableStructure(STRUCT_DEF_TOWER);
+        obj = new DefensiveTower(data);
+    }
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)

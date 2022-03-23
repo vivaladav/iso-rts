@@ -26,7 +26,7 @@ enum UnitType : unsigned int
 class Unit : public GameObject
 {
 public:
-    Unit(const ObjectData &data, int rows, int cols);
+    Unit(const ObjectData & data, int rows, int cols);
 
     UnitType GetUnitType() const;
 

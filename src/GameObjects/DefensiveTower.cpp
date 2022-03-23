@@ -4,6 +4,7 @@
 #include "GameMap.h"
 #include "IsoObject.h"
 #include "Player.h"
+#include "GameObjects/ObjectData.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
@@ -16,14 +17,27 @@
 namespace game
 {
 
-DefensiveTower::DefensiveTower(int rows, int cols)
-    : Structure(GameObjectType::OBJ_DEF_TOWER, rows, cols)
+DefensiveTower::DefensiveTower(const ObjectData & data)
+    : Structure(GameObjectType::OBJ_DEF_TOWER, data.rows, data.cols)
 {
+    // set attack range converting attribute
+    const int maxAttVal = 11;
+    const int attRanges[maxAttVal] = { 0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+    mAttackRange = attRanges[data.stats[OSTAT_FIRE_RANGE]];
+
     SetImage();
 }
 
 void DefensiveTower::Update(float delta)
 {
+    // do nothing if not linked
+    if(!IsLinked())
+    {
+        mTarget = nullptr;
+        return ;
+    }
+
+    // check if there's any target in range
     CheckForEnemies();
 
     // attacking other object
@@ -94,7 +108,7 @@ void DefensiveTower::CheckForEnemies()
     std::vector<GameObject *> objs;
 
     // find all enemies in range
-    for(int i = 1; i <= mAttackRadius; ++i)
+    for(int i = 1; i <= mAttackRange; ++i)
     {
         const int rTL = (row - i) > 0 ? (row - i) : 0;
         const int rBR = (row + i) < mapRows ? (row + i) : (mapRows - 1);
@@ -108,7 +122,10 @@ void DefensiveTower::CheckForEnemies()
             {
                 const GameMapCell & cell = gm->GetCell(r, c);
 
-                if(cell.objTop && cell.objTop->GetOwner() != nullptr && cell.objTop->GetOwner() != GetOwner())
+                GameObject * obj = cell.objTop;
+
+                // only visible enemy objects
+                if(obj && obj->GetOwner() != nullptr && obj->GetOwner() != GetOwner() && obj->IsVisible())
                     objs.push_back(cell.objTop);
             }
         }

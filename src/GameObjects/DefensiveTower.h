@@ -5,10 +5,14 @@
 namespace game
 {
 
+struct ObjectData;
+
 class DefensiveTower : public Structure
 {
 public:
-    DefensiveTower(int rows, int cols);
+    DefensiveTower(const ObjectData & data);
+
+    int GetAttackRange() const;
 
     void Update(float delta) override;
 
@@ -25,12 +29,13 @@ private:
 private:
     GameObject * mTarget = nullptr;
 
-    int mAttackRadius = 4;
-
     // weapon
     float mTimeAttack = 0.25f;
     float mTimerAttack = 0.f;
     float mWeaponDamage = 15.f;
+    int mAttackRange = 1;
 };
+
+inline int DefensiveTower::GetAttackRange() const { return mAttackRange; }
 
 } // namespace game

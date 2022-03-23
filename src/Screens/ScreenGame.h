@@ -124,6 +124,7 @@ private:
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
 
+    void ShowAttackIndicators(const GameObject * obj, int range);
     void ClearCellOverlays();
 
     void CenterCameraOverPlayerBase();

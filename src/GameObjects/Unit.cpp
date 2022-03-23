@@ -58,8 +58,8 @@ Unit::Unit(const ObjectData & data, int rows, int cols)
     mStats = data.stats;
 
     // set attack range converting attribute
-    const int maxAttVal = 10;
-    const int attRanges[maxAttVal] = { 2, 3, 4, 5, 6, 8, 9, 10, 11, 13 };
+    const int maxAttVal = 11;
+    const int attRanges[maxAttVal] = { 0, 2, 3, 4, 5, 6, 8, 9, 10, 11, 13 };
     mAttackRange = attRanges[mStats[OSTAT_FIRE_RANGE]];
 
     // TODO translate stats into actual values, ex.: speed = 5 -> SetSpeed(2.f)

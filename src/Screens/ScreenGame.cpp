@@ -13,6 +13,7 @@
 #include "AI/ObjectPath.h"
 #include "AI/PlayerAI.h"
 #include "AI/WallBuildPath.h"
+#include "GameObjects/DefensiveTower.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/WallGate.h"
 #include "Indicators/AttackRangeIndicator.h"
@@ -384,8 +385,10 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
     obj->SetSelected(true);
 
+    const GameObjectType got = obj->GetObjectType();
+
     // update quick selection buttons when selected unit
-    if(obj->GetObjectType() == OBJ_UNIT)
+    if(OBJ_UNIT == got)
     {
         const int numButtons = mGroupQuickUnitSel->GetNumButtons();
 
@@ -408,6 +411,15 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 
         if(checked != -1)
             mGroupQuickUnitSel->GetButton(checked)->SetChecked(false);
+
+
+        // show attack range overlay for towers
+        if(OBJ_DEF_TOWER == got)
+        {
+            auto tower = static_cast<DefensiveTower *>(obj);
+            const int range = tower->GetAttackRange();
+            ShowAttackIndicators(tower, range);
+        }
     }
 
     mPanelObjActions->SetObject(obj);
@@ -572,52 +584,7 @@ void ScreenGame::CreateUI()
 
         // show attack range overlay
         const int range = unit->GetAttackRange();
-
-        IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
-
-        const int rows = mIsoMap->GetNumRows();
-        const int cols = mIsoMap->GetNumCols();
-        const int rowTL = unit->GetRow1() - range > 0 ? unit->GetRow1() - range : 0;
-        const int colTL = unit->GetCol1() - range > 0 ? unit->GetCol1() - range : 0;
-        const int rowBR = unit->GetRow0() + range < rows ? unit->GetRow0() + range : rows - 1;
-        const int colBR = unit->GetCol0() + range < cols ? unit->GetCol0() + range : cols - 1;
-
-        const int neededInd = (rowBR - rowTL + 1) * (colBR - colTL + 1);
-        const int existingInd = mAttIndicators.size();
-        const int missingInd = neededInd - existingInd;
-
-        // create missing indicators
-        if(missingInd > 0)
-        {
-            for(int i = 0; i < missingInd; ++i)
-                mAttIndicators.push_back(new AttackRangeIndicator);
-        }
-
-        // init needed indicators
-        const PlayerFaction faction = unit->GetOwner()->GetFaction();
-
-        for(unsigned int i = 0; i < neededInd; ++i)
-        {
-            mAttIndicators[i]->SetVisible(true);
-            mAttIndicators[i]->SetFaction(faction);
-        }
-
-        // hide other indicators
-        const int existingInd2 = mAttIndicators.size();
-
-        for(int i = neededInd; i < existingInd2; ++i)
-            mAttIndicators[i]->SetVisible(false);
-
-        int ind = 0;
-
-        for(int r = rowTL; r <= rowBR; ++r)
-        {
-            for(int c = colTL; c <= colBR; ++c)
-            {
-                if(r != unit->GetRow0() || c != unit->GetCol0())
-                    layer->AddObject(mAttIndicators[ind++], r, c);
-            }
-        }
+        ShowAttackIndicators(unit, range);
     });
 
     // conquer
@@ -1899,6 +1866,57 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
                     mTempStructIndicator = nullptr;
                 }
             });
+        }
+    }
+}
+
+void ScreenGame::ShowAttackIndicators(const GameObject * obj, int range)
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
+
+    const int rows = mIsoMap->GetNumRows();
+    const int cols = mIsoMap->GetNumCols();
+    const int r0 = obj->GetRow0();
+    const int c0 = obj->GetCol0();
+    const int rowTL = obj->GetRow1() - range > 0 ? obj->GetRow1() - range : 0;
+    const int colTL = obj->GetCol1() - range > 0 ? obj->GetCol1() - range : 0;
+    const int rowBR = r0 + range < rows ? r0 + range : rows - 1;
+    const int colBR = c0 + range < cols ? c0 + range : cols - 1;
+
+    const int neededInd = (rowBR - rowTL + 1) * (colBR - colTL + 1);
+    const int existingInd = mAttIndicators.size();
+    const int missingInd = neededInd - existingInd;
+
+    // create missing indicators
+    if(missingInd > 0)
+    {
+        for(int i = 0; i < missingInd; ++i)
+            mAttIndicators.push_back(new AttackRangeIndicator);
+    }
+
+    // init needed indicators
+    const PlayerFaction faction = obj->GetOwner()->GetFaction();
+
+    for(unsigned int i = 0; i < neededInd; ++i)
+    {
+        mAttIndicators[i]->SetVisible(true);
+        mAttIndicators[i]->SetFaction(faction);
+    }
+
+    // hide other indicators
+    const int existingInd2 = mAttIndicators.size();
+
+    for(int i = neededInd; i < existingInd2; ++i)
+        mAttIndicators[i]->SetVisible(false);
+
+    int ind = 0;
+
+    for(int r = rowTL; r <= rowBR; ++r)
+    {
+        for(int c = colTL; c <= colBR; ++c)
+        {
+            if(r != r0 || c != c0)
+                layer->AddObject(mAttIndicators[ind++], r, c);
         }
     }
 }
