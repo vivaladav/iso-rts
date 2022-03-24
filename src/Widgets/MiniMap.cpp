@@ -1,6 +1,7 @@
 #include "Widgets/MiniMap.h"
 
-#include "Screens/ScreenGame.h"
+#include "CameraMapController.h"
+#include "IsoMap.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/MouseButtonEvent.h>
@@ -102,16 +103,15 @@ const unsigned int MINIMAP_COLORS[MiniMap::NUM_MM_ELEM_TYPES] =
     0x604739ff
 };
 
-MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
+MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im)
     : sgl::sgui::Widget(nullptr)
-    , mScreen(screen)
-    , mRows(rows)
-    , mCols(cols)
+    , mCamController(cameraController)
+    , mIsoMap(im)
 {
     using namespace sgl;
 
     // init elements data
-    mElementsMap.assign(mRows * mCols, nullptr);
+    mElementsMap.assign(mIsoMap->GetNumRows() * mIsoMap->GetNumCols(), nullptr);
 
     // BACKGROUND
     auto tm = graphic::TextureManager::Instance();
@@ -124,8 +124,8 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     // MAP AREA
     const int maxSize = 240;
     const int maxCells = (maxSize / MAP_SCALE) - 1;
-    const int mapW0 = cols * MAP_SCALE;
-    const int mapH0 = rows * MAP_SCALE;
+    const int mapW0 = mIsoMap->GetNumCols() * MAP_SCALE;
+    const int mapH0 = mIsoMap->GetNumRows() * MAP_SCALE;
     const bool mapBiggerThanW = mapW0 > maxSize;
     const bool mapBiggerThanH = mapH0 > maxSize;
     mMapW = mapBiggerThanW ? maxSize : mapW0;
@@ -159,7 +159,7 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
     mCameraCornerBR->SetCamera(cam);
 
     // set camera move to 25% of map
-    mMapMove = mRows * 0.25f;
+    mMapMove = mIsoMap->GetNumRows() * 0.25f;
 
     // BUTTON LEFT
     const int marginButtonsDir = 5;
@@ -218,8 +218,8 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
         // update map columns
         int inc = mMapMove;
 
-        if(mC1 + inc >= mCols)
-            inc = mCols - mC1 - 1;
+        if(mC1 + inc >= mIsoMap->GetNumCols())
+            inc = mIsoMap->GetNumCols() - mC1 - 1;
 
         mC0 += inc;
         mC1 += inc;
@@ -242,8 +242,8 @@ MiniMap::MiniMap(int rows, int cols, ScreenGame * screen)
         // update map columns
         int inc = mMapMove;
 
-        if(mR1 + inc >= mRows)
-            inc = mRows - mR1 - 1;
+        if(mR1 + inc >= mIsoMap->GetNumRows())
+            inc = mIsoMap->GetNumRows() - mR1 - 1;
 
         mR0 += inc;
         mR1 += inc;
@@ -295,7 +295,7 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, MiniMapElemType typ
     // check no cell is covered
     for(int r = r0; r >= r1; --r)
     {
-        const int ind0 = r * mCols;
+        const int ind0 = r * mIsoMap->GetNumCols();
 
         for(int c = c0; c >= c1; --c)
         {
@@ -325,7 +325,7 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, MiniMapElemType typ
 
     for(int r = r0; r >= r1; --r)
     {
-        const int ind0 = r * mCols;
+        const int ind0 = r * mIsoMap->GetNumCols();
 
         for(int c = c0; c >= c1; --c)
         {
@@ -340,7 +340,7 @@ void MiniMap::AddElement(int r0, int c0, int rows, int cols, MiniMapElemType typ
 
 void MiniMap::UpdateElement(int r0, int c0, int rows, int cols, MiniMapElemType type, PlayerFaction faction)
 {
-    const int ind0 = r0 * mCols + c0;
+    const int ind0 = r0 * mIsoMap->GetNumCols() + c0;
     MiniMapElem * elem = mElementsMap[ind0];
 
     // nothing here
@@ -361,7 +361,7 @@ void MiniMap::UpdateElement(int r0, int c0, int rows, int cols, MiniMapElemType 
 
 void MiniMap::RemoveElement(int r0, int c0)
 {
-    const int ind0 = r0 * mCols + c0;
+    const int ind0 = r0 * mIsoMap->GetNumCols() + c0;
     MiniMapElem * elem = mElementsMap[ind0];
 
     // nothing here
@@ -371,7 +371,7 @@ void MiniMap::RemoveElement(int r0, int c0)
     // free cells occupied by elem
     for(int r = elem->brR; r >= elem->tlR; --r)
     {
-        const int ind0 = r * mCols;
+        const int ind0 = r * mIsoMap->GetNumCols();
 
         for(int c = elem->brC; c >= elem->tlC; --c)
         {
@@ -402,7 +402,7 @@ void MiniMap::RemoveElement(int r0, int c0)
 
 void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
 {
-    const int indElem = startRow * mCols + startCol;
+    const int indElem = startRow * mIsoMap->GetNumCols() + startCol;
     MiniMapElem * elem = mElementsMap[indElem];
 
     if(nullptr == elem)
@@ -411,7 +411,7 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
     // free cells occupied by elem
     for(int r = elem->brR; r >= elem->tlR; --r)
     {
-        const int ind0 = r * mCols;
+        const int ind0 = r * mIsoMap->GetNumCols();
 
         for(int c = elem->brC; c >= elem->tlC; --c)
         {
@@ -429,7 +429,7 @@ void MiniMap::MoveElement(int startRow, int startCol, int endRow, int endCol)
 
     for(int r = elem->brR; r >= elem->tlR; --r)
     {
-        const int ind0 = r * mCols;
+        const int ind0 = r * mIsoMap->GetNumCols();
 
         for(int c = elem->brC; c >= elem->tlC; --c)
         {
@@ -509,9 +509,9 @@ void MiniMap::MoveContentVertical(int val)
 void MiniMap::UpdateAreaButtons()
 {
     mButtonU->SetEnabled(mR0 > 0);
-    mButtonD->SetEnabled(mR1 < (mRows - 1));
+    mButtonD->SetEnabled(mR1 < (mIsoMap->GetNumRows() - 1));
     mButtonL->SetEnabled(mC0 > 0);
-    mButtonR->SetEnabled(mC1 < (mCols - 1));
+    mButtonR->SetEnabled(mC1 < (mIsoMap->GetNumCols() - 1));
 }
 
 void MiniMap::HandlePositionChanged()
@@ -546,7 +546,11 @@ void MiniMap::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
         const int col = mC0 + (x - mMapX) / MAP_SCALE;
         const int row = mR0 + (y - mMapY) / MAP_SCALE;
 
-        mScreen->CenterCameraOverCell(row, col);
+        const sgl::core::Pointd2D pos = mIsoMap->GetCellPosition(row, col);
+        const int cX = pos.x + mIsoMap->GetTileWidth() * 0.5f;
+        const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
+
+        mCamController->CenterCameraToPoint(cX, cY);
     }
 }
 

@@ -14,7 +14,8 @@ namespace sgl
 namespace game
 {
 
-class ScreenGame;
+class CameraMapController;
+class IsoMap;
 
 enum PlayerFaction : unsigned int;
 
@@ -33,7 +34,7 @@ public:
     };
 
 public:
-    MiniMap(int rows, int cols, ScreenGame * screen);
+    MiniMap(CameraMapController * cameraController, IsoMap * im);
     ~MiniMap();
 
     void AddFunctionOnClose(const std::function<void()> & f);
@@ -92,7 +93,9 @@ private:
     std::vector<MiniMapElem *> mElementsMap;
     std::vector<MiniMapElem *> mElementsRenderingList;
 
-    ScreenGame * mScreen = nullptr;
+    CameraMapController * mCamController = nullptr;
+
+    IsoMap * mIsoMap = nullptr;
 
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Image * mMapBg = nullptr;
@@ -108,10 +111,6 @@ private:
     sgl::graphic::Image * mCameraCornerTR = nullptr;
     sgl::graphic::Image * mCameraCornerBL = nullptr;
     sgl::graphic::Image * mCameraCornerBR = nullptr;
-
-
-    int mRows = 0;
-    int mCols = 0;
 
     int mR0 = 0;
     int mC0 = 0;

@@ -765,7 +765,7 @@ void ScreenGame::CreateUI()
         mMiniMap->SetVisible(true);
     });
 
-    mMiniMap = new MiniMap(mIsoMap->GetNumRows(), mIsoMap->GetNumCols(), this);
+    mMiniMap = new MiniMap(mCamController, mIsoMap);
     mMiniMap->SetVisible(false);
     mMiniMap->SetX(rendW - mMiniMap->GetWidth());
 
