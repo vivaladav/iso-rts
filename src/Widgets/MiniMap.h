@@ -46,6 +46,8 @@ public:
 
     void SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D & bl, const Cell2D & br);
 
+    void Refresh();
+
 private:
     struct MiniMapElem
     {
@@ -80,6 +82,8 @@ private:
     void MoveContentVertical(int val);
 
     void UpdateAreaButtons();
+
+    void UpdateMapArea();
 
     void HandlePositionChanged() override;
 

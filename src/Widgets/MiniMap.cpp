@@ -122,23 +122,11 @@ MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im)
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // MAP AREA
-    const int maxSize = 240;
-    const int maxCells = (maxSize / MAP_SCALE) - 1;
-    const int mapW0 = mIsoMap->GetNumCols() * MAP_SCALE;
-    const int mapH0 = mIsoMap->GetNumRows() * MAP_SCALE;
-    const bool mapBiggerThanW = mapW0 > maxSize;
-    const bool mapBiggerThanH = mapH0 > maxSize;
-    mMapW = mapBiggerThanW ? maxSize : mapW0;
-    mMapH = mapBiggerThanH ? maxSize : mapH0;
-
-    mR1 = mapBiggerThanW ? maxCells : (mMapH / MAP_SCALE) - 1;
-    mC1 = mapBiggerThanH ? maxCells : (mMapW / MAP_SCALE) - 1;
-
     tex = tm->GetSprite(SpriteFileMapPanels, IND_MINIMAP_MAP_BG);
     mMapBg = new graphic::Image(tex);
-    mMapBg->SetWidth(mMapW);
-    mMapBg->SetHeight(mMapH);
     RegisterRenderable(mMapBg);
+
+    UpdateMapArea();
 
     // CAMERA CORNERS
     sgl::graphic::Camera * cam = GetCamera();
@@ -469,6 +457,13 @@ void MiniMap::SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D 
     mCameraCornerTL->SetPosition(tlX, tlY);
 }
 
+void MiniMap::Refresh()
+{
+    UpdateMapArea();
+
+    HandlePositionChanged();
+}
+
 void MiniMap::PositionElement(MiniMapElem * elem)
 {
     const int imgX = mMapX + (elem->tlC - mC0) * MAP_SCALE;
@@ -512,6 +507,25 @@ void MiniMap::UpdateAreaButtons()
     mButtonD->SetEnabled(mR1 < (mIsoMap->GetNumRows() - 1));
     mButtonL->SetEnabled(mC0 > 0);
     mButtonR->SetEnabled(mC1 < (mIsoMap->GetNumCols() - 1));
+}
+
+void MiniMap::UpdateMapArea()
+{
+    const int maxSize = 240;
+    const int maxCells = (maxSize / MAP_SCALE) - 1;
+    const int mapW0 = mIsoMap->GetNumCols() * MAP_SCALE;
+    const int mapH0 = mIsoMap->GetNumRows() * MAP_SCALE;
+    const bool mapBiggerThanW = mapW0 > maxSize;
+    const bool mapBiggerThanH = mapH0 > maxSize;
+    mMapW = mapBiggerThanW ? maxSize : mapW0;
+    mMapH = mapBiggerThanH ? maxSize : mapH0;
+
+    mR1 = mapBiggerThanW ? maxCells : (mMapH / MAP_SCALE) - 1;
+    mC1 = mapBiggerThanH ? maxCells : (mMapW / MAP_SCALE) - 1;
+
+    // update map area size
+    mMapBg->SetWidth(mMapW);
+    mMapBg->SetHeight(mMapH);
 }
 
 void MiniMap::HandlePositionChanged()
