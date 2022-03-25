@@ -124,6 +124,9 @@ private:
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
 
+    void HandleSelectionClick(sgl::core::MouseButtonEvent & event);
+    void HandleActionClick(sgl::core::MouseButtonEvent & event);
+
     void ShowAttackIndicators(const GameObject * obj, int range);
     void ClearCellOverlays();
 

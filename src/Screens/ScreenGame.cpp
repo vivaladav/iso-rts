@@ -368,8 +368,11 @@ void ScreenGame::ClearSelection(Player * player)
 {
     GameObject * selObj = player->GetSelectedObject();
 
-    if(selObj != nullptr)
-        HidePanelObjActions();
+    // no selection -> nothing to do
+    if(nullptr == selObj)
+        return ;
+
+    HidePanelObjActions();
 
     player->ClearSelectedObject();
 
@@ -890,188 +893,10 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
     if(mPaused)
         return ;
 
-    // handle only LEFT click
-    if(event.GetButton() != sgl::core::MouseEvent::BUTTON_LEFT)
-        return ;
-
-    Player * player = GetGame()->GetLocalPlayer();
-
-    const sgl::graphic::Camera * cam = mCamController->GetCamera();
-    const int worldX = cam->GetScreenToWorldX(event.GetX());
-    const int worldY = cam->GetScreenToWorldY(event.GetY());
-
-    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
-    const bool insideMap = mIsoMap->IsCellInside(clickCell);
-
-    const bool hasSelected = player->HasSelectedObject();
-
-    // clicked outside the map
-    if(!insideMap)
-    {
-        // clear the previous selection, if any
-        if(hasSelected)
-            ClearSelection(player);
-
-        return ;
-    }
-
-    // DEBUG
-    std::cout << "CLICK: " << clickCell.row << "," << clickCell.col << std::endl;
-
-    const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
-    GameObject * clickObj = clickGameCell.objTop;
-
-    // check if there's a lower object when top is empty
-    if(nullptr == clickObj)
-        clickObj = clickGameCell.objBottom;
-
-    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
-
-    if(hasSelected)
-    {
-        GameObject * selObj = player->GetSelectedObject();
-        const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
-
-        // clear selection when clicking on selected object again
-        if(clickObj == selObj)
-        {
-            ClearSelection(player);
-            return ;
-        }
-
-        // selected object is a unit
-        if(selObj->GetObjectType() == OBJ_UNIT)
-        {
-            Unit * selUnit = static_cast<Unit *>(selObj);
-
-            const GameObjectActionId action = selUnit->GetActiveAction();
-
-            // select another own object when not attacking
-            if(action != GameObjectActionId::ATTACK && isClickObjOwn && clickObj != selObj)
-            {
-                ClearSelection(player);
-                SelectObject(clickObj, player);
-                return ;
-            }
-
-            if(action == GameObjectActionId::MOVE)
-            {
-                const bool diffClick = selCell != clickCell;
-
-                // try to move only if clicked on a different cell
-                if(diffClick)
-                    HandleUnitMoveOnMouseUp(selUnit, clickCell);
-            }
-            if(action == GameObjectActionId::ATTACK)
-            {
-                // clicked on nothing
-                if(nullptr == clickObj)
-                    return ;
-
-                const bool res = selUnit->SetAttackTarget(clickObj);
-
-                if(!res)
-                    return ;
-
-                selUnit->SetActiveAction(GameObjectActionId::IDLE);
-                selUnit->SetCurrentAction(GameObjectActionId::ATTACK);
-
-                // disable action buttons
-                mPanelObjActions->SetActionsEnabled(false);
-
-                mActiveObjActions.emplace_back(selUnit, GameObjectActionId::ATTACK);
-            }
-            else if(action == GameObjectActionId::CONQUER_CELL)
-            {
-                const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
-
-                // destination is visible and walkable or conquering unit cell
-                if(player->IsCellVisible(clickInd) &&
-                   (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
-                {
-                    auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                      clickCell.row, clickCell.col);
-
-                    // path available -> start conquering
-                    if(!path.empty())
-                    {
-                        auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
-                        cp->SetPathCells(path);
-
-                        mGameMap->ConquerCells(cp);
-
-                        // store active action
-                        mActiveObjActions.emplace_back(selUnit, action);
-
-                        // disable action buttons
-                        mPanelObjActions->SetActionsEnabled(false);
-
-                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
-                        selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
-
-                        ClearCellOverlays();
-                    }
-                }
-            }
-            else if (action == GameObjectActionId::BUILD_WALL)
-            {
-                const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
-
-                const bool diffClick = selCell != clickCell;
-
-                // not clicking on unit cell, destination is visible and walkable
-                if(diffClick &&
-                   player->IsCellVisible(clickInd) &&
-                   mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
-                {
-                    const auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                            clickCell.row, clickCell.col);
-
-                    // path available -> start building
-                    if(!path.empty())
-                    {
-                        // store active action
-                        mActiveObjActions.emplace_back(selUnit, action);
-
-                        // disable action buttons
-                        mPanelObjActions->SetActionsEnabled(false);
-
-                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
-                        selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);
-
-                        // clear temporary overlay
-                        ClearCellOverlays();
-
-                        // setup build
-                        auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
-                        wbp->SetPathCells(path);
-                        // NOTE only level 0 for now
-                        wbp->SetWallLevel(0);
-
-                        mGameMap->BuildWalls(wbp);
-                    }
-                }
-            }
-            else if (action == GameObjectActionId::BUILD_STRUCTURE)
-                HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
-        }
-        // selected object is not a unit
-        else
-        {
-            // select another own object
-            if(isClickObjOwn && clickObj != selObj)
-            {
-                ClearSelection(player);
-                SelectObject(clickObj, player);
-            }
-        }
-    }
-    // no object currently selected
-    else
-    {
-        if(isClickObjOwn)
-            SelectObject(clickObj, player);
-    }
+    if(event.GetButton() == sgl::core::MouseEvent::BUTTON_LEFT)
+        HandleSelectionClick(event);
+    else if(event.GetButton() == sgl::core::MouseEvent::BUTTON_RIGHT)
+        HandleActionClick(event);
 }
 
 void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
@@ -1867,6 +1692,176 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
                 }
             });
         }
+    }
+}
+
+void ScreenGame::HandleSelectionClick(sgl::core::MouseButtonEvent & event)
+{
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const sgl::graphic::Camera * cam = mCamController->GetCamera();
+    const int worldX = cam->GetScreenToWorldX(event.GetX());
+    const int worldY = cam->GetScreenToWorldY(event.GetY());
+    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
+
+    // clicked outside the map -> clear current selection
+    if(!mIsoMap->IsCellInside(clickCell))
+    {
+        ClearSelection(player);
+        return ;
+    }
+
+    // get clicked object, if any
+    const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
+    GameObject * clickObj = clickGameCell.objTop ? clickGameCell.objTop : clickGameCell.objBottom;
+    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
+
+    // clicked non-own or no object -> nothing to do
+    if(!isClickObjOwn)
+        return ;
+
+    GameObject * currSel = player->GetSelectedObject();
+
+    // clicked selected object -> deselect it
+    if(clickObj == currSel)
+    {
+        ClearSelection(player);
+        return ;
+    }
+
+    // normal selection -> clear current selection and select clicked object
+    ClearSelection(player);
+    SelectObject(clickObj, player);
+}
+
+void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
+{
+    Player * player = GetGame()->GetLocalPlayer();
+
+    // no object selected -> nothing to do
+    if(!player->HasSelectedObject())
+        return ;
+
+    const sgl::graphic::Camera * cam = mCamController->GetCamera();
+    const int worldX = cam->GetScreenToWorldX(event.GetX());
+    const int worldY = cam->GetScreenToWorldY(event.GetY());
+
+    const Cell2D clickCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
+
+    // clicked outside the map -> nothing to do
+    if(!mIsoMap->IsCellInside(clickCell))
+        return ;
+
+    GameObject * selObj = player->GetSelectedObject();
+    const Cell2D selCell(selObj->GetRow0(), selObj->GetCol0());
+
+    // check if there's a lower object when top is empty
+    const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
+    GameObject * clickObj = clickGameCell.objTop ? clickGameCell.objTop : clickGameCell.objBottom;
+
+    // selected object is a unit
+    if(selObj->GetObjectType() == OBJ_UNIT)
+    {
+        Unit * selUnit = static_cast<Unit *>(selObj);
+
+        const GameObjectActionId action = selUnit->GetActiveAction();
+
+        if(action == GameObjectActionId::MOVE)
+        {
+            const bool diffClick = selCell != clickCell;
+
+            // try to move only if clicked on a different cell
+            if(diffClick)
+                HandleUnitMoveOnMouseUp(selUnit, clickCell);
+        }
+        if(action == GameObjectActionId::ATTACK)
+        {
+            const bool res = selUnit->SetAttackTarget(clickObj);
+
+            if(!res)
+                return ;
+
+            selUnit->SetActiveAction(GameObjectActionId::IDLE);
+            selUnit->SetCurrentAction(GameObjectActionId::ATTACK);
+
+            // disable action buttons
+            mPanelObjActions->SetActionsEnabled(false);
+
+            mActiveObjActions.emplace_back(selUnit, GameObjectActionId::ATTACK);
+        }
+        else if(action == GameObjectActionId::CONQUER_CELL)
+        {
+            const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
+
+            // destination is visible and walkable or conquering unit cell
+            if(player->IsCellVisible(clickInd) &&
+               (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
+            {
+                auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                  clickCell.row, clickCell.col);
+
+                // path available -> start conquering
+                if(!path.empty())
+                {
+                    auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
+                    cp->SetPathCells(path);
+
+                    mGameMap->ConquerCells(cp);
+
+                    // store active action
+                    mActiveObjActions.emplace_back(selUnit, action);
+
+                    // disable action buttons
+                    mPanelObjActions->SetActionsEnabled(false);
+
+                    selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                    selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
+
+                    ClearCellOverlays();
+                }
+            }
+        }
+        else if(action == GameObjectActionId::BUILD_WALL)
+        {
+            const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
+
+            const bool diffClick = selCell != clickCell;
+
+            // not clicking on unit cell, destination is visible and walkable
+            if(diffClick &&
+               player->IsCellVisible(clickInd) &&
+               mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
+            {
+                const auto path = mPathfinder->MakePath(selCell.row, selCell.col,
+                                                        clickCell.row, clickCell.col);
+
+                // path available -> start building
+                if(!path.empty())
+                {
+                    // store active action
+                    mActiveObjActions.emplace_back(selUnit, action);
+
+                    // disable action buttons
+                    mPanelObjActions->SetActionsEnabled(false);
+
+                    selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                    selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);
+
+                    // clear temporary overlay
+                    ClearCellOverlays();
+
+                    // setup build
+                    auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
+                    wbp->SetPathCells(path);
+                    // NOTE only level 0 for now
+                    wbp->SetWallLevel(0);
+
+                    mGameMap->BuildWalls(wbp);
+                }
+            }
+        }
+        else if (action == GameObjectActionId::BUILD_STRUCTURE)
+            HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
     }
 }
 
