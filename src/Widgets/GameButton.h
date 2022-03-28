@@ -36,7 +36,7 @@ protected:
                  const std::array<unsigned int, NUM_VISUAL_STATES> & spriteIds,
                  const std::array<unsigned int, NUM_VISUAL_STATES> & labelsColor);
 
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
 
 private:
     std::array<sgl::graphic::Texture *, NUM_VISUAL_STATES> mBackgrounds;

@@ -17,7 +17,7 @@ namespace game
 
 ShortcutButton::ShortcutButton(int shortcutKey,
                                sgl::sgui::Widget * parent)
-    : sgl::sgui::PushButton(parent)
+    : sgl::sgui::AbstractButton(parent)
     , mShortcutKey(shortcutKey)
 {
 }

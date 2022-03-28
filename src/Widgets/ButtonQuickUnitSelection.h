@@ -28,7 +28,7 @@ public:
     void SetUnit(Unit * unit);
 
 private:
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
 
     void HandlePositionChanged() override;
 

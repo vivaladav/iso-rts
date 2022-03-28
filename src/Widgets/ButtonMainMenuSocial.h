@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgl/sgui/PushButton.h>
+#include <sgl/sgui/AbstractButton.h>
 
 #include <array>
 
@@ -12,7 +12,7 @@ namespace sgl
 namespace game
 {
 
-class ButtonMainMenuSocial : public sgl::sgui::PushButton
+class ButtonMainMenuSocial : public sgl::sgui::AbstractButton
 {
 
 public:
@@ -21,7 +21,7 @@ public:
 private:
     void HandlePositionChanged() override;
 
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override;
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
 
     void PositionElements();
 

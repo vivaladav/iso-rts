@@ -76,7 +76,7 @@ public:
     }
 
 private:
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
@@ -90,8 +90,13 @@ private:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
-        // reset BG to make changes visible
-        SetCurrBg(mBody);
+
+        SetSize(mBody->GetWidth(), mBody->GetHeight());
+    }
+
+    void HandlePositionChanged() override
+    {
+        mBody->SetPosition(GetScreenX(), GetScreenY());
     }
 
 private:
@@ -120,15 +125,15 @@ public:
 
         // LABEL
         font = fm->GetFont("data/fonts/Lato-Regular.ttf", 19, Font::NORMAL);
-        SetLabelFont(font);
-        SetLabel("BUILD");
+        mLabel = new Text("BUILD", font);
+        RegisterRenderable(mLabel);
 
         // set initial visual state
         SetState(NORMAL);
     }
 
 private:
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         // BACKGROUND
         const unsigned int texIds[NUM_VISUAL_STATES] =
@@ -143,8 +148,8 @@ private:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
-        // reset BG to make changes visible
-        SetCurrBg(mBody);
+
+        SetSize(mBody->GetWidth(), mBody->GetHeight());
 
         // LABEL
         const unsigned int colorLabel[NUM_VISUAL_STATES] =
@@ -156,7 +161,7 @@ private:
             0xc2c2a3ff
         };
 
-        SetLabelColor(colorLabel[state]);
+        mLabel->SetColor(colorLabel[state]);
 
         // update shortcut label alpha
         const unsigned char alphaEn = 255;
@@ -167,21 +172,34 @@ private:
 
     void HandlePositionChanged() override
     {
-        PushButton::HandlePositionChanged();
+        ShortcutButton::HandlePositionChanged();
+
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+
+        // position BG
+        mBody->SetPosition(x0, y0);
 
         // SHORTCUT
         const int shortBgX0 = 182;
         const int shortBgY0 = 22;
         const int shortBgSize = 14;
 
-        const int shortcutX = GetScreenX() + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
-        const int shortcutY = GetScreenY() + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
+        const int shortcutX = x0 + shortBgX0 + (shortBgSize - mShortcut->GetWidth()) * 0.5f;
+        const int shortcutY = y0 + shortBgY0 + (shortBgSize - mShortcut->GetHeight()) * 0.5f;
 
         mShortcut->SetPosition(shortcutX, shortcutY);
+
+        // LABEL
+        const int labelX = x0 + (GetWidth() - mLabel->GetWidth()) * 0.5f;
+        const int labelY = y0 + (GetHeight() - mLabel->GetHeight()) * 0.5f;
+
+        mLabel->SetPosition(labelX, labelY);
     }
 
 private:
     sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Text * mLabel = nullptr;
     sgl::graphic::Text * mShortcut = nullptr;
 };
 
@@ -272,7 +290,7 @@ public:
     }
 
 private:
-    void OnStateChanged(sgl::sgui::PushButton::VisualState state) override
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
@@ -286,8 +304,8 @@ private:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
         mBody->SetTexture(tex);
-        // reset BG to make changes visible
-        SetCurrBg(mBody);
+
+        SetSize(mBody->GetWidth(), mBody->GetHeight());
 
         // set title color
         const unsigned int colorTitle[NUM_VISUAL_STATES] =
@@ -313,10 +331,13 @@ private:
 
     void HandlePositionChanged() override
     {
-        PushButton::HandlePositionChanged();
+        ShortcutButton::HandlePositionChanged();
 
         const int x0 = GetScreenX();
         const int y0 = GetScreenY();
+
+        // position BG
+        mBody->SetPosition(x0, y0);
 
         // IMAGE
         const int imageBlockH = GetHeight() - TITLE_H;

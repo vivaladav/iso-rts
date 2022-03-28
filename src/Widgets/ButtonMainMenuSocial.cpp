@@ -13,7 +13,7 @@ namespace game
 {
 
 ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget * parent)
-    : sgl::sgui::PushButton(parent)
+    : sgl::sgui::AbstractButton(parent)
     , mLabelsColor
     {
         0xd6ebf5ff,
@@ -43,12 +43,12 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget 
 
 void ButtonMainMenuSocial::HandlePositionChanged()
 {
-     sgl::sgui::PushButton::HandlePositionChanged();
+     sgl::sgui::AbstractButton::HandlePositionChanged();
 
      PositionElements();
 }
 
-void ButtonMainMenuSocial::OnStateChanged(sgl::sgui::PushButton::VisualState state)
+void ButtonMainMenuSocial::OnStateChanged(VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -62,8 +62,8 @@ void ButtonMainMenuSocial::OnStateChanged(sgl::sgui::PushButton::VisualState sta
     auto tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
     mBody->SetTexture(tex);
-    // reset BG to make changes visible
-    SetCurrBg(mBody);
+
+    SetSize(mBody->GetWidth(), mBody->GetHeight());
 
     mIcon->SetColor(mLabelsColor[state]);
 }
@@ -74,6 +74,9 @@ void ButtonMainMenuSocial::PositionElements()
     const int y = GetScreenY();
     const int w = GetWidth();
     const int h = GetHeight();
+
+    // position BG
+    mBody->SetPosition(x, y);
 
     // center icon
     const int iconX = x + (w - mIcon->GetWidth()) * 0.5f;

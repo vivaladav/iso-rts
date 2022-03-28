@@ -268,7 +268,7 @@ void ScreenTest::TestSGui()
 
     for(unsigned int n = 0; n < bg->GetNumButtons(); ++n)
     {
-        PushButton * btn = bg->GetButton(n);
+        auto btn = static_cast<ButtonUnitsSelector *>(bg->GetButton(n));
         btn->AddOnToggleFunction([label, n](bool checked)
         {
             if(checked)

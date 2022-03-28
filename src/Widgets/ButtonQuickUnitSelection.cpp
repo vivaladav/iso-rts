@@ -177,7 +177,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
     HandlePositionChanged();
 }
 
-void ButtonQuickUnitSelection::OnStateChanged(sgl::sgui::PushButton::VisualState state)
+void ButtonQuickUnitSelection::OnStateChanged(VisualState state)
 {
     sgl::sgui::ImageButton::OnStateChanged(state);
 

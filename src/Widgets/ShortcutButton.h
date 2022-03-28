@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgl/sgui/PushButton.h>
+#include <sgl/sgui/AbstractButton.h>
 
 namespace sgl
 {
@@ -14,7 +14,7 @@ namespace sgl
 namespace game
 {
 
-class ShortcutButton : public sgl::sgui::PushButton
+class ShortcutButton : public sgl::sgui::AbstractButton
 {
 public:
     ShortcutButton(int shortcutKey, sgl::sgui::Widget * parent);

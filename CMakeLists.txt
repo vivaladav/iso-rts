@@ -146,8 +146,6 @@ add_executable(
     src/States/StatesIds.h
     src/States/StateTest.h
     src/States/StateTest.cpp
-    src/Widgets/ButtonBuildNewUnit.h
-    src/Widgets/ButtonBuildNewUnit.cpp
     src/Widgets/ButtonDialogBack.h
     src/Widgets/ButtonDialogBack.cpp
     src/Widgets/ButtonDialogContinue.h

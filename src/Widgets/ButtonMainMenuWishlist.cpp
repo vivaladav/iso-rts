@@ -13,7 +13,7 @@ namespace game
 {
 
 ButtonMainMenuWishlist::ButtonMainMenuWishlist(sgl::sgui::Widget * parent)
-    : sgl::sgui::PushButton(parent)
+    : sgl::sgui::AbstractButton(parent)
     , mLabelsColor
     {
         0xd6ebf5ff,
@@ -50,12 +50,12 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(sgl::sgui::Widget * parent)
 
 void ButtonMainMenuWishlist::HandlePositionChanged()
 {
-     sgl::sgui::PushButton::HandlePositionChanged();
+     sgl::sgui::AbstractButton::HandlePositionChanged();
 
      PositionElements();
 }
 
-void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::PushButton::VisualState state)
+void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::AbstractButton::VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -69,8 +69,8 @@ void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::PushButton::VisualState s
     auto tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
     mBody->SetTexture(tex);
-    // reset BG to make changes visible
-    SetCurrBg(mBody);
+
+    SetSize(mBody->GetWidth(), mBody->GetHeight());
 
     mIcon->SetColor(mLabelsColor[state]);
     mText->SetColor(mLabelsColor[state]);
@@ -86,6 +86,9 @@ void ButtonMainMenuWishlist::PositionElements()
     const int marginH = 10;
     const int totW = mIcon->GetWidth() + marginH + mText->GetWidth();
     const int x0 = x + (w - totW) * 0.5f;
+
+    // position BG
+    mBody->SetPosition(x, y);
 
     // icon
     const int iconX = x0;

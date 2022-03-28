@@ -59,7 +59,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     SetState(NORMAL);
 }
 
-void ObjectActionButton::OnStateChanged(sgl::sgui::PushButton::VisualState state)
+void ObjectActionButton::OnStateChanged(VisualState state)
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
@@ -73,8 +73,8 @@ void ObjectActionButton::OnStateChanged(sgl::sgui::PushButton::VisualState state
     auto tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileObjActionButton, texIds[state]);
     mBody->SetTexture(tex);
-    // reset BG to make changes visible
-    SetCurrBg(mBody);
+
+    SetSize(mBody->GetWidth(), mBody->GetHeight());
 
     // update shortcut label alpha
     const unsigned char alphaEn = 255;
@@ -88,10 +88,13 @@ void ObjectActionButton::OnStateChanged(sgl::sgui::PushButton::VisualState state
 
 void ObjectActionButton::HandlePositionChanged()
 {
-   PushButton::HandlePositionChanged();
+   ShortcutButton::HandlePositionChanged();
 
    const int x = GetScreenX();
    const int y = GetScreenY();
+
+   // position BG
+   mBody->SetPosition(x, y);
 
    // ICON
    const int iconBoxW = 56;

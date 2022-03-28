@@ -11,11 +11,7 @@ namespace sgl
 {
     namespace graphic { class Image; }
 
-    namespace sgui
-    {
-        class PushButton;
-        class Widget;
-    }
+    namespace sgui { class Widget; }
 }
 
 namespace game
