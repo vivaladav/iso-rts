@@ -345,6 +345,15 @@ void ScreenTest::TestSGui()
     cb->AddItem(new TestComboBoxItem("OPTION 3"));
 
     cb->SetY(wY);
+
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    label = new Label(cb->GetActiveItem()->GetText().c_str(), font, container3);
+    label->SetPosition(cb->GetX() + cb->GetWidth() + 50, cb->GetY());
+
+    cb->SetOnActiveChanged([label, cb](int index)
+    {
+        label->SetText(cb->GetActiveItem()->GetText().c_str());
+    });
 }
 
 void ScreenTest::TestSprite()
