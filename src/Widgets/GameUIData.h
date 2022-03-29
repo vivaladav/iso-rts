@@ -276,5 +276,4 @@ enum SpriteIdUnitQuickSel : unsigned int
     NUM_UQS_UNIT_SPRITE_PER_FACTION = IND_UQS_UNIT1_F2 - IND_UQS_UNIT1_F1
 };
 
-
 } // namespace game

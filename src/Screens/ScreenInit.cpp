@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameData.h"
+#include "GameTestData.h"
 #include "States/StatesIds.h"
 #include "Widgets/GameUIData.h"
 
@@ -690,6 +691,29 @@ ScreenInit::ScreenInit(Game * game)
         };
 
         tm->RegisterSprite(SpriteFileUnitQuickSel, rects);
+    });
+
+    // TEST COMBO BOX
+    mJobs.emplace_back([tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // MAIN BUTTON BG
+            { 0, 0, 200, 50 },
+            { 200, 0, 200, 50 },
+            { 400, 0, 200, 50 },
+            { 600, 0, 200, 50 },
+            { 800, 0, 200, 50 },
+
+            // ITEM BUTTON BG
+            { 0, 50, 200, 50 },
+            { 200, 50, 200, 50 },
+            { 400, 50, 200, 50 },
+            { 600, 50, 200, 50 },
+            { 800, 50, 200, 50 }
+        };
+
+        tm->RegisterSprite(SpriteFileTestComboBox, rects);
     });
 
     // FINAL JOB - move to next screen

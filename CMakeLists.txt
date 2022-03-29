@@ -28,6 +28,8 @@ add_executable(
     src/GameMap.cpp
     src/GameMapCell.cpp
     src/GameMapCell.h
+    src/GameTestData.h
+    src/GameTestData.cpp
     src/IsoLayer.h
     src/IsoLayer.cpp
     src/IsoMap.h
@@ -200,6 +202,8 @@ add_executable(
     src/Widgets/ShortcutButton.cpp
     src/Widgets/SimpleResourceDisplay.h
     src/Widgets/SimpleResourceDisplay.cpp
+    src/Widgets/TestComboBox.h
+    src/Widgets/TestComboBox.cpp
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
 )

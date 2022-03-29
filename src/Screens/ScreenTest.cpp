@@ -5,6 +5,7 @@
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"
+#include "Widgets/TestComboBox.h"
 
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/graphic/Font.h>
@@ -302,8 +303,9 @@ void ScreenTest::TestSGui()
     mPb2->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 2 100%" << std::endl; });
 
     button = new ButtonMainMenu("RESET", container);
-    button->SetPosition(mPb0->GetX(), mPb2->GetY() + mPb2->GetHeight() + marginbBars);
-    button->AddOnClickFunction([this]{
+    button->SetPosition(mPb0->GetX() + mPb0->GetWidth() + marginbBars * 2, mPb0->GetY());
+    button->AddOnClickFunction([this]
+    {
         mTimerPb = 0;
         mPb0->Reset();
         mPb1->Reset();
@@ -327,6 +329,22 @@ void ScreenTest::TestSGui()
     wY += button->GetHeight() * 2;
     button->SetY(wY);
     button->AddOnClickFunction([container2]{ container2->SetAlpha(255); });
+
+    // -- COMBO BOX --
+    wY = 550;
+
+    auto container3 = new Widget;
+    container3->SetPosition(1300, wY);
+
+    label = new Label("COMBO BOX", font, container3);
+    wY = label->GetHeight() * 2;
+
+    auto cb = new TestComboBox(container3);
+    cb->AddItem(new TestComboBoxItem("OPTION 1"));
+    cb->AddItem(new TestComboBoxItem("OPTION 2"));
+    cb->AddItem(new TestComboBoxItem("OPTION 3"));
+
+    cb->SetY(wY);
 }
 
 void ScreenTest::TestSprite()
