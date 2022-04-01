@@ -4,18 +4,17 @@ namespace game
 {
 
 // TEST COMBO BOX
-extern const char SpriteFileTestComboBox[];
+extern const char SpriteFileTestUI[];
 
-enum SpriteIdTestComboBox : unsigned int
+enum SpriteIdTestUI : unsigned int
 {
-    // MAIN BUTTON BG
+    // COMBOBOX MAIN BUTTON BG
     IND_TCB_NORMAL,
     IND_TCB_DISABLED,
     IND_TCB_OVER,
     IND_TCB_PUSHED,
     IND_TCB_CHECKED,
-
-    // ITEM BUTTON BG
+    // COMBOBOX ITEM BUTTON BG
     IND_TCBI_NORMAL,
     IND_TCBI_DISABLED,
     IND_TCBI_OVER,

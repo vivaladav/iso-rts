@@ -52,7 +52,7 @@ void TestComboBoxItem::OnStateChanged(sgl::sgui::AbstractButton::VisualState sta
     };
 
     auto tm = sgl::graphic::TextureManager::Instance();
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTestComboBox, texIds[state]);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTestUI, texIds[state]);
     mBody->SetTexture(tex);
 
     SetSize(mBody->GetWidth(), mBody->GetHeight());
@@ -110,7 +110,7 @@ void TestComboBox::OnStateChanged(sgl::sgui::AbstractButton::VisualState state)
     };
 
     auto tm = sgl::graphic::TextureManager::Instance();
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTestComboBox, texIds[state]);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTestUI, texIds[state]);
     SetBodyTexture(tex);
 
     // TEXT

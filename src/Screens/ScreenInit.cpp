@@ -698,14 +698,13 @@ ScreenInit::ScreenInit(Game * game)
     {
         const std::vector<sgl::core::Rectd> rects
         {
-            // MAIN BUTTON BG
+            // COMBOBOX MAIN BUTTON BG
             { 0, 0, 200, 50 },
             { 200, 0, 200, 50 },
             { 400, 0, 200, 50 },
             { 600, 0, 200, 50 },
             { 800, 0, 200, 50 },
-
-            // ITEM BUTTON BG
+            // COMBOBOX ITEM BUTTON BG
             { 0, 50, 200, 50 },
             { 200, 50, 200, 50 },
             { 400, 50, 200, 50 },
@@ -713,7 +712,7 @@ ScreenInit::ScreenInit(Game * game)
             { 800, 50, 200, 50 }
         };
 
-        tm->RegisterSprite(SpriteFileTestComboBox, rects);
+        tm->RegisterSprite(SpriteFileTestUI, rects);
     });
 
     // FINAL JOB - move to next screen
