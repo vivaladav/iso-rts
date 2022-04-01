@@ -6,6 +6,7 @@
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/Test/TestComboBox.h"
+#include "Widgets/Test/TestSliderH.h"
 
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/graphic/Font.h>
@@ -313,10 +314,11 @@ void ScreenTest::TestSGui()
     });
 
     // -- SET ALPHA --
+    int wX = 1300;
     int wY = button->GetY() + button->GetHeight() * 2;
 
     auto container2 = new Widget;
-    container2->SetPosition(1300, wY);
+    container2->SetPosition(wX, wY);
 
     label = new Label("SET ALPHA", font, container2);
     wY = label->GetHeight() * 2;
@@ -334,7 +336,7 @@ void ScreenTest::TestSGui()
     wY = 550;
 
     auto container3 = new Widget;
-    container3->SetPosition(1300, wY);
+    container3->SetPosition(wX, wY);
 
     label = new Label("COMBO BOX", font, container3);
     wY = label->GetHeight() * 2;
@@ -354,6 +356,18 @@ void ScreenTest::TestSGui()
     {
         label->SetText(cb->GetActiveItem()->GetText().c_str());
     });
+
+    // SLIDER
+    wY = 725;
+    auto container4 = new Widget;
+    container4->SetPosition(wX, wY);
+
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    label = new Label("SLIDER", font, container4);
+    wY = label->GetHeight() * 2;
+
+    auto slider = new TestSliderH(container4);
+    slider->SetY(wY);
 }
 
 void ScreenTest::TestSprite()

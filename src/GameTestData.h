@@ -19,7 +19,11 @@ enum SpriteIdTestUI : unsigned int
     IND_TCBI_DISABLED,
     IND_TCBI_OVER,
     IND_TCBI_PUSHED,
-    IND_TCBI_CHECKED
+    IND_TCBI_CHECKED,
+    // SLIDER HORIZ
+    IND_TSLIH_BG,
+    IND_TSLIH_BAR,
+    IND_TSLIH_BUTTON
 };
 
 } // namespace game

@@ -206,6 +206,8 @@ add_executable(
     src/Widgets/UnitsSelector.cpp
     src/Widgets/Test/TestComboBox.h
     src/Widgets/Test/TestComboBox.cpp
+    src/Widgets/Test/TestSliderH.h
+    src/Widgets/Test/TestSliderH.cpp
 )
 
 target_include_directories(

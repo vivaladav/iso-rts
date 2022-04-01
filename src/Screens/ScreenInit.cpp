@@ -693,7 +693,7 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteFileUnitQuickSel, rects);
     });
 
-    // TEST COMBO BOX
+    // TEST UI
     mJobs.emplace_back([tm]
     {
         const std::vector<sgl::core::Rectd> rects
@@ -709,7 +709,11 @@ ScreenInit::ScreenInit(Game * game)
             { 200, 50, 200, 50 },
             { 400, 50, 200, 50 },
             { 600, 50, 200, 50 },
-            { 800, 50, 200, 50 }
+            { 800, 50, 200, 50 },
+            // SLIDER HORIZ
+            { 0, 101, 304, 20 },
+            { 305, 101, 300, 16 },
+            { 606, 101, 30, 30 }
         };
 
         tm->RegisterSprite(SpriteFileTestUI, rects);
