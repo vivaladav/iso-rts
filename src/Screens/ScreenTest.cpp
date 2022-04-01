@@ -5,7 +5,7 @@
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"
-#include "Widgets/TestComboBox.h"
+#include "Widgets/Test/TestComboBox.h"
 
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/graphic/Font.h>
