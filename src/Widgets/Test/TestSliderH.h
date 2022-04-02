@@ -23,6 +23,8 @@ private:
 
     void HandlePositionChanged() override;
 
+    void HandleValueChanged(int val) override;
+
     void UpdateGraphics(sgl::sgui::Slider::VisualState state);
     void UpdatePositions();
 };

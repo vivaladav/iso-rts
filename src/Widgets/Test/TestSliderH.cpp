@@ -3,7 +3,7 @@
 #include "GameTestData.h"
 
 #include <sgl/graphic/Image.h>
-#include <sgl/graphic/Text.h>
+#include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 
 namespace game
@@ -27,6 +27,27 @@ void TestSliderH::HandlePositionChanged()
     UpdatePositions();
 }
 
+void TestSliderH::HandleValueChanged(int val)
+{
+    // update BAR
+    const int fullBarW = GetBarFullWidth();
+    const int barW = fullBarW * GetValue() / 100;
+    mBar->SetWidth(barW);
+
+    // update BUTTON
+    const int barX1 = mBar->GetX() + barW;
+
+    const int btnW = mButton->GetWidth();
+    int btnX = barX1 - (btnW * 0.5f);
+
+    const int limitX = mBg->GetX() + mBg->GetWidth();
+
+    if(btnX + btnW > limitX)
+        btnX = limitX - btnW;
+
+    mButton->SetX(btnX);
+}
+
 void TestSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
 {
     auto tm = sgl::graphic::TextureManager::Instance();
@@ -38,6 +59,11 @@ void TestSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
     // BAR
     tex = tm->GetSprite(SpriteFileTestUI, IND_TSLIH_BAR);
     mBar->SetTexture(tex);
+    const int fullBarW = tex->GetWidth();
+    const int barW = fullBarW * GetValue() / 100;
+    mBar->SetWidth(barW);
+
+    SetBarFullWidth(fullBarW);
 
     // BUTTON
     tex = tm->GetSprite(SpriteFileTestUI, IND_TSLIH_BUTTON);
