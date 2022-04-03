@@ -204,16 +204,6 @@ add_executable(
     src/Widgets/SimpleResourceDisplay.cpp
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
-    src/Widgets/MapEditor/ButtonCloseEditorPanel.h
-    src/Widgets/MapEditor/ButtonCloseEditorPanel.cpp
-    src/Widgets/MapEditor/ComboBoxPanel.h
-    src/Widgets/MapEditor/ComboBoxPanel.cpp
-    src/Widgets/MapEditor/EditorFileMenu.h
-    src/Widgets/MapEditor/EditorFileMenu.cpp
-    src/Widgets/MapEditor/PanelObjects.h
-    src/Widgets/MapEditor/PanelObjects.cpp
-    src/Widgets/MapEditor/PanelTiles.h
-    src/Widgets/MapEditor/PanelTiles.cpp
     src/Widgets/Test/TestComboBox.h
     src/Widgets/Test/TestComboBox.cpp
 )
