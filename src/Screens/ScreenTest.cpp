@@ -366,7 +366,25 @@ void ScreenTest::TestSGui()
     label = new Label("SLIDER", font, container4);
     wY = label->GetHeight() * 2;
 
+    // SLIDER DEFAULT
     auto slider = new TestSliderH(container4);
+    slider->SetY(wY);
+
+    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    label = new Label(std::to_string(slider->GetValue()).c_str(), font, container4);
+    label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
+
+    slider->SetOnValueChanged([label](int val)
+    {
+        label->SetText(std::to_string(val).c_str());
+    });
+
+    wY += slider->GetHeight() * 2;
+
+    // SLIDER CUSTOM RANGE
+    slider = new TestSliderH(container4);
+    slider->SetMinMax(50, 500);
+    slider->SetStep(50);
     slider->SetY(wY);
 
     font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);

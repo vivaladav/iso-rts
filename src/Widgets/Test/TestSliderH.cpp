@@ -31,7 +31,7 @@ void TestSliderH::HandleValueChanged(int val)
 {
     // update BAR
     const int fullBarW = GetBarFullWidth();
-    const int barW = fullBarW * GetValue() / 100;
+    const int barW = fullBarW * GetValuePerc() / 100;
     mBar->SetWidth(barW);
 
     // update BUTTON
@@ -60,10 +60,11 @@ void TestSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
     tex = tm->GetSprite(SpriteFileTestUI, IND_TSLIH_BAR);
     mBar->SetTexture(tex);
     const int fullBarW = tex->GetWidth();
+    const int fullBarH = tex->GetHeight();
     const int barW = fullBarW * GetValue() / 100;
     mBar->SetWidth(barW);
 
-    SetBarFullWidth(fullBarW);
+    SetBarFullSize(fullBarW, fullBarH);
 
     // BUTTON
     tex = tm->GetSprite(SpriteFileTestUI, IND_TSLIH_BUTTON);
