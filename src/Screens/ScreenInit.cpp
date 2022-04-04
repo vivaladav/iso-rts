@@ -640,6 +640,28 @@ ScreenInit::ScreenInit(Game * game)
         tm->RegisterSprite(SpriteFileObjActionButton, rects);
     });
 
+    // PLANET MAP
+    mJobs.emplace_back([tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // PLANET
+            { 0, 0, 800, 800 },
+            { 801, 0, 84, 72 },
+            { 801, 73, 84, 72 },
+            { 801, 146, 84, 72 },
+            { 801, 219, 84, 72 },
+            { 801, 292, 84, 72 },
+            { 801, 365, 84, 72 },
+            { 801, 438, 84, 72 },
+            { 801, 511, 84, 72 },
+            { 801, 584, 84, 72 },
+            { 801, 657, 84, 72 }
+        };
+
+        tm->RegisterSprite(SpriteFilePlanetMap, rects);
+    });
+
     // RESOURCES BAR
     mJobs.emplace_back([tm]
     {

@@ -223,6 +223,25 @@ enum SpriteIdMapUI : unsigned int
     IND_ICON_CELL_MATERIAL
 };
 
+// PLANET MAP
+extern const char SpriteFilePlanetMap[];
+
+enum SpriteIdPlanetMap : unsigned int
+{
+    // PLANET
+    IND_PM_PLANET,
+    IND_PM_CELL_NORMAL,
+    IND_PM_CELL_EXPLORED,
+    IND_PM_CELL_SELECTED,
+    IND_PM_CELL_DISABLED,
+    IND_PM_CELL_F1,
+    IND_PM_CELL_F1_SEL,
+    IND_PM_CELL_F2,
+    IND_PM_CELL_F2_SEL,
+    IND_PM_CELL_F3,
+    IND_PM_CELL_F3_SEL
+};
+
 // RESOURCES BAR
 extern const char SpriteFileResourcesBar[];
 

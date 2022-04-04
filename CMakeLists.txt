@@ -127,6 +127,8 @@ add_executable(
     src/Screens/ScreenNewGame.cpp
     src/Screens/ScreenSettings.h
     src/Screens/ScreenSettings.cpp
+    src/Screens/ScreenPlanetMap.h
+    src/Screens/ScreenPlanetMap.cpp
     src/Screens/ScreenTest.h
     src/Screens/ScreenTest.cpp
     src/Screens/SharedScreenListener.h
@@ -143,6 +145,8 @@ add_executable(
     src/States/StateMainMenu.cpp
     src/States/StateNewGame.h
     src/States/StateNewGame.cpp
+    src/States/StatePlanetMap.h
+    src/States/StatePlanetMap.cpp
     src/States/StateSettings.h
     src/States/StateSettings.cpp
     src/States/StatesIds.h
@@ -194,6 +198,8 @@ add_executable(
     src/Widgets/PanelObjectActions.cpp
     src/Widgets/PanelResources.h
     src/Widgets/PanelResources.cpp
+    src/Widgets/PlanetMap.h
+    src/Widgets/PlanetMap.cpp
     src/Widgets/ProgressBarResources.h
     src/Widgets/ProgressBarResources.cpp
     src/Widgets/ResourceDisplay.h

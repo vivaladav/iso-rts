@@ -45,7 +45,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     button->AddOnClickFunction([game]
     {
-        game->RequestNextActiveState(StateId::FACTION_SEL);
+        game->RequestNextActiveState(StateId::PLANET_MAP);
     });
 
     buttonY += button->GetHeight() + VMARGIN;

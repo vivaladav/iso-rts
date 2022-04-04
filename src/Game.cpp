@@ -9,6 +9,7 @@
 #include "States/StateInit.h"
 #include "States/StateMainMenu.h"
 #include "States/StateNewGame.h"
+#include "States/StatePlanetMap.h"
 #include "States/StateSettings.h"
 #include "States/StateTest.h"
 
@@ -57,6 +58,7 @@ Game::Game(int argc, char * argv[])
     mStateMan->AddState(new StateInit(this));
     mStateMan->AddState(new StateMainMenu(this));
     mStateMan->AddState(new StateNewGame(this));
+    mStateMan->AddState(new StatePlanetMap(this));
     mStateMan->AddState(new StateSettings(this));
     mStateMan->AddState(new StateTest(this));
 

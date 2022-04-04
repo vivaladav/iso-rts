@@ -10,6 +10,7 @@ enum StateId : int
     MAIN_MENU,
     FACTION_SEL,
     NEW_GAME,
+    PLANET_MAP,
     SETTINGS,
     TEST,
 
