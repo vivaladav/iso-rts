@@ -239,7 +239,11 @@ enum SpriteIdPlanetMap : unsigned int
     IND_PM_CELL_F2,
     IND_PM_CELL_F2_SEL,
     IND_PM_CELL_F3,
-    IND_PM_CELL_F3_SEL
+    IND_PM_CELL_F3_SEL,
+
+    // PANELS  TOP
+    IND_PM_PANEL_NAME,
+    IND_PM_PANEL_DATE,
 };
 
 // RESOURCES BAR

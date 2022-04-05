@@ -5,6 +5,7 @@
 namespace sgl
 {
     namespace graphic { class Image; }
+    namespace sgui { class Label; }
 }
 
 namespace game
@@ -22,7 +23,14 @@ public:
     void Render() override;
 
 private:
+    void SetPlanetName(const char * name);
+    void SetDate(const char * date);
+
+private:
     sgl::graphic::Image * mBg = nullptr;
+
+    sgl::sgui::Label * mLabelName = nullptr;
+    sgl::sgui::Label * mLabelDate = nullptr;
 
     PlanetMap * mPlanet = nullptr;
 };

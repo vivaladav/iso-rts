@@ -656,7 +656,10 @@ ScreenInit::ScreenInit(Game * game)
             { 801, 438, 84, 72 },
             { 801, 511, 84, 72 },
             { 801, 584, 84, 72 },
-            { 801, 657, 84, 72 }
+            { 801, 657, 84, 72 },
+            // PANELS  TOP
+            { 0, 801, 400, 50 },
+            { 401, 801, 400, 50 },
         };
 
         tm->RegisterSprite(SpriteFilePlanetMap, rects);

@@ -52,7 +52,7 @@ public:
     bool IsScreenPointInside(int x, int y) override
     {
         const int border = 2;
-        const int hw = (GetWidth() * 0.5) - border;
+        const int hw = (GetWidth() * 0.5f) - border;
         const int hh = (GetHeight() * 0.5f) - border;
         const int radius2 = hw > hh ? hw * hw : hh * hh;
 
