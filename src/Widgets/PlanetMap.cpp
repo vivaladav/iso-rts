@@ -49,6 +49,22 @@ public:
         UpdateGraphics(GetState());
     }
 
+    bool IsScreenPointInside(int x, int y) override
+    {
+        const int hw = GetWidth() * 0.5;
+        const int hh = GetHeight() * 0.5f;
+        const int radius2 = hw > hh ? hw * hw : hh * hh;
+
+        const int xc = GetScreenX() + hw;
+        const int yc = GetScreenY() + hh;
+
+        const int dx = xc - x;
+        const int dy = yc - y;
+        const int dist2 = (dx * dx) + (dy * dy);
+
+        return dist2 < radius2;
+    }
+
 private:
     void OnStateChanged(VisualState state) override { UpdateGraphics(state); }
 
