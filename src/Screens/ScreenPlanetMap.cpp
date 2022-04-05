@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "States/StatesIds.h"
+#include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PlanetMap.h"
 
@@ -17,7 +18,28 @@
 
 namespace game
 {
+// ===== BUTTON PLANET MAP PANELS =====
+class ButtonPlanetMap : public GameButton
+{
+public:
+    ButtonPlanetMap(sgl::sgui::Widget * parent)
+        : GameButton(SpriteFilePlanetMap,
+                     { IND_PM_BTN_NORMAL, IND_PM_BTN_DISABLED,
+                       IND_PM_BTN_OVER, IND_PM_BTN_PRESSED,
+                       IND_PM_BTN_NORMAL },
+                     { 0xd7eaf4ff, 0x506c7cff, 0xebf4f9ff,
+                       0xc3dfeeff, 0xd7eaf4ff },  parent)
+    {
+        const char * fileFont = "data/fonts/Lato-Regular.ttf";
+        const int size = 20;
 
+        auto fm = sgl::graphic::FontManager::Instance();
+        sgl::graphic::Font * fnt = fm->GetFont(fileFont, size, sgl::graphic::Font::NORMAL);
+        SetLabelFont(fnt);
+    }
+};
+
+// ===== SCREEN PLANET MAP =====
 ScreenPlanetMap::ScreenPlanetMap(Game * game)
     : Screen(game)
 {
@@ -31,7 +53,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const char * fileFont = "data/fonts/Lato-Regular.ttf";
 
     const unsigned int colorHeader = 0xe9f7fbcc;
-    const int sizeTopHeader = 24;
+    const int sizeHeader = 24;
 
     // BACKGROUND
     tex = tm->GetTexture("data/img/space_bg.jpg");
@@ -41,7 +63,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_NAME);
     auto panelName = new sgui::Image(tex);
 
-    fnt = fm->GetFont(fileFont, sizeTopHeader, graphic::Font::NORMAL);
+    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
     mLabelName = new sgui::Label(fnt, panelName);
     mLabelName->SetColor(colorHeader);
 
@@ -50,9 +72,34 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     auto panelDate = new sgui::Image(tex);
     panelDate->SetX(mBg->GetWidth() - panelDate->GetWidth());
 
-    fnt = fm->GetFont(fileFont, sizeTopHeader, graphic::Font::NORMAL);
+    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
     mLabelDate = new sgui::Label(fnt, panelDate);
     mLabelDate->SetColor(colorHeader);
+
+    // PANEL LEAVE
+    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_LEAVE);
+    auto panelLeave = new sgui::Image(tex);
+    panelLeave->SetPosition(mBg->GetWidth() - panelLeave->GetWidth(),
+                            mBg->GetHeight() - panelLeave->GetHeight());
+
+    const int labelHeaderLeaveX = 35;
+    const int labelHeaderLeaveY = 15;
+    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
+    auto labelHeaderLeave = new sgui::Label("LEAVE THE PLANET", fnt, panelLeave);
+    labelHeaderLeave->SetColor(colorHeader);
+    labelHeaderLeave->SetPosition(labelHeaderLeaveX, labelHeaderLeaveY);
+
+    auto buttonLeave = new ButtonPlanetMap(panelLeave);
+    buttonLeave->SetLabel("LEAVE");
+    const int buttonLeaveY = labelHeaderLeaveY + labelHeaderLeave-> GetHeight() + 25;
+    buttonLeave->SetPosition((panelLeave->GetWidth() - buttonLeave->GetWidth()) * 0.5f,
+                              buttonLeaveY);
+
+    buttonLeave->AddOnClickFunction([this]
+    {
+        // TODO change to galaxy screen
+        GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
+    });
 
     // PLANET
     mPlanet = new PlanetMap;
