@@ -4,6 +4,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/PanelPlanetResources.h"
 #include "Widgets/PlanetMap.h"
 
 #include <sgl/graphic/Font.h>
@@ -53,7 +54,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const char * fileFont = "data/fonts/Lato-Regular.ttf";
 
     const unsigned int colorHeader = 0xe9f7fbcc;
-    const int sizeHeader = 24;
+    const int sizeHeader = 26;
 
     // BACKGROUND
     tex = tm->GetTexture("data/img/space_bg.jpg");
@@ -75,6 +76,12 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
     mLabelDate = new sgui::Label(fnt, panelDate);
     mLabelDate->SetColor(colorHeader);
+
+    // PANEL RESOURCES
+    const int panelResY = 100;
+    mPanelResources = new PanelPlanetResources;
+    mPanelResources->SetY(panelResY);
+    mPanelResources->SetEnabled(false);
 
     // PANEL LEAVE
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_LEAVE);
@@ -107,6 +114,20 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const int planetX = (mBg->GetWidth() - mPlanet->GetWidth()) * 0.5f;
     const int planetY = (mBg->GetHeight() - mPlanet->GetHeight()) * 0.5f;
     mPlanet->SetPosition(planetX, planetY);
+
+    mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
+    {
+        if(!enabled)
+            return;
+
+        mPanelResources->SetEnabled(true);
+
+        // TEST - REMOVE LATER
+        mPanelResources->SetResourceValue(0, 1);
+        mPanelResources->SetResourceValue(1, 2);
+        mPanelResources->SetResourceValue(2, 3);
+        mPanelResources->SetResourceValue(3, 4);
+    });
 
     // TEST - REMOVE LATER
     SetPlanetName("TEST PLANET V");

@@ -11,6 +11,7 @@ namespace sgl
 namespace game
 {
 
+class PanelPlanetResources;
 class PlanetMap;
 
 class ScreenPlanetMap : public Screen
@@ -28,6 +29,8 @@ private:
 
 private:
     sgl::graphic::Image * mBg = nullptr;
+
+    PanelPlanetResources * mPanelResources = nullptr;
 
     sgl::sgui::Label * mLabelName = nullptr;
     sgl::sgui::Label * mLabelDate = nullptr;

@@ -156,24 +156,22 @@ PlanetMap::PlanetMap()
         { 519, 649 }
     };
 
-    mButtonMission = new sgui::AbstractButtonsGroup();
+    mButtonsMission = new sgui::AbstractButtonsGroup;
 
     for(int i = 0; i < MAX_MISSIONS; ++i)
     {
         auto btn = new ButtonMission(this);
         btn->SetPosition(buttonsPos[i].x, buttonsPos[i].y);
 
-        mButtonMission->AddButton(btn);
+        mButtonsMission->AddButton(btn);
     }
 
-    // handle mission selection
-    mButtonMission->SetFunctionOnToggle([this](unsigned int ind, bool checked)
-    {
-        if(!checked)
-            return ;
 
-        // TODO
-    });
+}
+
+void PlanetMap::SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f)
+{
+    mButtonsMission->SetFunctionOnToggle(f);
 }
 
 void PlanetMap::HandlePositionChanged()

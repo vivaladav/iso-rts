@@ -1,5 +1,6 @@
 #include <sgl/sgui/Widget.h>
 
+#include <functional>
 
 namespace sgl
 {
@@ -19,13 +20,15 @@ class PlanetMap : public sgl::sgui::Widget
 public:
     PlanetMap();
 
+    void SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f);
+
 private:
     void HandlePositionChanged() override;
 
 private:
     static const unsigned int MAX_MISSIONS = 12;
 
-    sgl::sgui::AbstractButtonsGroup * mButtonMission;
+    sgl::sgui::AbstractButtonsGroup * mButtonsMission;
 
     sgl::graphic::Image * mBg = nullptr;
 };

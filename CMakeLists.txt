@@ -196,6 +196,8 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelObjectActions.h
     src/Widgets/PanelObjectActions.cpp
+    src/Widgets/PanelPlanetResources.h
+    src/Widgets/PanelPlanetResources.cpp
     src/Widgets/PanelResources.h
     src/Widgets/PanelResources.cpp
     src/Widgets/PlanetMap.h
