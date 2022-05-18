@@ -1,7 +1,8 @@
-#include "PanelPlanetResources.h"
+#include "Widgets/PanelPlanetResources.h"
 
 #include "GameConstants.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/Point.h>
 #include <sgl/graphic/Camera.h>
@@ -35,11 +36,11 @@ PanelPlanetResources::PanelPlanetResources()
     // HEADER
     const char * fileFont = "data/fonts/Lato-Regular.ttf";
     const unsigned int colorHeader = 0xe9f7fbcc;
-    const int sizeHeader = 26;
     const int marginHeaderX = 20;
     const int marginHeaderY = 15;
 
-    graphic::Font * fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
+    graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
+                                      graphic::Font::NORMAL);
     auto label = new sgui::Label("RESOURCES", fnt, this);
     label->SetColor(colorHeader);
     label->SetPosition(marginHeaderX, marginHeaderY);

@@ -1,0 +1,171 @@
+#include "Widgets/PanelPlanetInfo.h"
+
+#include "GameConstants.h"
+#include "Widgets/GameUIData.h"
+#include "Widgets/WidgetsConstants.h"
+
+#include <sgl/core/Point.h>
+#include <sgl/graphic/Camera.h>
+#include <sgl/graphic/Font.h>
+#include <sgl/graphic/FontManager.h>
+#include <sgl/graphic/Image.h>
+#include <sgl/graphic/Text.h>
+#include <sgl/graphic/Texture.h>
+#include <sgl/graphic/TextureManager.h>
+
+#include <sgl/sgui/Image.h>
+
+namespace game
+{
+
+PanelPlanetInfo::PanelPlanetInfo()
+    : sgl::sgui::Widget(nullptr)
+{
+    using namespace sgl;
+
+    auto tm = graphic::TextureManager::Instance();
+    auto fm = graphic::FontManager::Instance();
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_INFO);
+    mBg = new graphic::Image(tex);
+    RegisterRenderable(mBg);
+
+    SetSize(tex->GetWidth(), tex->GetHeight());
+
+    // TITLE
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const unsigned int colorTitle = 0xe9f7fbcc;
+
+    graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
+                                      graphic::Font::NORMAL);
+    mTitle = new graphic::Text("INFO", fnt);
+    mTitle->SetColor(colorTitle);
+    RegisterRenderable(mTitle);
+
+    // -- DATA --
+    const unsigned int colorHeader = 0xb0c5cfff;
+    const unsigned int colorData = 0x80a2b3ff;
+
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                            graphic::Font::NORMAL);
+
+    // LINE SIZE
+    mHeaderSize = new graphic::Text("SIZE", fntData);
+    mHeaderSize->SetColor(colorHeader);
+    RegisterRenderable(mHeaderSize);
+
+    mLabelSize = new graphic::Text("-", fntData);
+    mLabelSize->SetColor(colorData);
+    RegisterRenderable(mLabelSize);
+
+    // LINE STATUS
+    mHeaderStatus = new graphic::Text("STATUS", fntData);
+    mHeaderStatus->SetColor(colorHeader);
+    RegisterRenderable(mHeaderStatus);
+
+    mLabelStatus = new graphic::Text("-", fntData);
+    mLabelStatus->SetColor(colorData);
+    RegisterRenderable(mLabelStatus);
+
+    // LINE VALUE
+    mHeaderValue = new graphic::Text("VALUE", fntData);
+    mHeaderValue->SetColor(colorHeader);
+    RegisterRenderable(mHeaderValue);
+
+    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS);
+    mBarValue = new graphic::Image(tex);
+    RegisterRenderable(mBarValue);
+
+    // LINE OCCUPIER
+    mHeaderOccupier = new graphic::Text("OCCUPIER", fntData);
+    mHeaderOccupier->SetColor(colorHeader);
+    RegisterRenderable(mHeaderOccupier);
+
+    mLabelOccupier = new graphic::Text("-", fntData);
+    mLabelOccupier->SetColor(colorData);
+    RegisterRenderable(mLabelOccupier);
+
+    // position elements
+    UpdatePositions();
+}
+
+void PanelPlanetInfo::SetResourceValue(unsigned int res, unsigned int value)
+{
+
+}
+
+void PanelPlanetInfo::HandlePositionChanged()
+{
+    UpdatePositions();
+}
+
+void PanelPlanetInfo::HandleStateEnabled()
+{
+
+}
+
+void PanelPlanetInfo::HandleStateDisabled()
+{
+
+}
+
+void PanelPlanetInfo::UpdatePositions()
+{
+    const int x0 = GetScreenX();
+    const int y0 = GetScreenY();
+
+    const int marginL = 20;
+    const int marginR = 30;
+    const int marginT = 15;
+
+    const int x1 = x0 + GetWidth() - marginR;
+
+    int x;
+    int y;
+    int dataX;
+
+    // BACKGROUND
+    mBg->SetPosition(x0, y0);
+
+    // TITLE
+    x = x0 + marginL;
+    y = y0 + marginT;
+
+    mTitle->SetPosition(x, y);
+
+    const int marginTitleB = 30;
+    const int marginHeaderB = 20;
+
+    // LINE SIZE
+    y += mTitle->GetHeight() + marginTitleB;
+    mHeaderSize->SetPosition(x, y);
+
+    dataX = x1 - mLabelSize->GetWidth();
+    mLabelSize->SetPosition(dataX, y);
+
+    // LINE STATUS
+    y += mHeaderSize->GetHeight() + marginHeaderB;
+    mHeaderStatus->SetPosition(x, y);
+
+    dataX = x1 - mLabelStatus->GetWidth();
+    mLabelStatus->SetPosition(dataX, y);
+
+    // LINE VALUE
+    y += mHeaderStatus->GetHeight() + marginHeaderB;
+    mHeaderValue->SetPosition(x, y);
+
+    dataX = x1 - mBarValue->GetWidth();
+    const int marginValueT = -2;
+    const int barY = y + marginValueT;
+    mBarValue->SetPosition(dataX, barY);
+
+    // LINE OCCUPIER
+    y += mHeaderValue->GetHeight() + marginHeaderB;
+    mHeaderOccupier->SetPosition(x, y);
+
+    dataX = x1 - mLabelOccupier->GetWidth();
+    mLabelOccupier->SetPosition(dataX, y);
+}
+
+} // namespace game

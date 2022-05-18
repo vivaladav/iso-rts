@@ -4,8 +4,10 @@
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/PanelPlanetInfo.h"
 #include "Widgets/PanelPlanetResources.h"
 #include "Widgets/PlanetMap.h"
+#include "Widgets/WidgetsConstants.h"
 
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -54,7 +56,6 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const char * fileFont = "data/fonts/Lato-Regular.ttf";
 
     const unsigned int colorHeader = 0xe9f7fbcc;
-    const int sizeHeader = 26;
 
     // BACKGROUND
     tex = tm->GetTexture("data/img/space_bg.jpg");
@@ -64,7 +65,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_NAME);
     auto panelName = new sgui::Image(tex);
 
-    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
+    fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle, graphic::Font::NORMAL);
     mLabelName = new sgui::Label(fnt, panelName);
     mLabelName->SetColor(colorHeader);
 
@@ -73,7 +74,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     auto panelDate = new sgui::Image(tex);
     panelDate->SetX(mBg->GetWidth() - panelDate->GetWidth());
 
-    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
+    fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle, graphic::Font::NORMAL);
     mLabelDate = new sgui::Label(fnt, panelDate);
     mLabelDate->SetColor(colorHeader);
 
@@ -83,6 +84,12 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mPanelResources->SetY(panelResY);
     mPanelResources->SetEnabled(false);
 
+    // PANEL INFO
+    mPanelInfo = new PanelPlanetInfo;
+    const int panelInfoY = mBg->GetHeight() - mPanelInfo->GetHeight();
+    mPanelInfo->SetY(panelInfoY);
+    mPanelInfo->SetEnabled(false);
+
     // PANEL LEAVE
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_LEAVE);
     auto panelLeave = new sgui::Image(tex);
@@ -91,7 +98,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     const int labelHeaderLeaveX = 35;
     const int labelHeaderLeaveY = 15;
-    fnt = fm->GetFont(fileFont, sizeHeader, graphic::Font::NORMAL);
+    fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle, graphic::Font::NORMAL);
     auto labelHeaderLeave = new sgui::Label("LEAVE THE PLANET", fnt, panelLeave);
     labelHeaderLeave->SetColor(colorHeader);
     labelHeaderLeave->SetPosition(labelHeaderLeaveX, labelHeaderLeaveY);
@@ -120,7 +127,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         if(!enabled)
             return;
 
+        // enable panels
         mPanelResources->SetEnabled(true);
+        mPanelInfo->SetEnabled(true);
 
         // TEST - REMOVE LATER
         mPanelResources->SetResourceValue(0, 1);

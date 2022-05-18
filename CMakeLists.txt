@@ -196,6 +196,8 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelObjectActions.h
     src/Widgets/PanelObjectActions.cpp
+    src/Widgets/PanelPlanetInfo.h
+    src/Widgets/PanelPlanetInfo.cpp
     src/Widgets/PanelPlanetResources.h
     src/Widgets/PanelPlanetResources.cpp
     src/Widgets/PanelResources.h
@@ -210,6 +212,7 @@ add_executable(
     src/Widgets/ShortcutButton.cpp
     src/Widgets/SimpleResourceDisplay.h
     src/Widgets/SimpleResourceDisplay.cpp
+    src/Widgets/WidgetsConstants.h
     src/Widgets/UnitsSelector.h
     src/Widgets/UnitsSelector.cpp
     src/Widgets/Test/TestComboBox.h
