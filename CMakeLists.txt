@@ -22,6 +22,7 @@ add_executable(
     src/Game.h
     src/Game.cpp
     src/GameConstants.h
+    src/GameConstants.cpp
     src/GameData.h
     src/GameData.cpp
     src/GameMap.h

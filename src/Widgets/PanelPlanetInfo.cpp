@@ -20,6 +20,8 @@ namespace game
 
 PanelPlanetInfo::PanelPlanetInfo()
     : sgl::sgui::Widget(nullptr)
+    , mOccupier(NO_FACTION)
+    , mStatus(TER_ST_UNKNOWN)
 {
     using namespace sgl;
 
@@ -44,33 +46,30 @@ PanelPlanetInfo::PanelPlanetInfo()
     RegisterRenderable(mTitle);
 
     // -- DATA --
-    const unsigned int colorHeader = 0xb0c5cfff;
-    const unsigned int colorData = 0x80a2b3ff;
-
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
-                                            graphic::Font::NORMAL);
+                                          graphic::Font::NORMAL);
 
     // LINE SIZE
     mHeaderSize = new graphic::Text("SIZE", fntData);
-    mHeaderSize->SetColor(colorHeader);
+    mHeaderSize->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderSize);
 
     mLabelSize = new graphic::Text("-", fntData);
-    mLabelSize->SetColor(colorData);
+    mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelSize);
 
     // LINE STATUS
     mHeaderStatus = new graphic::Text("STATUS", fntData);
-    mHeaderStatus->SetColor(colorHeader);
+    mHeaderStatus->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderStatus);
 
     mLabelStatus = new graphic::Text("-", fntData);
-    mLabelStatus->SetColor(colorData);
+    mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelStatus);
 
     // LINE VALUE
     mHeaderValue = new graphic::Text("VALUE", fntData);
-    mHeaderValue->SetColor(colorHeader);
+    mHeaderValue->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderValue);
 
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS);
@@ -79,20 +78,95 @@ PanelPlanetInfo::PanelPlanetInfo()
 
     // LINE OCCUPIER
     mHeaderOccupier = new graphic::Text("OCCUPIER", fntData);
-    mHeaderOccupier->SetColor(colorHeader);
+    mHeaderOccupier->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderOccupier);
 
     mLabelOccupier = new graphic::Text("-", fntData);
-    mLabelOccupier->SetColor(colorData);
+    mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelOccupier);
 
     // position elements
     UpdatePositions();
 }
 
-void PanelPlanetInfo::SetResourceValue(unsigned int res, unsigned int value)
+void PanelPlanetInfo::ClearData()
+{
+    SetTerritoryValue(0);
+
+    SetTerritoryOccupier(NO_FACTION);
+}
+
+void PanelPlanetInfo::SetTerritorySize(int size)
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelSize);
+    delete mLabelSize;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    mLabelSize = new graphic::Text("-", fntData);
+    mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelSize);
+}
+
+void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
 {
 
+}
+
+void PanelPlanetInfo::SetTerritoryOccupier(PlayerFaction faction)
+{
+    using namespace sgl;
+
+    if(mOccupier == faction)
+        return ;
+
+    // delete current text
+    UnregisterRenderable(mLabelOccupier);
+    delete mLabelOccupier;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    if(faction < NUM_FACTIONS)
+    {
+        mLabelOccupier = new graphic::Text(FACTIONS_NAME[faction], fntData);
+        mLabelOccupier->SetColor(PLAYER_COLOR[faction]);
+    }
+    else
+    {
+        mLabelOccupier = new graphic::Text("-", fntData);
+        mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
+    }
+
+    RegisterRenderable(mLabelOccupier);
+
+    UpdatePositions();
+}
+
+void PanelPlanetInfo::SetTerritoryValue(unsigned int value)
+{
+    using namespace sgl;
+
+    const int maxVal = 5;
+
+    if(value > maxVal)
+        return ;
+
+    auto tm = graphic::TextureManager::Instance();
+    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS + value);
+    mBarValue->SetTexture(tex);
 }
 
 void PanelPlanetInfo::HandlePositionChanged()

@@ -16,12 +16,20 @@ namespace sgl
 namespace game
 {
 
+enum PlayerFaction : unsigned int;
+enum TerritoryStatus : unsigned int;
+
 class PanelPlanetInfo : public sgl::sgui::Widget
 {
 public:
     PanelPlanetInfo();
 
-    void SetResourceValue(unsigned int res, unsigned int value);
+    void ClearData();
+
+    void SetTerritorySize(int size);
+    void SetTerritoryStatus(TerritoryStatus status);
+    void SetTerritoryOccupier(PlayerFaction faction);
+    void SetTerritoryValue(unsigned int value);
 
 private:
     void HandlePositionChanged() override;
@@ -44,6 +52,12 @@ private:
     sgl::graphic::Image * mBarValue = nullptr;
 
     sgl::graphic::Image * mBg = nullptr;
+
+    int mSize = 0;
+    int mValue = 0;
+    PlayerFaction mOccupier;
+    TerritoryStatus mStatus;
+
 };
 
 } // namespace game

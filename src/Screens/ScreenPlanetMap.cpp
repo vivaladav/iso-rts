@@ -1,6 +1,7 @@
 #include "Screens/ScreenPlanetMap.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -132,10 +133,17 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelInfo->SetEnabled(true);
 
         // TEST - REMOVE LATER
-        mPanelResources->SetResourceValue(0, 1);
-        mPanelResources->SetResourceValue(1, 2);
-        mPanelResources->SetResourceValue(2, 3);
-        mPanelResources->SetResourceValue(3, 4);
+        const int maxRes = 10;
+        mPanelResources->SetResourceValue(0, rand() % maxRes);
+        mPanelResources->SetResourceValue(1, rand() % maxRes);
+        mPanelResources->SetResourceValue(2, rand() % maxRes);
+        mPanelResources->SetResourceValue(3, rand() % maxRes);
+
+        const int maxVal = 5;
+        mPanelInfo->SetTerritoryValue(rand() % maxVal);
+
+        mPanelInfo->SetTerritoryOccupier(static_cast<PlayerFaction>(rand() % NUM_FACTIONS));
+        // TEST - REMOVE LATER
     });
 
     // TEST - REMOVE LATER

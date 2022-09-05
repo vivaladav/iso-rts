@@ -39,7 +39,6 @@ enum PlayerFaction : unsigned int
     NO_FACTION
 };
 
-
 enum ResourceType : unsigned int
 {
     RES_ENERGY,
@@ -51,5 +50,18 @@ enum ResourceType : unsigned int
 
     RES_INVALID
 };
+
+enum TerritoryStatus : unsigned int
+{
+    TER_ST_UNEXPLORED,
+    TER_ST_FREE,
+    TER_ST_OCCUPIED,
+
+    NUM_TERRITORY_STATUSES,
+
+    TER_ST_UNKNOWN
+};
+
+extern const char * FACTIONS_NAME[NUM_FACTIONS];
 
 } // namespace game

@@ -1,6 +1,7 @@
 #include "Screens/ScreenFactionSelection.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonDialogBack.h"
 #include "Widgets/ButtonDialogContinue.h"
@@ -98,7 +99,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_PANEL_F1);
     auto panelFaction = new sgui::Image(tex, panelCol);
 
-    auto labelFactionName = new sgui::Label("Zulox", fntFaction, panelFaction);
+    auto labelFactionName = new sgui::Label(FACTIONS_NAME[FACTION_1], fntFaction, panelFaction);
     int labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
     labelFactionName->SetPosition(labelX, 10);
     labelFactionName->SetColor(colorHeader);
@@ -155,7 +156,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     panelFaction = new sgui::Image(tex, panelCol);
     panelFaction->SetPosition(x, y);
 
-    labelFactionName = new sgui::Label("Domens", fntFaction, panelFaction);
+    labelFactionName = new sgui::Label(FACTIONS_NAME[FACTION_2], fntFaction, panelFaction);
     labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
     labelFactionName->SetPosition(labelX, 10);
     labelFactionName->SetColor(colorHeader);
@@ -210,7 +211,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     panelFaction->SetPosition(x, y);
 
     fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
-    labelFactionName = new sgui::Label("Alphen", fnt, panelFaction);
+    labelFactionName = new sgui::Label(FACTIONS_NAME[FACTION_3], fnt, panelFaction);
     labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
     labelFactionName->SetPosition(labelX, 10);
     labelFactionName->SetColor(colorHeader);
