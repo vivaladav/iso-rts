@@ -95,7 +95,7 @@ void PanelPlanetInfo::ClearData()
 {
     SetTerritoryValue(0);
     SetTerritorySize(0);
-
+    SetTerritoryStatus(TER_ST_UNKNOWN);
     SetTerritoryOccupier(NO_FACTION);
 }
 
@@ -137,7 +137,48 @@ void PanelPlanetInfo::SetTerritorySize(int size)
 
 void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
 {
+    using namespace sgl;
 
+    if(status == mStatus)
+        return ;
+
+    mStatus = status;
+
+    // delete current text
+    UnregisterRenderable(mLabelStatus);
+    delete mLabelStatus;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    /*
+    TER_ST_UNEXPLORED,
+    TER_ST_FREE,
+    TER_ST_OCCUPIED,
+    */
+
+    if(status < NUM_TERRITORY_STATUSES)
+    {
+        const char * statuses[] =
+        {
+            "UNEXPLORED",
+            "FREE",
+            "OCCUPIED"
+        };
+
+        mLabelStatus = new graphic::Text(statuses[status], fntData);
+    }
+    else
+        mLabelStatus = new graphic::Text("-", fntData);
+
+    mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelStatus);
+
+    UpdatePositions();
 }
 
 void PanelPlanetInfo::SetTerritoryOccupier(PlayerFaction faction)

@@ -144,8 +144,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         const int minSize = 100;
         const int sizeMult = 10;
-
         mPanelInfo->SetTerritorySize(minSize + (rand() % sizeMult) * sizeMult);
+
+        mPanelInfo->SetTerritoryStatus(static_cast<TerritoryStatus>(rand() % NUM_TERRITORY_STATUSES));
 
         mPanelInfo->SetTerritoryOccupier(static_cast<PlayerFaction>(rand() % NUM_FACTIONS));
         // TEST - REMOVE LATER
