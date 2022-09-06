@@ -15,6 +15,8 @@
 
 #include <sgl/sgui/Image.h>
 
+#include <sstream>
+
 namespace game
 {
 
@@ -92,6 +94,7 @@ PanelPlanetInfo::PanelPlanetInfo()
 void PanelPlanetInfo::ClearData()
 {
     SetTerritoryValue(0);
+    SetTerritorySize(0);
 
     SetTerritoryOccupier(NO_FACTION);
 }
@@ -99,6 +102,11 @@ void PanelPlanetInfo::ClearData()
 void PanelPlanetInfo::SetTerritorySize(int size)
 {
     using namespace sgl;
+
+    if(size == mSize)
+        return ;
+
+    mSize = size;
 
     // delete current text
     UnregisterRenderable(mLabelSize);
@@ -111,9 +119,20 @@ void PanelPlanetInfo::SetTerritorySize(int size)
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
-    mLabelSize = new graphic::Text("-", fntData);
+    if(size > 0)
+    {
+        std::ostringstream s;
+        s << size << "x" << size;
+
+        mLabelSize = new graphic::Text(s.str().c_str(), fntData);
+    }
+    else
+        mLabelSize = new graphic::Text("-", fntData);
+
     mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelSize);
+
+    UpdatePositions();
 }
 
 void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
@@ -125,8 +144,10 @@ void PanelPlanetInfo::SetTerritoryOccupier(PlayerFaction faction)
 {
     using namespace sgl;
 
-    if(mOccupier == faction)
+    if(faction == mOccupier)
         return ;
+
+    mOccupier = faction;
 
     // delete current text
     UnregisterRenderable(mLabelOccupier);
