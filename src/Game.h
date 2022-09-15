@@ -22,6 +22,7 @@ namespace sgl
 namespace game
 {
 
+class MapsRegistry;
 class ObjectsDataRegistry;
 class Player;
 
@@ -54,6 +55,7 @@ public:
     Difficulty GetDifficulty() const;
     void SetDifficulty(Difficulty level);
 
+    const MapsRegistry * GetMapsRegistry() const;
     const ObjectsDataRegistry * GetObjectsRegistry() const;
 
     // -- players --
@@ -85,6 +87,7 @@ private:
     sgl::sgui::Stage * mStage = nullptr;
     sgl::graphic::Font * mFontGui = nullptr;
 
+    MapsRegistry * mMapsReg = nullptr;
     ObjectsDataRegistry * mObjsRegistry = nullptr;
 
     Difficulty mDiff = EASY;
@@ -116,6 +119,7 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 inline Difficulty Game::GetDifficulty() const { return mDiff; }
 inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
 
+inline const MapsRegistry * Game::GetMapsRegistry() const { return mMapsReg; }
 inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }

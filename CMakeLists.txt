@@ -39,6 +39,8 @@ add_executable(
     src/IsoObject.cpp
     src/MapLoader.h
     src/MapLoader.cpp
+    src/MapsRegistry.h
+    src/MapsRegistry.cpp
     src/Player.h
     src/Player.cpp
     src/StatValue.h

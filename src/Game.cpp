@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "GameConstants.h"
+#include "MapsRegistry.h"
 #include "Player.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "States/StatesIds.h"
@@ -37,6 +38,7 @@ Game::Game(int argc, char * argv[])
         "data/maps/60x60-01.map",
         "data/maps/80x80-01.map"
     }
+    , mMapsReg(new MapsRegistry)
     , mObjsRegistry(new ObjectsDataRegistry)
     , mLocalFaction(NO_FACTION)
 {
@@ -47,8 +49,6 @@ Game::Game(int argc, char * argv[])
     mRenderer->SetLogicalSize(1920, 1080);
 
     TextureManager::Instance()->SetNewTextureQuality(TextureQuality::BEST);
-
-    FontManager * fm = FontManager::Create();
 
     // -- State Manager --
     mStateMan = new sgl::utilities::StateManager;
@@ -69,12 +69,23 @@ Game::Game(int argc, char * argv[])
     AddKeyboardListener(mStage);
     AddMouseListener(mStage);
 
+    FontManager * fm = FontManager::Create();
     mFontGui = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
     mStage->SetDefaultFont(mFontGui);
+
+    // -- MAPS --
+    // PLANET 1
+    mMapsReg->CreatePlanet(PLANET_1);
+    //               planetId, file, energy, material, diamonds, blobs, size, value, occupier, status
+    mMapsReg->AddMap(PLANET_1, "data/maps/20x20-empty.map", 1, 2, 1, 1, 20, 1, NO_FACTION, TER_ST_UNEXPLORED);
+    mMapsReg->AddMap(PLANET_1, "data/maps/40x40-01.map", 2, 2, 1, 1, 40, 2, NO_FACTION, TER_ST_UNEXPLORED);
+    mMapsReg->AddMap(PLANET_1, "data/maps/60x60-01.map", 4, 4, 2, 2, 60, 3, NO_FACTION, TER_ST_UNEXPLORED);
+    mMapsReg->AddMap(PLANET_1, "data/maps/80x80-01.map", 5, 4, 2, 2, 80, 3, NO_FACTION, TER_ST_UNEXPLORED);
 }
 
 Game::~Game()
 {
+    delete mMapsReg;
     delete mObjsRegistry;
 
     ClearPlayers();

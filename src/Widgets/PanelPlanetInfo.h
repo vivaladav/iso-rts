@@ -57,7 +57,6 @@ private:
     int mValue = 0;
     PlayerFaction mOccupier;
     TerritoryStatus mStatus;
-
 };
 
 } // namespace game

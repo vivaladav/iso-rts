@@ -155,19 +155,14 @@ void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
-    /*
-    TER_ST_UNEXPLORED,
-    TER_ST_FREE,
-    TER_ST_OCCUPIED,
-    */
-
     if(status < NUM_TERRITORY_STATUSES)
     {
         const char * statuses[] =
         {
             "UNEXPLORED",
             "FREE",
-            "OCCUPIED"
+            "OCCUPIED",
+            "UNAVAILABLE"
         };
 
         mLabelStatus = new graphic::Text(statuses[status], fntData);

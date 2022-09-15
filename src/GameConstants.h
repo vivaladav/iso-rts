@@ -56,10 +56,20 @@ enum TerritoryStatus : unsigned int
     TER_ST_UNEXPLORED,
     TER_ST_FREE,
     TER_ST_OCCUPIED,
+    TER_ST_UNAVAILABLE, // disabled
 
     NUM_TERRITORY_STATUSES,
 
     TER_ST_UNKNOWN
+};
+
+enum Planets : unsigned int
+{
+    PLANET_1,
+
+    NUM_PLANETS,
+
+    PLANET_UNKNOWN
 };
 
 extern const char * FACTIONS_NAME[NUM_FACTIONS];
