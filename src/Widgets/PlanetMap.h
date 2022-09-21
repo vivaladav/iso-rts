@@ -22,6 +22,9 @@ public:
 
     void SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f);
 
+    void SetButtonEnabled(unsigned int index, bool enabled);
+    void SetButtonState(unsigned int index, PlayerFaction occupier, bool explored);
+
 private:
     void HandlePositionChanged() override;
 

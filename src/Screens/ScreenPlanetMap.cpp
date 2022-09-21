@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "MapsRegistry.h"
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -123,6 +124,28 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const int planetY = (mBg->GetHeight() - mPlanet->GetHeight()) * 0.5f;
     mPlanet->SetPosition(planetX, planetY);
 
+    const int planetId = game->GetCurrentPlanet();
+    auto mapReg = game->GetMapsRegistry();
+
+    const int numMaps = mapReg->GetNumMaps(planetId);
+
+    for(int i = 0; i < numMaps; ++i)
+    {
+        const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
+
+        mPlanet->SetButtonState(i, NO_FACTION, (i%2 == 0));
+
+        if(ts == TER_ST_UNAVAILABLE)
+            mPlanet->SetButtonEnabled(i, false);
+        else
+        {
+            const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
+            const bool explored = ts != TER_ST_UNEXPLORED;
+
+            mPlanet->SetButtonState(i, occupier, explored);
+        }
+    }
+
     mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
     {
         if(!enabled)
@@ -132,28 +155,27 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelResources->SetEnabled(true);
         mPanelInfo->SetEnabled(true);
 
-        // TEST - REMOVE LATER
-        const int maxRes = 10;
-        mPanelResources->SetResourceValue(0, rand() % maxRes);
-        mPanelResources->SetResourceValue(1, rand() % maxRes);
-        mPanelResources->SetResourceValue(2, rand() % maxRes);
-        mPanelResources->SetResourceValue(3, rand() % maxRes);
+        auto game = GetGame();
+        const int planetId = game->GetCurrentPlanet();
+        auto mapReg = game->GetMapsRegistry();
 
-        const int maxVal = 5;
-        mPanelInfo->SetTerritoryValue(rand() % maxVal);
+        mPanelResources->SetResourceValue(RES_ENERGY, mapReg->GetMapEnergy(planetId, ind));
+        mPanelResources->SetResourceValue(RES_MATERIAL1, mapReg->GetMapMaterial(planetId, ind));
+        mPanelResources->SetResourceValue(RES_BLOBS, mapReg->GetMapBlobs(planetId, ind));
+        mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, ind));
 
-        const int minSize = 100;
-        const int sizeMult = 10;
-        mPanelInfo->SetTerritorySize(minSize + (rand() % sizeMult) * sizeMult);
+        mPanelInfo->SetTerritoryValue(mapReg->GetMapValue(planetId, ind));
 
-        mPanelInfo->SetTerritoryStatus(static_cast<TerritoryStatus>(rand() % NUM_TERRITORY_STATUSES));
+        mPanelInfo->SetTerritorySize(mapReg->GetMapSize(planetId, ind));
 
-        mPanelInfo->SetTerritoryOccupier(static_cast<PlayerFaction>(rand() % NUM_FACTIONS));
-        // TEST - REMOVE LATER
+        mPanelInfo->SetTerritoryStatus(mapReg->GetMapStatus(planetId, ind));
+
+        mPanelInfo->SetTerritoryOccupier(mapReg->GetMapOccupier(planetId, ind));
     });
 
+    SetPlanetName(PLANETS_NAME[planetId]);
+
     // TEST - REMOVE LATER
-    SetPlanetName("TEST PLANET V");
     SetDate("001 - 2200");
 }
 

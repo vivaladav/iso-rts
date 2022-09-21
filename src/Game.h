@@ -26,6 +26,7 @@ class MapsRegistry;
 class ObjectsDataRegistry;
 class Player;
 
+enum Planets : unsigned int;
 enum PlayerFaction : unsigned int;
 enum StateId : int;
 
@@ -47,6 +48,8 @@ public:
     const std::vector<std::string> & GetMapFiles() const;
     const std::string & GetCurrentMapFile() const;
     void SetCurrentMap(unsigned int index);
+    void SetCurrentPlanet(Planets planet);
+    Planets GetCurrentPlanet() const;
 
     void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
@@ -77,7 +80,6 @@ private:
 private:
     std::vector<std::string> mMapFiles;
     std::vector<Player *> mPlayers;
-    unsigned int mCurrMap = 0;
 
     sgl::graphic::Renderer * mRenderer = nullptr;
     sgl::graphic::Window * mWin = nullptr;
@@ -94,6 +96,9 @@ private:
 
     PlayerFaction mLocalFaction;
 
+    unsigned int mCurrMap = 0;
+    Planets mCurrPlanet;
+
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
     unsigned char mClearB = 0;
@@ -107,6 +112,9 @@ inline void Game::SetCurrentMap(unsigned int index)
     if(index < mMapFiles.size())
         mCurrMap = index;
 }
+
+inline void Game::SetCurrentPlanet(Planets planet) { mCurrPlanet = planet; }
+inline Planets Game::GetCurrentPlanet() const { return mCurrPlanet; }
 
 inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {

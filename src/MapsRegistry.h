@@ -18,6 +18,9 @@ public:
     bool AddMap(unsigned int planetId, const std::string & file, int energy,
                 int material, int diamonds, int blobs, int size, int value,
                 PlayerFaction occupier, TerritoryStatus status);
+    bool AddUnavailableMap(unsigned int planetId);
+
+    int GetNumMaps(unsigned int planetId) const;
 
     const std::string & GetMapFile(unsigned int planetId, unsigned int index) const;
     int GetMapEnergy(unsigned int planetId, unsigned int index) const;

@@ -48,6 +48,27 @@ bool MapsRegistry::AddMap(unsigned int planetId, const std::string & file, int e
     return true;
 }
 
+bool MapsRegistry::AddUnavailableMap(unsigned int planetId)
+{
+    // planet not found
+    if(mData.find(planetId) == mData.end())
+        return false;
+
+    mData[planetId].emplace_back(std::string(), 0, 0, 0, 0, 0, 0,
+                                 NO_FACTION, TER_ST_UNAVAILABLE);
+
+    return true;
+}
+
+int MapsRegistry::GetNumMaps(unsigned int planetId) const
+{
+    // planet not found
+    if(mData.find(planetId) == mData.end())
+        return 0;
+
+    return mData.at(planetId).size();
+}
+
 const std::string & MapsRegistry::GetMapFile(unsigned int planetId, unsigned int index) const
 {
     if(mData.find(planetId) != mData.end())

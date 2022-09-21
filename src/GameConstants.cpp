@@ -10,4 +10,9 @@ const char * FACTIONS_NAME[NUM_FACTIONS] =
     "Alphen"
 };
 
+const char * PLANETS_NAME[NUM_PLANETS] =
+{
+    "Osiris V"
+};
+
 } // namespace game

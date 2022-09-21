@@ -73,5 +73,6 @@ enum Planets : unsigned int
 };
 
 extern const char * FACTIONS_NAME[NUM_FACTIONS];
+extern const char * PLANETS_NAME[NUM_PLANETS];
 
 } // namespace game

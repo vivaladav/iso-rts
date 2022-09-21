@@ -165,13 +165,31 @@ PlanetMap::PlanetMap()
 
         mButtonsMission->AddButton(btn);
     }
-
-
 }
 
 void PlanetMap::SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f)
 {
     mButtonsMission->SetFunctionOnToggle(f);
+}
+
+void PlanetMap::SetButtonEnabled(unsigned int index, bool enabled)
+{
+    if(index >= mButtonsMission->GetNumButtons())
+        return ;
+
+    auto b = static_cast<ButtonMission *>(mButtonsMission->GetButton(index));
+    b->SetEnabled(enabled);
+}
+
+void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, bool explored)
+{
+    if(index >= mButtonsMission->GetNumButtons())
+        return ;
+
+    auto b = static_cast<ButtonMission *>(mButtonsMission->GetButton(index));
+
+    b->SetFaction(occupier);
+    b->SetExplored(explored);
 }
 
 void PlanetMap::HandlePositionChanged()

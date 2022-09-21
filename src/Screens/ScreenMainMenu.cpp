@@ -1,6 +1,7 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "Version.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
@@ -45,6 +46,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     button->AddOnClickFunction([game]
     {
+        // TODO REMOVE WHEN PLANET SELECTION IS DONE
+        game->SetCurrentPlanet(PLANET_1);
         game->RequestNextActiveState(StateId::PLANET_MAP);
     });
 
