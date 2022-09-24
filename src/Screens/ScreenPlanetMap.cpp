@@ -6,6 +6,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"
 #include "Widgets/PanelPlanetResources.h"
 #include "Widgets/PlanetMap.h"
@@ -85,6 +86,12 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mPanelResources = new PanelPlanetResources;
     mPanelResources->SetY(panelResY);
     mPanelResources->SetEnabled(false);
+
+    // PANEL ACTIONS
+    mPanelActions = new PanelPlanetActions;
+    const int panActionsY = (mBg->GetHeight() - mPanelActions->GetHeight()) * 0.5f;
+    mPanelActions->SetY(panActionsY);
+    mPanelActions->SetEnabled(false);
 
     // PANEL INFO
     mPanelInfo = new PanelPlanetInfo;
