@@ -171,6 +171,8 @@ add_executable(
     src/Widgets/ButtonMinimap.cpp
     src/Widgets/ButtonNavigation.h
     src/Widgets/ButtonNavigation.cpp
+    src/Widgets/ButtonPlanetMap.h
+    src/Widgets/ButtonPlanetMap.cpp
     src/Widgets/ButtonQuickUnitSelection.h
     src/Widgets/ButtonQuickUnitSelection.cpp
     src/Widgets/ButtonUnitsSelector.h

@@ -4,6 +4,7 @@
 #include "GameConstants.h"
 #include "MapsRegistry.h"
 #include "States/StatesIds.h"
+#include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelPlanetActions.h"
@@ -24,28 +25,7 @@
 
 namespace game
 {
-// ===== BUTTON PLANET MAP PANELS =====
-class ButtonPlanetMap : public GameButton
-{
-public:
-    ButtonPlanetMap(sgl::sgui::Widget * parent)
-        : GameButton(SpriteFilePlanetMap,
-                     { IND_PM_BTN_NORMAL, IND_PM_BTN_DISABLED,
-                       IND_PM_BTN_OVER, IND_PM_BTN_PRESSED,
-                       IND_PM_BTN_NORMAL },
-                     { 0xd7eaf4ff, 0x506c7cff, 0xebf4f9ff,
-                       0xc3dfeeff, 0xd7eaf4ff },  parent)
-    {
-        const char * fileFont = "data/fonts/Lato-Regular.ttf";
-        const int size = 20;
 
-        auto fm = sgl::graphic::FontManager::Instance();
-        sgl::graphic::Font * fnt = fm->GetFont(fileFont, size, sgl::graphic::Font::NORMAL);
-        SetLabelFont(fnt);
-    }
-};
-
-// ===== SCREEN PLANET MAP =====
 ScreenPlanetMap::ScreenPlanetMap(Game * game)
     : Screen(game)
 {
@@ -160,6 +140,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         // enable panels
         mPanelResources->SetEnabled(true);
+        mPanelActions->SetEnabled(true);
         mPanelInfo->SetEnabled(true);
 
         auto game = GetGame();
@@ -172,11 +153,8 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, ind));
 
         mPanelInfo->SetTerritoryValue(mapReg->GetMapValue(planetId, ind));
-
         mPanelInfo->SetTerritorySize(mapReg->GetMapSize(planetId, ind));
-
         mPanelInfo->SetTerritoryStatus(mapReg->GetMapStatus(planetId, ind));
-
         mPanelInfo->SetTerritoryOccupier(mapReg->GetMapOccupier(planetId, ind));
     });
 
