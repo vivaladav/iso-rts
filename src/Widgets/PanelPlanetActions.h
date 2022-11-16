@@ -24,8 +24,8 @@ public:
 private:
     void HandlePositionChanged() override;
 
-//    void HandleStateEnabled() override;
-//    void HandleStateDisabled() override;
+    void HandleStateEnabled() override;
+    void HandleStateDisabled() override;
 
     void UpdatePositions();
 
@@ -37,6 +37,9 @@ private:
     ButtonPlanetMap * mButtonConquer = nullptr;
     ButtonPlanetMap * mButtonSendAI = nullptr;
 
+    sgl::graphic::Text * mTextExplore = nullptr;
+    sgl::graphic::Text * mTextConquer = nullptr;
+    sgl::graphic::Text * mTextSendAI = nullptr;
 };
 
 } // namespace game
