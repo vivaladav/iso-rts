@@ -5,7 +5,6 @@
 #include "MapsRegistry.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonPlanetMap.h"
-#include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"

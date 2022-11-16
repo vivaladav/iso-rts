@@ -1,7 +1,5 @@
 #include "Particles/ParticleDamage.h"
 
-#include "GameMap.h"
-#include "GameObjects/GameObject.h"
 #include "Particles/DataParticleDamage.h"
 
 #include <cmath>

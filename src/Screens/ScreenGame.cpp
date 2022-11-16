@@ -27,7 +27,6 @@
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
-#include "Widgets/GameUIData.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"

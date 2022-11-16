@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
-#include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
