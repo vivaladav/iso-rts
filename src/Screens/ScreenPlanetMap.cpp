@@ -138,7 +138,6 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             return;
 
         // enable panels
-        mPanelResources->SetEnabled(true);
         mPanelActions->SetEnabled(true);
         mPanelInfo->SetEnabled(true);
 
@@ -146,15 +145,30 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         const int planetId = game->GetCurrentPlanet();
         auto mapReg = game->GetMapsRegistry();
 
-        mPanelResources->SetResourceValue(RES_ENERGY, mapReg->GetMapEnergy(planetId, ind));
-        mPanelResources->SetResourceValue(RES_MATERIAL1, mapReg->GetMapMaterial(planetId, ind));
-        mPanelResources->SetResourceValue(RES_BLOBS, mapReg->GetMapBlobs(planetId, ind));
-        mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, ind));
+        const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
 
-        mPanelInfo->SetTerritoryValue(mapReg->GetMapValue(planetId, ind));
-        mPanelInfo->SetTerritorySize(mapReg->GetMapSize(planetId, ind));
-        mPanelInfo->SetTerritoryStatus(mapReg->GetMapStatus(planetId, ind));
-        mPanelInfo->SetTerritoryOccupier(mapReg->GetMapOccupier(planetId, ind));
+        if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
+        {
+            mPanelResources->SetEnabled(true);
+            mPanelResources->SetResourceValue(RES_ENERGY, mapReg->GetMapEnergy(planetId, ind));
+            mPanelResources->SetResourceValue(RES_MATERIAL1, mapReg->GetMapMaterial(planetId, ind));
+            mPanelResources->SetResourceValue(RES_BLOBS, mapReg->GetMapBlobs(planetId, ind));
+            mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, ind));
+
+            mPanelInfo->SetTerritoryValue(mapReg->GetMapValue(planetId, ind));
+            mPanelInfo->SetTerritorySize(mapReg->GetMapSize(planetId, ind));
+            mPanelInfo->SetTerritoryOccupier(mapReg->GetMapOccupier(planetId, ind));
+        }
+        else
+        {
+            mPanelResources->SetEnabled(false);
+
+            mPanelInfo->SetTerritoryValue(0);
+            mPanelInfo->SetTerritorySize(0);
+            mPanelInfo->SetTerritoryOccupier(NO_FACTION);
+        }
+
+        mPanelInfo->SetTerritoryStatus(status);
     });
 
     SetPlanetName(PLANETS_NAME[planetId]);

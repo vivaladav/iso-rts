@@ -56,7 +56,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     mHeaderSize->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderSize);
 
-    mLabelSize = new graphic::Text("-", fntData);
+    mLabelSize = new graphic::Text("?", fntData);
     mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelSize);
 
@@ -65,7 +65,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     mHeaderStatus->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderStatus);
 
-    mLabelStatus = new graphic::Text("-", fntData);
+    mLabelStatus = new graphic::Text("?", fntData);
     mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelStatus);
 
@@ -83,7 +83,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     mHeaderOccupier->SetColor(WidgetsConstants::colorPlanetMapHeader);
     RegisterRenderable(mHeaderOccupier);
 
-    mLabelOccupier = new graphic::Text("-", fntData);
+    mLabelOccupier = new graphic::Text("?", fntData);
     mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelOccupier);
 
@@ -127,7 +127,7 @@ void PanelPlanetInfo::SetTerritorySize(int size)
         mLabelSize = new graphic::Text(s.str().c_str(), fntData);
     }
     else
-        mLabelSize = new graphic::Text("-", fntData);
+        mLabelSize = new graphic::Text("?", fntData);
 
     mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelSize);
@@ -168,7 +168,7 @@ void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
         mLabelStatus = new graphic::Text(statuses[status], fntData);
     }
     else
-        mLabelStatus = new graphic::Text("-", fntData);
+        mLabelStatus = new graphic::Text("?", fntData);
 
     mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelStatus);
@@ -203,7 +203,7 @@ void PanelPlanetInfo::SetTerritoryOccupier(PlayerFaction faction)
     }
     else
     {
-        mLabelOccupier = new graphic::Text("-", fntData);
+        mLabelOccupier = new graphic::Text("?", fntData);
         mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
     }
 
