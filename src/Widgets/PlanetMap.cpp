@@ -181,15 +181,19 @@ void PlanetMap::SetButtonEnabled(unsigned int index, bool enabled)
     b->SetEnabled(enabled);
 }
 
-void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, bool explored)
+void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, TerritoryStatus ts)
 {
     if(index >= mButtonsMission->GetNumButtons())
         return ;
 
     auto b = static_cast<ButtonMission *>(mButtonsMission->GetButton(index));
 
+    const bool explored = ts == TER_ST_FREE || ts == TER_ST_OCCUPIED;
+    const bool enabled = ts == TER_ST_UNEXPLORED || explored;
+
     b->SetFaction(occupier);
     b->SetExplored(explored);
+    b->SetEnabled(enabled);
 }
 
 void PlanetMap::HandlePositionChanged()

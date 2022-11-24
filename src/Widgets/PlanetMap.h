@@ -14,6 +14,7 @@ namespace game
 class ButtonMission;
 
 enum PlayerFaction : unsigned int;
+enum TerritoryStatus : unsigned int;
 
 class PlanetMap : public sgl::sgui::Widget
 {
@@ -23,7 +24,7 @@ public:
     void SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f);
 
     void SetButtonEnabled(unsigned int index, bool enabled);
-    void SetButtonState(unsigned int index, PlayerFaction occupier, bool explored);
+    void SetButtonState(unsigned int index, PlayerFaction occupier, TerritoryStatus ts);
 
 private:
     void HandlePositionChanged() override;

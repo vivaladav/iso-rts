@@ -117,19 +117,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     for(int i = 0; i < numMaps; ++i)
     {
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
         const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
 
-        mPlanet->SetButtonState(i, NO_FACTION, (i%2 == 0));
-
-        if(ts == TER_ST_UNAVAILABLE)
-            mPlanet->SetButtonEnabled(i, false);
-        else
-        {
-            const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
-            const bool explored = ts != TER_ST_UNEXPLORED;
-
-            mPlanet->SetButtonState(i, occupier, explored);
-        }
+        mPlanet->SetButtonState(i, occupier, ts);
     }
 
     mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
