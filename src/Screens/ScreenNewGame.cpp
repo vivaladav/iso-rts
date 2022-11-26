@@ -173,7 +173,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     // -- BUTTON NEW GAME --
     mButtonStart = new ButtonMainMenu("START", panel);
-    mButtonStart->SetEnabled(false);
     mButtonStart->SetX(buttonBackW + marginButtonsH);
 
     // TODO proper selection of factions
@@ -265,7 +264,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         game->SetDifficulty(mDiff);
 
         // move to game
-        game->RequestNextActiveState(StateId::GAME);
+        game->RequestNextActiveState(StateId::PLANET_MAP);
     });
 
     // position buttons panel
@@ -344,8 +343,6 @@ void ScreenNewGame::ShowMapPreviews(unsigned int mapStart)
 
                     mMapSelInd = m;
                     mGame->SetCurrentMap(m);
-
-                    mButtonStart->SetEnabled(true);
                 }
             });
         }

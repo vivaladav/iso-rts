@@ -6,6 +6,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/PanelResources.h"
 #include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"
 #include "Widgets/PanelPlanetResources.h"
@@ -39,9 +40,15 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     const unsigned int colorHeader = 0xe9f7fbcc;
 
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+
     // BACKGROUND
     tex = tm->GetTexture("data/img/space_bg.jpg");
     mBg = new graphic::Image(tex);
+
+    // PANEL PLAYER RESOURCES TOP BAR
+    mPanelPlayerRes = new PanelResources(game->GetLocalPlayer());
+    mPanelPlayerRes->SetX((rendW - mPanelPlayerRes->GetWidth()) * 0.5f);
 
     // PANEL PLANET NAME
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_NAME);

@@ -48,7 +48,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     {
         // TODO REMOVE WHEN PLANET SELECTION IS DONE
         game->SetCurrentPlanet(PLANET_1);
-        game->RequestNextActiveState(StateId::PLANET_MAP);
+        game->RequestNextActiveState(StateId::FACTION_SEL);
     });
 
     buttonY += button->GetHeight() + VMARGIN;
