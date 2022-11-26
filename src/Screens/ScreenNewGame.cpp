@@ -181,6 +181,9 @@ ScreenNewGame::ScreenNewGame(Game * game)
         const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
 
         const int MAX_UNITS0 = 5;
+        const int startEnergy = 400;
+        const int startMaterial = 50;
+        const int startMoney = 500;
 
         // create human player
         const PlayerFaction pf = game->GetLocalPlayerFaction();
@@ -207,6 +210,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
         // TODO temporary for testing. In the future start only with 2 types
         p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_3));
         p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_4));
+
+        // assign initial resources
+        p->SumResource(Player::Stat::ENERGY, startEnergy);
+        p->SumResource(Player::Stat::MATERIAL, startMaterial);
+        p->SumResource(Player::Stat::MONEY, startMoney);
 
         // create AI players
         const char * strPlayers[] =
@@ -253,6 +261,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
             // TODO temporary for testing. In the future start only with 2 types
             p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_3));
             p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_4));
+
+            // assign initial resources
+            p->SumResource(Player::Stat::ENERGY, startEnergy);
+            p->SumResource(Player::Stat::MATERIAL, startMaterial);
+            p->SumResource(Player::Stat::MONEY, startMoney);
 
             ++indFaction;
 
