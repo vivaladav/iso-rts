@@ -169,8 +169,6 @@ add_executable(
     src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonMinimap.h
     src/Widgets/ButtonMinimap.cpp
-    src/Widgets/ButtonNavigation.h
-    src/Widgets/ButtonNavigation.cpp
     src/Widgets/ButtonPlanetMap.h
     src/Widgets/ButtonPlanetMap.cpp
     src/Widgets/ButtonQuickUnitSelection.h
@@ -189,8 +187,6 @@ add_executable(
     src/Widgets/GameButton.cpp
     src/Widgets/GameUIData.h
     src/Widgets/GameUIData.cpp
-    src/Widgets/MapPreview.h
-    src/Widgets/MapPreview.cpp
     src/Widgets/MiniMap.h
     src/Widgets/MiniMap.cpp
     src/Widgets/ObjectActionButton.h

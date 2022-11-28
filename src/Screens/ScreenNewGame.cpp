@@ -9,9 +9,7 @@
 #include "AI/PlayerAI.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
-#include "Widgets/ButtonNavigation.h"
 #include "Widgets/ButtonUnitsSelector.h"
-#include "Widgets/MapPreview.h"
 
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -115,46 +113,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     // move down
     widgetY += bgDiff->GetHeight() + marginWidgetsV;
-
-    // -- MAP --
-    mLabelMaps = new Label("MAP", fontHeader);
-    mLabelMaps->SetColor(colorHeader);
-    mLabelMaps->SetPosition(marginL, widgetY);
-
-    // MAP PREVIEW
-    const unsigned int numMaps = mGame->GetMapFiles().size();
-    mMapPreviews.assign(numMaps, nullptr);
-
-    ShowMapPreviews(mStartMap);
-
-    // MAP NAVIGATION BUTTONS
-    if(numMaps > mapsPerScreen)
-    {
-        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-        const int yc = mMapPreviews[0]->GetY() + mMapPreviews[0]->GetHeight() + marginMapV * 0.5f;
-
-        mButtonNavL = new ButtonNavigation("<");
-        mButtonNavL->AddOnClickFunction([this]
-        {
-            mStartMap -= mapsPerScreen;
-            UpdateNavButtonsState();
-            ShowMapPreviews(mStartMap);
-        });
-        mButtonNavL->SetPosition(marginL, yc - mButtonNavL->GetHeight() * 0.5f);
-
-        mButtonNavR = new ButtonNavigation(">");
-        mButtonNavR->AddOnClickFunction([this]
-        {
-            mStartMap += mapsPerScreen;
-            UpdateNavButtonsState();
-            ShowMapPreviews(mStartMap);
-        });
-        mButtonNavR->SetPosition(rendW - marginL - mButtonNavR->GetWidth(),
-                                 yc - mButtonNavR->GetHeight() * 0.5f);
-
-        UpdateNavButtonsState();
-    }
-
     // -- NAVIGATION PANEL --
     const int marginButtonsH = 100;
     const int marginButtonsB = 25;
@@ -175,7 +133,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     mButtonStart = new ButtonMainMenu("START", panel);
     mButtonStart->SetX(buttonBackW + marginButtonsH);
 
-    // TODO proper selection of factions
     mButtonStart->AddOnClickFunction([this, game]
     {
         const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
@@ -297,101 +254,6 @@ void ScreenNewGame::Update(float update)
 
 void ScreenNewGame::Render()
 {
-}
-
-MapPreview * ScreenNewGame::GetMapPreview(unsigned int index)
-{
-    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
-
-    if(index >= mapFiles.size())
-        return nullptr;
-
-    if(nullptr == mMapPreviews[index])
-        mMapPreviews[index] = new MapPreview(mapFiles[index].c_str());
-
-    return mMapPreviews[index];
-}
-
-void ScreenNewGame::ShowMapPreviews(unsigned int mapStart)
-{
-    // hide maps between 0 and start, if already created
-    for(unsigned int m = 0; m < mapStart; ++m)
-    {
-        MapPreview * mp = mMapPreviews[m];
-
-        if(mp)
-            mp->SetVisible(false);
-    }
-
-    // show maps between start and start + mps
-    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
-    const unsigned int numMaps = mapFiles.size();
-
-    int mapX = mapX0;
-    int mapY = mLabelMaps->GetY() + mLabelMaps->GetHeight() + marginHeaderB;
-
-    const int lastCol = cols - 1;
-    const unsigned int end = mapStart + mapsPerScreen;
-    const unsigned int mapEnd = numMaps < end ? numMaps : end;
-
-    for(unsigned int m = mapStart; m < mapEnd; ++m)
-    {
-        MapPreview * preview = mMapPreviews[m];
-
-        // create preview widget if not created yet
-        if(nullptr == preview)
-        {
-            preview = new MapPreview(mapFiles[m]);
-            mMapPreviews[m] = preview;
-
-            preview->SetPosition(mapX, mapY);
-            preview->SetOnClickFunction([this, m]
-            {
-                if(-1 == mMapSelInd || mMapPreviews[m] != mMapPreviews[mMapSelInd])
-                {
-                    mMapPreviews[m]->SetSelected(true);
-
-                    if(mMapSelInd != -1)
-                        mMapPreviews[mMapSelInd]->SetSelected(false);
-
-                    mMapSelInd = m;
-                    mGame->SetCurrentMap(m);
-                }
-            });
-        }
-
-        preview->SetVisible(true);
-
-        const int c = m % cols;
-
-        if(c < lastCol)
-            mapX += preview->GetWidth() + marginMapH;
-        else
-        {
-            mapX = mapX0;
-            mapY += preview->GetHeight() + marginMapV;
-        }
-    }
-
-    // hide maps between start + mps and end, if already created
-    for(unsigned int m = mapEnd; m < numMaps; ++m)
-    {
-        MapPreview * mp = mMapPreviews[m];
-
-        if(mp)
-            mp->SetVisible(false);
-    }
-}
-
-void ScreenNewGame::UpdateNavButtonsState()
-{
-    const std::vector<std::string> & mapFiles = mGame->GetMapFiles();
-    const unsigned int numMaps = mapFiles.size();
-
-    // disable LEFT if start is < mapsPerScreen
-    mButtonNavL->SetEnabled(mStartMap >= mapsPerScreen);
-    // disable RIGHT if start + maps per screen > total maps
-    mButtonNavR->SetEnabled(mStartMap + mapsPerScreen < numMaps);
 }
 
 } // namespace game

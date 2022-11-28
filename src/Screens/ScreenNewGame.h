@@ -30,22 +30,7 @@ public:
     void Render() override;
 
 private:
-    MapPreview * GetMapPreview(unsigned int index);
-    void ShowMapPreviews(unsigned int mapStart);
-
-    void UpdateNavButtonsState();
-
-private:
-    std::vector<MapPreview *> mMapPreviews;
-    int mMapSelInd = -1;
-    unsigned int mStartMap = 0;
-
-    sgl::sgui::Label * mLabelMaps = nullptr;
-
     sgl::sgui::PushButton * mButtonStart = nullptr;
-
-    sgl::sgui::PushButton * mButtonNavL = nullptr;
-    sgl::sgui::PushButton * mButtonNavR = nullptr;
 
     Game * mGame = nullptr;
 
