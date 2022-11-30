@@ -57,7 +57,7 @@ enum TerritoryStatus : unsigned int
     TER_ST_FREE,
     TER_ST_OCCUPIED,
     TER_ST_UNREACHABLE,
-    TER_ST_UNAVAILABLE, // disabled
+    TER_ST_UNAVAILABLE,
 
     NUM_TERRITORY_STATUSES,
 

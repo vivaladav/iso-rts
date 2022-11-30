@@ -188,8 +188,14 @@ void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, Terri
 
     auto b = static_cast<ButtonMission *>(mButtonsMission->GetButton(index));
 
+    if(ts == TER_ST_UNAVAILABLE)
+    {
+        b->SetVisible(false);
+        return;
+    }
+
     const bool explored = ts == TER_ST_FREE || ts == TER_ST_OCCUPIED;
-    const bool enabled = ts == TER_ST_UNEXPLORED || explored;
+    const bool enabled = ts != TER_ST_UNREACHABLE;
 
     b->SetFaction(occupier);
     b->SetExplored(explored);

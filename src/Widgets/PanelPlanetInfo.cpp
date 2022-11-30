@@ -162,6 +162,7 @@ void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
             "UNEXPLORED",
             "FREE",
             "OCCUPIED",
+            "UNREACHABLE",
             "UNAVAILABLE"
         };
 
