@@ -11,4 +11,10 @@ public:
     ButtonPlanetMap(sgl::sgui::Widget * parent);
 };
 
+class SecondaryButtonPlanetMap : public GameButton
+{
+public:
+    SecondaryButtonPlanetMap(sgl::sgui::Widget * parent);
+};
+
 } // namespace game

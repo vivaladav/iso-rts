@@ -23,4 +23,19 @@ ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
     SetLabelFont(fnt);
 }
 
+SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
+    GameButton(SpriteFilePlanetMap,
+        { IND_PM_BTN2_NORMAL, IND_PM_BTN2_DISABLED, IND_PM_BTN2_OVER,
+          IND_PM_BTN2_PRESSED, IND_PM_BTN2_NORMAL },
+        { 0xf4e5d7ff, 0x7c6650ff, 0xf9f2ebff, 0xeed9c3ff, 0xf4e5d7ff },
+        parent)
+{
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const int size = 20;
+
+    auto fm = sgl::graphic::FontManager::Instance();
+    sgl::graphic::Font * fnt = fm->GetFont(fileFont, size, sgl::graphic::Font::NORMAL);
+    SetLabelFont(fnt);
+}
+
 } // namespace game
