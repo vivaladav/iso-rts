@@ -7,6 +7,7 @@
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelResources.h"
+#include "Widgets/PanelPlanetActionExplore.h"
 #include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"
 #include "Widgets/PanelPlanetResources.h"
@@ -22,6 +23,13 @@
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
+
+namespace
+{
+    constexpr int costExploreMoney = 100;
+    constexpr int costExploreEnergy = 50;
+    constexpr int costExploreMaterial = 20;
+}
 
 namespace game
 {
@@ -78,6 +86,24 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const int panActionsY = (mBg->GetHeight() - mPanelActions->GetHeight()) * 0.5f;
     mPanelActions->SetY(panActionsY);
     mPanelActions->SetEnabled(false);
+
+    mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::EXPLORE, [this]
+    {
+        mPanelActions->SetVisible(false);
+        mPanelExplore->SetVisible(true);
+    });
+
+    // PANEL ACTION EXPLORE
+    mPanelExplore = new PanelPlanetActionExplore(costExploreMoney, costExploreEnergy,
+                                                 costExploreMaterial);
+    mPanelExplore->SetY(panActionsY);
+    mPanelExplore->SetVisible(false);
+
+    mPanelExplore->AddOnButtonCancelClickFunction([this]
+    {
+        mPanelActions->SetVisible(true);
+        mPanelExplore->SetVisible(false);
+    });
 
     // PANEL INFO
     mPanelInfo = new PanelPlanetInfo;

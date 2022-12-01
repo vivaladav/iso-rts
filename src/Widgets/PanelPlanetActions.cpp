@@ -43,17 +43,16 @@ PanelPlanetActions::PanelPlanetActions()
     RegisterRenderable(mTitle);
 
     // BUTTONS
-    mButtonExplore = new ButtonPlanetMap(this);
-    mButtonExplore->SetLabel("EXPLORE");
+    mButtons[EXPLORE] = new ButtonPlanetMap(this);
+    mButtons[EXPLORE]->SetLabel("EXPLORE");
 
-    mButtonConquer = new ButtonPlanetMap(this);
-    mButtonConquer->SetLabel("CONQUER");
+    mButtons[CONQUER] = new ButtonPlanetMap(this);
+    mButtons[CONQUER]->SetLabel("CONQUER");
 
-    mButtonSendAI = new ButtonPlanetMap(this);
-    mButtonSendAI->SetLabel("SEND AI");
+    mButtons[SEND_AI] = new ButtonPlanetMap(this);
+    mButtons[SEND_AI]->SetLabel("SEND AI");
 
     // TEXT
-
     const int textSize = 18;
     fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
 
@@ -73,6 +72,12 @@ PanelPlanetActions::PanelPlanetActions()
     UpdatePositions();
 }
 
+void PanelPlanetActions::AddOnButtonClickFunction(Button btn, const std::function<void()> & f)
+{
+    if(btn < NUM_BUTTONS)
+        mButtons[btn]->AddOnClickFunction(f);
+}
+
 void PanelPlanetActions::HandlePositionChanged()
 {
     UpdatePositions();
@@ -80,9 +85,9 @@ void PanelPlanetActions::HandlePositionChanged()
 
 void PanelPlanetActions::HandleStateEnabled()
 {
-    mButtonExplore->SetEnabled(true);
-    mButtonConquer->SetEnabled(true);
-    mButtonSendAI->SetEnabled(true);
+    mButtons[EXPLORE]->SetEnabled(true);
+    mButtons[CONQUER]->SetEnabled(true);
+    mButtons[SEND_AI]->SetEnabled(true);
 
     mTextExplore->SetColor(textColorEna);
     mTextConquer->SetColor(textColorEna);
@@ -91,9 +96,9 @@ void PanelPlanetActions::HandleStateEnabled()
 
 void PanelPlanetActions::HandleStateDisabled()
 {
-    mButtonExplore->SetEnabled(false);
-    mButtonConquer->SetEnabled(false);
-    mButtonSendAI->SetEnabled(false);
+    mButtons[EXPLORE]->SetEnabled(false);
+    mButtons[CONQUER]->SetEnabled(false);
+    mButtons[SEND_AI]->SetEnabled(false);
 
     mTextExplore->SetColor(textColorDis);
     mTextConquer->SetColor(textColorDis);
@@ -130,27 +135,27 @@ void PanelPlanetActions::UpdatePositions()
     x = marginL;
     y = marginT + mTitle->GetHeight() + marginButtons;
 
-    mButtonExplore->SetPosition(x, y);
+    mButtons[EXPLORE]->SetPosition(x, y);
 
     y += buttonBlockH;
 
-    mButtonConquer->SetPosition(x, y);
+    mButtons[CONQUER]->SetPosition(x, y);
 
     y += buttonBlockH;
 
-    mButtonSendAI->SetPosition(x, y);
+    mButtons[SEND_AI]->SetPosition(x, y);
 
     // TEXT
     x = x0 + marginL;
-    y = y0 + mButtonExplore->GetY() + mButtonExplore->GetHeight() + marginTextT;
+    y = y0 + mButtons[EXPLORE]->GetY() + mButtons[EXPLORE]->GetHeight() + marginTextT;
 
     mTextExplore->SetPosition(x, y);
 
-    y = y0 + mButtonConquer->GetY() + mButtonConquer->GetHeight() + marginTextT;
+    y = y0 + mButtons[CONQUER]->GetY() + mButtons[CONQUER]->GetHeight() + marginTextT;
 
     mTextConquer->SetPosition(x, y);
 
-    y = y0 + mButtonSendAI->GetY() + mButtonSendAI->GetHeight() + marginTextT;
+    y = y0 + mButtons[SEND_AI]->GetY() + mButtons[SEND_AI]->GetHeight() + marginTextT;
 
     mTextSendAI->SetPosition(x, y);
 }

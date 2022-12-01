@@ -2,6 +2,8 @@
 
 #include <sgl/sgui/Widget.h>
 
+#include <functional>
+
 namespace sgl
 {
     namespace graphic
@@ -19,7 +21,19 @@ class ButtonPlanetMap;
 class PanelPlanetActions : public sgl::sgui::Widget
 {
 public:
+    enum Button : unsigned int
+    {
+        EXPLORE,
+        CONQUER,
+        SEND_AI,
+
+        NUM_BUTTONS
+    };
+
+public:
     PanelPlanetActions();
+
+    void AddOnButtonClickFunction(Button btn, const std::function<void()> & f);
 
 private:
     void HandlePositionChanged() override;
@@ -33,9 +47,7 @@ private:
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Text * mTitle = nullptr;
 
-    ButtonPlanetMap * mButtonExplore = nullptr;
-    ButtonPlanetMap * mButtonConquer = nullptr;
-    ButtonPlanetMap * mButtonSendAI = nullptr;
+    ButtonPlanetMap * mButtons[NUM_BUTTONS];
 
     sgl::graphic::Text * mTextExplore = nullptr;
     sgl::graphic::Text * mTextConquer = nullptr;
