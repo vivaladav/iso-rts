@@ -51,7 +51,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mPanelPlayerRes->SetX((rendW - mPanelPlayerRes->GetWidth()) * 0.5f);
 
     // PANEL PLANET NAME
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_NAME);
+    tex = tm->GetSprite(SpriteFilePlanetMap2, IND_PM_PANEL_NAME);
     auto panelName = new sgui::Image(tex);
 
     fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle, graphic::Font::NORMAL);
@@ -59,7 +59,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mLabelName->SetColor(colorHeader);
 
     // PANEL DATE
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_DATE);
+    tex = tm->GetSprite(SpriteFilePlanetMap2, IND_PM_PANEL_DATE);
     auto panelDate = new sgui::Image(tex);
     panelDate->SetX(mBg->GetWidth() - panelDate->GetWidth());
 
@@ -86,7 +86,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mPanelInfo->SetEnabled(false);
 
     // PANEL LEAVE
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_LEAVE);
+    tex = tm->GetSprite(SpriteFilePlanetMap2, IND_PM_PANEL_LEAVE);
     auto panelLeave = new sgui::Image(tex);
     panelLeave->SetPosition(mBg->GetWidth() - panelLeave->GetWidth(),
                             mBg->GetHeight() - panelLeave->GetHeight());

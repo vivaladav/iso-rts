@@ -31,7 +31,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     auto fm = graphic::FontManager::Instance();
 
     // BACKGROUND
-    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_PANEL_INFO);
+    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap2, IND_PM_PANEL_INFO);
     mBg = new graphic::Image(tex);
     RegisterRenderable(mBg);
 
