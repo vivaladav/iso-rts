@@ -202,6 +202,11 @@ void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, Terri
     b->SetEnabled(enabled);
 }
 
+int PlanetMap::GetSelectedTerritoryId() const
+{
+    return mButtonsMission->GetIndexChecked();
+}
+
 void PlanetMap::HandlePositionChanged()
 {
     const int x0 = GetScreenX();

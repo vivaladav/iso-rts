@@ -93,138 +93,48 @@ PanelPlanetInfo::PanelPlanetInfo()
 
 void PanelPlanetInfo::ClearData()
 {
-    SetTerritoryValue(0);
-    SetTerritorySize(0);
-    SetTerritoryStatus(TER_ST_UNKNOWN);
-    SetTerritoryOccupier(NO_FACTION);
-}
-
-void PanelPlanetInfo::SetTerritorySize(int size)
-{
-    using namespace sgl;
-
-    if(size == mSize)
+    if(TER_ST_UNKNOWN == mStatus)
         return ;
 
+    mValue = 0;
+    mSize = 0;
+    mStatus = TER_ST_UNKNOWN;
+    mOccupier = NO_FACTION;
+
+    UpdateTerritorySize();
+    UpdateTerritoryStatus();
+    UpdateTerritoryOccupier();
+    UpdateTerritoryValue();
+
+    UpdatePositions();
+}
+
+void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction faction, unsigned int value)
+{
+    const bool sizeChanged = size != mSize;
+    const bool statusChanged = status != mStatus;
+    const bool factionChanged = faction != mOccupier;
+    const bool valueChanged = value != mValue;
+
+    mValue = value;
     mSize = size;
-
-    // delete current text
-    UnregisterRenderable(mLabelSize);
-    delete mLabelSize;
-
-    // create new text
-    auto fm = graphic::FontManager::Instance();
-
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
-    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
-                                          graphic::Font::NORMAL);
-
-    if(size > 0)
-    {
-        std::ostringstream s;
-        s << size << "x" << size;
-
-        mLabelSize = new graphic::Text(s.str().c_str(), fntData);
-    }
-    else
-        mLabelSize = new graphic::Text("?", fntData);
-
-    mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
-    RegisterRenderable(mLabelSize);
-
-    UpdatePositions();
-}
-
-void PanelPlanetInfo::SetTerritoryStatus(TerritoryStatus status)
-{
-    using namespace sgl;
-
-    if(status == mStatus)
-        return ;
-
     mStatus = status;
-
-    // delete current text
-    UnregisterRenderable(mLabelStatus);
-    delete mLabelStatus;
-
-    // create new text
-    auto fm = graphic::FontManager::Instance();
-
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
-    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
-                                          graphic::Font::NORMAL);
-
-    if(status < NUM_TERRITORY_STATUSES)
-    {
-        const char * statuses[] =
-        {
-            "UNEXPLORED",
-            "FREE",
-            "OCCUPIED",
-            "UNREACHABLE",
-            "UNAVAILABLE"
-        };
-
-        mLabelStatus = new graphic::Text(statuses[status], fntData);
-    }
-    else
-        mLabelStatus = new graphic::Text("?", fntData);
-
-    mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
-    RegisterRenderable(mLabelStatus);
-
-    UpdatePositions();
-}
-
-void PanelPlanetInfo::SetTerritoryOccupier(PlayerFaction faction)
-{
-    using namespace sgl;
-
-    if(faction == mOccupier)
-        return ;
-
     mOccupier = faction;
 
-    // delete current text
-    UnregisterRenderable(mLabelOccupier);
-    delete mLabelOccupier;
+    if(sizeChanged)
+        UpdateTerritorySize();
 
-    // create new text
-    auto fm = graphic::FontManager::Instance();
+    if(statusChanged)
+        UpdateTerritoryStatus();
 
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
-    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
-                                          graphic::Font::NORMAL);
+    if(factionChanged || (NO_FACTION == mOccupier && statusChanged))
+        UpdateTerritoryOccupier();
 
-    if(faction < NUM_FACTIONS)
-    {
-        mLabelOccupier = new graphic::Text(FACTIONS_NAME[faction], fntData);
-        mLabelOccupier->SetColor(PLAYER_COLOR[faction]);
-    }
-    else
-    {
-        mLabelOccupier = new graphic::Text("?", fntData);
-        mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
-    }
+    if(valueChanged)
+        UpdateTerritoryValue();
 
-    RegisterRenderable(mLabelOccupier);
 
     UpdatePositions();
-}
-
-void PanelPlanetInfo::SetTerritoryValue(unsigned int value)
-{
-    using namespace sgl;
-
-    const int maxVal = 5;
-
-    if(value > maxVal)
-        return ;
-
-    auto tm = graphic::TextureManager::Instance();
-    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS + value);
-    mBarValue->SetTexture(tex);
 }
 
 void PanelPlanetInfo::HandlePositionChanged()
@@ -298,6 +208,113 @@ void PanelPlanetInfo::UpdatePositions()
 
     dataX = x1 - mLabelOccupier->GetWidth();
     mLabelOccupier->SetPosition(dataX, y);
+}
+
+void PanelPlanetInfo::UpdateTerritorySize()
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelSize);
+    delete mLabelSize;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    if(mSize > 0)
+    {
+        std::ostringstream s;
+        s << mSize << "x" << mSize;
+
+        mLabelSize = new graphic::Text(s.str().c_str(), fntData);
+    }
+    else
+        mLabelSize = new graphic::Text("?", fntData);
+
+    mLabelSize->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelSize);
+}
+
+void PanelPlanetInfo::UpdateTerritoryStatus()
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelStatus);
+    delete mLabelStatus;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    if(mStatus < NUM_TERRITORY_STATUSES)
+    {
+        const char * statuses[] =
+        {
+            "UNEXPLORED",
+            "FREE",
+            "OCCUPIED",
+            "OCCUPIED",
+            "UNREACHABLE",
+            "UNAVAILABLE"
+        };
+
+        mLabelStatus = new graphic::Text(statuses[mStatus], fntData);
+    }
+    else
+        mLabelStatus = new graphic::Text("?", fntData);
+
+    mLabelStatus->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelStatus);
+}
+
+void PanelPlanetInfo::UpdateTerritoryOccupier()
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelOccupier);
+    delete mLabelOccupier;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                          graphic::Font::NORMAL);
+
+    if(mOccupier < NUM_FACTIONS)
+    {
+        mLabelOccupier = new graphic::Text(FACTIONS_NAME[mOccupier], fntData);
+        mLabelOccupier->SetColor(PLAYER_COLOR[mOccupier]);
+    }
+    else
+    {
+        if(mStatus != TER_ST_UNKNOWN && mStatus != TER_ST_UNEXPLORED)
+            mLabelOccupier = new graphic::Text("-", fntData);
+        else
+            mLabelOccupier = new graphic::Text("?", fntData);
+
+        mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
+    }
+
+    RegisterRenderable(mLabelOccupier);
+}
+
+void PanelPlanetInfo::UpdateTerritoryValue()
+{
+    using namespace sgl;
+
+    auto tm = graphic::TextureManager::Instance();
+    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS + mValue);
+    mBarValue->SetTexture(tex);
 }
 
 } // namespace game

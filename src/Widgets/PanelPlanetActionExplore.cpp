@@ -1,5 +1,7 @@
 #include "Widgets/PanelPlanetActionExplore.h"
 
+#include "GameConstants.h"
+#include "Player.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/WidgetsConstants.h"
@@ -10,12 +12,28 @@
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/Image.h>
+#include <sgl/sgui/Label.h>
+#include <sgl/sgui/TextArea.h>
+
+#include <iostream>
+
+namespace
+{
+    constexpr unsigned int textColor = 0x80a2b3ff;
+    constexpr int textSize = 18;
+    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+}
 
 namespace game
 {
 
-PanelPlanetActionExplore::PanelPlanetActionExplore(int money, int energy, int material)
+PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, int energy, int material)
     : sgl::sgui::Widget(nullptr)
+    , mPlayer(player)
+    , mCostMoney(money)
+    , mCostenergy(energy)
+    , mCostmaterial(material)
 {
     using namespace sgl;
 
@@ -30,7 +48,6 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(int money, int energy, int ma
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // TITLE
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
     const unsigned int colorTitle = 0xe9f7fbcc;
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
@@ -39,6 +56,12 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(int money, int energy, int ma
     mTitle->SetColor(colorTitle);
     RegisterRenderable(mTitle);
 
+    // CONTENT
+    CreateContentStart(money, energy, material);
+    CreateContentSuccess();
+
+    mContentSuccess->SetVisible(false);
+
     // BUTTONS
     mButtonOk = new ButtonPlanetMap(this);
     mButtonOk->SetLabel("EXPLORE");
@@ -46,50 +69,50 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(int money, int energy, int ma
     mButtonCancel = new SecondaryButtonPlanetMap(this);
     mButtonCancel->SetLabel("CANCEL");
 
-    // TEXT
-    constexpr unsigned int textColor = 0x80a2b3ff;
-    const int textSize = 18;
-
-    fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
-
-    mTextDesc = new graphic::Text("Send a squad of scouts to explore the territory.", fnt);
-    mTextDesc->SetColor(textColor);
-    RegisterRenderable(mTextDesc);
-
-    mTextCost  = new graphic::Text("This will cost:", fnt);
-    mTextCost->SetColor(textColor);
-    RegisterRenderable(mTextCost);
-
-    // ICONS
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_MONEY);
-    mIconMoney = new graphic::Image(tex);
-    RegisterRenderable(mIconMoney);
-
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_ENERGY);
-    mIconEnergy = new graphic::Image(tex);
-    RegisterRenderable(mIconEnergy);
-
-    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_MATERIAL);
-    mIconMaterial = new graphic::Image(tex);
-    RegisterRenderable(mIconMaterial);
-
-    // VALUES
-    constexpr unsigned int valueColor = 0xb8bec7ff;
-
-    mTextMoney = new graphic::Text(std::to_string(money).c_str(), fnt);
-    mTextMoney->SetColor(valueColor);
-    RegisterRenderable(mTextMoney);
-
-    mTextEnergy = new graphic::Text(std::to_string(energy).c_str(), fnt);
-    mTextEnergy->SetColor(valueColor);
-    RegisterRenderable(mTextEnergy);
-
-    mTextMaterial = new graphic::Text(std::to_string(material).c_str(), fnt);
-    mTextMaterial->SetColor(valueColor);
-    RegisterRenderable(mTextMaterial);
-
     // position elements
     UpdatePositions();
+}
+
+void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
+{
+    const bool unexplored = status == TER_ST_UNEXPLORED || status == TER_ST_OCCUPIED_UNEXPLORED;
+
+    mButtonOk->SetVisible(unexplored);
+
+    mContentStart->SetVisible(unexplored);
+
+
+    if(unexplored)
+    {
+        const int money = mPlayer->GetStat(Player::Stat::MONEY).GetIntValue();
+        const int energy = mPlayer->GetStat(Player::Stat::ENERGY).GetIntValue();
+        const int material = mPlayer->GetStat(Player::Stat::MATERIAL).GetIntValue();
+        const bool enoughMoney = money >= mCostMoney;
+        const bool enoughEnergy = energy >= mCostenergy;
+        const bool enoughMaterial = material >= mCostmaterial;
+        const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
+
+        mButtonOk->SetEnabled(canExplore);
+
+        constexpr unsigned int enoughResColor = 0x85cc85ff;
+        constexpr unsigned int lackResColor = 0xcc8b85ff;
+
+        mLabelMoney->SetColor(enoughMoney ? enoughResColor : lackResColor);
+        mLabelEnergy->SetColor(enoughEnergy ? enoughResColor : lackResColor);
+        mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
+    }
+
+    // handle specific cases
+    if(TER_ST_FREE == status || TER_ST_OCCUPIED == status)
+    {
+        mContentSuccess->SetVisible(true);
+
+        mButtonCancel->SetLabel("CLOSE");
+    }
+    else
+    {
+        mContentSuccess->SetVisible(false);
+    }
 }
 
 void PanelPlanetActionExplore::AddOnButtonOkClickFunction(const std::function<void()> & f)
@@ -100,6 +123,101 @@ void PanelPlanetActionExplore::AddOnButtonOkClickFunction(const std::function<vo
 void PanelPlanetActionExplore::AddOnButtonCancelClickFunction(const std::function<void()> & f)
 {
     mButtonCancel->AddOnClickFunction(f);
+}
+
+void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int material)
+{
+    using namespace sgl;
+
+    mContentStart = new sgui::Widget(this);
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+
+    const int w = GetWidth();
+
+    // DESCRIPTION
+    graphic::Font * fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
+
+    const int marginL = 20;
+    const int marginR = 20;
+    const int contW = w - marginL - marginR;
+    const int contH = 80;
+    const char * txt = "Send a squad of scouts to explore the territory.\n\nThis will cost you:";
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
+    text->SetColor(textColor);
+
+    // COSTS
+    auto contCosts = new sgui::Widget(mContentStart);
+
+    const unsigned int valueColor = 0xb8bec7ff;
+    const int valueBlockW = 130;
+    const int spacingValue = 5;
+
+    int x = 0;
+    int y = 0;
+
+    graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_MONEY);
+    auto icon = new sgui::Image(tex, contCosts);
+
+    mLabelMoney = new sgui::Label(std::to_string(money).c_str(), fnt, contCosts);
+    mLabelMoney->SetColor(valueColor);
+
+    x = icon->GetWidth() + spacingValue;
+    y = (icon->GetHeight() - mLabelMoney->GetHeight()) * 0.5f;
+    mLabelMoney->SetPosition(x, y);
+
+    x = valueBlockW;
+
+    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_ENERGY);
+    icon = new sgui::Image(tex, contCosts);
+    icon->SetX(x);
+
+    mLabelEnergy = new sgui::Label(std::to_string(energy).c_str(), fnt, contCosts);
+    mLabelEnergy->SetColor(valueColor);
+
+    x += icon->GetWidth() + spacingValue;
+    y = (icon->GetHeight() - mLabelEnergy->GetHeight()) * 0.5f;
+    mLabelEnergy->SetPosition(x, y);
+
+    x = valueBlockW * 2;
+
+    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_MATERIAL);
+    icon = new sgui::Image(tex, contCosts);
+    icon->SetX(x);
+
+    mLabelMaterial = new sgui::Label(std::to_string(material).c_str(), fnt, contCosts);
+    mLabelMaterial->SetColor(valueColor);
+
+    x += icon->GetWidth() + spacingValue;
+    y = (icon->GetHeight() - mLabelMaterial->GetHeight()) * 0.5f;
+    mLabelMaterial->SetPosition(x, y);
+
+    x = (w - contCosts->GetWidth()) * 0.5f - marginL;
+    y = text->GetHeight();
+    contCosts->SetPosition(x, y);
+}
+
+void PanelPlanetActionExplore::CreateContentSuccess()
+{
+    using namespace sgl;
+
+    mContentSuccess = new sgui::Widget(this);
+
+    auto fm = graphic::FontManager::Instance();
+
+    const int w = GetWidth();
+
+    // DESCRIPTION
+    graphic::Font * fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
+
+    const int marginL = 20;
+    const int marginR = 20;
+    const int contW = w - marginL - marginR;
+    const int contH = 100;
+    const char * txt = "Exploration was successful!\n\nCheck out the other panels for the results.";
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
+    text->SetColor(textColor);
 }
 
 void PanelPlanetActionExplore::HandlePositionChanged()
@@ -132,50 +250,13 @@ void PanelPlanetActionExplore::UpdatePositions()
 
     mTitle->SetPosition(x, y);
 
-    // TEXT
-    const int spacingText = 15;
-    x = x0 + marginL;
-    y = mTitle->GetY() + mTitle->GetHeight() + marginTextT;
+    // CONTENT
+    x = marginL;
+    y = marginT + mTitle->GetHeight() + marginTextT;
 
-    mTextDesc->SetPosition(x, y);
+    mContentStart->SetPosition(x, y);
 
-    y += mTextDesc->GetHeight() + spacingText;
-
-    mTextCost->SetPosition(x, y);
-
-    // VALUES
-    const int valueBlockW = 130;
-    const int spacingValue = 5;
-    const int valuesW = (valueBlockW * 2) + mIconMaterial->GetWidth() +
-                        spacingValue + mTextMaterial->GetWidth();
-
-    x = x0 + (w - valuesW) * 0.5f;
-    y += mTextCost->GetHeight() + spacingText;
-
-    mIconMoney->SetPosition(x, y);
-
-    x += valueBlockW;
-
-    mIconEnergy->SetPosition(x, y);
-
-    x += valueBlockW;
-
-    mIconMaterial->SetPosition(x, y);
-
-    x = mIconMoney->GetX() + mIconMoney->GetWidth() + spacingValue;
-    y = mIconMoney->GetY() + (mIconMoney->GetHeight() - mTextMoney->GetHeight()) * 0.5f;
-
-    mTextMoney->SetPosition(x, y);
-
-    x = mIconEnergy->GetX() + mIconEnergy->GetWidth() + spacingValue;
-    y = mIconEnergy->GetY() + (mIconEnergy->GetHeight() - mTextEnergy->GetHeight()) * 0.5f;
-
-    mTextEnergy->SetPosition(x, y);
-
-    x = mIconMaterial->GetX() + mIconMaterial->GetWidth() + spacingValue;
-    y = mIconMaterial->GetY() + (mIconMaterial->GetHeight() - mTextMaterial->GetHeight()) * 0.5f;
-
-    mTextMaterial->SetPosition(x, y);
+    mContentSuccess->SetPosition(x, y);
 
     // BUTTONS
     const int marginButtonsBottom = 50;

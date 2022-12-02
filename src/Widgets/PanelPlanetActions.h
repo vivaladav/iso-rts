@@ -18,6 +18,8 @@ namespace game
 
 class ButtonPlanetMap;
 
+enum TerritoryStatus : unsigned int;
+
 class PanelPlanetActions : public sgl::sgui::Widget
 {
 public:
@@ -34,6 +36,8 @@ public:
     PanelPlanetActions();
 
     void AddOnButtonClickFunction(Button btn, const std::function<void()> & f);
+
+    void UpdateButtons(TerritoryStatus status, bool isPlayerOccupier);
 
 private:
     void HandlePositionChanged() override;

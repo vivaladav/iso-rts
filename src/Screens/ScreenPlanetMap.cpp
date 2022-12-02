@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "GameConstants.h"
 #include "MapsRegistry.h"
+#include "Player.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
@@ -28,7 +29,7 @@ namespace
 {
     constexpr int costExploreMoney = 100;
     constexpr int costExploreEnergy = 50;
-    constexpr int costExploreMaterial = 20;
+    constexpr int costExploreMaterial = 30;
 }
 
 namespace game
@@ -50,12 +51,14 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
 
+    Player * player = game->GetLocalPlayer();
+
     // BACKGROUND
     tex = tm->GetTexture("data/img/space_bg.jpg");
     mBg = new graphic::Image(tex);
 
     // PANEL PLAYER RESOURCES TOP BAR
-    mPanelPlayerRes = new PanelResources(game->GetLocalPlayer());
+    mPanelPlayerRes = new PanelResources(player);
     mPanelPlayerRes->SetX((rendW - mPanelPlayerRes->GetWidth()) * 0.5f);
 
     // PANEL PLANET NAME
@@ -94,10 +97,49 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     });
 
     // PANEL ACTION EXPLORE
-    mPanelExplore = new PanelPlanetActionExplore(costExploreMoney, costExploreEnergy,
-                                                 costExploreMaterial);
+    mPanelExplore = new PanelPlanetActionExplore(player, costExploreMoney,
+                                                 costExploreEnergy, costExploreMaterial);
     mPanelExplore->SetY(panActionsY);
     mPanelExplore->SetVisible(false);
+
+    mPanelExplore->AddOnButtonOkClickFunction([this]
+    {
+        auto game = GetGame();
+        Player * player = game->GetLocalPlayer();
+
+        const int money = player->GetStat(Player::Stat::MONEY).GetIntValue();
+        const int energy = player->GetStat(Player::Stat::ENERGY).GetIntValue();
+        const int material = player->GetStat(Player::Stat::MATERIAL).GetIntValue();
+
+        // check if player can afford to explore and take the resources away
+        if(money < costExploreMoney || energy < costExploreEnergy || material < costExploreMaterial)
+            return ;
+
+        player->SumResource(Player::Stat::MONEY, -costExploreMoney);
+        player->SumResource(Player::Stat::ENERGY, -costExploreEnergy);
+        player->SumResource(Player::Stat::MATERIAL, -costExploreMaterial);
+
+        // handle the result
+        const int planetId = game->GetCurrentPlanet();
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        auto mapReg = game->GetMapsRegistry();
+
+        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
+
+        if(occupier != NO_FACTION)
+        {
+
+        }
+        else
+        {
+            mapReg->SetMapStatus(planetId, territory, TER_ST_FREE);
+
+            mPanelExplore->UpdateExplorationStatus(TER_ST_FREE);
+
+            ShowInfo(territory);
+        }
+    });
 
     mPanelExplore->AddOnButtonCancelClickFunction([this]
     {
@@ -165,34 +207,30 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelActions->SetEnabled(true);
         mPanelInfo->SetEnabled(true);
 
+        // make sure panel actions is visible
+        mPanelActions->SetVisible(true);
+        mPanelExplore->SetVisible(false);
+
         auto game = GetGame();
         const int planetId = game->GetCurrentPlanet();
         auto mapReg = game->GetMapsRegistry();
 
         const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
 
-        if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
-        {
-            mPanelResources->SetEnabled(true);
-            mPanelResources->SetResourceValue(RES_ENERGY, mapReg->GetMapEnergy(planetId, ind));
-            mPanelResources->SetResourceValue(RES_MATERIAL1, mapReg->GetMapMaterial(planetId, ind));
-            mPanelResources->SetResourceValue(RES_BLOBS, mapReg->GetMapBlobs(planetId, ind));
-            mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, ind));
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, ind);
+        const bool playerOccupier = GetGame()->GetLocalPlayerFaction() == occupier;
+        mPanelActions->UpdateButtons(status, playerOccupier);
 
-            mPanelInfo->SetTerritoryValue(mapReg->GetMapValue(planetId, ind));
-            mPanelInfo->SetTerritorySize(mapReg->GetMapSize(planetId, ind));
-            mPanelInfo->SetTerritoryOccupier(mapReg->GetMapOccupier(planetId, ind));
-        }
+        if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
+            ShowInfo(ind);
         else
         {
             mPanelResources->SetEnabled(false);
 
-            mPanelInfo->SetTerritoryValue(0);
-            mPanelInfo->SetTerritorySize(0);
-            mPanelInfo->SetTerritoryOccupier(NO_FACTION);
+            mPanelInfo->SetData(0, status, NO_FACTION, 0);
         }
 
-        mPanelInfo->SetTerritoryStatus(status);
+        mPanelExplore->UpdateExplorationStatus(status);
     });
 
     SetPlanetName(PLANETS_NAME[planetId]);
@@ -235,6 +273,29 @@ void ScreenPlanetMap::SetDate(const char * date)
     const int x = (parent->GetWidth() - mLabelDate->GetWidth()) * 0.5f;
     const int y = (parent->GetHeight() - mLabelDate->GetHeight()) * 0.5f;
     mLabelDate->SetPosition(x, y);
+}
+
+void ScreenPlanetMap::ShowInfo(int territory)
+{
+    auto game = GetGame();
+    const int planetId = game->GetCurrentPlanet();
+    auto mapReg = game->GetMapsRegistry();
+
+    // PANEL RESOURCES
+    mPanelResources->SetEnabled(true);
+    mPanelResources->SetResourceValue(RES_ENERGY, mapReg->GetMapEnergy(planetId, territory));
+    mPanelResources->SetResourceValue(RES_MATERIAL1, mapReg->GetMapMaterial(planetId, territory));
+    mPanelResources->SetResourceValue(RES_BLOBS, mapReg->GetMapBlobs(planetId, territory));
+    mPanelResources->SetResourceValue(RES_DIAMONDS, mapReg->GetMapDiamonds(planetId, territory));
+
+    // PANEL INFO
+    const int size = mapReg->GetMapSize(planetId, territory);
+    const int value = mapReg->GetMapValue(planetId, territory);
+    const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
+    const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+
+    mPanelInfo->SetEnabled(true);
+    mPanelInfo->SetData(size, status, occupier, value);
 }
 
 } // namespace game

@@ -56,6 +56,7 @@ enum TerritoryStatus : unsigned int
     TER_ST_UNEXPLORED,
     TER_ST_FREE,
     TER_ST_OCCUPIED,
+    TER_ST_OCCUPIED_UNEXPLORED,
     TER_ST_UNREACHABLE,
     TER_ST_UNAVAILABLE,
 

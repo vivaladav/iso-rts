@@ -186,4 +186,26 @@ TerritoryStatus MapsRegistry::GetMapStatus(unsigned int planetId, unsigned int i
     return TER_ST_UNKNOWN;
 }
 
+void MapsRegistry::SetMapStatus(unsigned int planetId, unsigned int index, TerritoryStatus status)
+{
+    if(mData.find(planetId) != mData.end())
+    {
+        auto & data = mData.at(planetId);
+
+        if(index < data.size())
+            data[index].mStatus = status;
+    }
+}
+
+void MapsRegistry::SetMapOccupier(unsigned int planetId, unsigned int index, PlayerFaction occupier)
+{
+    if(mData.find(planetId) != mData.end())
+    {
+        auto & data = mData.at(planetId);
+
+        if(index < data.size())
+            data[index].mOccupier = occupier;
+    }
+}
+
 } // namespace game

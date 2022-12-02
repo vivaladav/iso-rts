@@ -25,11 +25,7 @@ public:
     PanelPlanetInfo();
 
     void ClearData();
-
-    void SetTerritorySize(int size);
-    void SetTerritoryStatus(TerritoryStatus status);
-    void SetTerritoryOccupier(PlayerFaction faction);
-    void SetTerritoryValue(unsigned int value);
+    void SetData(int size, TerritoryStatus status, PlayerFaction faction, unsigned int value);
 
 private:
     void HandlePositionChanged() override;
@@ -38,6 +34,11 @@ private:
     void HandleStateDisabled() override;
 
     void UpdatePositions();
+
+    void UpdateTerritorySize();
+    void UpdateTerritoryStatus();
+    void UpdateTerritoryOccupier();
+    void UpdateTerritoryValue();
 
 private:
     sgl::graphic::Text * mTitle = nullptr;

@@ -31,6 +31,8 @@ private:
     void SetPlanetName(const char * name);
     void SetDate(const char * date);
 
+    void ShowInfo(int territory);
+
 private:
     sgl::graphic::Image * mBg = nullptr;
 

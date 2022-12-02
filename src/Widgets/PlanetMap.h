@@ -26,6 +26,8 @@ public:
     void SetButtonEnabled(unsigned int index, bool enabled);
     void SetButtonState(unsigned int index, PlayerFaction occupier, TerritoryStatus ts);
 
+    int GetSelectedTerritoryId() const;
+
 private:
     void HandlePositionChanged() override;
 

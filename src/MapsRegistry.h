@@ -32,6 +32,9 @@ public:
     PlayerFaction GetMapOccupier(unsigned int planetId, unsigned int index) const;
     TerritoryStatus GetMapStatus(unsigned int planetId, unsigned int index) const;
 
+    void SetMapStatus(unsigned int planetId, unsigned int index, TerritoryStatus status);
+    void SetMapOccupier(unsigned int planetId, unsigned int index, PlayerFaction occupier);
+
 private:
     struct MapData
     {

@@ -11,23 +11,38 @@ namespace sgl
         class Image;
         class Text;
     }
+
+    namespace sgui
+    {
+        class Image;
+        class Label;
+        class TextArea;
+    }
 }
 
 namespace game
 {
 
-class SecondaryButtonPlanetMap;
 class ButtonPlanetMap;
+class SecondaryButtonPlanetMap;
+class Player;
+
+enum TerritoryStatus : unsigned int;
 
 class PanelPlanetActionExplore : public sgl::sgui::Widget
 {
 public:
-    PanelPlanetActionExplore(int money, int energy, int material);
+    PanelPlanetActionExplore(Player * player, int money, int energy, int material);
+
+    void UpdateExplorationStatus(TerritoryStatus status);
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);
     void AddOnButtonCancelClickFunction(const std::function<void()> & f);
 
 private:
+    void CreateContentStart(int money, int energy, int material);
+    void CreateContentSuccess();
+
     void HandlePositionChanged() override;
 
     void UpdatePositions();
@@ -36,19 +51,21 @@ private:
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Text * mTitle = nullptr;
 
+    sgl::sgui::Widget * mContentStart = nullptr;
+    sgl::sgui::Widget * mContentSuccess = nullptr;
+
+    sgl::sgui::Label * mLabelMoney = nullptr;
+    sgl::sgui::Label * mLabelEnergy = nullptr;
+    sgl::sgui::Label * mLabelMaterial = nullptr;
+
     ButtonPlanetMap * mButtonOk = nullptr;
     SecondaryButtonPlanetMap * mButtonCancel = nullptr;
 
-    sgl::graphic::Text * mTextDesc = nullptr;
-    sgl::graphic::Text * mTextCost = nullptr;
+    Player * mPlayer = nullptr;
 
-    sgl::graphic::Image * mIconMoney = nullptr;
-    sgl::graphic::Image * mIconEnergy = nullptr;
-    sgl::graphic::Image * mIconMaterial = nullptr;
-
-    sgl::graphic::Text * mTextMoney = nullptr;
-    sgl::graphic::Text * mTextEnergy = nullptr;
-    sgl::graphic::Text * mTextMaterial = nullptr;
+    int mCostMoney = 0;
+    int mCostenergy = 0;
+    int mCostmaterial = 0;
 };
 
 } // namespace game

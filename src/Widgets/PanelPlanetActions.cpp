@@ -1,5 +1,6 @@
 #include "Widgets/PanelPlanetActions.h"
 
+#include "GameConstants.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/WidgetsConstants.h"
@@ -76,6 +77,15 @@ void PanelPlanetActions::AddOnButtonClickFunction(Button btn, const std::functio
 {
     if(btn < NUM_BUTTONS)
         mButtons[btn]->AddOnClickFunction(f);
+}
+
+void PanelPlanetActions::UpdateButtons(TerritoryStatus status, bool isPlayerOccupier)
+{
+    const bool explored = TER_ST_FREE == status || TER_ST_OCCUPIED_UNEXPLORED == status;
+
+    mButtons[EXPLORE]->SetEnabled(!explored);
+    mButtons[CONQUER]->SetEnabled(!isPlayerOccupier);
+    mButtons[SEND_AI]->SetEnabled(!isPlayerOccupier);
 }
 
 void PanelPlanetActions::HandlePositionChanged()
