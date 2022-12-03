@@ -143,27 +143,17 @@ ScreenGame::ScreenGame(Game * game)
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 
     // -- PLAYERS --
-    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
-    {
-        Player * p = game->GetPlayerByIndex(i);
+//    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+//    {
+//        // temporary disable AI for development
+//        Player * p = game->GetPlayerByIndex(i);
 
-        // add start resources
-        const int startEnergy = 400;
-        p->SumResource(Player::Stat::ENERGY, startEnergy);
-
-        const int startMaterial = 50;
-        p->SumResource(Player::Stat::MATERIAL, startMaterial);
-
-        const int startMoney = 500;
-        p->SumResource(Player::Stat::MONEY, startMoney);
-
-        // temporary disable AI for development
 //        if(p->IsAI())
 //        {
 //            p->GetAI()->SetGameMap(mGameMap);
 //            mAiPlayers.push_back(p);
 //        }
-    }
+//    }
 
     // LOCAL PLAYER
     Player * localPlayer = game->GetLocalPlayer();

@@ -45,9 +45,8 @@ public:
     Game(int argc, char * argv[]);
     ~Game();
 
-    const std::vector<std::string> & GetMapFiles() const;
     const std::string & GetCurrentMapFile() const;
-    void SetCurrentMap(unsigned int index);
+    void SetCurrentTerritory(unsigned int territory);
     void SetCurrentPlanet(Planets planet);
     Planets GetCurrentPlanet() const;
 
@@ -78,7 +77,6 @@ private:
     void Update(float delta) override;
 
 private:
-    std::vector<std::string> mMapFiles;
     std::vector<Player *> mPlayers;
 
     sgl::graphic::Renderer * mRenderer = nullptr;
@@ -98,6 +96,7 @@ private:
 
     unsigned int mCurrMap = 0;
     Planets mCurrPlanet;
+    unsigned int mCurrTerritory = 0;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
@@ -105,12 +104,9 @@ private:
     unsigned char mClearA = 255;
 };
 
-inline const std::vector<std::string> & Game::GetMapFiles() const { return mMapFiles; }
-inline const std::string & Game::GetCurrentMapFile() const { return mMapFiles[mCurrMap]; }
-inline void Game::SetCurrentMap(unsigned int index)
+inline void Game::SetCurrentTerritory(unsigned int territory)
 {
-    if(index < mMapFiles.size())
-        mCurrMap = index;
+    mCurrTerritory = territory;
 }
 
 inline void Game::SetCurrentPlanet(Planets planet) { mCurrPlanet = planet; }

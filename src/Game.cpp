@@ -31,13 +31,6 @@ namespace game
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
-    , mMapFiles
-    {
-        "data/maps/20x20-empty.map",
-        "data/maps/40x40-01.map",
-        "data/maps/60x60-01.map",
-        "data/maps/80x80-01.map"
-    }
     , mMapsReg(new MapsRegistry)
     , mObjsRegistry(new ObjectsDataRegistry)
     , mLocalFaction(NO_FACTION)
@@ -78,10 +71,10 @@ Game::Game(int argc, char * argv[])
     // PLANET 1
     mMapsReg->CreatePlanet(PLANET_1);
     //               planetId, file, energy, material, diamonds, blobs, size, value, occupier, status
-    mMapsReg->AddMap(PLANET_1, "data/maps/20x20-empty.map", 1, 2, 1, 1, 20, 1, NO_FACTION, TER_ST_UNEXPLORED);
+    mMapsReg->AddMap(PLANET_1, "data/maps/80x80-01.map", 5, 4, 2, 2, 80, 3, NO_FACTION, TER_ST_UNEXPLORED);
     mMapsReg->AddMap(PLANET_1, "data/maps/40x40-01.map", 2, 2, 1, 1, 40, 2, NO_FACTION, TER_ST_UNEXPLORED);
     mMapsReg->AddMap(PLANET_1, "data/maps/60x60-01.map", 4, 4, 2, 2, 60, 3, NO_FACTION, TER_ST_UNREACHABLE);
-    mMapsReg->AddMap(PLANET_1, "data/maps/80x80-01.map", 5, 4, 2, 2, 80, 3, NO_FACTION, TER_ST_UNREACHABLE);
+    mMapsReg->AddMap(PLANET_1, "data/maps/20x20-empty.map", 1, 2, 1, 1, 20, 1, NO_FACTION, TER_ST_UNREACHABLE);
     mMapsReg->AddUnavailableMap(PLANET_1);
     mMapsReg->AddUnavailableMap(PLANET_1);
     mMapsReg->AddUnavailableMap(PLANET_1);
@@ -107,6 +100,11 @@ Game::~Game()
 
     sgl::graphic::Renderer::Destroy();
     sgl::graphic::Window::Destroy();
+}
+
+const std::string & Game::GetCurrentMapFile() const
+{
+    return mMapsReg->GetMapFile(mCurrPlanet, mCurrTerritory);
 }
 
 void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }

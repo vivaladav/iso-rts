@@ -96,6 +96,18 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelExplore->SetVisible(true);
     });
 
+    mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::CONQUER, [this]
+    {
+//        mPanelActions->SetVisible(false);
+//        mPanelExplore->SetVisible(true);
+
+        Game * game = GetGame();
+
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        game->SetCurrentTerritory(territory);
+        game->RequestNextActiveState(StateId::GAME);
+    });
+
     // PANEL ACTION EXPLORE
     mPanelExplore = new PanelPlanetActionExplore(player, costExploreMoney,
                                                  costExploreEnergy, costExploreMaterial);
@@ -244,6 +256,10 @@ ScreenPlanetMap::~ScreenPlanetMap()
     sgl::sgui::Stage::Instance()->ClearWidgets();
 
     delete mBg;
+
+    auto stage = sgl::sgui::Stage::Instance();
+
+    stage->ClearWidgets();
 }
 
 void ScreenPlanetMap::Update(float update)
