@@ -72,8 +72,10 @@ public:
     void SumResource(Stat sid, int val);
     void SumResourceMax(Stat sid, int val);
     void SetOnResourcesChanged(const std::function<void()> & f);
-    void AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f);
-    void AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f);
+    unsigned int AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f);
+    unsigned int AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f);
+    void RemoveOnResourceChanged(Stat sid, unsigned int funId);
+    void RemoveOnResourceRangeChanged(Stat sid, unsigned int funId);
 
     int GetNumCells() const;
     void SumCells(int val);

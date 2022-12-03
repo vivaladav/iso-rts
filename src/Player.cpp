@@ -137,20 +137,32 @@ void Player::SumResourceMax(Stat sid, int val)
     mStats[sid].SetMax(newMax);
 }
 
-void Player::AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f)
+unsigned int Player::AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f)
 {
     if(sid >= NUM_PSTATS)
-        return ;
+        return 0;
 
-    mStats[sid].AddOnValueChanged(f);
+    return mStats[sid].AddOnValueChanged(f);
 }
 
-void Player::AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f)
+unsigned int Player::AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f)
 {
     if(sid >= NUM_PSTATS)
-        return ;
+        return 0;
 
-    mStats[sid].AddOnRangeChanged(f);
+    return mStats[sid].AddOnRangeChanged(f);
+}
+
+void Player::RemoveOnResourceChanged(Stat sid, unsigned int funId)
+{
+    if(sid < NUM_PSTATS)
+        mStats[sid].RemoveOnValueChanged(funId);
+}
+
+void Player::RemoveOnResourceRangeChanged(Stat sid, unsigned int funId)
+{
+    if(sid < NUM_PSTATS)
+        mStats[sid].RemoveOnRangeChanged(funId);
 }
 
 void Player::SumCells(int val)

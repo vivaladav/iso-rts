@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 namespace sgl
 {
@@ -20,6 +21,7 @@ class PanelResources : public sgl::sgui::Widget
 {
 public:
     PanelResources(Player * player);
+    ~PanelResources();
 
 private:
     void HandlePositionChanged() override;
@@ -28,6 +30,11 @@ private:
 
 private:
     sgl::graphic::Image * mBg = nullptr;
+
+    Player * mPlayer = nullptr;
+
+    std::vector<unsigned int> mCallbackValIds;
+    std::vector<unsigned int> mCallbackRangeIds;
 };
 
 } // namespace game

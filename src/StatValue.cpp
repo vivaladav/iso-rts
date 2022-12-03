@@ -124,16 +124,50 @@ void StatValue::SumValue(float val)
     NotifyObserversValue();
 }
 
+unsigned int StatValue::AddOnValueChanged(const std::function<void(const StatValue *)> & f)
+{
+    static unsigned int num = 0;
+
+    mCallbacksVal.emplace(++num, f);
+
+    return num;
+}
+
+unsigned int StatValue::AddOnRangeChanged(const std::function<void(const StatValue *)> & f)
+{
+    static unsigned int num = 0;
+
+    mCallbacksRange.emplace(++num, f);
+
+    return num;
+}
+
+void StatValue::RemoveOnValueChanged(unsigned int funId)
+{
+    auto it = mCallbacksVal.find(funId);
+
+    if(it != mCallbacksVal.end())
+        mCallbacksVal.erase(it);
+}
+
+void StatValue::RemoveOnRangeChanged(unsigned int funId)
+{
+    auto it = mCallbacksRange.find(funId);
+
+    if(it != mCallbacksRange.end())
+        mCallbacksRange.erase(it);
+}
+
 void StatValue::NotifyObserversValue()
 {
-    for(auto & f : mCallbacksVal)
-        f(this);
+    for(auto & it : mCallbacksVal)
+        it.second(this);
 }
 
 void StatValue::NotifyObserversRange()
 {
-    for(auto & f : mCallbacksRange)
-        f(this);
+    for(auto & it : mCallbacksRange)
+        it.second(this);
 }
 
 } // namespace game

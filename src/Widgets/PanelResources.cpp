@@ -17,6 +17,7 @@ namespace game
 
 PanelResources::PanelResources(Player * player)
     : mBg(new sgl::graphic::Image)
+    , mPlayer(player)
 {
     RegisterRenderable(mBg);
 
@@ -36,30 +37,38 @@ PanelResources::PanelResources(Player * player)
     const int numDigitsMoney = 8;
     const int numDigits = 5;
 
+    mCallbackValIds.resize(Player::Stat::NUM_PSTATS, 0);
+    mCallbackRangeIds.resize(Player::Stat::NUM_PSTATS, 0);
+
     // MONEY
-    const StatValue & money = player->GetStat(Player::Stat::MONEY);
+    auto st = Player::Stat::MONEY;
+    const StatValue & money = player->GetStat(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MONEY);
     auto srd = new SimpleResourceDisplay(tex, numDigitsMoney, this);
     srd->SetValue(money.GetIntValue());
     srd->SetPosition(slotX + (slotW - srd->GetWidth()) * 0.5f, (GetHeight() - srd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::MONEY, [srd](const StatValue * val) { srd->SetValue(val->GetIntValue()); });
+    mCallbackValIds[st] = player->AddOnResourceChanged(st, [srd](const StatValue * val)
+    {
+        srd->SetValue(val->GetIntValue());
+    });
 
     slotX += slotW;
 
     // ENERGY
-    const StatValue & energy = player->GetStat(Player::Stat::ENERGY);
+    st = Player::Stat::ENERGY;
+    const StatValue & energy = player->GetStat(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_ENERGY);
     auto rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(energy.GetIntMin(), energy.GetIntMax());
     rd->SetValue(energy.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::ENERGY, [rd](const StatValue * val)
+    mCallbackValIds[st] = player->AddOnResourceChanged(st, [rd](const StatValue * val)
     {
         rd->SetValue(val->GetIntValue());
     });
-    player->AddOnResourceRangeChanged(Player::Stat::ENERGY, [rd](const StatValue * val)
+    mCallbackRangeIds[st] = player->AddOnResourceRangeChanged(st, [rd](const StatValue * val)
     {
         rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
     });
@@ -67,18 +76,19 @@ PanelResources::PanelResources(Player * player)
     slotX += slotW;
 
     // MATERIAL
-    const StatValue & material = player->GetStat(Player::Stat::MATERIAL);
+    st = Player::Stat::MATERIAL;
+    const StatValue & material = player->GetStat(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MATERIAL);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(material.GetIntMin(), material.GetIntMax());
     rd->SetValue(material.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::MATERIAL, [rd](const StatValue * val)
+    mCallbackValIds[st] = player->AddOnResourceChanged(st, [rd](const StatValue * val)
     {
         rd->SetValue(val->GetIntValue());
     });
-    player->AddOnResourceRangeChanged(Player::Stat::MATERIAL, [rd](const StatValue * val)
+    mCallbackRangeIds[st] = player->AddOnResourceRangeChanged(st, [rd](const StatValue * val)
     {
         rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
     });
@@ -86,18 +96,19 @@ PanelResources::PanelResources(Player * player)
     slotX += slotW;
 
     // DIAMONDS
-    const StatValue & diamonds = player->GetStat(Player::Stat::DIAMONDS);
+    st = Player::Stat::DIAMONDS;
+    const StatValue & diamonds = player->GetStat(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_DIAMOND);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(diamonds.GetIntMin(), diamonds.GetIntMax());
     rd->SetValue(diamonds.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val)
+    mCallbackValIds[st] = player->AddOnResourceChanged(st, [rd](const StatValue * val)
     {
         rd->SetValue(val->GetIntValue());
     });
-    player->AddOnResourceRangeChanged(Player::Stat::DIAMONDS, [rd](const StatValue * val)
+    mCallbackRangeIds[st] = player->AddOnResourceRangeChanged(st, [rd](const StatValue * val)
     {
         rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
     });
@@ -105,21 +116,45 @@ PanelResources::PanelResources(Player * player)
     slotX += slotW;
 
     // BLOB
-    const StatValue & blobs = player->GetStat(Player::Stat::BLOBS);
+    st = Player::Stat::BLOBS;
+    const StatValue & blobs = player->GetStat(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_BLOB);
     rd = new ResourceDisplay(tex, numDigits, this);
     rd->SetValueMinMax(blobs.GetIntMin(), blobs.GetIntMax());
     rd->SetValue(blobs.GetIntValue());
     rd->SetPosition(slotX + (slotW - rd->GetWidth()) * 0.5f, (GetHeight() - rd->GetHeight()) * 0.5f);
 
-    player->AddOnResourceChanged(Player::Stat::BLOBS, [rd](const StatValue * val)
+    mCallbackValIds[st] = player->AddOnResourceChanged(st, [rd](const StatValue * val)
     {
         rd->SetValue(val->GetIntValue());
     });
-    player->AddOnResourceRangeChanged(Player::Stat::BLOBS, [rd](const StatValue * val)
+    mCallbackRangeIds[st] = player->AddOnResourceRangeChanged(st, [rd](const StatValue * val)
     {
         rd->SetValueMinMax(val->GetIntMin(), val->GetIntMax());
     });
+}
+
+PanelResources::~PanelResources()
+{
+    // CLEAR OBSERVERS FROM PLAYER STATS
+    auto st = Player::Stat::MONEY;
+    mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[st]);
+
+    st = Player::Stat::ENERGY;
+    mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[st]);
+    mPlayer->RemoveOnResourceRangeChanged(st, mCallbackRangeIds[st]);
+
+    st = Player::Stat::MATERIAL;
+    mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[st]);
+    mPlayer->RemoveOnResourceRangeChanged(st, mCallbackRangeIds[st]);
+
+    st = Player::Stat::DIAMONDS;
+    mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[st]);
+    mPlayer->RemoveOnResourceRangeChanged(st, mCallbackRangeIds[st]);
+
+    st = Player::Stat::BLOBS;
+    mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[st]);
+    mPlayer->RemoveOnResourceRangeChanged(st, mCallbackRangeIds[st]);
 }
 
 void PanelResources::SetBg()

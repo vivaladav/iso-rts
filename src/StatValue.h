@@ -1,5 +1,5 @@
 #include <functional>
-#include <vector>
+#include <unordered_map>
 
 #pragma once
 
@@ -33,8 +33,10 @@ public:
     void SumValue(int val);
     void SumValue(float val);
 
-    void AddOnValueChanged(const std::function<void(const StatValue *)> & f);
-    void AddOnRangeChanged(const std::function<void(const StatValue *)> & f);
+    unsigned int AddOnValueChanged(const std::function<void(const StatValue *)> & f);
+    unsigned int AddOnRangeChanged(const std::function<void(const StatValue *)> & f);
+    void RemoveOnValueChanged(unsigned int funId);
+    void RemoveOnRangeChanged(unsigned int funId);
     void ClearCallbacks();
 
 private:
@@ -42,8 +44,8 @@ private:
     void NotifyObserversRange();
 
 private:
-    std::vector<std::function<void(const StatValue *)>> mCallbacksVal;
-    std::vector<std::function<void(const StatValue *)>> mCallbacksRange;
+    std::unordered_map<unsigned int, std::function<void(const StatValue *)>> mCallbacksVal;
+    std::unordered_map<unsigned int, std::function<void(const StatValue *)>> mCallbacksRange;
 
     unsigned int mId = 0;
 
@@ -71,16 +73,6 @@ inline float StatValue::GetFloatMax() const { return mMax.f; }
 
 inline int StatValue::GetIntValue() const { return mData.d; }
 inline float StatValue::GetFloatValue() const { return mData.f; }
-
-inline void StatValue::AddOnValueChanged(const std::function<void(const StatValue *)> & f)
-{
-    mCallbacksVal.push_back(f);
-}
-
-inline void StatValue::AddOnRangeChanged(const std::function<void(const StatValue *)> & f)
-{
-    mCallbacksRange.push_back(f);
-}
 
 inline void StatValue::ClearCallbacks()
 {
