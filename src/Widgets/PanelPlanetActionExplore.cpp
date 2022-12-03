@@ -112,6 +112,8 @@ void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
     else
     {
         mContentSuccess->SetVisible(false);
+
+        mButtonCancel->SetLabel("CANCEL");
     }
 }
 
