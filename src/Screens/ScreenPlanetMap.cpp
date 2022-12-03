@@ -136,7 +136,6 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         const int territory = mPlanet->GetSelectedTerritoryId();
         auto mapReg = game->GetMapsRegistry();
 
-        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
         const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
 
         if(occupier != NO_FACTION)
@@ -151,6 +150,12 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
             ShowInfo(territory);
         }
+
+        // update panel actions
+        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+        const bool playerOccupier = GetGame()->GetLocalPlayerFaction() == occupier;
+
+        mPanelActions->UpdateButtons(status, playerOccupier);
     });
 
     mPanelExplore->AddOnButtonCancelClickFunction([this]
@@ -228,7 +233,6 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         auto mapReg = game->GetMapsRegistry();
 
         const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
-
         const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, ind);
         const bool playerOccupier = GetGame()->GetLocalPlayerFaction() == occupier;
         mPanelActions->UpdateButtons(status, playerOccupier);
