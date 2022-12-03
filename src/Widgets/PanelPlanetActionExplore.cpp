@@ -16,8 +16,6 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/TextArea.h>
 
-#include <iostream>
-
 namespace
 {
     constexpr unsigned int textColor = 0x80a2b3ff;
@@ -64,7 +62,7 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
 
     // BUTTONS
     mButtonOk = new ButtonPlanetMap(this);
-    mButtonOk->SetLabel("EXPLORE");
+    mButtonOk->SetLabel("PROCEED");
 
     mButtonCancel = new SecondaryButtonPlanetMap(this);
     mButtonCancel->SetLabel("CANCEL");
@@ -145,7 +143,8 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 80;
-    const char * txt = "Send a squad of scouts to explore the territory.\n\nThis will cost you:";
+    const char * txt = "Send a squad of scouts to explore the territory.\n\n"
+                       "This will cost you:";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
     text->SetColor(textColor);
 

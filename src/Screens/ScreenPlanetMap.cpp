@@ -8,6 +8,7 @@
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelResources.h"
+#include "Widgets/PanelPlanetActionConquer.h"
 #include "Widgets/PanelPlanetActionExplore.h"
 #include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"
@@ -98,14 +99,8 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::CONQUER, [this]
     {
-//        mPanelActions->SetVisible(false);
-//        mPanelExplore->SetVisible(true);
-
-        Game * game = GetGame();
-
-        const int territory = mPlanet->GetSelectedTerritoryId();
-        game->SetCurrentTerritory(territory);
-        game->RequestNextActiveState(StateId::GAME);
+        mPanelActions->SetVisible(false);
+        mPanelConquer->SetVisible(true);
     });
 
     // PANEL ACTION EXPLORE
@@ -162,6 +157,26 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
         mPanelActions->SetVisible(true);
         mPanelExplore->SetVisible(false);
+    });
+
+    // PANEL ACTION CONQUER
+    mPanelConquer = new PanelPlanetActionConquer;
+    mPanelConquer->SetY(panActionsY);
+    mPanelConquer->SetVisible(false);
+
+    mPanelConquer->AddOnButtonOkClickFunction([this]
+    {
+        Game * game = GetGame();
+
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        game->SetCurrentTerritory(territory);
+        game->RequestNextActiveState(StateId::GAME);
+    });
+
+    mPanelConquer->AddOnButtonCancelClickFunction([this]
+    {
+        mPanelActions->SetVisible(true);
+        mPanelConquer->SetVisible(false);
     });
 
     // PANEL INFO
@@ -227,6 +242,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         // make sure panel actions is visible
         mPanelActions->SetVisible(true);
         mPanelExplore->SetVisible(false);
+        mPanelConquer->SetVisible(false);
 
         auto game = GetGame();
         const int planetId = game->GetCurrentPlanet();

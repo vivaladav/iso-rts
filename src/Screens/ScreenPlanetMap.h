@@ -12,6 +12,7 @@ namespace game
 {
 
 class PanelResources;
+class PanelPlanetActionConquer;
 class PanelPlanetActionExplore;
 class PanelPlanetActions;
 class PanelPlanetInfo;
@@ -41,6 +42,7 @@ private:
     PanelPlanetResources * mPanelResources = nullptr;
     PanelPlanetActions * mPanelActions = nullptr;
     PanelPlanetActionExplore * mPanelExplore = nullptr;
+    PanelPlanetActionConquer * mPanelConquer = nullptr;
 
     sgl::sgui::Label * mLabelName = nullptr;
     sgl::sgui::Label * mLabelDate = nullptr;

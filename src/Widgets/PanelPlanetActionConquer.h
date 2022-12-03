@@ -11,11 +11,6 @@ namespace sgl
         class Image;
         class Text;
     }
-
-    namespace sgui
-    {
-        class Label;
-    }
 }
 
 namespace game
@@ -27,19 +22,16 @@ class Player;
 
 enum TerritoryStatus : unsigned int;
 
-class PanelPlanetActionExplore : public sgl::sgui::Widget
+class PanelPlanetActionConquer : public sgl::sgui::Widget
 {
 public:
-    PanelPlanetActionExplore(Player * player, int money, int energy, int material);
-
-    void UpdateExplorationStatus(TerritoryStatus status);
+    PanelPlanetActionConquer();
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);
     void AddOnButtonCancelClickFunction(const std::function<void()> & f);
 
 private:
-    void CreateContentStart(int money, int energy, int material);
-    void CreateContentSuccess();
+    void CreateContentStart();
 
     void HandlePositionChanged() override;
 
@@ -50,20 +42,9 @@ private:
     sgl::graphic::Text * mTitle = nullptr;
 
     sgl::sgui::Widget * mContentStart = nullptr;
-    sgl::sgui::Widget * mContentSuccess = nullptr;
-
-    sgl::sgui::Label * mLabelMoney = nullptr;
-    sgl::sgui::Label * mLabelEnergy = nullptr;
-    sgl::sgui::Label * mLabelMaterial = nullptr;
 
     ButtonPlanetMap * mButtonOk = nullptr;
     SecondaryButtonPlanetMap * mButtonCancel = nullptr;
-
-    Player * mPlayer = nullptr;
-
-    int mCostMoney = 0;
-    int mCostenergy = 0;
-    int mCostmaterial = 0;
 };
 
 } // namespace game
