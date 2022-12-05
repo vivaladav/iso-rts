@@ -9,6 +9,7 @@
 #include "Widgets/GameUIData.h"
 #include "Widgets/PanelResources.h"
 #include "Widgets/PanelPlanetActionConquer.h"
+#include "Widgets/PanelPlanetActionConquerAI.h"
 #include "Widgets/PanelPlanetActionExplore.h"
 #include "Widgets/PanelPlanetActions.h"
 #include "Widgets/PanelPlanetInfo.h"
@@ -31,6 +32,11 @@ namespace
     constexpr int costExploreMoney = 100;
     constexpr int costExploreEnergy = 50;
     constexpr int costExploreMaterial = 30;
+
+    constexpr int costConquestMoney = 400;
+    constexpr int costConquestEnergy = 100;
+    constexpr int costConquestMaterial = 50;
+    constexpr int costConquestDiamonds = 10;
 }
 
 namespace game
@@ -101,6 +107,12 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
         mPanelActions->SetVisible(false);
         mPanelConquer->SetVisible(true);
+    });
+
+    mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::SEND_AI, [this]
+    {
+        mPanelActions->SetVisible(false);
+        mPanelConquerAI->SetVisible(true);
     });
 
     // PANEL ACTION EXPLORE
@@ -177,6 +189,23 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
         mPanelActions->SetVisible(true);
         mPanelConquer->SetVisible(false);
+    });
+
+    // PANEL ACTION CONQUER AI
+    mPanelConquerAI = new PanelPlanetActionConquerAI(player, costConquestMoney, costConquestEnergy,
+                                                     costConquestMaterial, costConquestDiamonds);
+    mPanelConquerAI->SetY(panActionsY);
+    mPanelConquerAI->SetVisible(false);
+
+    mPanelConquerAI->AddOnButtonOkClickFunction([this]
+    {
+
+    });
+
+    mPanelConquerAI->AddOnButtonCancelClickFunction([this]
+    {
+        mPanelActions->SetVisible(true);
+        mPanelConquerAI->SetVisible(false);
     });
 
     // PANEL INFO
@@ -263,6 +292,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         }
 
         mPanelExplore->UpdateExplorationStatus(status);
+        mPanelConquerAI->UpdateExplorationStatus(status, playerOccupier);
     });
 
     SetPlanetName(PLANETS_NAME[planetId]);

@@ -197,6 +197,8 @@ add_executable(
     src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlanetActionConquer.h
     src/Widgets/PanelPlanetActionConquer.cpp
+    src/Widgets/PanelPlanetActionConquerAI.h
+    src/Widgets/PanelPlanetActionConquerAI.cpp
     src/Widgets/PanelPlanetActionExplore.h
     src/Widgets/PanelPlanetActionExplore.cpp
     src/Widgets/PanelObjectActions.h

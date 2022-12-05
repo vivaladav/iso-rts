@@ -1,4 +1,4 @@
-#include "Widgets/PanelPlanetActionExplore.h"
+#include "Widgets/PanelPlanetActionConquerAI.h"
 
 #include "GameConstants.h"
 #include "Player.h"
@@ -26,12 +26,13 @@ namespace
 namespace game
 {
 
-PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, int energy, int material)
+PanelPlanetActionConquerAI::PanelPlanetActionConquerAI(Player * player, int money, int energy, int material, int diamonds)
     : sgl::sgui::Widget(nullptr)
     , mPlayer(player)
     , mCostMoney(money)
     , mCostenergy(energy)
     , mCostmaterial(material)
+    , mCostDiamonds(diamonds)
 {
     using namespace sgl;
 
@@ -50,12 +51,12 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
                                       graphic::Font::NORMAL);
-    mTitle = new graphic::Text("EXPLORE", fnt);
+    mTitle = new graphic::Text("SEND AI", fnt);
     mTitle->SetColor(colorTitle);
     RegisterRenderable(mTitle);
 
     // CONTENT
-    CreateContentStart(money, energy, material);
+    CreateContentStart(money, energy, material, diamonds);
     CreateContentSuccess();
 
     mContentSuccess->SetVisible(false);
@@ -71,25 +72,27 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
     UpdatePositions();
 }
 
-void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
+void PanelPlanetActionConquerAI::UpdateExplorationStatus(TerritoryStatus status, bool playerOwned)
 {
-    const bool unexplored = status == TER_ST_UNEXPLORED || status == TER_ST_OCCUPIED_UNEXPLORED;
+    const bool toConquer = !playerOwned;
 
-    mButtonOk->SetVisible(unexplored);
+    mButtonOk->SetVisible(toConquer);
 
-    mContentStart->SetVisible(unexplored);
+    mContentStart->SetVisible(toConquer);
 
-    if(unexplored)
+    if(toConquer)
     {
         const int money = mPlayer->GetStat(Player::Stat::MONEY).GetIntValue();
         const int energy = mPlayer->GetStat(Player::Stat::ENERGY).GetIntValue();
         const int material = mPlayer->GetStat(Player::Stat::MATERIAL).GetIntValue();
+        const int diaonds = mPlayer->GetStat(Player::Stat::DIAMONDS).GetIntValue();
         const bool enoughMoney = money >= mCostMoney;
         const bool enoughEnergy = energy >= mCostenergy;
         const bool enoughMaterial = material >= mCostmaterial;
-        const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
+        const bool enoughDiamonds = diaonds >= mCostDiamonds;
+        const bool canConquer = enoughMoney && enoughEnergy && enoughMaterial && enoughDiamonds;
 
-        mButtonOk->SetEnabled(canExplore);
+        mButtonOk->SetEnabled(canConquer);
 
         constexpr unsigned int enoughResColor = 0x85cc85ff;
         constexpr unsigned int lackResColor = 0xcc8b85ff;
@@ -97,34 +100,21 @@ void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
         mLabelMoney->SetColor(enoughMoney ? enoughResColor : lackResColor);
         mLabelEnergy->SetColor(enoughEnergy ? enoughResColor : lackResColor);
         mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
-    }
-
-    // handle specific cases
-    if(TER_ST_FREE == status || TER_ST_OCCUPIED == status)
-    {
-        mContentSuccess->SetVisible(true);
-
-        mButtonCancel->SetLabel("CLOSE");
-    }
-    else
-    {
-        mContentSuccess->SetVisible(false);
-
-        mButtonCancel->SetLabel("CANCEL");
+        mLabelDiamonds->SetColor(enoughDiamonds ? enoughResColor : lackResColor);
     }
 }
 
-void PanelPlanetActionExplore::AddOnButtonOkClickFunction(const std::function<void()> & f)
+void PanelPlanetActionConquerAI::AddOnButtonOkClickFunction(const std::function<void()> & f)
 {
     mButtonOk->AddOnClickFunction(f);
 }
 
-void PanelPlanetActionExplore::AddOnButtonCancelClickFunction(const std::function<void()> & f)
+void PanelPlanetActionConquerAI::AddOnButtonCancelClickFunction(const std::function<void()> & f)
 {
     mButtonCancel->AddOnClickFunction(f);
 }
 
-void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int material)
+void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int material, int diamonds)
 {
     using namespace sgl;
 
@@ -142,7 +132,7 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 80;
-    const char * txt = "Send a squad of scouts to explore the territory.\n\n"
+    const char * txt = "Send an AI general to conquer the territory.\n\n"
                        "This will cost you:";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
     text->SetColor(textColor);
@@ -151,12 +141,13 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     auto contCosts = new sgui::Widget(mContentStart);
 
     const unsigned int valueColor = 0xb8bec7ff;
-    const int valueBlockW = 130;
+    const int valueBlockW = 110;
     const int spacingValue = 5;
 
     int x = 0;
     int y = 0;
 
+    // money
     graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_MONEY);
     auto icon = new sgui::Image(tex, contCosts);
 
@@ -167,6 +158,7 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     y = (icon->GetHeight() - mLabelMoney->GetHeight()) * 0.5f;
     mLabelMoney->SetPosition(x, y);
 
+    // energy
     x = valueBlockW;
 
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_ENERGY);
@@ -180,7 +172,8 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     y = (icon->GetHeight() - mLabelEnergy->GetHeight()) * 0.5f;
     mLabelEnergy->SetPosition(x, y);
 
-    x = valueBlockW * 2;
+    // material
+    x = 2 * valueBlockW;
 
     tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_MATERIAL);
     icon = new sgui::Image(tex, contCosts);
@@ -193,12 +186,27 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     y = (icon->GetHeight() - mLabelMaterial->GetHeight()) * 0.5f;
     mLabelMaterial->SetPosition(x, y);
 
+    // diamonds
+    x = 3 * valueBlockW;
+
+    tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_ICON_DIAMONDS);
+    icon = new sgui::Image(tex, contCosts);
+    icon->SetX(x);
+
+    mLabelDiamonds = new sgui::Label(std::to_string(diamonds).c_str(), fnt, contCosts);
+    mLabelDiamonds->SetColor(valueColor);
+
+    x += icon->GetWidth() + spacingValue;
+    y = (icon->GetHeight() - mLabelDiamonds->GetHeight()) * 0.5f;
+    mLabelDiamonds->SetPosition(x, y);
+
+    // position row
     x = (w - contCosts->GetWidth()) * 0.5f - marginL;
     y = text->GetHeight();
     contCosts->SetPosition(x, y);
 }
 
-void PanelPlanetActionExplore::CreateContentSuccess()
+void PanelPlanetActionConquerAI::CreateContentSuccess()
 {
     using namespace sgl;
 
@@ -215,17 +223,17 @@ void PanelPlanetActionExplore::CreateContentSuccess()
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 100;
-    const char * txt = "Exploration was successful!\n\nCheck out the other panels for the results.";
+    const char * txt = "Conquest was successful!";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
     text->SetColor(textColor);
 }
 
-void PanelPlanetActionExplore::HandlePositionChanged()
+void PanelPlanetActionConquerAI::HandlePositionChanged()
 {
     UpdatePositions();
 }
 
-void PanelPlanetActionExplore::UpdatePositions()
+void PanelPlanetActionConquerAI::UpdatePositions()
 {
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();
