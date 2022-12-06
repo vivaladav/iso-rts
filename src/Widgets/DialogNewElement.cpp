@@ -848,15 +848,15 @@ void DialogNewElement::CheckBuild(int ind)
 {
     const std::vector<int> & costs = mData[ind].costs;
 
-    const bool SPEND[NUM_COSTS] =
+    const bool CAN_SPEND[NUM_COSTS] =
     {
-        mPlayer->GetStat(Player::ENERGY).GetIntValue() >= costs[RES_ENERGY],
-        mPlayer->GetStat(Player::MATERIAL).GetIntValue() >= costs[RES_MATERIAL1],
-        mPlayer->GetStat(Player::DIAMONDS).GetIntValue() >= costs[RES_DIAMONDS],
-        mPlayer->GetStat(Player::BLOBS).GetIntValue() >= costs[RES_BLOBS]
+        mPlayer->HasEnough(Player::ENERGY,  costs[RES_ENERGY]),
+        mPlayer->HasEnough(Player::MATERIAL, costs[RES_MATERIAL1]),
+        mPlayer->HasEnough(Player::DIAMONDS, costs[RES_DIAMONDS]),
+        mPlayer->HasEnough(Player::BLOBS, costs[RES_BLOBS])
     };
 
-    const bool allowed =  SPEND[0] && SPEND[1] && SPEND[2] && SPEND[3];
+    const bool allowed =  CAN_SPEND[0] && CAN_SPEND[1] && CAN_SPEND[2] && CAN_SPEND[3];
 
     // enable BUILD button
     mBtnBuild->SetEnabled(allowed);
@@ -865,7 +865,7 @@ void DialogNewElement::CheckBuild(int ind)
     for(unsigned int i = 0; i < NUM_COSTS; ++i)
     {
         const unsigned int COLORS[] = { 0xe08585ff, 0x5cd666ff};
-        const int ind = static_cast<int>(SPEND[i]);
+        const int ind = static_cast<int>(CAN_SPEND[i]);
 
         mLabelsCost[i]->SetColor(COLORS[ind]);
     }

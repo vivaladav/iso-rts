@@ -81,12 +81,9 @@ void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
 
     if(unexplored)
     {
-        const int money = mPlayer->GetStat(Player::Stat::MONEY).GetIntValue();
-        const int energy = mPlayer->GetStat(Player::Stat::ENERGY).GetIntValue();
-        const int material = mPlayer->GetStat(Player::Stat::MATERIAL).GetIntValue();
-        const bool enoughMoney = money >= mCostMoney;
-        const bool enoughEnergy = energy >= mCostenergy;
-        const bool enoughMaterial = material >= mCostmaterial;
+        const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
+        const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
+        const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
         const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
 
         mButtonOk->SetEnabled(canExplore);

@@ -580,11 +580,8 @@ bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
     if(gcell.owner == player)
         return false;
 
-    // check if unit has enough energy
-    if(COST_CONQUEST_CELL > player->GetStat(Player::Stat::MATERIAL).GetIntValue())
-        return false;
-
-    return true;
+    // check if unit has enough energy - LAST CHECK
+    return player->HasEnough(Player::Stat::MATERIAL, COST_CONQUEST_CELL);
 }
 
 void GameMap::StartConquerCell(const Cell2D & cell, Player * player)
@@ -669,10 +666,10 @@ bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * playe
         return false;
 
     // check costs
-    const bool costOk = player->GetStat(Player::ENERGY).GetIntValue() >= data.costs[RES_ENERGY] &&
-                        player->GetStat(Player::MATERIAL).GetIntValue() >= data.costs[RES_MATERIAL1] &&
-                        player->GetStat(Player::DIAMONDS).GetIntValue() >= data.costs[RES_DIAMONDS] &&
-                        player->GetStat(Player::BLOBS).GetIntValue() >= data.costs[RES_BLOBS];
+    const bool costOk = player->HasEnough(Player::ENERGY, data.costs[RES_ENERGY]) &&
+                        player->HasEnough(Player::MATERIAL, data.costs[RES_MATERIAL1]) &&
+                        player->HasEnough(Player::DIAMONDS, data.costs[RES_DIAMONDS]) &&
+                        player->HasEnough(Player::BLOBS, data.costs[RES_BLOBS]);
 
     if(!costOk)
         return false;
@@ -804,8 +801,8 @@ bool GameMap::CanBuildWall(const Cell2D & cell, Player * player, unsigned int le
     const int costMat = Wall::GetCostMaterial(level);
     const int costEne = Wall::GetCostEnergy(level);
 
-    return player->GetStat(Player::Stat::MATERIAL).GetIntValue() >= costMat  &&
-           player->GetStat(Player::Stat::ENERGY).GetIntValue() >= costEne;
+    return player->HasEnough(Player::Stat::MATERIAL, costMat)  &&
+           player->HasEnough(Player::Stat::ENERGY, costEne);
 }
 
 void GameMap::StartBuildWall(const Cell2D & cell, Player * player, unsigned int level)
@@ -1052,10 +1049,10 @@ bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * 
        return false;
 
     // check if player has enough resources
-    if(data.costs[RES_ENERGY] > player->GetStat(Player::Stat::ENERGY).GetIntValue() ||
-       data.costs[RES_MATERIAL1] > player->GetStat(Player::Stat::MATERIAL).GetIntValue() ||
-       data.costs[RES_DIAMONDS] > player->GetStat(Player::Stat::DIAMONDS).GetIntValue() ||
-       data.costs[RES_BLOBS] > player->GetStat(Player::Stat::BLOBS).GetIntValue())
+    if(!player->HasEnough(Player::Stat::ENERGY, data.costs[RES_ENERGY]) ||
+       !player->HasEnough(Player::Stat::MATERIAL, data.costs[RES_MATERIAL1]) ||
+       !player->HasEnough(Player::Stat::DIAMONDS, data.costs[RES_DIAMONDS]) ||
+       !player->HasEnough(Player::Stat::BLOBS, data.costs[RES_BLOBS]))
         return false;
 
     // check if there's at least 1 free cell where to place the new unit
@@ -1338,13 +1335,9 @@ bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
     if(MAX_UNITS_LEVEL == unitLevel)
         return false;
 
-    // check if player has enough energy
+    // check if player has enough energy - LAST CHECK
     const int cost = COST_UNIT_UPGRADE[unitLevel];
-
-    if(cost > player->GetStat(Player::Stat::ENERGY).GetIntValue())
-        return false;
-
-    return true;
+    return player->HasEnough(Player::Stat::ENERGY, cost);
 }
 
 void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)

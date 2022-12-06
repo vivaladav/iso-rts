@@ -82,14 +82,10 @@ void PanelPlanetActionConquerAI::UpdateExplorationStatus(TerritoryStatus status,
 
     if(toConquer)
     {
-        const int money = mPlayer->GetStat(Player::Stat::MONEY).GetIntValue();
-        const int energy = mPlayer->GetStat(Player::Stat::ENERGY).GetIntValue();
-        const int material = mPlayer->GetStat(Player::Stat::MATERIAL).GetIntValue();
-        const int diaonds = mPlayer->GetStat(Player::Stat::DIAMONDS).GetIntValue();
-        const bool enoughMoney = money >= mCostMoney;
-        const bool enoughEnergy = energy >= mCostenergy;
-        const bool enoughMaterial = material >= mCostmaterial;
-        const bool enoughDiamonds = diaonds >= mCostDiamonds;
+        const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
+        const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
+        const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
+        const bool enoughDiamonds = mPlayer->HasEnough(Player::Stat::DIAMONDS, mCostDiamonds);
         const bool canConquer = enoughMoney && enoughEnergy && enoughMaterial && enoughDiamonds;
 
         mButtonOk->SetEnabled(canConquer);

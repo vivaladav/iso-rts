@@ -126,12 +126,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         auto game = GetGame();
         Player * player = game->GetLocalPlayer();
 
-        const int money = player->GetStat(Player::Stat::MONEY).GetIntValue();
-        const int energy = player->GetStat(Player::Stat::ENERGY).GetIntValue();
-        const int material = player->GetStat(Player::Stat::MATERIAL).GetIntValue();
-
         // check if player can afford to explore and take the resources away
-        if(money < costExploreMoney || energy < costExploreEnergy || material < costExploreMaterial)
+        if(!player->HasEnough(Player::Stat::MONEY, costExploreMoney) ||
+           !player->HasEnough(Player::Stat::ENERGY, costExploreEnergy) ||
+           !player->HasEnough(Player::Stat::MATERIAL, costExploreMaterial))
             return ;
 
         player->SumResource(Player::Stat::MONEY, -costExploreMoney);

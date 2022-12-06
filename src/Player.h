@@ -69,6 +69,7 @@ public:
 
     // stats
     const StatValue & GetStat(Stat sid);
+    bool HasEnough(Stat sid, int val);
     void SumResource(Stat sid, int val);
     void SumResourceMax(Stat sid, int val);
     void SetOnResourcesChanged(const std::function<void()> & f);
@@ -193,6 +194,14 @@ inline const StatValue & Player::GetStat(Stat sid)
         return mStats[sid];
     else
         return mDummyStat;
+}
+
+inline bool Player::HasEnough(Stat sid, int val)
+{
+    if(sid < NUM_PSTATS)
+        return val <= mStats[sid].GetIntValue();
+    else
+        return false;
 }
 
 inline void Player::SetOnResourcesChanged(const std::function<void()> & f) { mOnResourcesChanged = f; }
