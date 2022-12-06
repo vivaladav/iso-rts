@@ -141,6 +141,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
         const int startEnergy = 400;
         const int startMaterial = 50;
         const int startMoney = 500;
+        const int startDiamonds = 10;
+        const int startBlobs = 5;
 
         // create human player
         const PlayerFaction pf = game->GetLocalPlayerFaction();
@@ -169,6 +171,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_4));
 
         // assign initial resources
+        p->SumResource(Player::Stat::BLOBS, startBlobs);
+        p->SumResource(Player::Stat::DIAMONDS, startDiamonds);
         p->SumResource(Player::Stat::ENERGY, startEnergy);
         p->SumResource(Player::Stat::MATERIAL, startMaterial);
         p->SumResource(Player::Stat::MONEY, startMoney);
@@ -220,6 +224,8 @@ ScreenNewGame::ScreenNewGame(Game * game)
             p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_4));
 
             // assign initial resources
+            p->SumResource(Player::Stat::BLOBS, startBlobs);
+            p->SumResource(Player::Stat::DIAMONDS, startDiamonds);
             p->SumResource(Player::Stat::ENERGY, startEnergy);
             p->SumResource(Player::Stat::MATERIAL, startMaterial);
             p->SumResource(Player::Stat::MONEY, startMoney);
