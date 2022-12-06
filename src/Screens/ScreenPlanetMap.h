@@ -35,6 +35,8 @@ private:
 
     void ShowInfo(int territory);
 
+    bool TryToConquerTerritory(int index);
+
 private:
     sgl::graphic::Image * mBg = nullptr;
 

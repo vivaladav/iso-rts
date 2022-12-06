@@ -26,6 +26,7 @@
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
+#include <sgl/utilities/LoadedDie.h>
 
 namespace
 {
@@ -126,12 +127,6 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         auto game = GetGame();
         Player * player = game->GetLocalPlayer();
 
-        // check if player can afford to explore and take the resources away
-        if(!player->HasEnough(Player::Stat::MONEY, costExploreMoney) ||
-           !player->HasEnough(Player::Stat::ENERGY, costExploreEnergy) ||
-           !player->HasEnough(Player::Stat::MATERIAL, costExploreMaterial))
-            return ;
-
         player->SumResource(Player::Stat::MONEY, -costExploreMoney);
         player->SumResource(Player::Stat::ENERGY, -costExploreEnergy);
         player->SumResource(Player::Stat::MATERIAL, -costExploreMaterial);
@@ -158,7 +153,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         // update panel actions
         const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
-        const bool playerOccupier = GetGame()->GetLocalPlayerFaction() == occupier;
+        const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
 
         mPanelActions->UpdateButtons(status, playerOccupier);
     });
@@ -197,7 +192,19 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     mPanelConquerAI->AddOnButtonOkClickFunction([this]
     {
+        auto game = GetGame();
+        Player * player = game->GetLocalPlayer();
 
+        // pay costs
+        player->SumResource(Player::Stat::MONEY, -costConquestMoney);
+        player->SumResource(Player::Stat::ENERGY, -costConquestEnergy);
+        player->SumResource(Player::Stat::MATERIAL, -costConquestMaterial);
+        player->SumResource(Player::Stat::DIAMONDS, -costConquestDiamonds);
+
+        // attempt the conquest
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        const bool res = TryToConquerTerritory(territory);
+        mPanelConquerAI->ShowResult(res);
     });
 
     mPanelConquerAI->AddOnButtonCancelClickFunction([this]
@@ -278,7 +285,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
         const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, ind);
-        const bool playerOccupier = GetGame()->GetLocalPlayerFaction() == occupier;
+        const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
         mPanelActions->UpdateButtons(status, playerOccupier);
 
         if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
@@ -291,7 +298,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         }
 
         mPanelExplore->UpdateExplorationStatus(status);
-        mPanelConquerAI->UpdateExplorationStatus(status, playerOccupier);
+        mPanelConquerAI->UpdateConquestStatus(status, playerOccupier);
     });
 
     SetPlanetName(PLANETS_NAME[planetId]);
@@ -361,6 +368,36 @@ void ScreenPlanetMap::ShowInfo(int territory)
 
     mPanelInfo->SetEnabled(true);
     mPanelInfo->SetData(size, status, occupier, value);
+}
+
+bool ScreenPlanetMap::TryToConquerTerritory(int index)
+{
+    auto game = GetGame();
+    auto mapReg = game->GetMapsRegistry();
+
+    const int planetId = game->GetCurrentPlanet();
+    const TerritoryStatus status = mapReg->GetMapStatus(planetId, index);
+
+    float probSuccess = 60.f;
+
+    // bonus explored and free
+    if(status == TER_ST_FREE)
+    {
+        const float bonusExploredAndFree = 30.f;
+        probSuccess += bonusExploredAndFree;
+    }
+    // bonus explored
+    else if(status == TER_ST_OCCUPIED)
+    {
+        const float bonusExplored = 15.f;
+        probSuccess += bonusExplored;
+    }
+
+    const float probFail = 100.f - probSuccess;
+
+    sgl::utilities::LoadedDie die({ probFail, probSuccess });
+
+    return die.GetNextValue();
 }
 
 } // namespace game

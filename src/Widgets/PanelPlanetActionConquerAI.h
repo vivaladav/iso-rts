@@ -32,13 +32,15 @@ class PanelPlanetActionConquerAI : public sgl::sgui::Widget
 public:
     PanelPlanetActionConquerAI(Player * player, int money, int energy, int material, int diamonds);
 
-    void UpdateExplorationStatus(TerritoryStatus status, bool playerOwned);
+    void UpdateConquestStatus(TerritoryStatus status, bool playerOwned);
+    void ShowResult(bool success);
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);
     void AddOnButtonCancelClickFunction(const std::function<void()> & f);
 
 private:
     void CreateContentStart(int money, int energy, int material, int diamonds);
+    void CreateContentFailure();
     void CreateContentSuccess();
 
     void HandlePositionChanged() override;
@@ -50,6 +52,7 @@ private:
     sgl::graphic::Text * mTitle = nullptr;
 
     sgl::sgui::Widget * mContentStart = nullptr;
+    sgl::sgui::Widget * mContentFailure = nullptr;
     sgl::sgui::Widget * mContentSuccess = nullptr;
 
     sgl::sgui::Label * mLabelMoney = nullptr;

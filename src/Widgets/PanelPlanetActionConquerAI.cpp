@@ -57,8 +57,10 @@ PanelPlanetActionConquerAI::PanelPlanetActionConquerAI(Player * player, int mone
 
     // CONTENT
     CreateContentStart(money, energy, material, diamonds);
+    CreateContentFailure();
     CreateContentSuccess();
 
+    mContentFailure->SetVisible(false);
     mContentSuccess->SetVisible(false);
 
     // BUTTONS
@@ -72,13 +74,15 @@ PanelPlanetActionConquerAI::PanelPlanetActionConquerAI(Player * player, int mone
     UpdatePositions();
 }
 
-void PanelPlanetActionConquerAI::UpdateExplorationStatus(TerritoryStatus status, bool playerOwned)
+void PanelPlanetActionConquerAI::UpdateConquestStatus(TerritoryStatus status, bool playerOwned)
 {
     const bool toConquer = !playerOwned;
 
     mButtonOk->SetVisible(toConquer);
 
-    mContentStart->SetVisible(toConquer);
+    mContentStart->SetVisible(true);
+    mContentFailure->SetVisible(false);
+    mContentSuccess->SetVisible(false);
 
     if(toConquer)
     {
@@ -97,7 +101,21 @@ void PanelPlanetActionConquerAI::UpdateExplorationStatus(TerritoryStatus status,
         mLabelEnergy->SetColor(enoughEnergy ? enoughResColor : lackResColor);
         mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
         mLabelDiamonds->SetColor(enoughDiamonds ? enoughResColor : lackResColor);
+
+        mButtonCancel->SetLabel("CANCEL");
     }
+}
+
+void PanelPlanetActionConquerAI::ShowResult(bool success)
+{
+    mContentStart->SetVisible(false);
+
+    mContentFailure->SetVisible(!success);
+    mContentSuccess->SetVisible(success);
+
+    mButtonOk->SetVisible(false);
+
+    mButtonCancel->SetLabel("CLOSE");
 }
 
 void PanelPlanetActionConquerAI::AddOnButtonOkClickFunction(const std::function<void()> & f)
@@ -202,6 +220,28 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     contCosts->SetPosition(x, y);
 }
 
+void PanelPlanetActionConquerAI::CreateContentFailure()
+{
+    using namespace sgl;
+
+    mContentFailure = new sgui::Widget(this);
+
+    auto fm = graphic::FontManager::Instance();
+
+    const int w = GetWidth();
+
+    // DESCRIPTION
+    graphic::Font * fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
+
+    const int marginL = 20;
+    const int marginR = 20;
+    const int contW = w - marginL - marginR;
+    const int contH = 100;
+    const char * txt = "Conquest failed.";
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
+    text->SetColor(textColor);
+}
+
 void PanelPlanetActionConquerAI::CreateContentSuccess()
 {
     using namespace sgl;
@@ -259,7 +299,7 @@ void PanelPlanetActionConquerAI::UpdatePositions()
     y = marginT + mTitle->GetHeight() + marginTextT;
 
     mContentStart->SetPosition(x, y);
-
+    mContentFailure->SetPosition(x, y);
     mContentSuccess->SetPosition(x, y);
 
     // BUTTONS
