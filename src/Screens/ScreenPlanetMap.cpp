@@ -272,6 +272,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelActions->SetVisible(true);
         mPanelExplore->SetVisible(false);
         mPanelConquer->SetVisible(false);
+        mPanelConquerAI->SetVisible(false);
 
         auto game = GetGame();
         const int planetId = game->GetCurrentPlanet();
