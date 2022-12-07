@@ -34,8 +34,8 @@ namespace
     constexpr int costExploreEnergy = 50;
     constexpr int costExploreMaterial = 30;
 
-    constexpr int costConquestMoney = 400;
-    constexpr int costConquestEnergy = 100;
+    constexpr int costConquestMoney = 500;
+    constexpr int costConquestEnergy = 400;
     constexpr int costConquestMaterial = 50;
     constexpr int costConquestDiamonds = 10;
 }
@@ -192,7 +192,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     mPanelConquerAI->AddOnButtonOkClickFunction([this]
     {
-        auto game = GetGame();
+        Game * game = GetGame();
         Player * player = game->GetLocalPlayer();
 
         // pay costs
@@ -204,6 +204,37 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         // attempt the conquest
         const int territory = mPlanet->GetSelectedTerritoryId();
         const bool res = TryToConquerTerritory(territory);
+
+        // conquest successful
+        if(res)
+        {
+            const int planetId = game->GetCurrentPlanet();
+            const PlayerFaction faction = game->GetLocalPlayerFaction();
+            const TerritoryStatus status = TER_ST_OCCUPIED;
+
+            MapsRegistry * mapReg = game->GetMapsRegistry();
+
+            // update data
+            mapReg->SetMapStatus(planetId, territory, status);
+            mapReg->SetMapOccupier(planetId, territory, faction);
+
+            // update resources
+            const int multMoney = 500;
+            const int multRes1 = 100;
+            const int multRes2 = 10;
+
+            player->SumResource(Player::Stat::MONEY, multMoney * mapReg->GetMapValue(planetId, territory));
+            player->SumResource(Player::Stat::ENERGY, multRes1 * mapReg->GetMapEnergy(planetId, territory));
+            player->SumResource(Player::Stat::MATERIAL, multRes1 * mapReg->GetMapMaterial(planetId, territory));
+            player->SumResource(Player::Stat::BLOBS, multRes2 * mapReg->GetMapBlobs(planetId, territory));
+            player->SumResource(Player::Stat::DIAMONDS, multRes2 * mapReg->GetMapDiamonds(planetId, territory));
+
+            // update UI
+            mPlanet->SetButtonState(territory, faction, status);
+
+            ShowInfo(territory);
+        }
+
         mPanelConquerAI->ShowResult(res);
     });
 
@@ -396,8 +427,7 @@ bool ScreenPlanetMap::TryToConquerTerritory(int index)
     const float probFail = 100.f - probSuccess;
 
     sgl::utilities::LoadedDie die({ probFail, probSuccess });
-
-    return die.GetNextValue();
+    return die.GetNextValue();;
 }
 
 } // namespace game

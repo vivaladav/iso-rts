@@ -258,8 +258,9 @@ void PanelPlanetActionConquerAI::CreateContentSuccess()
     const int marginL = 20;
     const int marginR = 20;
     const int contW = w - marginL - marginR;
-    const int contH = 100;
-    const char * txt = "Conquest was successful!";
+    const int contH = 120;
+    const char * txt = "Good news commander. The conquest was successful!\n\n"
+                       "Your resources have been replenished.";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
     text->SetColor(textColor);
 }

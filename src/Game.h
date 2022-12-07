@@ -123,7 +123,7 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 inline Difficulty Game::GetDifficulty() const { return mDiff; }
 inline void Game::SetDifficulty(Difficulty level) { mDiff = level; }
 
-inline MapsRegistry *Game::GetMapsRegistry() const { return mMapsReg; }
+inline MapsRegistry * Game::GetMapsRegistry() const { return mMapsReg; }
 inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
 
 inline int Game::GetNumPlayers() const { return mPlayers.size(); }
