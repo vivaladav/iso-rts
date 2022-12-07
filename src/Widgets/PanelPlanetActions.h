@@ -52,10 +52,6 @@ private:
     sgl::graphic::Text * mTitle = nullptr;
 
     ButtonPlanetMap * mButtons[NUM_BUTTONS];
-
-    sgl::graphic::Text * mTextExplore = nullptr;
-    sgl::graphic::Text * mTextConquer = nullptr;
-    sgl::graphic::Text * mTextSendAI = nullptr;
 };
 
 } // namespace game

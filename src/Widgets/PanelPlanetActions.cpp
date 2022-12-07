@@ -15,9 +15,6 @@
 namespace game
 {
 
-constexpr unsigned int textColorEna = 0x80a2b3ff;
-constexpr unsigned int textColorDis = 0x4c6f80ff;
-
 PanelPlanetActions::PanelPlanetActions()
     : sgl::sgui::Widget(nullptr)
 {
@@ -53,22 +50,6 @@ PanelPlanetActions::PanelPlanetActions()
     mButtons[SEND_AI] = new ButtonPlanetMap(this);
     mButtons[SEND_AI]->SetLabel("SEND AI");
 
-    // TEXT
-    const int textSize = 18;
-    fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
-
-    mTextExplore = new graphic::Text("Send scouts to explore the territory.", fnt);
-
-    RegisterRenderable(mTextExplore);
-
-    mTextConquer = new graphic::Text("Play to conquer the territory.", fnt);
-
-    RegisterRenderable(mTextConquer);
-
-    mTextSendAI = new graphic::Text("An AI general handles the conquest for you.", fnt);
-
-    RegisterRenderable(mTextSendAI);
-
     // position elements
     UpdatePositions();
 }
@@ -98,10 +79,6 @@ void PanelPlanetActions::HandleStateEnabled()
     mButtons[EXPLORE]->SetEnabled(true);
     mButtons[CONQUER]->SetEnabled(true);
     mButtons[SEND_AI]->SetEnabled(true);
-
-    mTextExplore->SetColor(textColorEna);
-    mTextConquer->SetColor(textColorEna);
-    mTextSendAI->SetColor(textColorEna);
 }
 
 void PanelPlanetActions::HandleStateDisabled()
@@ -109,10 +86,6 @@ void PanelPlanetActions::HandleStateDisabled()
     mButtons[EXPLORE]->SetEnabled(false);
     mButtons[CONQUER]->SetEnabled(false);
     mButtons[SEND_AI]->SetEnabled(false);
-
-    mTextExplore->SetColor(textColorDis);
-    mTextConquer->SetColor(textColorDis);
-    mTextSendAI->SetColor(textColorDis);
 }
 
 void PanelPlanetActions::UpdatePositions()
@@ -123,7 +96,6 @@ void PanelPlanetActions::UpdatePositions()
     const int marginL = 20;
     const int marginR = 30;
     const int marginT = 15;
-    const int marginTextT = 5;
 
     int x;
     int y;
@@ -139,10 +111,10 @@ void PanelPlanetActions::UpdatePositions()
     mTitle->SetPosition(x, y);
 
     // BUTTONS
-    const int marginButtons = 30;
-    const int buttonBlockH = 110;
+    const int marginButtons = 40;
+    const int buttonBlockH = 100;
 
-    x = marginL;
+    x = (GetWidth() - mButtons[EXPLORE]->GetWidth()) * 0.5f;
     y = marginT + mTitle->GetHeight() + marginButtons;
 
     mButtons[EXPLORE]->SetPosition(x, y);
@@ -154,20 +126,6 @@ void PanelPlanetActions::UpdatePositions()
     y += buttonBlockH;
 
     mButtons[SEND_AI]->SetPosition(x, y);
-
-    // TEXT
-    x = x0 + marginL;
-    y = y0 + mButtons[EXPLORE]->GetY() + mButtons[EXPLORE]->GetHeight() + marginTextT;
-
-    mTextExplore->SetPosition(x, y);
-
-    y = y0 + mButtons[CONQUER]->GetY() + mButtons[CONQUER]->GetHeight() + marginTextT;
-
-    mTextConquer->SetPosition(x, y);
-
-    y = y0 + mButtons[SEND_AI]->GetY() + mButtons[SEND_AI]->GetHeight() + marginTextT;
-
-    mTextSendAI->SetPosition(x, y);
 }
 
 } // namespace game
