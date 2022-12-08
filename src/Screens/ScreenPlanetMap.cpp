@@ -220,6 +220,8 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             mapReg->SetMapStatus(planetId, territory, status);
             mapReg->SetMapOccupier(planetId, territory, faction);
 
+            ExpandTerritoryReach(territory);
+
             // update resources
             const int multMoney = 500;
             const int multRes1 = 100;
@@ -430,6 +432,90 @@ bool ScreenPlanetMap::TryToConquerTerritory(int index)
 
     sgl::utilities::LoadedDie die({ probFail, probSuccess });
     return die.GetNextValue();;
+}
+
+void ScreenPlanetMap::ExpandTerritoryReach(int index)
+{
+    switch (index)
+    {
+        case 0:
+            TryToMakeTerrytoryUnexplored(2);
+        break;
+
+        case 1:
+            TryToMakeTerrytoryUnexplored(3);
+        break;
+
+        case 2:
+            TryToMakeTerrytoryUnexplored(0);
+            TryToMakeTerrytoryUnexplored(3);
+            TryToMakeTerrytoryUnexplored(5);
+        break;
+
+        case 3:
+            TryToMakeTerrytoryUnexplored(1);
+            TryToMakeTerrytoryUnexplored(2);
+            TryToMakeTerrytoryUnexplored(6);
+        break;
+
+        case 4:
+            TryToMakeTerrytoryUnexplored(5);
+        break;
+
+        case 5:
+            TryToMakeTerrytoryUnexplored(2);
+            TryToMakeTerrytoryUnexplored(4);
+            TryToMakeTerrytoryUnexplored(8);
+        break;
+
+        case 6:
+            TryToMakeTerrytoryUnexplored(3);
+            TryToMakeTerrytoryUnexplored(7);
+            TryToMakeTerrytoryUnexplored(9);
+        break;
+
+        case 7:
+            TryToMakeTerrytoryUnexplored(6);
+        break;
+
+        case 8:
+            TryToMakeTerrytoryUnexplored(5);
+            TryToMakeTerrytoryUnexplored(9);
+            TryToMakeTerrytoryUnexplored(10);
+        break;
+
+        case 9:
+            TryToMakeTerrytoryUnexplored(6);
+            TryToMakeTerrytoryUnexplored(8);
+            TryToMakeTerrytoryUnexplored(11);
+        break;
+
+        case 10:
+            TryToMakeTerrytoryUnexplored(8);
+        break;
+
+        case 11:
+            TryToMakeTerrytoryUnexplored(9);
+        break;
+
+        default:
+        break;
+    }
+}
+
+void ScreenPlanetMap::TryToMakeTerrytoryUnexplored(int index)
+{
+    auto game = GetGame();
+    const int planetId = game->GetCurrentPlanet();
+    auto mapReg = game->GetMapsRegistry();
+
+    if(mapReg->GetMapStatus(planetId, index) == TER_ST_UNREACHABLE)
+    {
+        mapReg->SetMapStatus(planetId, index, TER_ST_UNEXPLORED);
+
+        const PlayerFaction faction = mapReg->GetMapOccupier(planetId, index);
+        mPlanet->SetButtonState(index, faction, TER_ST_UNEXPLORED);
+    }
 }
 
 } // namespace game
