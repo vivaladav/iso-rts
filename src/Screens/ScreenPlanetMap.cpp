@@ -156,6 +156,8 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
 
         mPanelActions->UpdateButtons(status, playerOccupier);
+
+        mPlanet->SetButtonState(territory, occupier, status);
     });
 
     mPanelExplore->AddOnButtonCancelClickFunction([this]

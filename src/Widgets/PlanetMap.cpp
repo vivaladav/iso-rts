@@ -86,17 +86,28 @@ private:
         // no faction
         else
         {
-            if(mExplored && NORMAL == state)
-                tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_CELL_EXPLORED);
-            else
+            if(mExplored)
             {
                 const unsigned int texId[NUM_VISUAL_STATES] =
                 {
-                    IND_PM_CELL_NORMAL,
+                    IND_PM_CELL_EXPLORED,
                     IND_PM_CELL_DISABLED,
                     IND_PM_CELL_SELECTED,
                     IND_PM_CELL_SELECTED,
                     IND_PM_CELL_SELECTED
+                };
+
+                tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
+            }
+            else
+            {
+                const unsigned int texId[NUM_VISUAL_STATES] =
+                {
+                    IND_PM_CELL_UNEXPLORED,
+                    IND_PM_CELL_DISABLED,
+                    IND_PM_CELL_UNEXPLORED_SEL,
+                    IND_PM_CELL_UNEXPLORED_SEL,
+                    IND_PM_CELL_UNEXPLORED_SEL
                 };
 
                 tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
