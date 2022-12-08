@@ -87,12 +87,13 @@ Game::Game(int argc, char * argv[])
 
 Game::~Game()
 {
+    // delete states and screens
+    delete mStateMan;
+
     delete mMapsReg;
     delete mObjsRegistry;
 
     ClearPlayers();
-
-    delete mStateMan;
 
     sgl::sgui::Stage::Destroy();
 
