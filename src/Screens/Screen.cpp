@@ -10,7 +10,7 @@ namespace game
 
 Screen::Screen(Game * game)
     : mGame(game)
-    , mSharedListener(new SharedScreenListener(this))
+    , mSharedListener(new SharedScreenListener(game, this))
 {
     mGame->AddApplicationListener(mSharedListener);
     mGame->AddKeyboardListener(mSharedListener);
