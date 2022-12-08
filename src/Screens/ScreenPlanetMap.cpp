@@ -235,6 +235,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
             // update UI
             mPlanet->SetButtonState(territory, faction, status);
+            mPanelActions->UpdateButtons(status, true);
 
             ShowInfo(territory);
         }

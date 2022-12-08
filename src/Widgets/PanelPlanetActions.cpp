@@ -62,7 +62,8 @@ void PanelPlanetActions::AddOnButtonClickFunction(Button btn, const std::functio
 
 void PanelPlanetActions::UpdateButtons(TerritoryStatus status, bool isPlayerOccupier)
 {
-    const bool explored = TER_ST_FREE == status || TER_ST_OCCUPIED_UNEXPLORED == status;
+    const bool explored = TER_ST_FREE == status ||
+                          TER_ST_OCCUPIED == status;
 
     mButtons[EXPLORE]->SetEnabled(!explored);
     mButtons[CONQUER]->SetEnabled(!isPlayerOccupier);
