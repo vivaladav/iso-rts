@@ -74,19 +74,18 @@ private:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = nullptr;
 
-        // faction set
-        if(mFaction != NO_FACTION)
+        if(mExplored)
         {
-            const int idPerFaction = 2;
-            const int spriteId = IND_PM_CELL_F1 + (mFaction * idPerFaction) +
-                                 static_cast<int>(IsChecked());
+            // faction set
+            if(mFaction != NO_FACTION)
+            {
+                const int idPerFaction = 2;
+                const int spriteId = IND_PM_CELL_F1 + (mFaction * idPerFaction) +
+                        static_cast<int>(IsChecked());
 
-            tex = tm->GetSprite(SpriteFilePlanetMap, spriteId);
-        }
-        // no faction
-        else
-        {
-            if(mExplored)
+                tex = tm->GetSprite(SpriteFilePlanetMap, spriteId);
+            }
+            else
             {
                 const unsigned int texId[NUM_VISUAL_STATES] =
                 {
@@ -99,19 +98,19 @@ private:
 
                 tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
             }
-            else
+        }
+        else
+        {
+            const unsigned int texId[NUM_VISUAL_STATES] =
             {
-                const unsigned int texId[NUM_VISUAL_STATES] =
-                {
-                    IND_PM_CELL_UNEXPLORED,
-                    IND_PM_CELL_DISABLED,
-                    IND_PM_CELL_UNEXPLORED_SEL,
-                    IND_PM_CELL_UNEXPLORED_SEL,
-                    IND_PM_CELL_UNEXPLORED_SEL
-                };
+                IND_PM_CELL_UNEXPLORED,
+                IND_PM_CELL_DISABLED,
+                IND_PM_CELL_UNEXPLORED_SEL,
+                IND_PM_CELL_UNEXPLORED_SEL,
+                IND_PM_CELL_UNEXPLORED_SEL
+            };
 
-                tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
-            }
+            tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
         }
 
         mBody->SetTexture(tex);
