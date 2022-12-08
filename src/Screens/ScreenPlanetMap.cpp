@@ -140,7 +140,32 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         if(occupier != NO_FACTION)
         {
+            const float probFail = 90.f;
+            const float probSuccess = 100.f - probFail;
 
+            sgl::utilities::LoadedDie die({probFail, probSuccess});
+
+            const bool res = die.GetNextValue();
+
+            if(res)
+            {
+                mapReg->SetMapStatus(planetId, territory, TER_ST_OCCUPIED);
+
+                ShowInfo(territory);
+            }
+            else
+            {
+                mapReg->SetMapStatus(planetId, territory, TER_ST_OCCUPIED_UNEXPLORED);
+
+                // PANEL INFO
+                const int size = 0;
+                const int value = 0;
+
+                mPanelInfo->SetEnabled(true);
+                mPanelInfo->SetData(size, TER_ST_OCCUPIED_UNEXPLORED, occupier, value);
+            }
+
+            mPanelExplore->ShowResult(res);
         }
         else
         {
@@ -326,6 +351,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
         if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
             ShowInfo(ind);
+        else if(status == TER_ST_OCCUPIED_UNEXPLORED)
+        {
+            mPanelInfo->SetEnabled(true);
+            mPanelInfo->SetData(0, status, occupier, 0);
+        }
         else
         {
             mPanelResources->SetEnabled(false);

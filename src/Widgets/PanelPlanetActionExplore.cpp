@@ -56,8 +56,10 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
 
     // CONTENT
     CreateContentStart(money, energy, material);
+    CreateContentFailure();
     CreateContentSuccess();
 
+    mContentFailure->SetVisible(false);
     mContentSuccess->SetVisible(false);
 
     // BUTTONS
@@ -69,6 +71,18 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
 
     // position elements
     UpdatePositions();
+}
+
+void PanelPlanetActionExplore::ShowResult(bool success)
+{
+    mContentStart->SetVisible(false);
+
+    mContentFailure->SetVisible(!success);
+    mContentSuccess->SetVisible(success);
+
+    mButtonOk->SetVisible(false);
+
+    mButtonCancel->SetLabel("CLOSE");
 }
 
 void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
@@ -195,6 +209,28 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     contCosts->SetPosition(x, y);
 }
 
+void PanelPlanetActionExplore::CreateContentFailure()
+{
+    using namespace sgl;
+
+    mContentFailure = new sgui::Widget(this);
+
+    auto fm = graphic::FontManager::Instance();
+
+    const int w = GetWidth();
+
+    // DESCRIPTION
+    graphic::Font * fnt = fm->GetFont(fileFont, textSize, graphic::Font::NORMAL);
+
+    const int marginL = 20;
+    const int marginR = 20;
+    const int contW = w - marginL - marginR;
+    const int contH = 100;
+    const char * txt = "Exploration has failed.\n\nYour squad has been destroyed.";
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
+    text->SetColor(textColor);
+}
+
 void PanelPlanetActionExplore::CreateContentSuccess()
 {
     using namespace sgl;
@@ -253,6 +289,7 @@ void PanelPlanetActionExplore::UpdatePositions()
 
     mContentStart->SetPosition(x, y);
 
+    mContentFailure->SetPosition(x, y);
     mContentSuccess->SetPosition(x, y);
 
     // BUTTONS

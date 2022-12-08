@@ -32,6 +32,7 @@ class PanelPlanetActionExplore : public sgl::sgui::Widget
 public:
     PanelPlanetActionExplore(Player * player, int money, int energy, int material);
 
+    void ShowResult(bool success);
     void UpdateExplorationStatus(TerritoryStatus status);
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);
@@ -39,6 +40,7 @@ public:
 
 private:
     void CreateContentStart(int money, int energy, int material);
+    void CreateContentFailure();
     void CreateContentSuccess();
 
     void HandlePositionChanged() override;
@@ -50,6 +52,7 @@ private:
     sgl::graphic::Text * mTitle = nullptr;
 
     sgl::sgui::Widget * mContentStart = nullptr;
+    sgl::sgui::Widget * mContentFailure = nullptr;
     sgl::sgui::Widget * mContentSuccess = nullptr;
 
     sgl::sgui::Label * mLabelMoney = nullptr;

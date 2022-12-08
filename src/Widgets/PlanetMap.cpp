@@ -39,12 +39,12 @@ public:
         UpdateGraphics(GetState());
     }
 
-    void SetExplored(bool val)
+    void SetTerritoryStatus(TerritoryStatus ts)
     {
-        if(val == mExplored)
+        if(ts == mTerritoryStatus)
             return ;
 
-        mExplored = val;
+        mTerritoryStatus = ts;
 
         UpdateGraphics(GetState());
     }
@@ -74,32 +74,17 @@ private:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = nullptr;
 
-        if(mExplored)
+        // occupation known -> show it
+        if(TER_ST_OCCUPIED == mTerritoryStatus || TER_ST_OCCUPIED_UNEXPLORED == mTerritoryStatus)
         {
-            // faction set
-            if(mFaction != NO_FACTION)
-            {
-                const int idPerFaction = 2;
-                const int spriteId = IND_PM_CELL_F1 + (mFaction * idPerFaction) +
-                        static_cast<int>(IsChecked());
+            const int idPerFaction = 2;
+            const int spriteId = IND_PM_CELL_F1 + (mFaction * idPerFaction) +
+                    static_cast<int>(IsChecked());
 
-                tex = tm->GetSprite(SpriteFilePlanetMap, spriteId);
-            }
-            else
-            {
-                const unsigned int texId[NUM_VISUAL_STATES] =
-                {
-                    IND_PM_CELL_EXPLORED,
-                    IND_PM_CELL_DISABLED,
-                    IND_PM_CELL_SELECTED,
-                    IND_PM_CELL_SELECTED,
-                    IND_PM_CELL_SELECTED
-                };
-
-                tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
-            }
+            tex = tm->GetSprite(SpriteFilePlanetMap, spriteId);
         }
-        else
+        // cell unexplored
+        else if(TER_ST_UNEXPLORED == mTerritoryStatus)
         {
             const unsigned int texId[NUM_VISUAL_STATES] =
             {
@@ -108,6 +93,20 @@ private:
                 IND_PM_CELL_UNEXPLORED_SEL,
                 IND_PM_CELL_UNEXPLORED_SEL,
                 IND_PM_CELL_UNEXPLORED_SEL
+            };
+
+            tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
+        }
+        // explored and free or unrechable (which will be disabled)
+        else
+        {
+            const unsigned int texId[NUM_VISUAL_STATES] =
+            {
+                IND_PM_CELL_EXPLORED,
+                IND_PM_CELL_DISABLED,
+                IND_PM_CELL_SELECTED,
+                IND_PM_CELL_SELECTED,
+                IND_PM_CELL_SELECTED
             };
 
             tex = tm->GetSprite(SpriteFilePlanetMap, texId[state]);
@@ -130,8 +129,7 @@ private:
      sgl::graphic::Image * mBody = nullptr;
 
      PlayerFaction mFaction = NO_FACTION;
-
-     bool mExplored = false;
+     TerritoryStatus mTerritoryStatus = TER_ST_UNKNOWN;
 };
 
 // ===== PLANET MAP =====
@@ -204,11 +202,10 @@ void PlanetMap::SetButtonState(unsigned int index, PlayerFaction occupier, Terri
         return;
     }
 
-    const bool explored = ts == TER_ST_FREE || ts == TER_ST_OCCUPIED;
     const bool enabled = ts != TER_ST_UNREACHABLE;
 
     b->SetFaction(occupier);
-    b->SetExplored(explored);
+    b->SetTerritoryStatus(ts);
     b->SetEnabled(enabled);
 }
 
