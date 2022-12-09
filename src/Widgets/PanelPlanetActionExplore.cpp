@@ -1,6 +1,5 @@
 #include "Widgets/PanelPlanetActionExplore.h"
 
-#include "GameConstants.h"
 #include "Player.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"

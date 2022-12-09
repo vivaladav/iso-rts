@@ -27,6 +27,7 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/LoadedDie.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 namespace
 {
@@ -147,7 +148,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             const float probFail = 90.f;
             const float probSuccess = 100.f - probFail;
 
-            sgl::utilities::LoadedDie die({probFail, probSuccess});
+            utilities::LoadedDie die({probFail, probSuccess});
 
             const bool res = die.GetNextValue();
 
@@ -236,18 +237,18 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         const int territory = mPlanet->GetSelectedTerritoryId();
         const bool res = TryToConquerTerritory(territory);
 
+        const int planetId = game->GetCurrentPlanet();
+        const PlayerFaction pf = game->GetLocalPlayerFaction();
+
+        MapsRegistry * mapReg = game->GetMapsRegistry();
+
         // conquest successful
         if(res)
         {
-            const int planetId = game->GetCurrentPlanet();
-            const PlayerFaction faction = game->GetLocalPlayerFaction();
-            const TerritoryStatus status = TER_ST_OCCUPIED;
-
-            MapsRegistry * mapReg = game->GetMapsRegistry();
-
             // update data
+            const TerritoryStatus status = TER_ST_OCCUPIED;
             mapReg->SetMapStatus(planetId, territory, status);
-            mapReg->SetMapOccupier(planetId, territory, faction);
+            mapReg->SetMapOccupier(planetId, territory, pf);
 
             ExpandTerritoryReach(territory);
 
@@ -263,10 +264,51 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             player->SumResource(Player::Stat::DIAMONDS, multRes2 * mapReg->GetMapDiamonds(planetId, territory));
 
             // update UI
-            mPlanet->SetButtonState(territory, faction, status);
+            mPlanet->SetButtonState(territory, pf, status);
             mPanelActions->UpdateButtons(status, true);
 
             ShowInfo(territory);
+        }
+        // conquest failed
+        else
+        {
+            // decide winning fation
+            PlayerFaction faction = mapReg->GetMapOccupier(planetId, territory);
+
+            if(NO_FACTION == faction)
+            {
+                utilities::UniformDistribution dist(FACTION_1, FACTION_3);
+
+                int f = dist.GetNextValue();
+
+                if(f == pf)
+                    f = ++f % NUM_FACTIONS;
+
+                faction = static_cast<PlayerFaction>(f);
+
+                mapReg->SetMapOccupier(planetId, territory, faction);
+            }
+
+            // update status
+            const TerritoryStatus prevStatus = mapReg->GetMapStatus(planetId, territory);
+            const TerritoryStatus status = prevStatus == TER_ST_FREE ?
+                                           TER_ST_OCCUPIED : TER_ST_OCCUPIED_UNEXPLORED;
+
+            mapReg->SetMapStatus(planetId, territory, status);
+
+            // update UI
+            mPlanet->SetButtonState(territory, faction, status);
+
+            // PANEL INFO
+            if(status == TER_ST_OCCUPIED_UNEXPLORED)
+            {
+                const int size = 0;
+                const int value = 0;
+
+                mPanelInfo->SetEnabled(true);
+
+                mPanelInfo->SetData(size, status, faction, value);
+            }
         }
 
         mPanelConquerAI->ShowResult(res);
@@ -357,14 +399,20 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             ShowInfo(ind);
         else if(status == TER_ST_OCCUPIED_UNEXPLORED)
         {
+            const int size = 0;
+            const int value = 0;
+
             mPanelInfo->SetEnabled(true);
-            mPanelInfo->SetData(0, status, occupier, 0);
+            mPanelInfo->SetData(size, status, occupier, value);
         }
         else
         {
+            const int size = 0;
+            const int value = 0;
+
             mPanelResources->SetEnabled(false);
 
-            mPanelInfo->SetData(0, status, NO_FACTION, 0);
+            mPanelInfo->SetData(size, status, occupier, value);
         }
 
         mPanelExplore->ShowAction();
@@ -448,7 +496,7 @@ bool ScreenPlanetMap::TryToConquerTerritory(int index)
     const int planetId = game->GetCurrentPlanet();
     const TerritoryStatus status = mapReg->GetMapStatus(planetId, index);
 
-    float probSuccess = 60.f;
+    float probSuccess = 50.f;
 
     // bonus explored and free
     if(status == TER_ST_FREE)
