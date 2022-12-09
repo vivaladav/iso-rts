@@ -102,6 +102,14 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
         mPanelActions->SetVisible(false);
         mPanelExplore->SetVisible(true);
+
+        auto game = GetGame();
+        auto mapReg = game->GetMapsRegistry();
+        const int planetId = game->GetCurrentPlanet();
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+
+        mPanelExplore->UpdateExplorationStatus(status);
     });
 
     mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::CONQUER, [this]
@@ -114,6 +122,16 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
         mPanelActions->SetVisible(false);
         mPanelConquerAI->SetVisible(true);
+
+        auto game = GetGame();
+        auto mapReg = game->GetMapsRegistry();
+        const int planetId = game->GetCurrentPlanet();
+        const int territory = mPlanet->GetSelectedTerritoryId();
+        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
+        const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
+
+        mPanelConquerAI->UpdateConquestStatus(status, playerOccupier);
     });
 
     // PANEL ACTION EXPLORE
@@ -171,7 +189,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         {
             mapReg->SetMapStatus(planetId, territory, TER_ST_FREE);
 
-            mPanelExplore->UpdateExplorationStatus(TER_ST_FREE);
+            mPanelExplore->ShowResult(true);
 
             ShowInfo(territory);
         }

@@ -110,19 +110,10 @@ void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
         mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
     }
 
-    // handle specific cases
-    if(TER_ST_FREE == status || TER_ST_OCCUPIED == status)
-    {
-        mContentSuccess->SetVisible(true);
+    mContentFailure->SetVisible(false);
+    mContentSuccess->SetVisible(false);
 
-        mButtonCancel->SetLabel("CLOSE");
-    }
-    else
-    {
-        mContentSuccess->SetVisible(false);
-
-        mButtonCancel->SetLabel("CANCEL");
-    }
+    mButtonCancel->SetLabel("CANCEL");
 }
 
 void PanelPlanetActionExplore::AddOnButtonOkClickFunction(const std::function<void()> & f)
