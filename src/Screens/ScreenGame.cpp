@@ -198,10 +198,7 @@ ScreenGame::~ScreenGame()
 
     delete mCamController;
 
-    GetGame()->ClearPlayers();
-
     auto stage = sgl::sgui::Stage::Instance();
-
     stage->ClearWidgets();
     // make sure to reset stage visibility in case it was off before exit
     stage->SetVisible(true);
