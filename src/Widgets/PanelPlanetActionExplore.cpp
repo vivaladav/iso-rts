@@ -73,6 +73,33 @@ PanelPlanetActionExplore::PanelPlanetActionExplore(Player * player, int money, i
     UpdatePositions();
 }
 
+void PanelPlanetActionExplore::ShowAction()
+{
+    // show content
+    mContentStart->SetVisible(true);
+    mContentFailure->SetVisible(false);
+    mContentSuccess->SetVisible(false);
+
+    // update costs
+    const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
+    const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
+    const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
+    const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
+
+    mLabelMoney->SetColor(enoughMoney ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                        WidgetsConstants::colorPlanetMapLackRes);
+    mLabelEnergy->SetColor(enoughEnergy ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                          WidgetsConstants::colorPlanetMapLackRes);
+    mLabelMaterial->SetColor(enoughMaterial ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                              WidgetsConstants::colorPlanetMapLackRes);
+
+    // update buttons
+    mButtonOk->SetVisible(true);
+    mButtonOk->SetEnabled(canExplore);
+
+    mButtonCancel->SetLabel("CANCEL");
+}
+
 void PanelPlanetActionExplore::ShowResult(bool success)
 {
     mContentStart->SetVisible(false);
@@ -83,37 +110,6 @@ void PanelPlanetActionExplore::ShowResult(bool success)
     mButtonOk->SetVisible(false);
 
     mButtonCancel->SetLabel("CLOSE");
-}
-
-void PanelPlanetActionExplore::UpdateExplorationStatus(TerritoryStatus status)
-{
-    const bool unexplored = status == TER_ST_UNEXPLORED || status == TER_ST_OCCUPIED_UNEXPLORED;
-
-    mButtonOk->SetVisible(unexplored);
-
-    mContentStart->SetVisible(unexplored);
-
-    if(unexplored)
-    {
-        const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
-        const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
-        const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
-        const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
-
-        mButtonOk->SetEnabled(canExplore);
-
-        constexpr unsigned int enoughResColor = 0x85cc85ff;
-        constexpr unsigned int lackResColor = 0xcc8b85ff;
-
-        mLabelMoney->SetColor(enoughMoney ? enoughResColor : lackResColor);
-        mLabelEnergy->SetColor(enoughEnergy ? enoughResColor : lackResColor);
-        mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
-    }
-
-    mContentFailure->SetVisible(false);
-    mContentSuccess->SetVisible(false);
-
-    mButtonCancel->SetLabel("CANCEL");
 }
 
 void PanelPlanetActionExplore::AddOnButtonOkClickFunction(const std::function<void()> & f)
@@ -152,7 +148,6 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     // COSTS
     auto contCosts = new sgui::Widget(mContentStart);
 
-    const unsigned int valueColor = 0xb8bec7ff;
     const int valueBlockW = 130;
     const int spacingValue = 5;
 
@@ -163,7 +158,6 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     auto icon = new sgui::Image(tex, contCosts);
 
     mLabelMoney = new sgui::Label(std::to_string(money).c_str(), fnt, contCosts);
-    mLabelMoney->SetColor(valueColor);
 
     x = icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelMoney->GetHeight()) * 0.5f;
@@ -176,7 +170,6 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     icon->SetX(x);
 
     mLabelEnergy = new sgui::Label(std::to_string(energy).c_str(), fnt, contCosts);
-    mLabelEnergy->SetColor(valueColor);
 
     x += icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelEnergy->GetHeight()) * 0.5f;
@@ -189,7 +182,6 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     icon->SetX(x);
 
     mLabelMaterial = new sgui::Label(std::to_string(material).c_str(), fnt, contCosts);
-    mLabelMaterial->SetColor(valueColor);
 
     x += icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelMaterial->GetHeight()) * 0.5f;
@@ -217,7 +209,9 @@ void PanelPlanetActionExplore::CreateContentFailure()
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 100;
-    const char * txt = "Exploration has failed.\n\nYour squad has been destroyed.";
+    const char * txt = "Sorry Commander,\n"
+                       "but the exploration failed.\n\n"
+                       "Your squad has been destroyed by the enemy.";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
     text->SetColor(textColor);
 }
@@ -239,7 +233,9 @@ void PanelPlanetActionExplore::CreateContentSuccess()
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 100;
-    const char * txt = "Exploration was successful!\n\nCheck out the other panels for the results.";
+    const char * txt = "Good news Commander,\n"
+                       "the exploration was successful!\n\n"
+                       "Check out the other panels for the results.";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
     text->SetColor(textColor);
 }

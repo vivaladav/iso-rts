@@ -103,13 +103,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelActions->SetVisible(false);
         mPanelExplore->SetVisible(true);
 
-        auto game = GetGame();
-        auto mapReg = game->GetMapsRegistry();
-        const int planetId = game->GetCurrentPlanet();
-        const int territory = mPlanet->GetSelectedTerritoryId();
-        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
-
-        mPanelExplore->UpdateExplorationStatus(status);
+        mPanelExplore->ShowAction();
     });
 
     mPanelActions->AddOnButtonClickFunction(PanelPlanetActions::CONQUER, [this]
@@ -123,15 +117,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelActions->SetVisible(false);
         mPanelConquerAI->SetVisible(true);
 
-        auto game = GetGame();
-        auto mapReg = game->GetMapsRegistry();
-        const int planetId = game->GetCurrentPlanet();
-        const int territory = mPlanet->GetSelectedTerritoryId();
-        const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
-        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
-        const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
-
-        mPanelConquerAI->UpdateConquestStatus(status, playerOccupier);
+        mPanelConquerAI->ShowAction();
     });
 
     // PANEL ACTION EXPLORE
@@ -381,8 +367,8 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             mPanelInfo->SetData(0, status, NO_FACTION, 0);
         }
 
-        mPanelExplore->UpdateExplorationStatus(status);
-        mPanelConquerAI->UpdateConquestStatus(status, playerOccupier);
+        mPanelExplore->ShowAction();
+        mPanelConquerAI->ShowAction();
     });
 
     SetPlanetName(PLANETS_NAME[planetId]);

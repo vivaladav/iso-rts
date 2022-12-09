@@ -32,8 +32,8 @@ class PanelPlanetActionExplore : public sgl::sgui::Widget
 public:
     PanelPlanetActionExplore(Player * player, int money, int energy, int material);
 
+    void ShowAction();
     void ShowResult(bool success);
-    void UpdateExplorationStatus(TerritoryStatus status);
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);
     void AddOnButtonCancelClickFunction(const std::function<void()> & f);

@@ -32,7 +32,7 @@ class PanelPlanetActionConquerAI : public sgl::sgui::Widget
 public:
     PanelPlanetActionConquerAI(Player * player, int money, int energy, int material, int diamonds);
 
-    void UpdateConquestStatus(TerritoryStatus status, bool playerOwned);
+    void ShowAction();
     void ShowResult(bool success);
 
     void AddOnButtonOkClickFunction(const std::function<void()> & f);

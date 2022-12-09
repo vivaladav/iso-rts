@@ -1,6 +1,5 @@
 #include "Widgets/PanelPlanetActionConquerAI.h"
 
-#include "GameConstants.h"
 #include "Player.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
@@ -74,36 +73,34 @@ PanelPlanetActionConquerAI::PanelPlanetActionConquerAI(Player * player, int mone
     UpdatePositions();
 }
 
-void PanelPlanetActionConquerAI::UpdateConquestStatus(TerritoryStatus status, bool playerOwned)
+void PanelPlanetActionConquerAI::ShowAction()
 {
-    const bool toConquer = !playerOwned;
-
-    mButtonOk->SetVisible(toConquer);
-
+    // show content
     mContentStart->SetVisible(true);
     mContentFailure->SetVisible(false);
     mContentSuccess->SetVisible(false);
 
-    if(toConquer)
-    {
-        const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
-        const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
-        const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
-        const bool enoughDiamonds = mPlayer->HasEnough(Player::Stat::DIAMONDS, mCostDiamonds);
-        const bool canConquer = enoughMoney && enoughEnergy && enoughMaterial && enoughDiamonds;
+    // update costs
+    const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
+    const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
+    const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
+    const bool enoughDiamonds = mPlayer->HasEnough(Player::Stat::DIAMONDS, mCostDiamonds);
+    const bool canConquer = enoughMoney && enoughEnergy && enoughMaterial && enoughDiamonds;
 
-        mButtonOk->SetEnabled(canConquer);
+    mLabelMoney->SetColor(enoughMoney ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                        WidgetsConstants::colorPlanetMapLackRes);
+    mLabelEnergy->SetColor(enoughEnergy ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                          WidgetsConstants::colorPlanetMapLackRes);
+    mLabelMaterial->SetColor(enoughMaterial ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                              WidgetsConstants::colorPlanetMapLackRes);
+    mLabelDiamonds->SetColor(enoughDiamonds ? WidgetsConstants::colorPlanetMapEnoughRes :
+                                              WidgetsConstants::colorPlanetMapLackRes);
 
-        constexpr unsigned int enoughResColor = 0x85cc85ff;
-        constexpr unsigned int lackResColor = 0xcc8b85ff;
+    // update buttons
+    mButtonOk->SetVisible(true);
+    mButtonOk->SetEnabled(canConquer);
 
-        mLabelMoney->SetColor(enoughMoney ? enoughResColor : lackResColor);
-        mLabelEnergy->SetColor(enoughEnergy ? enoughResColor : lackResColor);
-        mLabelMaterial->SetColor(enoughMaterial ? enoughResColor : lackResColor);
-        mLabelDiamonds->SetColor(enoughDiamonds ? enoughResColor : lackResColor);
-
-        mButtonCancel->SetLabel("CANCEL");
-    }
+    mButtonCancel->SetLabel("CANCEL");
 }
 
 void PanelPlanetActionConquerAI::ShowResult(bool success)
@@ -154,7 +151,6 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     // COSTS
     auto contCosts = new sgui::Widget(mContentStart);
 
-    const unsigned int valueColor = 0xb8bec7ff;
     const int valueBlockW = 110;
     const int spacingValue = 5;
 
@@ -166,7 +162,6 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     auto icon = new sgui::Image(tex, contCosts);
 
     mLabelMoney = new sgui::Label(std::to_string(money).c_str(), fnt, contCosts);
-    mLabelMoney->SetColor(valueColor);
 
     x = icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelMoney->GetHeight()) * 0.5f;
@@ -180,7 +175,6 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     icon->SetX(x);
 
     mLabelEnergy = new sgui::Label(std::to_string(energy).c_str(), fnt, contCosts);
-    mLabelEnergy->SetColor(valueColor);
 
     x += icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelEnergy->GetHeight()) * 0.5f;
@@ -194,7 +188,6 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     icon->SetX(x);
 
     mLabelMaterial = new sgui::Label(std::to_string(material).c_str(), fnt, contCosts);
-    mLabelMaterial->SetColor(valueColor);
 
     x += icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelMaterial->GetHeight()) * 0.5f;
@@ -208,7 +201,6 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     icon->SetX(x);
 
     mLabelDiamonds = new sgui::Label(std::to_string(diamonds).c_str(), fnt, contCosts);
-    mLabelDiamonds->SetColor(valueColor);
 
     x += icon->GetWidth() + spacingValue;
     y = (icon->GetHeight() - mLabelDiamonds->GetHeight()) * 0.5f;
@@ -237,7 +229,9 @@ void PanelPlanetActionConquerAI::CreateContentFailure()
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 100;
-    const char * txt = "Conquest failed.";
+    const char * txt = "Sorry Commander,\n"
+                       "but the conquest failed.\n\n"
+                       "Your enemy has prevailed.";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
     text->SetColor(textColor);
 }
@@ -259,7 +253,8 @@ void PanelPlanetActionConquerAI::CreateContentSuccess()
     const int marginR = 20;
     const int contW = w - marginL - marginR;
     const int contH = 120;
-    const char * txt = "Good news commander. The conquest was successful!\n\n"
+    const char * txt = "Good news Commander,\n"
+                       "the conquest was successful!\n\n"
                        "Your resources have been replenished.";
     auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
     text->SetColor(textColor);
