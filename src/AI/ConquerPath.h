@@ -17,11 +17,10 @@ public:
     enum ConquerState : unsigned int
     {
         READY,
-        CONQUER_CELLING,
-        MOVING,
+        CONQUERING_CELL,
+        CONQUER_NEXT,
         COMPLETED,
         FAILED,
-        ABORTING,
         ABORTED,
 
         NUM_PATH_STATES
@@ -40,7 +39,6 @@ public:
     void SetPathCells(const std::vector<unsigned int> & cells);
 
     void Start();
-
     void Abort();
 
     void Update(float delta);
@@ -49,8 +47,8 @@ private:
     void CreateIndicators();
 
     void InitNextConquest();
-    void TransitionToMoveStep();
-    void InitNextMoveStep();
+    //void TransitionToMoveStep();
+    //void InitNextMoveStep();
 
     void UpdatePathCost();
 
@@ -59,7 +57,7 @@ private:
 private:
     std::vector<unsigned int> mCells;
 
-    std::vector<ConquestIndicator *> mConquestIndicators;
+    std::vector<ConquestIndicator *> mIndicators;
 
     Unit * mUnit = nullptr;
 
@@ -72,6 +70,7 @@ private:
 
     unsigned int mNextCell = 0;
 
+    /*
     float mObjX = 0.f;
     float mObjY = 0.f;
 
@@ -80,6 +79,7 @@ private:
 
     float mTargetX = 0.f;
     float mTargetY = 0.f;
+*/
 
     float mCost = 0.f;
 };

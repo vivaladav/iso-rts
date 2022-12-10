@@ -66,12 +66,13 @@ void WallBuildPath::InitNextBuild()
 {
     mState = BUILDING;
 
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
     if(!mUnit->HasEnergyForAction(BUILD_WALL))
     {
         mState = FAILED;
 
         // clear indicators
-        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
         layerOverlay->ClearObjects();
 
         // clear action data
@@ -88,8 +89,6 @@ void WallBuildPath::InitNextBuild()
         const Cell2D nextCell(nextRow, nextCol);
 
         Player * player = mUnit->GetOwner();
-
-        IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
         const int indexInd = mNextCell - 1;
 
@@ -114,6 +113,7 @@ void WallBuildPath::InitNextBuild()
 
         // TODO get conquer time from unit
         constexpr float TIME_BUILD = 0.5f;
+
         mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                    [this, nextCell, player, blockType]
         {

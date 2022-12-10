@@ -1771,11 +1771,6 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                 // path available -> start conquering
                 if(!path.empty())
                 {
-                    auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
-                    cp->SetPathCells(path);
-
-                    mGameMap->ConquerCells(cp);
-
                     // store active action
                     mActiveObjActions.emplace_back(selUnit, action);
 
@@ -1786,6 +1781,12 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                     selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
 
                     ClearCellOverlays();
+
+                    // start conquest
+                    auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
+                    cp->SetPathCells(path);
+
+                    mGameMap->ConquerCells(cp);
                 }
             }
         }
