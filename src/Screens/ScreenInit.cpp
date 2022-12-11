@@ -6,6 +6,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/GameUIData.h"
 
+#include <sgl/core/DataPackage.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -30,6 +31,15 @@ ScreenInit::ScreenInit(Game * game)
 
     // == SETUP JOBS ==
     auto tm = sgl::graphic::TextureManager::Instance();
+
+    // FULL IMAGES
+    mJobs.emplace_back([tm]
+    {
+        sgl::core::DataPackage package("data/img/imgs.bin");
+
+        tm->RegisterTexture(package, "img/main_menu_bg.png");
+        tm->RegisterTexture(package, "img/space_bg.jpg");
+    });
 
     // MAIN MENU
     mJobs.emplace_back([tm]

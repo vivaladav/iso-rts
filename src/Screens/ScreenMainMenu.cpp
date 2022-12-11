@@ -39,7 +39,10 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const int screenH = sgl::graphic::Renderer::Instance()->GetHeight();
 
     // -- BACKGROUND --
-    mBg = new sgl::graphic::Image("data/img/main_menu_bg.png");
+    auto tm = sgl::graphic::TextureManager::Instance();
+    auto tex = tm->GetTexture("img/main_menu_bg.png");
+
+    mBg = new sgl::graphic::Image(tex);
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panelButtons);
