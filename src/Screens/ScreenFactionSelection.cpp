@@ -34,12 +34,13 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
 
-    mBg = new graphic::Image("data/img/space_bg.jpg");
-
     auto tm = graphic::TextureManager::Instance();
     auto fm = graphic::FontManager::Instance();
     graphic::Texture * tex = nullptr;
     graphic::Font * fnt = nullptr;
+
+    tex = tm->GetTexture("img/space_bg.jpg");
+    mBg = new graphic::Image(tex);
 
     // MAIN PANEL
     tex = tm->GetSprite(SpriteFileFactionSelection, IND_FSEL_MAIN_BG);

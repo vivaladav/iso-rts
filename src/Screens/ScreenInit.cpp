@@ -26,21 +26,20 @@ ScreenInit::ScreenInit(Game * game)
 {
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    // -- BACKGROUND --
-    mBg = new sgl::graphic::Image("data/img/space_bg.jpg");
-
-    // == SETUP JOBS ==
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    // FULL IMAGES
-    mJobs.emplace_back([tm]
+    // -- BACKGROUND --
     {
         sgl::core::DataPackage package("data/img/imgs.bin");
 
         tm->RegisterTexture(package, "img/main_menu_bg.png");
         tm->RegisterTexture(package, "img/space_bg.jpg");
-    });
 
+        auto tex = tm->GetTexture("img/space_bg.jpg");
+        mBg = new sgl::graphic::Image(tex);
+    }
+
+    // == SETUP JOBS ==
     // MAIN MENU
     mJobs.emplace_back([tm]
     {

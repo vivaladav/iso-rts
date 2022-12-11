@@ -25,7 +25,9 @@ ScreenSettings::ScreenSettings(Game * game)
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
 
-    mBg = new graphic::Image("data/img/space_bg.jpg");
+    auto tm = graphic::TextureManager::Instance();
+    auto tex = tm->GetTexture("img/space_bg.jpg");
+    mBg = new graphic::Image(tex);
 
     // BUTTON BACK
     const int marginButton = 10;
