@@ -28,6 +28,8 @@ ScreenInit::ScreenInit(Game * game)
 
     auto tm = sgl::graphic::TextureManager::Instance();
 
+    mPackages.assign(NUM_DATA_PACKAGES, nullptr);
+
     // -- BACKGROUND --
     {
         sgl::core::DataPackage package("data/img/backgrounds.bin");
@@ -40,8 +42,26 @@ ScreenInit::ScreenInit(Game * game)
     }
 
     // == SETUP JOBS ==
+    // LOAD GAME PACKAGE
+    mJobs.emplace_back([this, tm]
+    {
+        mPackages[PACKAGE_GAME] =  new sgl::core::DataPackage("data/img/game.bin");
+    });
+
+    // LOAD TEST PACKAGE
+    mJobs.emplace_back([this, tm]
+    {
+        mPackages[PACKAGE_TEST] =  new sgl::core::DataPackage("data/img/test.bin");
+    });
+
+    // LOAD UI PACKAGE
+    mJobs.emplace_back([this, tm]
+    {
+        mPackages[PACKAGE_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
+    });
+
     // MAIN MENU
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         std::vector<sgl::core::Rectd> rects
         {
@@ -67,7 +87,7 @@ ScreenInit::ScreenInit(Game * game)
             { 128, 500, 24, 24 }
         };
 
-        tm->RegisterSprite(SpriteFileMainMenu, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMainMenu, rects);
     });
 
     // FACTION SELECTION
@@ -829,6 +849,9 @@ ScreenInit::ScreenInit(Game * game)
 ScreenInit::~ScreenInit()
 {
     delete mBg;
+
+    for(auto p : mPackages)
+        delete p;
 
     sgl::sgui::Stage::Instance()->ClearWidgets();
 }

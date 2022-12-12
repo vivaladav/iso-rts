@@ -7,6 +7,7 @@
 
 namespace sgl
 {
+    namespace core { class DataPackage; }
     namespace graphic { class Image; }
     namespace sgui { class Label; }
 }
@@ -27,8 +28,19 @@ private:
     void UpdateStatus();
 
 private:
+    enum Packages : unsigned int
+    {
+        PACKAGE_GAME,
+        PACKAGE_TEST,
+        PACKAGE_UI,
+
+        NUM_DATA_PACKAGES
+    };
+
     sgl::graphic::Image * mBg = nullptr;
     sgl::sgui::Label * mLabelStatus = nullptr;
+
+    std::vector<sgl::core::DataPackage *> mPackages;
 
     std::vector<std::function<void()>> mJobs;
     unsigned int mCurrJob = 0;
