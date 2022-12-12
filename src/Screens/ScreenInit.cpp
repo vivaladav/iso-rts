@@ -91,7 +91,7 @@ ScreenInit::ScreenInit(Game * game)
     });
 
     // FACTION SELECTION
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         std::vector<sgl::core::Rectd> rects
         {
@@ -130,11 +130,11 @@ ScreenInit::ScreenInit(Game * game)
             { 1404, 554, 300, 60 }
         };
 
-        tm->RegisterSprite(SpriteFileFactionSelection, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileFactionSelection, rects);
     });
 
     // CELLS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const int indRows = 2;
         const int indCols = 9;
@@ -159,11 +159,11 @@ ScreenInit::ScreenInit(Game * game)
             y += indH;
         }
 
-        tm->RegisterSprite(SpriteFileCells, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileCells, rects);
     });
 
     // MAP UI
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -200,12 +200,12 @@ ScreenInit::ScreenInit(Game * game)
             { 106, 287, 52, 52 }
         };
 
-        tm->RegisterSprite(SpriteFileMapPanels, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMapPanels, rects);
     });
 
 
     // MAP UI
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -220,11 +220,11 @@ ScreenInit::ScreenInit(Game * game)
             { 9, 37, 11, 12 }
         };
 
-        tm->RegisterSprite(SpriteFileMapUI, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMapUI, rects);
     });
 
     // COLLECTIBLES
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -241,11 +241,11 @@ ScreenInit::ScreenInit(Game * game)
             { 288, 70, 96, 58 }
         };
 
-        tm->RegisterSprite(SpriteCollectiblesFile, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteCollectiblesFile, rects);
     });
 
     // INDICATORS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -281,22 +281,22 @@ ScreenInit::ScreenInit(Game * game)
             { 97, 196, 96, 48 }
         };
 
-        tm->RegisterSprite(SpriteFileIndicators, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileIndicators, rects);
     });
 
     // PARTICLES
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
             { 0, 0, 4, 4 }
         };
 
-        tm->RegisterSprite(SpriteFileParticles, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileParticles, rects);
     });
 
     // ROCKS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -323,11 +323,11 @@ ScreenInit::ScreenInit(Game * game)
             { 768, 58, 96, 59 }
         };
 
-        tm->RegisterSprite(SpriteRocksFile, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteRocksFile, rects);
     });
 
     // SCENE ELEMENTS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -346,11 +346,11 @@ ScreenInit::ScreenInit(Game * game)
             { 579, 270, 192, 134 }
         };
 
-        tm->RegisterSprite(SpriteFileSceneElements, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileSceneElements, rects);
     });
 
     // STRUCTURES
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -459,11 +459,11 @@ ScreenInit::ScreenInit(Game * game)
             { 963, 582, 192, 96 }
         };
 
-        tm->RegisterSprite(SpriteFileStructures, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileStructures, rects);
     });
 
     // UNITS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -497,11 +497,11 @@ ScreenInit::ScreenInit(Game * game)
             { 485, 169, 96, 54 }
         };
 
-        tm->RegisterSprite(SpriteFileUnits, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileUnits, rects);
     });
 
     // UNIT PARTICLES
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rectsUnitsPart
         {
@@ -510,11 +510,11 @@ ScreenInit::ScreenInit(Game * game)
             { 0, 4, 10, 2 }
         };
 
-        tm->RegisterSprite(SpriteFileUnitsParticles, rectsUnitsPart);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
     });
 
     // WALLS
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -583,11 +583,11 @@ ScreenInit::ScreenInit(Game * game)
             { 672, 240, 96, 48 }
         };
 
-        tm->RegisterSprite(SpriteFileWalls, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileWalls, rects);
     });
 
     // NEW ELEMENT DIALOG
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -639,11 +639,11 @@ ScreenInit::ScreenInit(Game * game)
             { 1281, 567, 20, 80 }
         };
 
-        tm->RegisterSprite(SpriteFileNewElementDialog, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileNewElementDialog, rects);
     });
 
     // OBJECT ACTION BUTTON
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -666,11 +666,11 @@ ScreenInit::ScreenInit(Game * game)
             { 147, 114, 48, 48 }
         };
 
-        tm->RegisterSprite(SpriteFileObjActionButton, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileObjActionButton, rects);
     });
 
     // PLANET MAP
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -730,11 +730,11 @@ ScreenInit::ScreenInit(Game * game)
             { 1017, 763, 32, 32 }
         };
 
-        tm->RegisterSprite(SpriteFilePlanetMap, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFilePlanetMap, rects);
     });
 
     // PLANET MAP 2
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -748,11 +748,11 @@ ScreenInit::ScreenInit(Game * game)
             { 476, 827, 475, 135 }
         };
 
-        tm->RegisterSprite(SpriteFilePlanetMap2, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFilePlanetMap2, rects);
     });
 
     // RESOURCES BAR
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -769,11 +769,11 @@ ScreenInit::ScreenInit(Game * game)
             { 141, 51, 26, 26 }
         };
 
-        tm->RegisterSprite(SpriteFileResourcesBar, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileResourcesBar, rects);
     });
 
     // QUICK UNIT SELECTION
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -801,11 +801,25 @@ ScreenInit::ScreenInit(Game * game)
             { 493, 82, 32, 32 }
         };
 
-        tm->RegisterSprite(SpriteFileUnitQuickSel, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileUnitQuickSel, rects);
+    });
+
+    // TEST SPRITE
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            { 0, 0, 40, 40 },
+            { 40, 0, 40, 40 },
+            { 0, 40, 40, 40 },
+            { 40, 40, 40, 40 }
+        };
+
+        tm->RegisterSprite(*mPackages[PACKAGE_TEST], SpriteFileTestSprite, rects);
     });
 
     // TEST UI
-    mJobs.emplace_back([tm]
+    mJobs.emplace_back([this, tm]
     {
         const std::vector<sgl::core::Rectd> rects
         {
@@ -824,10 +838,29 @@ ScreenInit::ScreenInit(Game * game)
             // SLIDER HORIZ
             { 0, 101, 304, 20 },
             { 305, 101, 300, 16 },
-            { 606, 101, 30, 30 }
+            { 606, 101, 30, 30 },
+            // MULTI SELECTION
+            { 637, 101, 40, 40 },
+            { 678, 101, 40, 40 },
+            { 719, 101, 40, 40 },
+            { 760, 101, 40, 40 },
+            { 801, 101, 40, 40 }
         };
 
-        tm->RegisterSprite(SpriteFileTestUI, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_TEST], SpriteFileTestUI, rects);
+    });
+
+    // TEST IMAGES
+    mJobs.emplace_back([this, tm]
+    {
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/obj_null.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/red_dot4.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/square100.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/test-bar-bg.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/test-bar-nobg.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/text_area.png");
+
+            tm->RegisterTexture(*mPackages[PACKAGE_TEST], SpriteFileTestSprite);
     });
 
     // FINAL JOB - move to next screen

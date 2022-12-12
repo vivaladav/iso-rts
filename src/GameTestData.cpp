@@ -3,6 +3,7 @@
 namespace game
 {
 
-const char SpriteFileTestUI[] = "data/img/test/test-UI.png";
+const char SpriteFileTestSprite[] = "test/test_sprite.png";
+const char SpriteFileTestUI[] = "test/test-UI.png";
 
 } // namespace game

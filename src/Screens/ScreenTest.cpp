@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "GameTestData.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"
@@ -36,25 +37,28 @@ ScreenTest::ScreenTest(Game * game)
     game->SetClearColor(0x22, 0x22, 0x22, 0xFF);
 
     // -- Image testing --
+    auto tm = TextureManager::Instance();
+    Texture * tex = nullptr;
     Image * img = nullptr;
 
-    img = new Image("data/img/obj_null.png");
+    tex = tm->GetTexture("test/obj_null.png");
+    img = new Image(tex);
     img->SetPosition(64, 32);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/obj_null.png");
+    img = new Image(tex);
     img->SetPosition(128, 64);
     img->SetAlpha(128);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/obj_null.png");
+    img = new Image(tex);
     img->SetPosition(300, 32);
     img->ScaleH(2.f);
     img->SetRotation(45.f);
     img->SetColor(0x3366F0FF);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/obj_null.png");
+    img = new Image(tex);
     img->SetPosition(32, 64);
     img->SetWidth(64);
     img->SetHeight(32);
@@ -199,7 +203,7 @@ void ScreenTest::TestSGui()
     buttonY += button->GetHeight() * 1.5f;
 
     auto tm = TextureManager::Instance();
-    auto borders = new sgl::sgui::Image(tm->GetTexture("data/img/test/text_area.png"), container);
+    auto borders = new sgl::sgui::Image(tm->GetTexture("test/text_area.png"), container);
     borders->SetPosition(0, buttonY);
 
     const int taW = 400;
@@ -404,20 +408,6 @@ void ScreenTest::TestSprite()
 
     auto tm = TextureManager::Instance();
 
-    const std::vector<sgl::core::Rectd> rects
-    {
-        { 0, 0, 40, 40 },
-        { 40, 0, 40, 40 },
-        { 0, 40, 40, 40 },
-        { 40, 40, 40, 40 }
-    };
-
-    const unsigned int numRects = rects.size();
-
-    const char file[] = "data/img/test/test_sprite.png";
-
-    tm->RegisterSprite(file, rects);
-
     const int x0 = 20;
     const int y0 = 550;
     const int marginH = 20;
@@ -425,7 +415,7 @@ void ScreenTest::TestSprite()
 
     Image * img = nullptr;
 
-    img = new Image(tm->GetTexture(file));
+    img = new Image(tm->GetTexture(SpriteFileTestSprite));
     mRenderables.emplace_back(img);
 
     img->SetPosition(x0, y0);
@@ -435,9 +425,9 @@ void ScreenTest::TestSprite()
     // row 1
     int x = x1;
 
-    for(unsigned int i = 0; i < numRects; ++i)
+    for(unsigned int i = 0; i < NUM_TEST_SPRITE_RECTS; ++i)
     {
-        img = new Image(tm->GetSprite(file, i));
+        img = new Image(tm->GetSprite(SpriteFileTestSprite, i));
         img->SetPosition(x, y0);
         mRenderables.emplace_back(img);
 
@@ -448,9 +438,9 @@ void ScreenTest::TestSprite()
     x = x1;
     const int y1 = y0 + img->GetHeight() + marginV;
 
-    for(unsigned int i = 0; i < numRects; ++i)
+    for(unsigned int i = 0; i < NUM_TEST_SPRITE_RECTS; ++i)
     {
-        img = new Image(tm->GetSprite(file, numRects - i - 1));
+        img = new Image(tm->GetSprite(SpriteFileTestSprite, NUM_TEST_SPRITE_RECTS - i - 1));
         img->SetPosition(x, y1);
         mRenderables.emplace_back(img);
 
@@ -462,61 +452,65 @@ void ScreenTest::TestRotation()
 {
     using namespace sgl::graphic;
 
+    auto tm = TextureManager::Instance();
+    Texture * tex = nullptr;
     Image * img = nullptr;
 
+
+
     // no bg bar
-    img = new Image("data/img/test/square100.png");
+    img = new Image(tm->GetTexture("test/square100.png"));
     img->SetPosition(50, 800);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/test-bar-nobg.png");
+    img = new Image(tm->GetTexture("test/test-bar-nobg.png"));
     img->SetPosition(50, 800);
     img->SetRotation(45.f);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/red_dot4.png");
+    img = new Image(tm->GetTexture("test/red_dot4.png"));
     img->SetPosition(50, 800);
     mRenderables.emplace_back(img);
 
     // bar in square
-    img = new Image("data/img/test/square100.png");
+    img = new Image(tm->GetTexture("test/square100.png"));
     img->SetPosition(200, 800);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/test-bar-bg.png");
+    img = new Image(tm->GetTexture("test/test-bar-bg.png"));
     img->SetPosition(200, 800);
     img->SetRotation(45.f);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/red_dot4.png");
+    img = new Image(tm->GetTexture("test/red_dot4.png"));
     img->SetPosition(200, 800);
     mRenderables.emplace_back(img);
 
     // no bg bar - centered in origin
-    img = new Image("data/img/test/square100.png");
+    img = new Image(tm->GetTexture("test/square100.png"));
     img->SetPosition(50, 950);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/test-bar-nobg.png");
+    img = new Image(tm->GetTexture("test/test-bar-nobg.png"));
     img->SetPosition(50 - img->GetWidth() * 0.5f, 950- img->GetHeight() * 0.5f);
     img->SetRotation(45.f);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/red_dot4.png");
+    img = new Image(tm->GetTexture("test/red_dot4.png"));
     img->SetPosition(50, 950);
     mRenderables.emplace_back(img);
 
     // bar in square - centered in origin
-    img = new Image("data/img/test/square100.png");
+    img = new Image(tm->GetTexture("test/square100.png"));
     img->SetPosition(200, 950);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/test-bar-bg.png");
+    img = new Image(tm->GetTexture("test/test-bar-bg.png"));
     img->SetPosition(200 - img->GetWidth() * 0.5f, 950- img->GetHeight() * 0.5f);
     img->SetRotation(45.f);
     mRenderables.emplace_back(img);
 
-    img = new Image("data/img/test/red_dot4.png");
+    img = new Image(tm->GetTexture("test/red_dot4.png"));
     img->SetPosition(200, 950);
     mRenderables.emplace_back(img);
 }

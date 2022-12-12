@@ -1,5 +1,7 @@
 #include "ButtonUnitsSelector.h"
 
+#include "GameTestData.h"
+
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 
@@ -7,12 +9,13 @@ namespace game
 {
 
 ButtonUnitsSelector::ButtonUnitsSelector(const char * text)
-    : GameButton({
-                    "data/img/buttons/multi_sel-01.png",
-                    "data/img/buttons/multi_sel-02.png",
-                    "data/img/buttons/multi_sel-03.png",
-                    "data/img/buttons/multi_sel-04.png",
-                    "data/img/buttons/multi_sel-05.png",
+    : GameButton( SpriteFileTestUI,
+                 {
+                    IND_TMULTISEL_BG1,
+                    IND_TMULTISEL_BG2,
+                    IND_TMULTISEL_BG3,
+                    IND_TMULTISEL_BG4,
+                    IND_TMULTISEL_BG5
                  },
                  {
                      0xFFFFFFFF,

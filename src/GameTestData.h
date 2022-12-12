@@ -4,6 +4,7 @@ namespace game
 {
 
 // TEST COMBO BOX
+extern const char SpriteFileTestSprite[];
 extern const char SpriteFileTestUI[];
 
 enum SpriteIdTestUI : unsigned int
@@ -23,7 +24,15 @@ enum SpriteIdTestUI : unsigned int
     // SLIDER HORIZ
     IND_TSLIH_BG,
     IND_TSLIH_BAR,
-    IND_TSLIH_BUTTON
+    IND_TSLIH_BUTTON,
+    // MULTI SELECTION
+    IND_TMULTISEL_BG1,
+    IND_TMULTISEL_BG2,
+    IND_TMULTISEL_BG3,
+    IND_TMULTISEL_BG4,
+    IND_TMULTISEL_BG5
 };
+
+constexpr int NUM_TEST_SPRITE_RECTS = 4;
 
 } // namespace game
