@@ -63,7 +63,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     Player * player = game->GetLocalPlayer();
 
     // BACKGROUND
-    tex = tm->GetTexture("img/space_bg.jpg");
+    tex = tm->GetTexture("space_bg.jpg");
     mBg = new graphic::Image(tex);
 
     // PANEL PLAYER RESOURCES TOP BAR

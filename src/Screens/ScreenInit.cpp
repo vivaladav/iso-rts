@@ -30,12 +30,12 @@ ScreenInit::ScreenInit(Game * game)
 
     // -- BACKGROUND --
     {
-        sgl::core::DataPackage package("data/img/imgs.bin");
+        sgl::core::DataPackage package("data/img/backgrounds.bin");
 
-        tm->RegisterTexture(package, "img/main_menu_bg.png");
-        tm->RegisterTexture(package, "img/space_bg.jpg");
+        tm->RegisterTexture(package, "main_menu_bg.png");
+        tm->RegisterTexture(package, "space_bg.jpg");
 
-        auto tex = tm->GetTexture("img/space_bg.jpg");
+        auto tex = tm->GetTexture("space_bg.jpg");
         mBg = new sgl::graphic::Image(tex);
     }
 

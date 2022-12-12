@@ -39,7 +39,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     graphic::Texture * tex = nullptr;
     graphic::Font * fnt = nullptr;
 
-    tex = tm->GetTexture("img/space_bg.jpg");
+    tex = tm->GetTexture("space_bg.jpg");
     mBg = new graphic::Image(tex);
 
     // MAIN PANEL
