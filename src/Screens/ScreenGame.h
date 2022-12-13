@@ -144,6 +144,8 @@ private:
     std::vector<AttackRangeIndicator *> mAttIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
 
+    std::vector<unsigned int> mConquestPath;
+
     std::vector<GameObjectAction> mActiveObjActions;
 
     CameraMapController * mCamController = nullptr;

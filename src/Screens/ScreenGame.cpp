@@ -1765,29 +1765,69 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
             if(player->IsCellVisible(clickInd) &&
                (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
             {
-                auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                  clickCell.row, clickCell.col);
-
-                // path available -> start conquering
-                if(!path.empty())
+                if(!mConquestPath.empty())
                 {
-                    // store active action
-                    mActiveObjActions.emplace_back(selUnit, action);
+                    // reclicked on same cell of last path - > double click or finalize path
+                    if(mConquestPath.back() == clickInd)
+                    {
+                        std::cout << "DOUBLE CLICK on " << clickInd << std::endl;
+                        std::cout << "TOTAL PATH size: " << mConquestPath.size() << std::endl;
 
-                    // disable action buttons
-                    mPanelObjActions->SetActionsEnabled(false);
+                        // store active action
+                        mActiveObjActions.emplace_back(selUnit, action);
 
-                    selUnit->SetActiveAction(GameObjectActionId::IDLE);
-                    selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
+                        // disable action buttons
+                        mPanelObjActions->SetActionsEnabled(false);
 
-                    ClearCellOverlays();
+                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                        selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
 
-                    // start conquest
-                    auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
-                    cp->SetPathCells(path);
+                        ClearCellOverlays();
 
-                    mGameMap->ConquerCells(cp);
+                        // start conquest
+                        auto cp = new ConquerPath(selUnit, mIsoMap, mGameMap, this);
+                        cp->SetPathCells(mConquestPath);
+
+                        mGameMap->ConquerCells(cp);
+
+                        return ;
+                    }
                 }
+
+                sgl::ai::Pathfinder::PathOptions po;
+                unsigned int startR;
+                unsigned int startC;
+
+                // start pathfinding from unit position
+                if(mConquestPath.empty())
+                {
+                    po = sgl::ai::Pathfinder::ALL_OPTIONS;
+
+                    startR = selCell.row;
+                    startC = selCell.col;
+                }
+                // continue pathfinfing from latest click
+                else
+                {
+                    po = sgl::ai::Pathfinder::ALLOW_DIAGONALS;
+
+                    const unsigned int pathInd = mConquestPath.back();
+                    startR = pathInd / mIsoMap->GetNumCols();
+                    startC = pathInd % mIsoMap->GetNumCols();
+                }
+
+                auto path = mPathfinder->MakePath(startR, startC,
+                                                  clickCell.row, clickCell.col, po);
+
+                // empty path -> nothing to do
+                if(path.empty())
+                    return ;
+
+                std::cout << "ADDING PATH of size " << path.size()
+                          << " to existing conquest path of size " << mConquestPath.size() << std::endl;
+
+                mConquestPath.reserve(mConquestPath.size() + path.size());
+                mConquestPath.insert(mConquestPath.end(), path.begin(), path.end());
             }
         }
         else if(action == GameObjectActionId::BUILD_WALL)
