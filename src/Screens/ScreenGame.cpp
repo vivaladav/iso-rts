@@ -561,6 +561,8 @@ void ScreenGame::CreateUI()
         unit->SetActiveAction(GameObjectActionId::BUILD_WALL);
 
         ClearCellOverlays();
+
+        mWallPath.clear();
     });
 
     // attack
@@ -660,11 +662,12 @@ void ScreenGame::CreateUI()
 
         const GameObjectActionId action = selObj->GetActiveAction();
 
-        if(action == CONQUER_CELL)
+        if(action == CONQUER_CELL || action == BUILD_WALL)
         {
             // clear overlays
             ClearCellOverlays();
             mConquestPath.clear();
+            mWallPath.clear();
 
             // reset object action
             selObj->SetCurrentAction(GameObjectActionId::IDLE);
