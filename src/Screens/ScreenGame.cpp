@@ -1435,20 +1435,47 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     if(!canBuild)
         return ;
 
+    sgl::ai::Pathfinder::PathOptions po;
+    unsigned int startR;
+    unsigned int startC;
+
+    // start pathfinding from unit position
+    if(mWallPath.empty())
+    {
+        po = sgl::ai::Pathfinder::INCLUDE_START;
+
+        startR = unit->GetRow0();
+        startC = unit->GetCol0();
+    }
+    // continue pathfinfing from latest click
+    else
+    {
+        po = sgl::ai::Pathfinder::NO_OPTION;
+
+        const unsigned int pathInd = mWallPath.back();
+        startR = pathInd / mIsoMap->GetNumCols();
+        startC = pathInd % mIsoMap->GetNumCols();
+    }
+
     // show path cost when destination is visible
-    const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                            currCell.row, currCell.col);
+    const auto path = mPathfinder->MakePath(startR, startC, currCell.row, currCell.col, po);
 
     // this should not happen
-    if(path.size() < 2)
+    if(path.size() < 2 && mWallPath.empty())
         return ;
 
-    const unsigned int lastIdx = path.size() - 1;
+    std::vector<unsigned int> totPath;
+    totPath.reserve(mWallPath.size() + path.size());
+
+    totPath = mWallPath;
+    totPath.insert(totPath.end(), path.begin(), path.end());
+
+    const unsigned int lastIdx = totPath.size() - 1;
 
     const PlayerFaction faction = player->GetFaction();
 
     std::vector<Cell2D> cellsPath;
-    cellsPath.reserve(path.size());
+    cellsPath.reserve(totPath.size());
 
     // store coordinates of start cell
     const unsigned int pathInd0 = path[0];
@@ -1469,7 +1496,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
         }
 
         // add indicator to layer - skip path[0] as that's start
-        const unsigned int pathInd = path[i + 1];
+        const unsigned int pathInd = totPath[i + 1];
         const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
         const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
         cellsPath.emplace_back(indRow, indCol);
@@ -1484,7 +1511,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     const unsigned int lastIndicator = lastIdx - 1;
 
     WallBuildPath wbp(unit, mIsoMap, mGameMap, this);
-    wbp.SetPathCells(path);
+    wbp.SetPathCells(totPath);
     wbp.SetIndicatorsType(cellsPath, mWallIndicators);
 
     mWallIndicators[lastIndicator]->SetCost(wbp.GetEnergyCost(), wbp.GetMateriaCost());
@@ -1865,8 +1892,8 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                     startC = pathInd % mIsoMap->GetNumCols();
                 }
 
-                auto path = mPathfinder->MakePath(startR, startC,
-                                                  clickCell.row, clickCell.col, po);
+                const auto path = mPathfinder->MakePath(startR, startC, clickCell.row,
+                                                        clickCell.col, po);
 
                 // empty path -> nothing to do
                 if(path.empty())
@@ -1887,32 +1914,68 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                player->IsCellVisible(clickInd) &&
                mGameMap->IsCellWalkable(clickCell.row, clickCell.col))
             {
-                const auto path = mPathfinder->MakePath(selCell.row, selCell.col,
-                                                        clickCell.row, clickCell.col);
-
-                // path available -> start building
-                if(!path.empty())
+                if(!mWallPath.empty())
                 {
-                    // store active action
-                    mActiveObjActions.emplace_back(selUnit, action);
+                    // reclicked on same cell of last path -> double click -> finalize path
+                    if(mWallPath.back() == clickInd)
+                    {
+                        // store active action
+                        mActiveObjActions.emplace_back(selUnit, action);
 
-                    // disable action buttons
-                    mPanelObjActions->SetActionsEnabled(false);
+                        // disable action buttons
+                        mPanelObjActions->SetActionsEnabled(false);
 
-                    selUnit->SetActiveAction(GameObjectActionId::IDLE);
-                    selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);
+                        selUnit->SetActiveAction(GameObjectActionId::IDLE);
+                        selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);
 
-                    // clear temporary overlay
-                    ClearCellOverlays();
+                        // clear temporary overlay
+                        ClearCellOverlays();
 
-                    // setup build
-                    auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
-                    wbp->SetPathCells(path);
-                    // NOTE only level 0 for now
-                    wbp->SetWallLevel(0);
+                        // setup build
+                        auto wbp = new WallBuildPath(selUnit, mIsoMap, mGameMap, this);
+                        wbp->SetPathCells(mWallPath);
+                        // NOTE only level 0 for now
+                        wbp->SetWallLevel(0);
 
-                    mGameMap->BuildWalls(wbp);
+                        mGameMap->BuildWalls(wbp);
+
+                        mWallPath.clear();
+
+                        return ;
+                    }
                 }
+
+                sgl::ai::Pathfinder::PathOptions po;
+                unsigned int startR;
+                unsigned int startC;
+
+                // start pathfinding from unit position
+                if(mWallPath.empty())
+                {
+                    po = sgl::ai::Pathfinder::INCLUDE_START;
+
+                    startR = selCell.row;
+                    startC = selCell.col;
+                }
+                // continue pathfinfing from latest click
+                else
+                {
+                    po = sgl::ai::Pathfinder::NO_OPTION;
+
+                    const unsigned int pathInd = mWallPath.back();
+                    startR = pathInd / mIsoMap->GetNumCols();
+                    startC = pathInd % mIsoMap->GetNumCols();
+                }
+
+                const auto path = mPathfinder->MakePath(startR, startC, clickCell.row,
+                                                        clickCell.col, po);
+
+                // empty path -> nothing to do
+                if(path.empty())
+                    return ;
+
+                mWallPath.reserve(mWallPath.size() + path.size());
+                mWallPath.insert(mWallPath.end(), path.begin(), path.end());
             }
         }
         else if (action == GameObjectActionId::BUILD_STRUCTURE)

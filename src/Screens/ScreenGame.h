@@ -146,6 +146,7 @@ private:
     StructureIndicator * mTempStructIndicator = nullptr;
 
     std::vector<unsigned int> mConquestPath;
+    std::vector<unsigned int> mWallPath;
 
     std::vector<GameObjectAction> mActiveObjActions;
 
