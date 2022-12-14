@@ -12,6 +12,7 @@
 #include "Screens/ScreenGame.h"
 
 #include <cmath>
+#include <unordered_set>
 
 namespace game
 {
@@ -152,7 +153,9 @@ void ConquerPath::InitNextConquest()
 void ConquerPath::UpdatePathCost()
 {
     // TODO proper cost computation
-    mCost = (mCells.size() - 1) * 0.5f;
+    // use set to ignore repeated cells
+    std::unordered_set<unsigned int> cells(mCells.begin(), mCells.end());
+    mCost = (cells.size() - 1) * 0.5f;
 }
 
 void ConquerPath::FinishAbortion()
