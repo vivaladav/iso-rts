@@ -583,6 +583,8 @@ void ScreenGame::CreateUI()
         unit->SetActiveAction(GameObjectActionId::CONQUER_CELL);
 
         ClearCellOverlays();
+
+        mConquestPath.clear();
     });
 
     // move
@@ -1318,19 +1320,46 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
     if(!canConquer)
         return ;
 
+    sgl::ai::Pathfinder::PathOptions po;
+    unsigned int startR;
+    unsigned int startC;
+
+    // start pathfinding from unit position
+    if(mConquestPath.empty())
+    {
+        po = sgl::ai::Pathfinder::INCLUDE_START;
+
+        startR = unit->GetRow0();
+        startC = unit->GetCol0();
+    }
+    // continue pathfinfing from latest click
+    else
+    {
+        po = sgl::ai::Pathfinder::NO_OPTION;
+
+        const unsigned int pathInd = mConquestPath.back();
+        startR = pathInd / mIsoMap->GetNumCols();
+        startC = pathInd % mIsoMap->GetNumCols();
+    }
+
     // show path cost when destination is visible
-    const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                            currCell.row, currCell.col);
+    const auto path = mPathfinder->MakePath(startR, startC, currCell.row, currCell.col, po);
 
     // this should never happen, but just in case
     if(path.empty())
         return ;
 
-    const unsigned int lastIdx = path.size() - 1;
+    std::vector<unsigned int> totPath;
+    totPath.reserve(mConquestPath.size() + path.size());
+
+    totPath = mConquestPath;
+    totPath.insert(totPath.end(), path.begin(), path.end());
+
+    const unsigned int lastIdx = totPath.size() - 1;
 
     const PlayerFaction faction = player->GetFaction();
 
-    for(unsigned int i = 0; i < path.size(); ++i)
+    for(unsigned int i = 0; i < totPath.size(); ++i)
     {
         ConquestIndicator * ind = nullptr;
 
@@ -1343,7 +1372,7 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
         }
 
         // add indicator to layer
-        const unsigned int pathInd = path[i];
+        const unsigned int pathInd = totPath[i];
         const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
         const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
 
@@ -1354,7 +1383,7 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
     }
 
     ConquerPath cp(unit, mIsoMap, mGameMap, this);
-    cp.SetPathCells(path);
+    cp.SetPathCells(totPath);
 
     mConquestIndicators[lastIdx]->SetCost(cp.GetPathCost());
 }
@@ -1767,7 +1796,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
             {
                 if(!mConquestPath.empty())
                 {
-                    // reclicked on same cell of last path - > double click or finalize path
+                    // reclicked on same cell of last path -> double click -> finalize path
                     if(mConquestPath.back() == clickInd)
                     {
                         std::cout << "DOUBLE CLICK on " << clickInd << std::endl;
@@ -1790,6 +1819,8 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
 
                         mGameMap->ConquerCells(cp);
 
+                        mConquestPath.clear();
+
                         return ;
                     }
                 }
@@ -1801,7 +1832,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                 // start pathfinding from unit position
                 if(mConquestPath.empty())
                 {
-                    po = sgl::ai::Pathfinder::ALL_OPTIONS;
+                    po = sgl::ai::Pathfinder::INCLUDE_START;
 
                     startR = selCell.row;
                     startC = selCell.col;
@@ -1809,7 +1840,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                 // continue pathfinfing from latest click
                 else
                 {
-                    po = sgl::ai::Pathfinder::ALLOW_DIAGONALS;
+                    po = sgl::ai::Pathfinder::NO_OPTION;
 
                     const unsigned int pathInd = mConquestPath.back();
                     startR = pathInd / mIsoMap->GetNumCols();
