@@ -1799,9 +1799,6 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                     // reclicked on same cell of last path -> double click -> finalize path
                     if(mConquestPath.back() == clickInd)
                     {
-                        std::cout << "DOUBLE CLICK on " << clickInd << std::endl;
-                        std::cout << "TOTAL PATH size: " << mConquestPath.size() << std::endl;
-
                         // store active action
                         mActiveObjActions.emplace_back(selUnit, action);
 
@@ -1853,9 +1850,6 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                 // empty path -> nothing to do
                 if(path.empty())
                     return ;
-
-                std::cout << "ADDING PATH of size " << path.size()
-                          << " to existing conquest path of size " << mConquestPath.size() << std::endl;
 
                 mConquestPath.reserve(mConquestPath.size() + path.size());
                 mConquestPath.insert(mConquestPath.end(), path.begin(), path.end());
