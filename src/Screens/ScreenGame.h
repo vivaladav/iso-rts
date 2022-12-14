@@ -116,6 +116,7 @@ private:
     void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & onCompleted = []{});
 
+    void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);

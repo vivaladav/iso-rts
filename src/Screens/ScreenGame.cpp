@@ -655,6 +655,27 @@ void ScreenGame::CreateUI()
     {
         GameObject * selObj = player->GetSelectedObject();
 
+        if(nullptr == selObj)
+            return ;
+
+        const GameObjectActionId action = selObj->GetActiveAction();
+
+        if(action == CONQUER_CELL)
+        {
+            // clear overlays
+            ClearCellOverlays();
+            mConquestPath.clear();
+
+            // reset object action
+            selObj->SetCurrentAction(GameObjectActionId::IDLE);
+            selObj->SetActiveActionToDefault();
+
+            // update indicators
+            HandleUnitOnMouseMove(static_cast<Unit *>(selObj), mPrevCell);
+
+            return ;
+        }
+
         auto it = mActiveObjActions.begin();
 
         // search selected object in active actions
@@ -887,23 +908,9 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
     Player * player = GetGame()->GetLocalPlayer();
     GameObject * selObj = player->GetSelectedObject();
 
-    Unit * selUnit = (selObj && selObj->GetObjectType() == OBJ_UNIT) ?
-                     static_cast<Unit *>(selObj) : nullptr;
-
     // unit selected -> handle mouse motion
-    if(selUnit != nullptr)
-    {
-        const GameObjectActionId action = selUnit->GetActiveAction();
-
-        if(action == GameObjectActionId::MOVE)
-            HandleUnitMoveOnMouseMove(selUnit, currCell);
-        else if(action == GameObjectActionId::CONQUER_CELL)
-            HandleUnitConquestOnMouseMove(selUnit, currCell);
-        else if(action == GameObjectActionId::BUILD_WALL)
-            HandleUnitBuildWallOnMouseMove(selUnit, currCell);
-        else if(action == GameObjectActionId::BUILD_STRUCTURE)
-            HandleUnitBuildStructureOnMouseMove(selUnit, currCell);
-    }
+    if(selObj && selObj->GetObjectType() == OBJ_UNIT)
+        HandleUnitOnMouseMove(static_cast<Unit *>(selObj), currCell);
 
     // update previous cell before exit
     mPrevCell = currCell;
@@ -1224,6 +1231,20 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::MOVE);
+}
+
+void ScreenGame::HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell)
+{
+    const GameObjectActionId action = unit->GetActiveAction();
+
+    if(action == GameObjectActionId::MOVE)
+        HandleUnitMoveOnMouseMove(unit, cell);
+    else if(action == GameObjectActionId::CONQUER_CELL)
+        HandleUnitConquestOnMouseMove(unit, cell);
+    else if(action == GameObjectActionId::BUILD_WALL)
+        HandleUnitBuildWallOnMouseMove(unit, cell);
+    else if(action == GameObjectActionId::BUILD_STRUCTURE)
+        HandleUnitBuildStructureOnMouseMove(unit, cell);
 }
 
 void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
