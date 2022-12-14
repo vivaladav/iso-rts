@@ -1346,7 +1346,7 @@ void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currC
     const auto path = mPathfinder->MakePath(startR, startC, currCell.row, currCell.col, po);
 
     // this should never happen, but just in case
-    if(path.empty())
+    if(path.empty() && mConquestPath.empty())
         return ;
 
     std::vector<unsigned int> totPath;
