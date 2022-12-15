@@ -1481,7 +1481,7 @@ void ScreenGame::HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & curr
     cellsPath.reserve(totPath.size());
 
     // store coordinates of start cell
-    const unsigned int pathInd0 = path[0];
+    const unsigned int pathInd0 = totPath[0];
     const unsigned int indRow0 = pathInd0 / mIsoMap->GetNumCols();
     const unsigned int indCol0 = pathInd0 % mIsoMap->GetNumCols();
     cellsPath.emplace_back(indRow0, indCol0);
