@@ -27,12 +27,16 @@ public:
 private:
     void UpdateStatus();
 
+    void SetupLoadPackages();
+    void SetupTextures();
+
 private:
     enum Packages : unsigned int
     {
-        PACKAGE_GAME,
-        PACKAGE_TEST,
-        PACKAGE_UI,
+        PACKAGE_IMGS_BACKGROUNDS,
+        PACKAGE_IMGS_GAME,
+        PACKAGE_IMGS_TEST,
+        PACKAGE_IMGS_UI,
 
         NUM_DATA_PACKAGES
     };

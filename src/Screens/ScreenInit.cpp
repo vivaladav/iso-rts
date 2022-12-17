@@ -26,39 +26,108 @@ ScreenInit::ScreenInit(Game * game)
 {
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    auto tm = sgl::graphic::TextureManager::Instance();
-
     mPackages.assign(NUM_DATA_PACKAGES, nullptr);
 
+    auto tm = sgl::graphic::TextureManager::Instance();
+
     // -- BACKGROUND --
-    {
-        sgl::core::DataPackage package("data/img/backgrounds.bin");
+    mPackages[PACKAGE_IMGS_BACKGROUNDS] = new sgl::core::DataPackage("data/img/backgrounds.bin");
 
-        tm->RegisterTexture(package, "main_menu_bg.png");
-        tm->RegisterTexture(package, "space_bg.jpg");
+    tm->RegisterTexture(*mPackages[PACKAGE_IMGS_BACKGROUNDS], "main_menu_bg.png");
+    tm->RegisterTexture(*mPackages[PACKAGE_IMGS_BACKGROUNDS], "space_bg.jpg");
 
-        auto tex = tm->GetTexture("space_bg.jpg");
-        mBg = new sgl::graphic::Image(tex);
-    }
+    auto tex = tm->GetTexture("space_bg.jpg");
+    mBg = new sgl::graphic::Image(tex);
 
     // == SETUP JOBS ==
+    SetupLoadPackages();
+
+    SetupTextures();
+
+    // FINAL JOB - move to next screen
+    // NOTE keep last
+    mJobs.emplace_back([this]
+    {
+        GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
+    });
+
+    // INIT STATUS LABEL
+    auto fm = sgl::graphic::FontManager::Instance();
+    sgl::graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
+
+    mLabelStatus = new sgl::sgui::Label(font);
+    mLabelStatus->SetColor(0xEEEEEEFF);
+    UpdateStatus();
+}
+
+ScreenInit::~ScreenInit()
+{
+    delete mBg;
+
+    for(auto p : mPackages)
+        delete p;
+
+    sgl::sgui::Stage::Instance()->ClearWidgets();
+}
+
+void ScreenInit::Update(float update)
+{
+    mJobs[mCurrJob]();
+
+    ++mCurrJob;
+
+    UpdateStatus();
+}
+
+void ScreenInit::Render()
+{
+    mBg->Render();
+}
+
+void ScreenInit::UpdateStatus()
+{
+    // update status string
+    const int perc = static_cast<int>(std::roundf(mCurrJob * 100.f / mJobs.size()));
+
+    std::ostringstream ss;
+    ss << "LOADING... " << perc << "%";
+    mLabelStatus->SetText(ss.str().c_str());
+
+    // update position
+    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
+    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
+    const int x = (rendW - mLabelStatus->GetWidth()) * 0.5f;
+    const int y = rendH - (mLabelStatus->GetHeight() * 2.f);
+    mLabelStatus->SetPosition(x, y);
+}
+
+void ScreenInit::SetupLoadPackages()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
     // LOAD GAME PACKAGE
     mJobs.emplace_back([this, tm]
     {
-        mPackages[PACKAGE_GAME] =  new sgl::core::DataPackage("data/img/game.bin");
+        mPackages[PACKAGE_IMGS_GAME] =  new sgl::core::DataPackage("data/img/game.bin");
     });
 
     // LOAD TEST PACKAGE
     mJobs.emplace_back([this, tm]
     {
-        mPackages[PACKAGE_TEST] =  new sgl::core::DataPackage("data/img/test.bin");
+        mPackages[PACKAGE_IMGS_TEST] =  new sgl::core::DataPackage("data/img/test.bin");
     });
 
     // LOAD UI PACKAGE
     mJobs.emplace_back([this, tm]
     {
-        mPackages[PACKAGE_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
+        mPackages[PACKAGE_IMGS_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
     });
+
+}
+
+void ScreenInit::SetupTextures()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // MAIN MENU
     mJobs.emplace_back([this, tm]
@@ -87,7 +156,7 @@ ScreenInit::ScreenInit(Game * game)
             { 128, 500, 24, 24 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMainMenu, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMainMenu, rects);
     });
 
     // FACTION SELECTION
@@ -130,7 +199,7 @@ ScreenInit::ScreenInit(Game * game)
             { 1404, 554, 300, 60 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileFactionSelection, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileFactionSelection, rects);
     });
 
     // CELLS
@@ -159,7 +228,7 @@ ScreenInit::ScreenInit(Game * game)
             y += indH;
         }
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileCells, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileCells, rects);
     });
 
     // MAP UI
@@ -200,7 +269,7 @@ ScreenInit::ScreenInit(Game * game)
             { 106, 287, 52, 52 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMapPanels, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMapPanels, rects);
     });
 
 
@@ -220,7 +289,7 @@ ScreenInit::ScreenInit(Game * game)
             { 9, 37, 11, 12 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileMapUI, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMapUI, rects);
     });
 
     // COLLECTIBLES
@@ -241,7 +310,7 @@ ScreenInit::ScreenInit(Game * game)
             { 288, 70, 96, 58 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteCollectiblesFile, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteCollectiblesFile, rects);
     });
 
     // INDICATORS
@@ -281,7 +350,7 @@ ScreenInit::ScreenInit(Game * game)
             { 97, 196, 96, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileIndicators, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileIndicators, rects);
     });
 
     // PARTICLES
@@ -292,7 +361,7 @@ ScreenInit::ScreenInit(Game * game)
             { 0, 0, 4, 4 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileParticles, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileParticles, rects);
     });
 
     // ROCKS
@@ -323,7 +392,7 @@ ScreenInit::ScreenInit(Game * game)
             { 768, 58, 96, 59 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteRocksFile, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteRocksFile, rects);
     });
 
     // SCENE ELEMENTS
@@ -346,7 +415,7 @@ ScreenInit::ScreenInit(Game * game)
             { 579, 270, 192, 134 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileSceneElements, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileSceneElements, rects);
     });
 
     // STRUCTURES
@@ -459,7 +528,7 @@ ScreenInit::ScreenInit(Game * game)
             { 963, 582, 192, 96 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileStructures, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
     });
 
     // UNITS
@@ -497,7 +566,7 @@ ScreenInit::ScreenInit(Game * game)
             { 485, 169, 96, 54 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileUnits, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileUnits, rects);
     });
 
     // UNIT PARTICLES
@@ -510,7 +579,7 @@ ScreenInit::ScreenInit(Game * game)
             { 0, 4, 10, 2 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
     });
 
     // WALLS
@@ -583,7 +652,7 @@ ScreenInit::ScreenInit(Game * game)
             { 672, 240, 96, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_GAME], SpriteFileWalls, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileWalls, rects);
     });
 
     // NEW ELEMENT DIALOG
@@ -639,7 +708,7 @@ ScreenInit::ScreenInit(Game * game)
             { 1281, 567, 20, 80 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileNewElementDialog, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileNewElementDialog, rects);
     });
 
     // OBJECT ACTION BUTTON
@@ -666,7 +735,7 @@ ScreenInit::ScreenInit(Game * game)
             { 147, 114, 48, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileObjActionButton, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileObjActionButton, rects);
     });
 
     // PLANET MAP
@@ -730,7 +799,7 @@ ScreenInit::ScreenInit(Game * game)
             { 1017, 763, 32, 32 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFilePlanetMap, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap, rects);
     });
 
     // PLANET MAP 2
@@ -748,7 +817,7 @@ ScreenInit::ScreenInit(Game * game)
             { 476, 827, 475, 135 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFilePlanetMap2, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap2, rects);
     });
 
     // RESOURCES BAR
@@ -769,7 +838,7 @@ ScreenInit::ScreenInit(Game * game)
             { 141, 51, 26, 26 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileResourcesBar, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileResourcesBar, rects);
     });
 
     // QUICK UNIT SELECTION
@@ -801,7 +870,7 @@ ScreenInit::ScreenInit(Game * game)
             { 493, 82, 32, 32 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_UI], SpriteFileUnitQuickSel, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileUnitQuickSel, rects);
     });
 
     // TEST SPRITE
@@ -815,7 +884,7 @@ ScreenInit::ScreenInit(Game * game)
             { 40, 40, 40, 40 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_TEST], SpriteFileTestSprite, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite, rects);
     });
 
     // TEST UI
@@ -847,77 +916,22 @@ ScreenInit::ScreenInit(Game * game)
             { 801, 101, 40, 40 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_TEST], SpriteFileTestUI, rects);
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestUI, rects);
     });
 
     // TEST IMAGES
     mJobs.emplace_back([this, tm]
     {
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/obj_null.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/red_dot4.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/square100.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/test-bar-bg.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/test-bar-nobg.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], "test/text_area.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/obj_null.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/red_dot4.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/square100.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/test-bar-bg.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/test-bar-nobg.png");
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/text_area.png");
 
-            tm->RegisterTexture(*mPackages[PACKAGE_TEST], SpriteFileTestSprite);
+            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite);
     });
 
-    // FINAL JOB - move to next screen
-    // NOTE keep last
-    mJobs.emplace_back([this]
-    {
-        GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
-    });
-
-    // INIT STATUS LABEL
-    auto fm = sgl::graphic::FontManager::Instance();
-    sgl::graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
-
-    mLabelStatus = new sgl::sgui::Label(font);
-    mLabelStatus->SetColor(0xEEEEEEFF);
-    UpdateStatus();
-}
-
-ScreenInit::~ScreenInit()
-{
-    delete mBg;
-
-    for(auto p : mPackages)
-        delete p;
-
-    sgl::sgui::Stage::Instance()->ClearWidgets();
-}
-
-void ScreenInit::Update(float update)
-{
-    mJobs[mCurrJob]();
-
-    ++mCurrJob;
-
-    UpdateStatus();
-}
-
-void ScreenInit::Render()
-{
-    mBg->Render();
-}
-
-void ScreenInit::UpdateStatus()
-{
-    // update status string
-    const int perc = static_cast<int>(std::roundf(mCurrJob * 100.f / mJobs.size()));
-
-    std::ostringstream ss;
-    ss << "LOADING... " << perc << "%";
-    mLabelStatus->SetText(ss.str().c_str());
-
-    // update position
-    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
-    const int x = (rendW - mLabelStatus->GetWidth()) * 0.5f;
-    const int y = rendH - (mLabelStatus->GetHeight() * 2.f);
-    mLabelStatus->SetPosition(x, y);
 }
 
 } // namespace game
