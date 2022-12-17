@@ -25,9 +25,9 @@ ScreenNewGame::ScreenNewGame(Game * game)
     const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
 
     const int MAX_UNITS0 = 5;
-    const int startEnergy = 400;
-    const int startMaterial = 50;
-    const int startMoney = 500;
+    const int startEnergy = 800;
+    const int startMaterial = 200;
+    const int startMoney = 1000;
     const int startDiamonds = 10;
     const int startBlobs = 5;
 

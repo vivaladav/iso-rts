@@ -82,9 +82,9 @@ void ResourceGenerator::SetImage()
 void ResourceGenerator::UpdateOutput()
 {
     if(RESG_ENERGY == mTypeGen)
-        mOutput = 30;
+        mOutput = 50;
     else if(RESG_MATERIAL == mTypeGen)
-        mOutput = 6;
+        mOutput = 10;
     else if(RESG_ENERGY_SOLAR == mTypeGen)
         mOutput = 10;
     else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)

@@ -58,7 +58,7 @@ constexpr float TIME_NEW_UNIT = 0.5f;
 constexpr float TIME_CONQ_RES_GEN = 0.5f;
 constexpr float TIME_UPG_UNIT = 1.f;
 
-constexpr float TIME_ENERGY_USE = 2.f;
+constexpr float TIME_ENERGY_USE = 8.f;
 constexpr float TIME_AI_MOVE = 0.5f;
 
 ScreenGame::ScreenGame(Game * game)

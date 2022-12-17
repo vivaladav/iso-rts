@@ -37,8 +37,8 @@ Player::Player(const char * name, int pid)
 
     mStats[Stat::BLOBS].SetMax(100);
     mStats[Stat::DIAMONDS].SetMax(100);
-    mStats[Stat::ENERGY].SetMax(500);
-    mStats[Stat::MATERIAL].SetMax(200);
+    mStats[Stat::ENERGY].SetMax(1000);
+    mStats[Stat::MATERIAL].SetMax(500);
     mStats[Stat::MONEY].SetMax(99999999);
 
     // init vectors of resource generators
