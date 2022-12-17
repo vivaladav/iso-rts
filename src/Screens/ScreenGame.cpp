@@ -143,17 +143,16 @@ ScreenGame::ScreenGame(Game * game)
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 
     // -- PLAYERS --
-//    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
-//    {
-//        // temporary disable AI for development
-//        Player * p = game->GetPlayerByIndex(i);
+    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+    {
+        Player * p = game->GetPlayerByIndex(i);
 
-//        if(p->IsAI())
-//        {
-//            p->GetAI()->SetGameMap(mGameMap);
-//            mAiPlayers.push_back(p);
-//        }
-//    }
+        if(p->IsAI())
+        {
+            p->GetAI()->SetGameMap(mGameMap);
+            mAiPlayers.push_back(p);
+        }
+    }
 
     // LOCAL PLAYER
     Player * localPlayer = game->GetLocalPlayer();
