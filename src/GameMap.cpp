@@ -469,6 +469,15 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     // assign owner
     obj->SetOwner(owner);
 
+    if(owner != nullptr)
+    {
+        if(obj->GetObjectType() == OBJ_RES_GEN)
+            owner->AddResourceGenerator(static_cast<ResourceGenerator *>(obj));
+        else if(obj->IsStructure())
+            owner->AddStructure(static_cast<Structure *>(obj));
+    }
+
+
     // set object properties
     obj->SetCell(&mCells[ind0]);
     obj->SetSize(rows, cols);
@@ -477,9 +486,6 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     obj->SetGameMap(this);
     obj->SetScreen(mScreenGame);
 
-    // add generator to player
-    if(owner != nullptr && obj->GetObjectType() == OBJ_RES_GEN)
-        owner->AddResourceGenerator(static_cast<ResourceGenerator *>(obj));
 
     // store object in map list and in registry
     mObjects.push_back(obj);
@@ -1955,18 +1961,20 @@ Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> t
 
 void GameMap::DestroyObject(GameObject * obj)
 {
+    Player * localPlayer = mGame->GetLocalPlayer();
+    Player * owner = obj->GetOwner();
+
     // update visibility map
     // NOTE only local player for now
-    Player * localPlayer = mGame->GetLocalPlayer();
-
     if(obj->GetOwner() == localPlayer)
-    {
         DelPlayerObjVisibility(obj, localPlayer);
 
-        // remove unit from player
-        if(obj->GetObjectType() == OBJ_UNIT)
-            localPlayer->RemoveUnit(static_cast<Unit *>(obj));
-    }
+    // remove unit from player
+    if(obj->GetObjectType() == OBJ_UNIT)
+        owner->RemoveUnit(static_cast<Unit *>(obj));
+    // remove structure
+    else if(obj->IsStructure())
+        owner->RemoveStructure(static_cast<Structure *>(obj));
 
     // generic cells update
     for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)

@@ -7,6 +7,7 @@
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/ResourceGenerator.h"
+#include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 
 #include <cassert>
@@ -86,6 +87,36 @@ Unit * Player::GetUnit(unsigned int index)
 {
     if(index < mUnits.size())
         return mUnits[index];
+    else
+        return nullptr;
+}
+
+void Player::AddStructure(Structure * s)
+{
+    mStructures.push_back(s);
+}
+
+void Player::RemoveStructure(Structure * s)
+{
+    auto it = mStructures.begin();
+
+    while(it != mStructures.end())
+    {
+        if(*it == s)
+        {
+            mStructures.erase(it);
+
+            return ;
+        }
+        else
+            ++it;
+    }
+}
+
+Structure * Player::GetStructure(unsigned int index)
+{
+    if(index < mStructures.size())
+        return mStructures[index];
     else
         return nullptr;
 }

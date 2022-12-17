@@ -15,6 +15,7 @@ namespace game
 class GameObject;
 class PlayerAI;
 class ResourceGenerator;
+class Structure;
 class Unit;
 
 enum ResourceType : unsigned int;
@@ -51,6 +52,11 @@ public:
     void AddUnit(Unit * unit);
     void RemoveUnit(Unit * unit);
     Unit * GetUnit(unsigned int index);
+
+    unsigned int GetNumStructures() const;
+    void AddStructure(Structure * s);
+    void RemoveStructure(Structure * s);
+    Structure * GetStructure(unsigned int index);
 
     // visibility map
     void InitVisibility(int rows, int cols);
@@ -122,6 +128,7 @@ public:
 
 private:
     std::vector<Unit *> mUnits;
+    std::vector<Structure *> mStructures;
 
     std::vector<int> mVisMap;
 
@@ -164,6 +171,8 @@ inline void Player::SetFaction(PlayerFaction faction) { mFaction = faction; }
 inline unsigned int Player::GetMaxUnits() const { return mMaxUnits; }
 inline void Player::SetMaxUnits(int val) { mMaxUnits = val; }
 inline unsigned int Player::GetNumUnits() const { return mUnits.size(); }
+
+inline unsigned int Player::GetNumStructures() const { return mStructures.size(); }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {
