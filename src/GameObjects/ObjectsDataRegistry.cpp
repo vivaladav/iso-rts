@@ -415,7 +415,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_1,
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
-                   std::vector<int>{ 15, 15, 0, 0 },
+                   std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F1,
                    OCU_WORKER, UNIT_1, 1, 1,
                    Unit::TITLES[UNIT_1],
@@ -427,7 +427,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_2,
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
-                   std::vector<int>{ 20, 20, 0, 0 },
+                   std::vector<int>{ 200, 200, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F1,
                    OCU_SOLDIER, UNIT_2, 1, 1,
                    Unit::TITLES[UNIT_2],
@@ -439,7 +439,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_3,
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
-                   std::vector<int>{ 40, 40, 0, 0 },
+                   std::vector<int>{ 400, 400, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F1,
                    OCU_GENERIC, UNIT_3, 1, 1,
                    Unit::TITLES[UNIT_3],
@@ -452,7 +452,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_4,
         ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
-                   std::vector<int>{ 30, 30, 0, 0 },
+                   std::vector<int>{ 300, 300, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_04_F1,
                    OCU_SCOUT, UNIT_4, 1, 1,
                    Unit::TITLES[UNIT_4],
@@ -468,7 +468,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_1,
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
-                   std::vector<int>{ 15, 15, 0, 0 },
+                   std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F2,
                    OCU_WORKER, UNIT_1, 1, 1,
                    Unit::TITLES[UNIT_1],
@@ -480,7 +480,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_2,
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
-                   std::vector<int>{ 20, 20, 0, 0 },
+                   std::vector<int>{ 200, 200, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F2,
                    OCU_SOLDIER, UNIT_2, 1, 1,
                    Unit::TITLES[UNIT_2],
@@ -492,7 +492,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_3,
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
-                   std::vector<int>{ 40, 40, 0, 0 },
+                   std::vector<int>{ 400, 400, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F2,
                    OCU_GENERIC, UNIT_3, 1, 1,
                    Unit::TITLES[UNIT_3],
@@ -504,7 +504,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_4,
         ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
-                   std::vector<int>{ 30, 30, 0, 0 },
+                   std::vector<int>{ 300, 300, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_04_F2,
                    OCU_SCOUT, UNIT_4, 1, 1,
                    Unit::TITLES[UNIT_4],
@@ -520,7 +520,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_1,
         ObjectData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
-                   std::vector<int>{ 15, 15, 0, 0 },
+                   std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_01_F3,
                    OCU_WORKER, UNIT_1, 1, 1,
                    Unit::TITLES[UNIT_1],
@@ -532,7 +532,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_2,
         ObjectData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
-                   std::vector<int>{ 20, 20, 0, 0 },
+                   std::vector<int>{ 200, 200, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_02_F3,
                    OCU_SOLDIER, UNIT_2, 1, 1,
                    Unit::TITLES[UNIT_2],
@@ -544,7 +544,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_3,
         ObjectData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
-                   std::vector<int>{ 40, 40, 0, 0 },
+                   std::vector<int>{ 400, 400, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_03_F3,
                    OCU_GENERIC, UNIT_3, 1, 1,
                    Unit::TITLES[UNIT_3],
@@ -556,7 +556,7 @@ void ObjectsDataRegistry::InitUnits()
     (
         UNIT_4,
         ObjectData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
-                   std::vector<int>{ 30, 30, 0, 0 },
+                   std::vector<int>{ 300, 300, 0, 0 },
                    SpriteFileUnits, SPR_UNIT_04_F3,
                    OCU_SCOUT, UNIT_4, 1, 1,
                    Unit::TITLES[UNIT_4],

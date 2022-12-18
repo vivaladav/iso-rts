@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include "GameMap.h"
 #include "Player.h"
+#include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 
 #include <sgl/utilities/LoadedDie.h>
@@ -16,270 +17,118 @@ namespace game
 PlayerAI::PlayerAI(Player * player)
     : mPlayer(player)
 {
+}
 
+PlayerAI::~PlayerAI()
+{
+    ClearActionsDone();
+}
+
+void PlayerAI::Update(float delta)
+{
+    // TODO track time and keep it into consideration when defining priorities
+    // TODO use memory pools for actions
+    ClearActionsDone();
+
+    DecideActions();
 }
 
 void PlayerAI::DecideActions()
 {
-    const unsigned int rows = mGm->GetNumRows();
-    const unsigned int cols = mGm->GetNumCols();
-
-    // -- populate own and enemy cells --
-    std::vector<GameMapCell> ownCells;
-    std::vector<GameMapCell> enemyCells;
-
-    for(unsigned int r = 0; r < rows; ++r)
+    // STRUCTURES
+    for(unsigned int i = 0; i < mPlayer->GetNumStructures(); ++i)
     {
-        for(unsigned int c = 0; c < cols; ++c)
-        {
-            const GameMapCell & cell = mGm->GetCell(r, c);
+        Structure * s = mPlayer->GetStructure(i);
 
-            if(cell.owner == mPlayer)
-                ownCells.push_back(cell);
-            else if(cell.owner != nullptr)
-                enemyCells.push_back(cell);
+        switch (s->GetObjectType())
+        {
+            case GameObjectType::OBJ_BASE:
+                AddActionsBase(s);
+            break;
+
+            default:
+            break;
         }
     }
 
-    std::cout << "own cells:" << ownCells.size() << std::endl;
-    std::cout << "enemy cells:" << enemyCells.size() << std::endl;
-
-    std::vector<int> enemyDist = FindCellDistances(ownCells, enemyCells);
-
-    // -- visit own cells --
-    const unsigned int numOwnCells = ownCells.size();
-
-    for(unsigned int c = 0; c < numOwnCells; ++c)
+    // UNITS
+    for(unsigned int i = 0; i < mPlayer->GetNumUnits(); ++i)
     {
-        const Cell2D pos {ownCells[c].row, ownCells[c].col};
-
-        std::vector<AIActionId> actions;
-
-        // init possible actions
-//        if(mGm->CanCreateUnit(pos, mPlayer))
-//            actions.emplace_back(ACT_NEW_UNIT);
-        if(mGm->CanUpgradeUnit(mGm->GetCell(pos.row, pos.col).GetUnit(), mPlayer))
-            actions.emplace_back(ACT_UNIT_UPGRADE);
-        if(CanMoveUnit(ownCells[c]))
-            actions.emplace_back(ACT_UNIT_MOVE);
-
-        // no action available for now -> skip this cell
-        if(actions.empty())
-            continue;
-
-        const AIActionId actId = DecideCellAction(ownCells[c], actions, enemyDist[c]);
-        const int cellPriority = MakeCellPriority(ownCells[c], enemyDist[c]);
-        std::cout << "ACTION " << actId << " - cell priority:" << cellPriority << std::endl;
-
-        Cell2D dest = pos;
-
-        if(actId == ACT_UNIT_MOVE)
-            dest = DecideMoveDestination(ownCells[c]);
-
-        ActionAI action =
-        {
-            pos,
-            dest,
-            actId,
-            cellPriority
-        };
-
-        AddNewAction(action);
+        // TODO
+        //Unit * u = mPlayer->GetUnit(i);
     }
-
-    std::cout << "actions:" << mActions.size() << std::endl;
 }
 
-ActionAI PlayerAI::GetNextAction()
+const ActionAI * PlayerAI::GetNextAction()
 {
     // return NOP action if queue is empty
-    if(mActions.empty())
-        return { {0,0}, {0,0}, ACT_NOP, 0 };
+    if(mActionsTodo.empty())
+        return nullptr;
 
     // return top action
     return PopAction();
 }
 
-void PlayerAI::PushAction(const ActionAI & action)
+void PlayerAI::ClearActionsDone()
 {
-    mActions.emplace_back(action);
-    std::push_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+    for(ActionAI * a : mActionsDone)
+        delete a;
+
+    mActionsDone.clear();
 }
 
-ActionAI PlayerAI::PopAction()
+void PlayerAI::PushAction(ActionAI * action)
 {
-    std::pop_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+    mActionsTodo.emplace_back(action);
+    std::push_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
+}
 
-    const ActionAI elem = mActions.back();
-    mActions.pop_back();
+const ActionAI * PlayerAI::PopAction()
+{
+    std::pop_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
+
+    ActionAI * elem = mActionsTodo.back();
+    mActionsTodo.pop_back();
+
+    mActionsDone.push_back(elem);
 
     return elem;
 }
 
-std::vector<int> PlayerAI::FindCellDistances(const std::vector<GameMapCell> & ownCells,
-                                             const std::vector<GameMapCell> & enemyCells)
-{
-    std::vector<int> dist;
-    dist.reserve(ownCells.size());
-
-    const unsigned int min = mGm->GetNumRows() * mGm->GetNumCols();
-
-    for(const GameMapCell & oCell : ownCells)
-    {
-        int minDist = min;
-
-        for(const GameMapCell & eCell : enemyCells)
-        {
-            const int dist = abs(eCell.row - oCell.row) + abs(eCell.col - oCell.col);
-
-            if(dist < minDist)
-                minDist = dist;
-        }
-
-        dist.emplace_back(minDist);
-    }
-
-    return dist;
-}
-
-AIActionId PlayerAI::DecideCellAction(const GameMapCell & cell,
-                                      const std::vector<AIActionId> & actions,
-                                      int enemyDist)
-{
-    const unsigned int numActions = actions.size();
-
-    // -- find consts and most expensive action --
-    int maxCost = 0;
-
-    std::vector<int> costs;
-    costs.reserve(numActions);
-
-    for(AIActionId aid : actions)
-    {
-        int cost = 0;
-
-        switch(aid)
-        {
-            case ACT_NEW_UNIT:
-            {
-                // TODO
-            }
-            break;
-
-            case ACT_UNIT_UPGRADE:
-            {
-                const Unit * unit = cell.GetUnit();
-                cost = unit ? COST_UNIT_UPGRADE[unit->GetUnitLevel()] : 0;
-            }
-            break;
-
-            default:
-            break;
-        }
-
-        if(cost > maxCost)
-            maxCost = cost;
-
-        costs.emplace_back(cost);
-    }
-
-    //  -- distance from enemy --
-    const unsigned int rows = mGm->GetNumRows();
-    const unsigned int cols = mGm->GetNumCols();
-    const int maxDist = (rows - 1) + (cols - 1);
-
-    const float distScore = 100.f * (maxDist - enemyDist) / maxDist;
-
-    // -- define probability for each action --
-    std::vector<float> probs;
-    probs.reserve(numActions);
-
-    for(unsigned int i = 0; i < numActions; ++i)
-    {
-        const AIActionId aid = actions[i];
-
-        float prob = 0.f;
-
-        // add cost factor
-        prob += 100.f * (maxCost - costs[i]) / maxCost;
-
-        // add action dependent factors
-        switch(aid)
-        {
-            case ACT_NEW_UNIT:
-            {
-                prob += distScore;
-            }
-            break;
-
-            case ACT_UNIT_UPGRADE:
-            {
-                prob += distScore * 0.75f;
-
-                const Unit * unit = cell.GetUnit();
-                const int unitLevel = unit ? unit->GetUnitLevel() : 0;
-                prob += 100.f * (MAX_UNITS_LEVEL - unitLevel) / MAX_UNITS_LEVEL;
-            }
-            break;
-
-            case ACT_UNIT_MOVE:
-            {
-                prob += distScore;
-            }
-            break;
-
-            default:
-            break;
-        }
-
-        probs.emplace_back(prob);
-
-        std::cout << "ACTION " << aid << " - prob: " << prob << std::endl;
-    }
-
-    sgl::utilities::LoadedDie die(probs);
-
-    return actions[die.GetNextValue()];
-}
-
-int PlayerAI::MakeCellPriority(const GameMapCell & cell, int enemyDist) const
-{
-    int priority = 0;
-
-    // distance from enemy
-    const unsigned int rows = mGm->GetNumRows();
-    const unsigned int cols = mGm->GetNumCols();
-    const int maxDist = (rows - 1) + (cols - 1);
-
-    priority += 100 * (maxDist - enemyDist) / maxDist;
-
-    // add units val
-    const Unit * unit = cell.GetUnit();
-
-    const int maxPriorityUnits = 52;
-    const int incPriorityUnits = unit ? maxPriorityUnits : 0;
-
-
-    priority += incPriorityUnits;
-
-    return priority;
-}
-
-void PlayerAI::AddNewAction(const ActionAI & action)
+void PlayerAI::AddNewAction(ActionAI * action)
 {
     // insert action if not already in the queue
     bool found = false;
 
-    for(ActionAI & a : mActions)
+    for(ActionAI * a : mActionsTodo)
     {
-        // action already in queue -> update its priority
-        if(a == action)
+        // same action type
+        if(a->aid == action->aid)
         {
-            found = true;
+            if(AIA_NEW_UNIT == action->aid)
+            {
+                auto au1 = static_cast<ActionAINewUnit *>(a);
+                auto au2 = static_cast<ActionAINewUnit *>(action);
+
+                found = au1->unitType == au2->unitType;
+            }
+            // compare basic actions
+            else
+            {
+                found = a->ObjSrc == action->ObjSrc && a->ObjDst == action->ObjDst &&
+                        a->cellSrc == action->cellSrc && a->cellDst == action->cellDst;
+            }
+        }
+
+        // action already in queue -> update its priority
+        if(found)
+        {
+            std::cout << "PlayerAI::AddNewAction - UPDATING ACTION " << action->aid << " - old priority: "
+                      << a->priority << " - new priority: " << action->priority<< std::endl;
 
             // update queue
-            a.priority = action.priority;
-            std::make_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+            a->priority = action->priority;
+            std::make_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
 
             break;
         }
@@ -288,221 +137,155 @@ void PlayerAI::AddNewAction(const ActionAI & action)
     // add new action
     if(!found)
     {
-        std::cout << "NEW ACTION " << action.aid
-                  << " - priority: " << action.priority << std::endl;
+        std::cout << "PlayerAI::AddNewAction - NEW ACTION " << action->aid
+                  << " - priority: " << action->priority << std::endl;
         PushAction(action);
     }
 }
 
-bool PlayerAI::CanMoveUnit(const GameMapCell & cell) const
+void PlayerAI::AddActionsBase(Structure * s)
 {
-    // no units to move
-    if(!cell.HasUnit())
-        return false;
+    const unsigned int numUnits = mPlayer->GetNumUnits();
+    const unsigned int limitUnits = mPlayer->GetMaxUnits();
 
-    const int r0 = cell.row;
-    const int c0 = cell.col;
+    // can't build more units -> exit
+    if(numUnits >= limitUnits)
+        return ;
 
-    const int rows = mGm->GetNumRows();
-    const int cols = mGm->GetNumCols();
+    // define base priority
+    // MAX with 0 units and MIN with limit units
+    const int maxPriority = 100;
+    const int priority = maxPriority * (limitUnits - numUnits) / limitUnits;
 
-    // check prev row
-    if(r0 > 0)
+    // DECIDE UNIT TYPE
+    // TODO keep into consideration faction attitude
+    // (i.e.: if faction is more inclined to attack then prefer soldier over builder)
+    std::vector<int> priorities(NUM_UNIT_TYPES, priority);
+    std::vector<int> costs(NUM_UNIT_TYPES, 0);
+    std::vector<int> relCosts(NUM_UNIT_TYPES, 0);
+
+    // 1- exclude units that can't be built and check cost
+    const int multEnergy = 1;
+    const int multMaterial = 2;
+    const int multBlobs = 10;
+    const int multDiamonds = 20;
+    int maxCost = 0;
+    int validUnits = 0;
+
+    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
     {
-        const int r1 = r0 - 1;
+        const ObjectData & data = mPlayer->GetAvailableUnit(static_cast<UnitType>(i));
 
-        // TOP LEFT
-        if(c0 > 0 && mGm->GetCell(r1, c0 - 1).walkable)
-            return true;
-        // TOP
-        if(mGm->GetCell(r1, c0).walkable)
-            return true;
-        // TOP RIGHT
-        if(c0 < (cols - 1) && mGm->GetCell(r1, c0 + 1).walkable)
-            return true;
-    }
-
-    // check cell row
-    // LEFT
-    if(c0 > 0 && mGm->GetCell(r0, c0 - 1).walkable)
-        return true;
-    // RIGHT
-    if(c0 < (cols - 1) && mGm->GetCell(r0, c0 + 1).walkable)
-        return true;
-
-    // check next row
-    if(r0 < (rows - 1))
-    {
-        const int r2 = r0 + 1;
-
-        // BOTTOM LEFT
-        if(c0 > 0 && mGm->GetCell(r2, c0 - 1).walkable)
-            return true;
-        // BOTTOM
-        if(mGm->GetCell(r2, c0).walkable)
-            return true;
-        // BOTTOM RIGHT
-        if(c0 < (cols - 1) && mGm->GetCell(r2, c0 + 1).walkable)
-            return true;
-    }
-
-    // no walkable cell found
-    return false;
-}
-
-Cell2D PlayerAI::DecideMoveDestination(const GameMapCell & cell) const
-{
-    const int r0 = cell.row;
-    const int c0 = cell.col;
-
-    const int rows = mGm->GetNumRows();
-    const int cols = mGm->GetNumCols();
-
-    std::vector<Cell2D> dest;
-    std::vector<float> probs;
-
-    const float weightUnits = 100.f;
-    const float weightFree = 100.f;
-
-    // check prev row
-    if(r0 > 0)
-    {
-        const int r1 = r0 - 1;
-
-        // TOP LEFT
-        if(c0 > 0)
+        if(data.objClass == OC_NULL || !mGm->CanCreateUnit(data, s, mPlayer))
         {
-            const GameMapCell & tl = mGm->GetCell(r1, c0 - 1);
-
-            if(tl.walkable)
-            {
-                dest.emplace_back(r1, c0 - 1);
-
-                const Unit * unit = tl.GetUnit();
-                const float prob = unit ? weightUnits : 0.f;
-                const float prob2 = tl.owner == nullptr ? weightFree : 0.f;
-                probs.emplace_back(prob + prob2);
-            }
+            priorities[i] = 0;
+            continue;
         }
 
-        // TOP
-        const GameMapCell & tc = mGm->GetCell(r1, c0);
+        // total cost
+        costs[i] = data.costs[RES_ENERGY] * multEnergy + data.costs[RES_MATERIAL1] * multMaterial +
+                   data.costs[RES_BLOBS] * multBlobs + data.costs[RES_DIAMONDS] * multDiamonds;
 
-        if(tc.walkable)
+
+        if(costs[i] > maxCost)
+            maxCost = costs[i];
+
+        // relative cost
+        int costsIncluded = 0;
+
+        const int energy = mPlayer->GetStat(Player::ENERGY).GetIntValue();
+        const int material = mPlayer->GetStat(Player::MATERIAL).GetIntValue();
+        const int blobs = mPlayer->GetStat(Player::BLOBS).GetIntValue();
+        const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetIntValue();
+
+        if(energy > 0)
         {
-            dest.emplace_back(r1, c0);
-
-            const Unit * unit = tc.GetUnit();
-            const float prob = unit ? weightUnits : 0.f;
-            const float prob2 = tc.owner == nullptr ? weightFree : 0.f;
-            probs.emplace_back(prob + prob2);
+            relCosts[i] += data.costs[RES_ENERGY] * 100 / energy;
+            ++costsIncluded;
+        }
+        if(material > 0)
+        {
+            relCosts[i] += data.costs[RES_MATERIAL1] * 100 / material;
+            ++costsIncluded;
+        }
+        if(blobs > 0)
+        {
+            relCosts[i] += data.costs[RES_BLOBS] * 100 / blobs;
+            ++costsIncluded;
+        }
+        if(diamonds > 0)
+        {
+            relCosts[i] += data.costs[RES_DIAMONDS] * 100 / diamonds;
+            ++costsIncluded;
         }
 
-        // TOP RIGHT
-        if(c0 < (cols - 1))
-        {
-            const GameMapCell & tr = mGm->GetCell(r1, c0 + 1);
+        if(costsIncluded > 0)
+            relCosts[i] /= costsIncluded;
 
-            if(tr.walkable)
-            {
-                dest.emplace_back(r1, c0 + 1);
-
-                const Unit * unit = tr.GetUnit();
-                const float prob = unit ? weightUnits : 0.f;
-                const float prob2 = tr.owner == nullptr ? weightFree : 0.f;
-                probs.emplace_back(prob + prob2);
-
-            }
-        }
+        ++validUnits;
     }
 
-    // check cell row
-    // LEFT
-    if(c0 > 0)
+    // can't create any unit -> exit
+    if(0 == validUnits)
+        return ;
+
+    // 2- apply bonuses based on existing units
+    const int bonusExistingUnit = -25;
+
+    for(unsigned int i = 0; i < mPlayer->GetNumUnits(); ++i)
     {
-        const GameMapCell & l = mGm->GetCell(r0, c0 - 1);
+        Unit * u = mPlayer->GetUnit(i);
+        const unsigned int typeId = u->GetUnitType();
 
-        if(l.walkable)
+        if(priorities[typeId] <= 0)
+            continue ;
+
+        priorities[typeId] += bonusExistingUnit;
+    }
+
+    // 3- apply bonuses based on unit type
+    const int bonusCost = -15;
+    const int bonusRelCost = -20;
+
+    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    {
+        if(priorities[i] <= 0)
+            continue ;
+
+        // NOTE eventually costs can be weighted on the current resources.
+        // i.e.: if you have a lot of X it doesn't really matter if a unit requires 20 or 40.
+        priorities[i] += bonusCost * costs[i] / maxCost;
+
+        priorities[i] += bonusRelCost * relCosts[i] / 100;
+    }
+
+    // 4- pick highest priority
+    // create action
+    auto action = new ActionAINewUnit;
+    action->aid = AIA_NEW_UNIT;
+    action->ObjSrc = s;
+    action->priority = 0;
+    action->unitType = UNIT_NULL;
+
+    // for now picking first of list when priorities are the same
+    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    {
+        if(priorities[i] > action->priority)
         {
-            dest.emplace_back(r0, c0 - 1);
-
-            const Unit * unit = l.GetUnit();
-            const float prob = unit ? weightUnits : 0.f;
-            const float prob2 = l.owner == nullptr ? weightFree : 0.f;
-            probs.emplace_back(prob + prob2);
+            action->priority = priorities[i];
+            action->unitType = static_cast<UnitType>(i);
         }
     }
 
-    // RIGHT
-    if(c0 < (cols - 1))
+    // no valid unit was found -> exit
+    if(UNIT_NULL == action->unitType)
     {
-        const GameMapCell & r = mGm->GetCell(r0, c0 + 1);
-
-        if(r.walkable)
-        {
-            dest.emplace_back(r0, c0 + 1);
-
-            const Unit * unit = r.GetUnit();
-            const float prob = unit ? weightUnits : 0.f;
-            const float prob2 = r.owner == nullptr ? weightFree : 0.f;
-            probs.emplace_back(prob + prob2);
-        }
+        mActionsDone.push_back(action);
+        return ;
     }
 
-    // check next row
-    if(r0 < (rows - 1))
-    {
-        const int r2 = r0 + 1;
-
-        // BOTTOM LEFT
-        if(c0 > 0)
-        {
-            const GameMapCell & bl = mGm->GetCell(r2, c0 - 1);
-
-            if(bl.walkable)
-            {
-                dest.emplace_back(r2, c0 - 1);
-
-                const Unit * unit = bl.GetUnit();
-                const float prob = unit ? weightUnits : 0.f;
-                const float prob2 = bl.owner == nullptr ? weightFree : 0.f;
-                probs.emplace_back(prob + prob2);
-            }
-        }
-
-        // BOTTOM
-        const GameMapCell & bc = mGm->GetCell(r2, c0);
-
-        if(bc.walkable)
-        {
-            dest.emplace_back(r2, c0);
-
-            const Unit * unit = bc.GetUnit();
-            const float prob = unit ? weightUnits : 0.f;
-            const float prob2 = bc.owner == nullptr ? weightFree : 0.f;
-            probs.emplace_back(prob + prob2);
-        }
-
-        // BOTTOM RIGHT
-        if(c0 < (cols - 1))
-        {
-            const GameMapCell & br = mGm->GetCell(r2, c0 + 1);
-
-            if(br.walkable)
-            {
-                dest.emplace_back(r2, c0 + 1);
-
-                const Unit * unit = br.GetUnit();
-                const float prob = unit ? weightUnits : 0.f;
-                const float prob2 = br.owner == nullptr ? weightFree : 0.f;
-                probs.emplace_back(prob + prob2);
-            }
-        }
-    }
-
-    sgl::utilities::LoadedDie die(probs);
-
-    return dest[die.GetNextValue()];
+    // push action to the queue
+    AddNewAction(action);
 }
 
 } // namespace game

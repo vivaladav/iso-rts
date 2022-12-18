@@ -5,40 +5,45 @@
 namespace game
 {
 
+class GameObject;
+
+enum UnitType : unsigned int;
+
 enum AIActionId : unsigned int
 {
-    ACT_NOP,
+    AIA_NOP,
 
-    ACT_NEW_UNIT,
-    ACT_UNIT_MOVE,
-    ACT_UNIT_UPGRADE,
+    AIA_NEW_UNIT,
+    AIA_UNIT_MOVE,
 
     NUM_AI_ACTIONS
 };
 
+// ===== ACTION AI =====
 struct ActionAI
 {
-    Cell2D src;
-    Cell2D dst;
-    AIActionId aid;
-    int priority;
-
-    friend bool operator==(const ActionAI & a1, const ActionAI & a2);
+    GameObject * ObjSrc = nullptr;
+    GameObject * ObjDst = nullptr;
+    Cell2D cellSrc;
+    Cell2D cellDst;
+    AIActionId aid = AIA_NOP;
+    int priority = 0;
 };
-
-inline bool operator==(const ActionAI & a1, const ActionAI & a2)
-{
-    return a1.aid == a2.aid &&
-           a1.src == a2.src &&
-           a1.dst == a2.dst;
-}
 
 struct ActionAiComp
 {
-    bool operator()(const ActionAI & a, const ActionAI & b)
+    bool operator()(const ActionAI * a, const ActionAI * b)
     {
-        return a.priority < b.priority;
+        return a->priority < b->priority;
     }
 };
+
+// ===== ACTION AI NEW UNIT =====
+
+struct ActionAINewUnit : public ActionAI
+{
+    UnitType unitType;
+};
+
 
 } // namespace game

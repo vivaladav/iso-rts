@@ -7,8 +7,10 @@
 namespace game
 {
 
+
 class GameMap;
 class Player;
+class Structure;
 
 struct GameMapCell;
 
@@ -16,36 +18,31 @@ class PlayerAI
 {
 public:
     PlayerAI(Player * player);
+    ~PlayerAI();
 
     void SetGameMap(GameMap * gm);
 
-    void DecideActions();
+    void Update(float delta);
 
-    ActionAI GetNextAction();
+    const ActionAI * GetNextAction();
 
     Player * GetPlayer();
 
 private:
-    void PushAction(const ActionAI & action);
-    ActionAI PopAction();
+    void ClearActionsDone();
 
-    std::vector<int> FindCellDistances(const std::vector<GameMapCell> & ownCells,
-                                       const std::vector<GameMapCell> & enemyCells);
+    void DecideActions();
 
-    AIActionId DecideCellAction(const GameMapCell & cell,
-                                const std::vector<AIActionId> & actions,
-                                int enemyDist);
+    void PushAction(ActionAI * action);
+    const ActionAI * PopAction();
 
-    int MakeCellPriority(const GameMapCell & cell,
-                         int enemyDist) const;
+    void AddNewAction(ActionAI * action);
 
-    void AddNewAction(const ActionAI & action);
-
-    bool CanMoveUnit(const GameMapCell & cell) const;
-    Cell2D DecideMoveDestination(const GameMapCell & cell) const;
+    void AddActionsBase(Structure * s);
 
 private:
-    std::vector<ActionAI> mActions;
+    std::vector<ActionAI *> mActionsTodo;
+    std::vector<ActionAI *> mActionsDone;
 
     Player * mPlayer = nullptr;
 

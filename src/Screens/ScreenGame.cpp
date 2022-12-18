@@ -143,17 +143,16 @@ ScreenGame::ScreenGame(Game * game)
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 
     // -- PLAYERS --
-//    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
-//    {
-//        // temporary disable AI for development
-//        Player * p = game->GetPlayerByIndex(i);
+    for(int i = 0; i < GetGame()->GetNumPlayers(); ++i)
+    {
+        Player * p = game->GetPlayerByIndex(i);
 
-//        if(p->IsAI())
-//        {
-//            p->GetAI()->SetGameMap(mGameMap);
-//            mAiPlayers.push_back(p);
-//        }
-//    }
+        if(p->IsAI())
+        {
+            p->GetAI()->SetGameMap(mGameMap);
+            mAiPlayers.push_back(p);
+        }
+    }
 
     // LOCAL PLAYER
     Player * localPlayer = game->GetLocalPlayer();
@@ -969,6 +968,7 @@ void ScreenGame::UpdateAI(float delta)
         if(mCurrPlayerAI < mAiPlayers.size())
         {
             PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
+            ai->Update(delta);
             ExecuteAIAction(ai);
         }
 
@@ -980,54 +980,32 @@ void ScreenGame::UpdateAI(float delta)
 
 void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 {
-    //Player * player = ai->GetPlayer();
-    ai->DecideActions();
-
     bool done = false;
 
     // execute planned action until one is successful or there's no more actions to do (NOP)
     while(!done)
     {
-        const ActionAI action = ai->GetNextAction();
+        const ActionAI * action = ai->GetNextAction();
 
-        switch(action.aid)
+        if(nullptr == action)
         {
-            case ACT_NEW_UNIT:
+            std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
+            return ;
+        }
+
+        switch(action->aid)
+        {
+            case AIA_NEW_UNIT:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-//                done = SetupNewUnit(action.src, player);
-                done = true;
+
+                auto a = static_cast<const ActionAINewUnit *>(action);
+                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer());
             }
-            break;
-
-            case ACT_UNIT_UPGRADE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
-                //done = SetupUnitUpgrade(action.obj, player);
-                done = true;
-            }
-            break;
-
-            case ACT_UNIT_MOVE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: from "
-                          << action.src.row << "," << action.src.col
-                          << " -> "
-                          << action.dst.row << "," << action.dst.col
-                          << std::endl;
-
-                // TODO move unit
-                done = false;
-            }
-            break;
-
-            case ACT_NOP:
-                std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
-                done = true;
             break;
 
             default:
-                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action.aid << std::endl;
+                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action->aid << std::endl;
             break;
         }
     }
