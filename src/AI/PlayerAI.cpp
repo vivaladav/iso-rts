@@ -102,10 +102,29 @@ void PlayerAI::AddNewAction(ActionAI * action)
 
     for(ActionAI * a : mActionsTodo)
     {
-        // action already in queue -> update its priority
-        if(*a == *action)
+        // same action type
+        if(a->aid == action->aid)
         {
-            found = true;
+            if(AIA_NEW_UNIT == action->aid)
+            {
+                auto au1 = static_cast<ActionAINewUnit *>(a);
+                auto au2 = static_cast<ActionAINewUnit *>(action);
+
+                found = au1->unitType == au2->unitType;
+            }
+            // compare basic actions
+            else
+            {
+                found = a->ObjSrc == action->ObjSrc && a->ObjDst == action->ObjDst &&
+                        a->cellSrc == action->cellSrc && a->cellDst == action->cellDst;
+            }
+        }
+
+        // action already in queue -> update its priority
+        if(found)
+        {
+            std::cout << "PlayerAI::AddNewAction - UPDATING ACTION " << action->aid << " - old priority: "
+                      << a->priority << " - new priority: " << action->priority<< std::endl;
 
             // update queue
             a->priority = action->priority;
@@ -118,7 +137,7 @@ void PlayerAI::AddNewAction(ActionAI * action)
     // add new action
     if(!found)
     {
-        std::cout << "NEW ACTION " << action->aid
+        std::cout << "PlayerAI::AddNewAction - NEW ACTION " << action->aid
                   << " - priority: " << action->priority << std::endl;
         PushAction(action);
     }
@@ -143,6 +162,7 @@ void PlayerAI::AddActionsBase(Structure * s)
     // (i.e.: if faction is more inclined to attack then prefer soldier over builder)
     std::vector<int> priorities(NUM_UNIT_TYPES, priority);
     std::vector<int> costs(NUM_UNIT_TYPES, 0);
+    std::vector<int> relCosts(NUM_UNIT_TYPES, 0);
 
     // 1- exclude units that can't be built and check cost
     const int multEnergy = 1;
@@ -162,11 +182,45 @@ void PlayerAI::AddActionsBase(Structure * s)
             continue;
         }
 
+        // total cost
         costs[i] = data.costs[RES_ENERGY] * multEnergy + data.costs[RES_MATERIAL1] * multMaterial +
                    data.costs[RES_BLOBS] * multBlobs + data.costs[RES_DIAMONDS] * multDiamonds;
 
+
         if(costs[i] > maxCost)
             maxCost = costs[i];
+
+        // relative cost
+        int costsIncluded = 0;
+
+        const int energy = mPlayer->GetStat(Player::ENERGY).GetIntValue();
+        const int material = mPlayer->GetStat(Player::MATERIAL).GetIntValue();
+        const int blobs = mPlayer->GetStat(Player::BLOBS).GetIntValue();
+        const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetIntValue();
+
+        if(energy > 0)
+        {
+            relCosts[i] += data.costs[RES_ENERGY] * 100 / energy;
+            ++costsIncluded;
+        }
+        if(material > 0)
+        {
+            relCosts[i] += data.costs[RES_MATERIAL1] * 100 / material;
+            ++costsIncluded;
+        }
+        if(blobs > 0)
+        {
+            relCosts[i] += data.costs[RES_BLOBS] * 100 / blobs;
+            ++costsIncluded;
+        }
+        if(diamonds > 0)
+        {
+            relCosts[i] += data.costs[RES_DIAMONDS] * 100 / diamonds;
+            ++costsIncluded;
+        }
+
+        if(costsIncluded > 0)
+            relCosts[i] /= costsIncluded;
 
         ++validUnits;
     }
@@ -191,6 +245,7 @@ void PlayerAI::AddActionsBase(Structure * s)
 
     // 3- apply bonuses based on unit type
     const int bonusCost = -15;
+    const int bonusRelCost = -20;
 
     for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
     {
@@ -201,7 +256,7 @@ void PlayerAI::AddActionsBase(Structure * s)
         // i.e.: if you have a lot of X it doesn't really matter if a unit requires 20 or 40.
         priorities[i] += bonusCost * costs[i] / maxCost;
 
-        // TODO consider relative cost based on % of current level of each resource
+        priorities[i] += bonusRelCost * relCosts[i] / 100;
     }
 
     // 4- pick highest priority
