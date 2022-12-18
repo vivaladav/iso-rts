@@ -14,9 +14,9 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/Label.h>
 #include <sgl/sgui/PushButton.h>
 #include <sgl/sgui/Stage.h>
-#include <sgl/sgui/TextArea.h>
 #include <sgl/utilities/System.h>
 
 namespace game
@@ -151,19 +151,26 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto fm = FontManager::Instance();
     Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
 
-    const std::string strVersion = std::string(VERSION) + std::string("\n") +
-                                   std::string(VERSION_BRANCH) + std::string("-") +
-                                   std::string(VERSION_NUM) + std::string("-") +
-                                   std::string(VERSION_SHORT_HASH);
-    auto labelVer = new TextArea(250, 50, strVersion.c_str(), fnt);
-    labelVer->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_RIGHT,
-                               sgl::sgui::TextArea::ALIGN_V_BOTTOM);
-    labelVer->SetColor(0xb2b2b2ff);
+    const unsigned int colorVersion = 0xb2b2b2ff;
     const int marginLabelH = 15;
     const int marginLabelV = 10;
-    const int labelX = screenW - labelVer->GetWidth() - marginLabelH;
-    const int labelY = screenH - labelVer->GetHeight() - marginLabelV;
-    labelVer->SetPosition(labelX, labelY);
+
+    auto labelVer = new Label(VERSION, fnt);
+    labelVer->SetColor(colorVersion);
+
+    const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
+                                 std::string(VERSION_NUM) + std::string("-") +
+                                 std::string(VERSION_SHORT_HASH);
+    auto labelBuild = new Label(strBuild.c_str(), fnt);
+    labelBuild->SetColor(colorVersion);
+
+    const int labelBuildX = screenW - labelBuild->GetWidth() - marginLabelH;
+    const int labelBuildY = screenH - labelBuild->GetHeight() - marginLabelV;
+    labelBuild->SetPosition(labelBuildX, labelBuildY);
+
+    const int labelVerX = screenW - labelVer->GetWidth() - marginLabelH;
+    const int labelVerY = labelBuildY - labelVer->GetHeight();
+    labelVer->SetPosition(labelVerX, labelVerY);
 }
 
 ScreenMainMenu::~ScreenMainMenu()
