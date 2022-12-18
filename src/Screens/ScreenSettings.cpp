@@ -61,28 +61,43 @@ ScreenSettings::ScreenSettings(Game * game)
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
 
+    auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
+    graphic::Font * font;
+    graphic::Texture * tex;
 
     //  BACKGROUND
-    auto tex = tm->GetTexture("space_bg.jpg");
+    tex = tm->GetTexture("space_bg.jpg");
     mBg = new graphic::Image(tex);
 
     // MAIN PANEL
     tex = tm->GetSprite(SpriteFileSettings, IND_SET_PANEL);
-    sgl::sgui::Widget * panel = new sgl::sgui::Image(tex);
+    auto win = new sgui::Image(tex);
 
-    panel->SetPosition((screenW - panel->GetWidth()) * 0.5f, (screenH - panel->GetHeight()) * 0.5f);
+    win->SetPosition((screenW - win->GetWidth()) * 0.5f,
+                     (screenH - win->GetHeight()) * 0.5f);
+
+    const int marginContTop = 5;
+    const int marginContLeft = 50;
 
     // BUTTON BACK
     auto btnBack = new ButtonBack(nullptr);
-    const int posBackX = panel->GetX() + panel->GetWidth() - btnBack->GetWidth();
-    const int posBackY = panel->GetY();
-    btnBack->SetPosition(posBackX, posBackY);
+
+    btnBack->SetPosition(win->GetX() + win->GetWidth() - btnBack->GetWidth(),
+                         win->GetY());
 
     btnBack->AddOnClickFunction([game]
     {
         game->RequestNextActiveState(StateId::MAIN_MENU);
     });
+
+    // TITLE
+    const unsigned int colorTitle = 0xe6eef2ff;
+    font = fm->GetFont("data/fonts/Lato-Regular.ttf", 30, graphic::Font::NORMAL);
+    auto labelTitle = new sgui::Label("SETTINGS", font, win);
+
+    labelTitle->SetColor(colorTitle);
+    labelTitle->SetPosition(marginContLeft, marginContTop);
 }
 
 ScreenSettings::~ScreenSettings()
