@@ -873,6 +873,47 @@ void ScreenInit::SetupTextures()
         tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileUnitQuickSel, rects);
     });
 
+    // SETTINGS
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // PANELS
+            { 0, 0, 1300, 800 },
+            { 0, 801, 1200, 20 },
+            { 0, 822, 1200, 10 },
+            { 0, 833, 1200, 20 },
+
+            // BUTTON BACK
+            { 0, 854, 250, 40 },
+            { 251, 854, 250, 40 },
+            { 502, 854, 250, 40 },
+            { 753, 854, 250, 40 },
+
+            // COMBO BOX
+            { 0, 895, 250, 34 },
+            { 251, 895, 250, 34 },
+            { 502, 895, 250, 34 },
+            { 753, 895, 250, 34 },
+            { 0, 930, 250, 34 },
+            { 251, 930, 250, 34 },
+            { 502, 930, 250, 34 },
+            { 753, 930, 250, 34 },
+
+            // CHECK BOX
+            { 1004, 854, 45, 39 },
+            { 1050, 854, 45, 39 },
+            { 1096, 854, 45, 39 },
+            { 1142, 854, 45, 39 },
+            { 1004, 894, 45, 39 },
+            { 1050, 894, 45, 39 },
+            { 1096, 894, 45, 39 },
+            { 1142, 894, 45, 39 },
+        };
+
+        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileSettings, rects);
+    });
+
     // TEST SPRITE
     mJobs.emplace_back([this, tm]
     {

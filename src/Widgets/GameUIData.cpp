@@ -12,6 +12,7 @@ const char SpriteFileObjActionButton[] = "UI/object_action_button.png";
 const char SpriteFilePlanetMap[] = "UI/planet_map.png";
 const char SpriteFilePlanetMap2[] = "UI/planet_map-2.png";
 const char SpriteFileResourcesBar[] = "UI/resources_bar.png";
+const char SpriteFileSettings[] = "UI/game_settings.png";
 const char SpriteFileUnitQuickSel[] = "UI/quick_unit_selection.png";
 
 } // namespace game

@@ -324,6 +324,44 @@ enum SpriteIdResourcesBar : unsigned int
     IND_RESBAR_BLOB
 };
 
+// SETTINGS
+extern const char SpriteFileSettings[];
+
+enum SpriteIdSettings : unsigned int
+{
+    // PANELS
+    IND_SET_PANEL,
+    IND_SET_PANEL2_TOP,
+    IND_SET_PANEL2_MID,
+    IND_SET_PANEL2_BOTTOM,
+
+    // BUTTON BACK
+    IND_SET_BTN_NORMAL,
+    IND_SET_BTN_DISABLED,
+    IND_SET_BTN_OVER,
+    IND_SET_BTN_PUSHED,
+
+    // COMBO BOX
+    IND_SET_CB_NORMAL,
+    IND_SET_CB_DISABLED,
+    IND_SET_CB_OVER,
+    IND_SET_CB_PUSHED,
+    IND_SET_CBI_NORMAL,
+    IND_SET_CBI_DISABLED,
+    IND_SET_CBI_OVER,
+    IND_SET_CBI_PUSHED,
+
+    // CHECK BOX
+    IND_SET_CHB_NORMAL,
+    IND_SET_CHB_DISABLED,
+    IND_SET_CHB_OVER,
+    IND_SET_CHB_PUSHED,
+    IND_SET_CHB_CHECKED_NORMAL,
+    IND_SET_CHB_CHECKED_DISABLED,
+    IND_SET_CHB_CHECKED_OVER,
+    IND_SET_CHB_CHECKED_PUSHED,
+};
+
 // UNIT QUICK SELECTION
 extern const char SpriteFileUnitQuickSel[];
 
