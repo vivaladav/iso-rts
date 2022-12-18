@@ -991,36 +991,28 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         switch(action.aid)
         {
-            case ACT_NEW_UNIT:
+            case AIA_NEW_UNIT:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-//                done = SetupNewUnit(action.src, player);
-                done = true;
-            }
-            break;
-
-            case ACT_UNIT_UPGRADE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - UNIT UPGRADE" << std::endl;
-                //done = SetupUnitUpgrade(action.obj, player);
-                done = true;
-            }
-            break;
-
-            case ACT_UNIT_MOVE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: from "
-                          << action.src.row << "," << action.src.col
-                          << " -> "
-                          << action.dst.row << "," << action.dst.col
-                          << std::endl;
-
-                // TODO move unit
+                // TODO
                 done = false;
             }
             break;
 
-            case ACT_NOP:
+
+            case AIA_UNIT_MOVE:
+            {
+                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: from "
+                          << action.cellSrc.row << "," << action.cellSrc.col
+                          << " -> "
+                          << action.cellDst.row << "," << action.cellDst.col
+                          << std::endl;
+                // TODO
+                done = false;
+            }
+            break;
+
+            case AIA_NOP:
                 std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
                 done = true;
             break;

@@ -7,8 +7,10 @@
 namespace game
 {
 
+
 class GameMap;
 class Player;
+class Structure;
 
 struct GameMapCell;
 
@@ -30,6 +32,8 @@ private:
     ActionAI PopAction();
 
     void AddNewAction(const ActionAI & action);
+
+    void AddActionsBase(Structure * s);
 
 private:
     std::vector<ActionAI> mActions;
