@@ -18,25 +18,31 @@ class PlayerAI
 {
 public:
     PlayerAI(Player * player);
+    ~PlayerAI();
 
     void SetGameMap(GameMap * gm);
 
-    void DecideActions();
+    void Update(float delta);
 
-    ActionAI GetNextAction();
+    const ActionAI * GetNextAction();
 
     Player * GetPlayer();
 
 private:
-    void PushAction(const ActionAI & action);
-    ActionAI PopAction();
+    void ClearActionsDone();
 
-    void AddNewAction(const ActionAI & action);
+    void DecideActions();
+
+    void PushAction(ActionAI * action);
+    const ActionAI * PopAction();
+
+    void AddNewAction(ActionAI * action);
 
     void AddActionsBase(Structure * s);
 
 private:
-    std::vector<ActionAI> mActions;
+    std::vector<ActionAI *> mActionsTodo;
+    std::vector<ActionAI *> mActionsDone;
 
     Player * mPlayer = nullptr;
 

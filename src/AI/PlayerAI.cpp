@@ -17,7 +17,20 @@ namespace game
 PlayerAI::PlayerAI(Player * player)
     : mPlayer(player)
 {
+}
 
+PlayerAI::~PlayerAI()
+{
+    ClearActionsDone();
+}
+
+void PlayerAI::Update(float delta)
+{
+    // TODO track time and keep it into consideration when defining priorities
+    // TODO use memory pools for actions
+    ClearActionsDone();
+
+    DecideActions();
 }
 
 void PlayerAI::DecideActions()
@@ -46,47 +59,57 @@ void PlayerAI::DecideActions()
     }
 }
 
-ActionAI PlayerAI::GetNextAction()
+const ActionAI * PlayerAI::GetNextAction()
 {
     // return NOP action if queue is empty
-    if(mActions.empty())
-        return {};
+    if(mActionsTodo.empty())
+        return nullptr;
 
     // return top action
     return PopAction();
 }
 
-void PlayerAI::PushAction(const ActionAI & action)
+void PlayerAI::ClearActionsDone()
 {
-    mActions.emplace_back(action);
-    std::push_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+    for(ActionAI * a : mActionsDone)
+        delete a;
+
+    mActionsDone.clear();
 }
 
-ActionAI PlayerAI::PopAction()
+void PlayerAI::PushAction(ActionAI * action)
 {
-    std::pop_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+    mActionsTodo.emplace_back(action);
+    std::push_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
+}
 
-    const ActionAI elem = mActions.back();
-    mActions.pop_back();
+const ActionAI * PlayerAI::PopAction()
+{
+    std::pop_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
+
+    ActionAI * elem = mActionsTodo.back();
+    mActionsTodo.pop_back();
+
+    mActionsDone.push_back(elem);
 
     return elem;
 }
 
-void PlayerAI::AddNewAction(const ActionAI & action)
+void PlayerAI::AddNewAction(ActionAI * action)
 {
     // insert action if not already in the queue
     bool found = false;
 
-    for(ActionAI & a : mActions)
+    for(ActionAI * a : mActionsTodo)
     {
         // action already in queue -> update its priority
-        if(a == action)
+        if(*a == *action)
         {
             found = true;
 
             // update queue
-            a.priority = action.priority;
-            std::make_heap(mActions.begin(), mActions.end(), ActionAiComp{});
+            a->priority = action->priority;
+            std::make_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
 
             break;
         }
@@ -95,8 +118,8 @@ void PlayerAI::AddNewAction(const ActionAI & action)
     // add new action
     if(!found)
     {
-        std::cout << "NEW ACTION " << action.aid
-                  << " - priority: " << action.priority << std::endl;
+        std::cout << "NEW ACTION " << action->aid
+                  << " - priority: " << action->priority << std::endl;
         PushAction(action);
     }
 }
@@ -106,15 +129,9 @@ void PlayerAI::AddActionsBase(Structure * s)
     const unsigned int numUnits = mPlayer->GetNumUnits();
     const unsigned int limitUnits = mPlayer->GetMaxUnits();
 
-    // can't build more units
+    // can't build more units -> exit
     if(numUnits >= limitUnits)
         return ;
-
-    // create action
-    ActionAINewUnit action;
-    action.aid = AIA_NEW_UNIT;
-    action.ObjSrc = s;
-    action.priority = 0;
 
     // define base priority
     // MAX with 0 units and MIN with limit units
@@ -133,6 +150,7 @@ void PlayerAI::AddActionsBase(Structure * s)
     const int multBlobs = 10;
     const int multDiamonds = 20;
     int maxCost = 0;
+    int validUnits = 0;
 
     for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
     {
@@ -149,9 +167,15 @@ void PlayerAI::AddActionsBase(Structure * s)
 
         if(costs[i] > maxCost)
             maxCost = costs[i];
+
+        ++validUnits;
     }
 
-    // 2- apply bonuses
+    // can't create any unit -> exit
+    if(0 == validUnits)
+        return ;
+
+    // 2- apply bonuses based on existing units
     const int bonusExistingUnit = -25;
 
     for(unsigned int i = 0; i < mPlayer->GetNumUnits(); ++i)
@@ -159,23 +183,50 @@ void PlayerAI::AddActionsBase(Structure * s)
         Unit * u = mPlayer->GetUnit(i);
         const unsigned int typeId = u->GetUnitType();
 
-        if(0 == priorities[typeId])
+        if(priorities[typeId] <= 0)
             continue ;
 
         priorities[typeId] += bonusExistingUnit;
-
-        // TODO consider cost
     }
 
-    // 3- pick highest priority
+    // 3- apply bonuses based on unit type
+    const int bonusCost = -15;
+
+    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    {
+        if(priorities[i] <= 0)
+            continue ;
+
+        // NOTE eventually costs can be weighted on the current resources.
+        // i.e.: if you have a lot of X it doesn't really matter if a unit requires 20 or 40.
+        priorities[i] += bonusCost * costs[i] / maxCost;
+
+        // TODO consider relative cost based on % of current level of each resource
+    }
+
+    // 4- pick highest priority
+    // create action
+    auto action = new ActionAINewUnit;
+    action->aid = AIA_NEW_UNIT;
+    action->ObjSrc = s;
+    action->priority = 0;
+    action->unitType = UNIT_NULL;
+
     // for now picking first of list when priorities are the same
     for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
     {
-        if(priorities[i] > action.priority)
+        if(priorities[i] > action->priority)
         {
-            action.priority = priorities[i];
-            action.unitType = static_cast<UnitType>(i);
+            action->priority = priorities[i];
+            action->unitType = static_cast<UnitType>(i);
         }
+    }
+
+    // no valid unit was found -> exit
+    if(UNIT_NULL == action->unitType)
+    {
+        mActionsDone.push_back(action);
+        return ;
     }
 
     // push action to the queue

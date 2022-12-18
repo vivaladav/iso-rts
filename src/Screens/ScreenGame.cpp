@@ -968,6 +968,7 @@ void ScreenGame::UpdateAI(float delta)
         if(mCurrPlayerAI < mAiPlayers.size())
         {
             PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
+            ai->Update(delta);
             ExecuteAIAction(ai);
         }
 
@@ -979,46 +980,32 @@ void ScreenGame::UpdateAI(float delta)
 
 void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 {
-    //Player * player = ai->GetPlayer();
-    ai->DecideActions();
-
     bool done = false;
 
     // execute planned action until one is successful or there's no more actions to do (NOP)
     while(!done)
     {
-        const ActionAI action = ai->GetNextAction();
+        const ActionAI * action = ai->GetNextAction();
 
-        switch(action.aid)
+        if(nullptr == action)
+        {
+            std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
+            return ;
+        }
+
+        switch(action->aid)
         {
             case AIA_NEW_UNIT:
             {
                 std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-                // TODO
-                done = false;
+
+                auto a = static_cast<const ActionAINewUnit *>(action);
+                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer());
             }
-            break;
-
-
-            case AIA_UNIT_MOVE:
-            {
-                std::cout << "AI " << mCurrPlayerAI << " - MOVE UNIT: from "
-                          << action.cellSrc.row << "," << action.cellSrc.col
-                          << " -> "
-                          << action.cellDst.row << "," << action.cellDst.col
-                          << std::endl;
-                // TODO
-                done = false;
-            }
-            break;
-
-            case AIA_NOP:
-                std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
-                done = true;
             break;
 
             default:
-                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action.aid << std::endl;
+                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action->aid << std::endl;
             break;
         }
     }

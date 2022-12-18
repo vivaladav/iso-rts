@@ -47,9 +47,9 @@ inline bool operator==(const ActionAI & a1, const ActionAI & a2)
 
 struct ActionAiComp
 {
-    bool operator()(const ActionAI & a, const ActionAI & b)
+    bool operator()(const ActionAI * a, const ActionAI * b)
     {
-        return a.priority < b.priority;
+        return a->priority < b->priority;
     }
 };
 
