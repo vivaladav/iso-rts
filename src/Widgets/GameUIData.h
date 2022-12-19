@@ -331,15 +331,15 @@ enum SpriteIdSettings : unsigned int
 {
     // PANELS
     IND_SET_PANEL,
-    IND_SET_PANEL2_TOP,
-    IND_SET_PANEL2_MID,
-    IND_SET_PANEL2_BOTTOM,
 
     // BUTTON BACK
     IND_SET_BTN_NORMAL,
     IND_SET_BTN_DISABLED,
     IND_SET_BTN_OVER,
     IND_SET_BTN_PUSHED,
+
+    // SECONDARY BUTTON
+    IND_SET_BTN2_LINE,
 
     // COMBO BOX
     IND_SET_CB_NORMAL,
@@ -360,6 +360,17 @@ enum SpriteIdSettings : unsigned int
     IND_SET_CHB_CHECKED_DISABLED,
     IND_SET_CHB_CHECKED_OVER,
     IND_SET_CHB_CHECKED_PUSHED,
+};
+
+// SETTINGS - EXPANDABLE TEXTURES
+extern const char SpriteFileSettingsExp[];
+
+enum SpriteIdSettingsExp : unsigned int
+{
+    // PANELS
+    IND_SET_PANEL2_TOP,
+    IND_SET_PANEL2_MID,
+    IND_SET_PANEL2_BOTTOM,
 };
 
 // UNIT QUICK SELECTION

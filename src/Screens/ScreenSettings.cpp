@@ -51,6 +51,64 @@ public:
     }
 };
 
+// ====== PANEL CONTENT ======
+class PanelContentSettings : public sgl::sgui::Widget
+{
+public:
+    PanelContentSettings(int h, sgl::sgui::Widget * parent)
+        : sgl::sgui::Widget(parent)
+    {
+        using namespace sgl;
+
+        auto tm = graphic::TextureManager::Instance();
+        graphic::Texture * tex;
+
+        tex = tm->GetSprite(SpriteFileSettingsExp, IND_SET_PANEL2_TOP);
+        mImgTop = new graphic::Image(tex);
+        RegisterRenderable(mImgTop);
+
+        tex = tm->GetSprite(SpriteFileSettingsExp, IND_SET_PANEL2_BOTTOM);
+        mImgBot = new graphic::Image(tex);
+        RegisterRenderable(mImgBot);
+
+        tex = tm->GetSprite(SpriteFileSettingsExp, IND_SET_PANEL2_MID);
+        tex->SetScaleMode(0);
+        mImgMid = new graphic::Image(tex);
+        mImgMid->SetHeight(h - mImgTop->GetHeight() - mImgBot->GetHeight());
+        RegisterRenderable(mImgMid);
+
+        SetSize(mImgTop->GetWidth(), h);
+
+        UpdatePositions();
+    }
+
+private:
+    void HandlePositionChanged() override
+    {
+        UpdatePositions();
+    }
+
+    void UpdatePositions()
+    {
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+
+        // BACKGROUND
+        int y = y0;
+        mImgTop->SetPosition(x0, y);
+
+        y += mImgTop->GetHeight();
+        mImgMid->SetPosition(x0, y);
+
+        y += mImgMid->GetHeight();
+        mImgBot->SetPosition(x0, y);
+    }
+
+private:
+    sgl::graphic::Image * mImgTop = nullptr;
+    sgl::graphic::Image * mImgMid = nullptr;
+    sgl::graphic::Image * mImgBot = nullptr;
+};
 
 // ====== SCREEN SETTINGS ======
 ScreenSettings::ScreenSettings(Game * game)
@@ -79,6 +137,7 @@ ScreenSettings::ScreenSettings(Game * game)
 
     const int marginContTop = 5;
     const int marginContLeft = 50;
+    const int marginPanelTop = 105;
 
     // BUTTON BACK
     auto btnBack = new ButtonBack(nullptr);
@@ -98,6 +157,10 @@ ScreenSettings::ScreenSettings(Game * game)
 
     labelTitle->SetColor(colorTitle);
     labelTitle->SetPosition(marginContLeft, marginContTop);
+
+    // PANEL CONTENT
+    auto panel = new PanelContentSettings(320, win);
+    panel->SetPosition((win->GetWidth() - panel->GetWidth()) * 0.5f,marginPanelTop);
 }
 
 ScreenSettings::~ScreenSettings()
