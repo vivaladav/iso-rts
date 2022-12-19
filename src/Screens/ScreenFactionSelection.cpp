@@ -67,7 +67,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     int y = y0;
 
     // LABEL "SELECT YOUR FACTION"
-    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 44, graphic::Font::NORMAL);
+    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 40, graphic::Font::NORMAL);
     sgui::Label * labelTitle = new sgui::Label("SELECT YOUR FACTION", fnt, panelMain);
     labelTitle->SetPosition(x, y);
     labelTitle->SetColor(colorTitle);

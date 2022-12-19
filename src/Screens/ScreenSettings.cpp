@@ -9,8 +9,10 @@
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/AbstractButtonsGroup.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
@@ -49,6 +51,83 @@ public:
 
         SetLabel("BACK");
     }
+};
+
+// ====== PANEL BUTTON =====
+
+class ButtonPanel : public sgl::sgui::AbstractButton
+{
+public:
+    ButtonPanel(const char * text, sgl::sgui::Widget * parent)
+        : sgl::sgui::AbstractButton(parent)
+    {
+        using namespace sgl;
+
+        // UPDATE SIZE
+        const int w = 250;
+        const int h = 40;
+        SetSize(w, h);
+
+        // LABEL
+        auto fm = graphic::FontManager::Instance();
+        graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 24, graphic::Font::NORMAL);
+
+        mLabel = new graphic::Text(text, font);
+        RegisterRenderable(mLabel);
+
+        // BAR
+        auto tm = graphic::TextureManager::Instance();
+        graphic::Texture * tex = tm->GetSprite(SpriteFileSettings, IND_SET_BTN2_LINE);
+
+        mBar = new sgui::Image(tex, this);
+        mBar->SetY(h - mBar->GetHeight());
+
+        // UPDATE CONTENT
+        UpdateGraphics(NORMAL);
+        UpdatePositions();
+    }
+
+private:
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        UpdateGraphics(state);
+    }
+
+    void HandlePositionChanged() override
+    {
+        UpdatePositions();
+    }
+
+    void UpdateGraphics(sgl::sgui::AbstractButton::VisualState state)
+    {
+        const unsigned int colors[NUM_VISUAL_STATES] =
+        {
+           0x98c2d9ff,
+           0x506773ff,
+           0xaad9f2ff,
+           0xa1cee5ff,
+           0xaad9f2ff,
+        };
+
+        mLabel->SetColor(colors[state]);
+
+        mBar->SetVisible(IsChecked());
+    }
+
+    void UpdatePositions()
+    {
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+
+        // LABEL
+        mLabel->SetPosition(x0 + (GetWidth() - mLabel->GetWidth()) * 0.5f,
+                            y0 + (GetHeight() - mLabel->GetHeight()) * 0.5f);
+    }
+
+private:
+    sgl::graphic::Text * mLabel = nullptr;
+
+    sgl::sgui::Image * mBar = nullptr;
 };
 
 // ====== PANEL CONTENT ======
@@ -137,7 +216,10 @@ ScreenSettings::ScreenSettings(Game * game)
 
     const int marginContTop = 5;
     const int marginContLeft = 50;
+    const int marginButtonsTop = 65;
     const int marginPanelTop = 105;
+
+    int x, y;
 
     // BUTTON BACK
     auto btnBack = new ButtonBack(nullptr);
@@ -158,9 +240,58 @@ ScreenSettings::ScreenSettings(Game * game)
     labelTitle->SetColor(colorTitle);
     labelTitle->SetPosition(marginContLeft, marginContTop);
 
+    // BUTTONS PANEL
+    auto btnGroup = new sgl::sgui::AbstractButtonsGroup;
+
+    x = marginContLeft;
+    y = marginButtonsTop;
+
+    auto btn = new ButtonPanel("GAME", win);
+    btn->SetPosition(x, y);
+    btnGroup->AddButton(btn);
+
+    x += btn->GetWidth();
+
+    btn = new ButtonPanel("AUDIO", win);
+    btn->SetPosition(x, y);
+    btnGroup->AddButton(btn);
+
+    x += btn->GetWidth();
+
+    btn = new ButtonPanel("VIDEO", win);
+    btn->SetPosition(x, y);
+    btnGroup->AddButton(btn);
+
+    x += btn->GetWidth();
+
+    btn = new ButtonPanel("CONTROLS", win);
+    btn->SetPosition(x, y);
+    btnGroup->AddButton(btn);
+
+    btnGroup->SetFunctionOnToggle([this](unsigned int index, bool checked)
+    {
+        for(unsigned int i = 0; i < Panel::NUM_PANELS; ++i)
+            mPanels[i]->SetVisible(i == index);
+    });
+
     // PANEL CONTENT
-    auto panel = new PanelContentSettings(320, win);
-    panel->SetPosition((win->GetWidth() - panel->GetWidth()) * 0.5f,marginPanelTop);
+    x = marginContLeft;
+    y += btn->GetHeight();
+
+    CreatePanelGame(win);
+    mPanels[Panel::GAME]->SetPosition(x, y);
+
+    CreatePanelAudio(win);
+    mPanels[Panel::AUDIO]->SetPosition(x, y);
+
+    CreatePanelVideo(win);
+    mPanels[Panel::VIDEO]->SetPosition(x, y);
+
+    CreatePanelControls(win);
+    mPanels[Panel::CONTROLS]->SetPosition(x, y);
+
+    // default panel is GAME
+    btnGroup->SetButtonChecked(Panel::GAME, true);
 }
 
 ScreenSettings::~ScreenSettings()
@@ -177,6 +308,30 @@ void ScreenSettings::Update(float update)
 void ScreenSettings::Render()
 {
     mBg->Render();
+}
+
+void ScreenSettings::CreatePanelGame(sgl::sgui::Widget * parent)
+{
+    const int h =150;
+    mPanels[Panel::GAME] = new PanelContentSettings(h, parent);
+}
+
+void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
+{
+    const int h = 170;
+    mPanels[Panel::AUDIO] = new PanelContentSettings(h, parent);
+}
+
+void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
+{
+    const int h = 200;
+    mPanels[Panel::VIDEO] = new PanelContentSettings(h, parent);
+}
+
+void ScreenSettings::CreatePanelControls(sgl::sgui::Widget * parent)
+{
+    const int h = 650;
+    mPanels[Panel::CONTROLS] = new PanelContentSettings(h, parent);
 }
 
 } // namespace game
