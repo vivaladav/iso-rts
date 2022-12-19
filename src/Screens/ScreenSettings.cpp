@@ -17,6 +17,13 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 
+namespace
+{
+    constexpr unsigned int colorTxt = 0x73a6bfff;
+    constexpr unsigned int sizeTxt = 22;
+    const char * fontTxt = "data/fonts/Lato-Regular.ttf";
+}
+
 namespace game
 {
 // ====== BUTTON BACK =====
@@ -324,8 +331,41 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
 
 void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
 {
-    const int h = 200;
-    mPanels[Panel::VIDEO] = new PanelContentSettings(h, parent);
+    using namespace sgl;
+
+    const int h = 340;
+    auto panel = new PanelContentSettings(h, parent);
+    mPanels[Panel::VIDEO] = panel;
+
+    const int x0 = 30;
+    const int y0 = 40;
+    const int blockH = 100;
+    int x = x0;
+    int y = y0;
+
+    auto fm = graphic::FontManager::Instance();
+    graphic::Font * font = fm->GetFont(fontTxt, sizeTxt, graphic::Font::NORMAL);
+
+    // RESOLUTION
+    auto label = new sgui::Label("RESOLUTION", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    // FULLSCREEN
+    x = x0;
+    y = y0 + blockH;
+
+    label = new sgui::Label("FULLSCREEN", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    // VSYNC
+    x = x0;
+    y = y0 + blockH * 2;
+
+    label = new sgui::Label("VSYNC", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
 }
 
 void ScreenSettings::CreatePanelControls(sgl::sgui::Widget * parent)
