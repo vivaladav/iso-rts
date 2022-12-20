@@ -39,7 +39,7 @@ Game::Game(int argc, char * argv[])
     using namespace sgl::graphic;
 
     mWin = Window::Create("Virtueror - v. 0.0.1", 1600, 900);
-    mRenderer = Renderer::Create(mWin);
+    mRenderer = Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
 
     TextureManager::Instance()->SetNewTextureQuality(TextureQuality::BEST);
