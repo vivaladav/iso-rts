@@ -14,7 +14,7 @@ enum AIActionId : unsigned int
     AIA_NOP,
 
     AIA_NEW_UNIT,
-    AIA_UNIT_MOVE,
+    AIA_UNIT_CONQUER_GEN,
 
     NUM_AI_ACTIONS
 };

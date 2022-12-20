@@ -11,6 +11,7 @@ namespace game
 class GameMap;
 class Player;
 class Structure;
+class Unit;
 
 struct GameMapCell;
 
@@ -39,6 +40,7 @@ private:
     void AddNewAction(ActionAI * action);
 
     void AddActionsBase(Structure * s);
+    void AddActionsUnit(Unit * u);
 
 private:
     std::vector<ActionAI *> mActionsTodo;

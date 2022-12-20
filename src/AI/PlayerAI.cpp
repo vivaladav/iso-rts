@@ -54,8 +54,8 @@ void PlayerAI::DecideActions()
     // UNITS
     for(unsigned int i = 0; i < mPlayer->GetNumUnits(); ++i)
     {
-        // TODO
-        //Unit * u = mPlayer->GetUnit(i);
+        Unit * u = mPlayer->GetUnit(i);
+        AddActionsUnit(u);
     }
 }
 
@@ -286,6 +286,11 @@ void PlayerAI::AddActionsBase(Structure * s)
 
     // push action to the queue
     AddNewAction(action);
+}
+
+void PlayerAI::AddActionsUnit(Unit * u)
+{
+
 }
 
 } // namespace game
