@@ -31,6 +31,7 @@ public:
 
 private:
     void ClearActionsDone();
+    void ClearActionsTodo();
 
     void DecideActions();
 

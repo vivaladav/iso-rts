@@ -21,6 +21,7 @@ PlayerAI::PlayerAI(Player * player)
 
 PlayerAI::~PlayerAI()
 {
+    ClearActionsTodo();
     ClearActionsDone();
 }
 
@@ -28,6 +29,7 @@ void PlayerAI::Update(float delta)
 {
     // TODO track time and keep it into consideration when defining priorities
     // TODO use memory pools for actions
+    ClearActionsTodo();
     ClearActionsDone();
 
     DecideActions();
@@ -75,6 +77,14 @@ void PlayerAI::ClearActionsDone()
         delete a;
 
     mActionsDone.clear();
+}
+
+void PlayerAI::ClearActionsTodo()
+{
+    for(ActionAI * a : mActionsTodo)
+        delete a;
+
+    mActionsTodo.clear();
 }
 
 void PlayerAI::PushAction(ActionAI * action)
