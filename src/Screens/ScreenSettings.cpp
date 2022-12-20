@@ -465,6 +465,12 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label = new sgui::Label("VSYNC", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
+
+    auto label2 = new sgui::Label("ON (not implemented yet)", font, panel);
+    label2->SetColor(colorTxt);
+
+    x += blockW;
+    label2->SetPosition(x, y);
 }
 
 void ScreenSettings::CreatePanelControls(sgl::sgui::Widget * parent)
