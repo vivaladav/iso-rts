@@ -12,6 +12,7 @@
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/graphic/Window.h>
 #include <sgl/sgui/AbstractButtonsGroup.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
@@ -135,6 +136,90 @@ private:
     sgl::graphic::Text * mLabel = nullptr;
 
     sgl::sgui::Image * mBar = nullptr;
+};
+
+// ====== CHECKBOX BUTTON =====
+
+class SettingsCheckbox : public sgl::sgui::AbstractButton
+{
+public:
+    SettingsCheckbox(sgl::sgui::Widget * parent)
+        : sgl::sgui::AbstractButton(parent)
+    {
+        using namespace sgl;
+
+        SetCheckable(true);
+
+        // BAR
+        mBg = new graphic::Image;
+        RegisterRenderable(mBg);
+
+        // UPDATE CONTENT
+        UpdateGraphics(NORMAL);
+        UpdatePositions();
+    }
+
+private:
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        UpdateGraphics(state);
+    }
+
+    void HandlePositionChanged() override
+    {
+        UpdatePositions();
+    }
+
+    void UpdateGraphics(sgl::sgui::AbstractButton::VisualState state)
+    {
+        using namespace sgl;
+
+        auto tm = graphic::TextureManager::Instance();
+        graphic::Texture * tex = nullptr;
+
+        if(IsChecked())
+        {
+            if(IsEnabled())
+            {
+                if(MOUSE_OVER == state)
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_CHECKED_OVER);
+                else if(PUSHED == state)
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_CHECKED_PUSHED);
+                else
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_CHECKED_NORMAL);
+            }
+            else
+                tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_CHECKED_DISABLED);
+        }
+        else
+        {
+            if(IsEnabled())
+            {
+                if(MOUSE_OVER == state)
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_OVER);
+                else if(PUSHED == state)
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_PUSHED);
+                else
+                    tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_NORMAL);
+            }
+            else
+                tex = tm->GetSprite(SpriteFileSettings, IND_SET_CHB_DISABLED);
+        }
+
+        mBg->SetTexture(tex);
+
+        SetSize(mBg->GetWidth(), mBg->GetHeight());
+    }
+
+    void UpdatePositions()
+    {
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+        mBg->SetPosition(x0, y0);
+    }
+
+private:
+    sgl::graphic::Image * mBg = nullptr;
 };
 
 // ====== PANEL CONTENT ======
@@ -339,7 +424,9 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
 
     const int x0 = 30;
     const int y0 = 40;
+    const int blockW = 300;
     const int blockH = 100;
+
     int x = x0;
     int y = y0;
 
@@ -358,6 +445,18 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label = new sgui::Label("FULLSCREEN", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
+
+    auto cb = new SettingsCheckbox(panel);
+    cb->SetChecked(sgl::graphic::Window::Instance()->IsFullscreen());
+
+    x += blockW;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([](bool checked)
+    {
+        sgl::graphic::Window::Instance()->SetFullscreen(checked);
+    });
 
     // VSYNC
     x = x0;
