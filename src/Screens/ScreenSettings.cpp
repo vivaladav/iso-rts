@@ -18,6 +18,8 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 
+#include <iostream>
+
 namespace
 {
     constexpr unsigned int colorTxt = 0x73a6bfff;
@@ -438,6 +440,19 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
+    auto win = graphic::Window::Instance();
+
+    for(int d = 0; d < win->GetNumDisplays(); ++d)
+    {
+        for(int m = 0; m < win->GetNumDisplayModes(d); ++m)
+        {
+            graphic::DisplayMode dm = win->GetDisplayMode(d, m);
+
+            std::cout << "DISPLAY " << d << " - " << dm.width << "x" << dm.height
+                      << " @ " << dm.refresh << "Hz" << std::endl;
+        }
+    }
+
     // FULLSCREEN
     x = x0;
     y = y0 + blockH;
@@ -447,7 +462,7 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label->SetPosition(x, y);
 
     auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(sgl::graphic::Window::Instance()->IsFullscreen());
+    cb->SetChecked(graphic::Window::Instance()->IsFullscreen());
 
     x += blockW;
     y += (label->GetHeight() - cb->GetHeight()) * 0.5;
@@ -455,7 +470,7 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
 
     cb->AddOnToggleFunction([](bool checked)
     {
-        sgl::graphic::Window::Instance()->SetFullscreen(checked);
+        graphic::Window::Instance()->SetFullscreen(checked);
     });
 
     // VSYNC
