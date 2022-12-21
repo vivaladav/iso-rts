@@ -14,6 +14,8 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Window.h>
 #include <sgl/sgui/AbstractButtonsGroup.h>
+#include <sgl/sgui/ComboBox.h>
+#include <sgl/sgui/ComboBoxItem.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
@@ -138,6 +140,136 @@ private:
     sgl::graphic::Text * mLabel = nullptr;
 
     sgl::sgui::Image * mBar = nullptr;
+};
+
+
+// ====== COMBOBOX =====
+class SettingsComboBox : public sgl::sgui::ComboBox
+{
+public:
+    SettingsComboBox(sgl::sgui::Widget * parent)
+        : sgl::sgui::ComboBox(parent)
+    {
+        using namespace sgl::graphic;
+
+        auto fm = FontManager::Instance();
+        Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, Font::NORMAL);
+        SetLabelFont(font);
+    }
+
+private:
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        using namespace sgl::graphic;
+
+        // BODY
+        const unsigned int texIds[NUM_VISUAL_STATES] =
+        {
+            IND_SET_CB_NORMAL,
+            IND_SET_CB_DISABLED,
+            IND_SET_CB_OVER,
+            IND_SET_CB_PUSHED,
+            IND_SET_CB_NORMAL,
+        };
+
+        auto tm = TextureManager::Instance();
+        Texture * tex = tm->GetSprite(SpriteFileSettings, texIds[state]);
+        SetBodyTexture(tex);
+
+        // TEXT
+        const unsigned int txtColors[NUM_VISUAL_STATES] =
+        {
+            0xd7eaf4ff,
+            0x506c7cff,
+            0xebf4f9ff,
+            0xc3dfeeff,
+            0xd7eaf4ff
+        };
+
+       SetLabelColor(txtColors[state]);
+    }
+};
+
+// ====== COMBOBOX ITEM =====
+class SettingsComboBoxItem : public sgl::sgui::ComboBoxItem
+{
+public:
+    SettingsComboBoxItem(const char * txt)
+        : sgl::sgui::ComboBoxItem(txt)
+    {
+        using namespace sgl::graphic;
+
+        mBody = new Image;
+        RegisterRenderable(mBody);
+
+        // TEXT LABEL
+        auto fm = FontManager::Instance();
+        Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, Font::NORMAL);
+        mText = new Text(txt, font, true);
+        RegisterRenderable(mText);
+
+        // init to normal state
+        SetState(NORMAL);
+
+        PositionElements();
+    }
+
+private:
+    void HandlePositionChanged() override
+    {
+        PositionElements();
+    }
+
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        using namespace sgl::graphic;
+
+        // BODY
+        const unsigned int texIds[NUM_VISUAL_STATES] =
+        {
+            IND_SET_CBI_NORMAL,
+            IND_SET_CBI_DISABLED,
+            IND_SET_CBI_OVER,
+            IND_SET_CBI_PUSHED,
+            IND_SET_CBI_NORMAL,
+        };
+
+        auto tm = TextureManager::Instance();
+        Texture * tex = tm->GetSprite(SpriteFileSettings, texIds[state]);
+        mBody->SetTexture(tex);
+
+        SetSize(mBody->GetWidth(), mBody->GetHeight());
+
+        // TEXT
+        const unsigned int txtColors[NUM_VISUAL_STATES] =
+        {
+            0xd7eaf4ff,
+            0x506c7cff,
+            0xebf4f9ff,
+            0xc3dfeeff,
+            0xd7eaf4ff
+        };
+
+       mText->SetColor(txtColors[state]);
+    }
+
+    void PositionElements()
+    {
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+
+        // position BG
+        mBody->SetPosition(x0, y0);
+
+        // text
+        const int textX = x0 + (GetWidth() - mText->GetWidth()) * 0.5f;
+        const int textY = y0 + (GetHeight() - mText->GetHeight()) * 0.5f;
+        mText->SetPosition(textX, textY);
+    }
+
+private:
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Text * mText = nullptr;
 };
 
 // ====== CHECKBOX BUTTON =====
@@ -449,9 +581,19 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
             graphic::DisplayMode dm = win->GetDisplayMode(d, m);
 
             std::cout << "DISPLAY " << d << " - " << dm.width << "x" << dm.height
+                      << "(" << static_cast<float>(dm.width) / static_cast<float>(dm.height) << ")"
                       << " @ " << dm.refresh << "Hz" << std::endl;
         }
     }
+
+    auto combo = new SettingsComboBox(panel);
+    combo->AddItem(new SettingsComboBoxItem("RES 1"));
+    combo->AddItem(new SettingsComboBoxItem("RES 2"));
+    combo->AddItem(new SettingsComboBoxItem("RES 3"));
+
+    x += blockW;
+    y += (label->GetHeight() - combo->GetHeight()) * 0.5;
+    combo->SetPosition(x, y);
 
     // FULLSCREEN
     x = x0;
