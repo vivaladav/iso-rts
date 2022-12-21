@@ -21,6 +21,7 @@
 #include <sgl/sgui/Stage.h>
 
 #include <iostream>
+#include <sstream>
 
 namespace
 {
@@ -270,6 +271,24 @@ private:
 private:
     sgl::graphic::Image * mBody = nullptr;
     sgl::graphic::Text * mText = nullptr;
+};
+
+class ComboBoxItemResolution : public SettingsComboBoxItem
+{
+public:
+    ComboBoxItemResolution(int display, int mode, const char * txt)
+        : SettingsComboBoxItem(txt)
+        , mDisplay(display)
+        , mMode(mode)
+    {
+    }
+
+    int GetDisplay() const { return mDisplay; }
+    int GetMode() const { return mMode; }
+
+private:
+    int mDisplay = 0;
+    int mMode = 0;
 };
 
 // ====== CHECKBOX BUTTON =====
@@ -572,7 +591,14 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
+    auto combo = new SettingsComboBox(panel);
+
     auto win = graphic::Window::Instance();
+
+    const sgl::graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
+
+    int currIndex = -1;
+    int validModes = 0;
 
     for(int d = 0; d < win->GetNumDisplays(); ++d)
     {
@@ -580,16 +606,38 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
         {
             graphic::DisplayMode dm = win->GetDisplayMode(d, m);
 
-            std::cout << "DISPLAY " << d << " - " << dm.width << "x" << dm.height
-                      << "(" << static_cast<float>(dm.width) / static_cast<float>(dm.height) << ")"
-                      << " @ " << dm.refresh << "Hz" << std::endl;
+            // display requirements
+            const int minW = 1280;
+            const float minRatio = 1.6f;
+            const float ratio = static_cast<float>(dm.width) / static_cast<float>(dm.height);
+
+            if(ratio < minRatio || dm.width < minW)
+                continue ;
+
+            /// add combo item
+            std::ostringstream oss;
+            oss << dm.width << "x" << dm.height << " @ " << dm.refresh << "Hz";
+            combo->AddItem(new ComboBoxItemResolution(d, m, oss.str().c_str()));
+
+            // record current mode
+            if(dm.width == currDM.width && dm.height == currDM.height && dm.refresh == currDM.refresh)
+                currIndex = validModes;
+
+            ++validModes;
         }
+
+        combo->SetActiveItem(currIndex);
+
+        // NOTE only handling display 0 for now, this might change later
+        break ;
     }
 
-    auto combo = new SettingsComboBox(panel);
-    combo->AddItem(new SettingsComboBoxItem("RES 1"));
-    combo->AddItem(new SettingsComboBoxItem("RES 2"));
-    combo->AddItem(new SettingsComboBoxItem("RES 3"));
+    combo->SetOnActiveChanged([combo, win](int)
+    {
+        auto item = static_cast<const ComboBoxItemResolution *>(combo->GetActiveItem());
+
+        win->SetDisplayMode(item->GetDisplay(), item->GetMode());
+    });
 
     x += blockW;
     y += (label->GetHeight() - combo->GetHeight()) * 0.5;
