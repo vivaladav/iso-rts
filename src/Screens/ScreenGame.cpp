@@ -789,10 +789,13 @@ void ScreenGame::CreateUI()
         mMiniMap->SetVisible(false);
     });
 
-    auto objs = mGameMap->GetVisibleObjects(0, 0, mIsoMap->GetNumRows(), mIsoMap->GetNumCols());
+    const std::vector<GameObject *> & objs = mGameMap->GetObjects();
 
     for(GameObject * obj : objs)
     {
+        if(!obj->IsVisible())
+            continue ;
+
         const Player * p = obj->GetOwner();
         PlayerFaction faction = NO_FACTION;
         MiniMap::MiniMapElemType type = MiniMap::MME_SCENE;

@@ -39,7 +39,8 @@ public:
 
     bool HasObject(unsigned int r, unsigned int c) const;
 
-    std::vector<GameObject *> GetVisibleObjects(int r0, int c0, int r1, int c1) const;
+    const std::vector<GameMapCell>  & GetCells() const;
+    const std::vector<GameObject *> & GetObjects() const;
 
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
@@ -206,6 +207,16 @@ inline bool GameMap::HasObject(unsigned int r, unsigned int c) const
     const unsigned int ind = r * mCols + c;
 
     return ind < mCells.size() && mCells[ind].objTop != nullptr;
+}
+
+inline const std::vector<GameMapCell> & GameMap::GetCells() const
+{
+    return mCells;
+}
+
+inline const std::vector<GameObject *> & GameMap::GetObjects() const
+{
+    return mObjects;
 }
 
 inline bool GameMap::IsCellWalkable(unsigned int cellInd) const
