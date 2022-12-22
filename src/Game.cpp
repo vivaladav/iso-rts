@@ -41,6 +41,7 @@ Game::Game(int argc, char * argv[])
     mWin = Window::Create("Virtueror - v. 0.0.1", 0, 0);
     mRenderer = Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
+    mWin->SetFullscreen(true);
 
     TextureManager::Instance()->SetNewTextureQuality(TextureQuality::BEST);
 
