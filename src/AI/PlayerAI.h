@@ -7,13 +7,15 @@
 namespace game
 {
 
-
 class GameMap;
+class GameObject;
 class Player;
 class Structure;
 class Unit;
 
 struct GameMapCell;
+
+enum ResourceType : unsigned int;
 
 class PlayerAI
 {
@@ -33,6 +35,8 @@ private:
     void ClearActionsDone();
     void ClearActionsTodo();
 
+    void PrepareData();
+
     void DecideActions();
 
     void PushAction(ActionAI * action);
@@ -42,10 +46,16 @@ private:
 
     void AddActionsBase(Structure * s);
     void AddActionsUnit(Unit * u);
+    void AddActionUnitConquestResGen(Unit * u, ResourceType type);
+
+    int ApproxDistance(GameObject * obj1, GameObject * obj2) const;
 
 private:
     std::vector<ActionAI *> mActionsTodo;
     std::vector<ActionAI *> mActionsDone;
+
+    // shared data
+    std::vector<GameObject *> mResGenerators;
 
     Player * mPlayer = nullptr;
 

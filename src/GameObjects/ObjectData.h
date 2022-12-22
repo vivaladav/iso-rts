@@ -92,6 +92,8 @@ struct ObjectData
     static const char * STR_STAT[NUM_TOT_OBJ_STATS];
 
     static const ObjectData NullObj;
+
+    static const int MAX_STAT_VAL = 10;
 };
 
 } // namespace game

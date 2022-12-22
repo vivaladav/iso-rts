@@ -48,6 +48,8 @@ public:
     bool HasEnergyForAction(GameObjectActionId action);
     void ConsumeEnergy(GameObjectActionId action);
 
+    int GetStat(unsigned int index) const;
+
 public:
     static const char * TITLES[NUM_UNIT_TYPES];
     static const char * DESCRIPTIONS[NUM_UNIT_TYPES];

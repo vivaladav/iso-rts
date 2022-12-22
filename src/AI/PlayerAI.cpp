@@ -3,13 +3,21 @@
 #include "GameConstants.h"
 #include "GameMap.h"
 #include "Player.h"
+#include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 
 #include <sgl/utilities/LoadedDie.h>
 
+#include <cmath>
 #include <algorithm>
 #include <iostream>
+
+namespace
+{
+constexpr int MAX_PRIORITY = 100;
+constexpr int MIN_PRIORITY = 1;
+}
 
 namespace game
 {
@@ -32,7 +40,33 @@ void PlayerAI::Update(float delta)
     ClearActionsTodo();
     ClearActionsDone();
 
+    PrepareData();
+
     DecideActions();
+}
+
+void PlayerAI::PrepareData()
+{
+    // clear data
+    mResGenerators.clear();
+
+    // collect data
+    const std::vector<GameObject *> & objects = mGm->GetObjects();
+
+    for(GameObject * obj : objects)
+    {
+        const GameObjectType type = obj->GetObjectType();
+
+        switch(type)
+        {
+            case OBJ_RES_GEN:
+                mResGenerators.push_back(obj);
+            break;
+
+            default:
+            break;
+        }
+    }
 }
 
 void PlayerAI::DecideActions()
@@ -261,7 +295,110 @@ void PlayerAI::AddActionsBase(Structure * s)
 
 void PlayerAI::AddActionsUnit(Unit * u)
 {
+    // CONQUEST RESOURCE GENERATORS
+    AddActionUnitConquestResGen(u, RES_ENERGY);
+    AddActionUnitConquestResGen(u, RES_MATERIAL1);
+}
 
+void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
+{
+    const enum Player::Stat types[NUM_RESOURCES] =
+    {
+        Player::Stat::ENERGY,
+        Player::Stat::MATERIAL,
+        Player::Stat::DIAMONDS,
+        Player::Stat::BLOBS
+    };
+
+    const int basePriorities[NUM_RESOURCES] =
+    {
+        90,     //RES_ENERGY
+        70,     //RES_MATERIAL1
+        45,     //RES_DIAMONDS
+        45      //RES_BLOBS
+    };
+
+    const enum Player::Stat ptype = types[type];
+    const StatValue & stat = mPlayer->GetStat(ptype);
+
+    int priority = basePriorities[type];
+
+    // bonus resource availability level
+    const int bonusResAvailable = -20;
+
+    priority += bonusResAvailable * stat.GetIntValue() / stat.GetIntMax();
+
+    // visit all generators
+    const int maxDist = mGm->GetNumRows() + mGm->GetNumCols();
+    const unsigned int numGens = mResGenerators.size();
+
+    const int bonusDist = -50;
+    const int bonusOwned = -40;
+
+    unsigned int indexMax = numGens;
+    int maxPriority = 0;
+
+    for(unsigned int i = 0; i < numGens; ++i)
+    {
+        auto resGen = static_cast<ResourceGenerator *>(mResGenerators[i]);
+
+        if(resGen->GetResourceType() != type)
+            continue;
+
+        const Player * owner = resGen->GetOwner();
+
+        if(owner == mPlayer)
+            continue;
+
+        int loopPriority = priority;
+
+        // bonus distance
+        const int dist = ApproxDistance(u, resGen);
+
+        loopPriority += bonusDist * dist / maxDist;
+
+        // bonus owned
+        const int owned = owner != nullptr;
+        loopPriority += owned * bonusOwned;
+
+        if(loopPriority > maxPriority)
+        {
+            maxPriority = loopPriority;
+            indexMax = i;
+        }
+    }
+
+    // can't find something that's worth an action
+    if(maxPriority < MIN_PRIORITY)
+        return ;
+
+    priority = maxPriority;
+
+    // bonus unit speed
+    const int bonusSpeed = 10;
+    priority += bonusSpeed * u->GetStat(OSTAT_SPEED) / ObjectData::MAX_STAT_VAL;
+
+    // bonus unit conquest
+    const int bonusConquest = 20;
+    priority += bonusConquest * u->GetStat(OSTAT_CONQUEST) / ObjectData::MAX_STAT_VAL;
+
+    if(priority > MAX_PRIORITY)
+        priority = MAX_PRIORITY;
+
+    auto action = new ActionAI;
+    action->aid = AIA_UNIT_CONQUER_GEN;
+    action->ObjSrc = u;
+    action->ObjDst = mResGenerators[indexMax];
+    action->priority = priority;
+
+    // push action to the queue
+    AddNewAction(action);
+}
+
+int PlayerAI::ApproxDistance(GameObject * obj1, GameObject * obj2) const
+{
+    return std::abs(obj1->GetRow0() - obj2->GetRow0()) +
+           std::abs(obj1->GetCol0() - obj2->GetCol0());
 }
 
 } // namespace game

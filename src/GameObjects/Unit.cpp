@@ -137,6 +137,14 @@ void Unit::ConsumeEnergy(GameObjectActionId action)
        SumEnergy(-ACTION_COSTS[action]);
 }
 
+int Unit::GetStat(unsigned int index) const
+{
+    if(index < mStats.size())
+        return mStats[index];
+    else
+        return 0;
+}
+
 bool Unit::HasEnergyForAction(GameObjectActionId action)
 {
     if(action < NUM_OBJ_ACTIONS)

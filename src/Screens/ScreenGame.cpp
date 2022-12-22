@@ -992,15 +992,23 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         if(nullptr == action)
         {
-            std::cout << "AI " << mCurrPlayerAI << " - NOP" << std::endl;
+            std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NOP" << std::endl;
             return ;
         }
 
         switch(action->aid)
         {
+            case AIA_UNIT_CONQUER_GEN:
+            {
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - CONQUER GENERATOR" << std::endl;
+
+                done = false;
+            }
+            break;
+
             case AIA_NEW_UNIT:
             {
-                std::cout << "AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
 
                 auto a = static_cast<const ActionAINewUnit *>(action);
                 done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer());
@@ -1008,7 +1016,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             break;
 
             default:
-                std::cout << "AI " << mCurrPlayerAI << " - unkown action" << action->aid << std::endl;
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - unkown action" << action->aid << std::endl;
             break;
         }
     }
