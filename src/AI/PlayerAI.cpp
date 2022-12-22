@@ -107,50 +107,11 @@ const ActionAI * PlayerAI::PopAction()
 
 void PlayerAI::AddNewAction(ActionAI * action)
 {
-    // insert action if not already in the queue
-    bool found = false;
-
-    for(ActionAI * a : mActionsTodo)
-    {
-        // same action type
-        if(a->aid == action->aid)
-        {
-            if(AIA_NEW_UNIT == action->aid)
-            {
-                auto au1 = static_cast<ActionAINewUnit *>(a);
-                auto au2 = static_cast<ActionAINewUnit *>(action);
-
-                found = au1->unitType == au2->unitType;
-            }
-            // compare basic actions
-            else
-            {
-                found = a->ObjSrc == action->ObjSrc && a->ObjDst == action->ObjDst &&
-                        a->cellSrc == action->cellSrc && a->cellDst == action->cellDst;
-            }
-        }
-
-        // action already in queue -> update its priority
-        if(found)
-        {
-            std::cout << "PlayerAI::AddNewAction - UPDATING ACTION " << action->aid << " - old priority: "
-                      << a->priority << " - new priority: " << action->priority<< std::endl;
-
-            // update queue
-            a->priority = action->priority;
-            std::make_heap(mActionsTodo.begin(), mActionsTodo.end(), ActionAiComp{});
-
-            break;
-        }
-    }
-
-    // add new action
-    if(!found)
-    {
-        std::cout << "PlayerAI::AddNewAction - NEW ACTION " << action->aid
-                  << " - priority: " << action->priority << std::endl;
-        PushAction(action);
-    }
+    // NOTE not checking existing actions for now as all actions should be unique
+    // as they are created by different objects (at least the ObjSrc is different)
+    std::cout << "PlayerAI::AddNewAction - ADDED NEW ACTION " << action->aid
+              << " - priority: " << action->priority << std::endl;
+    PushAction(action);
 }
 
 void PlayerAI::AddActionsBase(Structure * s)
