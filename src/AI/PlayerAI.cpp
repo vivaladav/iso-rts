@@ -95,7 +95,7 @@ void PlayerAI::DecideActions()
     }
 }
 
-const ActionAI * PlayerAI::GetNextAction()
+const ActionAI * PlayerAI::GetNextActionTodo()
 {
     // return NOP action if queue is empty
     if(mActionsTodo.empty())
@@ -105,9 +105,31 @@ const ActionAI * PlayerAI::GetNextAction()
     return PopAction();
 }
 
+void PlayerAI::SetActionDone(const ActionAI * action)
+{
+    auto it = mActionsDoing.begin();
+
+    while(it != mActionsDoing.end())
+    {
+        if(action->actId == (*it)->actId)
+        {
+            mActionsDoing.erase(it);
+
+            mActionsDone.push_back(action);
+
+            std::cout << "PlayerAI::SetActionDone - ACTION DONE - id: " << action->actId
+                      << " - type: " << action->type << std::endl;
+
+            return ;
+        }
+        else
+            ++it;
+    }
+}
+
 void PlayerAI::ClearActionsDone()
 {
-    for(ActionAI * a : mActionsDone)
+    for(const ActionAI * a : mActionsDone)
         delete a;
 
     mActionsDone.clear();
@@ -134,22 +156,28 @@ const ActionAI * PlayerAI::PopAction()
     ActionAI * elem = mActionsTodo.back();
     mActionsTodo.pop_back();
 
-    mActionsDone.push_back(elem);
-
     return elem;
 }
 
 void PlayerAI::AddNewAction(ActionAI * action)
 {
+    static unsigned int num = 0;
+
+    action->actId = ++num;
+
     // NOTE not checking existing actions for now as all actions should be unique
     // as they are created by different objects (at least the ObjSrc is different)
-    std::cout << "PlayerAI::AddNewAction - ADDED NEW ACTION " << action->aid
-              << " - priority: " << action->priority << std::endl;
+    std::cout << "PlayerAI::AddNewAction - ADDED NEW ACTION id: " << action->actId
+              << " - type: " << action->type << " - priority: " << action->priority << std::endl;
     PushAction(action);
 }
 
 void PlayerAI::AddActionsBase(Structure * s)
 {
+    // check if action is already in progress
+    if(IsSimilarActionInProgress(AIA_NEW_UNIT))
+        return ;
+
     const unsigned int numUnits = mPlayer->GetNumUnits();
     const unsigned int limitUnits = mPlayer->GetMaxUnits();
 
@@ -267,7 +295,7 @@ void PlayerAI::AddActionsBase(Structure * s)
     // 4- pick highest priority
     // create action
     auto action = new ActionAINewUnit;
-    action->aid = AIA_NEW_UNIT;
+    action->type = AIA_NEW_UNIT;
     action->ObjSrc = s;
     action->priority = 0;
     action->unitType = UNIT_NULL;
@@ -386,13 +414,24 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         priority = MAX_PRIORITY;
 
     auto action = new ActionAI;
-    action->aid = AIA_UNIT_CONQUER_GEN;
+    action->type = AIA_UNIT_CONQUER_GEN;
     action->ObjSrc = u;
     action->ObjDst = mResGenerators[indexMax];
     action->priority = priority;
 
     // push action to the queue
     AddNewAction(action);
+}
+
+bool PlayerAI::IsSimilarActionInProgress(AIActionType type) const
+{
+    for(const ActionAI * a : mActionsDoing)
+    {
+        if(a->type == type)
+            return true;
+    }
+
+    return false;
 }
 
 int PlayerAI::ApproxDistance(GameObject * obj1, GameObject * obj2) const

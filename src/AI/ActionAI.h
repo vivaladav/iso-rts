@@ -9,7 +9,7 @@ class GameObject;
 
 enum UnitType : unsigned int;
 
-enum AIActionId : unsigned int
+enum AIActionType : unsigned int
 {
     AIA_NOP,
 
@@ -22,11 +22,12 @@ enum AIActionId : unsigned int
 // ===== ACTION AI =====
 struct ActionAI
 {
+    unsigned int actId = 0;
     GameObject * ObjSrc = nullptr;
     GameObject * ObjDst = nullptr;
     Cell2D cellSrc;
     Cell2D cellDst;
-    AIActionId aid = AIA_NOP;
+    AIActionType type = AIA_NOP;
     int priority = 0;
 };
 

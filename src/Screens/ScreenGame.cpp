@@ -54,9 +54,9 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr float TIME_NEW_UNIT = 0.5f;
-constexpr float TIME_CONQ_RES_GEN = 0.5f;
-constexpr float TIME_UPG_UNIT = 1.f;
+constexpr float TIME_NEW_UNIT = 2.f;
+constexpr float TIME_CONQ_RES_GEN = 2.f;
+constexpr float TIME_UPG_UNIT = 2.f;
 
 constexpr float TIME_ENERGY_USE = 8.f;
 constexpr float TIME_AI_MOVE = 0.5f;
@@ -963,20 +963,18 @@ void ScreenGame::UpdateAI(float delta)
 
     if(mTimerAI < 0.f)
     {
-        // reset current player if needed
-        if(mCurrPlayerAI >= MAX_NUM_PLAYERS)
-            mCurrPlayerAI = 0;
 
-        // current index pooints to an actual AI player
-        if(mCurrPlayerAI < mAiPlayers.size())
-        {
-            PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
-            ai->Update(delta);
-            ExecuteAIAction(ai);
-        }
+        PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
+        ai->Update(delta);
+        ExecuteAIAction(ai);
 
         // move to next player and update timer
         ++mCurrPlayerAI;
+
+        // reset current player if needed
+        if(mCurrPlayerAI >= mAiPlayers.size())
+            mCurrPlayerAI = 0;
+
         mTimerAI = TIME_AI_MOVE;
     }
 }
@@ -988,7 +986,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
     // execute planned action until one is successful or there's no more actions to do (NOP)
     while(!done)
     {
-        const ActionAI * action = ai->GetNextAction();
+        const ActionAI * action = ai->GetNextActionTodo();
 
         if(nullptr == action)
         {
@@ -996,7 +994,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             return ;
         }
 
-        switch(action->aid)
+        switch(action->type)
         {
             case AIA_UNIT_CONQUER_GEN:
             {
@@ -1011,12 +1009,18 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                 std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
 
                 auto a = static_cast<const ActionAINewUnit *>(action);
-                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer());
+
+                ai->RegisterActionInProgress(action);
+
+                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer(), [action, ai]
+                {
+                    ai->SetActionDone(action);
+                });
             }
             break;
 
             default:
-                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - unkown action" << action->aid << std::endl;
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - unkown action" << action->type << std::endl;
             break;
         }
     }
@@ -1027,7 +1031,8 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
     return cell.row * mIsoMap->GetNumCols() + cell.col;
 }
 
-bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
+bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
+                              const std::function<void ()> & onDone)
 {
     const ObjectData & data = player->GetAvailableUnit(type);
 
@@ -1052,7 +1057,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, data]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, data, onDone]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
@@ -1065,6 +1070,8 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player)
         mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
 
         SetObjectActionCompleted(gen);
+
+        onDone();
     });
 
     // store active action

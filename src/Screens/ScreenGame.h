@@ -109,7 +109,7 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player);
+    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player, const std::function<void()> & onDone = []{});
     bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player);
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player);
     bool SetupUnitUpgrade(GameObject * obj, Player * player);

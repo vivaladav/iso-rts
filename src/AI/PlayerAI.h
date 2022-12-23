@@ -27,7 +27,10 @@ public:
 
     void Update(float delta);
 
-    const ActionAI * GetNextAction();
+    const ActionAI * GetNextActionTodo();
+
+    void RegisterActionInProgress(const ActionAI * action);
+    void SetActionDone(const ActionAI * action);
 
     Player * GetPlayer();
 
@@ -48,13 +51,16 @@ private:
     void AddActionsUnit(Unit * u);
     void AddActionUnitConquestResGen(Unit * u, ResourceType type);
 
+    bool IsSimilarActionInProgress(AIActionType type) const;
+
     int ApproxDistance(GameObject * obj1, GameObject * obj2) const;
 
 private:
     std::vector<ActionAI *> mActionsTodo;
-    std::vector<ActionAI *> mActionsDone;
+    std::vector<const ActionAI *> mActionsDoing;
+    std::vector<const ActionAI *> mActionsDone;
 
-    // shared data
+    // shared data,
     std::vector<GameObject *> mResGenerators;
 
     Player * mPlayer = nullptr;
@@ -65,5 +71,10 @@ private:
 inline void PlayerAI::SetGameMap(GameMap * gm) { mGm = gm; }
 
 inline Player * PlayerAI::GetPlayer() { return mPlayer; }
+
+inline void PlayerAI::RegisterActionInProgress(const ActionAI * action)
+{
+    mActionsDoing.push_back(action);
+}
 
 } // namespace game
