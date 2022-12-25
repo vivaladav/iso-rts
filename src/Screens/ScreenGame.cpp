@@ -983,10 +983,17 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 {
     bool done = false;
 
+    Player * player = ai->GetPlayer();
+
     // execute planned action until one is successful or there's no more actions to do (NOP)
     while(!done)
     {
         const ActionAI * action = ai->GetNextActionTodo();
+
+        auto ClearAction = [action, ai]
+        {
+            ai->SetActionDone(action);
+        };
 
         if(nullptr == action)
         {
@@ -998,24 +1005,46 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
         {
             case AIA_UNIT_CONQUER_GEN:
             {
-                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - CONQUER GENERATOR" << std::endl;
+                auto unit = static_cast<Unit *>(action->ObjSrc);
+                const Cell2D start(unit->GetRow0(), unit->GetCol0());
+                const Cell2D end(action->ObjDst->GetRow0(), action->ObjDst->GetCol0());
 
-                done = false;
+                // NOTE probably need to change actions to not take into consideration cells,
+                // but only objects
+
+                // unit and generator are next to each other
+                if(mGameMap->AreObjectsAdjacent(action->ObjSrc, action->ObjDst))
+                    done = SetupStructureConquest(unit, start, end, player);
+                // unit needs to move to the generator
+                else
+                {
+                    Cell2D target = mGameMap->GetAdjacentMoveTarget(start, action->ObjDst);
+
+                    // failed to find a suitable target
+                    if(-1 == target.row || -1 == target.col)
+                        continue;
+
+                    done = SetupUnitMove(unit, start, target, [this, unit, end, player, ClearAction]
+                    {
+                        const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
+
+                        SetupStructureConquest(unit, currCell, end, player, ClearAction);
+                    });
+                }
+
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - CONQUER GENERATOR "
+                          << (done ? "DOING" : "FAILED") << std::endl;
             }
             break;
 
             case AIA_NEW_UNIT:
             {
-                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT" << std::endl;
-
                 auto a = static_cast<const ActionAINewUnit *>(action);
 
-                ai->RegisterActionInProgress(action);
+                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer(), ClearAction);
 
-                done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer(), [action, ai]
-                {
-                    ai->SetActionDone(action);
-                });
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT"
+                          << (done ? "DOING" : "FAILED") << std::endl;
             }
             break;
 
@@ -1023,6 +1052,9 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                 std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - unkown action" << action->type << std::endl;
             break;
         }
+
+        if(done)
+            ai->RegisterActionInProgress(action);
     }
 }
 

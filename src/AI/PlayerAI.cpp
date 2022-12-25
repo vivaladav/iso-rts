@@ -351,6 +351,23 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
 
     int priority = basePriorities[type];
 
+    // check active actions to avoid duplicates
+    for(auto action : mActionsDoing)
+    {
+        if(action->type == AIA_UNIT_CONQUER_GEN)
+        {
+            // unit is already conquering a resource generator -> exit
+            if(action->ObjSrc == u)
+                return ;
+            // another unit is already conquering a generator -> halves priority
+            else
+                priority /= 2;
+        }
+        // unit is already doing something -> halves priority
+        else if(action->ObjSrc == u)
+            priority /= 2;
+    }
+
     // bonus resource availability level
     const int bonusResAvailable = -20;
 
@@ -366,6 +383,10 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
     unsigned int indexMax = numGens;
     int maxPriority = 0;
 
+    int totGenerators = 0;
+    int ownedGenerators = 0;
+    int unlinkedGenerators = 0;
+
     for(unsigned int i = 0; i < numGens; ++i)
     {
         auto resGen = static_cast<ResourceGenerator *>(mResGenerators[i]);
@@ -373,19 +394,27 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         if(resGen->GetResourceType() != type)
             continue;
 
+        ++totGenerators;
+
         const Player * owner = resGen->GetOwner();
 
         if(owner == mPlayer)
+        {
+            ++ownedGenerators;
+
+            if(!resGen->IsLinked())
+                ++unlinkedGenerators;
+
             continue;
+        }
 
         int loopPriority = priority;
 
         // bonus distance
         const int dist = ApproxDistance(u, resGen);
-
         loopPriority += bonusDist * dist / maxDist;
 
-        // bonus owned
+        // bonus owned by enemy
         const int owned = owner != nullptr;
         loopPriority += owned * bonusOwned;
 
@@ -396,11 +425,21 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         }
     }
 
-    // can't find something that's worth an action
-    if(maxPriority < MIN_PRIORITY)
-        return ;
-
     priority = maxPriority;
+
+    // bonus owned and unlinked generators
+    if(ownedGenerators > 0)
+    {
+        const int bonusOwnned = -30;
+        priority += bonusOwned * ownedGenerators / totGenerators;
+
+        const int bonusUnlinked = -10;
+        priority += bonusUnlinked * unlinkedGenerators / ownedGenerators;
+    }
+
+    // can't find something that's worth an action
+    if(priority < MIN_PRIORITY)
+        return ;
 
     // bonus unit speed
     const int bonusSpeed = 10;

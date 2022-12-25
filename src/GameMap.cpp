@@ -135,9 +135,9 @@ void GameMap::SetSize(unsigned int rows, unsigned int cols)
         }
     }
 
-    // init player(s) visibility map
-    // NOTE for now only for human player
-    mGame->GetPlayerByIndex(0)->InitVisibility(mRows, mCols);
+    // init players visibility map
+    for(int i = 0; i < mGame->GetNumPlayers(); ++i)
+        mGame->GetPlayerByIndex(i)->InitVisibility(mRows, mCols);
 }
 
 void GameMap::SyncMapCells()
