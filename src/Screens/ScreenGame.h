@@ -109,12 +109,14 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player, const std::function<void()> & onDone = []{});
-    bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player);
-    bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player);
-    bool SetupUnitUpgrade(GameObject * obj, Player * player);
-    void SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                       const std::function<void()> & onCompleted = []{});
+    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player,
+                                const std::function<void()> & OnDone = []{});
+    bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
+                                const std::function<void()> & OnDone = []{});
+    bool SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
+                       const std::function<void()> & OnDone = []{});
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);

@@ -1032,7 +1032,7 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
 }
 
 bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
-                              const std::function<void ()> & onDone)
+                              const std::function<void ()> & OnDone)
 {
     const ObjectData & data = player->GetAvailableUnit(type);
 
@@ -1057,7 +1057,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, data, onDone]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, data, OnDone]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
@@ -1071,7 +1071,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
 
         SetObjectActionCompleted(gen);
 
-        onDone();
+        OnDone();
     });
 
     // store active action
@@ -1086,7 +1086,8 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     return true;
 }
 
-bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player)
+bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end,
+                                        Player * player, const std::function<void ()> & OnDone)
 {
     // check if conquest is possible
     if(!mGameMap->CanConquerStructure(unit, end, player))
@@ -1098,7 +1099,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, start, end, player, unit]
+    pb->SetFunctionOnCompleted([this, start, end, player, unit, OnDone]
     {
         mGameMap->ConquerStructure(start, end, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(start));
@@ -1116,6 +1117,8 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
+
+        OnDone();
     });
 
     // store active action
@@ -1132,7 +1135,8 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     return true;
 }
 
-bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player)
+bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
+                                        const std::function<void()> & OnDone)
 {
     const StructureType st = unit->GetStructureToBuild();
     const ObjectData & data = player->GetAvailableStructure(st);
@@ -1147,7 +1151,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     // TODO get time from unit
     CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, data]
+    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, data, OnDone]
     {
         mGameMap->BuildStructure(cellTarget, player, data);
         mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
@@ -1161,6 +1165,8 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
+
+        OnDone();
     });
 
     // store active action
@@ -1178,7 +1184,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     return true;
 }
 
-bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
+bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void ()> & OnDone)
 {
     // check if upgrade is possible
     if(!mGameMap->CanUpgradeUnit(obj, player))
@@ -1192,34 +1198,36 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player)
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell]
+    pb->SetFunctionOnCompleted([this, cell, OnDone]
     {
         mGameMap->UpgradeUnit(cell);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+
+        OnDone();
     });
 
     return true;
 }
 
-void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                               const std::function<void()> & onCompleted)
+bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
+                               const std::function<void()> & OnDone)
 {
     const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col,
                                             sgl::ai::Pathfinder::ALL_OPTIONS);
 
     // empty path -> exit
     if(path.empty())
-        return ;
+        return false;
 
     auto op = new ObjectPath(unit, mIsoMap, mGameMap, this);
     op->SetPathCells(path);
-    op->SetOnCompleted(onCompleted);
+    op->SetOnCompleted(OnDone);
 
     const bool res = mGameMap->MoveUnit(op);
 
     // movement failed
     if(!res)
-        return ;
+        return false;
 
     ClearCellOverlays();
 
@@ -1230,6 +1238,8 @@ void ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::MOVE);
+
+    return true;
 }
 
 void ScreenGame::HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell)
