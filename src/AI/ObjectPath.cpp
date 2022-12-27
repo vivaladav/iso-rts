@@ -63,12 +63,7 @@ void ObjectPath::Start()
         InitNextMoveStep();
     }
     else
-    {
-        mState = FAILED;
-
-        // clear action data once the action is completed
-        mScreen->SetObjectActionCompleted(mObj);
-    }
+        Fail();
 }
 
 void ObjectPath::Update(float delta)
@@ -180,12 +175,7 @@ void ObjectPath::Update(float delta)
             if(canMove)
                 InitNextMoveStep();
             else
-            {
-                mState = FAILED;
-
-                // clear action data once the action is completed
-                mScreen->SetObjectActionCompleted(mObj);
-            }
+                Fail();
         }
         else
         {
@@ -203,6 +193,16 @@ void ObjectPath::UpdatePathCost()
 {
     // TODO proper cost computation
     mCost = (mCells.size() - 1) * 0.5f;
+}
+
+void ObjectPath::Fail()
+{
+    mState = FAILED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mObj);
+
+    mOnFailed();
 }
 
 } // namespace game

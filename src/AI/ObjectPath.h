@@ -38,6 +38,7 @@ public:
     void SetPathCells(const std::vector<unsigned int> & cells);
 
     void SetOnCompleted(const std::function<void()> & f);
+    void SetOnFailed(const std::function<void()> & f);
 
     void Start();
 
@@ -50,10 +51,13 @@ private:
 
     void UpdatePathCost();
 
+    void Fail();
+
 private:
     std::vector<unsigned int> mCells;
 
     std::function<void()> mOnCompleted;
+    std::function<void()> mOnFailed;
 
     GameObject * mObj = nullptr;
 
@@ -79,7 +83,7 @@ private:
 };
 
 inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{}), mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
+    : mOnCompleted([]{}), mOnFailed([]{}), mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
 {
 }
 
