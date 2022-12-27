@@ -44,6 +44,12 @@ void ConquerPath::Abort()
         mState = ABORTED;
 }
 
+void ConquerPath::Update(float delta)
+{
+    if(CONQUER_NEXT == mState)
+        InitNextConquest();
+}
+
 void ConquerPath::CreateIndicators()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -77,10 +83,7 @@ void ConquerPath::InitNextConquest()
     // check if unit has enough energy to continue
     if(!mUnit->HasEnergyForAction(CONQUER_CELL))
     {
-        mState = FAILED;
-
-        // clear action data once the action is completed
-        mScreen->SetObjectActionCompleted(mUnit);
+        Fail();
 
         // clear indicators
         layerOverlay->ClearObjects();
@@ -137,17 +140,15 @@ void ConquerPath::InitNextConquest()
 
                 // clear action data once the action is completed
                 mScreen->SetObjectActionCompleted(mUnit);
+
+                mOnCompleted();
             }
         });
 
         return ;
     }
 
-    // reached the end of the path without conquering
-    mState = FAILED;
-
-    // clear action data if action failed
-    mScreen->SetObjectActionCompleted(mUnit);
+    Fail();
 }
 
 void ConquerPath::UpdatePathCost()
@@ -178,10 +179,14 @@ void ConquerPath::FinishAbortion()
     mState = ABORTED;
 }
 
-void ConquerPath::Update(float delta)
+void ConquerPath::Fail()
 {
-    if(CONQUER_NEXT == mState)
-        InitNextConquest();
+    mState = FAILED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
+
+    mOnFailed();
 }
 
 } // namespace game

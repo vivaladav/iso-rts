@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <vector>
 
 namespace game
@@ -38,6 +39,9 @@ public:
 
     void SetPathCells(const std::vector<unsigned int> & cells);
 
+    void SetOnCompleted(const std::function<void()> & f);
+    void SetOnFailed(const std::function<void()> & f);
+
     void Start();
     void Abort();
 
@@ -47,17 +51,20 @@ private:
     void CreateIndicators();
 
     void InitNextConquest();
-    //void TransitionToMoveStep();
-    //void InitNextMoveStep();
 
     void UpdatePathCost();
 
     void FinishAbortion();
 
+    void Fail();
+
 private:
     std::vector<unsigned int> mCells;
 
     std::vector<ConquestIndicator *> mIndicators;
+
+    std::function<void()> mOnCompleted;
+    std::function<void()> mOnFailed;
 
     Unit * mUnit = nullptr;
 
@@ -70,22 +77,11 @@ private:
 
     unsigned int mNextCell = 0;
 
-    /*
-    float mObjX = 0.f;
-    float mObjY = 0.f;
-
-    float mVelX = 0.f;
-    float mVelY = 0.f;
-
-    float mTargetX = 0.f;
-    float mTargetY = 0.f;
-*/
-
     float mCost = 0.f;
 };
 
 inline ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
+    : mOnCompleted([]{}), mOnFailed([]{}), mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
 {
 }
 
@@ -100,6 +96,16 @@ inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells)
     mCells = cells;
 
     UpdatePathCost();
+}
+
+inline void ConquerPath::SetOnCompleted(const std::function<void()> & f)
+{
+    mOnCompleted = f;
+}
+
+inline void ConquerPath::SetOnFailed(const std::function<void()> & f)
+{
+    mOnFailed = f;
 }
 
 } // namespace game
