@@ -368,6 +368,12 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
             priority /= 2;
     }
 
+    // scale priority based on unit's energy
+    priority = priority * u->GetEnergy() / u->GetMaxEnergy();
+
+    // scale priority based on unit's health
+    priority = priority * u->GetHealth() / u->GetMaxHealth();
+
     // bonus resource availability level
     const int bonusResAvailable = -20;
 
