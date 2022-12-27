@@ -49,6 +49,7 @@ void PlayerAI::PrepareData()
 {
     // clear data
     mResGenerators.clear();
+    mStructures.clear();
 
     // collect data
     const std::vector<GameObject *> & objects = mGm->GetObjects();
@@ -57,6 +58,7 @@ void PlayerAI::PrepareData()
     {
         const GameObjectType type = obj->GetObjectType();
 
+        //store objects based on type
         switch(type)
         {
             case OBJ_RES_GEN:
@@ -66,6 +68,10 @@ void PlayerAI::PrepareData()
             default:
             break;
         }
+
+        // store structures
+        if(obj->IsStructure())
+            mStructures.push_back(obj);
     }
 }
 
@@ -323,9 +329,75 @@ void PlayerAI::AddActionsBase(Structure * s)
 
 void PlayerAI::AddActionsUnit(Unit * u)
 {
+    // CONNECT STRUCTURES
+    AddActionUnitConnectStructure(u);
+
     // CONQUEST RESOURCE GENERATORS
     AddActionUnitConquestResGen(u, RES_ENERGY);
     AddActionUnitConquestResGen(u, RES_MATERIAL1);
+}
+
+void PlayerAI::AddActionUnitConnectStructure(Unit * u)
+{
+    int priority = 100;
+
+    // check if there's any structure to connect
+    const unsigned int numStructures = mStructures.size();
+    const int maxDist = mGm->GetNumRows() + mGm->GetNumCols();
+
+    unsigned int bestStructInd = numStructures;
+    int minDist = maxDist;
+
+    for(unsigned int i = 0; i < numStructures; ++i)
+    {
+        auto s = static_cast<Structure *>(mStructures[i]);
+
+        // own structure which is not linked
+        if(s->GetOwner() == mPlayer && !s->IsLinked())
+        {
+            const int dist = ApproxDistance(u, s);
+
+            if(dist < minDist)
+            {
+                minDist = dist;
+                bestStructInd = i;
+            }
+        }
+    }
+
+    // can't find any structure to connect
+    if(bestStructInd == numStructures)
+        return ;
+
+    // check active actions to avoid duplicates
+    for(auto action : mActionsDoing)
+    {
+        // any unit is already doing the same -> exit
+        if(action->type == AIA_UNIT_CONNECT_STRUCTURE)
+            return ;
+        // unit is already doing something -> 25% priority
+        else if(action->ObjSrc == u)
+            priority /= 4;
+    }
+
+    // scale priority based on unit's energy
+    priority = priority * u->GetEnergy() / u->GetMaxEnergy();
+
+    // scale priority based on unit's health
+    priority = priority * u->GetHealth() / u->GetMaxHealth();
+
+    // bonus distance
+    const int bonusDist = -25;
+    priority += bonusDist * minDist / maxDist;
+
+    auto action = new ActionAI;
+    action->type = AIA_UNIT_CONNECT_STRUCTURE;
+    action->ObjSrc = u;
+    action->ObjDst = mStructures[bestStructInd];
+    action->priority = priority;
+
+    // push action to the queue
+    AddNewAction(action);
 }
 
 void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
@@ -354,18 +426,12 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
     // check active actions to avoid duplicates
     for(auto action : mActionsDoing)
     {
+        // any unit is already doing the same -> exit
         if(action->type == AIA_UNIT_CONQUER_GEN)
-        {
-            // unit is already conquering a resource generator -> exit
-            if(action->ObjSrc == u)
-                return ;
-            // another unit is already conquering a generator -> halves priority
-            else
-                priority /= 2;
-        }
-        // unit is already doing something -> halves priority
+            return ;
+        // unit is already doing something -> 25% priority
         else if(action->ObjSrc == u)
-            priority /= 2;
+            priority /= 4;
     }
 
     // scale priority based on unit's energy

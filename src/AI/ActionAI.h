@@ -14,6 +14,7 @@ enum AIActionType : unsigned int
     AIA_NOP,
 
     AIA_NEW_UNIT,
+    AIA_UNIT_CONNECT_STRUCTURE,
     AIA_UNIT_CONQUER_GEN,
 
     NUM_AI_ACTIONS

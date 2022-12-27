@@ -49,6 +49,7 @@ private:
 
     void AddActionsBase(Structure * s);
     void AddActionsUnit(Unit * u);
+    void AddActionUnitConnectStructure(Unit * u);
     void AddActionUnitConquestResGen(Unit * u, ResourceType type);
 
     bool IsSimilarActionInProgress(AIActionType type) const;
@@ -62,6 +63,7 @@ private:
 
     // shared data,
     std::vector<GameObject *> mResGenerators;
+    std::vector<GameObject *> mStructures;
 
     Player * mPlayer = nullptr;
 
