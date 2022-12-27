@@ -375,9 +375,10 @@ void PlayerAI::AddActionUnitConnectStructure(Unit * u)
         // any unit is already doing the same -> exit
         if(action->type == AIA_UNIT_CONNECT_STRUCTURE)
             return ;
-        // unit is already doing something -> 25% priority
+        // unit is already doing something -> exit
+        // NOTE keeping the case as this might change to lower priority instead of nothing
         else if(action->ObjSrc == u)
-            priority /= 4;
+            return ;
     }
 
     // scale priority based on unit's energy
@@ -429,9 +430,10 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         // any unit is already doing the same -> exit
         if(action->type == AIA_UNIT_CONQUER_GEN)
             return ;
-        // unit is already doing something -> 25% priority
+        // unit is already doing something -> exit
+        // NOTE keeping the case as this might change to lower priority instead of nothing
         else if(action->ObjSrc == u)
-            priority /= 4;
+            return ;
     }
 
     // scale priority based on unit's energy
