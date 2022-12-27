@@ -178,12 +178,14 @@ void GameMap::SyncMapCells()
 void GameMap::ApplyLocalVisibility()
 {
     Player * p = mGame->GetLocalPlayer();
-
     ApplyVisibility(p);
 }
 
 void GameMap::ApplyVisibility(Player * player)
 {
+    if(player != mGame->GetLocalPlayer())
+        return ;
+
     // update cells
     const unsigned int totCells = mRows * mCols;
 
@@ -645,6 +647,7 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
     ClearCell(gcell);
 
     // assign owner
+    Player * prevOwner = gcell.owner;
     gcell.owner = player;
 
     // update player
@@ -658,19 +661,13 @@ void GameMap::ConquerCell(const Cell2D & cell, Player * player)
 
     UpdateLinkedCells(player);
 
-    // update visibility map if local player
-    if(player == mGame->GetPlayerByIndex(0))
-    {
-        AddPlayerCellVisibility(gcell, player);
+    // update visibility map
+    AddPlayerCellVisibility(gcell, player);
 
-        ApplyVisibility(player);
-    }
-    else if(stolen)
-    {
-        DelPlayerCellVisibility(gcell, player);
+    if(stolen)
+        DelPlayerCellVisibility(gcell, prevOwner);
 
-        ApplyVisibility(player);
-    }
+    ApplyLocalVisibility();
 }
 
 void GameMap::ConquerCells(ConquerPath * path)
@@ -778,6 +775,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     ClearCell(gcell);
 
     // assign owner
+    Player * prevOwner = gcell.owner;
     gcell.owner = player;
 
     // update player
@@ -800,19 +798,13 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     if(obj->GetObjectType() == OBJ_DEF_TOWER || obj->GetObjectType() == OBJ_WALL_GATE)
         UpdateWalls(cell);
 
-    // update visibility map if local player
-    if(player == mGame->GetPlayerByIndex(0))
-    {
-        AddPlayerCellVisibility(gcell, player);
+    // update visibility map
+    AddPlayerCellVisibility(gcell, player);
 
-        ApplyVisibility(player);
-    }
-    else if(stolen)
-    {
-        DelPlayerCellVisibility(gcell, player);
+    if(stolen)
+        DelPlayerCellVisibility(gcell, prevOwner);
 
-        ApplyVisibility(player);
-    }
+    ApplyLocalVisibility();
 }
 
 bool GameMap::CanBuildWall(const Cell2D & cell, Player * player, unsigned int level)
@@ -870,6 +862,7 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     ClearCell(gcell);
 
     // assign owner
+    Player * prevOwner = gcell.owner;
     gcell.owner = player;
 
     // update player
@@ -895,19 +888,13 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);
 
-    // update visibility map if local player
-    if(player == mGame->GetPlayerByIndex(0))
-    {
-        AddPlayerCellVisibility(gcell, player);
+    // update visibility map
+    AddPlayerCellVisibility(gcell, player);
 
-        ApplyVisibility(player);
-    }
-    else if(stolen)
-    {
-        DelPlayerCellVisibility(gcell, player);
+    if(stolen)
+        DelPlayerCellVisibility(gcell, prevOwner);
 
-        ApplyVisibility(player);
-    }
+    ApplyLocalVisibility();
 }
 
 void GameMap::BuildWalls(WallBuildPath * path)
@@ -1040,6 +1027,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     }
 
     // assign owner to object
+    Player * prevOwner = obj->GetOwner();
     obj->SetOwner(player);
 
     // update player
@@ -1056,16 +1044,12 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     UpdateLinkedCells(player);
 
     // update visibility
-    Player * localPlayer = mGame->GetLocalPlayer();
+    if(prevOwner && prevOwner != player)
+        DelPlayerObjVisibility(obj, prevOwner);
 
-    if(player == localPlayer)
-    {
-        AddPlayerObjVisibility(obj, localPlayer);
+    AddPlayerObjVisibility(obj, player);
 
-        // TODO this should be optimized as it's affecting the whole map
-        // when only a small portion is changed
-        ApplyVisibility(localPlayer);
-    }
+    ApplyLocalVisibility();
 }
 
 bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player)
@@ -1346,13 +1330,9 @@ void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D
     player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
 
     // update visibility map
-    // NOTE only for human player for now
-    Player * localPlayer = mGame->GetLocalPlayer();
+    AddPlayerObjVisibility(unit, player);
 
-    if(unit->GetOwner() == localPlayer)
-        AddPlayerObjVisibility(unit, localPlayer);
-
-    ApplyVisibility(localPlayer);
+    ApplyLocalVisibility();
 }
 
 bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
@@ -1974,7 +1954,7 @@ void GameMap::UpdateLinkedCells(Player * player)
     for(GameObject * obj : objs)
         AddPlayerObjVisibility(obj, player);
 
-    ApplyVisibility(player);
+   ApplyLocalVisibility();
 }
 
 void GameMap::UpdateInfluencedCells(int row, int col)
