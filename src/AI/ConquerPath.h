@@ -78,12 +78,9 @@ private:
     unsigned int mNextCell = 0;
 
     float mCost = 0.f;
-};
 
-inline ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{}), mOnFailed([]{}), mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
-{
-}
+    bool mLocalPlayer = false;
+};
 
 inline Unit * ConquerPath::GetUnit() const { return mUnit; }
 

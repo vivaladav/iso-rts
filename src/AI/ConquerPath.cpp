@@ -17,6 +17,12 @@
 namespace game
 {
 
+ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
+    : mOnCompleted([]{}), mOnFailed([]{}), mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
+{
+    mLocalPlayer = unit->GetOwner()->IsLocal();
+}
+
 ConquerPath::~ConquerPath()
 {
     // delete the ConquestIndicators
@@ -30,7 +36,8 @@ void ConquerPath::Start()
     if(mState != READY)
         return ;
 
-    CreateIndicators();
+    if(mLocalPlayer)
+        CreateIndicators();
 
     // stat conquering first cell
     InitNextConquest();
@@ -106,7 +113,7 @@ void ConquerPath::InitNextConquest()
             ++mNextCell;
 
             // remove current indicator if not finished yet
-            if(mNextCell < mCells.size())
+            if(mLocalPlayer && mNextCell < mCells.size())
                 layerOverlay->ClearObject(mIndicators[mNextCell - 1]);
 
             continue;
@@ -132,7 +139,8 @@ void ConquerPath::InitNextConquest()
                 mState = CONQUER_NEXT;
 
                 // remove current indicator
-                layerOverlay->ClearObject(mIndicators[mNextCell - 1]);
+                if(mLocalPlayer)
+                    layerOverlay->ClearObject(mIndicators[mNextCell - 1]);
             }
             else
             {
