@@ -1013,26 +1013,59 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                 // but only objects
 
                 // unit and generator are next to each other
-                if(mGameMap->AreObjectsAdjacent(action->ObjSrc, action->ObjDst))
-                    done = SetupStructureConquest(unit, start, end, player);
+                if(mGameMap->AreObjectsOrthoAdjacent(action->ObjSrc, action->ObjDst))
+                    done = SetupStructureConquest(unit, start, end, player, ClearAction);
                 // unit needs to move to the generator
                 else
                 {
-                    Cell2D target = mGameMap->GetAdjacentMoveTarget(start, action->ObjDst);
+                    Cell2D target = mGameMap->GetOrthoAdjacentMoveTarget(start, action->ObjDst);
 
                     // failed to find a suitable target
                     if(-1 == target.row || -1 == target.col)
-                        continue;
-
-                    done = SetupUnitMove(unit, start, target, [this, unit, end, player, ClearAction]
+                        done = false;
+                    else
                     {
-                        const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
-                        SetupStructureConquest(unit, currCell, end, player, ClearAction);
-                    });
+                        done = SetupUnitMove(unit, start, target, [this, unit, end, player, ClearAction]
+                        {
+                            const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
+
+                            SetupStructureConquest(unit, currCell, end, player, ClearAction);
+                        });
+                    }
                 }
 
                 std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - CONQUER GENERATOR "
+                          << (done ? "DOING" : "FAILED") << std::endl;
+            }
+            break;
+
+            case AIA_UNIT_CONNECT_STRUCTURE:
+            {
+                auto unit = static_cast<Unit *>(action->ObjSrc);
+                const Cell2D unitCell(unit->GetRow0(), unit->GetCol0());
+
+                // unit and structure are next to each other
+                if(mGameMap->AreObjectsOrthoAdjacent(unit, action->ObjDst))
+                    done = SetupConnectCells(unit, ClearAction);
+                // unit needs to move to the structure
+                else
+                {
+                    Cell2D target = mGameMap->GetOrthoAdjacentMoveTarget(unitCell, action->ObjDst);
+
+                    // failed to find a suitable target
+                    if(-1 == target.row || -1 == target.col)
+                        done = false;
+                    else
+                    {
+                        done = SetupUnitMove(unit, unitCell, target, [this, unit, ClearAction]
+                        {
+                            SetupConnectCells(unit, ClearAction);
+                        });
+                    }
+                }
+
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " -Result CONNECT STRUCTURE "
                           << (done ? "DOING" : "FAILED") << std::endl;
             }
             break;
@@ -1043,7 +1076,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
                 done = SetupNewUnit(a->unitType, a->ObjSrc, ai->GetPlayer(), ClearAction);
 
-                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT"
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NEW UNIT "
                           << (done ? "DOING" : "FAILED") << std::endl;
             }
             break;
@@ -1270,6 +1303,80 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::MOVE);
+
+    return true;
+}
+
+bool ScreenGame::SetupConnectCells(Unit * unit, const std::function<void()> & OnDone)
+{
+    const Player * player = unit->GetOwner();
+    const Cell2D startCell(unit->GetRow0(), unit->GetCol0());
+
+    // find closest linked cell
+    const std::vector<GameMapCell> & cells = mGameMap->GetCells();
+
+    const int maxDist = mGameMap->GetNumRows() + mGameMap->GetNumCols();
+    int minDist = maxDist;
+    Cell2D targetCell(-1, -1);
+
+    for(const GameMapCell & cell : cells)
+    {
+        if(cell.owner == player && cell.linked)
+        {
+            const Cell2D dest(cell.row, cell.col);
+            int dist = mGameMap->ApproxDistance(startCell, dest);
+
+            if(dist < minDist)
+            {
+                minDist = dist;
+                targetCell = dest;
+            }
+        }
+    }
+
+    // can't find a target
+    if(-1 == targetCell.row)
+    {
+        std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
+                  << " - CONNECT STRUCTURE FAILED (can't find target)" << std::endl;
+
+        return false;
+    }
+
+    // if target cell has object try to find one next to it free
+    if(mGameMap->HasObject(targetCell.row, targetCell.col))
+    {
+        targetCell = mGameMap->GetOrthoAdjacentMoveTarget(startCell, targetCell);
+
+        // can't find an adjacent cell that's free
+        if(-1 == targetCell.row)
+        {
+            std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
+                      << " - CONNECT STRUCTURE FAILED (GetOrthoAdjacentMoveTarget failed)" << std::endl;
+
+            return false;
+        }
+    }
+
+    const auto path = mPathfinder->MakePath(startCell.row, startCell.col,
+                                            targetCell.row, targetCell.col,
+                                            sgl::ai::Pathfinder::INCLUDE_START);
+
+    // can't find a path from start to target
+    if(path.empty())
+    {
+        std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
+                  << " - CONNECT STRUCTURE FAILED (no path)" << std::endl;
+
+        return false;
+    }
+
+    // start conquest
+    auto cp = new ConquerPath(unit, mIsoMap, mGameMap, this);
+    cp->SetPathCells(path);
+    cp->SetOnCompleted(OnDone);
+    cp->SetOnFailed(OnDone);
+    mGameMap->ConquerCells(cp);
 
     return true;
 }

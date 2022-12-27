@@ -117,6 +117,7 @@ private:
     bool SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void()> & OnDone = []{});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & OnDone = []{});
+    bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);

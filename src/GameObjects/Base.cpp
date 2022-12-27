@@ -13,6 +13,8 @@ Base::Base(int rows, int cols)
     : Structure(GameObjectType::OBJ_BASE, rows, cols)
 {
     SetVisibilityLevel(1);
+    // base is linked to itself
+    SetLinked(true);
 }
 
 void Base::UpdateGraphics()
