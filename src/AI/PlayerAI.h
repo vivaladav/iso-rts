@@ -54,8 +54,6 @@ private:
 
     bool IsSimilarActionInProgress(AIActionType type) const;
 
-    int ApproxDistance(GameObject * obj1, GameObject * obj2) const;
-
 private:
     std::vector<ActionAI *> mActionsTodo;
     std::vector<const ActionAI *> mActionsDoing;

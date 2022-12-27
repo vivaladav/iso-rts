@@ -9,7 +9,6 @@
 
 #include <sgl/utilities/LoadedDie.h>
 
-#include <cmath>
 #include <algorithm>
 #include <iostream>
 
@@ -355,7 +354,7 @@ void PlayerAI::AddActionUnitConnectStructure(Unit * u)
         // own structure which is not linked
         if(s->GetOwner() == mPlayer && !s->IsLinked())
         {
-            const int dist = ApproxDistance(u, s);
+            const int dist = mGm->ApproxDistance(u, s);
 
             if(dist < minDist)
             {
@@ -485,7 +484,7 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         int loopPriority = priority;
 
         // bonus distance
-        const int dist = ApproxDistance(u, resGen);
+        const int dist = mGm->ApproxDistance(u, resGen);
         loopPriority += bonusDist * dist / maxDist;
 
         // bonus owned by enemy
@@ -545,12 +544,6 @@ bool PlayerAI::IsSimilarActionInProgress(AIActionType type) const
     }
 
     return false;
-}
-
-int PlayerAI::ApproxDistance(GameObject * obj1, GameObject * obj2) const
-{
-    return std::abs(obj1->GetRow0() - obj2->GetRow0()) +
-           std::abs(obj1->GetCol0() - obj2->GetCol0());
 }
 
 } // namespace game

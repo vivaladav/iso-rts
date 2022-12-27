@@ -544,6 +544,60 @@ bool GameMap::AreCellsAdjacent(const Cell2D & cell1, const Cell2D & cell2) const
     return distR <= maxDist && distC <= maxDist;
 }
 
+bool GameMap::AreObjectsOrthoAdjacent(const GameObject * obj1, const GameObject * obj2) const
+{
+    const Cell2D TL1(obj1->GetRow1(), obj1->GetCol1());
+    const Cell2D BR1(obj1->GetRow0(), obj1->GetCol0());
+    const Cell2D TL2(obj2->GetRow1(), obj2->GetCol1());
+    const Cell2D BR2(obj2->GetRow0(), obj2->GetCol0());
+
+    const int maxD = 1;
+
+    // obj1 above obj2
+    if(BR1.row < TL2.row)
+    {
+        // obj1 left of obj2 OR obj1 right of obj2
+        if(BR1.col < TL2.col || TL1.col > BR2.col)
+            return false;
+        // same cols
+        else
+            return (TL2.row - BR1.row) == maxD;
+    }
+    // obj1 below obj2
+    else if(TL1.row > BR1.row)
+    {
+        // obj1 left of obj2 OR obj1 right of obj2
+        if(BR1.col < TL2.col || TL1.col > BR2.col)
+            return false;
+        // same cols
+        else
+            return (BR2.row - TL1.row) == maxD;
+    }
+    // same rows
+    else
+    {
+        // obj1 left of obj2
+        if(BR1.col < TL2.col)
+            return (TL2.col - BR1.col) == maxD;
+        // obj1 right of obj2
+        else if(TL1.col > BR2.col)
+            return (TL1.col - BR2.col) == maxD;
+        // same cols, overlapping objects? -> this should never happen
+        else
+            return false;
+    }
+}
+
+bool GameMap::AreCellsOrthoAdjacent(const Cell2D & cell1, const Cell2D & cell2) const
+{
+    const int distR = std::abs(cell1.row - cell2.row);
+    const int distC = std::abs(cell1.col - cell2.col);
+
+    const int maxDist = 1;
+
+    return (distR == 0 && distC == maxDist) || (distR == maxDist && distC == 0);
+}
+
 bool GameMap::CanConquerCell(const Cell2D & cell, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
@@ -1478,6 +1532,11 @@ Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const GameObject * t
     return GetAdjacentMoveTarget(start, tl, br);
 }
 
+Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & target) const
+{
+    return GetAdjacentMoveTarget(start, target, target);
+}
+
 Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const
 {
     // get all walkable cells around target
@@ -1490,7 +1549,7 @@ Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targe
     const int colBR = targetBR.col + 1 < static_cast<int>(mCols - 1) ? targetBR.col + 1 : mCols - 1;
 
     std::vector<Cell2D> walkalbes;
-    const int maxWalkables = (tCols + 2) * 2 + tRows;
+    const int maxWalkables = (tCols + 2 + tRows) * 2;
     walkalbes.reserve(maxWalkables);
 
     for(int r = rowTL; r <= rowBR; ++r)
@@ -1500,6 +1559,89 @@ Cell2D GameMap::GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targe
         for(int c = colTL; c <= colBR; ++c)
         {
             const int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
+        }
+    }
+
+    return GetClosestCell(start, walkalbes);
+}
+
+Cell2D GameMap::GetOrthoAdjacentMoveTarget(const Cell2D & start, const GameObject * target) const
+{
+    const Cell2D tl(target->GetRow1(), target->GetCol1());
+    const Cell2D br(target->GetRow0(), target->GetCol0());
+
+    return GetOrthoAdjacentMoveTarget(start, tl, br);
+}
+
+Cell2D GameMap::GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & target) const
+{
+    return GetOrthoAdjacentMoveTarget(start, target, target);
+}
+
+Cell2D GameMap::GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const
+{
+    const int tRows = targetBR.row - targetTL.row + 1;
+    const int tCols = targetBR.col - targetTL.col + 1;
+
+    std::vector<Cell2D> walkalbes;
+    const int maxWalkables = (tRows + tCols) * 2;
+    walkalbes.reserve(maxWalkables);
+
+    // TOP cells
+    if(targetTL.row > 0)
+    {
+        const int r = targetTL.row - 1;
+        const int indBase = r * mCols;
+
+        for(int c = targetTL.col; c <= targetBR.col; ++c)
+        {
+            const int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
+        }
+    }
+
+    // BOTTOM cells
+    if(targetBR.row < (mRows - 1))
+    {
+        const int r = targetBR.row + 1;
+        const int indBase = r * mCols;
+
+        for(int c = targetTL.col; c <= targetBR.col; ++c)
+        {
+            const int ind = indBase + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
+        }
+    }
+
+    // LEFT cells
+    if(targetTL.col > 0)
+    {
+        const int c = targetTL.col - 1;
+
+        for(int r = targetTL.row; r <= targetBR.row; ++r)
+        {
+            const int ind = (r * mCols) + c;
+
+            if(mCells[ind].walkable)
+                walkalbes.emplace_back(r, c);
+        }
+    }
+
+    // RIGHT cells
+    if(targetBR.col < (mCols - 1))
+    {
+        const int c = targetBR.col + 1;
+
+        for(int r = targetTL.row; r <= targetBR.row; ++r)
+        {
+            const int ind = (r * mCols) + c;
 
             if(mCells[ind].walkable)
                 walkalbes.emplace_back(r, c);
@@ -1543,6 +1685,17 @@ bool GameMap::MoveObjectUp(GameObject * obj)
     gc.objBottom = nullptr;
 
     return true;
+}
+
+int GameMap::ApproxDistance(const Cell2D & c1, const Cell2D & c2) const
+{
+    return std::abs(c1.row - c2.row) + std::abs(c1.col - c2.col);
+}
+
+int GameMap::ApproxDistance(GameObject * obj1, GameObject * obj2) const
+{
+    return std::abs(obj1->GetRow0() - obj2->GetRow0()) +
+           std::abs(obj1->GetCol0() - obj2->GetCol0());
 }
 
 void GameMap::CheckGameEnd()

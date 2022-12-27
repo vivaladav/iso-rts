@@ -80,6 +80,8 @@ public:
 
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
     bool AreCellsAdjacent(const Cell2D & cell1, const Cell2D & cell2) const;
+    bool AreObjectsOrthoAdjacent(const GameObject * obj1, const GameObject * obj2) const;
+    bool AreCellsOrthoAdjacent(const Cell2D & cell1, const Cell2D & cell2) const;
 
     // cell conquest
     bool CanConquerCell(const Cell2D & cell, Player * player);
@@ -124,7 +126,11 @@ public:
 
     Cell2D GetCloseMoveTarget(const Cell2D & start, const Cell2D & end) const;
     Cell2D GetAdjacentMoveTarget(const Cell2D & start, const GameObject * target) const;
+    Cell2D GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & target) const;
     Cell2D GetAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const;
+    Cell2D GetOrthoAdjacentMoveTarget(const Cell2D & start, const GameObject * target) const;
+    Cell2D GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & target) const;
+    Cell2D GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const;
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
 
@@ -133,6 +139,9 @@ public:
 
     unsigned int GetNumRows() const;
     unsigned int GetNumCols() const;
+
+    int ApproxDistance(const Cell2D & c1, const Cell2D & c2) const;
+    int ApproxDistance(GameObject * obj1, GameObject * obj2) const;
 
     void CheckGameEnd();
 
