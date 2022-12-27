@@ -40,6 +40,8 @@ private:
 
     void PrepareData();
 
+    void UpdatePriorityRange();
+
     void DecideActions();
 
     void PushAction(ActionAI * action);
@@ -66,6 +68,8 @@ private:
     Player * mPlayer = nullptr;
 
     GameMap * mGm = nullptr;
+
+    int mMinPriority = 0;
 };
 
 inline void PlayerAI::SetGameMap(GameMap * gm) { mGm = gm; }

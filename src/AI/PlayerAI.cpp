@@ -15,7 +15,6 @@
 namespace
 {
 constexpr int MAX_PRIORITY = 100;
-constexpr int MIN_PRIORITY = 1;
 }
 
 namespace game
@@ -40,6 +39,8 @@ void PlayerAI::Update(float delta)
     ClearActionsDone();
 
     PrepareData();
+
+    UpdatePriorityRange();
 
     DecideActions();
 }
@@ -72,6 +73,13 @@ void PlayerAI::PrepareData()
         if(obj->IsStructure())
             mStructures.push_back(obj);
     }
+}
+
+void PlayerAI::UpdatePriorityRange()
+{
+    // TODO define min priority based on current situation
+
+    mMinPriority = 50;
 }
 
 void PlayerAI::DecideActions()
@@ -166,9 +174,14 @@ const ActionAI * PlayerAI::PopAction()
 
 void PlayerAI::AddNewAction(ActionAI * action)
 {
+    // assign unique ID to action
     static unsigned int num = 0;
 
     action->actId = ++num;
+
+    // clamp priority
+    if(action->priority > MAX_PRIORITY)
+        action->priority = MAX_PRIORITY;
 
     // NOTE not checking existing actions for now as all actions should be unique
     // as they are created by different objects (at least the ObjSrc is different)
@@ -293,11 +306,26 @@ void PlayerAI::AddActionsBase(Structure * s)
         // NOTE eventually costs can be weighted on the current resources.
         // i.e.: if you have a lot of X it doesn't really matter if a unit requires 20 or 40.
         priorities[i] += bonusCost * costs[i] / maxCost;
-
         priorities[i] += bonusRelCost * relCosts[i] / 100;
     }
 
     // 4- pick highest priority
+    // check at least 1 priority is enough
+    bool priorityOk = false;
+
+    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    {
+        if(priorities[i] >= mMinPriority)
+        {
+            priorityOk = true;
+            break;
+        }
+    }
+
+    // can't find anything good enough
+    if(!priorityOk)
+        return ;
+
     // create action
     auto action = new ActionAINewUnit;
     action->type = AIA_NEW_UNIT;
@@ -389,6 +417,10 @@ void PlayerAI::AddActionUnitConnectStructure(Unit * u)
     // bonus distance
     const int bonusDist = -25;
     priority += bonusDist * minDist / maxDist;
+
+    // can't find something that's worth an action
+    if(priority < mMinPriority)
+        return ;
 
     auto action = new ActionAI;
     action->type = AIA_UNIT_CONNECT_STRUCTURE;
@@ -510,10 +542,6 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         priority += bonusUnlinked * unlinkedGenerators / ownedGenerators;
     }
 
-    // can't find something that's worth an action
-    if(priority < MIN_PRIORITY)
-        return ;
-
     // bonus unit speed
     const int bonusSpeed = 10;
     priority += bonusSpeed * u->GetStat(OSTAT_SPEED) / ObjectData::MAX_STAT_VAL;
@@ -522,8 +550,9 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
     const int bonusConquest = 20;
     priority += bonusConquest * u->GetStat(OSTAT_CONQUEST) / ObjectData::MAX_STAT_VAL;
 
-    if(priority > MAX_PRIORITY)
-        priority = MAX_PRIORITY;
+    // can't find something that's worth an action
+    if(priority < mMinPriority)
+        return ;
 
     auto action = new ActionAI;
     action->type = AIA_UNIT_CONQUER_GEN;
