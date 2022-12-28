@@ -31,12 +31,12 @@
 
 namespace
 {
-    constexpr int costExploreMoney = 350;
-    constexpr int costExploreEnergy = 250;
+    constexpr int costExploreMoney = 500;
+    constexpr int costExploreEnergy = 300;
     constexpr int costExploreMaterial = 50;
 
-    constexpr int costConquestMoney = 700;
-    constexpr int costConquestEnergy = 500;
+    constexpr int costConquestMoney = 1000;
+    constexpr int costConquestEnergy = 800;
     constexpr int costConquestMaterial = 200;
     constexpr int costConquestDiamonds = 10;
 }
