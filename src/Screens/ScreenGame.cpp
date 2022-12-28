@@ -934,9 +934,7 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time,
     mProgressBars.emplace(cellInd, pb);
 
     // progress bar visibility depends on local player's visibility map
-    Player * localPlayer = GetGame()->GetLocalPlayer();
-    const unsigned int ind = (cell.row * mGameMap->GetNumCols()) + cell.col;
-    pb->SetVisible(localPlayer->IsCellVisible(ind));
+    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
 
     return pb;
 }
@@ -1134,10 +1132,13 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
         mGameMap->CreateUnit(data, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
-        const PlayerFaction faction = player->GetFaction();
-        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-
-        mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
+        // add unit to map if cell is visible to local player
+        if(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col))
+        {
+            const PlayerFaction faction = player->GetFaction();
+            const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+            mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
+        }
 
         SetObjectActionCompleted(gen);
 
@@ -1228,10 +1229,16 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
         unit->ConsumeEnergy(BUILD_STRUCTURE);
 
-        const PlayerFaction faction = player->GetFaction();
-        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+        // add unit to map if cell is visible to local player
+        const unsigned int rTL = cellTarget.row - data.rows + 1;
+        const unsigned int cTL = cellTarget.col - data.cols + 1;
 
-        mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, type, faction);
+        if(mGameMap->IsAnyCellVisibleToLocalPlayer(rTL, cTL, cellTarget.row, cellTarget.col))
+        {
+            const PlayerFaction faction = player->GetFaction();
+            const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+            mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, type, faction);
+        }
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);

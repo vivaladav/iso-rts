@@ -70,6 +70,41 @@ GameMap::~GameMap()
         delete cp;
 }
 
+bool GameMap::IsCellVisibleToLocalPlayer(unsigned int ind) const
+{
+    Player * p = mGame->GetLocalPlayer();
+    return p->IsCellVisible(ind);
+}
+
+bool GameMap::IsCellVisibleToLocalPlayer(unsigned int r, unsigned int c) const
+{
+    const unsigned int ind = (r * mCols) + c;
+
+    Player * p = mGame->GetLocalPlayer();
+    return p->IsCellVisible(ind);
+}
+
+bool GameMap::IsAnyCellVisibleToLocalPlayer(unsigned int rTL, unsigned int cTL,
+                                            unsigned int rBR, unsigned int cBR) const
+{
+    Player * p = mGame->GetLocalPlayer();
+
+    for(unsigned int r = rTL; r <= rBR; ++r)
+    {
+        const unsigned int indBase = (r * mCols);
+
+        for(unsigned int c = cTL; c <= cBR; ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            if(p->IsCellVisible(ind))
+                return true;
+        }
+    }
+
+    return false;
+}
+
 bool GameMap::IsCellWalkable(unsigned int r, unsigned int c) const
 {
     const unsigned int ind = r * mCols + c;
@@ -881,9 +916,13 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType pla
     CreateObject(OBJECTS2, planned, player, cell.row, cell.col, rows, cols);
 
     // update minimap
-    const PlayerFaction faction = player->GetFaction();
-    const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-    mScreenGame->GetMiniMap()->AddElement(cell.row, cell.col, rows, cols, type, faction);
+    if(IsCellVisibleToLocalPlayer(cell.row, cell.col))
+    {
+        const PlayerFaction faction = player->GetFaction();
+        const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+        MiniMap * mm = mScreenGame->GetMiniMap();
+        mm->AddElement(cell.row, cell.col, rows, cols, type, faction);
+    }
 
     // update this wall type and the ones surrounding it
     UpdateWalls(cell);

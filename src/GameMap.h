@@ -42,6 +42,10 @@ public:
     const std::vector<GameMapCell>  & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
 
+    bool IsCellVisibleToLocalPlayer(unsigned int ind) const;
+    bool IsCellVisibleToLocalPlayer(unsigned int r, unsigned int c) const;
+    bool IsAnyCellVisibleToLocalPlayer(unsigned int rTL, unsigned int cTL,
+                                       unsigned int rBR, unsigned int cBR) const;
     bool IsCellWalkable(unsigned int cellInd) const;
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
     bool IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const;
