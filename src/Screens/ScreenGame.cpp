@@ -400,7 +400,6 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
         if(checked != -1)
             mGroupQuickUnitSel->GetButton(checked)->SetChecked(false);
 
-
         // show attack range overlay for towers
         if(OBJ_DEF_TOWER == got)
         {
@@ -1151,8 +1150,9 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     gen->SetActiveAction(GameObjectActionId::IDLE);
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
 
-    // disable actions panel
-    mPanelObjActions->SetActionsEnabled(false);
+    // disable actions panel (if action is done by local player)
+    if(player == GetGame()->GetLocalPlayer())
+        mPanelObjActions->SetActionsEnabled(false);
 
     return true;
 }
@@ -1200,8 +1200,9 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::CONQUER_STRUCTURE);
 
-    // disable actions panel
-    mPanelObjActions->SetActionsEnabled(false);
+    // disable actions panel (if action is done by local player)
+    if(player == GetGame()->GetLocalPlayer())
+        mPanelObjActions->SetActionsEnabled(false);
 
     return true;
 }
@@ -1249,8 +1250,9 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_STRUCTURE, cellTarget);
 
-    // disable action buttons
-    mPanelObjActions->SetActionsEnabled(false);
+    // disable actions panel (if action is done by local player)
+    if(player == GetGame()->GetLocalPlayer())
+        mPanelObjActions->SetActionsEnabled(false);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::BUILD_STRUCTURE);
@@ -1308,7 +1310,9 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     ClearCellOverlays();
 
-    mPanelObjActions->SetActionsEnabled(false);
+    // disable actions panel (if action is done by local player)
+    if(unit->GetOwner() == GetGame()->GetLocalPlayer())
+        mPanelObjActions->SetActionsEnabled(false);
 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::MOVE);
