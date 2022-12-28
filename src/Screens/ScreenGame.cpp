@@ -933,8 +933,10 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time,
     const int cellInd = CellToIndex(cell);
     mProgressBars.emplace(cellInd, pb);
 
-    // make progress bar visible only if created for local player
-    pb->SetVisible(GetGame()->GetLocalPlayerFaction() == playerFaction);
+    // progress bar visibility depends on local player's visibility map
+    Player * localPlayer = GetGame()->GetLocalPlayer();
+    const unsigned int ind = (cell.row * mGameMap->GetNumCols()) + cell.col;
+    pb->SetVisible(localPlayer->IsCellVisible(ind));
 
     return pb;
 }
