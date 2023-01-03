@@ -46,7 +46,7 @@ PanelPlanetResources::PanelPlanetResources()
     label->SetPosition(marginHeaderX, marginHeaderY);
 
     // ICONS
-    mIcons.reserve(NUM_RESOURCES);
+    mIcons.assign(NUM_RESOURCES, nullptr);
 
     const unsigned int texIdsIcons[NUM_RESOURCES] =
     {
@@ -64,9 +64,7 @@ PanelPlanetResources::PanelPlanetResources()
     }
 
     // BARS
-    mBars.reserve(NUM_RESOURCES);
-
-    mBarsValue.reserve(NUM_RESOURCES);
+    mBars.assign(NUM_RESOURCES, 0);
     mBarsValue.assign(NUM_RESOURCES, 0);
 
     const unsigned int texIdBar = IND_PM_PIPS_BAR_0;
