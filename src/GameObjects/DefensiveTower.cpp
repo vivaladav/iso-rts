@@ -9,10 +9,9 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
 
+#include <sgl/core/Math.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
-
-#include <cmath>
 
 namespace game
 {
@@ -174,7 +173,7 @@ void DefensiveTower::Shoot()
     const float tY = isoTargetY + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
     const float speed = 300.f;
 
-    const float rad2deg = 180.f / M_PI;
+    const float rad2deg = 180.f / sgl::core::Math::PIf;
     const float dy0 = tY - y0;
     const float dx1 = tX - x0;
     const float dy1 = dy0;

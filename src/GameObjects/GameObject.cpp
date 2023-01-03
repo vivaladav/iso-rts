@@ -9,10 +9,9 @@
 #include "Particles/UpdaterDamage.h"
 #include "Screens/ScreenGame.h"
 
+#include <sgl/core/Math.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/utilities/UniformDistribution.h>
-
-#include <cmath>
 
 namespace game
 {
@@ -186,7 +185,7 @@ void GameObject::Hit(float damage)
     // random generator for velocity direction
     sgl::utilities::UniformDistribution genVel(static_cast<int>(ang0), static_cast<int>(ang1));
 
-    const float deg2rad = M_PI / 180.f;
+    const float deg2rad = sgl::core::Math::PIf / 180.f;
 
     // random generator for speed
     const int minSpeed = 100;
