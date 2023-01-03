@@ -252,13 +252,11 @@ void PanelPlanetActionExplore::UpdatePositions()
     const int h = GetHeight();
 
     const int marginL = 20;
-    const int marginR = 30;
     const int marginT = 15;
     const int marginTextT = 5;
 
     int x;
     int y;
-    int dataX;
 
     // BACKGROUND
     mBg->SetPosition(x0, y0);

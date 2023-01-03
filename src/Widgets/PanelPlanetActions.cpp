@@ -95,12 +95,10 @@ void PanelPlanetActions::UpdatePositions()
     const int y0 = GetScreenY();
 
     const int marginL = 20;
-    const int marginR = 30;
     const int marginT = 15;
 
     int x;
     int y;
-    int dataX;
 
     // BACKGROUND
     mBg->SetPosition(x0, y0);
