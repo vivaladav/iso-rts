@@ -273,6 +273,59 @@ enum SpriteIdStructures : unsigned int
     NUM_MAT_GEN_SPRITES_PER_FAC = 2
 };
 
+// TREES
+extern const char SpriteFileTrees[];
+
+enum SpriteIdTrees : unsigned int
+{
+    // TREE TYPE 1
+    // 1 tree
+    TREE1_1T_1,
+    TREE1_1T_2,
+    TREE1_1T_3,
+    TREE1_1T_4,
+    TREE1_1T_5,
+    TREE1_1T_6,
+    TREE1_1T_7,
+    TREE1_1T_8,
+    // 2 trees
+    TREE1_2T_1,
+    TREE1_2T_2,
+    TREE1_2T_3,
+    TREE1_2T_4,
+    TREE1_2T_5,
+    TREE1_2T_6,
+    TREE1_2T_7,
+    TREE1_2T_8,
+    // 3 trees
+    TREE1_3T_1,
+    TREE1_3T_2,
+    TREE1_3T_3,
+    TREE1_3T_4,
+    TREE1_3T_5,
+    TREE1_3T_6,
+    TREE1_3T_7,
+    TREE1_3T_8,
+    // 4 trees
+    TREE1_4T_1,
+    TREE1_4T_2,
+    TREE1_4T_3,
+    TREE1_4T_4,
+    TREE1_4T_5,
+    TREE1_4T_6,
+    TREE1_4T_7,
+    TREE1_4T_8,
+    // 5 trees
+    TREE1_5T_1,
+    TREE1_5T_2,
+    TREE1_5T_3,
+    TREE1_5T_4,
+    TREE1_5T_5,
+    TREE1_5T_6,
+    TREE1_5T_7,
+    TREE1_5T_8,
+};
+
 // UNITS
 extern const char SpriteFileUnits[];
 
