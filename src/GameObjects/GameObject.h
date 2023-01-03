@@ -210,10 +210,10 @@ enum GameObjectActionId : unsigned int
 };
 
 class GameMap;
-class GameMapCell;
 class IsoObject;
 class Player;
 class ScreenGame;
+struct GameMapCell;
 
 class GameObject
 {
