@@ -64,7 +64,7 @@ PanelPlanetResources::PanelPlanetResources()
     }
 
     // BARS
-    mBars.assign(NUM_RESOURCES, 0);
+    mBars.assign(NUM_RESOURCES, nullptr);
     mBarsValue.assign(NUM_RESOURCES, 0);
 
     const unsigned int texIdBar = IND_PM_PIPS_BAR_0;

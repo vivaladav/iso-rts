@@ -165,7 +165,7 @@ private:
 
     bool MoveObjToCell(GameObject * obj, int row, int col);
 
-    Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets) const;
+    Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> & targets) const;
 
     void DestroyObject(GameObject * obj);
 

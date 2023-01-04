@@ -2085,7 +2085,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
     return true;
 }
 
-Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> targets) const
+Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> & targets) const
 {
     // failed to find any walkable
     if(targets.empty())
