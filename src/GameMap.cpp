@@ -462,8 +462,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         const ObjectData & data = owner->GetAvailableStructure(STRUCT_DEF_TOWER);
         obj = new DefensiveTower(data);
     }
-    else if(OBJ_TREES_1)
-        obj= new Trees(OBJ_TREES_1, rows, cols);
+    else if(OBJ_TREES_1 == objId)
+        obj = new Trees(OBJ_TREES_1, rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)
@@ -493,7 +493,6 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         else if(obj->IsStructure())
             owner->AddStructure(static_cast<Structure *>(obj));
     }
-
 
     // set object properties
     obj->SetCell(&mCells[ind0]);
