@@ -20,8 +20,8 @@ Trees::Trees(GameObjectType subtype, int rows, int cols)
     mVariant = dis.GetNextValue();
 
     //randomize time for change
-    const int minTime = 2;
-    const int maxTime = 6;
+    const int minTime = 5;
+    const int maxTime = 20;
     dis.SetParameters(minTime, maxTime);
 
     mTimeChange = dis.GetNextValue();
@@ -38,7 +38,17 @@ void Trees::Update(float delta)
 
     if(mTimerChange < zeroTime)
     {
-        if(mNumTrees < MAX_TREE1_TREES)
+        // still growing 1 tree
+        if(1 == mNumTrees && mVariant < (NUM_TREE1_VARIANTS - 1))
+        {
+            ++mVariant;
+
+            SetImage();
+
+            mTimerChange = mTimeChange;
+        }
+        // grow more trees
+        else if(mNumTrees < MAX_TREE1_TREES)
         {
             ++mNumTrees;
 
@@ -68,11 +78,9 @@ void Trees::SetImage()
     // set texture
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    sgl::graphic::Texture * tex = nullptr;
-
     const unsigned int baseSpriteId = TREE1_1T_1 + (NUM_TREE1_VARIANTS * (mNumTrees - 1));
     const unsigned int spriteId = baseSpriteId + mVariant;
-    tex = tm->GetSprite(SpriteFileTrees, spriteId);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTrees, spriteId);
 
     isoObj->SetTexture(tex);
 }
