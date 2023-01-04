@@ -14,6 +14,15 @@ SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
 {
     SetStatic(true);
 
+    // set object health
+    float health = 1000.f;
+
+    if(mSubtype >= OBJ_MOUNTAINS_FIRST && mSubtype <= OBJ_MOUNTAINS_LAST)
+        const float health = 10000.f;
+
+    SetMaxHealth(health);
+    SetHealth(health);
+
     SetImage();
 }
 

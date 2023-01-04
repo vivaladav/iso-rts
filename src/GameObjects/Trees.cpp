@@ -6,6 +6,11 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/utilities/UniformDistribution.h>
 
+namespace
+{
+    constexpr float treeHealth = 80.f;
+}
+
 namespace game
 {
 
@@ -18,6 +23,9 @@ Trees::Trees(GameObjectType subtype, int rows, int cols)
     // randomize initial variant
     sgl::utilities::UniformDistribution dis(0, NUM_TREE1_VARIANTS - 1);
     mVariant = dis.GetNextValue();
+
+    SetMaxHealth(treeHealth);
+    SetHealth(treeHealth);
 
     //randomize time for change
     const int minTime = 5;
@@ -53,6 +61,10 @@ void Trees::Update(float delta)
             ++mNumTrees;
 
             SetImage();
+
+
+            SetMaxHealth(GetMaxHealth() + treeHealth);
+            SumHealth(treeHealth);
 
             mTimerChange = mTimeChange;
         }
