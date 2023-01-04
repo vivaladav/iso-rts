@@ -1823,7 +1823,8 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
         return FOG_OF_WAR;
 
     // scene cell
-    if(SCENE_ROCKS == cell.currType || DIAMONDS_SOURCE == cell.currType || BLOBS_SOURCE == cell.currType)
+    if(SCENE_ROCKS == cell.currType || DIAMONDS_SOURCE == cell.currType ||
+       BLOBS_SOURCE == cell.currType || TREES1 == cell.currType)
         return cell.currType;
 
     const PlayerFaction ownerFaction = cell.owner ? cell.owner->GetFaction() : NO_FACTION;

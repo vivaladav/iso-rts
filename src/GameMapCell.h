@@ -22,6 +22,8 @@ enum CellTypes : int
     DIAMONDS_SOURCE,
     BLOBS_SURR,
     DIAMONDS_SURR,
+    TREES1,
+    TREES1_SURR,
 
     // FACTION 1
     F1,

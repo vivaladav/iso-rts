@@ -17,6 +17,8 @@ enum SpriteIdCells : unsigned int
     IND_DIAMONDS_SOURCE,
     IND_BLOBS_SURR,
     IND_DIAMONDS_SURR,
+    IND_TREES1,
+    IND_TREES1_SURR,
     // F1
     IND_F1,
     IND_F1_CONNECTED,
@@ -33,7 +35,6 @@ enum SpriteIdCells : unsigned int
     IND_FOG_OF_WAR,
 
     NUM_IND_CELLS
-
 };
 
 // COLLECTIBLES

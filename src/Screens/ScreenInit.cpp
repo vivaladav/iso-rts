@@ -206,9 +206,11 @@ void ScreenInit::SetupTextures()
     mJobs.emplace_back([this, tm]
     {
         const int indRows = 2;
-        const int indCols = 9;
-        const int indW = 96;
-        const int indH = 48;
+        const int indCols = 10;
+        const int cellW = 96;
+        const int cellH = 48;
+        const int blockW = cellW + 1;
+        const int blockH = cellH + 1;
         int x = 0;
         int y = 0;
 
@@ -219,13 +221,13 @@ void ScreenInit::SetupTextures()
         {
             for(int c = 0; c < indCols; ++c)
             {
-                rects.emplace_back(x, y, indW, indH);
+                rects.emplace_back(x, y, cellW, cellH);
 
-                x += indW;
+                x += blockW;
             }
 
             x = 0;
-            y += indH;
+            y += blockH;
         }
 
         tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileCells, rects);
