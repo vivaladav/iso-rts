@@ -45,6 +45,7 @@ inline Structure::Structure(GameObjectType type, int rows, int cols)
     : GameObject(type, rows, cols)
 {
     SetStructure(true);
+    SetStatic(true);
 }
 
 } // namespace game

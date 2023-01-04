@@ -12,7 +12,7 @@ SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
     : GameObject(GameObjectType::OBJ_SCENE_OBJECT, rows, cols)
     , mSubtype(subtype)
 {
-    SetStructure(true);
+    SetStatic(true);
 
     SetImage();
 }

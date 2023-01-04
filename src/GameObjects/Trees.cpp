@@ -13,7 +13,7 @@ Trees::Trees(GameObjectType subtype, int rows, int cols)
     : GameObject(GameObjectType::OBJ_TREES, rows, cols)
     , mSubtype(subtype)
 {
-    SetStructure(true);
+    SetStatic(true);
 
     // randomize initial variant
     sgl::utilities::UniformDistribution dis(0, NUM_TREE1_VARIANTS - 1);

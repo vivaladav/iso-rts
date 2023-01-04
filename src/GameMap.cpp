@@ -278,7 +278,7 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
         MiniMap * mm = mScreenGame->GetMiniMap();
 
         // hide objects if not visited or not a structure
-        if(!visible && (!go->IsVisited() || !go->IsStructure()))
+        if(!visible && (!go->IsVisited() || !go->IsStatic()))
         {
             layer->SetObjectVisible(obj, false);
 

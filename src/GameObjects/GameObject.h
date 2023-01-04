@@ -251,6 +251,8 @@ public:
     bool IsLinked() const;
     void SetLinked(bool val);
 
+    bool IsStatic() const;
+
     bool IsDestroyed() const;
 
     const GameMapCell * GetCell() const;
@@ -311,6 +313,7 @@ protected:
     void SetVisibilityLevel(int val);
     void SetStructure(bool val);
     void SetCanBeConquered(bool val);
+    void SetStatic(bool val);
 
     void SetSpeed(float speed);
 
@@ -353,6 +356,8 @@ private:
     float mSpeed = 0.f;
 
     bool mStructure = false;
+    // set to TRUE for elements that stay visible under FOGOW
+    bool mStatic = false;
 
     bool mCanBeConq = false;
 
@@ -388,6 +393,8 @@ inline bool GameObject::IsVisible() const { return mVisible; }
 
 inline bool GameObject::IsLinked() const { return mLinked; }
 
+inline bool GameObject::IsStatic() const { return mStatic; }
+
 inline bool GameObject::IsDestroyed() const
 {
     const float minH = 0.01f;
@@ -417,6 +424,7 @@ inline ScreenGame * GameObject::GetScreen() const { return mScreen; }
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
 inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
+inline void GameObject::SetStatic(bool val) { mStatic = val; }
 
 inline float GameObject::GetHealth() const { return mHealth; }
 inline float GameObject::GetMaxHealth() const { return mMaxHealth; }
