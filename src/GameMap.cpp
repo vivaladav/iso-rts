@@ -22,6 +22,7 @@
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/ResourceStorage.h"
 #include "GameObjects/SceneObject.h"
+#include "GameObjects/Trees.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
 #include "GameObjects/WallGate.h"
@@ -186,26 +187,23 @@ void GameMap::SyncMapCells()
         mCells[i].currType = type;
         mCells[i].basicType = type;
 
+        const int row = i / mCols;
+        const int col = i % mCols;
+
         // DIAMONDS GENERATOR
         if(DIAMONDS_SOURCE == type)
         {
-           const int row = i / mCols;
-           const int col = i % mCols;
+           auto gen = new DiamondsGenerator(this);
+           gen->SetCell(row, col);
 
-           auto dg = new DiamondsGenerator(this);
-           dg->SetCell(row, col);
-
-           mCollGen.emplace_back(dg);
+           mCollGen.emplace_back(gen);
         }
         else if(BLOBS_SOURCE == type)
         {
-           const int row = i / mCols;
-           const int col = i % mCols;
+           auto gen = new BlobsGenerator(this);
+           gen->SetCell(row, col);
 
-           auto dg = new BlobsGenerator(this);
-           dg->SetCell(row, col);
-
-           mCollGen.emplace_back(dg);
+           mCollGen.emplace_back(gen);
         }
     }
 }
@@ -346,6 +344,8 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         CreateObject(layerId, OBJ_RES_STORAGE_BLOBS, nullptr, r0, c0, rows, cols);
     else if(MapObjectId::RADAR_STATION == objId)
         CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
+    else if(MapObjectId::TREES_1 == objId)
+        CreateObject(layerId, OBJ_TREES_1, nullptr, r0, c0, rows, cols);
     else if(objId >= MapObjectId::MOUNTAINS_FIRST && objId <= MapObjectId::MOUNTAINS_LAST)
     {
         const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAINS_FIRST);
@@ -462,6 +462,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         const ObjectData & data = owner->GetAvailableStructure(STRUCT_DEF_TOWER);
         obj = new DefensiveTower(data);
     }
+    else if(OBJ_TREES_1)
+        obj= new Trees(OBJ_TREES_1, rows, cols);
     else if(OBJ_DIAMONDS == objId)
         obj = new Diamonds;
     else if(OBJ_BLOBS == objId)

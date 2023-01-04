@@ -90,6 +90,8 @@ add_executable(
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Structure.h
     src/GameObjects/Structure.cpp
+    src/GameObjects/Trees.h
+    src/GameObjects/Trees.cpp
     src/GameObjects/Unit.h
     src/GameObjects/Unit.cpp
     src/GameObjects/Wall.h

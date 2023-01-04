@@ -63,6 +63,8 @@ enum class MapObjectId : unsigned int
     MOUNTAINS_7,
     MOUNTAINS_8,    // 4031
 
+    TREES_1 = 4050,
+
     // UNITS
     UNIT = 5000,
     UNIT_1_P1 = 5100,
@@ -144,6 +146,9 @@ enum GameObjectType : unsigned int
     OBJ_MOUNTAINS_6,
     OBJ_MOUNTAINS_7,
     OBJ_MOUNTAINS_8,
+
+    OBJ_TREES,
+    OBJ_TREES_1,
 
     OBJ_BLOBS,
     OBJ_DIAMONDS,
