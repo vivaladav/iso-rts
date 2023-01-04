@@ -2118,15 +2118,18 @@ void GameMap::DestroyObject(GameObject * obj)
 
     // update visibility map
     // NOTE only local player for now
-    if(obj->GetOwner() == localPlayer)
+    if(owner == localPlayer)
         DelPlayerObjVisibility(obj, localPlayer);
 
-    // remove unit from player
-    if(obj->GetObjectType() == OBJ_UNIT)
-        owner->RemoveUnit(static_cast<Unit *>(obj));
-    // remove structure
-    else if(obj->IsStructure())
-        owner->RemoveStructure(static_cast<Structure *>(obj));
+    if(owner != nullptr)
+    {
+        // remove unit from player
+        if(obj->GetObjectType() == OBJ_UNIT)
+            owner->RemoveUnit(static_cast<Unit *>(obj));
+        // remove structure
+        else if(obj->IsStructure())
+            owner->RemoveStructure(static_cast<Structure *>(obj));
+    }
 
     // generic cells update
     for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
