@@ -6,6 +6,7 @@
 namespace sgl
 {
     namespace graphic { class Image; }
+    namespace sgui { class AbstractButtonsGroup; }
 }
 
 namespace game
@@ -40,6 +41,8 @@ private:
     };
 
     sgl::graphic::Image * mBg = nullptr;
+
+    sgl::sgui::AbstractButtonsGroup * mGroupButtons = nullptr;
 
     PanelContentSettings * mPanels[NUM_PANELS];
 };

@@ -20,6 +20,7 @@ class PlanetMap : public sgl::sgui::Widget
 {
 public:
     PlanetMap();
+    ~PlanetMap();
 
     void SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f);
 

@@ -486,34 +486,34 @@ ScreenSettings::ScreenSettings(Game * game)
     labelTitle->SetPosition(marginContLeft, marginContTop);
 
     // BUTTONS PANEL
-    auto btnGroup = new sgl::sgui::AbstractButtonsGroup;
+    mGroupButtons = new sgl::sgui::AbstractButtonsGroup;
 
     x = marginContLeft;
     y = marginButtonsTop;
 
     auto btn = new ButtonPanel("GAME", win);
     btn->SetPosition(x, y);
-    btnGroup->AddButton(btn);
+    mGroupButtons->AddButton(btn);
 
     x += btn->GetWidth();
 
     btn = new ButtonPanel("AUDIO", win);
     btn->SetPosition(x, y);
-    btnGroup->AddButton(btn);
+    mGroupButtons->AddButton(btn);
 
     x += btn->GetWidth();
 
     btn = new ButtonPanel("VIDEO", win);
     btn->SetPosition(x, y);
-    btnGroup->AddButton(btn);
+    mGroupButtons->AddButton(btn);
 
     x += btn->GetWidth();
 
     btn = new ButtonPanel("CONTROLS", win);
     btn->SetPosition(x, y);
-    btnGroup->AddButton(btn);
+    mGroupButtons->AddButton(btn);
 
-    btnGroup->SetFunctionOnToggle([this](unsigned int index, bool checked)
+    mGroupButtons->SetFunctionOnToggle([this](unsigned int index, bool checked)
     {
         for(unsigned int i = 0; i < Panel::NUM_PANELS; ++i)
             mPanels[i]->SetVisible(i == index);
@@ -536,12 +536,14 @@ ScreenSettings::ScreenSettings(Game * game)
     mPanels[Panel::CONTROLS]->SetPosition(x, y);
 
     // default panel is GAME
-    btnGroup->SetButtonChecked(Panel::GAME, true);
+    mGroupButtons->SetButtonChecked(Panel::GAME, true);
 }
 
 ScreenSettings::~ScreenSettings()
 {
     sgl::sgui::Stage::Instance()->ClearWidgets();
+
+    delete mGroupButtons;
 
     delete mBg;
 }

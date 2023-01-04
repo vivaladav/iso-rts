@@ -175,6 +175,11 @@ PlanetMap::PlanetMap()
     }
 }
 
+PlanetMap::~PlanetMap()
+{
+    delete mButtonsMission;
+}
+
 void PlanetMap::SetFunctionOnToggle(const std::function<void(unsigned int, bool)> & f)
 {
     mButtonsMission->SetFunctionOnToggle(f);
