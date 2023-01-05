@@ -27,9 +27,9 @@ Trees::Trees(GameObjectType subtype, int rows, int cols)
     SetMaxHealth(treeHealth);
     SetHealth(treeHealth);
 
-    //randomize time for change
-    const int minTime = 5;
-    const int maxTime = 20;
+    //randomize time for change (1-5 mins)
+    const int minTime = 60;
+    const int maxTime = 60 * 5;
     dis.SetParameters(minTime, maxTime);
 
     mTimeChange = dis.GetNextValue();
