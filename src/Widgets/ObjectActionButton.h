@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Widgets/ShortcutButton.h"
+#include <sgl/sgui/AbstractButton.h>
 
 namespace sgl
 {
@@ -14,7 +14,7 @@ namespace sgl
 namespace game
 {
 
-class ObjectActionButton : public ShortcutButton
+class ObjectActionButton : public sgl::sgui::AbstractButton
 {
 public:
     enum ActionIcon : unsigned int

@@ -219,8 +219,6 @@ add_executable(
     src/Widgets/ProgressBarResources.cpp
     src/Widgets/ResourceDisplay.h
     src/Widgets/ResourceDisplay.cpp
-    src/Widgets/ShortcutButton.h
-    src/Widgets/ShortcutButton.cpp
     src/Widgets/SimpleResourceDisplay.h
     src/Widgets/SimpleResourceDisplay.cpp
     src/Widgets/WidgetsConstants.h

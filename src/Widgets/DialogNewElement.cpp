@@ -3,10 +3,7 @@
 #include "GameConstants.h"
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
-#include "GameObjects/Unit.h"
-#include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
-#include "Widgets/ShortcutButton.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/DummyRenderable.h>
@@ -61,13 +58,15 @@ public:
 
 // ===== BUTTON CLOSE =====
 
-class ButtonClose : public ShortcutButton
+class ButtonClose : public sgl::sgui::AbstractButton
 {
 public:
     ButtonClose(sgl::sgui::Widget * parent)
-        : ShortcutButton(sgl::core::KeyboardEvent::KEY_ESC, parent)
+        : AbstractButton(parent)
         , mBody(new sgl::graphic::Image)
     {
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+
         // register graphic elements
         RegisterRenderable(mBody);
 
@@ -105,14 +104,16 @@ private:
 
 // ===== BUTTON BUILD =====
 
-class ButtonBuild : public ShortcutButton
+class ButtonBuild : public sgl::sgui::AbstractButton
 {
 public:
     ButtonBuild(sgl::sgui::Widget * parent)
-        : ShortcutButton(sgl::core::KeyboardEvent::KEY_B, parent)
+        : sgl::sgui::AbstractButton(parent)
         , mBody(new sgl::graphic::Image)
     {
         using namespace sgl::graphic;
+
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_B);
 
         auto fm = FontManager::Instance();
         auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 11, Font::NORMAL);
@@ -172,8 +173,6 @@ private:
 
     void HandlePositionChanged() override
     {
-        ShortcutButton::HandlePositionChanged();
-
         const int x0 = GetScreenX();
         const int y0 = GetScreenY();
 
@@ -205,14 +204,15 @@ private:
 
 // ===== BUTTON SLOT =====
 
-class ButtonSlot : public ShortcutButton
+class ButtonSlot : public sgl::sgui::AbstractButton
 {
 public:
     ButtonSlot(int index)
-        : ShortcutButton(KEYS[index], nullptr)
-        , mBody(new sgl::graphic::Image)
+        : mBody(new sgl::graphic::Image)
     {
         using namespace sgl::graphic;
+
+        SetShortcutKey(KEYS[index]);
 
         SetCheckable(true);
 
@@ -331,8 +331,6 @@ private:
 
     void HandlePositionChanged() override
     {
-        ShortcutButton::HandlePositionChanged();
-
         const int x0 = GetScreenX();
         const int y0 = GetScreenY();
 

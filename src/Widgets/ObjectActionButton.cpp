@@ -16,13 +16,15 @@ namespace game
 
 ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
                                        int shortcutKey, sgl::sgui::Widget * parent)
-    : ShortcutButton(shortcutKey, parent)
+    : sgl::sgui::AbstractButton(parent)
     , mBody(new sgl::graphic::Image)
     , mIcon(new sgl::graphic::Image)
 {
     using namespace sgl::graphic;
 
     assert(icon < NUM_ACTION_ICONS);
+
+    SetShortcutKey(shortcutKey);
 
     RegisterRenderable(mBody);
     RegisterRenderable(mIcon);
@@ -88,8 +90,6 @@ void ObjectActionButton::OnStateChanged(VisualState state)
 
 void ObjectActionButton::HandlePositionChanged()
 {
-   ShortcutButton::HandlePositionChanged();
-
    const int x = GetScreenX();
    const int y = GetScreenY();
 
