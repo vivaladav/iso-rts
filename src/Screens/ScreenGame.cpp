@@ -2174,7 +2174,7 @@ void ScreenGame::ShowAttackIndicators(const GameObject * obj, int range)
     // init needed indicators
     const PlayerFaction faction = obj->GetOwner()->GetFaction();
 
-    for(unsigned int i = 0; i < neededInd; ++i)
+    for(int i = 0; i < neededInd; ++i)
     {
         mAttIndicators[i]->SetVisible(true);
         mAttIndicators[i]->SetFaction(faction);

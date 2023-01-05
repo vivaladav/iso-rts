@@ -175,7 +175,7 @@ void IsoMap::SetVisibleArea(int x, int y, int w, int h)
 
     ++BL.row;
 
-    if(BL.row > mRows)
+    if(BL.row > static_cast<int>(mRows))
         BL.row = mRows;
 
     mRenderingR1 = BL.row;
@@ -185,7 +185,7 @@ void IsoMap::SetVisibleArea(int x, int y, int w, int h)
 
     ++BR.col;
 
-    if(BR.col > mCols)
+    if(BR.col > static_cast<int>(mCols))
         BR.col = mCols;
 
     mRenderingC1 = BR.col;

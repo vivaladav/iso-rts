@@ -22,8 +22,8 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 unsigned int GameObject::counter = 0;
 
 GameObject::GameObject(GameObjectType type, int rows, int cols)
-    : mIsoObj(new IsoObject(rows, cols))
-    , mOnValuesChanged([](){})
+    : mOnValuesChanged([](){})
+    , mIsoObj(new IsoObject(rows, cols))
     , mObjId(++counter)
     , mType(type)
 {

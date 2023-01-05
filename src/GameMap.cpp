@@ -1626,7 +1626,7 @@ Cell2D GameMap::GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & 
     }
 
     // BOTTOM cells
-    if(targetBR.row < (mRows - 1))
+    if(targetBR.row < (static_cast<int>(mRows) - 1))
     {
         const int r = targetBR.row + 1;
         const int indBase = r * mCols;
@@ -1655,7 +1655,7 @@ Cell2D GameMap::GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & 
     }
 
     // RIGHT cells
-    if(targetBR.col < (mCols - 1))
+    if(targetBR.col < (static_cast<int>(mCols) - 1))
     {
         const int c = targetBR.col + 1;
 

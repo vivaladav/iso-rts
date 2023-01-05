@@ -305,13 +305,13 @@ void IsoLayer::UpdateRenderList()
 
     const int cols = mMap->GetNumCols();
 
-    for(int r = mRenderingR0; r < mRenderingR1; ++r)
+    for(unsigned int r = mRenderingR0; r < mRenderingR1; ++r)
     {
         const int ind0 = r * cols;
 
-        for(int c = mRenderingC0; c < mRenderingC1; ++c)
+        for(unsigned int c = mRenderingC0; c < mRenderingC1; ++c)
         {
-            const int ind = ind0 + c;
+            const unsigned int ind = ind0 + c;
 
             IsoObject * obj = mObjectsMap[ind];
 
