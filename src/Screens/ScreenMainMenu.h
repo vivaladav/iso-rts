@@ -17,6 +17,9 @@ public:
     void Render() override;
 
 private:
+    void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
+
+private:
     sgl::graphic::Image * mBg = nullptr;
 };
 

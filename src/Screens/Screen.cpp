@@ -12,7 +12,6 @@ Screen::Screen(Game * game)
     : mGame(game)
     , mSharedListener(new SharedScreenListener(game, this))
 {
-    mGame->AddApplicationListener(mSharedListener);
     mGame->AddKeyboardListener(mSharedListener);
 
     auto cam = sgl::graphic::Camera::GetDefaultCamera();

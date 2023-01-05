@@ -9,6 +9,7 @@
 #include "Widgets/ButtonMainMenuWishlist.h"
 #include "Widgets/GameUIData.h"
 
+#include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -27,6 +28,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 {
     using namespace sgl::graphic;
     using namespace sgl::sgui;
+
+    game->AddApplicationListener(this);
 
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
@@ -187,6 +190,13 @@ void ScreenMainMenu::Update(float update)
 void ScreenMainMenu::Render()
 {
     mBg->Render();
+}
+
+void ScreenMainMenu::OnApplicationQuit(sgl::core::ApplicationEvent & event)
+{
+    GetGame()->Exit();
+
+    event.SetConsumed();
 }
 
 } // namespace game

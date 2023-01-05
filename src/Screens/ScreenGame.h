@@ -32,6 +32,7 @@ class ButtonMinimap;
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
+class DialogExit;
 class DialogNewElement;
 class GameMap;
 class GameObject;
@@ -92,12 +93,15 @@ public:
     MiniMap * GetMiniMap() const;
 
 private:
+    void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
+
     void InitParticlesSystem();
 
     void CreateIsoMap();
     void CreateLayers();
 
     void CreateUI();
+    void CreateDialogExit();
     void HidePanelObjActions();
     void ClearNewElemDialog();
 
@@ -161,6 +165,7 @@ private:
     std::vector<sgl::sgui::Widget *> mWidgetsToDelete;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
+    DialogExit * mDialogExit = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
     sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
     ButtonMinimap * mButtonMinimap = nullptr;

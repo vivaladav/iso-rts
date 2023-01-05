@@ -11,12 +11,6 @@
 
 namespace game
 {
-void SharedScreenListener::OnApplicationQuit(sgl::core::ApplicationEvent & event)
-{
-    mScreen->GetGame()->Exit();
-
-    event.SetConsumed();
-}
 
 void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
 {
@@ -25,15 +19,17 @@ void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
 
     const int key = event.GetKey();
 
-    // EXIT
-    if(key == KeyboardEvent::KEY_ESC)
-        mScreen->GetGame()->Exit();
+    Game * game = mScreen->GetGame();
+
+    // SHIFT-ESC -> EXIT
+    if(key == KeyboardEvent::KEY_ESC && event.IsModShiftDown())
+        game->Exit();
 
     // -- SCREENS NAVIGATION --
     else if(key == KeyboardEvent::KEY_M)
-        mScreen->GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
+        game->RequestNextActiveState(StateId::MAIN_MENU);
     else if(key == KeyboardEvent::KEY_T)
-        mScreen->GetGame()->RequestNextActiveState(StateId::TEST);
+        game->RequestNextActiveState(StateId::TEST);
 
     // -- WINDOW --
     else if(key == KeyboardEvent::KEY_F)

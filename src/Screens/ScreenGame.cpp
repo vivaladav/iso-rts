@@ -26,6 +26,7 @@
 #include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
+#include "Widgets/DialogExit.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
@@ -34,6 +35,7 @@
 #include "Widgets/PanelResources.h"
 
 #include <sgl/ai/Pathfinder.h>
+#include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/core/event/MouseMotionEvent.h>
@@ -71,6 +73,7 @@ ScreenGame::ScreenGame(Game * game)
 {
     game->SetClearColor(0x0F, 0x0F, 0x0F, 0xFF);
 
+    game->AddApplicationListener(this);
     game->AddKeyboardListener(this);
 
     const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
@@ -433,6 +436,13 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
 {
     const GameMapCell * cell = obj->GetCell();
     CenterCameraOverCell(cell->row, cell->col);
+}
+
+void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
+{
+    CreateDialogExit();
+
+    event.SetConsumed();
 }
 
 void ScreenGame::InitParticlesSystem()
@@ -812,6 +822,30 @@ void ScreenGame::CreateUI()
     }
 }
 
+void ScreenGame::CreateDialogExit()
+{
+    if(mDialogExit != nullptr)
+        return ;
+
+    mDialogExit = new DialogExit(GetGame());
+    mDialogExit->SetFocus();
+
+    mDialogExit->SetFunctionOnClose([this]
+    {
+        // schedule dialog deletion
+        mWidgetsToDelete.push_back(mDialogExit);
+        mDialogExit = nullptr;
+    });
+
+    // position dialog
+    auto renderer = sgl::graphic::Renderer::Instance();
+    const int rendW = renderer->GetWidth();
+    const int rendH = renderer->GetHeight();
+    const int posX = (rendW - mDialogExit->GetWidth()) / 2;
+    const int posY = (rendH - mDialogExit->GetHeight()) / 2;
+    mDialogExit->SetPosition(posX, posY);
+}
+
 void ScreenGame::HidePanelObjActions()
 {
     mPanelObjActions->ClearObject();
@@ -854,6 +888,8 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
+    else if(key == KeyboardEvent::KEY_ESC)
+        CreateDialogExit();
     // SHIFT + B -> center camera on own base
     else if(key == KeyboardEvent::KEY_B)
     {

@@ -1,5 +1,7 @@
+
 #pragma once
 
+#include <sgl/core/event/ApplicationEventListener.h>
 #include <sgl/core/event/KeyboardEventListener.h>
 #include <sgl/core/event/MouseEventListener.h>
 
@@ -9,7 +11,8 @@ namespace game
 class Game;
 class SharedScreenListener;
 
-class Screen : public sgl::core::KeyboardEventListener , public sgl::core::MouseEventListener
+class Screen : public sgl::core::ApplicationEventListener, public sgl::core::KeyboardEventListener,
+               public sgl::core::MouseEventListener
 {
 public:
     Screen(Game * game);
