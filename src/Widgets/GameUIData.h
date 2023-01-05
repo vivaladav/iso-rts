@@ -3,6 +3,37 @@
 namespace game
 {
 
+// DIALOG EXIT
+extern const char SpriteFileDialogExit[];
+
+enum SpriteIdDialogExit : unsigned int
+{
+    // BACKGROUND
+    IND_DIA_EX_BG,
+
+    // BUTTON 1
+    IND_DIA_EX_BTN_NORMAL,
+    IND_DIA_EX_BTN_DISABLED,
+    IND_DIA_EX_BTN_OVER,
+    IND_DIA_EX_BTN_PUSHED,
+    // BUTTON 2
+    IND_DIA_EX_BTN2_NORMAL,
+    IND_DIA_EX_BTN2_DISABLED,
+    IND_DIA_EX_BTN2_OVER,
+    IND_DIA_EX_BTN2_PUSHED,
+    // BUTTON CLOSE
+    IND_DIA_EX_BTN_X_NORMAL,
+    IND_DIA_EX_BTN_X_DISABLED,
+    IND_DIA_EX_BTN_X_OVER,
+    IND_DIA_EX_BTN_X_PUSHED,
+
+    // ICONS
+    IND_DIA_ICON_STEAM_NORMAL,
+    IND_DIA_ICON_STEAM_DISABLED,
+    IND_DIA_ICON_STEAM_OVER,
+    IND_DIA_ICON_STEAM_PUSHED,
+};
+
 // NEW ELEMENT DIALOG
 extern const char SpriteFileNewElementDialog[];
 

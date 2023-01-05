@@ -181,6 +181,8 @@ add_executable(
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
     src/Widgets/CellProgressBar.cpp
+    src/Widgets/DialogExit.h
+    src/Widgets/DialogExit.cpp
     src/Widgets/DialogNewElement.h
     src/Widgets/DialogNewElement.cpp
     src/Widgets/DigitsDisplay.h
