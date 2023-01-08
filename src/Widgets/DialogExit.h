@@ -6,7 +6,11 @@
 
 namespace sgl
 {
-    namespace graphic { class Image; }
+    namespace graphic
+    {
+        class Image;
+        class Text;
+    }
     namespace sgui { class AbstractButton; }
 }
 
@@ -30,7 +34,7 @@ private:
 
 private:
     sgl::graphic::Image * mBg = nullptr;
-
+    sgl::graphic::Text * mTitle = nullptr;
     sgl::sgui::AbstractButton * mButtonClose = nullptr;
 };
 

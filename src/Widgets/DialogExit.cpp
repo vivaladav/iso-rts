@@ -9,8 +9,10 @@
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
+#include <sgl/graphic/Text.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/sgui/ImageButton.h>
+#include <sgl/utilities/System.h>
 
 namespace game
 {
@@ -50,19 +52,131 @@ public:
     }
 };
 
+// ===== BUTTON WISHLIST =====
+class ButtonWishlistDialogExit : public sgl::sgui::AbstractButton
+{
+
+public:
+    ButtonWishlistDialogExit(sgl::sgui::Widget * parent)
+        : sgl::sgui::AbstractButton(parent)
+        , mBody(new sgl::graphic::Image)
+        , mIcon(new sgl::graphic::Image)
+    {
+        using namespace sgl;
+
+        // REGISTER GRAPHICS
+        RegisterRenderable(mBody);
+        RegisterRenderable(mIcon);
+
+        // TEXT LABEL
+        // TODO use setLabel after adding support for icon to PushButton
+        auto fm = graphic::FontManager::Instance();
+        graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+        mText = new graphic::Text("WISHLIST NOW", font, true);
+        RegisterRenderable(mText);
+
+        // init to normal state
+        SetState(NORMAL);
+
+        PositionElements();
+    }
+
+private:
+    void HandlePositionChanged() override
+    {
+        PositionElements();
+    }
+
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        using namespace sgl;
+
+        const unsigned int texBgIds[NUM_VISUAL_STATES] =
+        {
+            IND_DIA_EX_BTN2_NORMAL,
+            IND_DIA_EX_BTN2_DISABLED,
+            IND_DIA_EX_BTN2_OVER,
+            IND_DIA_EX_BTN2_PUSHED,
+            IND_DIA_EX_BTN2_PUSHED
+        };
+
+        const unsigned int texIconIds[NUM_VISUAL_STATES] =
+        {
+            IND_DIA_ICON_STEAM_NORMAL,
+            IND_DIA_ICON_STEAM_DISABLED,
+            IND_DIA_ICON_STEAM_OVER,
+            IND_DIA_ICON_STEAM_PUSHED,
+            IND_DIA_ICON_STEAM_PUSHED
+        };
+
+        const unsigned int colorsTxt[NUM_VISUAL_STATES] =
+        {
+            0xc3dae5ff,
+            0x5a6266ff,
+            0xc2e2f2ff,
+            0xb9ced9ff,
+            0xb9ced9ff,
+        };
+
+        // body
+        auto tm = graphic::TextureManager::Instance();
+        graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, texBgIds[state]);
+        mBody->SetTexture(tex);
+
+        SetSize(mBody->GetWidth(), mBody->GetHeight());
+
+        // icon
+        tex = tm->GetSprite(SpriteFileDialogExit, texIconIds[state]);
+        mIcon->SetTexture(tex);
+
+        mIcon->SetColor(colorsTxt[state]);
+        mText->SetColor(colorsTxt[state]);
+    }
+
+    void PositionElements()
+    {
+        const int x = GetScreenX();
+        const int y = GetScreenY();
+        const int w = GetWidth();
+        const int h = GetHeight();
+
+        const int marginH = 10;
+        const int totW = mIcon->GetWidth() + marginH + mText->GetWidth();
+        const int x0 = x + (w - totW) * 0.5f;
+
+        // position BG
+        mBody->SetPosition(x, y);
+
+        // icon
+        const int iconX = x0;
+        const int iconY = y + (h - mIcon->GetHeight()) * 0.5f;
+        mIcon->SetPosition(iconX, iconY);
+
+        // text
+        const int textX = iconX + mIcon->GetWidth() + marginH;
+        const int textY = y + (h - mText->GetHeight()) * 0.5f;
+        mText->SetPosition(textX, textY);
+    }
+
+private:
+    sgl::graphic::Image * mBody = nullptr;
+    sgl::graphic::Image * mIcon = nullptr;
+    sgl::graphic::Text * mText = nullptr;
+};
+
 // ===== DIALOG =====
 DialogExit::DialogExit(Game * game)
 {
     using namespace sgl;
 
-    auto fm = sgl::graphic::FontManager::Instance();
-    auto tm = sgl::graphic::TextureManager::Instance();
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
 
     const int marginL = 40;
     const int marginT = 8;
 
     // BACKGROUND
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_NE_DIALOG_BG);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_NE_DIALOG_BG);
     mBg = new graphic::Image(tex);
     RegisterRenderable(mBg);
 
@@ -73,6 +187,10 @@ DialogExit::DialogExit(Game * game)
     // BUTTON CLOSE
     mButtonClose = new ButtonCloseDialogExit(this);
     mButtonClose->SetX(GetWidth() - mButtonClose->GetWidth());
+
+    // TITLE
+    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, graphic::Font::NORMAL);
+    mTitle = new graphic::Text("LEAVE", font);
 
     // BUTTON PLANET MAP
     const int btnY0 = 78;
@@ -114,6 +232,19 @@ DialogExit::DialogExit(Game * game)
     {
         game->Exit();
     });
+
+    btnY += btn->GetHeight() + marginBtnV;
+
+    // BUTTON WISHLIST
+    auto btn2 = new ButtonWishlistDialogExit(this);
+
+    btn2->SetPosition(btnX, btnY);
+
+    btn2->AddOnClickFunction([game]
+    {
+        sgl::utilities::System sys;
+        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580?utm_campaign=game&utm_source=exitdialog");
+    });
 }
 
 void DialogExit::SetFunctionOnClose(const std::function<void()> & f)
@@ -132,5 +263,12 @@ void DialogExit::SetPositions()
     const int y0 = GetScreenY();
 
     mBg->SetPosition(x0, y0);
+
+    const int marginL = 35;
+    const int marginT = 16;
+    int x = x0 + marginL;
+    int y = y0 + marginT;
+    mTitle->SetPosition(x, y);
 }
+
 } // namespace game
