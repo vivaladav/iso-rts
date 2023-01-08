@@ -243,7 +243,8 @@ DialogExit::DialogExit(Game * game)
     btn2->AddOnClickFunction([game]
     {
         sgl::utilities::System sys;
-        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580?utm_campaign=game&utm_source=exitdialog");
+        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtueror_The_Virtual_Conqueror/"
+                             "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=exitdialog");
     });
 }
 
