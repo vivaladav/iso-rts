@@ -46,9 +46,29 @@ void ConquerPath::Start()
 void ConquerPath::Abort()
 {
     if(CONQUERING_CELL == mState)
-        FinishAbortion();
+        InstantAbort();
     else
         mState = ABORTED;
+}
+
+void ConquerPath::InstantAbort()
+{
+    // clear progress bar
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const Cell2D cell(nextRow, nextCol);
+
+    mScreen->CancelProgressBar(cell);
+
+    mGameMap->SetCellChanging(nextRow, nextCol, false);
+
+    // clear indicators
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+    layerOverlay->ClearObjects();
+
+    // set new state
+    mState = ABORTED;
 }
 
 void ConquerPath::Update(float delta)
@@ -165,26 +185,6 @@ void ConquerPath::UpdatePathCost()
     // use set to ignore repeated cells
     std::unordered_set<unsigned int> cells(mCells.begin(), mCells.end());
     mCost = (cells.size() - 1) * 0.5f;
-}
-
-void ConquerPath::FinishAbortion()
-{
-    // clear progress bar
-    const unsigned int nextInd = mCells[mNextCell];
-    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const Cell2D cell(nextRow, nextCol);
-
-    mScreen->CancelProgressBar(cell);
-
-    mGameMap->SetCellChanging(nextRow, nextCol, false);
-
-    // clear indicators
-    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-    layerOverlay->ClearObjects();
-
-    // set new state
-    mState = ABORTED;
 }
 
 void ConquerPath::Fail()

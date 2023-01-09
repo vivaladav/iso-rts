@@ -150,26 +150,6 @@ void WallBuildPath::UpdatePathCost()
     mMaterialCost = segments * Wall::GetCostMaterial(mLevel);
 }
 
-void WallBuildPath::FinishAbortion()
-{
-    // clear progress bar
-    const unsigned int nextInd = mCells[mNextCell];
-    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const Cell2D cell(nextRow, nextCol);
-
-    mGameMap->SetCellChanging(nextRow, nextCol, false);
-
-    mScreen->CancelProgressBar(cell);
-
-    // clear indicators
-    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-    layerOverlay->ClearObjects();
-
-    // set new state
-    mState = ABORTED;
-}
-
 void WallBuildPath::Start()
 {
     // do nothing if already started
@@ -188,9 +168,29 @@ void WallBuildPath::Start()
 void WallBuildPath::Abort()
 {
     if(BUILDING == mState)
-        FinishAbortion();
+        InstantAbortion();
     else
         mState = ABORTED;
+}
+
+void WallBuildPath::InstantAbortion()
+{
+    // clear progress bar
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const Cell2D cell(nextRow, nextCol);
+
+    mGameMap->SetCellChanging(nextRow, nextCol, false);
+
+    mScreen->CancelProgressBar(cell);
+
+    // clear indicators
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+    layerOverlay->ClearObjects();
+
+    // set new state
+    mState = ABORTED;
 }
 
 void WallBuildPath::Update(float delta)

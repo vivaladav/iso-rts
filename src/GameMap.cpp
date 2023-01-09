@@ -1752,6 +1752,8 @@ void GameMap::Update(float delta)
         {
             GameObject * obj = *itObj;
 
+            DestroyObjectPaths(obj);
+
             // erase object from vector and set
             itObj = mObjects.erase(itObj);
             mObjectsSet.erase(obj);
@@ -2320,6 +2322,69 @@ void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cel
                 visFun(ind);
             }
         }
+    }
+}
+
+void GameMap::DestroyObjectPaths(GameObject * obj)
+{
+    // ObjectPaths
+    auto itPath = mPaths.begin();
+
+    while(itPath != mPaths.end())
+    {
+        ObjectPath * path = *itPath;
+
+        if(path->GetObject() == obj)
+        {
+            path->InstantAbort();
+            delete path;
+            itPath = mPaths.erase(itPath);
+            break;
+        }
+        else
+            ++itPath;
+    }
+
+    // other paths are only for units
+    if(obj->GetObjectType() != OBJ_UNIT)
+        return ;
+
+    auto unit = static_cast<Unit *>(obj);
+
+    // ConquerPaths
+    auto itCP = mConquerPaths.begin();
+
+    while(itCP != mConquerPaths.end())
+    {
+        ConquerPath * path = *itCP;
+
+        if(path->GetUnit() == unit)
+        {
+            path->InstantAbort();
+            delete path;
+            itCP = mConquerPaths.erase(itCP);
+            break;
+        }
+        else
+            ++itCP;
+    }
+
+    // WallBuildPaths
+    auto itWBP = mWallBuildPaths.begin();
+
+    while(itWBP != mWallBuildPaths.end())
+    {
+        WallBuildPath * path = *itWBP;
+
+        if(path->GetUnit() == unit)
+        {
+            path->InstantAbortion();
+            delete path;
+            itWBP = mWallBuildPaths.erase(itWBP);
+            break;
+        }
+        else
+            ++itWBP;
     }
 }
 

@@ -186,6 +186,7 @@ private:
     void PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
                                    std::function<void(int)> visFun);
 
+    void DestroyObjectPaths(GameObject * obj);
     void UpdateObjectPaths(float delta);
     void UpdateConquerPaths(float delta);
     void UpdateWallBuildPaths(float delta);

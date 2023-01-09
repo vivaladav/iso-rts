@@ -43,6 +43,7 @@ public:
     void Start();
 
     void Abort();
+    void InstantAbort();
 
     void Update(float delta);
 
@@ -81,11 +82,6 @@ private:
 
     float mCost = 0.f;
 };
-
-inline ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{}), mOnFailed([]{}), mObj(obj), mIsoMap(im), mGameMap(gm), mScreen(sg)
-{
-}
 
 inline GameObject * ObjectPath::GetObject() const { return mObj; }
 

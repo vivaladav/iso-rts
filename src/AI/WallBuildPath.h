@@ -47,6 +47,7 @@ public:
     void Start();
 
     void Abort();
+    void InstantAbortion();
 
     void Update(float delta);
 
@@ -59,8 +60,6 @@ private:
     void InitNextBuild();
 
     void UpdatePathCost();
-
-    void FinishAbortion();
 
 private:
     std::vector<unsigned int> mCells;

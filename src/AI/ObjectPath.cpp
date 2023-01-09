@@ -14,6 +14,16 @@
 namespace game
 {
 
+ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
+    : mOnCompleted([]{})
+    , mOnFailed([]{})
+    , mObj(obj)
+    , mIsoMap(im)
+    , mGameMap(gm)
+    , mScreen(sg)
+{
+}
+
 void ObjectPath::InitNextMoveStep()
 {
     const IsoObject * isoObj = mObj->GetIsoObject();
@@ -66,6 +76,20 @@ void ObjectPath::Start()
     }
     else
         Fail();
+}
+
+void ObjectPath::InstantAbort()
+{
+    mState = ABORTED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mObj);
+
+    if(mNextCell < mCells.size())
+    {
+        const unsigned int nextInd = mCells[mNextCell];
+        mGameMap->SetCellWalkTarget(nextInd, false);
+    }
 }
 
 void ObjectPath::Update(float delta)
@@ -153,12 +177,7 @@ void ObjectPath::Update(float delta)
 
         // handle next step or termination
         if(ABORTING == mState)
-        {
-            mState = ABORTED;
-
-            // clear action data once the action is completed
-            mScreen->SetObjectActionCompleted(mObj);
-        }
+            InstantAbort();
         else if(mNextCell < mCells.size())
         {
             const unsigned int nextInd = mCells[mNextCell];

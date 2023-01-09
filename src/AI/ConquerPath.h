@@ -44,6 +44,7 @@ public:
 
     void Start();
     void Abort();
+    void InstantAbort();
 
     void Update(float delta);
 
@@ -54,7 +55,6 @@ private:
 
     void UpdatePathCost();
 
-    void FinishAbortion();
 
     void Fail();
 
