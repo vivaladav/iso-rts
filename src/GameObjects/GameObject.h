@@ -234,6 +234,7 @@ public:
     IsoObject * GetIsoObject() const;
 
     bool IsStructure() const;
+    bool CanBeCollected() const;
     bool CanBeConquered() const;
 
     bool IsSelected() const;
@@ -312,6 +313,7 @@ protected:
 
     void SetVisibilityLevel(int val);
     void SetStructure(bool val);
+    void SetCanBeCollected(bool val);
     void SetCanBeConquered(bool val);
     void SetStatic(bool val);
 
@@ -359,6 +361,7 @@ private:
     // set to TRUE for elements that stay visible under FOGOW
     bool mStatic = false;
 
+    bool mCanBeCollected = false;
     bool mCanBeConq = false;
 
     bool mSelected = false;
@@ -379,6 +382,7 @@ inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 
 inline bool GameObject::IsStructure() const { return mStructure; }
 
+inline bool GameObject::CanBeCollected() const { return mCanBeCollected; }
 inline bool GameObject::CanBeConquered() const { return mCanBeConq; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
@@ -423,6 +427,7 @@ inline ScreenGame * GameObject::GetScreen() const { return mScreen; }
 
 inline void GameObject::SetVisibilityLevel(int val) { mVisLevel = val; }
 inline void GameObject::SetStructure(bool val) { mStructure = val; }
+inline void GameObject::SetCanBeCollected(bool val) { mCanBeCollected = val; }
 inline void GameObject::SetCanBeConquered(bool val) { mCanBeConq = val; }
 inline void GameObject::SetStatic(bool val) { mStatic = val; }
 
