@@ -29,6 +29,8 @@ public:
 
     const ActionAI * GetNextActionTodo();
 
+    void HandleObjectDestroyed(GameObject * obj);
+
     void RegisterActionInProgress(const ActionAI * action);
     void SetActionDone(const ActionAI * action);
 
@@ -37,6 +39,9 @@ public:
 private:
     void ClearActionsDone();
     void ClearActionsTodo();
+
+    void HandleObjectDestroyedInTodo(GameObject * obj);
+    void HandleObjectDestroyedInDoing(GameObject * obj);
 
     void PrepareData();
 

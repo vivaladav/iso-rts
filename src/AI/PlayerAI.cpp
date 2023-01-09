@@ -118,6 +118,12 @@ const ActionAI * PlayerAI::GetNextActionTodo()
     return PopAction();
 }
 
+void PlayerAI::HandleObjectDestroyed(GameObject * obj)
+{
+    HandleObjectDestroyedInTodo(obj);
+    HandleObjectDestroyedInDoing(obj);
+}
+
 void PlayerAI::SetActionDone(const ActionAI * action)
 {
     auto it = mActionsDoing.begin();
@@ -154,6 +160,44 @@ void PlayerAI::ClearActionsTodo()
         delete a;
 
     mActionsTodo.clear();
+}
+
+void PlayerAI::HandleObjectDestroyedInTodo(GameObject * obj)
+{
+    auto it = mActionsTodo.begin();
+
+    while(it != mActionsTodo.end())
+    {
+        const ActionAI * action = *it;
+
+        if(action->ObjSrc == obj || action->ObjDst == obj)
+        {
+            delete action;
+            mActionsTodo.erase(it);
+            break;
+        }
+        else
+            ++it;
+    }
+}
+
+void PlayerAI::HandleObjectDestroyedInDoing(GameObject * obj)
+{
+    auto it = mActionsDoing.begin();
+
+    while(it != mActionsDoing.end())
+    {
+        const ActionAI * action = *it;
+
+        if(action->ObjSrc == obj || action->ObjDst == obj)
+        {
+            delete action;
+            mActionsDoing.erase(it);
+            break;
+        }
+        else
+            ++it;
+    }
 }
 
 void PlayerAI::PushAction(ActionAI * action)

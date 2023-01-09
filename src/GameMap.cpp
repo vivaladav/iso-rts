@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
+#include "AI/PlayerAI.h"
 #include "AI/WallBuildPath.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/Blobs.h"
@@ -1753,6 +1754,11 @@ void GameMap::Update(float delta)
             GameObject * obj = *itObj;
 
             DestroyObjectPaths(obj);
+
+            Player * p = obj->GetOwner();
+
+            if(p != nullptr && p->IsAI())
+                p->GetAI()->HandleObjectDestroyed(obj);
 
             // erase object from vector and set
             itObj = mObjects.erase(itObj);
