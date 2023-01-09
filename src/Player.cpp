@@ -144,6 +144,16 @@ void Player::RemVisibilityToAll()
     }
 }
 
+void Player::SetResource(Stat sid, int val)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    mStats[sid].SetValue(val);
+
+    mOnResourcesChanged();
+}
+
 void Player::SumResource(Stat sid, int val)
 {
     if(sid >= NUM_PSTATS)
@@ -152,6 +162,14 @@ void Player::SumResource(Stat sid, int val)
     mStats[sid].SumValue(val);
 
     mOnResourcesChanged();
+}
+
+void Player::SetResourceMax(Stat sid, int val)
+{
+    if(sid >= NUM_PSTATS)
+        return ;
+
+    mStats[sid].SetMax(val);
 }
 
 void Player::SumResourceMax(Stat sid, int val)

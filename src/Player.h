@@ -76,7 +76,9 @@ public:
     // stats
     const StatValue & GetStat(Stat sid);
     bool HasEnough(Stat sid, int val);
+    void SetResource(Stat sid, int val);
     void SumResource(Stat sid, int val);
+    void SetResourceMax(Stat sid, int val);
     void SumResourceMax(Stat sid, int val);
     void SetOnResourcesChanged(const std::function<void()> & f);
     unsigned int AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *)> & f);

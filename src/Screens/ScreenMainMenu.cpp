@@ -26,32 +26,33 @@ namespace game
 ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(game)
 {
-    using namespace sgl::graphic;
-    using namespace sgl::sgui;
+    using namespace sgl;
 
     game->AddApplicationListener(this);
 
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    Widget * panelButtons = new Widget;
+    auto panelButtons = new sgui::Widget;
 
     int buttonY = 0;
     const int VMARGIN = 30;
 
-    const int screenW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int screenH = sgl::graphic::Renderer::Instance()->GetHeight();
+    const int screenW = graphic::Renderer::Instance()->GetWidth();
+    const int screenH = graphic::Renderer::Instance()->GetHeight();
 
     // -- BACKGROUND --
-    auto tm = sgl::graphic::TextureManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
     auto tex = tm->GetTexture("main_menu_bg.png");
 
-    mBg = new sgl::graphic::Image(tex);
+    mBg = new graphic::Image(tex);
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu("NEW GAME", panelButtons);
 
     button->AddOnClickFunction([game]
     {
+        game->InitGameData();
+
         // TODO REMOVE WHEN PLANET SELECTION IS DONE
         game->SetCurrentPlanet(PLANET_1);
         game->RequestNextActiveState(StateId::FACTION_SEL);
@@ -90,7 +91,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnWishlist->AddOnClickFunction([]
     {
-        sgl::utilities::System sys;
+        utilities::System sys;
         sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtueror_The_Virtual_Conqueror/"
                              "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=mainmenu");
     });
@@ -98,7 +99,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     btnWishlist->SetPosition(buttonX, buttonY);
 
     // -- SOCIAL BUTTONS --
-    auto panelSocial = new Widget;
+    auto panelSocial = new sgui::Widget;
 
     const int socialMarginH = 15;
     int socialX = 0;
@@ -109,7 +110,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        sgl::utilities::System sys;
+        utilities::System sys;
         sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
     });
 
@@ -120,7 +121,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        sgl::utilities::System sys;
+        utilities::System sys;
         sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
     });
 
@@ -131,7 +132,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        sgl::utilities::System sys;
+        utilities::System sys;
         sys.OpenUrlInBrowser("https://twitter.com/vivaladev");
     });
 
@@ -141,7 +142,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     btnSocial->AddOnClickFunction([]
     {
-        sgl::utilities::System sys;
+        utilities::System sys;
         sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");
     });
 
@@ -152,20 +153,20 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     panelSocial->SetPosition(psX, psY);
 
     // VERSION LABEL
-    auto fm = FontManager::Instance();
-    Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
+    auto fm = graphic::FontManager::Instance();
+    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
 
     const unsigned int colorVersion = 0xb2b2b2ff;
     const int marginLabelH = 15;
     const int marginLabelV = 10;
 
-    auto labelVer = new Label(VERSION, fnt);
+    auto labelVer = new sgui::Label(VERSION, fnt);
     labelVer->SetColor(colorVersion);
 
     const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
                                  std::string(VERSION_NUM) + std::string("-") +
                                  std::string(VERSION_SHORT_HASH);
-    auto labelBuild = new Label(strBuild.c_str(), fnt);
+    auto labelBuild = new sgui::Label(strBuild.c_str(), fnt);
     labelBuild->SetColor(colorVersion);
 
     const int labelBuildX = screenW - labelBuild->GetWidth() - marginLabelH;
@@ -175,6 +176,9 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const int labelVerX = screenW - labelVer->GetWidth() - marginLabelH;
     const int labelVerY = labelBuildY - labelVer->GetHeight();
     labelVer->SetPosition(labelVerX, labelVerY);
+
+    // makes sure game data is cleared before starting something new
+    game->ClearGameData();
 }
 
 ScreenMainMenu::~ScreenMainMenu()

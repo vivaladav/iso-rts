@@ -208,4 +208,9 @@ void MapsRegistry::SetMapOccupier(unsigned int planetId, unsigned int index, Pla
     }
 }
 
+void MapsRegistry::ClearData()
+{
+    mData.clear();
+}
+
 } // namespace game

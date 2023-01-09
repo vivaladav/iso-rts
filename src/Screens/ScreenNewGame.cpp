@@ -58,11 +58,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
     p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_4));
 
     // assign initial resources
-    p->SumResource(Player::Stat::BLOBS, startBlobs);
-    p->SumResource(Player::Stat::DIAMONDS, startDiamonds);
-    p->SumResource(Player::Stat::ENERGY, startEnergy);
-    p->SumResource(Player::Stat::MATERIAL, startMaterial);
-    p->SumResource(Player::Stat::MONEY, startMoney);
+    p->SetResource(Player::Stat::BLOBS, startBlobs);
+    p->SetResource(Player::Stat::DIAMONDS, startDiamonds);
+    p->SetResource(Player::Stat::ENERGY, startEnergy);
+    p->SetResource(Player::Stat::MATERIAL, startMaterial);
+    p->SetResource(Player::Stat::MONEY, startMoney);
 
     // create AI players
     const char * strPlayers[] =
@@ -111,11 +111,11 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_4));
 
         // assign initial resources
-        p->SumResource(Player::Stat::BLOBS, startBlobs);
-        p->SumResource(Player::Stat::DIAMONDS, startDiamonds);
-        p->SumResource(Player::Stat::ENERGY, startEnergy);
-        p->SumResource(Player::Stat::MATERIAL, startMaterial);
-        p->SumResource(Player::Stat::MONEY, startMoney);
+        p->SetResource(Player::Stat::BLOBS, startBlobs);
+        p->SetResource(Player::Stat::DIAMONDS, startDiamonds);
+        p->SetResource(Player::Stat::ENERGY, startEnergy);
+        p->SetResource(Player::Stat::MATERIAL, startMaterial);
+        p->SetResource(Player::Stat::MONEY, startMoney);
 
         ++indFaction;
 

@@ -45,6 +45,9 @@ public:
     Game(int argc, char * argv[]);
     ~Game();
 
+    void InitGameData();
+    void ClearGameData();
+
     const std::string & GetCurrentMapFile() const;
     void SetCurrentTerritory(unsigned int territory);
     void SetCurrentPlanet(Planets planet);
