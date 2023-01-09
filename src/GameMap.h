@@ -50,7 +50,9 @@ public:
     bool IsCellWalkable(unsigned int r, unsigned int c) const override;
     bool IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const;
 
+    void SetCellWalkable(unsigned int cellInd, bool val);
     void SetCellWalkable(unsigned int r, unsigned int c, bool val);
+    void SetCellWalkTarget(unsigned int cellInd, bool val);
 
     bool IsCellObjectVisited(unsigned int cellInd) const;
     bool IsCellObjectVisited(unsigned int r, unsigned int c) const;
@@ -235,6 +237,23 @@ inline const std::vector<GameObject *> & GameMap::GetObjects() const
 inline bool GameMap::IsCellWalkable(unsigned int cellInd) const
 {
     return mCells[cellInd].walkable;
+}
+
+inline void GameMap::SetCellWalkable(unsigned int cellInd, bool val)
+{
+    mCells[cellInd].walkable = val;
+}
+
+inline void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
+{
+    const unsigned int ind = r * mCols + c;
+
+    SetCellWalkable(ind, val);
+}
+
+inline void GameMap::SetCellWalkTarget(unsigned int cellInd, bool val)
+{
+    mCells[cellInd].walkTarget = val;
 }
 
 inline bool GameMap::IsCellObjectVisited(unsigned int r, unsigned int c) const

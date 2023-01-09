@@ -130,13 +130,6 @@ bool GameMap::IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const
            (checkS && checkE && IsCellWalkable(r + 1, c + 1));
 }
 
-void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
-{
-    const unsigned int ind = r * mCols + c;
-
-    mCells[ind].walkable = val;
-}
-
 bool GameMap::IsCellObjectVisited(unsigned int cellInd) const
 {
     if(cellInd < mRows * mCols)
@@ -501,7 +494,6 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     // links to other objects
     obj->SetGameMap(this);
     obj->SetScreen(mScreenGame);
-
 
     // store object in map list and in registry
     mObjects.push_back(obj);
@@ -2081,6 +2073,7 @@ bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
 
     mCells[ind1].objTop = obj;
     mCells[ind1].walkable = false;
+    mCells[ind1].walkTarget = false;
 
     return true;
 }

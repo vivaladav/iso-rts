@@ -32,6 +32,8 @@ void ObjectPath::InitNextMoveStep()
     mVelX = (mTargetX - mObjX) * mObj->GetSpeed();
     mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
 
+    mGameMap->SetCellWalkTarget(nextInd, true);
+
     ++mNextCell;
 }
 
@@ -50,7 +52,7 @@ void ObjectPath::Start()
     // check if next destination is walkable
     const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
 
-    bool canMove = nextCell.walkable;
+    bool canMove = nextCell.walkable && !nextCell.walkTarget;
 
     // TODO remove check if mObj is changed into mUnit like for other paths
     if(mObj->GetObjectType() == OBJ_UNIT)
@@ -133,7 +135,7 @@ void ObjectPath::Update(float delta)
         const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
 
         // collect collectable object, if any
-        if(targetCell.walkable && targetCell.objTop != nullptr)
+        if(targetCell.objTop != nullptr && targetCell.objTop->CanBeCollected())
         {
             player->HandleCollectable(targetCell.objTop);
 
@@ -166,7 +168,7 @@ void ObjectPath::Update(float delta)
             // check if next destination is walkable
             const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
 
-            bool canMove = nextCell.walkable;
+            bool canMove = nextCell.walkable && !nextCell.walkTarget;
 
             // TODO remove check if mObj is changed into mUnit like for other paths
             if(mObj->GetObjectType() == OBJ_UNIT)

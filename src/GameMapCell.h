@@ -69,6 +69,7 @@ struct GameMapCell
     int row = 0;
     int col = 0;
     bool walkable = true;
+    bool walkTarget = false;
     bool changing = false;
     bool linked = false;
 };
