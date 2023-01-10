@@ -119,7 +119,7 @@ void StructureIndicator::CreateCostData()
     using namespace sgl::graphic;
 
     FontManager * fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
+    Font * font = fm->GetFont("Lato-Bold.ttf", 14, Font::NORMAL);
 
     auto tm = sgl::graphic::TextureManager::Instance();
 

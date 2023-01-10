@@ -30,7 +30,7 @@ ButtonUnitsSelector::ButtonUnitsSelector(const char * text)
 
     // set label font
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    Font * font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
 
     SetLabelFont(font);
 

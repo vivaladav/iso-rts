@@ -38,7 +38,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // TITLE
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     const unsigned int colorTitle = 0xe9f7fbcc;
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
@@ -221,7 +221,7 @@ void PanelPlanetInfo::UpdateTerritorySize()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -250,7 +250,7 @@ void PanelPlanetInfo::UpdateTerritoryStatus()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -286,7 +286,7 @@ void PanelPlanetInfo::UpdateTerritoryOccupier()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 

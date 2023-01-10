@@ -31,7 +31,7 @@ PanelPlanetActions::PanelPlanetActions()
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // TITLE
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     const unsigned int colorTitle = 0xe9f7fbcc;
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,

@@ -28,10 +28,11 @@ private:
     void UpdateStatus();
 
     void SetupLoadPackages();
+    void SetupFonts();
     void SetupTextures();
 
 private:
-    enum Packages : unsigned int
+    enum TexPackages : unsigned int
     {
         PACKAGE_IMGS_BACKGROUNDS,
         PACKAGE_IMGS_GAME,
@@ -44,7 +45,7 @@ private:
     sgl::graphic::Image * mBg = nullptr;
     sgl::sgui::Label * mLabelStatus = nullptr;
 
-    std::vector<sgl::core::DataPackage *> mPackages;
+    std::vector<sgl::core::DataPackage *> mTexPackages;
 
     std::vector<std::function<void()>> mJobs;
     unsigned int mCurrJob = 0;

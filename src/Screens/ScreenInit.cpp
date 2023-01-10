@@ -21,27 +21,29 @@
 namespace game
 {
 
+const char * fontsGamePackage = "data/fonts/game.bin";
+
 ScreenInit::ScreenInit(Game * game)
     : Screen(game)
 {
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
-    mPackages.assign(NUM_DATA_PACKAGES, nullptr);
+    mTexPackages.assign(NUM_DATA_PACKAGES, nullptr);
 
     auto tm = sgl::graphic::TextureManager::Instance();
 
     // -- BACKGROUND --
-    mPackages[PACKAGE_IMGS_BACKGROUNDS] = new sgl::core::DataPackage("data/img/backgrounds.bin");
+    mTexPackages[PACKAGE_IMGS_BACKGROUNDS] = new sgl::core::DataPackage("data/img/backgrounds.bin");
 
-    tm->RegisterTexture(*mPackages[PACKAGE_IMGS_BACKGROUNDS], "main_menu_bg.png");
-    tm->RegisterTexture(*mPackages[PACKAGE_IMGS_BACKGROUNDS], "space_bg.jpg");
+    tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_BACKGROUNDS], "main_menu_bg.png");
+    tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_BACKGROUNDS], "space_bg.jpg");
 
     auto tex = tm->GetTexture("space_bg.jpg");
     mBg = new sgl::graphic::Image(tex);
 
     // == SETUP JOBS ==
     SetupLoadPackages();
-
+    SetupFonts();
     SetupTextures();
 
     // FINAL JOB - move to next screen
@@ -53,8 +55,10 @@ ScreenInit::ScreenInit(Game * game)
 
     // INIT STATUS LABEL
     auto fm = sgl::graphic::FontManager::Instance();
-    sgl::graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
+    fm->RegisterDataPackage(fontsGamePackage);
+    fm->RegisterFont(fontsGamePackage, "Lato-Regular.ttf");
 
+    sgl::graphic::Font * font = fm->GetFont("Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
     mLabelStatus = new sgl::sgui::Label(font);
     mLabelStatus->SetColor(0xEEEEEEFF);
     UpdateStatus();
@@ -64,7 +68,7 @@ ScreenInit::~ScreenInit()
 {
     delete mBg;
 
-    for(auto p : mPackages)
+    for(auto p : mTexPackages)
         delete p;
 
     sgl::sgui::Stage::Instance()->ClearWidgets();
@@ -103,26 +107,34 @@ void ScreenInit::UpdateStatus()
 
 void ScreenInit::SetupLoadPackages()
 {
-    auto tm = sgl::graphic::TextureManager::Instance();
-
     // LOAD GAME PACKAGE
-    mJobs.emplace_back([this, tm]
+    mJobs.emplace_back([this]
     {
-        mPackages[PACKAGE_IMGS_GAME] =  new sgl::core::DataPackage("data/img/game.bin");
+        mTexPackages[PACKAGE_IMGS_GAME] =  new sgl::core::DataPackage("data/img/game.bin");
     });
 
     // LOAD TEST PACKAGE
-    mJobs.emplace_back([this, tm]
+    mJobs.emplace_back([this]
     {
-        mPackages[PACKAGE_IMGS_TEST] =  new sgl::core::DataPackage("data/img/test.bin");
+        mTexPackages[PACKAGE_IMGS_TEST] =  new sgl::core::DataPackage("data/img/test.bin");
     });
 
     // LOAD UI PACKAGE
-    mJobs.emplace_back([this, tm]
+    mJobs.emplace_back([this]
     {
-        mPackages[PACKAGE_IMGS_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
+        mTexPackages[PACKAGE_IMGS_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
     });
+}
 
+void ScreenInit::SetupFonts()
+{
+    // REGISTER FONTS
+    auto fm = sgl::graphic::FontManager::Instance();
+
+    mJobs.emplace_back([this, fm]
+    {
+        fm->RegisterFont(fontsGamePackage, "Lato-Bold.ttf");
+    });
 }
 
 void ScreenInit::SetupTextures()
@@ -160,7 +172,7 @@ void ScreenInit::SetupTextures()
             { 935, 193, 32, 24 },
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileDialogExit, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExit, rects);
     });
 
     // MAIN MENU
@@ -190,7 +202,7 @@ void ScreenInit::SetupTextures()
             { 128, 500, 24, 24 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMainMenu, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMainMenu, rects);
     });
 
     // FACTION SELECTION
@@ -233,7 +245,7 @@ void ScreenInit::SetupTextures()
             { 1404, 554, 300, 60 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileFactionSelection, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileFactionSelection, rects);
     });
 
     // CELLS
@@ -264,7 +276,7 @@ void ScreenInit::SetupTextures()
             y += blockH;
         }
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileCells, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileCells, rects);
     });
 
     // MAP UI
@@ -305,7 +317,7 @@ void ScreenInit::SetupTextures()
             { 106, 287, 52, 52 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMapPanels, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMapPanels, rects);
     });
 
 
@@ -325,7 +337,7 @@ void ScreenInit::SetupTextures()
             { 9, 37, 11, 12 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileMapUI, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMapUI, rects);
     });
 
     // COLLECTIBLES
@@ -346,7 +358,7 @@ void ScreenInit::SetupTextures()
             { 288, 70, 96, 58 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteCollectiblesFile, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteCollectiblesFile, rects);
     });
 
     // INDICATORS
@@ -386,7 +398,7 @@ void ScreenInit::SetupTextures()
             { 97, 196, 96, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileIndicators, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileIndicators, rects);
     });
 
     // PARTICLES
@@ -397,7 +409,7 @@ void ScreenInit::SetupTextures()
             { 0, 0, 4, 4 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileParticles, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileParticles, rects);
     });
 
     // ROCKS
@@ -428,7 +440,7 @@ void ScreenInit::SetupTextures()
             { 768, 58, 96, 59 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteRocksFile, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteRocksFile, rects);
     });
 
     // SCENE ELEMENTS
@@ -451,7 +463,7 @@ void ScreenInit::SetupTextures()
             { 579, 270, 192, 134 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileSceneElements, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileSceneElements, rects);
     });
 
     // STRUCTURES
@@ -564,7 +576,7 @@ void ScreenInit::SetupTextures()
             { 963, 582, 192, 96 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
     });
 
     // TREES
@@ -611,7 +623,7 @@ void ScreenInit::SetupTextures()
             { 679, 199, 96, 63 },
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileTrees, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileTrees, rects);
     });
 
     // UNITS
@@ -649,7 +661,7 @@ void ScreenInit::SetupTextures()
             { 485, 169, 96, 54 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileUnits, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileUnits, rects);
     });
 
     // UNIT PARTICLES
@@ -662,7 +674,7 @@ void ScreenInit::SetupTextures()
             { 0, 4, 10, 2 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
     });
 
     // WALLS
@@ -735,7 +747,7 @@ void ScreenInit::SetupTextures()
             { 672, 240, 96, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_GAME], SpriteFileWalls, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileWalls, rects);
     });
 
     // NEW ELEMENT DIALOG
@@ -791,7 +803,7 @@ void ScreenInit::SetupTextures()
             { 1281, 567, 20, 80 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileNewElementDialog, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileNewElementDialog, rects);
     });
 
     // OBJECT ACTION BUTTON
@@ -818,7 +830,7 @@ void ScreenInit::SetupTextures()
             { 147, 114, 48, 48 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileObjActionButton, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileObjActionButton, rects);
     });
 
     // PLANET MAP
@@ -882,7 +894,7 @@ void ScreenInit::SetupTextures()
             { 1017, 763, 32, 32 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap, rects);
     });
 
     // PLANET MAP 2
@@ -900,7 +912,7 @@ void ScreenInit::SetupTextures()
             { 476, 827, 475, 135 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap2, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap2, rects);
     });
 
     // RESOURCES BAR
@@ -921,7 +933,7 @@ void ScreenInit::SetupTextures()
             { 141, 51, 26, 26 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileResourcesBar, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileResourcesBar, rects);
     });
 
     // QUICK UNIT SELECTION
@@ -953,7 +965,7 @@ void ScreenInit::SetupTextures()
             { 493, 82, 32, 32 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileUnitQuickSel, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileUnitQuickSel, rects);
     });
 
     // SETTINGS
@@ -994,7 +1006,7 @@ void ScreenInit::SetupTextures()
             { 1222, 841, 45, 39 },
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileSettings, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileSettings, rects);
     });
 
     // SETTINGS - EXPANDABLE TEXTURES
@@ -1008,7 +1020,7 @@ void ScreenInit::SetupTextures()
             { 0, 32, 1200, 20 },
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_UI], SpriteFileSettingsExp, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileSettingsExp, rects);
     });
 
     // TEST SPRITE
@@ -1022,7 +1034,7 @@ void ScreenInit::SetupTextures()
             { 40, 40, 40, 40 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite, rects);
     });
 
     // TEST UI
@@ -1054,22 +1066,21 @@ void ScreenInit::SetupTextures()
             { 801, 101, 40, 40 }
         };
 
-        tm->RegisterSprite(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestUI, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_TEST], SpriteFileTestUI, rects);
     });
 
     // TEST IMAGES
     mJobs.emplace_back([this, tm]
     {
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/obj_null.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/red_dot4.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/square100.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/test-bar-bg.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/test-bar-nobg.png");
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], "test/text_area.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/obj_null.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/red_dot4.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/square100.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/test-bar-bg.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/test-bar-nobg.png");
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], "test/text_area.png");
 
-            tm->RegisterTexture(*mPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite);
+            tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite);
     });
-
 }
 
 } // namespace game

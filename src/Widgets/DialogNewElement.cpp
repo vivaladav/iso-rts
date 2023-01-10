@@ -116,7 +116,7 @@ public:
         SetShortcutKey(sgl::core::KeyboardEvent::KEY_B);
 
         auto fm = FontManager::Instance();
-        auto font = fm->GetFont("data/fonts/Lato-Bold.ttf", 11, Font::NORMAL);
+        auto font = fm->GetFont("Lato-Bold.ttf", 11, Font::NORMAL);
         mShortcut = new Text("B", font, true);
         mShortcut->SetColor(0xd5daddff);
 
@@ -125,7 +125,7 @@ public:
         RegisterRenderable(mShortcut);
 
         // LABEL
-        font = fm->GetFont("data/fonts/Lato-Regular.ttf", 19, Font::NORMAL);
+        font = fm->GetFont("Lato-Regular.ttf", 19, Font::NORMAL);
         mLabel = new Text("BUILD", font);
         RegisterRenderable(mLabel);
 
@@ -221,7 +221,7 @@ public:
         // TITLE
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
-        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, Font::NORMAL);
+        auto font = fm->GetFont("Lato-Regular.ttf", 16, Font::NORMAL);
         mTitle = new sgl::sgui::TextArea(tex->GetWidth(), TITLE_H, font, this);
         mTitle->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_CENTER, sgl::sgui::TextArea::ALIGN_V_CENTER);
 
@@ -229,7 +229,7 @@ public:
         mImage = new DummyRenderable;
 
         // SHORTCUT
-        font = fm->GetFont("data/fonts/Lato-Bold.ttf", 12, Font::NORMAL);
+        font = fm->GetFont("Lato-Bold.ttf", 12, Font::NORMAL);
         mShortcut = new Text(SHORTCUTS[index], font);
         mShortcut->SetColor(0xd5daddff);
 
@@ -452,7 +452,7 @@ public:
         UnregisterRenderable(mLabel);
         delete mLabel;
 
-        auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, Font::NORMAL);
+        auto font = fm->GetFont("Lato-Regular.ttf", 18, Font::NORMAL);
         mLabel = new Text(txt, font);
         mLabel->SetColor(0xf1f2f4ff);
         RegisterRenderable(mLabel);
@@ -541,7 +541,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     mBtnClose->SetX(imgBg->GetWidth() - mBtnClose->GetWidth());
 
     // TITLE
-    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 28, sgl::graphic::Font::NORMAL);
+    auto font = fm->GetFont("Lato-Regular.ttf", 28, sgl::graphic::Font::NORMAL);
     mTitle = new Label(title, font, this);
     mTitle->SetColor(0xf1f2f4ff);
     mTitle->SetPosition(marginL, marginT);
@@ -614,8 +614,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const unsigned int colorHeader = 0xf1f2f4ff;
     const unsigned int colorText = 0xb6c0c9ff;
 
-    auto fontHeader = fm->GetFont("data/fonts/Lato-Bold.ttf", 18, sgl::graphic::Font::NORMAL);
-    auto fontText = fm->GetFont("data/fonts/Lato-Regular.ttf", 17, sgl::graphic::Font::NORMAL);
+    auto fontHeader = fm->GetFont("Lato-Bold.ttf", 18, sgl::graphic::Font::NORMAL);
+    auto fontText = fm->GetFont("Lato-Regular.ttf", 17, sgl::graphic::Font::NORMAL);
 
     const int marginPanelXY0 = 10;
     const int marginPanelBlock = 20;

@@ -68,25 +68,25 @@ ScreenTest::ScreenTest(Game * game)
     FontManager * fm = FontManager::Instance();
 
     const int TXT_X0 = 20;
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
+    Font * font = fm->GetFont("Lato-Regular.ttf", 24, Font::NORMAL);
     Text * txt = nullptr;
 
     txt = new Text("Text 1", font);
     txt->SetPosition(TXT_X0, 250);
     mRenderables.emplace_back(txt);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD | Font::ITALIC);
+    font = fm->GetFont("Lato-Regular.ttf", 24, Font::BOLD | Font::ITALIC);
     txt = new Text("Text 2 (bold & italic)", font);
     txt->SetPosition(TXT_X0, 300);
     mRenderables.emplace_back(txt);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
     txt = new Text("Text 3 (bold - A=128)", font);
     txt->SetPosition(TXT_X0, 350);
     txt->SetAlpha(128);
     mRenderables.emplace_back(txt);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 24, Font::NORMAL);
     txt = new Text("Text 4 (50, 150, 250, 255)", font);
     txt->SetPosition(TXT_X0, 400);
     txt->SetColor(50, 150, 250, 255);
@@ -151,13 +151,13 @@ void ScreenTest::TestSGui()
     FontManager * fm = FontManager::Instance();
 
     // -- PUSHBUTTON --
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    Font * font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
     Label * label = new Label("PUSH BUTTON", font, container);
 
     ButtonMainMenu * button = new ButtonMainMenu("BUTTON 1", container);
     button->SetY(label->GetHeight() + 20);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 24, Font::NORMAL);
     label = new Label(font, container);
     label->SetY(button->GetY() + button->GetHeight() + 10);
 
@@ -191,7 +191,7 @@ void ScreenTest::TestSGui()
     buttonY += button->GetHeight() + marginV;
 
     // -- TEXT AREA --
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
     label = new Label("TEXT AREA", font, container);
     label->SetY(buttonY);
 
@@ -210,7 +210,7 @@ void ScreenTest::TestSGui()
     const int taH = 300;
     const char * text = "This is a pretty long text.(NN)\n\nOver multiple lines, well, at least 4 and I bet that "
                         "this line will wrap at some point before the newline.(N)\nHere it is the end!";
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
     auto ta = new TextArea(taW, taH, text, font, container);
     ta->SetY(buttonY);
     ta->SetColor(0x99FFAAFF);
@@ -248,7 +248,7 @@ void ScreenTest::TestSGui()
     });
 
     // -- BUTTONS GROUP --
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
 
     label = new Label("BUTTONS GROUP", font, container);
     label->SetX(400);
@@ -283,7 +283,7 @@ void ScreenTest::TestSGui()
     }
 
     // -- PROGRESS BAR --
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
 
     label = new Label("PROGRESS BAR", font, container);
     label->SetX(700);
@@ -352,7 +352,7 @@ void ScreenTest::TestSGui()
 
     cb->SetY(wY);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
     label = new Label(cb->GetActiveItem()->GetText().c_str(), font, container3);
     label->SetPosition(cb->GetX() + cb->GetWidth() + 50, cb->GetY());
 
@@ -366,7 +366,7 @@ void ScreenTest::TestSGui()
     auto container4 = new Widget;
     container4->SetPosition(wX, wY);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 24, Font::BOLD);
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
     label = new Label("SLIDER", font, container4);
     wY = label->GetHeight() * 2;
 
@@ -374,7 +374,7 @@ void ScreenTest::TestSGui()
     auto slider = new TestSliderH(container4);
     slider->SetY(wY);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
     label = new Label(std::to_string(slider->GetValue()).c_str(), font, container4);
     label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
 
@@ -391,7 +391,7 @@ void ScreenTest::TestSGui()
     slider->SetStep(50);
     slider->SetY(wY);
 
-    font = fm->GetFont("data/fonts/OpenSans.ttf", 22, Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
     label = new Label(std::to_string(slider->GetValue()).c_str(), font, container4);
     label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
 

@@ -27,7 +27,7 @@ namespace
 {
     constexpr unsigned int colorTxt = 0x73a6bfff;
     constexpr unsigned int sizeTxt = 22;
-    const char * fontTxt = "data/fonts/Lato-Regular.ttf";
+    const char * fontTxt = "Lato-Regular.ttf";
 }
 
 namespace game
@@ -58,7 +58,7 @@ public:
 
         // set label font
         auto fm = FontManager::Instance();
-        Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 24, Font::NORMAL);
+        Font * font = fm->GetFont("Lato-Regular.ttf", 24, Font::NORMAL);
 
         SetLabelFont(font);
 
@@ -83,7 +83,7 @@ public:
 
         // LABEL
         auto fm = graphic::FontManager::Instance();
-        graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 24, graphic::Font::NORMAL);
+        graphic::Font * font = fm->GetFont("Lato-Regular.ttf", 24, graphic::Font::NORMAL);
 
         mLabel = new graphic::Text(text, font);
         RegisterRenderable(mLabel);
@@ -154,7 +154,7 @@ public:
         using namespace sgl::graphic;
 
         auto fm = FontManager::Instance();
-        Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, Font::NORMAL);
+        Font * font = fm->GetFont("Lato-Regular.ttf", 20, Font::NORMAL);
         SetLabelFont(font);
     }
 
@@ -205,7 +205,7 @@ public:
 
         // TEXT LABEL
         auto fm = FontManager::Instance();
-        Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, Font::NORMAL);
+        Font * font = fm->GetFont("Lato-Regular.ttf", 20, Font::NORMAL);
         mText = new Text(txt, font, true);
         RegisterRenderable(mText);
 
@@ -479,7 +479,7 @@ ScreenSettings::ScreenSettings(Game * game)
 
     // TITLE
     const unsigned int colorTitle = 0xe6eef2ff;
-    font = fm->GetFont("data/fonts/Lato-Regular.ttf", 30, graphic::Font::NORMAL);
+    font = fm->GetFont("Lato-Regular.ttf", 30, graphic::Font::NORMAL);
     auto labelTitle = new sgui::Label("SETTINGS", font, win);
 
     labelTitle->SetColor(colorTitle);

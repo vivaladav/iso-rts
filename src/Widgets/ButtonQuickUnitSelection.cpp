@@ -57,7 +57,7 @@ ButtonQuickUnitSelection::ButtonQuickUnitSelection(int index, ScreenGame * sg, s
 {
     // create shortcut label
     auto fm = sgl::graphic::FontManager::Instance();
-    auto fontShortcut = fm->GetFont("data/fonts/Lato-Regular.ttf", 12, sgl::graphic::Font::NORMAL);
+    auto fontShortcut = fm->GetFont("Lato-Regular.ttf", 12, sgl::graphic::Font::NORMAL);
     mShortcut = new sgl::graphic::Text(KEYS_STR[index], fontShortcut);
     RegisterRenderable(mShortcut);
 

@@ -110,7 +110,7 @@ void DigitsDisplay::UpdateDigits(bool force)
     ss << val << mSuffix;
 
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", mFontSize, Font::NORMAL);
+    Font * font = fm->GetFont("Lato-Regular.ttf", mFontSize, Font::NORMAL);
     sgl::core::Sized size = font->GetTextSize(ss.str().c_str());
 
     // create zeroes

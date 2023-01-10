@@ -154,7 +154,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // VERSION LABEL
     auto fm = graphic::FontManager::Instance();
-    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+    graphic::Font * fnt = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
 
     const unsigned int colorVersion = 0xb2b2b2ff;
     const int marginLabelH = 15;

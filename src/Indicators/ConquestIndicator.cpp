@@ -83,7 +83,7 @@ void ConquestIndicator::CreateLabelCost()
     s << std::fixed << std::setprecision(1) << mCost;   
 
     FontManager * fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/OpenSans.ttf", 14, Font::BOLD);
+    Font * font = fm->GetFont("Lato-Bold.ttf", 14, Font::NORMAL);
     mTxtCost = new Text(s.str().c_str(), font);
     mTxtCost->SetColor(color);
 

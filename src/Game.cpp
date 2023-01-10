@@ -65,7 +65,7 @@ Game::Game(int argc, char * argv[])
     AddMouseListener(mStage);
 
     FontManager * fm = FontManager::Create();
-    mFontGui = fm->GetFont("data/fonts/OpenSans.ttf", 32, Font::BOLD);
+    mFontGui = fm->GetFont("Lato-Bold.ttf", 32, Font::NORMAL);
     mStage->SetDefaultFont(mFontGui);
 }
 

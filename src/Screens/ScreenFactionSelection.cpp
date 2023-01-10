@@ -67,13 +67,13 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     int y = y0;
 
     // LABEL "SELECT YOUR FACTION"
-    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 40, graphic::Font::NORMAL);
+    fnt = fm->GetFont("Lato-Regular.ttf", 40, graphic::Font::NORMAL);
     sgui::Label * labelTitle = new sgui::Label("SELECT YOUR FACTION", fnt, panelMain);
     labelTitle->SetPosition(x, y);
     labelTitle->SetColor(colorTitle);
 
-    graphic::Font * fntFaction = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
-    graphic::Font * fntTxt = fm->GetFont("data/fonts/Lato-Regular.ttf", 20, graphic::Font::NORMAL);
+    graphic::Font * fntFaction = fm->GetFont("Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    graphic::Font * fntTxt = fm->GetFont("Lato-Regular.ttf", 20, graphic::Font::NORMAL);
 
     // BUTTON BACK
     auto btnBack = new ButtonDialogBack(panelMain);
@@ -211,7 +211,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     panelFaction = new sgui::Image(tex, panelCol);
     panelFaction->SetPosition(x, y);
 
-    fnt = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    fnt = fm->GetFont("Lato-Regular.ttf", 32, graphic::Font::NORMAL);
     labelFactionName = new sgui::Label(FACTIONS_NAME[FACTION_3], fnt, panelFaction);
     labelX = (panelFaction->GetWidth() - labelFactionName->GetWidth()) * 0.5f;
     labelFactionName->SetPosition(labelX, 10);
@@ -295,7 +295,7 @@ int ScreenFactionSelection::AddPanelStats(int x, int y, const std::array<int, NU
     auto panel = new sgui::Image(tex, parent);
     panel->SetPosition(x, y);
 
-    graphic::Font * fnt = fm->GetFont("data/fonts/Lato-Bold.ttf", 20, graphic::Font::NORMAL);
+    graphic::Font * fnt = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
 
     const int marginHeaderB = 5;
     const int marginBlockB = 36;

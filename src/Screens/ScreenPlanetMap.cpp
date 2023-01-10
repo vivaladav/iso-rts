@@ -54,7 +54,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     graphic::Texture * tex = nullptr;
     graphic::Font * fnt = nullptr;
 
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
 
     const unsigned int colorHeader = 0xe9f7fbcc;
 

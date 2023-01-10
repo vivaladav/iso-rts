@@ -30,7 +30,7 @@ ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
             });
 
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 34, Font::NORMAL);
+    Font * font = fm->GetFont("Lato-Regular.ttf", 34, Font::NORMAL);
 
     SetLabelFont(font);
 

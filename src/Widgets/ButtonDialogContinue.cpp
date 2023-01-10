@@ -30,7 +30,7 @@ ButtonDialogContinue::ButtonDialogContinue(sgl::sgui::Widget * parent)
 
     // set label font
     auto fm = FontManager::Instance();
-    Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 32, Font::NORMAL);
+    Font * font = fm->GetFont("Lato-Regular.ttf", 32, Font::NORMAL);
 
     SetLabelFont(font);
 

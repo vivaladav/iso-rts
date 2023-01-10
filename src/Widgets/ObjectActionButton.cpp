@@ -52,7 +52,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
 
     // -- CREATE SHORTCUT TEXT --
     auto fm = FontManager::Instance();
-    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 12, Font::BOLD);
+    auto font = fm->GetFont("Lato-Bold.ttf", 12, Font::NORMAL);
     mShortcut = new Text(shortcut, font, true);
 
     RegisterRenderable(mShortcut);

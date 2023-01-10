@@ -19,7 +19,7 @@ namespace
 {
     constexpr unsigned int textColor = 0x80a2b3ff;
     constexpr int textSize = 18;
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
 }
 
 namespace game

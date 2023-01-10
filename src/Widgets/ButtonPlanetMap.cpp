@@ -15,7 +15,7 @@ ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
         { 0xd7eaf4ff, 0x335f73b2, 0xebf4f9ff, 0xc3dfeeff, 0xd7eaf4ff },
         parent)
 {
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     const int size = 20;
 
     auto fm = sgl::graphic::FontManager::Instance();
@@ -30,7 +30,7 @@ SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
         { 0xf4e5d7ff, 0x735333b2, 0xf9f2ebff, 0xeed9c3ff, 0xf4e5d7ff },
         parent)
 {
-    const char * fileFont = "data/fonts/Lato-Regular.ttf";
+    const char * fileFont = "Lato-Regular.ttf";
     const int size = 20;
 
     auto fm = sgl::graphic::FontManager::Instance();

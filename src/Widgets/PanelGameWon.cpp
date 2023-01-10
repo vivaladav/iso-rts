@@ -19,7 +19,7 @@ PanelGameWon::PanelGameWon(Game * game, sgl::sgui::Widget * parent)
 
     FontManager * fm = FontManager::Instance();
 
-    Font * fontName = fm->GetFont("data/fonts/OpenSans.ttf", 128, Font::BOLD);
+    Font * fontName = fm->GetFont("Lato-Bold.ttf", 128, Font::NORMAL);
 
     Label * labelName = new Label("VICTORY!", fontName, this);
     labelName->SetColor(0x060606FF);

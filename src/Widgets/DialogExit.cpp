@@ -30,7 +30,7 @@ public:
     {
         using namespace sgl;
 
-        const char * fileFont = "data/fonts/Lato-Regular.ttf";
+        const char * fileFont = "Lato-Regular.ttf";
         const int size = 24;
 
         auto fm = graphic::FontManager::Instance();
@@ -71,7 +71,7 @@ public:
         // TEXT LABEL
         // TODO use setLabel after adding support for icon to PushButton
         auto fm = graphic::FontManager::Instance();
-        graphic::Font * font = fm->GetFont("data/fonts/Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+        graphic::Font * font = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
         mText = new graphic::Text("WISHLIST NOW", font, true);
         RegisterRenderable(mText);
 
@@ -189,7 +189,7 @@ DialogExit::DialogExit(Game * game)
     mButtonClose->SetX(GetWidth() - mButtonClose->GetWidth());
 
     // TITLE
-    auto font = fm->GetFont("data/fonts/Lato-Regular.ttf", 16, graphic::Font::NORMAL);
+    auto font = fm->GetFont("Lato-Regular.ttf", 16, graphic::Font::NORMAL);
     mTitle = new graphic::Text("LEAVE", font);
 
     // BUTTON PLANET MAP
