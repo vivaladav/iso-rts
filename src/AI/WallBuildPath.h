@@ -2,6 +2,7 @@
 
 #include "Cell2D.h"
 
+#include <functional>
 #include <vector>
 
 namespace game
@@ -49,6 +50,10 @@ public:
     void Abort();
     void InstantAbortion();
 
+    void SetOnCompleted(const std::function<void()> & f);
+    void SetOnFailed(const std::function<void()> & f);
+    void SetOnAborted(const std::function<void()> & f);
+
     void Update(float delta);
 
     void SetIndicatorsType(const std::vector<Cell2D> & cells,
@@ -61,10 +66,16 @@ private:
 
     void UpdatePathCost();
 
+    void Fail();
+
 private:
     std::vector<unsigned int> mCells;
 
     std::vector<WallIndicator *> mIndicators;
+
+    std::function<void()> mOnCompleted;
+    std::function<void()> mOnFailed;
+    std::function<void()> mOnAborted;
 
     Unit * mUnit = nullptr;
 
@@ -93,7 +104,13 @@ private:
 };
 
 inline WallBuildPath::WallBuildPath(Unit *unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
+    : mOnCompleted([]{})
+    , mOnFailed([]{})
+    , mOnAborted([]{})
+    , mUnit(unit)
+    , mIsoMap(im)
+    , mGameMap(gm)
+    , mScreen(sg)
 {
 }
 
@@ -113,5 +130,9 @@ inline void WallBuildPath::SetPathCells(const std::vector<unsigned int> & cells)
 
 inline unsigned int WallBuildPath::GetWallLevel() const { return mLevel; }
 inline void WallBuildPath::SetWallLevel(unsigned int level) { mLevel = level; }
+
+inline void WallBuildPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
+inline void WallBuildPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
+inline void WallBuildPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 } // namespace game

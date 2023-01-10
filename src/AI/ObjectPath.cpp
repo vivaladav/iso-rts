@@ -17,6 +17,7 @@ namespace game
 ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
     : mOnCompleted([]{})
     , mOnFailed([]{})
+    , mOnAborted([]{})
     , mObj(obj)
     , mIsoMap(im)
     , mGameMap(gm)
@@ -90,6 +91,8 @@ void ObjectPath::InstantAbort()
         const unsigned int nextInd = mCells[mNextCell];
         mGameMap->SetCellWalkTarget(nextInd, false);
     }
+
+    mOnAborted();
 }
 
 void ObjectPath::Update(float delta)

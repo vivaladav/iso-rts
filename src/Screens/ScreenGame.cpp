@@ -1337,6 +1337,8 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     auto op = new ObjectPath(unit, mIsoMap, mGameMap, this);
     op->SetPathCells(path);
     op->SetOnCompleted(OnDone);
+    op->SetOnFailed(OnDone);
+    op->SetOnAborted(OnDone);
 
     const bool res = mGameMap->MoveUnit(op);
 
@@ -1428,6 +1430,8 @@ bool ScreenGame::SetupConnectCells(Unit * unit, const std::function<void()> & On
     cp->SetPathCells(path);
     cp->SetOnCompleted(OnDone);
     cp->SetOnFailed(OnDone);
+    cp->SetOnAborted(OnDone);
+
     mGameMap->ConquerCells(cp);
 
     return true;

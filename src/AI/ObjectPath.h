@@ -39,6 +39,7 @@ public:
 
     void SetOnCompleted(const std::function<void()> & f);
     void SetOnFailed(const std::function<void()> & f);
+    void SetOnAborted(const std::function<void()> & f);
 
     void Start();
 
@@ -59,6 +60,7 @@ private:
 
     std::function<void()> mOnCompleted;
     std::function<void()> mOnFailed;
+    std::function<void()> mOnAborted;
 
     GameObject * mObj = nullptr;
 
@@ -96,6 +98,8 @@ inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells)
 }
 
 inline void ObjectPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
+inline void ObjectPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
+inline void ObjectPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 inline void ObjectPath::Abort()
 {

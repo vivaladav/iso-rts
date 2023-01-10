@@ -18,7 +18,13 @@ namespace game
 {
 
 ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{}), mOnFailed([]{}), mUnit(unit), mIsoMap(im), mGameMap(gm), mScreen(sg)
+    : mOnCompleted([]{})
+    , mOnFailed([]{})
+    , mOnAborted([]{})
+    , mUnit(unit)
+    , mIsoMap(im)
+    , mGameMap(gm)
+    , mScreen(sg)
 {
     mLocalPlayer = unit->GetOwner()->IsLocal();
 }
@@ -69,6 +75,8 @@ void ConquerPath::InstantAbort()
 
     // set new state
     mState = ABORTED;
+
+    mOnAborted();
 }
 
 void ConquerPath::Update(float delta)

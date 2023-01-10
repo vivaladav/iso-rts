@@ -41,6 +41,7 @@ public:
 
     void SetOnCompleted(const std::function<void()> & f);
     void SetOnFailed(const std::function<void()> & f);
+    void SetOnAborted(const std::function<void()> & f);
 
     void Start();
     void Abort();
@@ -65,6 +66,7 @@ private:
 
     std::function<void()> mOnCompleted;
     std::function<void()> mOnFailed;
+    std::function<void()> mOnAborted;
 
     Unit * mUnit = nullptr;
 
@@ -95,14 +97,8 @@ inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells)
     UpdatePathCost();
 }
 
-inline void ConquerPath::SetOnCompleted(const std::function<void()> & f)
-{
-    mOnCompleted = f;
-}
-
-inline void ConquerPath::SetOnFailed(const std::function<void()> & f)
-{
-    mOnFailed = f;
-}
+inline void ConquerPath::SetOnCompleted(const std::function<void()> & f) {  mOnCompleted = f; }
+inline void ConquerPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
+inline void ConquerPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 } // namespace game

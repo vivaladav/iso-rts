@@ -70,13 +70,7 @@ void WallBuildPath::InitNextBuild()
 
     if(!mUnit->HasEnergyForAction(BUILD_WALL))
     {
-        mState = FAILED;
-
-        // clear indicators
-        layerOverlay->ClearObjects();
-
-        // clear action data
-        mScreen->SetObjectActionCompleted(mUnit);
+        Fail();
 
         return ;
     }
@@ -131,16 +125,15 @@ void WallBuildPath::InitNextBuild()
 
                 // clear action data once the action is completed
                 mScreen->SetObjectActionCompleted(mUnit);
+
+                mOnCompleted();
             }
         });
 
         return ;
     }
 
-    mState = FAILED;
-
-    // clear action data if action failed
-    mScreen->SetObjectActionCompleted(mUnit);
+    Fail();
 }
 
 void WallBuildPath::UpdatePathCost()
@@ -167,23 +160,23 @@ void WallBuildPath::Start()
 
 void WallBuildPath::Abort()
 {
-    if(BUILDING == mState)
-        InstantAbortion();
-    else
-        mState = ABORTED;
+    InstantAbortion();
 }
 
 void WallBuildPath::InstantAbortion()
 {
     // clear progress bar
-    const unsigned int nextInd = mCells[mNextCell];
-    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const Cell2D cell(nextRow, nextCol);
+    if(mNextCell < mCells.size())
+    {
+        const unsigned int nextInd = mCells[mNextCell];
+        const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+        const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+        const Cell2D cell(nextRow, nextCol);
 
-    mGameMap->SetCellChanging(nextRow, nextCol, false);
+        mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-    mScreen->CancelProgressBar(cell);
+        mScreen->CancelProgressBar(cell);
+    }
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -191,6 +184,8 @@ void WallBuildPath::InstantAbortion()
 
     // set new state
     mState = ABORTED;
+
+    mOnAborted();
 }
 
 void WallBuildPath::Update(float delta)
@@ -238,6 +233,20 @@ void WallBuildPath::SetIndicatorsType(const std::vector<Cell2D> & cells,
         const int bc = cells[lastIdx].col - cells[lastIdx - 1].col;
         indicators[lastIndicator]->SetBeforeAfterDirections(br, bc, 0, 0);
     }
+}
+
+void WallBuildPath::Fail()
+{
+    // clear indicators
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+    layerOverlay->ClearObjects();
+
+    // clear action data
+    mScreen->SetObjectActionCompleted(mUnit);
+
+    mState = FAILED;
+
+    mOnCompleted();
 }
 
 } // namespace game
