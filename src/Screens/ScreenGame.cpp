@@ -284,6 +284,23 @@ void ScreenGame::GameWon()
     panel->SetPosition(x, y);
 }
 
+void ScreenGame::CancelProgressBar(CellProgressBar * pb)
+{
+    auto it = mProgressBars.begin();
+
+    while(it != mProgressBars.end())
+    {
+        if(it->second == pb)
+        {
+            mProgressBars.erase(it);
+            delete pb;
+            break;
+        }
+
+        ++it;
+    }
+}
+
 void ScreenGame::CancelProgressBar(const Cell2D & cell)
 {
     const int cellInd = CellToIndex(cell);
@@ -318,6 +335,26 @@ void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * pla
 
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+}
+
+void ScreenGame::ClearObjectAction(GameObject * obj)
+{
+    auto it = mActiveObjActions.begin();
+
+    // search selected object in active actions
+    while(it != mActiveObjActions.end())
+    {
+        if(it->obj == obj)
+        {
+            CancelProgressBar(it->progressBar);
+
+            mActiveObjActions.erase(it);
+
+            return ;
+        }
+
+        ++it;
+    }
 }
 
 void ScreenGame::SetObjectActionCompleted(GameObject * obj)
@@ -1181,7 +1218,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     });
 
     // store active action
-    mActiveObjActions.emplace_back(gen, GameObjectActionId::BUILD_UNIT, cell);
+    mActiveObjActions.emplace_back(gen, GameObjectActionId::BUILD_UNIT, cell, pb);
 
     gen->SetActiveAction(GameObjectActionId::IDLE);
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
@@ -1231,7 +1268,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     // store active action
     const GameMapCell & targetCell = mGameMap->GetCell(end.row, end.col);
 
-    mActiveObjActions.emplace_back(unit, targetCell.objTop, GameObjectActionId::CONQUER_STRUCTURE, start);
+    mActiveObjActions.emplace_back(unit, targetCell.objTop, GameObjectActionId::CONQUER_STRUCTURE, start, pb);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::CONQUER_STRUCTURE);
@@ -1284,7 +1321,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     });
 
     // store active action
-    mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_STRUCTURE, cellTarget);
+    mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_STRUCTURE, cellTarget, pb);
 
     // disable actions panel (if action is done by local player)
     if(player == GetGame()->GetLocalPlayer())

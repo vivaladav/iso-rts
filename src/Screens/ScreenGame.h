@@ -76,10 +76,12 @@ public:
     void GameOver();
     void GameWon();
 
+    void CancelProgressBar(CellProgressBar * pb);
     void CancelProgressBar(const Cell2D & cell);
     void CreateProgressBar(const Cell2D & cell, float time, Player * player,
                            const std::function<void()> & onCompleted);
 
+    void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
 
     sgl::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);

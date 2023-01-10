@@ -5,6 +5,7 @@
 namespace game
 {
 
+class CellProgressBar;
 class GameObject;
 
 enum GameObjectActionId : unsigned int;
@@ -12,11 +13,13 @@ enum GameObjectActionId : unsigned int;
 struct GameObjectAction
 {
     GameObjectAction(GameObject * go, GameObjectActionId aid);
-    GameObjectAction(GameObject * go, GameObjectActionId aid, const Cell2D & cell);
-    GameObjectAction(GameObject * go, GameObject * t, GameObjectActionId aid, const Cell2D & cell);
+    GameObjectAction(GameObject * go, GameObjectActionId aid, const Cell2D & cell, CellProgressBar * pb);
+    GameObjectAction(GameObject * go, GameObject * t, GameObjectActionId aid, const Cell2D & cell, CellProgressBar * pb);
 
     GameObject * obj = nullptr;
     GameObject * target = nullptr;
+
+    CellProgressBar * progressBar = nullptr;
 
     Cell2D actionCell;
 
@@ -30,18 +33,20 @@ inline GameObjectAction::GameObjectAction(GameObject * go,
 {
 }
 
-inline GameObjectAction::GameObjectAction(GameObject * go,
-                                          GameObjectActionId aid,
-                                          const Cell2D & cell)
+inline GameObjectAction::GameObjectAction(GameObject * go, GameObjectActionId aid,
+                                          const Cell2D & cell, CellProgressBar * pb)
     : obj(go)
+    , progressBar(pb)
     , actionCell(cell)
     , actId(aid)
 {
 }
 
-inline GameObjectAction::GameObjectAction(GameObject * go, GameObject * t, GameObjectActionId aid, const Cell2D & cell)
+inline GameObjectAction::GameObjectAction(GameObject * go, GameObject * t, GameObjectActionId aid,
+                                          const Cell2D & cell, CellProgressBar * pb)
     : obj(go)
     , target(t)
+    , progressBar(pb)
     , actionCell(cell)
     , actId(aid)
 {

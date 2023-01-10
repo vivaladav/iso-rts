@@ -1753,6 +1753,8 @@ void GameMap::Update(float delta)
         {
             GameObject * obj = *itObj;
 
+            mScreenGame->ClearObjectAction(obj);
+
             DestroyObjectPaths(obj);
 
             Player * p = obj->GetOwner();
