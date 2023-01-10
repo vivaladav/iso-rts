@@ -45,6 +45,8 @@ Game::Game(int argc, char * argv[])
 
     TextureManager::Instance()->SetNewTextureQuality(TextureQuality::BEST);
 
+    FontManager::Create();
+
     // -- State Manager --
     mStateMan = new sgl::utilities::StateManager;
 
@@ -63,10 +65,6 @@ Game::Game(int argc, char * argv[])
     mStage = sgl::sgui::Stage::Create();
     AddKeyboardListener(mStage);
     AddMouseListener(mStage);
-
-    FontManager * fm = FontManager::Create();
-    mFontGui = fm->GetFont("Lato-Bold.ttf", 32, Font::NORMAL);
-    mStage->SetDefaultFont(mFontGui);
 }
 
 Game::~Game()

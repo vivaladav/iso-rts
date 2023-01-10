@@ -88,7 +88,6 @@ private:
     sgl::utilities::StateManager * mStateMan = nullptr;
 
     sgl::sgui::Stage * mStage = nullptr;
-    sgl::graphic::Font * mFontGui = nullptr;
 
     MapsRegistry * mMapsReg = nullptr;
     ObjectsDataRegistry * mObjsRegistry = nullptr;

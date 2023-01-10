@@ -62,6 +62,9 @@ ScreenInit::ScreenInit(Game * game)
     mLabelStatus = new sgl::sgui::Label(font);
     mLabelStatus->SetColor(0xEEEEEEFF);
     UpdateStatus();
+
+    // SET DEFAULT FONT FOR SGUI
+    sgl::sgui::Stage::Instance()->SetDefaultFont(font);
 }
 
 ScreenInit::~ScreenInit()
