@@ -31,15 +31,8 @@
 #include "Screens/ScreenGame.h"
 #include "Widgets/MiniMap.h"
 
-#include <sgl/utilities/UniformDistribution.h>
-
 #include <algorithm>
-#include <cassert>
-#include <cmath>
 #include <iostream>
-#include <string>
-#include <unordered_set>
-#include <vector>
 
 namespace game
 {
