@@ -82,6 +82,8 @@ add_executable(
     src/GameObjects/PracticeTarget.cpp
     src/GameObjects/RadarStation.h
     src/GameObjects/RadarStation.cpp
+    src/GameObjects/RadarTower.h
+    src/GameObjects/RadarTower.cpp
     src/GameObjects/ResourceGenerator.h
     src/GameObjects/ResourceGenerator.cpp
     src/GameObjects/ResourceStorage.h

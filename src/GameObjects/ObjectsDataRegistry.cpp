@@ -62,6 +62,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_RADAR])
     );
 
+    // radar tower
+    data1.emplace
+    (
+        STRUCT_RADAR_TOWER,
+        ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
+                   std::vector<int>{ 100, 50, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F1,
+                   OCS_RADAR, STRUCT_RADAR_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_RADAR_TOWER],
+                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
+    );
+
     // defensive tower
     data1.emplace
     (
@@ -185,6 +197,18 @@ void ObjectsDataRegistry::InitStructures()
                    Structure::DESCRIPTIONS[STRUCT_RADAR])
     );
 
+    // radar tower
+    data2.emplace
+    (
+        STRUCT_RADAR_TOWER,
+        ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
+                   std::vector<int>{ 100, 50, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F2,
+                   OCS_RADAR, STRUCT_RADAR_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_RADAR_TOWER],
+                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
+    );
+
     // defensive tower
     data2.emplace
     (
@@ -294,6 +318,18 @@ void ObjectsDataRegistry::InitStructures()
                    OCS_TARGET, STRUCT_TARGET, 1, 1,
                    Structure::TITLES[STRUCT_TARGET],
                    Structure::DESCRIPTIONS[STRUCT_TARGET])
+    );
+
+    // radar tower
+    data3.emplace
+    (
+        STRUCT_RADAR_TOWER,
+        ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
+                   std::vector<int>{ 100, 50, 0, 0 },
+                   SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F3,
+                   OCS_RADAR, STRUCT_RADAR_TOWER, 1, 1,
+                   Structure::TITLES[STRUCT_RADAR_TOWER],
+                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
     );
 
     // radar

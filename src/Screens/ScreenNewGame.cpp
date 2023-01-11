@@ -48,6 +48,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_GEN_MATERIAL_EXTRACTOR));
     p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_GEN_SOLAR));
     p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR_TOWER));
     p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_TARGET));
 
     // assign initial available units
@@ -99,6 +100,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_WALL_GATE));
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_DEF_TOWER));
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR_TOWER));
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_GEN_MATERIAL_EXTRACTOR));
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_GEN_SOLAR));
         p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_TARGET));

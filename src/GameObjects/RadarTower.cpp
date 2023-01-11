@@ -1,4 +1,4 @@
-#include "GameObjects/RadarStation.h"
+#include "GameObjects/RadarTower.h"
 
 #include "GameData.h"
 #include "IsoObject.h"
@@ -9,7 +9,7 @@
 namespace game
 {
 
-RadarStation::RadarStation(int rows, int cols)
+RadarTower::RadarTower(int rows, int cols)
     : Structure(OBJ_RADAR_STATION, rows, cols)
 {
     SetCanBeConquered(true);
@@ -19,22 +19,22 @@ RadarStation::RadarStation(int rows, int cols)
     SetVisibilityLevel(1);
 }
 
-void RadarStation::UpdateGraphics()
+void RadarTower::UpdateGraphics()
 {
     SetImage();
 
     SetDefaultColors();
 }
 
-void RadarStation::OnLinkedChanged()
+void RadarTower::OnLinkedChanged()
 {
     GameObject::OnLinkedChanged();
 
-    const int maxVis = 15;
+    const int maxVis = 9;
     SetVisibilityLevel(maxVis * static_cast<int>(IsLinked()));
 }
 
-void RadarStation::SetImage()
+void RadarTower::SetImage()
 {
     auto * tm = sgl::graphic::TextureManager::Instance();
 
@@ -50,13 +50,13 @@ void RadarStation::SetImage()
     unsigned int texInd;
 
     if(nullptr == owner)
-        texInd = ID_STRUCT_RADAR;
+        texInd = ID_STRUCT_RADAR_TOWER;
     else
     {
         const unsigned int faction = owner->GetFaction();
 
-        texInd = SpriteIdStructures::ID_STRUCT_RADAR_F1 +
-                 (faction * NUM_RADAR_SPRITES_PER_FAC) +
+        texInd = SpriteIdStructures::ID_STRUCT_RADAR_TOWER_F1 +
+                 (faction * NUM_RADAR_TOWER_SPRITES_PER_FAC) +
                  static_cast<int>(IsSelected());
     }
 

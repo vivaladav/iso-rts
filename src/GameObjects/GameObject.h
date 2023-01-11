@@ -27,7 +27,7 @@ enum class MapObjectId : unsigned int
     STORAGE_MATERIAL,
     STORAGE_DIAMONDS,
     STORAGE_BLOBS,
-
+    RADAR_TOWER,
 
     // SCENE OBJECTS
     MOUNTAIN_ROW_END_L_1 = 4000,
@@ -173,6 +173,7 @@ enum GameObjectType : unsigned int
     OBJ_DEF_TOWER,
     OBJ_PRACTICE_TARGET,
     OBJ_RADAR_STATION,
+    OBJ_RADAR_TOWER,
 
     NUM_GAME_OBJECT_TYPES,
 

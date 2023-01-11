@@ -20,6 +20,7 @@
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/PracticeTarget.h"
 #include "GameObjects/RadarStation.h"
+#include "GameObjects/RadarTower.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/ResourceStorage.h"
 #include "GameObjects/SceneObject.h"
@@ -441,6 +442,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     }
     else if(OBJ_RADAR_STATION == objId)
         obj = new RadarStation(rows, cols);
+    else if(OBJ_RADAR_TOWER == objId)
+        obj = new RadarTower(rows, cols);
     else if(OBJ_PRACTICE_TARGET == objId)
         obj = new PracticeTarget(rows, cols);
     else if(objId >= OBJ_MOUNTAINS_FIRST && objId <= OBJ_MOUNTAINS_LAST)
