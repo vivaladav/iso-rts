@@ -58,6 +58,10 @@ void Trees::Update(float delta)
         // grow more trees
         else if(mNumTrees < MAX_TREE1_TREES)
         {
+            // randomize new variant
+            sgl::utilities::UniformDistribution dis(0, NUM_TREE1_VARIANTS - 1);
+            mVariant = dis.GetNextValue();
+
             ++mNumTrees;
 
             SetImage();
