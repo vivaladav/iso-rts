@@ -73,7 +73,7 @@ Unit::Unit(const ObjectData & data, int rows, int cols)
     const float speed = maxSpeed * static_cast<float>(mStats[OSTAT_SPEED]) / maxStatVal;
     SetSpeed(speed);
 
-    SetVisibilityLevel(1);
+    SetVisibilityLevel(4);
 }
 
 void Unit::IncreaseUnitLevel()
