@@ -26,7 +26,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
 
     const int MAX_UNITS0 = 5;
     const int startEnergy = 800;
-    const int startMaterial = 200;
+    const int startMaterial = 250;
     const int startMoney = 1000;
     const int startDiamonds = 10;
     const int startBlobs = 5;
