@@ -489,7 +489,7 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
     const int basePriorities[NUM_RESOURCES] =
     {
         90,     //RES_ENERGY
-        70,     //RES_MATERIAL1
+        75,     //RES_MATERIAL1
         45,     //RES_DIAMONDS
         45      //RES_BLOBS
     };
@@ -526,7 +526,7 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
     const int maxDist = mGm->GetNumRows() + mGm->GetNumCols();
     const unsigned int numGens = mResGenerators.size();
 
-    const int bonusDist = -50;
+    const int bonusDist = -60;
     const int bonusOwned = -40;
 
     unsigned int indexMax = numGens;
