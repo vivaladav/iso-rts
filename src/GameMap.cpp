@@ -38,7 +38,7 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr int COST_CONQUEST_CELL = 2;
+constexpr int COST_CONQUEST_CELL = 1;
 constexpr int COST_CONQUEST_RES_GEN = 4;
 
 // ==================== PUBLIC METHODS ====================

@@ -69,7 +69,7 @@ Unit::Unit(const ObjectData & data, int rows, int cols)
     const float maxStatVal = 10.f;
 
     // set actual speed
-    const float maxSpeed = 10.f;
+    const float maxSpeed = 5.f;
     const float speed = maxSpeed * static_cast<float>(mStats[OSTAT_SPEED]) / maxStatVal;
     SetSpeed(speed);
 

@@ -264,16 +264,12 @@ void Player::HandleCollectable(GameObject * obj)
     if(type == OBJ_DIAMONDS)
     {
         auto d = static_cast<Diamonds *>(obj);
-
-        const int diamondsMult = 10;
-        mStats[Stat::DIAMONDS].SumValue(d->GetNum() * diamondsMult);
+        mStats[Stat::DIAMONDS].SumValue(d->GetNum());
     }
     else if(type == OBJ_BLOBS)
     {
         auto d = static_cast<Blobs *>(obj);
-
-        const int blobsMult = 5;
-        mStats[Stat::BLOBS].SumValue(d->GetNum() * blobsMult);
+        mStats[Stat::BLOBS].SumValue(d->GetNum());
     }
 
     mOnResourcesChanged();

@@ -56,9 +56,9 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr float TIME_NEW_UNIT = 2.f;
-constexpr float TIME_CONQ_RES_GEN = 2.f;
-constexpr float TIME_UPG_UNIT = 2.f;
+constexpr float TIME_NEW_UNIT = 4.f;
+constexpr float TIME_CONQ_RES_GEN = 5.f;
+constexpr float TIME_UPG_UNIT = 5.f;
 
 constexpr float TIME_ENERGY_USE = 8.f;
 constexpr float TIME_AI_MOVE = 0.5f;

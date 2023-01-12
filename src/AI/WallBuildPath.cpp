@@ -106,7 +106,7 @@ void WallBuildPath::InitNextBuild()
         const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
 
         // TODO get conquer time from unit
-        constexpr float TIME_BUILD = 0.5f;
+        constexpr float TIME_BUILD = 2.f;
 
         mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                    [this, nextCell, player, blockType]

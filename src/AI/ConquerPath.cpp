@@ -151,7 +151,7 @@ void ConquerPath::InitNextConquest()
         mGameMap->StartConquerCell(nextCell, player);
 
         // TODO get conquer time from unit
-        constexpr float TIME_CONQ_CELL = 0.5f;
+        constexpr float TIME_CONQ_CELL = 1.f;
 
         mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player,
                                    [this, nextCell, player, layerOverlay]
