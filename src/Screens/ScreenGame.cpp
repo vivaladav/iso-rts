@@ -71,7 +71,7 @@ ScreenGame::ScreenGame(Game * game)
     , mTimerEnergy(TIME_ENERGY_USE)
     , mTimerAI(TIME_AI_MOVE)
 {
-    game->SetClearColor(0x0F, 0x0F, 0x0F, 0xFF);
+    game->SetClearColor(0x1A, 0x1A, 0x1A, 0xFF);
 
     game->AddApplicationListener(this);
     game->AddKeyboardListener(this);

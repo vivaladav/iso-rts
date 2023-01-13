@@ -84,11 +84,11 @@ void ResourceGenerator::UpdateOutput()
     if(RESG_ENERGY == mTypeGen)
         mOutput = 50;
     else if(RESG_MATERIAL == mTypeGen)
-        mOutput = 10;
+        mOutput = 25;
     else if(RESG_ENERGY_SOLAR == mTypeGen)
-        mOutput = 10;
+        mOutput = 15;
     else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)
-        mOutput = 2;
+        mOutput = 10;
     // default
     else
         mOutput = 1;
