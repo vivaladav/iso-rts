@@ -86,7 +86,7 @@ void GameObject::SetOwner(Player * owner)
     UpdateGraphics();
 }
 
-inline void GameObject::SetHealth(float val)
+void GameObject::SetHealth(float val)
 {
     const float oldH = mHealth;
 
@@ -104,7 +104,7 @@ inline void GameObject::SetHealth(float val)
         mOnValuesChanged();
 }
 
-inline void GameObject::SumHealth(float val)
+void GameObject::SumHealth(float val)
 {
     SetHealth(mHealth + val);
 }
