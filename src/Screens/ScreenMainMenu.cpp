@@ -163,8 +163,14 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto labelVer = new sgui::Label(VERSION, fnt);
     labelVer->SetColor(colorVersion);
 
+#if defined(DEBUG)
+    const std::string strBuildType("D");
+#elif defined(RELEASE)
+    const std::string strBuildType("R");
+#endif
+
     const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
-                                 std::string(VERSION_NUM) + std::string("-") +
+                                 std::string(VERSION_NUM) + strBuildType + std::string("-") +
                                  std::string(VERSION_SHORT_HASH);
     auto labelBuild = new sgui::Label(strBuild.c_str(), fnt);
     labelBuild->SetColor(colorVersion);

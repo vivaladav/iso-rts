@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set platform version for preprocessor checks
 add_compile_definitions($<$<PLATFORM_ID:Linux>:LINUX=1>
-                        $<$<PLATFORM_ID:Windows>:WINDOWS=1>)
+                        $<$<PLATFORM_ID:Windows>:WINDOWS=1>
+                        $<$<CONFIG:Debug>:DEBUG=1>
+                        $<$<CONFIG:Release>:RELEASE=1>)
 
 # include internal libraries
 add_subdirectory(lib)
