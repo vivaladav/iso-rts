@@ -43,6 +43,7 @@
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/graphic/Window.h>
 #include <sgl/sgui/ButtonsGroup.h>
 #include <sgl/sgui/Stage.h>
 
@@ -75,6 +76,8 @@ ScreenGame::ScreenGame(Game * game)
 
     game->AddApplicationListener(this);
     game->AddKeyboardListener(this);
+
+    sgl::graphic::Window::Instance()->AddWindowListener(this);
 
     const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
     const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
@@ -993,6 +996,25 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
     mPrevCell = currCell;
 }
 
+void ScreenGame::OnWindowExposed(sgl::graphic::WindowEvent &)
+{
+    mPaused = false;
+}
+
+void ScreenGame::OnWindowHidden(sgl::graphic::WindowEvent &)
+{
+    mPaused = true;
+}
+
+void ScreenGame::OnWindowMouseEntered(sgl::graphic::WindowEvent & event)
+{
+}
+
+void ScreenGame::OnWindowMouseLeft(sgl::graphic::WindowEvent & event)
+{
+    mCamController->HandleMouseLeftWindow();
+}
+
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction)
 {
     auto pb = new CellProgressBar(playerFaction, 0.f, time);
@@ -1065,16 +1087,13 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
     {
         const ActionAI * action = ai->GetNextActionTodo();
 
+        if(nullptr == action)
+            return ;
+
         auto ClearAction = [action, ai]
         {
             ai->SetActionDone(action);
         };
-
-        if(nullptr == action)
-        {
-            std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI << " - NOP" << std::endl;
-            return ;
-        }
 
         switch(action->type)
         {

@@ -72,6 +72,10 @@ public:
     void OnKeyUp(sgl::core::KeyboardEvent & event) override;
     void OnMouseButtonUp(sgl::core::MouseButtonEvent & event) override;
     void OnMouseMotion(sgl::core::MouseMotionEvent & event) override;
+    void OnWindowExposed(sgl::graphic::WindowEvent & event) override;
+    void OnWindowHidden(sgl::graphic::WindowEvent & event) override;
+    void OnWindowMouseEntered(sgl::graphic::WindowEvent & event) override;
+    void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
     void GameOver();
     void GameWon();

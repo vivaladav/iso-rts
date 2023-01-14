@@ -4,6 +4,7 @@
 #include <sgl/core/event/ApplicationEventListener.h>
 #include <sgl/core/event/KeyboardEventListener.h>
 #include <sgl/core/event/MouseEventListener.h>
+#include <sgl/graphic/event/WindowEventListener.h>
 
 namespace game
 {
@@ -12,7 +13,7 @@ class Game;
 class SharedScreenListener;
 
 class Screen : public sgl::core::ApplicationEventListener, public sgl::core::KeyboardEventListener,
-               public sgl::core::MouseEventListener
+               public sgl::core::MouseEventListener, public sgl::graphic::WindowEventListener
 {
 public:
     Screen(Game * game);

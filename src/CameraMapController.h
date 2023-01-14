@@ -30,6 +30,7 @@ public:
     void HandleKeyDown(sgl::core::KeyboardEvent & event);
     void HandleKeyUp(sgl::core::KeyboardEvent & event);
     void HandleMouseMotion(sgl::core::MouseMotionEvent & event);
+    void HandleMouseLeftWindow();
 
     void Update(float delta);
 

@@ -131,7 +131,7 @@ void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
     const int screenX = event.GetX();
     const int screenY = event.GetY();
 
-    const int scrollingMargin = 5;
+    const int scrollingMargin = 10;
 
     if(screenX < scrollingMargin)
     {
@@ -176,6 +176,18 @@ void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
         mDirY = NO_SCROLL;
         mMouseScrollY = false;
     }
+}
+
+void CameraMapController::HandleMouseLeftWindow()
+{
+    mMouseScrollX = false;
+    mMouseScrollY = false;
+
+    if(!mKeyScrollX)
+        mDirX = NO_SCROLL;
+
+    if(!mKeyScrollY)
+        mDirY = NO_SCROLL;
 }
 
 void CameraMapController::Update(float delta)
