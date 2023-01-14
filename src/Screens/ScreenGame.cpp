@@ -43,7 +43,6 @@
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
-#include <sgl/graphic/Window.h>
 #include <sgl/sgui/ButtonsGroup.h>
 #include <sgl/sgui/Stage.h>
 
@@ -73,11 +72,6 @@ ScreenGame::ScreenGame(Game * game)
     , mTimerAI(TIME_AI_MOVE)
 {
     game->SetClearColor(0x1A, 0x1A, 0x1A, 0xFF);
-
-    game->AddApplicationListener(this);
-    game->AddKeyboardListener(this);
-
-    sgl::graphic::Window::Instance()->AddWindowListener(this);
 
     const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
     const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();

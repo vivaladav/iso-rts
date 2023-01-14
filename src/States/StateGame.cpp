@@ -4,6 +4,8 @@
 #include "Screens/ScreenGame.h"
 #include "States/StatesIds.h"
 
+#include <sgl/graphic/Window.h>
+
 namespace game
 {
 
@@ -15,7 +17,13 @@ StateGame::StateGame(Game * game)
 void StateGame::OnActive()
 {
     mScreen = new ScreenGame(mGame);
+
+    mGame->AddApplicationListener(mScreen);
+    mGame->AddKeyboardListener(mScreen);
     mGame->AddMouseListener(mScreen);
+
+    sgl::graphic::Window::Instance()->AddWindowListener(mScreen);
+
 }
 
 void StateGame::OnInactive()

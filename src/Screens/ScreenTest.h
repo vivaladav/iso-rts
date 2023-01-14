@@ -20,6 +20,8 @@ public:
     ScreenTest(Game * game);
     ~ScreenTest();
 
+    void OnKeyUp(sgl::core::KeyboardEvent & event) override;
+
     void Update(float delta) override;
     void Render() override;
 

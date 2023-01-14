@@ -10,6 +10,7 @@
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/ApplicationEvent.h>
+#include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -27,8 +28,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     : Screen(game)
 {
     using namespace sgl;
-
-    game->AddApplicationListener(this);
 
     game->SetClearColor(0x12, 0x12, 0x12, 0xFF);
 
@@ -192,6 +191,15 @@ ScreenMainMenu::~ScreenMainMenu()
     sgl::sgui::Stage::Instance()->ClearWidgets();
 
     delete mBg;
+}
+
+void ScreenMainMenu::OnKeyUp(sgl::core::KeyboardEvent & event)
+{
+    const int key = event.GetKey();
+
+    // CTRL-T -> open test screen
+    if(key == sgl::core::KeyboardEvent::KEY_T && event.IsModCtrlDown())
+        GetGame()->RequestNextActiveState(StateId::TEST);
 }
 
 void ScreenMainMenu::Update(float update)

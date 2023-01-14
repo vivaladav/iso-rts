@@ -25,12 +25,6 @@ void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
     if(key == KeyboardEvent::KEY_ESC && event.IsModShiftDown())
         game->Exit();
 
-    // -- SCREENS NAVIGATION --
-    else if(key == KeyboardEvent::KEY_M)
-        game->RequestNextActiveState(StateId::MAIN_MENU);
-    else if(key == KeyboardEvent::KEY_T)
-        game->RequestNextActiveState(StateId::TEST);
-
     // -- WINDOW --
     else if(key == KeyboardEvent::KEY_F)
         Window::Instance()->SwitchFullscreen();

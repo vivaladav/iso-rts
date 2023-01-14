@@ -15,6 +15,9 @@ StateMainMenu::StateMainMenu(Game * game)
 void StateMainMenu::OnActive()
 {
     mScreen = new ScreenMainMenu(mGame);
+
+    mGame->AddApplicationListener(mScreen);
+    mGame->AddKeyboardListener(mScreen);
 }
 
 void StateMainMenu::OnInactive()

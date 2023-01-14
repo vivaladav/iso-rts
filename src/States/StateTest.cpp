@@ -15,6 +15,9 @@ StateTest::StateTest(Game * game)
 void StateTest::OnActive()
 {
     mScreen = new ScreenTest(mGame);
+
+    mGame->AddApplicationListener(mScreen);
+    mGame->AddKeyboardListener(mScreen);
     mGame->AddMouseListener(mScreen);
 }
 

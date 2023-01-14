@@ -13,6 +13,8 @@ public:
     ScreenMainMenu(Game * game);
     ~ScreenMainMenu();
 
+    void OnKeyUp(sgl::core::KeyboardEvent & event) override;
+
     void Update(float update) override;
     void Render() override;
 

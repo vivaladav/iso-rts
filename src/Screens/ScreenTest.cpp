@@ -3,12 +3,14 @@
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameTestData.h"
+#include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/Test/TestComboBox.h"
 #include "Widgets/Test/TestSliderH.h"
 
+#include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -110,6 +112,15 @@ ScreenTest::~ScreenTest()
         delete r;
 
     sgl::sgui::Stage::Instance()->ClearWidgets();
+}
+
+void ScreenTest::OnKeyUp(sgl::core::KeyboardEvent & event)
+{
+    const int key = event.GetKey();
+
+    // ESC -> go back to main menu
+    if(key == sgl::core::KeyboardEvent::KEY_ESC)
+        GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
 }
 
 void ScreenTest::Update(float delta)
