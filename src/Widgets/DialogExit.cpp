@@ -189,8 +189,10 @@ DialogExit::DialogExit(Game * game)
     mButtonClose->SetX(GetWidth() - mButtonClose->GetWidth());
 
     // TITLE
-    auto font = fm->GetFont("Lato-Regular.ttf", 16, graphic::Font::NORMAL);
+    auto font = fm->GetFont("Lato-Regular.ttf", 28, graphic::Font::NORMAL);
     mTitle = new graphic::Text("LEAVE", font);
+    mTitle->SetColor(0xf1f3f4ff);
+    RegisterRenderable(mTitle);
 
     // BUTTON PLANET MAP
     const int btnY0 = 78;
@@ -266,7 +268,7 @@ void DialogExit::SetPositions()
     mBg->SetPosition(x0, y0);
 
     const int marginL = 35;
-    const int marginT = 16;
+    const int marginT = 5;
     int x = x0 + marginL;
     int y = y0 + marginT;
     mTitle->SetPosition(x, y);
