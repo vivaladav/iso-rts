@@ -168,7 +168,6 @@ private:
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --
-    std::vector<sgl::sgui::Widget *> mWidgetsToDelete;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogExit * mDialogExit = nullptr;

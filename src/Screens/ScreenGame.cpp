@@ -205,12 +205,6 @@ ScreenGame::~ScreenGame()
 
 void ScreenGame::Update(float delta)
 {
-    // handle Widgets scheduled for deletion
-    for(auto w : mWidgetsToDelete)
-        delete w;
-
-    mWidgetsToDelete.clear();
-
     // do nothing when paused
     if(mPaused)
         return ;
@@ -867,7 +861,7 @@ void ScreenGame::CreateDialogExit()
     mDialogExit->SetFunctionOnClose([this]
     {
         // schedule dialog deletion
-        mWidgetsToDelete.push_back(mDialogExit);
+        sgl::sgui::Stage::Instance()->DeleteLater(mDialogExit);
         mDialogExit = nullptr;
     });
 
@@ -893,7 +887,7 @@ void ScreenGame::ClearNewElemDialog()
         return ;
 
     // schedule dialog deletion
-    mWidgetsToDelete.push_back(mDialogNewElement);
+    sgl::sgui::Stage::Instance()->DeleteLater(mDialogNewElement);
     mDialogNewElement = nullptr;
 }
 
