@@ -128,6 +128,7 @@ void Game::Update(float delta)
     auto * state = static_cast<BaseGameState *>(mStateMan->GetActiveState());
 
     state->Update(delta);
+    mStage->Update(delta);
 
     state->Render();
     mStage->Render();
