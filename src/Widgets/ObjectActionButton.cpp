@@ -52,7 +52,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
 
     // -- CREATE SHORTCUT TEXT --
     auto fm = FontManager::Instance();
-    auto font = fm->GetFont("Lato-Bold.ttf", 12, Font::NORMAL);
+    auto font = fm->GetFont("Lato-Bold.ttf", 13, Font::NORMAL);
     mShortcut = new Text(shortcut, font, true);
 
     RegisterRenderable(mShortcut);
@@ -97,8 +97,8 @@ void ObjectActionButton::HandlePositionChanged()
    mBody->SetPosition(x, y);
 
    // ICON
-   const int iconBoxW = 56;
-   const int iconBoxH = 56;
+   const int iconBoxW = 64;
+   const int iconBoxH = 64;
 
    const int iconX = x + (iconBoxW - mIcon->GetWidth()) * 0.5f;
    const int iconY = y + (iconBoxH - mIcon->GetHeight()) * 0.5f;
@@ -106,11 +106,11 @@ void ObjectActionButton::HandlePositionChanged()
    mIcon->SetPosition(iconX, iconY);
 
    // SHORTCUT
-   const int shortcutX0 = 48;
-   const int shortcutY0 = 48;
+   const int shortcutX0 = 55;
+   const int shortcutY0 = 55;
 
-   const int shortcutBoxW = 16;
-   const int shortcutBoxH = 16;
+   const int shortcutBoxW = 18;
+   const int shortcutBoxH = 18;
 
    const int shortcutX = x + shortcutX0 + (shortcutBoxW - mShortcut->GetWidth()) * 0.5f;
    const int shortcutY = y + shortcutY0 + (shortcutBoxH - mShortcut->GetHeight()) * 0.5f;
