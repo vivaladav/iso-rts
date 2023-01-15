@@ -41,6 +41,9 @@ void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
     // DEBUG: SHIFT/CTRL + R -> add/remove resources
     else if(key == KeyboardEvent::KEY_R)
     {
+        if(mGame->GetNumPlayers() == 0)
+            return ;
+
         Player * p = mGame->GetLocalPlayer();
 
         if(event.IsModShiftDown())
