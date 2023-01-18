@@ -17,8 +17,7 @@
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/media/AudioManager.h>
-#include <sgl/media/Music.h>
-#include <sgl/media/Sound.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/PushButton.h>
 #include <sgl/sgui/Stage.h>
@@ -189,7 +188,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     game->ClearGameData();
 
     // START MUSIC
-    sgl::media::AudioManager::Instance()->GetMusic("menus/menu_01.ogg")->Play();
+    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("menus/menu_01.ogg");
 }
 
 ScreenMainMenu::~ScreenMainMenu()
