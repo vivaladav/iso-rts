@@ -110,7 +110,7 @@ ScreenTest::ScreenTest(Game * game)
 
     // TEST AUDIO
     auto am = sgl::media::AudioManager::Instance();
-    auto music = am->GetMusic("test/menu_01.mp3");
+    auto music = am->GetMusic("test/menu_01.ogg");
     music->Play();
 }
 

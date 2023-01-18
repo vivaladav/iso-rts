@@ -131,6 +131,18 @@ void ScreenInit::SetupLoadPackages()
         mTexPackages[PACKAGE_IMGS_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
     });
 
+    // LOAD MUSIC GAME PACKAGE
+    mJobs.emplace_back([this]
+    {
+        mTexPackages[PACKAGE_MUSIC_GAME] =  new sgl::core::DataPackage("data/music/game.bin");
+    });
+
+    // LOAD MUSIC MENUS PACKAGE
+    mJobs.emplace_back([this]
+    {
+        mTexPackages[PACKAGE_MUSIC_MENUS] =  new sgl::core::DataPackage("data/music/menus.bin");
+    });
+
     // LOAD MUSIC TEST PACKAGE
     mJobs.emplace_back([this]
     {
@@ -159,10 +171,24 @@ void ScreenInit::SetupMusic()
 {
     auto am = sgl::media::AudioManager::Instance();
 
+    // MENUS MUSIC
+    mJobs.emplace_back([this, am]
+    {
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_MENUS], "menus/menu_01.ogg");
+    });
+
+    // GAME MUSIC
+    mJobs.emplace_back([this, am]
+    {
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "game/music_01.ogg");
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "mission/music_01.ogg");
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "mission/music_02.ogg");
+    });
+
     // TEST MUSIC
     mJobs.emplace_back([this, am]
     {
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_TEST], "test/menu_01.mp3");
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_TEST], "test/menu_01.ogg");
     });
 }
 

@@ -16,6 +16,9 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/Music.h>
+#include <sgl/media/Sound.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/PushButton.h>
 #include <sgl/sgui/Stage.h>
@@ -184,6 +187,9 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // makes sure game data is cleared before starting something new
     game->ClearGameData();
+
+    // START MUSIC
+    sgl::media::AudioManager::Instance()->GetMusic("menus/menu_01.ogg")->Play();
 }
 
 ScreenMainMenu::~ScreenMainMenu()

@@ -41,6 +41,8 @@ private:
         PACKAGE_IMGS_TEST,
         PACKAGE_IMGS_UI,
 
+        PACKAGE_MUSIC_GAME,
+        PACKAGE_MUSIC_MENUS,
         PACKAGE_MUSIC_TEST,
 
         PACKAGE_SFX_TEST,
