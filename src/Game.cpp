@@ -21,6 +21,7 @@
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Window.h>
+#include <sgl/media/AudioManager.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/StateManager.h>
 
@@ -61,6 +62,9 @@ Game::Game(int argc, char * argv[])
 
     mStateMan->RequestNextActiveState(StateId::INIT);
 
+    // -- AUDIO --
+    sgl::media::AudioManager::Create();
+
     // -- SGUI Stage --
     mStage = sgl::sgui::Stage::Create();
     AddKeyboardListener(mStage);
@@ -78,6 +82,8 @@ Game::~Game()
     ClearPlayers();
 
     sgl::sgui::Stage::Destroy();
+
+    sgl::media::AudioManager::Destroy();
 
     sgl::graphic::FontManager::Destroy();
 

@@ -29,6 +29,8 @@ private:
 
     void SetupLoadPackages();
     void SetupFonts();
+    void SetupMusic();
+    void SetupSFX();
     void SetupTextures();
 
 private:
@@ -38,6 +40,10 @@ private:
         PACKAGE_IMGS_GAME,
         PACKAGE_IMGS_TEST,
         PACKAGE_IMGS_UI,
+
+        PACKAGE_MUSIC_TEST,
+
+        PACKAGE_SFX_TEST,
 
         NUM_DATA_PACKAGES
     };

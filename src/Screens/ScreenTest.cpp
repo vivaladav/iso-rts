@@ -18,6 +18,9 @@
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/Music.h>
+#include <sgl/media/Sound.h>
 #include <sgl/sgui/ButtonsGroup.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
@@ -104,10 +107,18 @@ ScreenTest::ScreenTest(Game * game)
     TestRotation();
 
     TestSGui();
+
+    // TEST AUDIO
+    auto am = sgl::media::AudioManager::Instance();
+    auto music = am->GetMusic("test/menu_01.mp3");
+    music->Play();
 }
 
 ScreenTest::~ScreenTest()
 {
+    //sgl::media::AudioManager::Instance()->FadeOutMusic(500);
+    sgl::media::AudioManager::Instance()->StopMusic();
+
     for(sgl::graphic::TexturedRenderable * r : mRenderables)
         delete r;
 
@@ -176,6 +187,8 @@ void ScreenTest::TestSGui()
     {
         label->SetText("button 1 clicked");
         std::cout << "button 1 clicked" << std::endl;
+
+        sgl::media::AudioManager::Instance()->GetSound("test/test.ogg")->Play();
     });
 
     button = new ButtonMainMenu("BUTTON 2", container);

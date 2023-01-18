@@ -12,6 +12,7 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 
@@ -44,6 +45,8 @@ ScreenInit::ScreenInit(Game * game)
     // == SETUP JOBS ==
     SetupLoadPackages();
     SetupFonts();
+    SetupMusic();
+    SetupSFX();
     SetupTextures();
 
     // FINAL JOB - move to next screen
@@ -127,6 +130,18 @@ void ScreenInit::SetupLoadPackages()
     {
         mTexPackages[PACKAGE_IMGS_UI] =  new sgl::core::DataPackage("data/img/UI/UI.bin");
     });
+
+    // LOAD MUSIC TEST PACKAGE
+    mJobs.emplace_back([this]
+    {
+        mTexPackages[PACKAGE_MUSIC_TEST] =  new sgl::core::DataPackage("data/music/test.bin");
+    });
+
+    // LOAD SFX TEST PACKAGE
+    mJobs.emplace_back([this]
+    {
+        mTexPackages[PACKAGE_SFX_TEST] =  new sgl::core::DataPackage("data/sfx/test.bin");
+    });
 }
 
 void ScreenInit::SetupFonts()
@@ -137,6 +152,28 @@ void ScreenInit::SetupFonts()
     mJobs.emplace_back([this, fm]
     {
         fm->RegisterFont(fontsGamePackage, "Lato-Bold.ttf");
+    });
+}
+
+void ScreenInit::SetupMusic()
+{
+    auto am = sgl::media::AudioManager::Instance();
+
+    // TEST MUSIC
+    mJobs.emplace_back([this, am]
+    {
+        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_TEST], "test/menu_01.mp3");
+    });
+}
+
+void ScreenInit::SetupSFX()
+{
+    auto am = sgl::media::AudioManager::Instance();
+
+    // TEST SFX
+    mJobs.emplace_back([this, am]
+    {
+        am->CreateSound(mTexPackages[PACKAGE_SFX_TEST], "test/test.ogg");
     });
 }
 

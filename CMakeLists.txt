@@ -248,6 +248,7 @@ target_link_libraries(
     PRIVATE ai
     PRIVATE core
     PRIVATE graphic
+    PRIVATE media
     PRIVATE sgui
     PRIVATE utilities
 )
