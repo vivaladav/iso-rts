@@ -607,6 +607,10 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     cb->AddOnToggleFunction([ap](bool checked)
     {
         ap->SetMusicEnabled(checked);
+
+        // restart music if re-enabled
+        if(checked)
+            ap->PlayMusic("menus/menu_01.ogg");
     });
 
     // SOUNDS ENABLED
@@ -637,6 +641,8 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     const int volumeMax = 100;
     const int volumeStep = 5;
 
+    const int marginSliderR = 30;
+
     label = new sgui::Label("AUDIO VOLUME", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
@@ -656,7 +662,7 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
 
     label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
     label->SetColor(colorTxtSlider);
-    label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
+    label->SetPosition(slider->GetX() + slider->GetWidth() + marginSliderR, slider->GetY());
 
     slider->SetOnValueChanged([label, am](int val)
     {
@@ -684,7 +690,7 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
 
     label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
     label->SetColor(colorTxtSlider);
-    label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
+    label->SetPosition(slider->GetX() + slider->GetWidth() + marginSliderR, slider->GetY());
 
     slider->SetOnValueChanged([label, am](int val)
     {
