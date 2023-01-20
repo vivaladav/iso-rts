@@ -63,7 +63,12 @@ Game::Game(int argc, char * argv[])
     mStateMan->RequestNextActiveState(StateId::INIT);
 
     // -- AUDIO --
-    sgl::media::AudioManager::Create();
+    const int defVolumeMusic = 50;
+    const int defVolumeSound = 50;
+
+    auto am = sgl::media::AudioManager::Create();
+    am->SetVolumeMusic(defVolumeMusic);
+    am->SetVolumeSound(defVolumeSound);
 
     // -- SGUI Stage --
     mStage = sgl::sgui::Stage::Create();
