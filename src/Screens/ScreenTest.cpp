@@ -10,6 +10,7 @@
 #include "Widgets/Test/TestComboBox.h"
 #include "Widgets/Test/TestSliderH.h"
 
+#include <sgl/core/Timer.h>
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/graphic/Font.h>
@@ -26,6 +27,7 @@
 #include <sgl/sgui/Stage.h>
 #include <sgl/sgui/TextArea.h>
 
+#include <chrono>
 #include <iostream>
 
 namespace game
@@ -107,6 +109,8 @@ ScreenTest::ScreenTest(Game * game)
 
     TestSGui();
 
+    TestTimer();
+
     // TEST AUDIO
     auto am = sgl::media::AudioManager::Instance();
     am->GetPlayer()->PlayMusic("test/menu_01.ogg");
@@ -114,6 +118,8 @@ ScreenTest::ScreenTest(Game * game)
 
 ScreenTest::~ScreenTest()
 {
+    delete mTimer1;
+
     for(sgl::graphic::TexturedRenderable * r : mRenderables)
         delete r;
 
@@ -532,6 +538,30 @@ void ScreenTest::TestRotation()
     img = new Image(tm->GetTexture("test/red_dot4.png"));
     img->SetPosition(200, 950);
     mRenderables.emplace_back(img);
+}
+
+void ScreenTest::TestTimer()
+{
+    using namespace sgl;
+
+    mTimer1 = new core::Timer(2.f);
+    mTimer1->SetSingleShot(true);
+
+    auto t0 = std::chrono::high_resolution_clock::now();
+
+    mTimer1->AddTimeoutFunction([t0]
+    {
+        auto t1 = std::chrono::high_resolution_clock::now();
+        const std::time_t tNow = std::chrono::system_clock::to_time_t(t1);
+        const std::chrono::duration<float> diff = t1 - t0;
+        std::cout << "mTimer1 - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
+    });
+
+
+    mTimer1->Start();
+
+    const std::time_t tNow = std::chrono::system_clock::to_time_t(t0);
+    std::cout << "ScreenTest::TestTimer - timer started: " << tNow << std::endl;
 }
 
 } // namespace game

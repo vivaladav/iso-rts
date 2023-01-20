@@ -6,6 +6,7 @@
 
 namespace sgl
 {
+    namespace core { class Timer; }
     namespace graphic { class TexturedRenderable; }
 }
 
@@ -31,9 +32,12 @@ private:
     void TestSGui();
     void TestSprite();
     void TestRotation();
+    void TestTimer();
 
 private:
     std::vector<sgl::graphic::TexturedRenderable *> mRenderables;
+
+    sgl::core::Timer * mTimer1 = nullptr;
 
     CellProgressBar * mPb0 = nullptr;
     CellProgressBar * mPb1 = nullptr;
