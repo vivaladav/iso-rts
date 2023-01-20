@@ -38,18 +38,7 @@ void GameSliderH::HandleValueChanged(int val)
     const int barW = fullBarW * GetValuePerc() / 100;
     mBar->SetWidth(barW);
 
-    // update BUTTON
-    const int barX1 = mBar->GetX() + barW;
-
-    const int btnW = mButton->GetWidth();
-    int btnX = barX1 - (btnW * 0.5f);
-
-    const int limitX = mBg->GetX() + mBg->GetWidth();
-
-    if(btnX + btnW > limitX)
-        btnX = limitX - btnW;
-
-    mButton->SetX(btnX);
+    UpdatePositions();
 }
 
 void GameSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
@@ -84,7 +73,16 @@ void GameSliderH::UpdatePositions()
     mBar->SetPosition(barX, barY);
 
     // BUTTON
-    const int btnX = x0;
+    const int barX1 = mBar->GetX() + mBar->GetWidth();
+
+    const int btnW = mButton->GetWidth();
+    int btnX = barX1 - (btnW * 0.5f);
+
+    const int limitX = mBg->GetX() + mBg->GetWidth();
+
+    if(btnX + btnW > limitX)
+        btnX = limitX - btnW;
+
     const int btnY = y0;
     mButton->SetPosition(btnX, btnY);
 }
