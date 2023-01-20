@@ -1092,6 +1092,11 @@ void ScreenInit::SetupTextures()
             { 0, 0, 1200, 20 },
             { 0, 21, 1200, 10 },
             { 0, 32, 1200, 20 },
+
+            // HORIZONTAL SLIDER
+            { 0, 53, 304, 18 },
+            { 305, 53, 300, 14 },
+            { 606, 53, 30, 30 }
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileSettingsExp, rects);
