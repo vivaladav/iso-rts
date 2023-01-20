@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
+#include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Font.h>
@@ -13,6 +14,8 @@
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Window.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/AbstractButtonsGroup.h>
 #include <sgl/sgui/ComboBox.h>
 #include <sgl/sgui/ComboBoxItem.h>
@@ -26,8 +29,12 @@
 namespace
 {
     constexpr unsigned int colorTxt = 0x73a6bfff;
+    constexpr unsigned int colorTxtSlider = 0xadc2ccff;
     constexpr unsigned int sizeTxt = 22;
     const char * fontTxt = "Lato-Regular.ttf";
+
+    constexpr int blockSettingW = 500;
+    constexpr int blockSettingH = 100;
 }
 
 namespace game
@@ -565,8 +572,126 @@ void ScreenSettings::CreatePanelGame(sgl::sgui::Widget * parent)
 
 void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
 {
-    const int h = 170;
-    mPanels[Panel::AUDIO] = new PanelContentSettings(h, parent);
+    using namespace sgl;
+
+    const int h = 450;
+    auto panel = new PanelContentSettings(h, parent);
+    mPanels[Panel::AUDIO] = panel;
+
+    const int x0 = 30;
+    const int y0 = 40;
+
+    int x = x0;
+    int y = y0;
+
+    auto fm = graphic::FontManager::Instance();
+    graphic::Font * font = fm->GetFont(fontTxt, sizeTxt, graphic::Font::NORMAL);
+
+    auto am = media::AudioManager::Instance();
+    auto ap = am->GetPlayer();
+
+    auto tm = graphic::TextureManager::Instance();
+
+    // MUSIC ENABLED
+    auto label = new sgui::Label("MUSIC", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    auto cb = new SettingsCheckbox(panel);
+    cb->SetChecked(ap->IsMusicEnabled());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([ap](bool checked)
+    {
+        ap->SetMusicEnabled(checked);
+    });
+
+    // SOUNDS ENABLED
+    x = x0;
+    y = y0 + blockSettingH;
+
+    label = new sgui::Label("SOUNDS", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    cb = new SettingsCheckbox(panel);
+    cb->SetChecked(ap->IsSoundEnabled());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([ap](bool checked)
+    {
+        ap->SetSoundEnabled(checked);
+    });
+
+    // MUSIC VOLUME
+    x = x0;
+    y = y0 + blockSettingH * 2;
+
+    const int volumeMin = 0;
+    const int volumeMax = 100;
+    const int volumeStep = 5;
+
+    label = new sgui::Label("AUDIO VOLUME", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    graphic::Texture * texSliderBg = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BG);
+    graphic::Texture * texSliderBar = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BAR);
+    graphic::Texture * texSliderBtn = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BUTTON);
+
+    auto slider = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, panel);
+    slider->SetMinMax(volumeMin, volumeMax);
+    slider->SetStep(volumeStep);
+    slider->SetValue(am->GetVolumeMusic());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - slider->GetHeight()) * 0.5;
+    slider->SetPosition(x, y);
+
+    label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
+    label->SetColor(colorTxtSlider);
+    label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
+
+    slider->SetOnValueChanged([label, am](int val)
+    {
+        am->SetVolumeMusic(val);
+
+        label->SetText(std::to_string(val).c_str());
+    });
+
+    // SOUNDS VOLUME
+    x = x0;
+    y = y0 + blockSettingH * 3;
+
+    label = new sgui::Label("SOUNDS VOLUME", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    slider = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, panel);
+    slider->SetMinMax(volumeMin, volumeMax);
+    slider->SetStep(volumeStep);
+    slider->SetValue(am->GetVolumeSound());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - slider->GetHeight()) * 0.5;
+    slider->SetPosition(x, y);
+
+    label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
+    label->SetColor(colorTxtSlider);
+    label->SetPosition(slider->GetX() + slider->GetWidth() + 50, slider->GetY());
+
+    slider->SetOnValueChanged([label, am](int val)
+    {
+        am->SetVolumeSound(val);
+
+        label->SetText(std::to_string(val).c_str());
+    });
 }
 
 void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
@@ -579,8 +704,6 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
 
     const int x0 = 30;
     const int y0 = 40;
-    const int blockW = 300;
-    const int blockH = 100;
 
     int x = x0;
     int y = y0;
@@ -641,13 +764,13 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
         win->SetDisplayMode(item->GetDisplay(), item->GetMode());
     });
 
-    x += blockW;
+    x += blockSettingW;
     y += (label->GetHeight() - combo->GetHeight()) * 0.5;
     combo->SetPosition(x, y);
 
     // FULLSCREEN
     x = x0;
-    y = y0 + blockH;
+    y = y0 + blockSettingH;
 
     label = new sgui::Label("FULLSCREEN", font, panel);
     label->SetColor(colorTxt);
@@ -656,7 +779,7 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     auto cb = new SettingsCheckbox(panel);
     cb->SetChecked(graphic::Window::Instance()->IsFullscreen());
 
-    x += blockW;
+    x += blockSettingW;
     y += (label->GetHeight() - cb->GetHeight()) * 0.5;
     cb->SetPosition(x, y);
 
@@ -667,7 +790,7 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
 
     // VSYNC
     x = x0;
-    y = y0 + blockH * 2;
+    y = y0 + blockSettingH * 2;
 
     label = new sgui::Label("VSYNC", font, panel);
     label->SetColor(colorTxt);
@@ -676,7 +799,7 @@ void ScreenSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     auto label2 = new sgui::Label("ON (not implemented yet)", font, panel);
     label2->SetColor(colorTxt);
 
-    x += blockW;
+    x += blockSettingW;
     label2->SetPosition(x, y);
 }
 
