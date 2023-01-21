@@ -38,6 +38,7 @@ private:
     std::vector<sgl::graphic::TexturedRenderable *> mRenderables;
 
     sgl::core::Timer * mTimer1 = nullptr;
+    sgl::core::Timer * mTimer2 = nullptr;
 
     CellProgressBar * mPb0 = nullptr;
     CellProgressBar * mPb1 = nullptr;

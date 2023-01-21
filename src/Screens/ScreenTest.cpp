@@ -119,6 +119,7 @@ ScreenTest::ScreenTest(Game * game)
 ScreenTest::~ScreenTest()
 {
     delete mTimer1;
+    delete mTimer2;
 
     for(sgl::graphic::TexturedRenderable * r : mRenderables)
         delete r;
@@ -544,6 +545,7 @@ void ScreenTest::TestTimer()
 {
     using namespace sgl;
 
+    // SINGLE SHOT TIMER
     mTimer1 = new core::Timer(2.f);
     mTimer1->SetSingleShot(true);
 
@@ -554,14 +556,28 @@ void ScreenTest::TestTimer()
         auto t1 = std::chrono::high_resolution_clock::now();
         const std::time_t tNow = std::chrono::system_clock::to_time_t(t1);
         const std::chrono::duration<float> diff = t1 - t0;
-        std::cout << "mTimer1 - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
+        std::cout << "mTimer1(single shot) - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
     });
-
 
     mTimer1->Start();
 
+    // TIMER
+    mTimer2 = new core::Timer(5.f);
+
+    t0 = std::chrono::high_resolution_clock::now();
+
+    mTimer2->AddTimeoutFunction([t0]
+    {
+        auto t1 = std::chrono::high_resolution_clock::now();
+        const std::time_t tNow = std::chrono::system_clock::to_time_t(t1);
+        const std::chrono::duration<float> diff = t1 - t0;
+        std::cout << "mTimer2 - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
+    });
+
+    mTimer2->Start();
+
     const std::time_t tNow = std::chrono::system_clock::to_time_t(t0);
-    std::cout << "ScreenTest::TestTimer - timer started: " << tNow << std::endl;
+    std::cout << "ScreenTest::TestTimer - timers started: " << tNow << std::endl;
 }
 
 } // namespace game
