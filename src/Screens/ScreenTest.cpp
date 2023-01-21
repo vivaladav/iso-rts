@@ -554,7 +554,7 @@ void ScreenTest::TestTimer()
     mTimer1->AddTimeoutFunction([t0]
     {
         auto t1 = std::chrono::high_resolution_clock::now();
-        const std::time_t tNow = std::chrono::system_clock::to_time_t(t1);
+        const std::time_t tNow = std::chrono::high_resolution_clock::to_time_t(t1);
         const std::chrono::duration<float> diff = t1 - t0;
         std::cout << "mTimer1(single shot) - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
     });
@@ -569,14 +569,14 @@ void ScreenTest::TestTimer()
     mTimer2->AddTimeoutFunction([t0]
     {
         auto t1 = std::chrono::high_resolution_clock::now();
-        const std::time_t tNow = std::chrono::system_clock::to_time_t(t1);
+        const std::time_t tNow = std::chrono::high_resolution_clock::to_time_t(t1);
         const std::chrono::duration<float> diff = t1 - t0;
         std::cout << "mTimer2 - timeout: " << tNow << " - duration: " << diff.count() << std::endl;
     });
 
     mTimer2->Start();
 
-    const std::time_t tNow = std::chrono::system_clock::to_time_t(t0);
+    const std::time_t tNow = std::chrono::high_resolution_clock::to_time_t(t0);
     std::cout << "ScreenTest::TestTimer - timers started: " << tNow << std::endl;
 }
 
