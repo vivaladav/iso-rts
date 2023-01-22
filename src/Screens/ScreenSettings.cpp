@@ -643,7 +643,7 @@ void ScreenSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
 
     const int marginSliderR = 30;
 
-    label = new sgui::Label("AUDIO VOLUME", font, panel);
+    label = new sgui::Label("MUSIC VOLUME", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
