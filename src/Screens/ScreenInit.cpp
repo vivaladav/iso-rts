@@ -1010,6 +1010,20 @@ void ScreenInit::SetupTextures()
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileResourcesBar, rects);
     });
 
+    // TOOLTIPS
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // SIMPLE TOOLTIP
+            { 0, 0, 20, 32 },
+            { 21, 0, 20, 32 },
+            { 42, 0, 20, 32 }
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileTooltips, rects);
+    });
+
     // QUICK UNIT SELECTION
     mJobs.emplace_back([this, tm]
     {

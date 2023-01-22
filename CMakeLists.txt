@@ -193,6 +193,8 @@ add_executable(
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
+    src/Widgets/GameSimpleTooltip.h
+    src/Widgets/GameSimpleTooltip.cpp
     src/Widgets/GameSliderH.h
     src/Widgets/GameSliderH.cpp
     src/Widgets/GameUIData.h

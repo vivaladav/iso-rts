@@ -410,6 +410,16 @@ enum SpriteIdSettingsExp : unsigned int
 };
 
 // UNIT QUICK SELECTION
+extern const char SpriteFileTooltips[];
+
+enum SpriteIdTooltips : unsigned int
+{
+    IND_TOOLTIP_SIMPLE_LEFT,
+    IND_TOOLTIP_SIMPLE_CONT,
+    IND_TOOLTIP_SIMPLE_RIGHT
+};
+
+// UNIT QUICK SELECTION
 extern const char SpriteFileUnitQuickSel[];
 
 enum SpriteIdUnitQuickSel : unsigned int
