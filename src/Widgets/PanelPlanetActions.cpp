@@ -43,12 +43,15 @@ PanelPlanetActions::PanelPlanetActions()
     // BUTTONS
     mButtons[EXPLORE] = new ButtonPlanetMap(this);
     mButtons[EXPLORE]->SetLabel("EXPLORE");
+    mButtons[EXPLORE]->SetTooltipText("Send scouts to explore the territory");
 
     mButtons[CONQUER] = new ButtonPlanetMap(this);
     mButtons[CONQUER]->SetLabel("CONQUER");
+    mButtons[CONQUER]->SetTooltipText("Start a mission to conquer the territory");
 
     mButtons[SEND_AI] = new ButtonPlanetMap(this);
     mButtons[SEND_AI]->SetLabel("SEND AI");
+    mButtons[SEND_AI]->SetTooltipText("Send an AI to conquer the territory");
 
     // position elements
     UpdatePositions();

@@ -1,5 +1,6 @@
 #include "ButtonPlanetMap.h"
 
+#include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Font.h>
@@ -8,6 +9,7 @@
 namespace game
 {
 
+// PRIMARY BUTTON
 ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
     GameButton(SpriteFilePlanetMap,
         { IND_PM_BTN_NORMAL, IND_PM_BTN_DISABLED, IND_PM_BTN_OVER,
@@ -23,6 +25,16 @@ ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
     SetLabelFont(fnt);
 }
 
+void ButtonPlanetMap::SetTooltipText(const char * tooltip)
+{
+    // TOOLTIP
+    auto tt = new GameSimpleTooltip(tooltip);
+    SetTooltip(tt);
+    SetTooltipDelay(500);
+    SetTooltipShowingTime(2500);
+}
+
+// SECONDARY BUTTON
 SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
     GameButton(SpriteFilePlanetMap,
         { IND_PM_BTN2_NORMAL, IND_PM_BTN2_DISABLED, IND_PM_BTN2_OVER,

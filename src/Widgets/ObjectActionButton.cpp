@@ -1,5 +1,6 @@
 #include "Widgets/ObjectActionButton.h"
 
+#include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -14,8 +15,8 @@
 namespace game
 {
 
-ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
-                                       int shortcutKey, sgl::sgui::Widget * parent)
+ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, int shortcutKey,
+                                       const char * tooltip, sgl::sgui::Widget * parent)
     : sgl::sgui::AbstractButton(parent)
     , mBody(new sgl::graphic::Image)
     , mIcon(new sgl::graphic::Image)
@@ -56,6 +57,12 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut,
     mShortcut = new Text(shortcut, font, true);
 
     RegisterRenderable(mShortcut);
+
+    // TOOLTIP
+    auto tt = new GameSimpleTooltip(tooltip);
+    SetTooltip(tt);
+    SetTooltipDelay(500);
+    SetTooltipShowingTime(2000);
 
     // set initial visual state
     SetState(NORMAL);

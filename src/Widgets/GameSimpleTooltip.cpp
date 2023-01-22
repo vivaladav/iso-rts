@@ -47,7 +47,7 @@ GameSimpleTooltip::GameSimpleTooltip(const char * text)
     // TITLE
     auto font = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
     mLabel = new graphic::Text(text, font);
-    mLabel->SetColor(0x8fb0ccff);
+    mLabel->SetColor(0x98bbd9ff);
     RegisterRenderable(mLabel);
 
     // SET SIZES

@@ -34,8 +34,8 @@ public:
     };
 
 public:
-    ObjectActionButton(ActionIcon icon, const char * shortcut,
-                       int shortcutKey, sgl::sgui::Widget * parent);
+    ObjectActionButton(ActionIcon icon, const char * shortcut, int shortcutKey,
+                       const char * tooltip, sgl::sgui::Widget * parent);
 
 private:
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
