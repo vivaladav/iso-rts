@@ -193,6 +193,10 @@ void ScreenTest::TestSGui()
         sgl::media::AudioManager::Instance()->GetPlayer()->PlaySound("test/test.ogg");
     });
 
+    auto labelTT = new Label("ButtonMainMenu", font);
+    labelTT->SetColor(0xEEEEEEFF);
+    button->SetTooltip(labelTT);
+
     button = new ButtonMainMenu("BUTTON 2", container);
     button->SetY(label->GetY() + marginV);
 
