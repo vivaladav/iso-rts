@@ -111,9 +111,7 @@ ScreenTest::ScreenTest(Game * game)
 
     TestTimer();
 
-    // TEST AUDIO
-    auto am = sgl::media::AudioManager::Instance();
-    am->GetPlayer()->PlayMusic("test/menu_01.ogg");
+    TestAudio();
 }
 
 ScreenTest::~ScreenTest()
@@ -582,6 +580,17 @@ void ScreenTest::TestTimer()
 
     const std::time_t tNow = std::chrono::high_resolution_clock::to_time_t(t0);
     std::cout << "ScreenTest::TestTimer - timers started: " << tNow << std::endl;
+}
+
+void ScreenTest::TestAudio()
+{
+    auto am = sgl::media::AudioManager::Instance();
+    auto ap = am->GetPlayer();
+
+    ap->StopMusic();
+    ap->AddMusicToQueue("test/test.ogg");
+    ap->AddMusicToQueue("test/menu_01.ogg");
+    ap->PlayMusicQueue();
 }
 
 } // namespace game

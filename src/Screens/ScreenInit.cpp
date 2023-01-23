@@ -189,6 +189,8 @@ void ScreenInit::SetupMusic()
     mJobs.emplace_back([this, am]
     {
         am->CreateMusic(mTexPackages[PACKAGE_MUSIC_TEST], "test/menu_01.ogg");
+
+        am->CreateMusic(mTexPackages[PACKAGE_SFX_TEST], "test/test.ogg");
     });
 }
 

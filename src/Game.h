@@ -14,6 +14,8 @@ namespace sgl
         class Window;
     }
 
+    namespace media { class AudioManager; }
+
     namespace sgui { class Stage; }
 
     namespace utilities { class StateManager; }
@@ -88,6 +90,8 @@ private:
     sgl::utilities::StateManager * mStateMan = nullptr;
 
     sgl::sgui::Stage * mStage = nullptr;
+
+    sgl::media::AudioManager * mAudioMan = nullptr;
 
     MapsRegistry * mMapsReg = nullptr;
     ObjectsDataRegistry * mObjsRegistry = nullptr;

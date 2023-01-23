@@ -33,6 +33,7 @@ private:
     void TestSprite();
     void TestRotation();
     void TestTimer();
+    void TestAudio();
 
 private:
     std::vector<sgl::graphic::TexturedRenderable *> mRenderables;

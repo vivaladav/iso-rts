@@ -66,9 +66,9 @@ Game::Game(int argc, char * argv[])
     const int defVolumeMusic = 50;
     const int defVolumeSound = 50;
 
-    auto am = sgl::media::AudioManager::Create();
-    am->SetVolumeMusic(defVolumeMusic);
-    am->SetVolumeSound(defVolumeSound);
+    mAudioMan = sgl::media::AudioManager::Create();
+    mAudioMan->SetVolumeMusic(defVolumeMusic);
+    mAudioMan->SetVolumeSound(defVolumeSound);
 
     // -- SGUI Stage --
     mStage = sgl::sgui::Stage::Create();
@@ -140,6 +140,7 @@ void Game::Update(float delta)
 
     state->Update(delta);
     mStage->Update(delta);
+    mAudioMan->Update(delta);
 
     state->Render();
     mStage->Render();
