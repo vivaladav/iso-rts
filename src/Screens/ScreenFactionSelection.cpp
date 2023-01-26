@@ -14,6 +14,8 @@
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
@@ -263,6 +265,9 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
         game->SetLocalPlayerFaction(mFaction);
         game->RequestNextActiveState(StateId::NEW_GAME);
     });
+
+    // START MUSIC
+    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("game/music_01.ogg");
 }
 
 ScreenFactionSelection::~ScreenFactionSelection()

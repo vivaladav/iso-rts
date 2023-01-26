@@ -101,6 +101,7 @@ public:
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
 
+    void InitMusic();
     void InitParticlesSystem();
 
     void CreateIsoMap();

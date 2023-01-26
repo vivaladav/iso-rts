@@ -43,6 +43,8 @@
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/ButtonsGroup.h>
 #include <sgl/sgui/Stage.h>
 
@@ -172,6 +174,8 @@ ScreenGame::ScreenGame(Game * game)
 
     // set initial camera position
     CenterCameraOverPlayerBase();
+
+    InitMusic();
 }
 
 ScreenGame::~ScreenGame()
@@ -471,6 +475,16 @@ void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
     CreateDialogExit();
 
     event.SetConsumed();
+}
+
+void ScreenGame::InitMusic()
+{
+    auto am = sgl::media::AudioManager::Instance();
+    auto ap = am->GetPlayer();
+
+    ap->AddMusicToQueue("mission/music_01.ogg");
+    ap->AddMusicToQueue("mission/music_02.ogg");
+    ap->PlayMusicQueue();
 }
 
 void ScreenGame::InitParticlesSystem()
