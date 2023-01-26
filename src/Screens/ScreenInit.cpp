@@ -19,10 +19,19 @@
 #include <cmath>
 #include <sstream>
 
+namespace
+{
+const char * packageFontsGame = "data/fonts/game.bin";
+
+const char * packageMusicGame = "data/music/game.bin";
+const char * packageMusicMenus = "data/music/menus.bin";
+const char * packageMusicTest = "data/music/test.bin";
+
+const char * packageSoundsTest = "data/sfx/test.bin";
+}
+
 namespace game
 {
-
-const char * fontsGamePackage = "data/fonts/game.bin";
 
 ScreenInit::ScreenInit(Game * game)
     : Screen(game)
@@ -58,8 +67,8 @@ ScreenInit::ScreenInit(Game * game)
 
     // INIT STATUS LABEL
     auto fm = sgl::graphic::FontManager::Instance();
-    fm->RegisterDataPackage(fontsGamePackage);
-    fm->RegisterFont(fontsGamePackage, "Lato-Regular.ttf");
+    fm->RegisterDataPackage(packageFontsGame);
+    fm->RegisterFont(packageFontsGame, "Lato-Regular.ttf");
 
     sgl::graphic::Font * font = fm->GetFont("Lato-Regular.ttf", 32, sgl::graphic::Font::NORMAL);
     mLabelStatus = new sgl::sgui::Label(font);
@@ -113,6 +122,8 @@ void ScreenInit::UpdateStatus()
 
 void ScreenInit::SetupLoadPackages()
 {
+    auto am = sgl::media::AudioManager::Instance();
+
     // LOAD GAME PACKAGE
     mJobs.emplace_back([this]
     {
@@ -132,27 +143,27 @@ void ScreenInit::SetupLoadPackages()
     });
 
     // LOAD MUSIC GAME PACKAGE
-    mJobs.emplace_back([this]
+    mJobs.emplace_back([am]
     {
-        mTexPackages[PACKAGE_MUSIC_GAME] =  new sgl::core::DataPackage("data/music/game.bin");
+        am->RegisterDataPackage(packageMusicGame);
     });
 
     // LOAD MUSIC MENUS PACKAGE
-    mJobs.emplace_back([this]
+    mJobs.emplace_back([am]
     {
-        mTexPackages[PACKAGE_MUSIC_MENUS] =  new sgl::core::DataPackage("data/music/menus.bin");
+        am->RegisterDataPackage(packageMusicMenus);
     });
 
     // LOAD MUSIC TEST PACKAGE
-    mJobs.emplace_back([this]
+    mJobs.emplace_back([am]
     {
-        mTexPackages[PACKAGE_MUSIC_TEST] =  new sgl::core::DataPackage("data/music/test.bin");
+        am->RegisterDataPackage(packageMusicTest);
     });
 
     // LOAD SFX TEST PACKAGE
-    mJobs.emplace_back([this]
+    mJobs.emplace_back([am]
     {
-        mTexPackages[PACKAGE_SFX_TEST] =  new sgl::core::DataPackage("data/sfx/test.bin");
+        am->RegisterDataPackage(packageSoundsTest);
     });
 }
 
@@ -163,7 +174,7 @@ void ScreenInit::SetupFonts()
 
     mJobs.emplace_back([this, fm]
     {
-        fm->RegisterFont(fontsGamePackage, "Lato-Bold.ttf");
+        fm->RegisterFont(packageFontsGame, "Lato-Bold.ttf");
     });
 }
 
@@ -174,23 +185,23 @@ void ScreenInit::SetupMusic()
     // MENUS MUSIC
     mJobs.emplace_back([this, am]
     {
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_MENUS], "menus/menu_01.ogg");
+        am->CreateMusic(packageMusicMenus, "menus/menu_01.ogg");
     });
 
     // GAME MUSIC
     mJobs.emplace_back([this, am]
     {
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "game/music_01.ogg");
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "mission/music_01.ogg");
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_GAME], "mission/music_02.ogg");
+        am->CreateMusic(packageMusicGame, "game/music_01.ogg");
+        am->CreateMusic(packageMusicGame, "mission/music_01.ogg");
+        am->CreateMusic(packageMusicGame, "mission/music_02.ogg");
     });
 
     // TEST MUSIC
     mJobs.emplace_back([this, am]
     {
-        am->CreateMusic(mTexPackages[PACKAGE_MUSIC_TEST], "test/menu_01.ogg");
+        am->CreateMusic(packageMusicTest, "test/menu_01.ogg");
 
-        am->CreateMusic(mTexPackages[PACKAGE_SFX_TEST], "test/test.ogg");
+        am->CreateMusic(packageSoundsTest, "test/test.ogg");
     });
 }
 
@@ -201,7 +212,7 @@ void ScreenInit::SetupSFX()
     // TEST SFX
     mJobs.emplace_back([this, am]
     {
-        am->CreateSound(mTexPackages[PACKAGE_SFX_TEST], "test/test.ogg");
+        am->CreateSound(packageSoundsTest, "test/test.ogg");
     });
 }
 
