@@ -8,6 +8,8 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Text.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 
 namespace game
 {
@@ -39,6 +41,22 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget 
     SetState(NORMAL);
 
     PositionElements();
+}
+
+void ButtonMainMenuSocial::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void ButtonMainMenuSocial::HandleButtonDown()
+{
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
 }
 
 void ButtonMainMenuSocial::HandlePositionChanged()

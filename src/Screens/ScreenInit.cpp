@@ -28,6 +28,7 @@ const char * packageMusicMenus = "data/music/menus.bin";
 const char * packageMusicTest = "data/music/test.bin";
 
 const char * packageSoundsTest = "data/sfx/test.bin";
+const char * packageSoundsUI = "data/sfx/UI/UI.bin";
 }
 
 namespace game
@@ -160,6 +161,12 @@ void ScreenInit::SetupLoadPackages()
         am->RegisterDataPackage(packageMusicTest);
     });
 
+    // LOAD SFX UI PACKAGE
+    mJobs.emplace_back([am]
+    {
+        am->RegisterDataPackage(packageSoundsUI);
+    });
+
     // LOAD SFX TEST PACKAGE
     mJobs.emplace_back([am]
     {
@@ -208,6 +215,15 @@ void ScreenInit::SetupMusic()
 void ScreenInit::SetupSFX()
 {
     auto am = sgl::media::AudioManager::Instance();
+
+    // UI SFX
+    mJobs.emplace_back([this, am]
+    {
+        am->CreateSound(packageSoundsUI, "UI/button_click-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/button_over-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/button_over-02.ogg");
+        am->CreateSound(packageSoundsUI, "UI/checkbox-01.ogg");
+    });
 
     // TEST SFX
     mJobs.emplace_back([this, am]

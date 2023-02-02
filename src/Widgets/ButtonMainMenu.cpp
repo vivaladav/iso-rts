@@ -4,6 +4,8 @@
 
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 
 namespace game
 {
@@ -35,6 +37,22 @@ ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
     SetLabelFont(font);
 
     SetLabel(text);
+}
+
+void ButtonMainMenu::HandleMouseOver()
+{
+    GameButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-02.ogg");
+}
+
+void ButtonMainMenu::HandleButtonDown()
+{
+    GameButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
 }
 
 } // namespace game

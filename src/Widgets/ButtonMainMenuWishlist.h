@@ -23,6 +23,8 @@ public:
     ButtonMainMenuWishlist(sgl::sgui::Widget * parent);
 
 private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
     void HandlePositionChanged() override;
 
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
