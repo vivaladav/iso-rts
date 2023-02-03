@@ -11,12 +11,20 @@ public:
     ButtonPlanetMap(sgl::sgui::Widget * parent);
 
     void SetTooltipText(const char * tooltip);
+
+private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
 };
 
 class SecondaryButtonPlanetMap : public GameButton
 {
 public:
     SecondaryButtonPlanetMap(sgl::sgui::Widget * parent);
+
+private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
 };
 
 } // namespace game

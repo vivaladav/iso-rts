@@ -5,6 +5,8 @@
 
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 
 namespace game
 {
@@ -34,6 +36,22 @@ void ButtonPlanetMap::SetTooltipText(const char * tooltip)
     SetTooltipShowingTime(2500);
 }
 
+void ButtonPlanetMap::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void ButtonPlanetMap::HandleButtonDown()
+{
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
+}
+
 // SECONDARY BUTTON
 SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
     GameButton(SpriteFilePlanetMap,
@@ -48,6 +66,22 @@ SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
     auto fm = sgl::graphic::FontManager::Instance();
     sgl::graphic::Font * fnt = fm->GetFont(fileFont, size, sgl::graphic::Font::NORMAL);
     SetLabelFont(fnt);
+}
+
+void SecondaryButtonPlanetMap::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void SecondaryButtonPlanetMap::HandleButtonDown()
+{
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click_cancel-01.ogg");
 }
 
 } // namespace game

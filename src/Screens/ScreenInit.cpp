@@ -219,6 +219,7 @@ void ScreenInit::SetupSFX()
     // UI SFX
     mJobs.emplace_back([this, am]
     {
+        am->CreateSound(packageSoundsUI, "UI/button_click_cancel-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click_long-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click-02.ogg");
