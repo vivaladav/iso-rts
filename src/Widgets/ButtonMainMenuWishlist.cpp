@@ -55,7 +55,7 @@ void ButtonMainMenuWishlist::HandleMouseOver()
     sgl::sgui::AbstractButton::HandleMouseOver();
 
     auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-    player->PlaySound("UI/button_over-01.ogg");
+    player->PlaySound("UI/button_over-02.ogg");
 }
 
 void ButtonMainMenuWishlist::HandleButtonDown()
@@ -63,7 +63,7 @@ void ButtonMainMenuWishlist::HandleButtonDown()
     sgl::sgui::AbstractButton::HandleButtonDown();
 
     auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-    player->PlaySound("UI/button_click-01.ogg");
+    player->PlaySound("UI/button_click-02.ogg");
 }
 
 void ButtonMainMenuWishlist::HandlePositionChanged()

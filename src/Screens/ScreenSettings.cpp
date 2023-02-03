@@ -71,6 +71,23 @@ public:
 
         SetLabel("BACK");
     }
+
+private:
+    void HandleMouseOver()
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown()
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
+    }
 };
 
 // ====== PANEL BUTTON =====
@@ -320,6 +337,14 @@ public:
     }
 
 private:
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/checkbox-01.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         UpdateGraphics(state);

@@ -44,7 +44,7 @@ void ButtonMainMenu::HandleMouseOver()
     GameButton::HandleMouseOver();
 
     auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-    player->PlaySound("UI/button_over-02.ogg");
+    player->PlaySound("UI/button_over-01.ogg");
 }
 
 void ButtonMainMenu::HandleButtonDown()
