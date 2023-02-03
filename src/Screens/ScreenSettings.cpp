@@ -73,7 +73,7 @@ public:
     }
 
 private:
-    void HandleMouseOver()
+    void HandleMouseOver() override
     {
         sgl::sgui::AbstractButton::HandleMouseOver();
 
@@ -81,7 +81,7 @@ private:
         player->PlaySound("UI/button_over-02.ogg");
     }
 
-    void HandleButtonDown()
+    void HandleButtonDown() override
     {
         sgl::sgui::AbstractButton::HandleButtonDown();
 
@@ -125,6 +125,22 @@ public:
     }
 
 private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-03.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-03.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         UpdateGraphics(state);
@@ -183,6 +199,14 @@ public:
     }
 
 private:
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         using namespace sgl::graphic;
@@ -240,6 +264,22 @@ public:
     }
 
 private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
+    }
+
     void HandlePositionChanged() override
     {
         PositionElements();
