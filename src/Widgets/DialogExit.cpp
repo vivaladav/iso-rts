@@ -11,6 +11,8 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/ImageButton.h>
 #include <sgl/utilities/System.h>
 
@@ -37,6 +39,22 @@ public:
         graphic::Font * fnt = fm->GetFont(fileFont, size, graphic::Font::NORMAL);
         SetLabelFont(fnt);
     }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-01.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
 };
 
 // ===== BUTTON X =====
@@ -49,6 +67,23 @@ public:
                                  IND_DIA_EX_BTN_X_PUSHED }, SpriteFileDialogExit, parent)
     {
         SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
     }
 };
 
@@ -82,6 +117,22 @@ public:
     }
 
 private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
+    }
+
     void HandlePositionChanged() override
     {
         PositionElements();
