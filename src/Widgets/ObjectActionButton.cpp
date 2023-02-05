@@ -9,6 +9,8 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 
 #include <cassert>
 
@@ -20,6 +22,7 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
     : sgl::sgui::AbstractButton(parent)
     , mBody(new sgl::graphic::Image)
     , mIcon(new sgl::graphic::Image)
+    , mIconId(icon)
 {
     using namespace sgl::graphic;
 
@@ -66,6 +69,30 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
 
     // set initial visual state
     SetState(NORMAL);
+}
+
+void ObjectActionButton::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-03.ogg");
+}
+
+void ObjectActionButton::HandleButtonDown()
+{
+    // no sound when opening dialog
+    if(UNITS == mIconId || BUILD_STRUCT == mIconId)
+        return ;
+
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+
+    if(CANCEL == mIconId)
+        player->PlaySound("UI/button_click_cancel-02.ogg");
+    else
+        player->PlaySound("UI/button_click-03.ogg");
 }
 
 void ObjectActionButton::OnStateChanged(VisualState state)

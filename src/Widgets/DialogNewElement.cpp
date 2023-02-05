@@ -124,7 +124,7 @@ private:
         sgl::sgui::AbstractButton::HandleButtonDown();
 
         auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_click-02.ogg");
+        player->PlaySound("UI/dialog_close-01.ogg");
     }
 
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
@@ -834,6 +834,10 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
 
     // finally show data
     UpdateSlots();
+
+    // play sound
+    auto ap = sgl::media::AudioManager::Instance()->GetPlayer();
+    ap->PlaySound("UI/dialog_open-01.ogg");
 }
 
 void DialogNewElement::CheckBuild()

@@ -38,6 +38,9 @@ public:
                        const char * tooltip, sgl::sgui::Widget * parent);
 
 private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override;
 
     void HandlePositionChanged() override;
@@ -46,6 +49,8 @@ private:
     sgl::graphic::Image * mBody = nullptr;
     sgl::graphic::Image * mIcon = nullptr;
     sgl::graphic::Text * mShortcut = nullptr;
+
+    ActionIcon mIconId;
 };
 
 } // namespace game
