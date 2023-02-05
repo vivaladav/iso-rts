@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include "MapsRegistry.h"
 #include "Player.h"
+#include "Version.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "States/StatesIds.h"
 #include "States/StateFactionSelection.h"
@@ -39,7 +40,8 @@ Game::Game(int argc, char * argv[])
 {
     using namespace sgl::graphic;
 
-    mWin = Window::Create("Virtueror - v. 0.1.0", 0, 0, this);
+    const std::string title = std::string("Virtueror - v. ") + std::string(VERSION);
+    mWin = Window::Create(title.c_str(), 0, 0, this);
     mRenderer = Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
     mWin->SetFullscreen(true);

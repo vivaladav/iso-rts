@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(virtueror LANGUAGES CXX VERSION 0.1.0)
+project(virtueror LANGUAGES CXX VERSION 0.1.1)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
