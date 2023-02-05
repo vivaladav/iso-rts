@@ -232,7 +232,9 @@ void ScreenInit::SetupSFX()
         am->CreateSound(packageSoundsUI, "UI/checkbox-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/checkbox-02.ogg");
         am->CreateSound(packageSoundsUI, "UI/dialog_close-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/dialog_close-02.ogg");
         am->CreateSound(packageSoundsUI, "UI/dialog_open-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/dialog_open-02.ogg");
     });
 
     // TEST SFX

@@ -2,6 +2,9 @@
 
 #include "Widgets/GameUIData.h"
 
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
+
 namespace game
 
 {
@@ -18,6 +21,22 @@ const std::array<unsigned int, sgl::sgui::PushButton::NUM_VISUAL_STATES> texIds 
 ButtonMinimap::ButtonMinimap()
     : sgl::sgui::ImageButton(texIds, SpriteFileMapPanels, nullptr)
 {
+}
+
+void ButtonMinimap::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-03.ogg");
+}
+
+void ButtonMinimap::HandleButtonDown()
+{
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/dialog_open-02.ogg");
 }
 
 } // namespace game

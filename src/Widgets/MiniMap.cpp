@@ -10,6 +10,8 @@
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/ImageButton.h>
 
 namespace game
@@ -28,64 +30,107 @@ public:
                                  }, SpriteFileMapPanels, parent)
     {
     }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::ImageButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-03.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::ImageButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/dialog_close-02.ogg");
+    }
 };
 
-class ButtonMoveLeft : public sgl::sgui::ImageButton
+class ButtonMove : public sgl::sgui::ImageButton
+{
+public:
+    ButtonMove(const std::array<unsigned int, NUM_VISUAL_STATES> & texIds,
+               const char * spriteFile, Widget * parent)
+    : sgl::sgui::ImageButton(texIds, spriteFile, parent)
+    {
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::ImageButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-03.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::ImageButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-03.ogg");
+    }
+};
+
+class ButtonMoveLeft : public ButtonMove
 {
 public:
     ButtonMoveLeft(sgl::sgui::Widget * parent)
-        : sgl::sgui::ImageButton({
-                                     IND_MINIMAP_BTN_L_NORMAL,
-                                     IND_MINIMAP_BTN_L_DISABLED,
-                                     IND_MINIMAP_BTN_L_OVER,
-                                     IND_MINIMAP_BTN_L_PUSHED,
-                                     IND_MINIMAP_BTN_L_NORMAL
-                                 }, SpriteFileMapPanels, parent)
+        : ButtonMove({
+                        IND_MINIMAP_BTN_L_NORMAL,
+                        IND_MINIMAP_BTN_L_DISABLED,
+                        IND_MINIMAP_BTN_L_OVER,
+                        IND_MINIMAP_BTN_L_PUSHED,
+                        IND_MINIMAP_BTN_L_NORMAL
+                    }, SpriteFileMapPanels, parent)
     {
     }
 };
 
-class ButtonMoveRight : public sgl::sgui::ImageButton
+class ButtonMoveRight : public ButtonMove
 {
 public:
     ButtonMoveRight(sgl::sgui::Widget * parent)
-        : sgl::sgui::ImageButton({
-                                     IND_MINIMAP_BTN_R_NORMAL,
-                                     IND_MINIMAP_BTN_R_DISABLED,
-                                     IND_MINIMAP_BTN_R_OVER,
-                                     IND_MINIMAP_BTN_R_PUSHED,
-                                     IND_MINIMAP_BTN_R_NORMAL
-                                 }, SpriteFileMapPanels, parent)
+        : ButtonMove({
+                         IND_MINIMAP_BTN_R_NORMAL,
+                         IND_MINIMAP_BTN_R_DISABLED,
+                         IND_MINIMAP_BTN_R_OVER,
+                         IND_MINIMAP_BTN_R_PUSHED,
+                         IND_MINIMAP_BTN_R_NORMAL
+                    }, SpriteFileMapPanels, parent)
     {
     }
 };
 
-class ButtonMoveUp : public sgl::sgui::ImageButton
+class ButtonMoveUp : public ButtonMove
 {
 public:
     ButtonMoveUp(sgl::sgui::Widget * parent)
-        : sgl::sgui::ImageButton({
-                                     IND_MINIMAP_BTN_U_NORMAL,
-                                     IND_MINIMAP_BTN_U_DISABLED,
-                                     IND_MINIMAP_BTN_U_OVER,
-                                     IND_MINIMAP_BTN_U_PUSHED,
-                                     IND_MINIMAP_BTN_U_NORMAL
-                                 }, SpriteFileMapPanels, parent)
+        : ButtonMove({
+                         IND_MINIMAP_BTN_U_NORMAL,
+                         IND_MINIMAP_BTN_U_DISABLED,
+                         IND_MINIMAP_BTN_U_OVER,
+                         IND_MINIMAP_BTN_U_PUSHED,
+                         IND_MINIMAP_BTN_U_NORMAL
+                    }, SpriteFileMapPanels, parent)
     {
     }
 };
 
-class ButtonMoveDown : public sgl::sgui::ImageButton
+class ButtonMoveDown : public ButtonMove
 {
 public:
     ButtonMoveDown(sgl::sgui::Widget * parent)
-        : sgl::sgui::ImageButton({
-                                     IND_MINIMAP_BTN_D_NORMAL,
-                                     IND_MINIMAP_BTN_D_DISABLED,
-                                     IND_MINIMAP_BTN_D_OVER,
-                                     IND_MINIMAP_BTN_D_PUSHED,
-                                     IND_MINIMAP_BTN_D_NORMAL
-                                 }, SpriteFileMapPanels, parent)
+        : ButtonMove({
+                     IND_MINIMAP_BTN_D_NORMAL,
+                     IND_MINIMAP_BTN_D_DISABLED,
+                     IND_MINIMAP_BTN_D_OVER,
+                     IND_MINIMAP_BTN_D_PUSHED,
+                     IND_MINIMAP_BTN_D_NORMAL
+                    }, SpriteFileMapPanels, parent)
     {
     }
 };
@@ -565,6 +610,10 @@ void MiniMap::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
         const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
         mCamController->CenterCameraToPoint(cX, cY);
+
+        // play sound
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
     }
 }
 
