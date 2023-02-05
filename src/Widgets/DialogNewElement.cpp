@@ -13,6 +13,8 @@
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/ButtonsGroup.h>
 #include <sgl/sgui/ImageButton.h>
 #include <sgl/sgui/Image.h>
@@ -39,6 +41,23 @@ public:
                         SpriteFileNewElementDialog, parent)
     {
     }
+
+private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-03.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-03.ogg");
+    }
 };
 
 // ===== BUTTON RIGHT =====
@@ -53,6 +72,23 @@ public:
                         IND_NE_DIALOG_RIGHT_NORMAL },
                         SpriteFileNewElementDialog, parent)
     {
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-03.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-03.ogg");
     }
 };
 
@@ -75,6 +111,22 @@ public:
     }
 
 private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
@@ -134,6 +186,22 @@ public:
     }
 
 private:
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-01.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click_long-02.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         // BACKGROUND
@@ -290,6 +358,17 @@ public:
     }
 
 private:
+    void HandleButtonDown() override
+    {
+        if(IsChecked())
+            return ;
+
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/checkbox-02.ogg");
+    }
+
     void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =

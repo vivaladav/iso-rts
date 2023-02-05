@@ -221,6 +221,7 @@ void ScreenInit::SetupSFX()
     {
         am->CreateSound(packageSoundsUI, "UI/button_click_cancel-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click_long-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/button_click_long-02.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click-01.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click-02.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_click-03.ogg");
@@ -228,6 +229,7 @@ void ScreenInit::SetupSFX()
         am->CreateSound(packageSoundsUI, "UI/button_over-02.ogg");
         am->CreateSound(packageSoundsUI, "UI/button_over-03.ogg");
         am->CreateSound(packageSoundsUI, "UI/checkbox-01.ogg");
+        am->CreateSound(packageSoundsUI, "UI/checkbox-02.ogg");
     });
 
     // TEST SFX
