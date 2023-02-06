@@ -514,6 +514,7 @@ void ScreenGame::CreateLayers()
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS1);
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS2);
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS3);
+    mIsoMap->CreateLayer(MapLayers::FACTION_INFLUENCE);
     mIsoMap->CreateLayer(MapLayers::OBJECTS1);
     mIsoMap->CreateLayer(MapLayers::OBJECTS2);
     mIsoMap->CreateLayer(MapLayers::CELL_OVERLAYS4);

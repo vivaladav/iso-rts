@@ -21,6 +21,7 @@ enum MapLayers : unsigned int
     CELL_OVERLAYS1,
     CELL_OVERLAYS2,
     CELL_OVERLAYS3,
+    FACTION_INFLUENCE,
     OBJECTS1,
     OBJECTS2,
     CELL_OVERLAYS4,
