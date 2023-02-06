@@ -153,6 +153,10 @@ public:
 
     void Update(float delta);
 
+    // TEST
+    void PrintControlMap();
+    void PrintControlMap(PlayerFaction f);
+
 private:
     void ClearCell(GameMapCell & gcell);
 
@@ -194,12 +198,25 @@ private:
     void UpdateWalls(const Cell2D & center);
     void UpdateWall(const Cell2D & cell);
 
+    void AddControlPointsForObject(GameObject * obj);
+
+private:
+    struct ControlCell
+    {
+        void UpdateRes();
+        void AddPoints(PlayerFaction f, int p);
+
+        std::vector<int> points;
+        PlayerFaction res;
+    };
+
 private:
     // to access visibility functions
     friend class ObjectPath;
     friend class ConquerPath;
 
     std::vector<GameMapCell> mCells;
+    std::vector<ControlCell> mControlMap;
     std::vector<GameObject *> mObjects;
     std::unordered_set<GameObject *> mObjectsSet;
     std::vector<CollectableGenerator *> mCollGen;
@@ -324,5 +341,11 @@ inline unsigned int GameMap::GetNumRows() const { return mRows; }
  * @return Number of map cells
  */
 inline unsigned int GameMap::GetNumCols() const { return mCols; }
+
+inline void GameMap::ControlCell::AddPoints(PlayerFaction f, int p)
+{
+    points[f] += p;
+    UpdateRes();
+}
 
 } // namespace game
