@@ -21,6 +21,8 @@ add_executable(
     src/CameraMapController.h
     src/CameraMapController.cpp
     src/Cell2D.h
+    src/ControlMap.h
+    src/ControlMap.cpp
     src/Game.h
     src/Game.cpp
     src/GameConstants.h
