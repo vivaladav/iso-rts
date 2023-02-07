@@ -1,13 +1,61 @@
 #include "ControlMap.h"
 
 #include "GameConstants.h"
+#include "GameData.h"
+#include "IsoObject.h"
+#include "IsoLayer.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
+
+#include <sgl/graphic/TextureManager.h>
+#include <sgl/graphic/Texture.h>
 
 #include <iostream>
 
 namespace game
 {
+
+ControlMap::ControlMap(IsoLayer * layer)
+    : mLayer(layer)
+{
+    // init all 2^8 combinations to error type
+    const int typeCombinations = 256;
+    mTypesMap.assign(typeCombinations, IND_INF_AREA_UNDEFINED);
+
+    unsigned int ind;
+
+    // CORNER BL
+    ind = CN_T + CN_TR + CN_R;
+    mTypesMap[ind] = IND_INF_AREA_BL_F1;
+
+    // CORNER BR
+    ind = CN_T + CN_TL + CN_L;
+    mTypesMap[ind] = IND_INF_AREA_BR_F1;
+
+    // CORNER TL
+    ind = CN_R + CN_BR + CN_B;
+    mTypesMap[ind] = IND_INF_AREA_TL_F1;
+
+    // CORNER TR
+    ind = CN_L + CN_BL + CN_B;
+    mTypesMap[ind] = IND_INF_AREA_TR_F1;
+
+    // LEFT
+    ind = CN_ALL_R + CN_T + CN_B;
+    mTypesMap[ind] = IND_INF_AREA_L_F1;
+
+    // RIGHT
+    ind = CN_ALL_L + CN_T + CN_B;
+    mTypesMap[ind] = IND_INF_AREA_R_F1;
+
+    // TOP
+    ind = CN_L + CN_R + CN_BOT;
+    mTypesMap[ind] = IND_INF_AREA_T_F1;
+
+    // BOTTOM
+    ind = CN_L + CN_R + CN_TOP;
+    mTypesMap[ind] = IND_INF_AREA_B_F1;
+}
 
 void ControlMap::SetSize(int rows, int cols)
 {
@@ -107,7 +155,44 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     }
 }
 
-void ControlMap::PrintControlMap()
+void ControlMap::UpdateVisualAreas()
+{
+    using namespace sgl;
+
+    auto tm = graphic::TextureManager::Instance();
+
+    mLayer->ClearObjects();
+
+    ClearUsedMarkers();
+
+    for(int r = 0; r < mRows; ++r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = 0; c < mCols; ++c)
+        {
+            const int ind = ind0 + c;
+            const PlayerFaction pf = mMap[ind].controller;
+
+            if(pf != NO_FACTION)
+            {
+                const unsigned int type = GetMarkerType(r, c, pf);
+
+                if(type != IND_INF_AREA_UNDEFINED)
+                {
+                    const unsigned int typef = type + (NUM_INF_AREA_ELEMS * pf);
+
+                    IsoObject * marker = GetNewMarker();
+                    marker->SetTexture(tm->GetSprite(SpriteFileIndicators, typef));
+
+                    mLayer->AddObject(marker, r, c);
+                }
+            }
+        }
+    }
+}
+
+void ControlMap::PrintControlMap() const
 {
     for(unsigned int r = 0; r < mRows; ++r)
     {
@@ -116,7 +201,7 @@ void ControlMap::PrintControlMap()
         for(unsigned int c = 0; c < mCols; ++c)
         {
             const int ind = ind0 + c;
-            std::cout << mMap[ind].res;
+            std::cout << mMap[ind].controller;
         }
 
         std::cout << "\n";
@@ -125,7 +210,7 @@ void ControlMap::PrintControlMap()
     std::cout << std::endl;
 }
 
-void ControlMap::PrintControlMap(PlayerFaction f)
+void ControlMap::PrintControlMap(PlayerFaction f) const
 {
     for(unsigned int r = 0; r < mRows; ++r)
     {
@@ -147,16 +232,56 @@ void ControlMap::ControlCell::UpdateRes()
 {
     int maxPoints = 0;
 
-    res = NO_FACTION;
+    controller = NO_FACTION;
 
     for(unsigned int f = FACTION_1; f < NUM_FACTIONS; ++f)
     {
         if(points[f] > maxPoints)
         {
             maxPoints = points[f];
-            res = static_cast<PlayerFaction>(f);
+            controller = static_cast<PlayerFaction>(f);
         }
     }
+}
+
+IsoObject * ControlMap::GetNewMarker()
+{
+    IsoObject * marker = nullptr;
+
+    if(mUsedMarkers < mMarkers.size())
+        marker = mMarkers[mUsedMarkers];
+    else
+    {
+        marker = new IsoObject(1, 1);
+        mMarkers.push_back(marker);
+    }
+
+    ++mUsedMarkers;
+
+    return marker;
+}
+
+unsigned int ControlMap::GetMarkerType(int r, int c, PlayerFaction f) const
+{
+    const unsigned int ind = FactionOwnsCell(r - 1, c - 1, f) * CN_TL +
+                             FactionOwnsCell(r - 1, c, f) * CN_T +
+                             FactionOwnsCell(r - 1, c + 1, f) * CN_TR +
+                             FactionOwnsCell(r, c - 1, f) * CN_L +
+                             FactionOwnsCell(r, c + 1, f) * CN_R +
+                             FactionOwnsCell(r + 1, c - 1, f) * CN_BL +
+                             FactionOwnsCell(r + 1, c, f) * CN_B +
+                             FactionOwnsCell(r + 1, c + 1, f) * CN_BR;
+
+    return mTypesMap[ind];
+}
+
+bool ControlMap::FactionOwnsCell(int r, int c, PlayerFaction f) const
+{
+    if(r < 0 || c < 0 || r >= mRows || c >= mCols)
+        return false;
+
+    const int ind = (r * mCols) + c;
+    return mMap[ind].controller == f;
 }
 
 } // namespace game

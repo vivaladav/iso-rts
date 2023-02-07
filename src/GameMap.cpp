@@ -45,7 +45,7 @@ constexpr int COST_CONQUEST_RES_GEN = 4;
 // ==================== PUBLIC METHODS ====================
 
 GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
-    : mControlMap(new ControlMap)
+    : mControlMap(new ControlMap(isoMap->GetLayer(MapLayers::FACTION_INFLUENCE)))
     , mGame(game)
     , mScreenGame(sg)
     , mIsoMap(isoMap)
@@ -529,6 +529,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
 
         // update control points
         mControlMap->AddControlPointsForObject(obj);
+        mControlMap->UpdateVisualAreas();
 
         // update visibility map
         // NOTE only for human player for now
