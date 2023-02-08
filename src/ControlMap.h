@@ -53,11 +53,11 @@ private:
         CN_BL    = 0x40,
         CN_L     = 0x80,
 
-        CN_TOP = CN_TL + CN_T + CN_TR,
-        CN_BOT = CN_BL + CN_B + CN_BR,
-        CN_ALL_L = CN_TL + CN_L + CN_BL,
-        CN_ALL_R = CN_TR + CN_R + CN_BR,
-        CN_ALL = CN_TOP + CN_BOT + CN_L + CN_R
+        CN_ALL_T = CN_TL | CN_T | CN_TR,
+        CN_ALL_B = CN_BL | CN_B | CN_BR,
+        CN_ALL_L = CN_TL | CN_L | CN_BL,
+        CN_ALL_R = CN_TR | CN_R | CN_BR,
+        CN_ALL = CN_ALL_T | CN_ALL_B | CN_L | CN_R
     };
 
 private:

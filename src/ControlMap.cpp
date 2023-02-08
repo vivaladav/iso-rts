@@ -25,36 +25,94 @@ ControlMap::ControlMap(IsoLayer * layer)
     unsigned int ind;
 
     // CORNER BL
-    ind = CN_T + CN_TR + CN_R;
+    ind = CN_T | CN_TR | CN_R;
     mTypesMap[ind] = IND_INF_AREA_BL_F1;
 
     // CORNER BR
-    ind = CN_T + CN_TL + CN_L;
+    ind = CN_T | CN_TL | CN_L;
+    mTypesMap[ind] = IND_INF_AREA_BR_F1;
+
+    ind = CN_ALL_L | CN_T;
     mTypesMap[ind] = IND_INF_AREA_BR_F1;
 
     // CORNER TL
-    ind = CN_R + CN_BR + CN_B;
+    ind = CN_R | CN_BR | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_TL_F1;
+
+    ind = CN_R | CN_ALL_B;
     mTypesMap[ind] = IND_INF_AREA_TL_F1;
 
     // CORNER TR
-    ind = CN_L + CN_BL + CN_B;
+    ind = CN_L | CN_BL | CN_B;
     mTypesMap[ind] = IND_INF_AREA_TR_F1;
 
     // LEFT
-    ind = CN_ALL_R + CN_T + CN_B;
+    ind = CN_ALL_R | CN_T | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_L_F1;
+
+    ind = CN_ALL_R | CN_ALL_T | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_L_F1;
+
+    ind = CN_ALL_R | CN_ALL_B | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_L_F1;
+
+    ind = CN_ALL_R | CN_ALL_B | CN_ALL_T;
     mTypesMap[ind] = IND_INF_AREA_L_F1;
 
     // RIGHT
-    ind = CN_ALL_L + CN_T + CN_B;
+    ind = CN_ALL_L | CN_T | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_R_F1;
+
+    ind = CN_ALL_L | CN_ALL_T | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_R_F1;
+
+    ind = CN_ALL_L | CN_ALL_B | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_R_F1;
+
+    ind = CN_ALL_L | CN_ALL_B | CN_ALL_T;
     mTypesMap[ind] = IND_INF_AREA_R_F1;
 
     // TOP
-    ind = CN_L + CN_R + CN_BOT;
+    ind = CN_L | CN_R | CN_ALL_B;
+    mTypesMap[ind] = IND_INF_AREA_T_F1;
+
+    ind = CN_ALL_L | CN_ALL_B | CN_R;
+    mTypesMap[ind] = IND_INF_AREA_T_F1;
+
+    ind = CN_ALL_R | CN_ALL_B | CN_L;
+    mTypesMap[ind] = IND_INF_AREA_T_F1;
+
+    ind = CN_ALL_R | CN_ALL_B | CN_ALL_L;
     mTypesMap[ind] = IND_INF_AREA_T_F1;
 
     // BOTTOM
-    ind = CN_L + CN_R + CN_TOP;
+    ind = CN_L | CN_R | CN_ALL_T;
     mTypesMap[ind] = IND_INF_AREA_B_F1;
+
+    ind = CN_ALL_L | CN_ALL_T | CN_R;
+    mTypesMap[ind] = IND_INF_AREA_B_F1;
+
+    ind = CN_ALL_R | CN_ALL_T | CN_L;
+    mTypesMap[ind] = IND_INF_AREA_B_F1;
+
+    ind = CN_ALL_R | CN_ALL_T | CN_ALL_L;
+    mTypesMap[ind] = IND_INF_AREA_B_F1;
+
+    // CONNECTOR LEFT
+    ind = CN_ALL_R | CN_ALL_T | CN_L | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_CONN_L_F1;
+
+    // CONNECTOR RIGHT
+    ind = CN_ALL_L | CN_ALL_B | CN_R | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_CONN_R_F1;
+
+    // CONNECTOR BOTTOM
+    ind = CN_ALL_L | CN_ALL_T | CN_R | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_CONN_B_F1;
+
+    // CONNECTOR TOP
+    ind = CN_ALL_R | CN_ALL_B | CN_L | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_CONN_T_F1;
 }
 
 void ControlMap::SetSize(int rows, int cols)
