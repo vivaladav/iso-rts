@@ -528,8 +528,11 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
             owner->AddStructure(static_cast<Structure *>(obj));
 
         // update control points
-        mControlMap->AddControlPointsForObject(obj);
-        mControlMap->UpdateVisualAreas();
+        if(obj->IsLinked())
+        {
+            mControlMap->AddControlPointsForObject(obj);
+            mControlMap->UpdateVisualAreas();
+        }
 
         // update visibility map
         // NOTE only for human player for now
@@ -1897,8 +1900,10 @@ void GameMap::UpdateLinkedCells(Player * player)
         {
             cell.linked = false;
 
-            if(cell.objTop != nullptr)
-                objs.insert(cell.objTop);
+            GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
+
+            if(o != nullptr && o->GetOwner() == player && o->IsStructure())
+                objs.insert(o);
         }
     }
 
@@ -1980,7 +1985,19 @@ void GameMap::UpdateLinkedCells(Player * player)
 
     // UPDATE LINK STATUS
     for(GameObject * obj : objs)
-        obj->SetLinked(objsLink[obj]);
+    {
+        if(obj->IsLinked() != objsLink[obj])
+        {
+            obj->SetLinked(objsLink[obj]);
+
+            // add control points of new linked object
+            if(obj->IsLinked())
+            {
+                mControlMap->AddControlPointsForObject(obj);
+                mControlMap->UpdateVisualAreas();
+            }
+        }
+    }
 
     // UPDATE INFLUENCE
     for(unsigned int ind : done)
