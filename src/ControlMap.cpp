@@ -28,11 +28,26 @@ ControlMap::ControlMap(IsoLayer * layer)
     ind = CN_T | CN_TR | CN_R;
     mTypesMap[ind] = IND_INF_AREA_BL_F1;
 
+    ind = CN_ALL_T | CN_R;
+    mTypesMap[ind] = IND_INF_AREA_BL_F1;
+
+    ind = CN_ALL_R | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_BL_F1;
+
+    ind = CN_ALL_R | CN_ALL_T;
+    mTypesMap[ind] = IND_INF_AREA_BL_F1;
+
     // CORNER BR
     ind = CN_T | CN_TL | CN_L;
     mTypesMap[ind] = IND_INF_AREA_BR_F1;
 
     ind = CN_ALL_L | CN_T;
+    mTypesMap[ind] = IND_INF_AREA_BR_F1;
+
+    ind = CN_ALL_T | CN_L;
+    mTypesMap[ind] = IND_INF_AREA_BR_F1;
+
+    ind = CN_ALL_T | CN_ALL_L;
     mTypesMap[ind] = IND_INF_AREA_BR_F1;
 
     // CORNER TL
@@ -42,8 +57,23 @@ ControlMap::ControlMap(IsoLayer * layer)
     ind = CN_R | CN_ALL_B;
     mTypesMap[ind] = IND_INF_AREA_TL_F1;
 
+    ind = CN_B | CN_ALL_R;
+    mTypesMap[ind] = IND_INF_AREA_TL_F1;
+
+    ind = CN_ALL_B | CN_ALL_R;
+    mTypesMap[ind] = IND_INF_AREA_TL_F1;
+
     // CORNER TR
     ind = CN_L | CN_BL | CN_B;
+    mTypesMap[ind] = IND_INF_AREA_TR_F1;
+
+    ind = CN_L | CN_ALL_B;
+    mTypesMap[ind] = IND_INF_AREA_TR_F1;
+
+    ind = CN_B | CN_ALL_L;
+    mTypesMap[ind] = IND_INF_AREA_TR_F1;
+
+    ind = CN_ALL_B | CN_ALL_L;
     mTypesMap[ind] = IND_INF_AREA_TR_F1;
 
     // LEFT
@@ -115,9 +145,9 @@ ControlMap::ControlMap(IsoLayer * layer)
     mTypesMap[ind] = IND_INF_AREA_CONN_T_F1;
 }
 
-void ControlMap::SetSize(int rows, int cols)
+void ControlMap::SetSize(unsigned int rows, unsigned int cols)
 {
-    const int size = rows * cols;
+    const unsigned int size = rows * cols;
 
     mRows = rows;
     mCols = cols;
@@ -126,18 +156,32 @@ void ControlMap::SetSize(int rows, int cols)
     mMap.assign(size, cc0);
 }
 
+void ControlMap::AddControlPointsForCell(unsigned int r, unsigned int c, PlayerFaction faction)
+{
+    const int maxPoints = 2;
+
+    AddControlPointstoArea(r, c, r, c, faction, maxPoints);
+}
+
 void ControlMap::AddControlPointsForObject(GameObject * obj)
 {
-    const PlayerFaction faction = obj->GetOwner()->GetFaction();
-
     const int rTL = obj->GetRow1();
     const int cTL = obj->GetCol1();
     const int rBR = obj->GetRow0();
     const int cBR = obj->GetCol0();
 
+    const PlayerFaction faction = obj->GetOwner()->GetFaction();
+
     // TODO get max points from object
     const int maxPoints = 5;
 
+    AddControlPointstoArea(rTL, cTL, rBR, cBR, faction, maxPoints);
+}
+
+void ControlMap::AddControlPointstoArea(int rTL, int cTL,
+                                        int rBR, int cBR,
+                                        PlayerFaction faction, int maxPoints)
+{
     // assign points to object area
     for(int r = rTL; r <= rBR; ++r)
     {
@@ -223,11 +267,11 @@ void ControlMap::UpdateVisualAreas()
 
     ClearUsedMarkers();
 
-    for(int r = 0; r < mRows; ++r)
+    for(unsigned int r = 0; r < mRows; ++r)
     {
         const int ind0 = r * mCols;
 
-        for(int c = 0; c < mCols; ++c)
+        for(unsigned int c = 0; c < mCols; ++c)
         {
             const int ind = ind0 + c;
             const PlayerFaction pf = mMap[ind].controller;
@@ -319,7 +363,7 @@ IsoObject * ControlMap::GetNewMarker()
     return marker;
 }
 
-unsigned int ControlMap::GetMarkerType(int r, int c, PlayerFaction f) const
+unsigned int ControlMap::GetMarkerType(unsigned int r, unsigned int c, PlayerFaction f) const
 {
     const unsigned int ind = FactionOwnsCell(r - 1, c - 1, f) * CN_TL +
                              FactionOwnsCell(r - 1, c, f) * CN_T +
@@ -333,9 +377,9 @@ unsigned int ControlMap::GetMarkerType(int r, int c, PlayerFaction f) const
     return mTypesMap[ind];
 }
 
-bool ControlMap::FactionOwnsCell(int r, int c, PlayerFaction f) const
+bool ControlMap::FactionOwnsCell(unsigned int r, unsigned int c, PlayerFaction f) const
 {
-    if(r < 0 || c < 0 || r >= mRows || c >= mCols)
+    if(r >= mRows || c >= mCols)
         return false;
 
     const int ind = (r * mCols) + c;

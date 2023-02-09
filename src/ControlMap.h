@@ -15,8 +15,9 @@ class ControlMap
 {
 public:
     ControlMap(IsoLayer * layer);
-    void SetSize(int rows, int cols);
+    void SetSize(unsigned int rows, unsigned int cols);
 
+    void AddControlPointsForCell(unsigned int r, unsigned int c, PlayerFaction faction);
     void AddControlPointsForObject(GameObject * obj);
 
     void UpdateVisualAreas();
@@ -26,11 +27,14 @@ public:
     void PrintControlMap(PlayerFaction f) const;
 
 private:
+    void AddControlPointstoArea(int rTL, int cTL, int rBR, int cBR,
+                                PlayerFaction faction, int maxPoints);
+
     IsoObject * GetNewMarker();
     void ClearUsedMarkers();
 
-    unsigned int GetMarkerType(int r, int c, PlayerFaction f) const;
-    bool FactionOwnsCell(int r, int c, PlayerFaction f) const;
+    unsigned int GetMarkerType(unsigned int r, unsigned int c, PlayerFaction f) const;
+    bool FactionOwnsCell(unsigned int r, unsigned int c, PlayerFaction f) const;
 
 private:
     struct ControlCell
