@@ -158,7 +158,7 @@ void ControlMap::SetSize(unsigned int rows, unsigned int cols)
 
 void ControlMap::AddControlPointsForCell(unsigned int r, unsigned int c, PlayerFaction faction)
 {
-    const int maxPoints = 2;
+    const int maxPoints = 3;
 
     AddControlPointstoArea(r, c, r, c, faction, maxPoints);
 }
@@ -173,7 +173,7 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     const PlayerFaction faction = obj->GetOwner()->GetFaction();
 
     // TODO get max points from object
-    const int maxPoints = 5;
+    const int maxPoints = 7;
 
     AddControlPointstoArea(rTL, cTL, rBR, cBR, faction, maxPoints);
 }

@@ -1892,18 +1892,29 @@ void GameMap::UpdateLinkedCells(Player * player)
 {
     std::unordered_set<GameObject *> objs;
     std::unordered_map<GameObject *, bool> objsLink;
+    std::unordered_map<int, bool> cells;
 
     // CLEAR ALL LINKED STATUS
-    for(GameMapCell & cell : mCells)
+    //for(GameMapCell & cell : mCells)
+    for(int r = 0; r < mRows; ++r)
     {
-        if(cell.owner == player)
+        const int ind0 = r * mCols;
+
+        for(int c = 0; c < mCols; ++c)
         {
-            cell.linked = false;
+            const int ind = ind0 + c;
+            const GameMapCell & cell = mCells[ind];
 
-            GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
+            if(cell.owner == player)
+            {
+                cells.emplace(ind, false);
+                //cell.linked = false;
 
-            if(o != nullptr && o->GetOwner() == player && o->IsStructure())
-                objs.insert(o);
+                GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
+
+                if(o != nullptr && o->GetOwner() == player && o->IsStructure())
+                    objs.insert(o);
+            }
         }
     }
 
@@ -1928,12 +1939,15 @@ void GameMap::UpdateLinkedCells(Player * player)
         unsigned int currInd = todo.back();
         todo.pop_back();
 
-        GameMapCell & currCell = mCells[currInd];
-        currCell.linked = true;
+        const GameMapCell & currCell = mCells[currInd];
+        cells[currInd] = true;
+        //currCell.linked = true;
 
         // mark object as linked
         if(currCell.objTop != nullptr)
             objsLink[currCell.objTop] = true;
+        else if(currCell.objBottom != nullptr)
+            objsLink[currCell.objBottom] = true;
 
         // add TOP
         unsigned int r = currCell.row - 1;
@@ -1983,7 +1997,25 @@ void GameMap::UpdateLinkedCells(Player * player)
         done.insert(currInd);
     }
 
-    // UPDATE LINK STATUS
+    // UPDATE LINK STATUS CELLS
+    for(const auto & it : cells)
+    {
+        GameMapCell & cell = mCells[it.first];
+
+        // linked status of cell changed
+        if(cell.linked != it.second)
+        {
+            cell.linked = it.second;
+
+            if(cell.linked)
+            {
+                mControlMap->AddControlPointsForCell(cell.row, cell.col, cell.owner->GetFaction());
+                mControlMap->UpdateVisualAreas();
+            }
+        }
+    }
+
+    // UPDATE LINK STATUS OBJECTS
     for(GameObject * obj : objs)
     {
         if(obj->IsLinked() != objsLink[obj])
