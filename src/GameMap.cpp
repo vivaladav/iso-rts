@@ -529,10 +529,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
 
         // update control points
         if(obj->IsLinked())
-        {
             mControlMap->AddControlPointsForObject(obj);
-            mControlMap->UpdateVisualAreas();
-        }
 
         // update visibility map
         // NOTE only for human player for now
@@ -1895,7 +1892,6 @@ void GameMap::UpdateLinkedCells(Player * player)
     std::unordered_map<int, bool> cells;
 
     // CLEAR ALL LINKED STATUS
-    //for(GameMapCell & cell : mCells)
     for(int r = 0; r < mRows; ++r)
     {
         const int ind0 = r * mCols;
@@ -1908,7 +1904,6 @@ void GameMap::UpdateLinkedCells(Player * player)
             if(cell.owner == player)
             {
                 cells.emplace(ind, false);
-                //cell.linked = false;
 
                 GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
 
@@ -2008,10 +2003,7 @@ void GameMap::UpdateLinkedCells(Player * player)
             cell.linked = it.second;
 
             if(cell.linked)
-            {
                 mControlMap->AddControlPointsForCell(cell.row, cell.col, cell.owner->GetFaction());
-                mControlMap->UpdateVisualAreas();
-            }
         }
     }
 
@@ -2024,10 +2016,7 @@ void GameMap::UpdateLinkedCells(Player * player)
 
             // add control points of new linked object
             if(obj->IsLinked())
-            {
                 mControlMap->AddControlPointsForObject(obj);
-                mControlMap->UpdateVisualAreas();
-            }
         }
     }
 

@@ -160,7 +160,10 @@ void ControlMap::AddControlPointsForCell(unsigned int r, unsigned int c, PlayerF
 {
     const int maxPoints = 3;
 
-    AddControlPointstoArea(r, c, r, c, faction, maxPoints);
+    AddControlPointsToArea(r, c, r, c, faction, maxPoints);
+
+    UpdateControllers();
+    UpdateVisualAreas();
 }
 
 void ControlMap::AddControlPointsForObject(GameObject * obj)
@@ -175,10 +178,13 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     // TODO get max points from object
     const int maxPoints = 7;
 
-    AddControlPointstoArea(rTL, cTL, rBR, cBR, faction, maxPoints);
+    AddControlPointsToArea(rTL, cTL, rBR, cBR, faction, maxPoints);
+
+    UpdateControllers();
+    UpdateVisualAreas();
 }
 
-void ControlMap::AddControlPointstoArea(int rTL, int cTL,
+void ControlMap::AddControlPointsToArea(int rTL, int cTL,
                                         int rBR, int cBR,
                                         PlayerFaction faction, int maxPoints)
 {
@@ -190,7 +196,7 @@ void ControlMap::AddControlPointstoArea(int rTL, int cTL,
         for(int c = cTL; c <= cBR; ++c)
         {
             const int ind = ind0 + c;
-            mMap[ind].AddPoints(faction, maxPoints);
+            mMap[ind].points[faction] += maxPoints;
         }
     }
 
@@ -211,7 +217,7 @@ void ControlMap::AddControlPointstoArea(int rTL, int cTL,
             for(int c = c0; c <= c1; ++c)
             {
                 const int ind = ind0 + c;
-                mMap[ind].AddPoints(faction, p);
+                mMap[ind].points[faction] += p;
             }
         }
 
@@ -225,7 +231,7 @@ void ControlMap::AddControlPointstoArea(int rTL, int cTL,
             for(int c = c0; c <= c1; ++c)
             {
                 const int ind = ind0 + c;
-                mMap[ind].AddPoints(faction, p);
+                mMap[ind].points[faction] += p;
             }
         }
 
@@ -239,7 +245,7 @@ void ControlMap::AddControlPointstoArea(int rTL, int cTL,
             for(int r = r0; r <= r1; ++r)
             {
                 const int ind = (r * mCols) + cL;
-                mMap[ind].AddPoints(faction, p);
+                mMap[ind].points[faction] += p;
             }
         }
 
@@ -251,7 +257,66 @@ void ControlMap::AddControlPointstoArea(int rTL, int cTL,
             for(int r = r0; r <= r1; ++r)
             {
                 const int ind = (r * mCols) + cR;
-                mMap[ind].AddPoints(faction, p);
+                mMap[ind].points[faction] += p;
+            }
+        }
+    }
+}
+
+void ControlMap::UpdateControllers()
+{
+    std::vector<int> blockPoints;
+
+    // traverse all blocks
+    for(int r0 = 0; r0 < mRows; r0 += SECTOR_SIZE)
+    {
+        const int r1 = r0 + SECTOR_SIZE < mRows ? r0 + SECTOR_SIZE : mRows;
+
+        for(int c0 = 0; c0 < mCols; c0 += SECTOR_SIZE)
+        {
+            const int c1 = c0 + SECTOR_SIZE < mCols ? c0 + SECTOR_SIZE : mCols;
+
+            blockPoints.assign(NUM_FACTIONS, 0);
+
+            // accumulate faction points per block
+            for(int r = r0; r < r1; ++r)
+            {
+                const int ind0 = r * mCols;
+
+                for(int c = c0; c < c1; ++c)
+                {
+                    const int ind = ind0 + c;
+
+                    for(int i = 0; i < NUM_FACTIONS; ++i)
+                        blockPoints[i] += mMap[ind].points[i];
+                }
+            }
+
+            // decide controlling faction
+            PlayerFaction controller = NO_FACTION;
+            int maxPoints = 0;
+
+            for(int i = 0; i < NUM_FACTIONS; ++i)
+            {
+                if(blockPoints[i] > maxPoints)
+                {
+                    maxPoints = blockPoints[i];
+                    controller = static_cast<PlayerFaction>(i);
+                }
+                else if(blockPoints[i] == maxPoints)
+                    controller = NO_FACTION;
+            }
+
+            // assign controlling faction to block
+            for(int r = r0; r < r1; ++r)
+            {
+                const int ind0 = r * mCols;
+
+                for(int c = c0; c < c1; ++c)
+                {
+                    const int ind = ind0 + c;
+                    mMap[ind].controller = controller;
+                }
             }
         }
     }
@@ -294,6 +359,7 @@ void ControlMap::UpdateVisualAreas()
     }
 }
 
+
 void ControlMap::PrintControlMap() const
 {
     for(unsigned int r = 0; r < mRows; ++r)
@@ -330,6 +396,7 @@ void ControlMap::PrintControlMap(PlayerFaction f) const
     std::cout << std::endl;
 }
 
+/*
 void ControlMap::ControlCell::UpdateRes()
 {
     int maxPoints = 0;
@@ -345,6 +412,7 @@ void ControlMap::ControlCell::UpdateRes()
         }
     }
 }
+*/
 
 IsoObject * ControlMap::GetNewMarker()
 {
@@ -365,19 +433,19 @@ IsoObject * ControlMap::GetNewMarker()
 
 unsigned int ControlMap::GetMarkerType(unsigned int r, unsigned int c, PlayerFaction f) const
 {
-    const unsigned int ind = FactionOwnsCell(r - 1, c - 1, f) * CN_TL +
-                             FactionOwnsCell(r - 1, c, f) * CN_T +
-                             FactionOwnsCell(r - 1, c + 1, f) * CN_TR +
-                             FactionOwnsCell(r, c - 1, f) * CN_L +
-                             FactionOwnsCell(r, c + 1, f) * CN_R +
-                             FactionOwnsCell(r + 1, c - 1, f) * CN_BL +
-                             FactionOwnsCell(r + 1, c, f) * CN_B +
-                             FactionOwnsCell(r + 1, c + 1, f) * CN_BR;
+    const unsigned int ind = IsFactionCell(r - 1, c - 1, f) * CN_TL +
+                             IsFactionCell(r - 1, c, f) * CN_T +
+                             IsFactionCell(r - 1, c + 1, f) * CN_TR +
+                             IsFactionCell(r, c - 1, f) * CN_L +
+                             IsFactionCell(r, c + 1, f) * CN_R +
+                             IsFactionCell(r + 1, c - 1, f) * CN_BL +
+                             IsFactionCell(r + 1, c, f) * CN_B +
+                             IsFactionCell(r + 1, c + 1, f) * CN_BR;
 
     return mTypesMap[ind];
 }
 
-bool ControlMap::FactionOwnsCell(unsigned int r, unsigned int c, PlayerFaction f) const
+bool ControlMap::IsFactionCell(unsigned int r, unsigned int c, PlayerFaction f) const
 {
     if(r >= mRows || c >= mCols)
         return false;

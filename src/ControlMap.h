@@ -20,28 +20,26 @@ public:
     void AddControlPointsForCell(unsigned int r, unsigned int c, PlayerFaction faction);
     void AddControlPointsForObject(GameObject * obj);
 
-    void UpdateVisualAreas();
-
     // TEST
     void PrintControlMap() const;
     void PrintControlMap(PlayerFaction f) const;
 
 private:
-    void AddControlPointstoArea(int rTL, int cTL, int rBR, int cBR,
+    void AddControlPointsToArea(int rTL, int cTL, int rBR, int cBR,
                                 PlayerFaction faction, int maxPoints);
+
+    void UpdateControllers();
+    void UpdateVisualAreas();
 
     IsoObject * GetNewMarker();
     void ClearUsedMarkers();
 
     unsigned int GetMarkerType(unsigned int r, unsigned int c, PlayerFaction f) const;
-    bool FactionOwnsCell(unsigned int r, unsigned int c, PlayerFaction f) const;
+    bool IsFactionCell(unsigned int r, unsigned int c, PlayerFaction f) const;
 
 private:
     struct ControlCell
     {
-        void UpdateRes();
-        void AddPoints(PlayerFaction f, int p);
-
         std::vector<int> points;
         PlayerFaction controller;
     };
@@ -64,6 +62,8 @@ private:
         CN_ALL = CN_ALL_T | CN_ALL_B | CN_L | CN_R
     };
 
+    static const int SECTOR_SIZE = 5;
+
 private:
     std::vector<ControlCell> mMap;
     std::vector<IsoObject * > mMarkers;
@@ -79,11 +79,5 @@ private:
 // ==================== INLINE METHODS ====================
 
 inline void ControlMap::ClearUsedMarkers() { mUsedMarkers = 0; }
-
-inline void ControlMap::ControlCell::AddPoints(PlayerFaction f, int p)
-{
-    points[f] += p;
-    UpdateRes();
-}
 
 } // namespace game

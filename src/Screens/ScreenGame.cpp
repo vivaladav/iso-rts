@@ -96,14 +96,6 @@ ScreenGame::ScreenGame(Game * game)
     MapLoader ml(mGameMap, mIsoMap);
     ml.Load(mapFile);
 
-    // TEST
-    std::cout << "CONTROL MAP" << std::endl;
-    mGameMap->PrintControlMap();
-    std::cout << "CONTROL POINTS FACTION 1" << std::endl;
-    mGameMap->PrintControlMap(FACTION_1);
-    std::cout << "CONTROL POINTS FACTION 2" << std::endl;
-    mGameMap->PrintControlMap(FACTION_2);
-
     // center map on screen
     const int mapH = mIsoMap->GetHeight();
 
