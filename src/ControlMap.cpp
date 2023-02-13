@@ -396,24 +396,6 @@ void ControlMap::PrintControlMap(PlayerFaction f) const
     std::cout << std::endl;
 }
 
-/*
-void ControlMap::ControlCell::UpdateRes()
-{
-    int maxPoints = 0;
-
-    controller = NO_FACTION;
-
-    for(unsigned int f = FACTION_1; f < NUM_FACTIONS; ++f)
-    {
-        if(points[f] > maxPoints)
-        {
-            maxPoints = points[f];
-            controller = static_cast<PlayerFaction>(f);
-        }
-    }
-}
-*/
-
 IsoObject * ControlMap::GetNewMarker()
 {
     IsoObject * marker = nullptr;
