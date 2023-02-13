@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Screen.h"
-#include "sgl/sgui/Widget.h"
 
 namespace sgl
 {
@@ -12,7 +11,7 @@ namespace sgl
 namespace game
 {
 
-class PanelContentSettings;
+class DialogSettings;
 
 class ScreenSettings : public Screen
 {
@@ -24,27 +23,9 @@ public:
     void Render() override;
 
 private:
-    void CreatePanelGame(sgl::sgui::Widget * parent);
-    void CreatePanelAudio(sgl::sgui::Widget * parent);
-    void CreatePanelVideo(sgl::sgui::Widget * parent);
-    void CreatePanelControls(sgl::sgui::Widget * parent);
-
-private:
-    enum Panel : unsigned int
-    {
-        GAME,
-        AUDIO,
-        VIDEO,
-        CONTROLS,
-
-        NUM_PANELS
-    };
-
     sgl::graphic::Image * mBg = nullptr;
 
-    sgl::sgui::AbstractButtonsGroup * mGroupButtons = nullptr;
-
-    PanelContentSettings * mPanels[NUM_PANELS];
+    DialogSettings * mDialog = nullptr;
 };
 
 } // namespace game

@@ -191,6 +191,8 @@ add_executable(
     src/Widgets/DialogExit.cpp
     src/Widgets/DialogNewElement.h
     src/Widgets/DialogNewElement.cpp
+    src/Widgets/DialogSettings.h
+    src/Widgets/DialogSettings.cpp
     src/Widgets/DigitsDisplay.h
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
