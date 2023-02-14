@@ -13,7 +13,7 @@ namespace sgl
 namespace game
 {
 
-class ButtonBackSettings;
+class ButtonCloseSettings;
 class Game;
 class PanelContentSettings;
 
@@ -23,7 +23,7 @@ public:
     DialogSettings();
     ~DialogSettings();
 
-    void AddOnBackClickFunction(const std::function<void()> & f);
+    void AddOnCloseClickedFunction(const std::function<void()> & f);
 
 private:
     void HandlePositionChanged() override;
@@ -53,7 +53,7 @@ private:
 
     sgl::graphic::Image * mBg = nullptr;
 
-    ButtonBackSettings * mButtonBack = nullptr;
+    ButtonCloseSettings * mButtonBack = nullptr;
 };
 
 } // namespace game

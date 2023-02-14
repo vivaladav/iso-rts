@@ -1,6 +1,5 @@
 #include "Widgets/DialogSettings.h"
 
-#include "Widgets/GameButton.h"
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
 
@@ -18,6 +17,7 @@
 #include <sgl/sgui/ComboBox.h>
 #include <sgl/sgui/ComboBoxItem.h>
 #include <sgl/sgui/Image.h>
+#include <sgl/sgui/ImageButton.h>
 #include <sgl/sgui/Label.h>
 
 #include <iostream>
@@ -36,37 +36,20 @@ namespace
 
 namespace game
 {
-// ====== BUTTON BACK =====
-class ButtonBackSettings : public GameButton
+// ====== BUTTON CLOSE =====
+class ButtonCloseSettings : public sgl::sgui::ImageButton
 {
 public:
-    ButtonBackSettings(sgl::sgui::Widget * parent)
-        : GameButton(SpriteFileSettings,
-                     {
-                         IND_SET_BTN_NORMAL,
-                         IND_SET_BTN_DISABLED,
-                         IND_SET_BTN_OVER,
-                         IND_SET_BTN_PUSHED,
-                         IND_SET_BTN_NORMAL
-                      },
-                      {
-                         0xdce3e8ff,
-                         0x506773b2,
-                         0xe6edf2ff,
-                         0xced4d9ff,
-                         0xdce3e8ff
-                      },
-                     parent)
+    ButtonCloseSettings(sgl::sgui::Widget * parent)
+        : sgl::sgui::ImageButton({
+                                    IND_SET_BTN_X_NORMAL,
+                                    IND_SET_BTN_X_DISABLED,
+                                    IND_SET_BTN_X_OVER,
+                                    IND_SET_BTN_X_PUSHED,
+                                    IND_SET_BTN_X_NORMAL
+                                },
+                                SpriteFileSettings, parent)
     {
-        using namespace sgl::graphic;
-
-        // set label font
-        auto fm = FontManager::Instance();
-        Font * font = fm->GetFont("Lato-Regular.ttf", 24, Font::NORMAL);
-
-        SetLabelFont(font);
-
-        SetLabel("BACK");
     }
 
 private:
@@ -528,7 +511,7 @@ DialogSettings::DialogSettings()
     int x, y;
 
     // BUTTON BACK
-    mButtonBack = new ButtonBackSettings(this);
+    mButtonBack = new ButtonCloseSettings(this);
     mButtonBack->SetX(GetWidth() - mButtonBack->GetWidth());
 
     // TITLE
@@ -598,7 +581,7 @@ DialogSettings::~DialogSettings()
     delete mGroupButtons;
 }
 
-void DialogSettings::AddOnBackClickFunction(const std::function<void()> & f)
+void DialogSettings::AddOnCloseClickedFunction(const std::function<void()> & f)
 {
     mButtonBack->AddOnClickFunction(f);
 }

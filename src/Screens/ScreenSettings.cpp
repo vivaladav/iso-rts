@@ -18,20 +18,20 @@ ScreenSettings::ScreenSettings(Game * game)
 {
     using namespace sgl;
 
-    const int screenW = graphic::Renderer::Instance()->GetWidth();
-    const int screenH = graphic::Renderer::Instance()->GetHeight();
-
     //  BACKGROUND
     auto tm = graphic::TextureManager::Instance();
     graphic::Texture * tex = tm->GetTexture("space_bg.jpg");
     mBg = new graphic::Image(tex);
 
     // DIALOG
+    const int screenW = graphic::Renderer::Instance()->GetWidth();
+    const int screenH = graphic::Renderer::Instance()->GetHeight();
+
     mDialog = new DialogSettings();
     mDialog->SetPosition((screenW - mDialog->GetWidth()) / 2,
                          (screenH - mDialog->GetHeight()) / 2);
 
-    mDialog->AddOnBackClickFunction([game]
+    mDialog->AddOnCloseClickedFunction([game]
     {
         game->RequestNextActiveState(StateId::MAIN_MENU);
     });
