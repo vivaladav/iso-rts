@@ -1,6 +1,7 @@
 #include "Widgets/DialogExit.h"
 
 #include "Game.h"
+#include "Screens/Screen.h"
 #include "States/StatesIds.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -216,7 +217,7 @@ private:
 };
 
 // ===== DIALOG =====
-DialogExit::DialogExit(Game * game)
+DialogExit::DialogExit(Game * game, Screen *screen)
 {
     using namespace sgl;
 
@@ -252,26 +253,28 @@ DialogExit::DialogExit(Game * game)
     int btnY = btnY0;
 
     auto btn = new ButtonDialogExit(this);
-    btn->SetLabel("PLANET MAP");
+    btn->SetLabel("SETTINGS");
 
     btnX = (w - btn->GetWidth()) / 2;
     btn->SetPosition(btnX, btnY);
 
-    btn->AddOnClickFunction([game]
+    btn->AddOnClickFunction([this, screen]
     {
-        game->RequestNextActiveState(StateId::PLANET_MAP);
+        mButtonClose->Click();
+
+        screen->ShowDialogSettings();
     });
 
     btnY += btn->GetHeight() + marginBtnV;
 
     // BUTTON MAIN MENU
     btn = new ButtonDialogExit(this);
-    btn->SetLabel("MAIN MENU");
+    btn->SetLabel("PLANET MAP");
     btn->SetPosition(btnX, btnY);
 
     btn->AddOnClickFunction([game]
     {
-        game->RequestNextActiveState(StateId::MAIN_MENU);
+        game->RequestNextActiveState(StateId::PLANET_MAP);
     });
 
     btnY += btn->GetHeight() + marginBtnV;

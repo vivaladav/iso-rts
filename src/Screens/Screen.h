@@ -9,6 +9,7 @@
 namespace game
 {
 
+class DialogSettings;
 class Game;
 class SharedScreenListener;
 
@@ -21,6 +22,8 @@ public:
 
     Game * GetGame() const;
 
+    void ShowDialogSettings();
+
     virtual void Update(float delta) = 0;
 
     virtual void Render() = 0;
@@ -29,6 +32,8 @@ private:
     Game * mGame = nullptr;
 
     SharedScreenListener * mSharedListener = nullptr;
+
+    DialogSettings * mSettings = nullptr;
 };
 
 inline Game * Screen::GetGame() const { return mGame; }

@@ -18,11 +18,12 @@ namespace game
 {
 
 class Game;
+class Screen;
 
 class DialogExit : public sgl::sgui::Widget
 {
 public:
-    DialogExit(Game * game);
+    DialogExit(Game * game, Screen * screen);
 
     void SetFunctionOnClose(const std::function<void()> & f);
 

@@ -870,7 +870,7 @@ void ScreenGame::CreateDialogExit()
     if(mDialogExit != nullptr)
         return ;
 
-    mDialogExit = new DialogExit(GetGame());
+    mDialogExit = new DialogExit(GetGame(), this);
     mDialogExit->SetFocus();
 
     mDialogExit->SetFunctionOnClose([this]
