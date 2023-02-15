@@ -6,7 +6,6 @@
 
 #include <sgl/graphic/Camera.h>
 #include <sgl/graphic/Renderer.h>
-#include <sgl/sgui/Stage.h>
 
 namespace game
 {
@@ -42,7 +41,7 @@ void Screen::ShowDialogSettings()
 
     mSettings->AddOnCloseClickedFunction([this]
     {
-        sgl::sgui::Stage::Instance()->DeleteLater(mSettings);
+        mSettings->DeleteLater();
         mSettings = nullptr;
     });
 }

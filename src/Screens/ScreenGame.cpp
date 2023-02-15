@@ -58,8 +58,8 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr float TIME_NEW_UNIT = 4.f;
-constexpr float TIME_CONQ_RES_GEN = 5.f;
+constexpr float TIME_NEW_UNIT = 1.f;
+constexpr float TIME_CONQ_RES_GEN = 1.f;
 constexpr float TIME_UPG_UNIT = 5.f;
 
 constexpr float TIME_ENERGY_USE = 8.f;
@@ -876,7 +876,7 @@ void ScreenGame::CreateDialogExit()
     mDialogExit->SetFunctionOnClose([this]
     {
         // schedule dialog deletion
-        sgl::sgui::Stage::Instance()->DeleteLater(mDialogExit);
+        mDialogExit->DeleteLater();
         mDialogExit = nullptr;
     });
 
@@ -902,7 +902,7 @@ void ScreenGame::ClearNewElemDialog()
         return ;
 
     // schedule dialog deletion
-    sgl::sgui::Stage::Instance()->DeleteLater(mDialogNewElement);
+    mDialogNewElement->DeleteLater();
     mDialogNewElement = nullptr;
 }
 
