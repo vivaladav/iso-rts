@@ -141,6 +141,24 @@ ScreenGame::ScreenGame(Game * game)
 
     mCamController->SetLimits(cameraL, cameraR, cameraT, cameraB);
 
+    // set reduced map area to cam controller so camera will stop closer to inside cells
+    const sgl::core::Pointd2D isoMapO = mIsoMap->GetOrigin();
+    const int isoMapHalfW = mIsoMap->GetWidth() / 2;
+    const int isoMapHalfH = mIsoMap->GetHeight() / 2;
+    const int marginCameraMult = 2;
+    const int marginCameraX = marginCameraMult * tileW;
+    const int marginCameraY = marginCameraMult * tileH;
+
+    const sgl::core::Pointd2D pT(isoMapO.x, isoMapO.y + marginCameraY);
+    const sgl::core::Pointd2D pR(pT.x + isoMapHalfW - marginCameraX, pT.y + isoMapHalfH);
+    const sgl::core::Pointd2D pB(pT.x, pT.y + mIsoMap->GetHeight() - marginCameraY);
+    const sgl::core::Pointd2D pL(pT.x - isoMapHalfW + marginCameraX, pT.y + isoMapHalfH);
+    mCamController->SetMapArea(pT, pR, pB, pL);
+
+    const sgl::core::Pointd2D o = mIsoMap->GetOrigin();
+    std::cout << "IsoMap origin: " << o.x << "," << o.y << std::endl;
+    std::cout << "IsoMap size: " << mIsoMap->GetWidth() << "x" << mIsoMap->GetHeight() << std::endl;
+
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());
 

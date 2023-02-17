@@ -28,10 +28,19 @@ CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
 {
 }
 
+void CameraMapController::SetMapArea(const sgl::core::Pointd2D & t, const sgl::core::Pointd2D & r,
+                                     const sgl::core::Pointd2D & b, const sgl::core::Pointd2D & l)
+{
+    mMapT = t;
+    mMapR = r;
+    mMapB = b;
+    mMapL = l;
+}
+
 void CameraMapController::CenterCameraToPoint(int x, int y)
 {
-    const int hw = mCamera->GetWidth() * 0.5f;
-    const int hh = mCamera->GetHeight() * 0.5f;
+    const int hw = mCamera->GetWidth() / 2;
+    const int hh = mCamera->GetHeight() / 2;
     const int cameraX0 = x - hw;
     const int cameraY0 = y - hh;
 
@@ -192,25 +201,40 @@ void CameraMapController::HandleMouseLeftWindow()
 
 void CameraMapController::Update(float delta)
 {
+    const float halfP = 0.5f;
+
+    // NOTE formula to check if center is inside the map area:
+    // d = (x−x1)(y2−y1)−(y−y1)(x2−x1)
+    sgl::core::Pointd2D cc(mCamera->GetX() + (mCamera->GetWidth() / 2),
+                           mCamera->GetY() + (mCamera->GetHeight() / 2));
+
+    bool inside = false;
+
     // HORIZONTAL
     const float movX = mDirX * mSpeed * delta;
 
     if(mDirX < 0)
     {
-        const int newX = static_cast<int>(movX - 0.5f) + mCamera->GetX();
+        cc.x = static_cast<int>(movX - halfP) + cc.x;
 
-        if(newX < mLimitL)
-            mCamera->SetX(mLimitL);
+        if(cc.y < mMapL.y)
+            inside = (cc.x - mMapT.x) * (mMapL.y - mMapT.y) > (cc.y - mMapT.y) * (mMapL.x - mMapT.x);
         else
+            inside = (cc.x - mMapL.x) * (mMapB.y - mMapL.y) > (cc.y - mMapL.y) * (mMapB.x - mMapL.x);
+
+        if(inside)
             mCamera->MoveX(movX);
     }
     else if(mDirX > 0)
     {
-        const int newX = static_cast<int>(movX + 0.5f) + mCamera->GetX();
+        cc.x = static_cast<int>(movX + halfP) + cc.x;
 
-        if(newX > mLimitR)
-            mCamera->SetX(mLimitR);
+        if(cc.y < mMapL.y)
+            inside = (cc.x - mMapR.x) * (mMapT.y - mMapR.y) > (cc.y - mMapR.y) * (mMapT.x - mMapR.x);
         else
+            inside = (cc.x - mMapB.x) * (mMapR.y - mMapB.y) > (cc.y - mMapB.y) * (mMapR.x - mMapB.x);
+
+        if(inside)
             mCamera->MoveX(movX);
     }
 
@@ -219,21 +243,27 @@ void CameraMapController::Update(float delta)
 
     if(mDirY < 0)
     {
-        const int newY = static_cast<int>(movY - 0.5f) + mCamera->GetY();
+        cc.y = static_cast<int>(movY - halfP) + cc.y;
 
-        if(newY < mLimitT)
-            mCamera->SetY(mLimitT);
+        if(cc.x < mMapT.x)
+            inside = (cc.x - mMapT.x) * (mMapL.y - mMapT.y) > (cc.y - mMapT.y) * (mMapL.x - mMapT.x);
         else
+            inside = (cc.x - mMapR.x) * (mMapT.y - mMapR.y) > (cc.y - mMapR.y) * (mMapT.x - mMapR.x);
+
+        if(inside)
             mCamera->MoveY(movY);
     }
     else if(mDirY > 0)
     {
-        const int newY = static_cast<int>(movY + 0.5f) + mCamera->GetY();
+        cc.y = static_cast<int>(movY + halfP) + cc.y;
 
-        if(newY > mLimitB)
-            mCamera->SetY(mLimitB);
+        if(cc.x < mMapT.x)
+            inside = (cc.x - mMapL.x) * (mMapB.y - mMapL.y) > (cc.y - mMapL.y) * (mMapB.x - mMapL.x);
         else
-            mCamera->MoveY(movY);
+            inside = (cc.x - mMapB.x) * (mMapR.y - mMapB.y) > (cc.y - mMapB.y) * (mMapR.x - mMapB.x);
+
+        if(inside)
+           mCamera->MoveY(movY);
     }
 }
 

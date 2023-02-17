@@ -46,6 +46,7 @@ public:
     int GetWidth() const;
     int GetHeight() const;
 
+    sgl::core::Pointd2D GetOrigin() const;
     void SetOrigin(int x, int y);
 
     void SetVisibleArea(int x, int y, int w, int h);
@@ -192,6 +193,9 @@ inline int IsoMap::GetWidth() const { return mTileW * mCols; }
  * @return Height of the map, in pixels
  */
 inline int IsoMap::GetHeight() const { return mTileH * mRows; }
+
+
+inline sgl::core::Pointd2D IsoMap::GetOrigin() const { return { mX0, mY0 }; }
 
 /**
  * @brief Gets an IsoLayer stored at a given position in the stack of layers.

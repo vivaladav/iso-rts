@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sgl/core/Point.h>
+
 namespace sgl
 {
     namespace core
@@ -22,6 +24,8 @@ public:
     const sgl::graphic::Camera * GetCamera() const;
 
     void SetLimits(int l, int r, int t, int b);
+    void SetMapArea(const sgl::core::Pointd2D & t, const sgl::core::Pointd2D & r,
+                    const sgl::core::Pointd2D & b, const sgl::core::Pointd2D & l);
 
     void SetSpeed(float val);
 
@@ -36,6 +40,11 @@ public:
 
 private:
     sgl::graphic::Camera * mCamera = nullptr;
+
+    sgl::core::Pointd2D mMapT;
+    sgl::core::Pointd2D mMapR;
+    sgl::core::Pointd2D mMapB;
+    sgl::core::Pointd2D mMapL;
 
     float mSpeed;
 
