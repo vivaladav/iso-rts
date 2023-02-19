@@ -39,6 +39,12 @@ public:
     void Update(float delta);
 
 private:
+    bool IsPointInsideTL(const sgl::core::Pointd2D & p) const;
+    bool IsPointInsideTR(const sgl::core::Pointd2D & p) const;
+    bool IsPointInsideBL(const sgl::core::Pointd2D & p) const;
+    bool IsPointInsideBR(const sgl::core::Pointd2D & p) const;
+
+private:
     sgl::graphic::Camera * mCamera = nullptr;
 
     sgl::core::Pointd2D mMapT;
@@ -75,5 +81,25 @@ inline void CameraMapController::SetLimits(int l, int r, int t, int b)
 }
 
 inline void CameraMapController::SetSpeed(float val) { mSpeed = val; }
+
+inline bool CameraMapController::IsPointInsideTL(const sgl::core::Pointd2D & p) const
+{
+    return (p.x - mMapT.x) * (mMapL.y - mMapT.y) > (p.y - mMapT.y) * (mMapL.x - mMapT.x);
+}
+
+inline bool CameraMapController::IsPointInsideTR(const sgl::core::Pointd2D & p) const
+{
+    return (p.x - mMapR.x) * (mMapT.y - mMapR.y) > (p.y - mMapR.y) * (mMapT.x - mMapR.x);
+}
+
+inline bool CameraMapController::IsPointInsideBL(const sgl::core::Pointd2D & p) const
+{
+    return (p.x - mMapL.x) * (mMapB.y - mMapL.y) > (p.y - mMapL.y) * (mMapB.x - mMapL.x);
+}
+
+inline bool CameraMapController::IsPointInsideBR(const sgl::core::Pointd2D & p) const
+{
+    return (p.x - mMapB.x) * (mMapR.y - mMapB.y) > (p.y - mMapB.y) * (mMapR.x - mMapB.x);;
+}
 
 } // namespace game

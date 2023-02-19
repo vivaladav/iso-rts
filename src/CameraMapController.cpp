@@ -215,24 +215,24 @@ void CameraMapController::Update(float delta)
 
     if(mDirX < 0)
     {
-        cc.x = static_cast<int>(movX - halfP) + cc.x;
+        cc.x += static_cast<int>(movX - halfP);
 
         if(cc.y < mMapL.y)
-            inside = (cc.x - mMapT.x) * (mMapL.y - mMapT.y) > (cc.y - mMapT.y) * (mMapL.x - mMapT.x);
+            inside = IsPointInsideTL(cc);
         else
-            inside = (cc.x - mMapL.x) * (mMapB.y - mMapL.y) > (cc.y - mMapL.y) * (mMapB.x - mMapL.x);
+            inside = IsPointInsideBL(cc);
 
         if(inside)
             mCamera->MoveX(movX);
     }
     else if(mDirX > 0)
     {
-        cc.x = static_cast<int>(movX + halfP) + cc.x;
+        cc.x += static_cast<int>(movX + halfP);
 
         if(cc.y < mMapL.y)
-            inside = (cc.x - mMapR.x) * (mMapT.y - mMapR.y) > (cc.y - mMapR.y) * (mMapT.x - mMapR.x);
+            inside = IsPointInsideTR(cc);
         else
-            inside = (cc.x - mMapB.x) * (mMapR.y - mMapB.y) > (cc.y - mMapB.y) * (mMapR.x - mMapB.x);
+            inside = IsPointInsideBR(cc);
 
         if(inside)
             mCamera->MoveX(movX);
@@ -243,24 +243,24 @@ void CameraMapController::Update(float delta)
 
     if(mDirY < 0)
     {
-        cc.y = static_cast<int>(movY - halfP) + cc.y;
+        cc.y += static_cast<int>(movY - halfP);
 
         if(cc.x < mMapT.x)
-            inside = (cc.x - mMapT.x) * (mMapL.y - mMapT.y) > (cc.y - mMapT.y) * (mMapL.x - mMapT.x);
+            inside = IsPointInsideTL(cc);
         else
-            inside = (cc.x - mMapR.x) * (mMapT.y - mMapR.y) > (cc.y - mMapR.y) * (mMapT.x - mMapR.x);
+            inside = IsPointInsideTR(cc);
 
         if(inside)
             mCamera->MoveY(movY);
     }
     else if(mDirY > 0)
     {
-        cc.y = static_cast<int>(movY + halfP) + cc.y;
+        cc.y += static_cast<int>(movY + halfP);
 
         if(cc.x < mMapT.x)
-            inside = (cc.x - mMapL.x) * (mMapB.y - mMapL.y) > (cc.y - mMapL.y) * (mMapB.x - mMapL.x);
+            inside = IsPointInsideBL(cc);
         else
-            inside = (cc.x - mMapB.x) * (mMapR.y - mMapB.y) > (cc.y - mMapB.y) * (mMapR.x - mMapB.x);
+            inside = IsPointInsideBR(cc);
 
         if(inside)
            mCamera->MoveY(movY);
