@@ -208,8 +208,6 @@ void CameraMapController::Update(float delta)
     sgl::core::Pointd2D cc(mCamera->GetX() + (mCamera->GetWidth() / 2),
                            mCamera->GetY() + (mCamera->GetHeight() / 2));
 
-    bool inside = false;
-
     // HORIZONTAL
     const float movX = mDirX * mSpeed * delta;
 
@@ -217,24 +215,14 @@ void CameraMapController::Update(float delta)
     {
         cc.x += static_cast<int>(movX - halfP);
 
-        if(cc.y < mMapL.y)
-            inside = IsPointInsideTL(cc);
-        else
-            inside = IsPointInsideBL(cc);
-
-        if(inside)
+        if((cc.y < mMapL.y && IsPointInsideTL(cc)) || (cc.y >= mMapL.y && IsPointInsideBL(cc)))
             mCamera->MoveX(movX);
     }
     else if(mDirX > 0)
     {
         cc.x += static_cast<int>(movX + halfP);
 
-        if(cc.y < mMapL.y)
-            inside = IsPointInsideTR(cc);
-        else
-            inside = IsPointInsideBR(cc);
-
-        if(inside)
+        if((cc.y < mMapL.y && IsPointInsideTR(cc)) || (cc.y >= mMapL.y && IsPointInsideBR(cc)))
             mCamera->MoveX(movX);
     }
 
@@ -245,24 +233,14 @@ void CameraMapController::Update(float delta)
     {
         cc.y += static_cast<int>(movY - halfP);
 
-        if(cc.x < mMapT.x)
-            inside = IsPointInsideTL(cc);
-        else
-            inside = IsPointInsideTR(cc);
-
-        if(inside)
+        if((cc.x < mMapT.x && IsPointInsideTL(cc)) || (cc.x >= mMapT.x && IsPointInsideTR(cc)))
             mCamera->MoveY(movY);
     }
     else if(mDirY > 0)
     {
         cc.y += static_cast<int>(movY + halfP);
 
-        if(cc.x < mMapT.x)
-            inside = IsPointInsideBL(cc);
-        else
-            inside = IsPointInsideBR(cc);
-
-        if(inside)
+        if((cc.x < mMapT.x && IsPointInsideBL(cc)) || (cc.x >= mMapT.x && IsPointInsideBR(cc)))
            mCamera->MoveY(movY);
     }
 }
