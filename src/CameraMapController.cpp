@@ -6,6 +6,8 @@
 
 #include <limits>
 
+#include <iostream>
+
 namespace game
 {
 
@@ -21,10 +23,6 @@ CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
     , mSpeed(DEF_SPEED)
     , mDirX(NO_SCROLL)
     , mDirY(NO_SCROLL)
-    , mLimitL(std::numeric_limits<int>::min())
-    , mLimitR(std::numeric_limits<int>::max())
-    , mLimitT(std::numeric_limits<int>::min())
-    , mLimitB(std::numeric_limits<int>::max())
 {
 }
 
@@ -39,22 +37,42 @@ void CameraMapController::SetMapArea(const sgl::core::Pointd2D & t, const sgl::c
 
 void CameraMapController::CenterCameraToPoint(int x, int y)
 {
-    const int hw = mCamera->GetWidth() / 2;
-    const int hh = mCamera->GetHeight() / 2;
-    const int cameraX0 = x - hw;
-    const int cameraY0 = y - hh;
+    sgl::core::Pointd2D p(x, y);
 
-    // clamp X
-    if(cameraX0 < mLimitL)
-        x = mLimitL + hw;
-    else if(cameraX0 > mLimitR)
-        x = mLimitR + hw;
-
-    // clamp Y
-    if(cameraY0 < mLimitT)
-        y = mLimitT + hh;
-    else if(cameraY0 > mLimitB)
-        y = mLimitB + hh;
+    // if point not inside -> use orthogonal projection
+    // LEFT
+    if(x < mMapT.x)
+    {
+        // TOP - LEFT
+        if(y < mMapL.y)
+        {
+            if(!IsPointInsideTL(p))
+                p = GetVectorPojection(mMapL, mMapT, p);
+        }
+        // BOTTOM - LEFT
+        else
+        {
+            // point not inside -> orthogonal projection
+            if(!IsPointInsideBL(p))
+                p = GetVectorPojection(mMapL, mMapB, p);
+        }
+    }
+    // RIGHT
+    else
+    {
+        // TOP - RIGHT
+        if(y < mMapL.y)
+        {
+            if(!IsPointInsideTR(p))
+                p = GetVectorPojection(mMapT, mMapR, p);
+        }
+        // BOTTOM - RIGHT
+        else
+        {
+            if(!IsPointInsideTR(p))
+                p = GetVectorPojection(mMapB, mMapR, p);
+        }
+    }
 
     mCamera->CenterToPoint(x, y);
 }
@@ -243,6 +261,20 @@ void CameraMapController::Update(float delta)
         if((cc.x < mMapT.x && IsPointInsideBL(cc)) || (cc.x >= mMapT.x && IsPointInsideBR(cc)))
            mCamera->MoveY(movY);
     }
+}
+
+sgl::core::Pointd2D CameraMapController::GetVectorPojection(const sgl::core::Pointd2D & a0,
+                                                            const sgl::core::Pointd2D & b0,
+                                                            const sgl::core::Pointd2D & p) const
+{
+    const int ax = p.x - a0.x;
+    const int ay = p.y - a0.y;
+    const int bx = b0.x - a0.x;
+    const int by = b0.y - a0.y;
+    const float m = static_cast<float>(ax * bx + ay + by) / static_cast<float>(bx * bx + by * by);
+
+    const sgl::core::Pointd2D ret((bx * m) + a0.x, (by * m) + a0.y);
+    return ret;
 }
 
 } // namespace game

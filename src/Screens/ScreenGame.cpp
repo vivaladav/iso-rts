@@ -105,10 +105,10 @@ ScreenGame::ScreenGame(Game * game)
     cam->SetFunctionOnMove([this]
     {
         const sgl::graphic::Camera * cam = mCamController->GetCamera();
-        const int camX0 = cam->GetX();
-        const int camY0 = cam->GetY();
         const int camW = cam->GetWidth();
         const int camH = cam->GetHeight();
+        const int camX0 = cam->GetX();
+        const int camY0 = cam->GetY();
         const int camX1 = camX0 + camW;
         const int camY1 = camY0 + camH;
 
@@ -116,36 +116,19 @@ ScreenGame::ScreenGame(Game * game)
         mIsoMap->SetVisibleArea(camX0, camY0, camW, camH);
 
         // update MiniMap
-        Cell2D cellTL = mIsoMap->CellFromScreenPoint(camX0, camY0);
-        Cell2D cellTR = mIsoMap->CellFromScreenPoint(camX1, camY0);
-        Cell2D cellBL = mIsoMap->CellFromScreenPoint(camX0, camY1);
-        Cell2D cellBR = mIsoMap->CellFromScreenPoint(camX1, camY1);
-
-        mMiniMap->SetCameraCells(cellTL, cellTR, cellBL, cellBR);
+        mMiniMap->SetCameraCells(mIsoMap->CellFromScreenPoint(camX0, camY0),
+                                 mIsoMap->CellFromScreenPoint(camX1, camY0),
+                                 mIsoMap->CellFromScreenPoint(camX0, camY1),
+                                 mIsoMap->CellFromScreenPoint(camX1, camY1));
     });
-
-    // set camera limits
-    const sgl::core::Pointd2D p0 = mIsoMap->GetCellPosition(0, 0);
-    const sgl::core::Pointd2D p1 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, 0);
-    const sgl::core::Pointd2D p2 = mIsoMap->GetCellPosition(mIsoMap->GetNumRows() - 1, mIsoMap->GetNumCols() - 1);
-    const sgl::core::Pointd2D p3 = mIsoMap->GetCellPosition(0, mIsoMap->GetNumCols() - 1);
-    const int tileW = mIsoMap->GetTileWidth();
-    const int tileH = mIsoMap->GetTileHeight();
-    const int marginCameraH = tileW;
-    const int marginCameraV = tileH * 2;
-
-    const int cameraL = p1.x - marginCameraH;
-    const int cameraR = p3.x + tileW + marginCameraH - rendW;
-    const int cameraT = p0.y - marginCameraV;
-    const int cameraB = p2.y + tileH + marginCameraV - rendH;
-
-    mCamController->SetLimits(cameraL, cameraR, cameraT, cameraB);
 
     // set reduced map area to cam controller so camera will stop closer to inside cells
     const sgl::core::Pointd2D isoMapO = mIsoMap->GetOrigin();
     const int isoMapHalfW = mIsoMap->GetWidth() / 2;
     const int isoMapHalfH = mIsoMap->GetHeight() / 2;
     const int marginCameraMult = 2;
+    const int tileW = mIsoMap->GetTileWidth();
+    const int tileH = mIsoMap->GetTileHeight();
     const int marginCameraX = marginCameraMult * tileW;
     const int marginCameraY = marginCameraMult * tileH;
 
@@ -154,10 +137,6 @@ ScreenGame::ScreenGame(Game * game)
     const sgl::core::Pointd2D pB(pT.x, pT.y + mIsoMap->GetHeight() - marginCameraY);
     const sgl::core::Pointd2D pL(pT.x - isoMapHalfW + marginCameraX, pT.y + isoMapHalfH);
     mCamController->SetMapArea(pT, pR, pB, pL);
-
-    const sgl::core::Pointd2D o = mIsoMap->GetOrigin();
-    std::cout << "IsoMap origin: " << o.x << "," << o.y << std::endl;
-    std::cout << "IsoMap size: " << mIsoMap->GetWidth() << "x" << mIsoMap->GetHeight() << std::endl;
 
     // init pathfinder
     mPathfinder->SetMap(mGameMap, mGameMap->GetNumRows(), mGameMap->GetNumCols());

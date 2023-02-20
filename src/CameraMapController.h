@@ -23,7 +23,6 @@ public:
 
     const sgl::graphic::Camera * GetCamera() const;
 
-    void SetLimits(int l, int r, int t, int b);
     void SetMapArea(const sgl::core::Pointd2D & t, const sgl::core::Pointd2D & r,
                     const sgl::core::Pointd2D & b, const sgl::core::Pointd2D & l);
 
@@ -44,6 +43,9 @@ private:
     bool IsPointInsideBL(const sgl::core::Pointd2D & p) const;
     bool IsPointInsideBR(const sgl::core::Pointd2D & p) const;
 
+    sgl::core::Pointd2D GetVectorPojection(const sgl::core::Pointd2D & a0, const sgl::core::Pointd2D & b0,
+                                           const sgl::core::Pointd2D & p) const;
+
 private:
     sgl::graphic::Camera * mCamera = nullptr;
 
@@ -56,10 +58,6 @@ private:
 
     int mDirX;
     int mDirY;
-    int mLimitL;
-    int mLimitR;
-    int mLimitT;
-    int mLimitB;
 
     bool mKeyScrollX = false;
     bool mKeyScrollY = false;
@@ -70,14 +68,6 @@ private:
 inline const sgl::graphic::Camera * CameraMapController::GetCamera() const
 {
     return mCamera;
-}
-
-inline void CameraMapController::SetLimits(int l, int r, int t, int b)
-{
-    mLimitL = l;
-    mLimitR = r;
-    mLimitT = t;
-    mLimitB = b;
 }
 
 inline void CameraMapController::SetSpeed(float val) { mSpeed = val; }
