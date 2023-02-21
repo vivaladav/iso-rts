@@ -15,8 +15,9 @@
 namespace game
 {
 
-ControlMap::ControlMap(IsoLayer * layer)
+ControlMap::ControlMap(IsoLayer * layer, Player * localPlayer)
     : mLayer(layer)
+    , mPlayer(localPlayer)
 {
     // init all 2^8 combinations to error type
     const int typeCombinations = 256;
@@ -184,6 +185,43 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     UpdateVisualAreas();
 }
 
+void ControlMap::UpdateVisualAreas()
+{
+    using namespace sgl;
+
+    auto tm = graphic::TextureManager::Instance();
+
+    mLayer->ClearObjects();
+
+    ClearUsedMarkers();
+
+    for(unsigned int r = 0; r < mRows; ++r)
+    {
+        const int ind0 = r * mCols;
+
+        for(unsigned int c = 0; c < mCols; ++c)
+        {
+            const int ind = ind0 + c;
+            const PlayerFaction pf = mMap[ind].controller;
+
+            if(pf != NO_FACTION && (pf == mPlayer->GetFaction() || mPlayer->IsCellVisible(ind)))
+            {
+                const unsigned int type = GetMarkerType(r, c, pf);
+
+                if(type != IND_INF_AREA_UNDEFINED)
+                {
+                    const unsigned int typef = type + (NUM_INF_AREA_ELEMS * pf);
+
+                    IsoObject * marker = GetNewMarker();
+                    marker->SetTexture(tm->GetSprite(SpriteFileIndicators, typef));
+
+                    mLayer->AddObject(marker, r, c);
+                }
+            }
+        }
+    }
+}
+
 void ControlMap::AddControlPointsToArea(int rTL, int cTL,
                                         int rBR, int cBR,
                                         PlayerFaction faction, int maxPoints)
@@ -320,80 +358,6 @@ void ControlMap::UpdateControllers()
             }
         }
     }
-}
-
-void ControlMap::UpdateVisualAreas()
-{
-    using namespace sgl;
-
-    auto tm = graphic::TextureManager::Instance();
-
-    mLayer->ClearObjects();
-
-    ClearUsedMarkers();
-
-    for(unsigned int r = 0; r < mRows; ++r)
-    {
-        const int ind0 = r * mCols;
-
-        for(unsigned int c = 0; c < mCols; ++c)
-        {
-            const int ind = ind0 + c;
-            const PlayerFaction pf = mMap[ind].controller;
-
-            if(pf != NO_FACTION)
-            {
-                const unsigned int type = GetMarkerType(r, c, pf);
-
-                if(type != IND_INF_AREA_UNDEFINED)
-                {
-                    const unsigned int typef = type + (NUM_INF_AREA_ELEMS * pf);
-
-                    IsoObject * marker = GetNewMarker();
-                    marker->SetTexture(tm->GetSprite(SpriteFileIndicators, typef));
-
-                    mLayer->AddObject(marker, r, c);
-                }
-            }
-        }
-    }
-}
-
-
-void ControlMap::PrintControlMap() const
-{
-    for(unsigned int r = 0; r < mRows; ++r)
-    {
-        const int ind0 = r * mCols;
-
-        for(unsigned int c = 0; c < mCols; ++c)
-        {
-            const int ind = ind0 + c;
-            std::cout << mMap[ind].controller;
-        }
-
-        std::cout << "\n";
-    }
-
-    std::cout << std::endl;
-}
-
-void ControlMap::PrintControlMap(PlayerFaction f) const
-{
-    for(unsigned int r = 0; r < mRows; ++r)
-    {
-        const int ind0 = r * mCols;
-
-        for(unsigned int c = 0; c < mCols; ++c)
-        {
-            const int ind = ind0 + c;
-            std::cout << mMap[ind].points[f];
-        }
-
-        std::cout << "\n";
-    }
-
-    std::cout << std::endl;
 }
 
 IsoObject * ControlMap::GetNewMarker()

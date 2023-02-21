@@ -154,10 +154,6 @@ public:
 
     void Update(float delta);
 
-    // TEST
-    void PrintControlMap();
-    void PrintControlMap(PlayerFaction f);
-
 private:
     void ClearCell(GameMapCell & gcell);
 

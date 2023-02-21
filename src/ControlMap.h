@@ -8,28 +8,26 @@ namespace game
 class GameObject;
 class IsoLayer;
 class IsoObject;
+class Player;
 
 enum PlayerFaction : unsigned int;
 
 class ControlMap
 {
 public:
-    ControlMap(IsoLayer * layer);
+    ControlMap(IsoLayer * layer, Player * localPlayer);
     void SetSize(unsigned int rows, unsigned int cols);
 
     void AddControlPointsForCell(unsigned int r, unsigned int c, PlayerFaction faction);
     void AddControlPointsForObject(GameObject * obj);
 
-    // TEST
-    void PrintControlMap() const;
-    void PrintControlMap(PlayerFaction f) const;
+    void UpdateVisualAreas();
 
 private:
     void AddControlPointsToArea(int rTL, int cTL, int rBR, int cBR,
                                 PlayerFaction faction, int maxPoints);
 
     void UpdateControllers();
-    void UpdateVisualAreas();
 
     IsoObject * GetNewMarker();
     void ClearUsedMarkers();
@@ -71,6 +69,7 @@ private:
     unsigned int mUsedMarkers = 0;
 
     IsoLayer * mLayer = nullptr;
+    Player * mPlayer = nullptr;
 
     unsigned int mRows = 0;
     unsigned int mCols = 0;

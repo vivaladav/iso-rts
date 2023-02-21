@@ -45,7 +45,7 @@ constexpr int COST_CONQUEST_RES_GEN = 4;
 // ==================== PUBLIC METHODS ====================
 
 GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
-    : mControlMap(new ControlMap(isoMap->GetLayer(MapLayers::FACTION_INFLUENCE)))
+    : mControlMap(new ControlMap(isoMap->GetLayer(MapLayers::FACTION_INFLUENCE), game->GetLocalPlayer()))
     , mGame(game)
     , mScreenGame(sg)
     , mIsoMap(isoMap)
@@ -226,6 +226,9 @@ void GameMap::ApplyVisibility(Player * player)
     // update objects
     for(GameObject * go : mObjects)
         ApplyVisibilityToObject(player, go);
+
+    // update control areas
+    mControlMap->UpdateVisualAreas();
 }
 
 void GameMap::ApplyLocalVisibilityToObject(GameObject * go)
@@ -2696,16 +2699,5 @@ void GameMap::UpdateWall(const Cell2D & cell)
         }
     }
 }
-
-void GameMap::PrintControlMap()
-{
-    mControlMap->PrintControlMap();
-}
-
-void GameMap::PrintControlMap(PlayerFaction f)
-{
-    mControlMap->PrintControlMap(f);
-}
-
 
 } // namespace game
