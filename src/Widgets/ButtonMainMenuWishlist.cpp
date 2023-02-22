@@ -33,7 +33,7 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(sgl::sgui::Widget * parent)
     RegisterRenderable(mBody);
 
     // ICON
-    Texture * tex = tm->GetSprite(SpriteFileMainMenu, IND_MM_ICON_STEAM);
+    Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, IND_MM_ICON_STEAM);
     mIcon = new Image(tex);
     RegisterRenderable(mIcon);
 
@@ -85,7 +85,7 @@ void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::AbstractButton::VisualSta
     };
 
     auto tm = sgl::graphic::TextureManager::Instance();
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, texIds[state]);
     mBody->SetTexture(tex);
 
     SetSize(mBody->GetWidth(), mBody->GetHeight());

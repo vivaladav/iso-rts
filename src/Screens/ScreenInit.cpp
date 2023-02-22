@@ -287,6 +287,22 @@ void ScreenInit::SetupTextures()
     {
         std::vector<sgl::core::Rectd> rects
         {
+            // CHANGELOG DIALOG
+            { 0, 0, 35, 450 },
+            { 537, 0, 30, 30 },
+            { 537, 31, 24, 30 },
+            { 36, 0, 500, 450 },
+            { 537, 62, 20, 360 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMainMenu, rects);
+    });
+
+    // MAIN MENU BUTTONS
+    mJobs.emplace_back([this, tm]
+    {
+        std::vector<sgl::core::Rectd> rects
+        {
             // PRIMARY BUTTON
             { 0, 0, 360, 70 },
             { 0, 70, 360, 70 },
@@ -309,7 +325,7 @@ void ScreenInit::SetupTextures()
             { 128, 500, 24, 24 }
         };
 
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMainMenu, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileMainMenuButtons, rects);
     });
 
     // FACTION SELECTION

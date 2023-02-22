@@ -33,7 +33,7 @@ ButtonMainMenuSocial::ButtonMainMenuSocial(unsigned int icon, sgl::sgui::Widget 
     RegisterRenderable(mBody);
 
     // ICON
-    Texture * tex = tm->GetSprite(SpriteFileMainMenu, icon);
+    Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, icon);
     mIcon = new Image(tex);
     RegisterRenderable(mIcon);
 
@@ -78,7 +78,7 @@ void ButtonMainMenuSocial::OnStateChanged(VisualState state)
     };
 
     auto tm = sgl::graphic::TextureManager::Instance();
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenu, texIds[state]);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, texIds[state]);
     mBody->SetTexture(tex);
 
     SetSize(mBody->GetWidth(), mBody->GetHeight());

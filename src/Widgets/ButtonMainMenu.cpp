@@ -15,7 +15,7 @@ ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
 {
     using namespace sgl::graphic;
 
-    SetData(SpriteFileMainMenu,
+    SetData(SpriteFileMainMenuButtons,
             {
                 IND_MM_BTN1_NORMAL,
                 IND_MM_BTN1_DISABLED,

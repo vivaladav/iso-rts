@@ -7,6 +7,9 @@ namespace sgl { namespace graphic { class Image; } }
 namespace game
 {
 
+class ButtonChangelog;
+class DialogChangelog;
+
 class ScreenMainMenu : public Screen
 {
 public:
@@ -23,6 +26,9 @@ private:
 
 private:
     sgl::graphic::Image * mBg = nullptr;
+
+    ButtonChangelog * mButtonChangelog = nullptr;
+    DialogChangelog * mDialogChangelog = nullptr;
 };
 
 } // namespace game

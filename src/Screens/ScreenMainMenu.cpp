@@ -8,6 +8,7 @@
 #include "Widgets/ButtonMainMenuSocial.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/DialogChangelog.h"
 
 #include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
@@ -152,6 +153,30 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const int psX = centerX - panelSocial->GetWidth() * 0.5f;
     const int psY = btnWishlist->GetY() + btnWishlist->GetHeight() + psMarginTop;
     panelSocial->SetPosition(psX, psY);
+
+    // CHANGELOG
+    mButtonChangelog = new ButtonChangelog;
+    const int btnChangelogX = screenW - mButtonChangelog->GetWidth();
+    const int btnChangelogY = (screenH - mButtonChangelog->GetHeight()) / 2;
+    mButtonChangelog->SetPosition(btnChangelogX, btnChangelogY);
+
+    mButtonChangelog->AddOnClickFunction([this]
+    {
+        mButtonChangelog->SetVisible(false);
+        mDialogChangelog->SetVisible(true);
+    });
+
+    mDialogChangelog = new DialogChangelog;
+    const int dialogChangelogX = screenW - mDialogChangelog->GetWidth();
+    const int dialogChangelogY = (screenH - mDialogChangelog->GetHeight()) / 2;
+    mDialogChangelog->SetPosition(dialogChangelogX, dialogChangelogY);
+    mDialogChangelog->SetVisible(false);
+
+    mDialogChangelog->AddOnCloseClickFunction([this]
+    {
+        mButtonChangelog->SetVisible(true);
+        mDialogChangelog->SetVisible(false);
+    });
 
     // VERSION LABEL
     auto fm = graphic::FontManager::Instance();
