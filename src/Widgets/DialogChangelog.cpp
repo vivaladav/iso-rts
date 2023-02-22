@@ -129,6 +129,15 @@ DialogChangelog::DialogChangelog()
     mButtonClose->SetX(GetWidth() - mButtonClose->GetWidth());
 }
 
+void DialogChangelog::SetContent(sgl::sgui::Widget * cont)
+{
+    const int marginL = 20;
+    const int marginT = 65;
+
+    cont->SetParent(this);
+    cont->SetPosition(marginL, marginT);
+}
+
 unsigned int DialogChangelog::AddOnCloseClickFunction(const std::function<void()> & f)
 {
     return mButtonClose->AddOnClickFunction(f);

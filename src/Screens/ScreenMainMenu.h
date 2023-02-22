@@ -24,6 +24,8 @@ public:
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
 
+    void CreateChangelog();
+
 private:
     sgl::graphic::Image * mBg = nullptr;
 

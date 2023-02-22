@@ -44,6 +44,8 @@ class DialogChangelog : public sgl::sgui::Widget
 public:
     DialogChangelog();
 
+    void SetContent(sgl::sgui::Widget * cont);
+
     unsigned int AddOnCloseClickFunction(const std::function<void()> & f);
 
 private:
