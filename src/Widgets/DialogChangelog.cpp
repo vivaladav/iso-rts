@@ -8,6 +8,7 @@
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/sgui/ScrollArea.h>
 #include <sgl/sgui/TextArea.h>
 
 namespace game
@@ -104,6 +105,30 @@ private:
     sgl::graphic::Image * mBg = nullptr;
 };
 
+// ===== CHANGELOG AREA =====
+class ChangelogArea : public sgl::sgui::ScrollArea
+{
+public:
+    ChangelogArea(sgl::sgui::Widget * parent)
+        : sgl::sgui::ScrollArea(460, 360, parent)
+    {
+
+    }
+
+private:
+    void HandleNewContent()
+    {
+        const int contX = 20;
+        const int contY = 20;
+        const int contW = 380;
+        const int contH = 320;
+
+        sgl::sgui::Widget * cont = GetContent();
+        cont->SetPosition(contX, contY);
+        cont->SetVisibleArea(0, 0, contW, contH);
+    }
+};
+
 // ===== DIALOG CHANGELOG =====
 DialogChangelog::DialogChangelog()
 {
@@ -127,15 +152,14 @@ DialogChangelog::DialogChangelog()
     // BUTTON CLOSE
     mButtonClose = new ButtonCloseChangelog(this);
     mButtonClose->SetX(GetWidth() - mButtonClose->GetWidth());
+
+    // CONTENT AREA
+    mContArea = new ChangelogArea(this);
 }
 
 void DialogChangelog::SetContent(sgl::sgui::Widget * cont)
 {
-    const int marginL = 20;
-    const int marginT = 65;
-
-    cont->SetParent(this);
-    cont->SetPosition(marginL, marginT);
+    mContArea->SetContent(cont);
 }
 
 unsigned int DialogChangelog::AddOnCloseClickFunction(const std::function<void()> & f)
@@ -161,8 +185,12 @@ void DialogChangelog::PositionElements()
     // TITLE
     const int titleX = x0 + marginL;
     const int titleY = y0 + marginT;
-
     mTitle->SetPosition(titleX, titleY);
+
+    // CONTENT
+    const int contX = marginL;
+    const int contY = 65;
+    mContArea->SetPosition(contX, contY);
 }
 
 } // namespace game

@@ -263,8 +263,6 @@ void ScreenMainMenu::CreateChangelog()
     // CONTENT
     const unsigned int colorContent = 0xb8ced9ff;
     const int contentW = 385;
-    const int marginL = 20;
-    const int marginT = 10;
     const int paddingV = 10;
 
     auto fm = graphic::FontManager::Instance();
@@ -272,8 +270,8 @@ void ScreenMainMenu::CreateChangelog()
 
     auto content = new sgl::sgui::Widget;
 
-    const int contX = marginL;
-    int contY = marginT;
+    const int contX = 0;
+    int contY = 0;
 
     auto title = new sgui::Label("0.1.2 - \"Almost alpha\"", font, content);
     title->SetPosition(contX, contY);
