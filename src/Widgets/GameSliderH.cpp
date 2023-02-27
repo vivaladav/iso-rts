@@ -49,7 +49,7 @@ void GameSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
     const int barW = fullBarW * GetValue() / 100;
     mBar->SetWidth(barW);
 
-    SetBarFullSize(fullBarW, fullBarH);
+    SetSlidingAreaSize(fullBarW, fullBarH);
 
     // update widget size
     SetSize(mBg->GetWidth(), mButton->GetHeight());
@@ -64,25 +64,17 @@ void GameSliderH::UpdatePositions()
 
     // BACKGROUND
     const int bgX = x0;
-    const int bgY = y0 + (mButton->GetHeight() - mBg->GetHeight()) * 0.5f;
+    const int bgY = y0 + (mButton->GetHeight() - mBg->GetHeight()) / 2;
     mBg->SetPosition(bgX, bgY);
 
     // BAR
     const int barX = bgX + border;
     const int barY = bgY + border;
     mBar->SetPosition(barX, barY);
+    SetSlidingAreaPosition(barX, barY);
 
     // BUTTON
-    const int barX1 = mBar->GetX() + mBar->GetWidth();
-
-    const int btnW = mButton->GetWidth();
-    int btnX = barX1 - (btnW * 0.5f);
-
-    const int limitX = mBg->GetX() + mBg->GetWidth();
-
-    if(btnX + btnW > limitX)
-        btnX = limitX - btnW;
-
+    const int btnX = barX + mBar->GetWidth() - (mButton->GetWidth() / 2);
     const int btnY = y0;
     mButton->SetPosition(btnX, btnY);
 }

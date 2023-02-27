@@ -40,11 +40,6 @@ void TestSliderH::HandleValueChanged(int val)
     const int btnW = mButton->GetWidth();
     int btnX = barX1 - (btnW * 0.5f);
 
-    const int limitX = mBg->GetX() + mBg->GetWidth();
-
-    if(btnX + btnW > limitX)
-        btnX = limitX - btnW;
-
     mButton->SetX(btnX);
 }
 
@@ -64,7 +59,7 @@ void TestSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
     const int barW = fullBarW * GetValue() / 100;
     mBar->SetWidth(barW);
 
-    SetBarFullSize(fullBarW, fullBarH);
+    SetSlidingAreaSize(fullBarW, fullBarH);
 
     // BUTTON
     tex = tm->GetSprite(SpriteFileTestUI, IND_TSLIH_BUTTON);
@@ -90,9 +85,10 @@ void TestSliderH::UpdatePositions()
     const int barX = bgX + border;
     const int barY = bgY + border;
     mBar->SetPosition(barX, barY);
+    SetSlidingAreaPosition(barX, barY);
 
     // BUTTON
-    const int btnX = x0;
+    const int btnX = barX + mBar->GetWidth() - (mButton->GetWidth() / 2);
     const int btnY = y0;
     mButton->SetPosition(btnX, btnY);
 }
