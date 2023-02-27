@@ -280,7 +280,7 @@ void ScreenMainMenu::CreateChangelog()
     contY += title->GetHeight() + paddingV;
 
     // CONTENT BLOCK: NEW FEATURES
-    int blockH = 200;
+    int blockH = 220;
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added music\n"
@@ -288,14 +288,15 @@ void ScreenMainMenu::CreateChangelog()
                          "- Introduced control areas to highlight what part of a map is controlled by each faction\n"
                          "- Implemented tooltips for UI elements\n"
                          "- Added audio settings\n"
-                         "- New changelog dialog in main menu\n");
+                         "- New changelog dialog in main menu\n"
+                         "- New video mode handling in settings\n");
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
 
     contY += blockH + paddingV;
 
     // CONTENT BLOCK: IMPROVEMENTS
-    blockH = 230;
+    blockH = 220;
     auto textImpr = new sgui::TextArea(contentW, blockH, font, content);
     textImpr->SetText("IMPROVEMENTS\n"
                       "- Settings dialog now available in game\n"
