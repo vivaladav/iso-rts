@@ -759,11 +759,10 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    auto combo = new SettingsComboBox(panel);
-
+    mComboRes = new SettingsComboBox(panel);
     auto win = graphic::Window::Instance();
 
-    const sgl::graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
+    const graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
 
     int currIndex = -1;
     int validModes = 0;
@@ -785,7 +784,7 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
             /// add combo item
             std::ostringstream oss;
             oss << dm.width << "x" << dm.height << " @ " << dm.refresh << "Hz";
-            combo->AddItem(new ComboBoxItemResolution(d, m, oss.str().c_str()));
+            mComboRes->AddItem(new ComboBoxItemResolution(d, m, oss.str().c_str()));
 
             // record current mode
             if(dm.width == currDM.width && dm.height == currDM.height && dm.refresh == currDM.refresh)
@@ -794,42 +793,53 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
             ++validModes;
         }
 
-        combo->SetActiveItem(currIndex);
+        mComboRes->SetActiveItem(currIndex);
 
         // NOTE only handling display 0 for now, this might change later
         break ;
     }
 
-    combo->SetOnActiveChanged([combo, win](int)
+    mComboRes->SetOnActiveChanged([this, win](int)
     {
-        auto item = static_cast<const ComboBoxItemResolution *>(combo->GetActiveItem());
+        auto item = static_cast<const ComboBoxItemResolution *>(mComboRes->GetActiveItem());
 
         win->SetDisplayMode(item->GetDisplay(), item->GetMode());
     });
 
     x += blockSettingW;
-    y += (label->GetHeight() - combo->GetHeight()) * 0.5;
-    combo->SetPosition(x, y);
+    y += (label->GetHeight() - mComboRes->GetHeight()) * 0.5;
+    mComboRes->SetPosition(x, y);
 
-    // FULLSCREEN
+    // VIDEO MODE
     x = x0;
     y = y0 + blockSettingH;
 
-    label = new sgui::Label("FULLSCREEN", font, panel);
+    label = new sgui::Label("VIDEO MODE", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(graphic::Window::Instance()->IsFullscreen());
+    const auto videoMode = win->GetVideoMode();
+
+    auto comboVM = new SettingsComboBox(panel);
+    comboVM->AddItem(new SettingsComboBoxItem("BORDERLESS"));
+    comboVM->AddItem(new SettingsComboBoxItem("FULLSCREEN"));
+    comboVM->AddItem(new SettingsComboBoxItem("WINDOW"));
+    comboVM->SetActiveItem(videoMode);
+
+    comboVM->SetOnActiveChanged([this, comboVM, win](int mode)
+    {
+        win->SetVideoMode(static_cast<sgl::graphic::Window::VideoMode>(mode));
+
+        // update resolution
+        mComboRes->SetEnabled(mode != sgl::graphic::Window::VM_BORDERLESS);
+        UpdateCurrentResolution();
+    });
+
+    mComboRes->SetEnabled(videoMode != sgl::graphic::Window::VM_BORDERLESS);
 
     x += blockSettingW;
-    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(x, y);
-
-    cb->AddOnToggleFunction([](bool checked)
-    {
-        graphic::Window::Instance()->SetFullscreen(checked);
-    });
+    y += (label->GetHeight() - comboVM->GetHeight()) / 2;
+    comboVM->SetPosition(x, y);
 
     // VSYNC
     x = x0;
@@ -850,6 +860,45 @@ void DialogSettings::CreatePanelControls(sgl::sgui::Widget * parent)
 {
     const int h = 650;
     mPanels[Panel::CONTROLS] = new PanelContentSettings(h, parent);
+}
+
+void DialogSettings::UpdateCurrentResolution()
+{
+    using namespace sgl;
+
+    auto win = graphic::Window::Instance();
+
+    const graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
+
+    int currIndex = -1;
+    int validModes = 0;
+
+    for(int d = 0; d < win->GetNumDisplays(); ++d)
+    {
+        for(int m = 0; m < win->GetNumDisplayModes(d); ++m)
+        {
+            graphic::DisplayMode dm = win->GetDisplayMode(d, m);
+
+            // display requirements
+            const int minW = 1280;
+            const float minRatio = 1.6f;
+            const float ratio = static_cast<float>(dm.width) / static_cast<float>(dm.height);
+
+            if(ratio < minRatio || dm.width < minW)
+                continue ;
+
+            // record current mode
+            if(dm.width == currDM.width && dm.height == currDM.height && dm.refresh == currDM.refresh)
+                currIndex = validModes;
+
+            ++validModes;
+        }
+
+        mComboRes->SetActiveItem(currIndex);
+
+        // NOTE only handling display 0 for now, this might change later
+        break ;
+    }
 }
 
 } // namespace game

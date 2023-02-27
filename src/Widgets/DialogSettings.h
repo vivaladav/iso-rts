@@ -16,6 +16,7 @@ namespace game
 class ButtonCloseSettings;
 class Game;
 class PanelContentSettings;
+class SettingsComboBox;
 
 class DialogSettings : public sgl::sgui::Widget
 {
@@ -34,6 +35,8 @@ private:
     void CreatePanelAudio(sgl::sgui::Widget * parent);
     void CreatePanelVideo(sgl::sgui::Widget * parent);
     void CreatePanelControls(sgl::sgui::Widget * parent);
+
+    void UpdateCurrentResolution();
 
 private:
     enum Panel : unsigned int
@@ -54,6 +57,8 @@ private:
     sgl::graphic::Image * mBg = nullptr;
 
     ButtonCloseSettings * mButtonBack = nullptr;
+
+    SettingsComboBox * mComboRes = nullptr;
 };
 
 } // namespace game
