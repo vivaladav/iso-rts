@@ -30,7 +30,7 @@ void TestSliderH::HandlePositionChanged()
 void TestSliderH::HandleValueChanged(int val)
 {
     // update BAR
-    const int fullBarW = GetBarFullWidth();
+    const int fullBarW = GetSlidingAreaWidth();
     const int barW = fullBarW * GetValuePerc() / 100;
     mBar->SetWidth(barW);
 

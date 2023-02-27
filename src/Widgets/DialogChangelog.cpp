@@ -9,6 +9,7 @@
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/sgui/ScrollArea.h>
+#include <sgl/sgui/Scrollbar.h>
 #include <sgl/sgui/TextArea.h>
 
 namespace game
@@ -105,28 +106,118 @@ private:
     sgl::graphic::Image * mBg = nullptr;
 };
 
+// ===== CHANGELOG SCROLLBAR =====
+
+class ChangelogScrollbar : public sgl::sgui::Scrollbar
+{
+public:
+    ChangelogScrollbar(sgl::sgui::Widget * parent)
+        :  sgl::sgui::Scrollbar(sgl::sgui::AbstractSlider::VERTICAL, parent)
+    {
+        using namespace sgl;
+
+        auto tm = graphic::TextureManager::Instance();
+
+        mBg->SetTexture(tm->GetSprite(SpriteFileMainMenu, IND_MM_SCROLLBAR));
+        mButton->SetTexture(tm->GetSprite(SpriteFileMainMenu, IND_MM_BTN_SCROLLBAR));
+
+        UpdatePositions();
+        UpdateGraphics(GetState());
+    }
+
+private:
+    static const int BORDER = 1;
+
+    void OnStateChanged(sgl::sgui::AbstractSlider::VisualState state) override
+    {
+        UpdateGraphics(state);
+    }
+
+    void HandlePositionChanged() override
+    {
+        UpdatePositions();
+    }
+
+    void HandleValueChanged(int) override
+    {
+        UpdatePositions();
+    }
+
+    void UpdateGraphics(sgl::sgui::AbstractSlider::VisualState state)
+    {
+        // set sliding area
+        const int areaW = mBg->GetWidth() - (BORDER * 2);
+        const int areaH = mBg->GetHeight() - (BORDER * 2) - mButton->GetHeight();
+        SetSlidingAreaSize(areaW, areaH);
+
+        // update widget size
+        SetSize(mButton->GetWidth(), mBg->GetHeight());
+    }
+
+    void UpdatePositions()
+    {
+        const int x0 = GetScreenX();
+        const int y0 = GetScreenY();
+
+        // BACKGROUND
+        const int bgX = x0 + (mButton->GetWidth() - mBg->GetWidth()) / 2;
+        const int bgY = y0;
+        mBg->SetPosition(bgX, bgY);
+
+        // BUTTON
+        const int btnX = x0;
+        const int btnY = y0 + (GetValuePerc() * GetSlidingAreaHeight() / 100) + BORDER;
+        mButton->SetPosition(btnX, btnY);
+        SetSlidingAreaPosition(bgX + BORDER, bgY + BORDER);
+    }
+};
+
 // ===== CHANGELOG AREA =====
 class ChangelogArea : public sgl::sgui::ScrollArea
 {
 public:
     ChangelogArea(sgl::sgui::Widget * parent)
         : sgl::sgui::ScrollArea(460, 360, parent)
+        , mScrollbar(new ChangelogScrollbar(this))
     {
+        mScrollbar->SetOnValueChanged([this](int val)
+        {
+            sgl::sgui::Widget * cont = GetContent();
+            cont->SetY(CONT_Y0 - val);
+            cont->SetVisibleArea(0, val, CONT_W, CONT_H);
+        });
+    }
 
+    void HandlePositionChanged() override
+    {
+        UpdatePositions();
     }
 
 private:
-    void HandleNewContent()
+    void HandleNewContent() override
     {
-        const int contX = 20;
-        const int contY = 20;
-        const int contW = 380;
-        const int contH = 320;
-
         sgl::sgui::Widget * cont = GetContent();
-        cont->SetPosition(contX, contY);
-        cont->SetVisibleArea(0, 0, contW, contH);
+        cont->SetPosition(CONT_X0, CONT_Y0);
+        cont->SetVisibleArea(0, 0, CONT_W, CONT_H);
+
+        mScrollbar->SetMinMax(0, cont->GetHeight() - CONT_H);
     }
+
+    void UpdatePositions()
+    {
+        // SCROLLBAR
+        const int sbX = GetWidth() - mScrollbar->GetWidth();
+        const int sbY = 0;
+        mScrollbar->SetPosition(sbX, sbY);
+    }
+
+private:
+    static const int CONT_X0 = 20;
+    static const int CONT_Y0 = 20;
+    static const int CONT_W = 380;
+    static const int CONT_H = 320;
+
+    ChangelogScrollbar * mScrollbar = nullptr;
 };
 
 // ===== DIALOG CHANGELOG =====
@@ -189,7 +280,7 @@ void DialogChangelog::PositionElements()
 
     // CONTENT
     const int contX = marginL;
-    const int contY = 65;
+    const int contY = 66;
     mContArea->SetPosition(contX, contY);
 }
 

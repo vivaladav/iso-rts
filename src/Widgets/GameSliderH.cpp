@@ -21,7 +21,7 @@ GameSliderH::GameSliderH(sgl::graphic::Texture * texBg, sgl::graphic::Texture * 
     UpdatePositions();
 }
 
-void GameSliderH::OnStateChanged(sgl::sgui::Slider::VisualState state)
+void GameSliderH::OnStateChanged(VisualState state)
 {
     UpdateGraphics(state);
 }
@@ -34,14 +34,14 @@ void GameSliderH::HandlePositionChanged()
 void GameSliderH::HandleValueChanged(int val)
 {
     // update BAR
-    const int fullBarW = GetBarFullWidth();
+    const int fullBarW = GetSlidingAreaWidth();
     const int barW = fullBarW * GetValuePerc() / 100;
     mBar->SetWidth(barW);
 
     UpdatePositions();
 }
 
-void GameSliderH::UpdateGraphics(sgl::sgui::Slider::VisualState state)
+void GameSliderH::UpdateGraphics(VisualState state)
 {
     // BAR
     const int fullBarW = mTexBar->GetWidth();

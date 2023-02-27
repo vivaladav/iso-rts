@@ -20,13 +20,13 @@ public:
                 sgl::graphic::Texture * texButton, sgl::sgui::Widget * parent);
 
 private:
-    void OnStateChanged(sgl::sgui::Slider::VisualState state) override;
+    void OnStateChanged(sgl::sgui::AbstractSlider::VisualState state) override;
 
     void HandlePositionChanged() override;
 
     void HandleValueChanged(int val) override;
 
-    void UpdateGraphics(sgl::sgui::Slider::VisualState state);
+    void UpdateGraphics(sgl::sgui::AbstractSlider::VisualState state);
     void UpdatePositions();
 
 private:
