@@ -21,7 +21,7 @@ class SettingsComboBox;
 class DialogSettings : public sgl::sgui::Widget
 {
 public:
-    DialogSettings();
+    DialogSettings(Game * game);
     ~DialogSettings();
 
     void AddOnCloseClickedFunction(const std::function<void()> & f);
@@ -49,7 +49,9 @@ private:
         NUM_PANELS
     };
 
-    private:
+private:
+    Game * mGame = nullptr;
+
     sgl::sgui::AbstractButtonsGroup * mGroupButtons = nullptr;
 
     PanelContentSettings * mPanels[NUM_PANELS];

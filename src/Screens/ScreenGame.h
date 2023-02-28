@@ -166,6 +166,8 @@ private:
 
     CameraMapController * mCamController = nullptr;
 
+    unsigned int mIdOnSettingsChanged = 0;
+
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --

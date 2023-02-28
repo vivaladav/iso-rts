@@ -82,6 +82,11 @@ ScreenGame::ScreenGame(Game * game)
     cam->SetSize(rendW, rendH);
     mCamController = new CameraMapController(cam);
 
+    mIdOnSettingsChanged = game->AddOnSettingsChangedFunction([this]
+    {
+        mCamController->SetSpeed(GetGame()->GetMapScrollingSpeed());
+    });
+
     InitParticlesSystem();
 
     // -- ISOMETRIC MAP --
@@ -177,6 +182,8 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
+    GetGame()->RemoveOnSettingsChangedFunction(mIdOnSettingsChanged);
+
     delete mPartMan;
 
     for(auto ind : mAttIndicators)

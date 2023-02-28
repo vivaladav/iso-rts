@@ -2,6 +2,8 @@
 
 #include <sgl/core/Application.h>
 
+#include <functional>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -78,11 +80,22 @@ public:
     void SetLocalPlayerFaction(PlayerFaction faction);
     PlayerFaction GetLocalPlayerFaction() const;
 
+    // -- settings --
+    int GetMapScrollingSpeed() const;
+    void SetMapScrollingSpeed(int val);
+
+    unsigned int AddOnSettingsChangedFunction(const std::function<void()> & f);
+    void RemoveOnSettingsChangedFunction(unsigned int fId);
+
 private:
+    void NotifyOnSettingsChanged();
+
     void Update(float delta) override;
 
 private:
     std::vector<Player *> mPlayers;
+
+    std::map<unsigned int, std::function<void()>> mOnSettingsChanged;
 
     sgl::graphic::Renderer * mRenderer = nullptr;
     sgl::graphic::Window * mWin = nullptr;
@@ -103,6 +116,8 @@ private:
     unsigned int mCurrMap = 0;
     Planets mCurrPlanet;
     unsigned int mCurrTerritory = 0;
+
+    int mMapScrollingSpeed = 5;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
@@ -158,5 +173,7 @@ inline PlayerFaction Game::GetLocalPlayerFaction() const
 {
     return mLocalFaction;
 }
+
+inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
 
 } // namespace game

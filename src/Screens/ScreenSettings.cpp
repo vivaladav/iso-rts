@@ -27,7 +27,7 @@ ScreenSettings::ScreenSettings(Game * game)
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
 
-    mDialog = new DialogSettings();
+    mDialog = new DialogSettings(game);
     mDialog->SetPosition((screenW - mDialog->GetWidth()) / 2,
                          (screenH - mDialog->GetHeight()) / 2);
 

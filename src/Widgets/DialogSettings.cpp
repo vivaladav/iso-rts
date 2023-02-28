@@ -1,5 +1,6 @@
 #include "Widgets/DialogSettings.h"
 
+#include "Game.h"
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
 
@@ -33,6 +34,9 @@ namespace
 
     constexpr int blockSettingW = 500;
     constexpr int blockSettingH = 100;
+
+    constexpr int contX0 = 30;
+    constexpr int contY0 = 40;
 }
 
 namespace game
@@ -489,7 +493,8 @@ private:
 };
 
 // ====== SCREEN SETTINGS ======
-DialogSettings::DialogSettings()
+DialogSettings::DialogSettings(Game * game)
+    : mGame(game)
 {
     using namespace sgl;
 
@@ -603,8 +608,50 @@ void DialogSettings::SetPositions()
 
 void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
 {
-    const int h =150;
-    mPanels[Panel::GAME] = new PanelContentSettings(h, parent);
+    using namespace sgl;
+
+    const int h =200;
+    auto panel = new PanelContentSettings(h, parent);
+    mPanels[Panel::GAME] = panel;
+
+    int x = contX0;
+    int y = contY0;
+
+    auto fm = graphic::FontManager::Instance();
+    graphic::Font * font = fm->GetFont(fontTxt, sizeTxt, graphic::Font::NORMAL);
+
+    auto tm = graphic::TextureManager::Instance();
+
+    // MAP SCROLLING SPEED
+    auto label = new sgui::Label("MAP SCROLLING SPEED", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    graphic::Texture * texSliderBg = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BG);
+    graphic::Texture * texSliderBar = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BAR);
+    graphic::Texture * texSliderBtn = tm->GetSprite(SpriteFileSettingsExp,IND_SET_SLIDERH_BUTTON);
+
+    const int minSpeed = 1;
+    const int maxSpeed = 10;
+    auto slider = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, panel);
+    slider->SetMinMax(minSpeed, maxSpeed);
+    slider->SetValue(mGame->GetMapScrollingSpeed());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - slider->GetHeight()) * 0.5;
+    slider->SetPosition(x, y);
+
+    const int marginSliderR = 30;
+    label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
+    label->SetColor(colorTxtSlider);
+    label->SetPosition(slider->GetX() + slider->GetWidth() + marginSliderR, slider->GetY());
+
+    slider->SetOnValueChanged([this, label](int val)
+    {
+        mGame->SetMapScrollingSpeed(val);
+
+        label->SetText(std::to_string(val).c_str());
+    });
 }
 
 void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
@@ -615,11 +662,8 @@ void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     auto panel = new PanelContentSettings(h, parent);
     mPanels[Panel::AUDIO] = panel;
 
-    const int x0 = 30;
-    const int y0 = 40;
-
-    int x = x0;
-    int y = y0;
+    int x = contX0;
+    int y = contY0;
 
     auto fm = graphic::FontManager::Instance();
     graphic::Font * font = fm->GetFont(fontTxt, sizeTxt, graphic::Font::NORMAL);
@@ -651,8 +695,8 @@ void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     });
 
     // SOUNDS ENABLED
-    x = x0;
-    y = y0 + blockSettingH;
+    x = contX0;
+    y = contY0 + blockSettingH;
 
     label = new sgui::Label("SOUNDS", font, panel);
     label->SetColor(colorTxt);
@@ -671,8 +715,8 @@ void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     });
 
     // MUSIC VOLUME
-    x = x0;
-    y = y0 + blockSettingH * 2;
+    x = contX0;
+    y = contY0 + blockSettingH * 2;
 
     const int volumeMin = 0;
     const int volumeMax = 100;
@@ -709,8 +753,8 @@ void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
     });
 
     // SOUNDS VOLUME
-    x = x0;
-    y = y0 + blockSettingH * 3;
+    x = contX0;
+    y = contY0 + blockSettingH * 3;
 
     label = new sgui::Label("SOUNDS VOLUME", font, panel);
     label->SetColor(colorTxt);
@@ -745,11 +789,8 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     auto panel = new PanelContentSettings(h, parent);
     mPanels[Panel::VIDEO] = panel;
 
-    const int x0 = 30;
-    const int y0 = 40;
-
-    int x = x0;
-    int y = y0;
+    int x = contX0;
+    int y = contY0;
 
     auto fm = graphic::FontManager::Instance();
     graphic::Font * font = fm->GetFont(fontTxt, sizeTxt, graphic::Font::NORMAL);
@@ -811,8 +852,8 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     mComboRes->SetPosition(x, y);
 
     // VIDEO MODE
-    x = x0;
-    y = y0 + blockSettingH;
+    x = contX0;
+    y = contY0 + blockSettingH;
 
     label = new sgui::Label("VIDEO MODE", font, panel);
     label->SetColor(colorTxt);
@@ -842,8 +883,8 @@ void DialogSettings::CreatePanelVideo(sgl::sgui::Widget * parent)
     comboVM->SetPosition(x, y);
 
     // VSYNC
-    x = x0;
-    y = y0 + blockSettingH * 2;
+    x = contX0;
+    y = contY0 + blockSettingH * 2;
 
     label = new sgui::Label("VSYNC", font, panel);
     label->SetColor(colorTxt);

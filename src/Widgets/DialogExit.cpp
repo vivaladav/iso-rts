@@ -217,7 +217,7 @@ private:
 };
 
 // ===== DIALOG =====
-DialogExit::DialogExit(Game * game, Screen *screen)
+DialogExit::DialogExit(Game * game, Screen * screen)
 {
     using namespace sgl;
 

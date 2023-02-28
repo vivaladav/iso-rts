@@ -132,6 +132,45 @@ const std::string & Game::GetCurrentMapFile() const
 
 void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }
 
+void Game::SetMapScrollingSpeed(int val)
+{
+    const int minSpeed = 1;
+    const int maxSpeed = 10;
+
+    if(val < minSpeed)
+        val = minSpeed;
+    else if(val > maxSpeed)
+        val = maxSpeed;
+
+    mMapScrollingSpeed = val;
+
+    NotifyOnSettingsChanged();
+}
+
+unsigned int Game::AddOnSettingsChangedFunction(const std::function<void()> & f)
+{
+    static unsigned int num = 0;
+
+    const unsigned int fId = ++num;
+    mOnSettingsChanged.emplace(fId, f);
+
+    return fId;
+}
+
+void Game::RemoveOnSettingsChangedFunction(unsigned int fId)
+{
+    auto it = mOnSettingsChanged.find(fId);
+
+    if(it != mOnSettingsChanged.end())
+        mOnSettingsChanged.erase(it);
+}
+
+void Game::NotifyOnSettingsChanged()
+{
+    for(auto & it: mOnSettingsChanged)
+        it.second();
+}
+
 void Game::Update(float delta)
 {
     mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);

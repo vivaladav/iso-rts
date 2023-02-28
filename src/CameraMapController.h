@@ -26,7 +26,7 @@ public:
     void SetMapArea(const sgl::core::Pointd2D & t, const sgl::core::Pointd2D & r,
                     const sgl::core::Pointd2D & b, const sgl::core::Pointd2D & l);
 
-    void SetSpeed(float val);
+    void SetSpeed(int val);
 
     void CenterCameraToPoint(int x, int y);
 
@@ -70,7 +70,16 @@ inline const sgl::graphic::Camera * CameraMapController::GetCamera() const
     return mCamera;
 }
 
-inline void CameraMapController::SetSpeed(float val) { mSpeed = val; }
+inline void CameraMapController::SetSpeed(int val)
+{
+    const float mult = 100.f;
+    mSpeed = mult * val;
+
+    const float minSpeed = 175.f;
+
+    if(mSpeed < minSpeed)
+        mSpeed = minSpeed;
+}
 
 inline bool CameraMapController::IsPointInsideTL(const sgl::core::Pointd2D & p) const
 {

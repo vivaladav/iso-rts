@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <sgl/core/event/ApplicationEventListener.h>
