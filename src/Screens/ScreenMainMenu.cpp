@@ -263,7 +263,7 @@ void ScreenMainMenu::CreateChangelog()
     // CONTENT
     const unsigned int colorContent = 0xb8ced9ff;
     const int contentW = 385;
-    const int paddingV = 10;
+    const int paddingV = 20;
 
     auto fm = graphic::FontManager::Instance();
     auto font = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
@@ -273,14 +273,14 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.1.2 - \"Almost alpha\"", font, content);
+    auto title = new sgui::Label("0.1.2 - \"Does it run better?\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
     contY += title->GetHeight() + paddingV;
 
     // CONTENT BLOCK: NEW FEATURES
-    int blockH = 220;
+    int blockH = 240;
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added music\n"
@@ -289,20 +289,18 @@ void ScreenMainMenu::CreateChangelog()
                          "- Implemented tooltips for UI elements\n"
                          "- Added audio settings\n"
                          "- New changelog dialog in main menu\n"
-                         "- New video mode handling in settings\n");
+                         "- New video mode control in settings\n"
+                         "- Control map scrolling speed in settings\n");
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
 
     contY += blockH + paddingV;
 
     // CONTENT BLOCK: IMPROVEMENTS
-    blockH = 220;
+    blockH = 110;
     auto textImpr = new sgui::TextArea(contentW, blockH, font, content);
     textImpr->SetText("IMPROVEMENTS\n"
                       "- Settings dialog now available in game\n"
-                      "- Map scrolling stops when mouse is outside the window\n"
-                      "- Game pauses when window is minimized\n"
-                      "- Disabled keys to navigate screens to avoid random exits\n"
                       "- Action icons for units and structures got a bit bigger\n");
     textImpr->SetPosition(contX, contY);
     textImpr->SetColor(colorContent);
@@ -310,10 +308,13 @@ void ScreenMainMenu::CreateChangelog()
     contY += blockH + paddingV;
 
     // CONTENT BLOCK: FIXES
-    blockH = 100;
+    blockH = 210;
     auto textFix = new sgui::TextArea(contentW, blockH, font, content);
     textFix->SetText("FIXES\n"
-                     "- Camera can't scroll to an empty area when scrolling diagonally");
+                     "- Camera can't scroll to an empty area when scrolling diagonally\n"
+                     "- Map scrolling stops when mouse is outside the window\n"
+                     "- Game pauses when window is minimized\n"
+                     "- Disabled keys to navigate screens to avoid random exits\n");
     textFix->SetPosition(contX, contY);
     textFix->SetColor(colorContent);
 
