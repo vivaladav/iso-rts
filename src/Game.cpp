@@ -44,7 +44,7 @@ Game::Game(int argc, char * argv[])
     mWin = Window::Create(title.c_str(), 0, 0, this);
     mRenderer = Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
-    mWin->SetVideoMode(sgl::graphic::Window::VM_BORDERLESS);
+    mWin->SetVideoMode(sgl::graphic::Window::VM_FULLSCREEN);
 
     TextureManager::Instance()->SetNewTextureQuality(TextureQuality::BEST);
 
