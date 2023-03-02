@@ -173,6 +173,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const std::string strBuildType("D");
 #elif defined(RELEASE)
     const std::string strBuildType("R");
+#else
+    const std::string strBuildType("?");
 #endif
 
     const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
