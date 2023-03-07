@@ -67,7 +67,7 @@ public:
                                  IND_DIA_EX_BTN_X_OVER, IND_DIA_EX_BTN_X_PUSHED,
                                  IND_DIA_EX_BTN_X_PUSHED }, SpriteFileDialogExit, parent)
     {
-        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESCAPE);
     }
 
 private:

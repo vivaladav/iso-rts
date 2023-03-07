@@ -935,7 +935,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         // disable actions panel when paused
         mPanelObjActions->SetEnabled(!mPaused);
     }
-    else if(key == KeyboardEvent::KEY_ESC)
+    else if(key == KeyboardEvent::KEY_ESCAPE)
         CreateDialogExit();
     // SHIFT + B -> center camera on own base
     else if(key == KeyboardEvent::KEY_B)

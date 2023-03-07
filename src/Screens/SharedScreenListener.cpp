@@ -22,7 +22,7 @@ void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
     Game * game = mScreen->GetGame();
 
     // SHIFT-ESC -> EXIT
-    if(key == KeyboardEvent::KEY_ESC && event.IsModShiftDown())
+    if(key == KeyboardEvent::KEY_ESCAPE && event.IsModShiftDown())
         game->Exit();
 
     // -- WINDOW --

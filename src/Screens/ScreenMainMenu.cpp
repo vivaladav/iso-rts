@@ -247,6 +247,7 @@ void ScreenMainMenu::CreateChangelog()
     {
         mButtonChangelog->SetVisible(false);
         mDialogChangelog->SetVisible(true);
+        mDialogChangelog->SetFocus();
     });
 
     // DIALOG
@@ -260,6 +261,7 @@ void ScreenMainMenu::CreateChangelog()
     {
         mButtonChangelog->SetVisible(true);
         mDialogChangelog->SetVisible(false);
+        sgl::sgui::Stage::Instance()->SetFocus();
     });
 
     // CONTENT

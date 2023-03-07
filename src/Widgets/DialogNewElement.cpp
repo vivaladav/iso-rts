@@ -101,7 +101,7 @@ public:
         : AbstractButton(parent)
         , mBody(new sgl::graphic::Image)
     {
-        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESCAPE);
 
         // register graphic elements
         RegisterRenderable(mBody);

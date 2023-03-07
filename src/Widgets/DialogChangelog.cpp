@@ -2,6 +2,7 @@
 
 #include "GameUIData.h"
 
+#include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -86,6 +87,8 @@ public:
         RegisterRenderable(mBg);
 
         SetSize(mBg->GetWidth(), mBg->GetHeight());
+
+        SetShortcutKey(core::KeyboardEvent::KEY_ESCAPE);
     }
 
 private:

@@ -55,7 +55,7 @@ public:
                                 },
                                 SpriteFileSettings, parent)
     {
-        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESCAPE);
     }
 
 private:
