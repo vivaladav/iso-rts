@@ -130,7 +130,7 @@ void ScreenTest::OnKeyUp(sgl::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     // ESC -> go back to main menu
-    if(key == sgl::core::KeyboardEvent::KEY_ESC)
+    if(key == sgl::core::KeyboardEvent::KEY_ESCAPE)
         GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
 }
 
@@ -360,12 +360,12 @@ void ScreenTest::TestSGui()
     button->AddOnClickFunction([container2]{ container2->SetAlpha(128); });
 
     button = new ButtonMainMenu("ALPHA 100%", container2);
-    wY += button->GetHeight() * 2;
+    wY += button->GetHeight() * 1.2f;
     button->SetY(wY);
     button->AddOnClickFunction([container2]{ container2->SetAlpha(255); });
 
     // -- COMBO BOX --
-    wY = 550;
+    wY = 500;
 
     auto container3 = new Widget;
     container3->SetPosition(wX, wY);
@@ -390,7 +390,7 @@ void ScreenTest::TestSGui()
     });
 
     // SLIDER
-    wY = 725;
+    wY = 650;
     auto container4 = new Widget;
     container4->SetPosition(wX, wY);
 
@@ -428,6 +428,14 @@ void ScreenTest::TestSGui()
         label->SetText(std::to_string(val).c_str());
     });
 
+    // SCROLL BAR
+    wY = 850;
+    auto container5 = new Widget;
+    container5->SetPosition(wX, wY);
+
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
+    label = new Label("SCROLLBAR", font, container5);
+    wY = label->GetHeight() * 2;
 }
 
 void ScreenTest::TestSprite()
