@@ -3,6 +3,7 @@
 #include "GameUIData.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
+#include <sgl/core/event/MouseWheelEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -194,6 +195,17 @@ public:
     void HandlePositionChanged() override
     {
         UpdatePositions();
+    }
+
+    void HandleMouseWheel(sgl::core::MouseWheelEvent & event) override
+    {
+        const int val = mScrollbar->GetValue();
+        const int inc = 10;
+
+        if(event.ScrollingUp())
+            mScrollbar->SetValue(val - inc);
+        else if(event.ScrollingDown())
+            mScrollbar->SetValue(val + inc);
     }
 
 private:
