@@ -778,6 +778,10 @@ void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
         am->SetVolumeSound(val);
 
         label->SetText(std::to_string(val).c_str());
+
+        // play sound after every value change to give audio feedback on volume
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
     });
 }
 
