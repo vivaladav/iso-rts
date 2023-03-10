@@ -35,6 +35,8 @@ private:
     void HandleKeyDown(sgl::core::KeyboardEvent & event) override;
     void HandleKeyUp(sgl::core::KeyboardEvent & event) override;
 
+    void HandleButtonUp() override;
+
     void UpdateValues();
 
 private:
