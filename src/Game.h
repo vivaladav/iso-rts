@@ -83,6 +83,8 @@ public:
     // -- settings --
     int GetMapScrollingSpeed() const;
     void SetMapScrollingSpeed(int val);
+    bool IsMapScrollingOnEdges() const;
+    void SetMapScrollingOnEdges(bool val);
 
     unsigned int AddOnSettingsChangedFunction(const std::function<void()> & f);
     void RemoveOnSettingsChangedFunction(unsigned int fId);
@@ -118,6 +120,7 @@ private:
     unsigned int mCurrTerritory = 0;
 
     int mMapScrollingSpeed = 5;
+    bool mMapScrollingOnEdges = true;
 
     unsigned char mClearR = 0;
     unsigned char mClearG = 0;
@@ -175,5 +178,8 @@ inline PlayerFaction Game::GetLocalPlayerFaction() const
 }
 
 inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
+
+inline bool Game::IsMapScrollingOnEdges() const { return mMapScrollingOnEdges; }
+inline void Game::SetMapScrollingOnEdges(bool val) { mMapScrollingOnEdges = val; }
 
 } // namespace game

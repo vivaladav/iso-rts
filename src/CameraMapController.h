@@ -16,10 +16,12 @@ namespace sgl
 namespace game
 {
 
+class Game;
+
 class CameraMapController
 {
 public:
-    CameraMapController(sgl::graphic::Camera * cam);
+    CameraMapController(sgl::graphic::Camera * cam, Game * game);
 
     const sgl::graphic::Camera * GetCamera() const;
 
@@ -48,6 +50,8 @@ private:
 
 private:
     sgl::graphic::Camera * mCamera = nullptr;
+
+    Game * mGame = nullptr;
 
     sgl::core::Pointd2D mMapT;
     sgl::core::Pointd2D mMapR;

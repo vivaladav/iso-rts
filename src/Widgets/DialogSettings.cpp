@@ -652,6 +652,27 @@ void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
 
         label->SetText(std::to_string(val).c_str());
     });
+
+    // MAP SCROLLING
+    x = contX0;
+    y = contY0 + blockSettingH;
+
+    label = new sgui::Label("MAP SCROLLING ON EDGES", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    auto cb = new SettingsCheckbox(panel);
+    cb->SetChecked(mGame->IsMapScrollingOnEdges());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([this](bool checked)
+    {
+        mGame->SetMapScrollingOnEdges(checked);
+    });
+
 }
 
 void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)

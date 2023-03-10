@@ -80,7 +80,7 @@ ScreenGame::ScreenGame(Game * game)
 
     auto cam = sgl::graphic::Camera::GetDefaultCamera();
     cam->SetSize(rendW, rendH);
-    mCamController = new CameraMapController(cam);
+    mCamController = new CameraMapController(cam, game);
 
     mIdOnSettingsChanged = game->AddOnSettingsChangedFunction([this]
     {

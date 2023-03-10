@@ -1,5 +1,6 @@
 #include "CameraMapController.h"
 
+#include "Game.h"
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseMotionEvent.h>
 #include <sgl/graphic/Camera.h>
@@ -18,8 +19,9 @@ constexpr int SCROLL_U = -1;
 constexpr int SCROLL_D = 1;
 constexpr int NO_SCROLL = 0;
 
-CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
+CameraMapController::CameraMapController(sgl::graphic::Camera * cam, Game * game)
     : mCamera(cam)
+    , mGame(game)
     , mSpeed(DEF_SPEED)
     , mDirX(NO_SCROLL)
     , mDirY(NO_SCROLL)
@@ -155,6 +157,9 @@ void CameraMapController::HandleKeyUp(sgl::core::KeyboardEvent & event)
 
 void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
 {
+    if(!mGame->IsMapScrollingOnEdges())
+        return ;
+
     const int screenX = event.GetX();
     const int screenY = event.GetY();
 
