@@ -267,7 +267,7 @@ void ScreenMainMenu::CreateChangelog()
     // CONTENT
     const unsigned int colorContent = 0xb8ced9ff;
     const int contentW = 385;
-    const int paddingV = 20;
+    const int paddingV = 25;
 
     auto fm = graphic::FontManager::Instance();
     auto font = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
@@ -285,7 +285,7 @@ void ScreenMainMenu::CreateChangelog()
 
     // CONTENT BLOCK: NEW FEATURES
     int blockH = 240;
-    auto textNewFeat = new sgui::TextArea(contentW, blockH, font, content);
+    auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added music\n"
                          "- Added sounds effects\n"
@@ -298,22 +298,22 @@ void ScreenMainMenu::CreateChangelog()
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
 
-    contY += blockH + paddingV;
+    contY += textNewFeat->GetHeight() + paddingV;
 
     // CONTENT BLOCK: IMPROVEMENTS
     blockH = 110;
-    auto textImpr = new sgui::TextArea(contentW, blockH, font, content);
+    auto textImpr = new sgui::TextArea(contentW, blockH, font, true, content);
     textImpr->SetText("IMPROVEMENTS\n"
                       "- Settings dialog now available in game\n"
                       "- Action icons for units and structures got a bit bigger\n");
     textImpr->SetPosition(contX, contY);
     textImpr->SetColor(colorContent);
 
-    contY += blockH + paddingV;
+    contY += textImpr->GetHeight() + paddingV;
 
     // CONTENT BLOCK: FIXES
     blockH = 210;
-    auto textFix = new sgui::TextArea(contentW, blockH, font, content);
+    auto textFix = new sgui::TextArea(contentW, blockH, font, true, content);
     textFix->SetText("FIXES\n"
                      "- Camera can't scroll to an empty area when scrolling diagonally\n"
                      "- Map scrolling stops when mouse is outside the window\n"

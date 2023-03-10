@@ -290,7 +290,7 @@ public:
         auto tm = sgl::graphic::TextureManager::Instance();
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
         auto font = fm->GetFont("Lato-Regular.ttf", 16, Font::NORMAL);
-        mTitle = new sgl::sgui::TextArea(tex->GetWidth(), TITLE_H, font, this);
+        mTitle = new sgl::sgui::TextArea(tex->GetWidth(), TITLE_H, font, false, this);
         mTitle->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_CENTER, sgl::sgui::TextArea::ALIGN_V_CENTER);
 
         // IMAGE
@@ -713,7 +713,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     // description text area
     const int areaW = panelInfo->GetWidth() - (2 * marginPanelXY0);
     const int areaH = 85;
-    mDescription = new TextArea(areaW, areaH, fontText, panelInfo);
+    mDescription = new TextArea(areaW, areaH, fontText, false, panelInfo);
     mDescription->SetColor(colorText);
     mDescription->SetPosition(marginPanelXY0, contY);
 

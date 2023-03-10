@@ -239,7 +239,7 @@ void ScreenTest::TestSGui()
     const char * text = "This is a pretty long text.(NN)\n\nOver multiple lines, well, at least 4 and I bet that "
                         "this line will wrap at some point before the newline.(N)\nHere it is the end!";
     font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
-    auto ta = new TextArea(taW, taH, text, font, container);
+    auto ta = new TextArea(taW, taH, text, font, false, container);
     ta->SetY(buttonY);
     ta->SetColor(0x99FFAAFF);
 

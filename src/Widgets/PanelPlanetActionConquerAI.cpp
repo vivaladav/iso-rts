@@ -145,7 +145,7 @@ void PanelPlanetActionConquerAI::CreateContentStart(int money, int energy, int m
     const int contH = 80;
     const char * txt = "Send an AI general to conquer the territory.\n\n"
                        "This will cost you:";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentStart);
     text->SetColor(textColor);
 
     // COSTS
@@ -232,7 +232,7 @@ void PanelPlanetActionConquerAI::CreateContentFailure()
     const char * txt = "Sorry Commander,\n"
                        "but the conquest failed.\n\n"
                        "Your enemy has prevailed.";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentFailure);
     text->SetColor(textColor);
 }
 
@@ -256,7 +256,7 @@ void PanelPlanetActionConquerAI::CreateContentSuccess()
     const char * txt = "Good news Commander,\n"
                        "the conquest was successful!\n\n"
                        "Your resources have been replenished.";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentSuccess);
     text->SetColor(textColor);
 }
 

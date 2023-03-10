@@ -33,7 +33,7 @@ ButtonChangelog::ButtonChangelog()
     // TEXT
     auto fm = graphic::FontManager::Instance();
     auto font = fm->GetFont("Lato-Regular.ttf", 20, graphic::Font::NORMAL);
-    mLabel = new sgui::TextArea(GetWidth(), GetHeight(), font, this);
+    mLabel = new sgui::TextArea(GetWidth(), GetHeight(), font, false, this);
     mLabel->setTextAlignment(sgui::TextArea::ALIGN_H_CENTER, sgui::TextArea::ALIGN_V_CENTER);
     mLabel->SetText("U\nP\nD\nA\nT\nE\nS");
 
@@ -200,7 +200,7 @@ public:
     void HandleMouseWheel(sgl::core::MouseWheelEvent & event) override
     {
         const int val = mScrollbar->GetValue();
-        const int inc = 10;
+        const int inc = 15;
 
         if(event.ScrollingUp())
             mScrollbar->SetValue(val - inc);

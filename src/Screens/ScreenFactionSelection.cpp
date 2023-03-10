@@ -120,7 +120,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     const int txtH = panelTxt->GetHeight() - marginTxt;
 
     const char * desc1 = "Trained warriors and expert weapon makers. They hate the Domens.";
-    auto txtArea = new sgui::TextArea(txtW, txtH, desc1, fntTxt, panelTxt);
+    auto txtArea = new sgui::TextArea(txtW, txtH, desc1, fntTxt, false, panelTxt);
     txtArea->SetPosition(txtX, txtY);
     txtArea->SetColor(colorText);
 
@@ -175,7 +175,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     txtY = marginTxt;
 
     const char * desc2 = "Masters of engineering and science. Long time enemies of the Zulox.";
-    txtArea = new sgui::TextArea(txtW, txtH, desc2, fntTxt, panelTxt);
+    txtArea = new sgui::TextArea(txtW, txtH, desc2, fntTxt, false, panelTxt);
     txtArea->SetPosition(txtX, txtY);
     txtArea->SetColor(colorText);
 
@@ -230,7 +230,7 @@ ScreenFactionSelection::ScreenFactionSelection(Game * game)
     txtY = marginTxt;
 
     const char * desc3 = "Great explorers and very versatile. They have never fought other factions until now.";
-    txtArea = new sgui::TextArea(txtW, txtH, desc3, fntTxt, panelTxt);
+    txtArea = new sgui::TextArea(txtW, txtH, desc3, fntTxt, false, panelTxt);
     txtArea->SetPosition(txtX, txtY);
     txtArea->SetColor(colorText);
 

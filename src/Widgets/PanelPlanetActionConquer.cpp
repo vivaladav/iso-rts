@@ -91,7 +91,7 @@ void PanelPlanetActionConquer::CreateContentStart()
     const int contH = 100;
     const char * txt = "Start a mission to conquer the territory.\n\n"
                        "You will personally lead the construction of a new base and your troops in battle.";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentStart);
     text->SetColor(textColor);
 }
 
