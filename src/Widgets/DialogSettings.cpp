@@ -657,7 +657,7 @@ void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
     x = contX0;
     y = contY0 + blockSettingH;
 
-    label = new sgui::Label("MAP SCROLLING ON EDGES", font, panel);
+    label = new sgui::Label("EDGE MAP SCROLLING", font, panel);
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 

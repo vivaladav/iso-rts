@@ -277,7 +277,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.1.2 - \"Does it run better?\"", font, content);
+    auto title = new sgui::Label("0.1.3 - \"xxx\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -287,14 +287,9 @@ void ScreenMainMenu::CreateChangelog()
     int blockH = 240;
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
-                         "- Added music\n"
-                         "- Added sounds effects\n"
-                         "- Introduced control areas to highlight what part of a map is controlled by each faction\n"
-                         "- Implemented tooltips for UI elements\n"
-                         "- Added audio settings\n"
-                         "- New changelog dialog in main menu\n"
-                         "- New video mode control in settings\n"
-                         "- Control map scrolling speed in settings\n");
+                         "- Added option for disabling edge map scrolling."
+                         "- Scrollable areas can be scrolled with mouse wheel."
+                        );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
 
@@ -304,21 +299,28 @@ void ScreenMainMenu::CreateChangelog()
     blockH = 110;
     auto textImpr = new sgui::TextArea(contentW, blockH, font, true, content);
     textImpr->SetText("IMPROVEMENTS\n"
-                      "- Settings dialog now available in game\n"
-                      "- Action icons for units and structures got a bit bigger\n");
+                     );
     textImpr->SetPosition(contX, contY);
     textImpr->SetColor(colorContent);
 
     contY += textImpr->GetHeight() + paddingV;
 
+    // CONTENT BLOCK: CHANGES
+    blockH = 110;
+    auto textChange = new sgui::TextArea(contentW, blockH, font, true, content);
+    textChange->SetText("CHANGES\n"
+                        "- Map scrolling with W,A,S,D instead than arrows."
+                     );
+    textChange->SetPosition(contX, contY);
+    textChange->SetColor(colorContent);
+
+    contY += textChange->GetHeight() + paddingV;
+
     // CONTENT BLOCK: FIXES
     blockH = 210;
     auto textFix = new sgui::TextArea(contentW, blockH, font, true, content);
     textFix->SetText("FIXES\n"
-                     "- Camera can't scroll to an empty area when scrolling diagonally\n"
-                     "- Map scrolling stops when mouse is outside the window\n"
-                     "- Game pauses when window is minimized\n"
-                     "- Disabled keys to navigate screens to avoid random exits\n");
+                    );
     textFix->SetPosition(contX, contY);
     textFix->SetColor(colorContent);
 
