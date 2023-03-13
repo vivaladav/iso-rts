@@ -148,8 +148,8 @@ const unsigned int MINIMAP_COLORS[MiniMap::NUM_MM_ELEM_TYPES] =
     0x604739ff
 };
 
-MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im)
-    : sgl::sgui::Widget(nullptr)
+MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
     , mCamController(cameraController)
     , mIsoMap(im)
 {

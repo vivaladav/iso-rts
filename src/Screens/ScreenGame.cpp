@@ -28,6 +28,7 @@
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogExit.h"
 #include "Widgets/DialogNewElement.h"
+#include "Widgets/GameHUD.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
@@ -526,17 +527,22 @@ void ScreenGame::CreateLayers()
 
 void ScreenGame::CreateUI()
 {
-    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
+    using namespace sgl;
+
+    const int rendW = graphic::Renderer::Instance()->GetWidth();
+    const int rendH = graphic::Renderer::Instance()->GetHeight();
+
+    // init HUD layer
+    mHUD = new GameHUD;
 
     Player * player = GetGame()->GetLocalPlayer();
 
     // top resources bar
-    mPanelResBar = new PanelResources(player);
+    mPanelResBar = new PanelResources(player, mHUD);
     mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
 
     // BASE ACTIONS
-    mPanelObjActions = new PanelObjectActions;
+    mPanelObjActions = new PanelObjectActions(mHUD);
     mPanelObjActions->SetVisible(false);
 
     // create new unit
@@ -793,7 +799,7 @@ void ScreenGame::CreateUI()
     });
 
     // CREATE QUICK UNIT SELECTION BUTTONS
-    mGroupQuickUnitSel = new sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL);
+    mGroupQuickUnitSel = new sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL, mHUD);
 
     const int numButtons = player->GetMaxUnits();
 
@@ -826,7 +832,7 @@ void ScreenGame::CreateUI()
     });
 
     // MINIMAP
-    mButtonMinimap = new ButtonMinimap;
+    mButtonMinimap = new ButtonMinimap(mHUD);
     mButtonMinimap->SetX(rendW - mButtonMinimap->GetWidth());
 
     mButtonMinimap->AddOnClickFunction([this]
@@ -835,7 +841,7 @@ void ScreenGame::CreateUI()
         mMiniMap->SetVisible(true);
     });
 
-    mMiniMap = new MiniMap(mCamController, mIsoMap);
+    mMiniMap = new MiniMap(mCamController, mIsoMap, mHUD);
     mMiniMap->SetVisible(false);
     mMiniMap->SetX(rendW - mMiniMap->GetWidth());
 
@@ -945,10 +951,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
     }
     // DEBUG: ALT + U -> toggle UI
     else if(event.IsModAltDown() && key == KeyboardEvent::KEY_U)
-    {
-        auto stage = sgl::sgui::Stage::Instance();
-        stage->SetVisible(!stage->IsVisible());
-    }
+        mHUD->SetVisible(!mHUD->IsVisible());
     // DEBUG: SHIFT/CTRL + V -> add/remove visibility to whole map
     else if(key == KeyboardEvent::KEY_V)
     {

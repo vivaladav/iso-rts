@@ -34,7 +34,7 @@ public:
     };
 
 public:
-    MiniMap(CameraMapController * cameraController, IsoMap * im);
+    MiniMap(CameraMapController * cameraController, IsoMap * im, sgl::sgui::Widget * parent);
     ~MiniMap();
 
     void AddFunctionOnClose(const std::function<void()> & f);

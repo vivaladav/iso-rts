@@ -1,7 +1,5 @@
 #include "Widgets/PanelObjectActions.h"
 
-#include "GameObjects/Base.h"
-#include "GameObjects/Unit.h"
 #include "GameObjects/WallGate.h"
 #include "Widgets/ObjectActionButton.h"
 
@@ -14,7 +12,8 @@
 namespace game
 {
 
-PanelObjectActions::PanelObjectActions()
+PanelObjectActions::PanelObjectActions(sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
 {
     using namespace sgl::core;
 

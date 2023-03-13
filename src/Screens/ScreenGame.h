@@ -34,6 +34,7 @@ class CellProgressBar;
 class ConquestIndicator;
 class DialogExit;
 class DialogNewElement;
+class GameHUD;
 class GameMap;
 class GameObject;
 class IsoLayer;
@@ -171,6 +172,7 @@ private:
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --
+    GameHUD * mHUD = nullptr;
     PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogExit * mDialogExit = nullptr;
