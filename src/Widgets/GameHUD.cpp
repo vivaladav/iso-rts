@@ -1,15 +1,19 @@
 #include "GameHUD.h"
 
+#include "Player.h"
 #include "Widgets/ButtonMinimap.h"
+#include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelResources.h"
 
 #include <sgl/graphic/Renderer.h>
+#include <sgl/sgui/ButtonsGroup.h>
 
 namespace game
 {
 
-GameHUD::GameHUD(Player * player, CameraMapController * camController, IsoMap * isoMap)
+GameHUD::GameHUD(Player * player, CameraMapController * camController,
+                 IsoMap * isoMap, ScreenGame * screen)
 {
     using namespace sgl;
 
@@ -40,6 +44,39 @@ GameHUD::GameHUD(Player * player, CameraMapController * camController, IsoMap * 
     {
         mButtonMinimap->SetVisible(true);
         mMiniMap->SetVisible(false);
+    });
+
+    // QUICK UNIT SELECTION BUTTONS
+    mGroupUnitSel = new sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL, this);
+
+    const int numButtons = player->GetMaxUnits();
+
+    for(int i = 0; i < numButtons; ++i)
+    {
+        auto b = new ButtonQuickUnitSelection(i, screen);
+        mGroupUnitSel->AddButton(b);
+    }
+
+    const int groupX = (rendW - mGroupUnitSel->GetWidth()) * 0.5f;
+    const int groupY = rendH - mGroupUnitSel->GetHeight();
+    mGroupUnitSel->SetPosition(groupX, groupY);
+
+    player->SetOnNumUnitsChanged([this, player]
+    {
+        const int numUnits = player->GetNumUnits();
+        const int maxUnits = player->GetMaxUnits();
+
+        for(int i = 0; i < numUnits; ++i)
+        {
+            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupUnitSel->GetButton(i));
+            b->SetUnit(player->GetUnit(i));
+        }
+
+        for(int i = numUnits; i < maxUnits; ++i)
+        {
+            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupUnitSel->GetButton(i));
+            b->ClearUnit();
+        }
     });
 }
 

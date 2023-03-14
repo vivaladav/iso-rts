@@ -415,13 +415,15 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     const GameObjectType got = obj->GetObjectType();
 
     // update quick selection buttons when selected unit
+    sgl::sgui::ButtonsGroup * buttonsUnitSel = mHUD->GetButtonsGroupUnitSel();
+
     if(OBJ_UNIT == got)
     {
-        const int numButtons = mGroupQuickUnitSel->GetNumButtons();
+        const int numButtons = buttonsUnitSel->GetNumButtons();
 
         for(int i = 0; i < numButtons; ++i)
         {
-            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
+            auto b = static_cast<ButtonQuickUnitSelection *>(buttonsUnitSel->GetButton(i));
             Unit * unit = b->GetUnit();
 
             if(unit == obj)
@@ -434,10 +436,10 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     // not a unit
     else
     {
-        const int checked = mGroupQuickUnitSel->GetIndexChecked();
+        const int checked = buttonsUnitSel->GetIndexChecked();
 
         if(checked != -1)
-            mGroupQuickUnitSel->GetButton(checked)->SetChecked(false);
+            buttonsUnitSel->GetButton(checked)->SetChecked(false);
 
         // show attack range overlay for towers
         if(OBJ_DEF_TOWER == got)
@@ -539,7 +541,7 @@ void ScreenGame::CreateUI()
     Player * player = GetGame()->GetLocalPlayer();
 
     // init HUD layer
-    mHUD = new GameHUD(player, mCamController, mIsoMap);
+    mHUD = new GameHUD(player, mCamController, mIsoMap, this);
 
     // BASE ACTIONS
     mPanelObjActions = new PanelObjectActions(mHUD);
@@ -795,39 +797,6 @@ void ScreenGame::CreateUI()
             }
             else
                 ++it;
-        }
-    });
-
-    // CREATE QUICK UNIT SELECTION BUTTONS
-    mGroupQuickUnitSel = new sgl::sgui::ButtonsGroup(sgl::sgui::ButtonsGroup::HORIZONTAL, mHUD);
-
-    const int numButtons = player->GetMaxUnits();
-
-    for(int i = 0; i < numButtons; ++i)
-    {
-        auto b = new ButtonQuickUnitSelection(i, this);
-        mGroupQuickUnitSel->AddButton(b);
-    }
-
-    const int groupX = (rendW - mGroupQuickUnitSel->GetWidth()) * 0.5f;
-    const int groupY = rendH - mGroupQuickUnitSel->GetHeight();
-    mGroupQuickUnitSel->SetPosition(groupX, groupY);
-
-    player->SetOnNumUnitsChanged([this, player]
-    {
-        const int numUnits = player->GetNumUnits();
-        const int maxUnits = player->GetMaxUnits();
-
-        for(int i = 0; i < numUnits; ++i)
-        {
-            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
-            b->SetUnit(player->GetUnit(i));
-        }
-
-        for(int i = numUnits; i < maxUnits; ++i)
-        {
-            auto b = static_cast<ButtonQuickUnitSelection *>(mGroupQuickUnitSel->GetButton(i));
-            b->ClearUnit();
         }
     });
 }

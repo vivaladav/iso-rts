@@ -17,18 +17,12 @@ namespace sgl
         class ParticlesManager;
         class ParticlesUpdater;
     }
-    namespace sgui
-    {
-        class ButtonsGroup;
-        class Widget;
-    }
 }
 
 namespace game
 {
 
 class AttackRangeIndicator;
-
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
@@ -175,7 +169,6 @@ private:
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogExit * mDialogExit = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
-    sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
