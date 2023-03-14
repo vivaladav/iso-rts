@@ -64,9 +64,11 @@ public:
 
     void ApplyLocalVisibility();
     void ApplyVisibility(Player * player);
+    void InitVisibility(Player * player);
 
     void ApplyLocalVisibilityToObject(GameObject * go);
     void ApplyVisibilityToObject(Player * player, GameObject * go);
+    void InitObjectVisibility(Player * player, GameObject * go);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
 
@@ -165,6 +167,8 @@ private:
     void UpdateLinkedCells(Player * player);
 
     void UpdateInfluencedCells(int row, int col);
+
+    void UpdateVisibility(Player * player, bool init);
 
     bool MoveObjToCell(GameObject * obj, int row, int col);
 

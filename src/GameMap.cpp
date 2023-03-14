@@ -211,24 +211,12 @@ void GameMap::ApplyLocalVisibility()
 
 void GameMap::ApplyVisibility(Player * player)
 {
-    if(player != mGame->GetLocalPlayer())
-        return ;
+    UpdateVisibility(player, false);
+}
 
-    // update cells
-    const unsigned int totCells = mRows * mCols;
-
-    for(unsigned int ind = 0; ind < totCells; ++ind)
-    {
-        const GameMapCell & cell = mCells[ind];
-        UpdateCellType(ind, cell);
-    }
-
-    // update objects
-    for(GameObject * go : mObjects)
-        ApplyVisibilityToObject(player, go);
-
-    // update control areas
-    mControlMap->UpdateVisualAreas();
+void GameMap::InitVisibility(Player * player)
+{
+    UpdateVisibility(player, true);
 }
 
 void GameMap::ApplyLocalVisibilityToObject(GameObject * go)
@@ -263,10 +251,10 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
                 visible = true;
                 break;
             }
-
-            if(visible)
-                break;
         }
+
+        if(visible)
+            break;
     }
 
     // update visibility if status changed
@@ -310,6 +298,63 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
     // update visited flag independently to avoid problems on init
     if(visible)
         go->SetVisited();
+}
+
+void GameMap::InitObjectVisibility(Player * player, GameObject * gameObj)
+{
+    const int rTL = gameObj->GetRow1();
+    const int cTL = gameObj->GetCol1();
+    const int rBR = gameObj->GetRow0();
+    const int cBR = gameObj->GetCol0();
+
+    bool visible = false;
+
+    for(int r = rTL; r <= rBR; ++r)
+    {
+        const int indBase = r * mCols;
+
+        for(int c = cTL; c <= cBR; ++c)
+        {
+            const int ind = indBase + c;
+
+            if(player->IsCellVisible(ind))
+            {
+                visible = true;
+                break;
+            }
+        }
+
+        if(visible)
+            break;
+    }
+
+    IsoObject * isoObj = gameObj->GetIsoObject();
+    IsoLayer * layer = isoObj->GetLayer();
+    layer->SetObjectVisible(isoObj, visible);
+    gameObj->SetVisible(visible);
+
+    // add visible objects to minimap
+    if(visible)
+    {
+        Player * objPlayer = gameObj->GetOwner();
+        MiniMap * mm = mScreenGame->GetMiniMap();
+
+        if(objPlayer != nullptr)
+        {
+            const PlayerFaction faction = objPlayer->GetFaction();
+            const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
+            mm->AddElement(gameObj->GetRow0(), gameObj->GetCol0(), gameObj->GetRows(), gameObj->GetCols(), type, faction);
+        }
+        else
+        {
+            const MiniMap::MiniMapElemType type = gameObj->CanBeConquered() ? MiniMap::MME_CONQUERABLE : MiniMap::MME_SCENE;
+            mm->AddElement(gameObj->GetRow0(), gameObj->GetCol0(), gameObj->GetRows(), gameObj->GetCols(),
+                           type, NO_FACTION);
+        }
+
+        // also mark visible objects as visited
+        gameObj->SetVisited();
+    }
 }
 
 void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
@@ -2103,6 +2148,36 @@ void GameMap::UpdateInfluencedCells(int row, int col)
             UpdateCellType(ind, gc);
         }
     }
+}
+
+void GameMap::UpdateVisibility(Player * player, bool init)
+{
+    if(player != mGame->GetLocalPlayer())
+        return ;
+
+    // update cells
+    const unsigned int totCells = mRows * mCols;
+
+    for(unsigned int ind = 0; ind < totCells; ++ind)
+    {
+        const GameMapCell & cell = mCells[ind];
+        UpdateCellType(ind, cell);
+    }
+
+    // update objects
+    if(init)
+    {
+        for(GameObject * go : mObjects)
+            InitObjectVisibility(player, go);
+    }
+    else
+    {
+        for(GameObject * go : mObjects)
+            ApplyVisibilityToObject(player, go);
+    }
+
+    // update control areas
+    mControlMap->UpdateVisualAreas();
 }
 
 bool GameMap::MoveObjToCell(GameObject * obj, int row, int col)
