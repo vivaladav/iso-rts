@@ -14,6 +14,7 @@ class ButtonMinimap;
 class CameraMapController;
 class IsoMap;
 class MiniMap;
+class PanelObjectActions;
 class PanelResources;
 class Player;
 class ScreenGame;
@@ -28,15 +29,21 @@ public:
     MiniMap * GetMinimap() const;
     sgl::sgui::ButtonsGroup * GetButtonsGroupUnitSel() const;
 
+    PanelObjectActions * GetPanelObjectActions() const;
+    void HidePanelObjActions();
+
 private:
     PanelResources * mPanelRes = nullptr;
     ButtonMinimap * mButtonMinimap = nullptr;
     MiniMap * mMiniMap = nullptr;
+    PanelObjectActions * mPanelObjActions = nullptr;
     sgl::sgui::ButtonsGroup * mGroupUnitSel = nullptr;
 };
 
 inline MiniMap * GameHUD::GetMinimap() const { return mMiniMap; }
 
 inline sgl::sgui::ButtonsGroup * GameHUD::GetButtonsGroupUnitSel() const { return mGroupUnitSel; }
+
+inline PanelObjectActions * GameHUD::GetPanelObjectActions() const { return mPanelObjActions; }
 
 } // namespace game

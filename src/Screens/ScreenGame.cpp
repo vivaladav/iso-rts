@@ -369,7 +369,7 @@ void ScreenGame::SetObjectActionCompleted(GameObject * obj)
             mActiveObjActions.erase(it);
 
             // re-enable actions panel
-            mPanelObjActions->SetActionsEnabled(true);
+            mHUD->GetPanelObjectActions()->SetActionsEnabled(true);
 
             // reset object's active action to default
             obj->SetActiveActionToDefault();
@@ -396,12 +396,9 @@ void ScreenGame::ClearSelection(Player * player)
     if(nullptr == selObj)
         return ;
 
-    HidePanelObjActions();
+    mHUD->HidePanelObjActions();
 
     player->ClearSelectedObject();
-
-    mPanelObjActions->ClearObject();
-    mPanelObjActions->SetVisible(false);
 
     ClearCellOverlays();
 
@@ -450,15 +447,14 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
         }
     }
 
-    mPanelObjActions->SetObject(obj);
-    mPanelObjActions->SetVisible(true);
+    PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
+    panelObjActions->SetObject(obj);
+    panelObjActions->SetVisible(true);
+    panelObjActions->SetActionsEnabled(obj->GetCurrentAction() == IDLE);
+
     sgl::sgui::Stage::Instance()->SetFocus();
 
     player->SetSelectedObject(obj);
-
-    // check actions panel status
-    const bool idle = obj->GetCurrentAction() == IDLE;
-    mPanelObjActions->SetActionsEnabled(idle);
 }
 
 void ScreenGame::CenterCameraOverCell(int row, int col)
@@ -543,12 +539,11 @@ void ScreenGame::CreateUI()
     // init HUD layer
     mHUD = new GameHUD(player, mCamController, mIsoMap, this);
 
-    // BASE ACTIONS
-    mPanelObjActions = new PanelObjectActions(mHUD);
-    mPanelObjActions->SetVisible(false);
+    PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
 
     // create new unit
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT,
+                                       [this, player, panelObjActions]
     {
         if(mDialogNewElement != nullptr)
             return ;
@@ -573,13 +568,14 @@ void ScreenGame::CreateUI()
         // position dialog
         const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
         const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
-        const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
-        mDialogNewElement->SetPosition(posX, posY);
+        const int posY = panelObjActions->GetY() - mDialogNewElement->GetHeight();
+        panelObjActions->SetPosition(posX, posY);
     });
 
     // UNIT ACTIONS
     // build structure
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT,
+                                       [this, player, panelObjActions]
     {
         if(mDialogNewElement != nullptr)
             return ;
@@ -611,14 +607,14 @@ void ScreenGame::CreateUI()
         // position dialog
         const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
         const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
-        const int posY = mPanelObjActions->GetY() - mDialogNewElement->GetHeight();
+        const int posY = panelObjActions->GetY() - mDialogNewElement->GetHeight();
         mDialogNewElement->SetPosition(posX, posY);
 
         ClearCellOverlays();
     });
 
     // build wall
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_WALL, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
         unit->SetActiveAction(GameObjectActionId::BUILD_WALL);
@@ -629,7 +625,7 @@ void ScreenGame::CreateUI()
     });
 
     // attack
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_ATTACK, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_ATTACK, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
         unit->SetActiveAction(GameObjectActionId::ATTACK);
@@ -642,7 +638,7 @@ void ScreenGame::CreateUI()
     });
 
     // conquer
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER_CELL, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER_CELL, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
         unit->SetActiveAction(GameObjectActionId::CONQUER_CELL);
@@ -653,7 +649,7 @@ void ScreenGame::CreateUI()
     });
 
     // move
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_MOVE, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_MOVE, [this, player]
     {
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
         unit->SetActiveAction(GameObjectActionId::MOVE);
@@ -662,7 +658,8 @@ void ScreenGame::CreateUI()
     });
 
     // WALL GATE
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_OPEN_GATE, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_OPEN_GATE,
+                                       [this, player, panelObjActions]
     {
         // open gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
@@ -678,13 +675,14 @@ void ScreenGame::CreateUI()
         mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS2, MapLayers::OBJECTS1);
 
         // update panel actions
-        mPanelObjActions->SetObject(gate);
+        panelObjActions->SetObject(gate);
 
         // reset focus as buttons will change
         sgl::sgui::Stage::Instance()->SetFocus();
     });
 
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CLOSE_GATE, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_CLOSE_GATE,
+                                       [this, player, panelObjActions]
     {
         // close gate
         auto gate = static_cast<WallGate *>(player->GetSelectedObject());
@@ -700,7 +698,7 @@ void ScreenGame::CreateUI()
         mIsoMap->ChangeObjectLayer(gate->GetIsoObject(), MapLayers::OBJECTS1, MapLayers::OBJECTS2);
 
         // update panel actions
-        mPanelObjActions->SetObject(gate);
+        panelObjActions->SetObject(gate);
 
         // reset focus as buttons will change
         sgl::sgui::Stage::Instance()->SetFocus();
@@ -708,7 +706,7 @@ void ScreenGame::CreateUI()
 
     // GENERIC ACTIONS
     // upgrade
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_UPGRADE, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_UPGRADE, [this, player]
     {
         // TODO
 
@@ -716,7 +714,8 @@ void ScreenGame::CreateUI()
     });
 
     // cancel
-    mPanelObjActions->SetButtonFunction(PanelObjectActions::BTN_CANCEL, [this, player]
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_CANCEL,
+                                       [this, player, panelObjActions]
     {
         GameObject * selObj = player->GetSelectedObject();
 
@@ -790,7 +789,7 @@ void ScreenGame::CreateUI()
                 mActiveObjActions.erase(it);
 
                 // re-enable actions
-                mPanelObjActions->SetActionsEnabled(true);
+                panelObjActions->SetActionsEnabled(true);
                 selObj->SetActiveActionToDefault();
 
                 break;
@@ -823,12 +822,6 @@ void ScreenGame::CreateDialogExit()
     const int posX = (rendW - mDialogExit->GetWidth()) / 2;
     const int posY = (rendH - mDialogExit->GetHeight()) / 2;
     mDialogExit->SetPosition(posX, posY);
-}
-
-void ScreenGame::HidePanelObjActions()
-{
-    mPanelObjActions->ClearObject();
-    mPanelObjActions->SetVisible(false);
 }
 
 void ScreenGame::ClearNewElemDialog()
@@ -865,7 +858,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         mPaused = !mPaused;
 
         // disable actions panel when paused
-        mPanelObjActions->SetEnabled(!mPaused);
+        mHUD->GetPanelObjectActions()->SetEnabled(!mPaused);
     }
     else if(key == KeyboardEvent::KEY_ESCAPE)
         CreateDialogExit();
@@ -1181,7 +1174,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
 
     // disable actions panel (if action is done by local player)
     if(player == GetGame()->GetLocalPlayer())
-        mPanelObjActions->SetActionsEnabled(false);
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     return true;
 }
@@ -1232,7 +1225,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
 
     // disable actions panel (if action is done by local player)
     if(player == GetGame()->GetLocalPlayer())
-        mPanelObjActions->SetActionsEnabled(false);
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     return true;
 }
@@ -1283,7 +1276,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
     // disable actions panel (if action is done by local player)
     if(player == GetGame()->GetLocalPlayer())
-        mPanelObjActions->SetActionsEnabled(false);
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);
     unit->SetCurrentAction(GameObjectActionId::BUILD_STRUCTURE);
@@ -1345,7 +1338,7 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
     // disable actions panel (if action is done by local player)
     if(unit->GetOwner() == GetGame()->GetLocalPlayer())
-        mPanelObjActions->SetActionsEnabled(false);
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     // store active action
     mActiveObjActions.emplace_back(unit, GameObjectActionId::MOVE);
@@ -2003,6 +1996,8 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
     GameObject * clickObj = clickGameCell.objTop ? clickGameCell.objTop : clickGameCell.objBottom;
 
+    PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
+
     // selected object is a unit
     if(selObj->GetObjectType() == OBJ_UNIT)
     {
@@ -2029,7 +2024,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
             selUnit->SetCurrentAction(GameObjectActionId::ATTACK);
 
             // disable action buttons
-            mPanelObjActions->SetActionsEnabled(false);
+            panelObjActions->SetActionsEnabled(false);
 
             mActiveObjActions.emplace_back(selUnit, GameObjectActionId::ATTACK);
         }
@@ -2050,7 +2045,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                         mActiveObjActions.emplace_back(selUnit, action);
 
                         // disable action buttons
-                        mPanelObjActions->SetActionsEnabled(false);
+                        panelObjActions->SetActionsEnabled(false);
 
                         selUnit->SetActiveAction(GameObjectActionId::IDLE);
                         selUnit->SetCurrentAction(GameObjectActionId::CONQUER_CELL);
@@ -2122,7 +2117,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                         mActiveObjActions.emplace_back(selUnit, action);
 
                         // disable action buttons
-                        mPanelObjActions->SetActionsEnabled(false);
+                        panelObjActions->SetActionsEnabled(false);
 
                         selUnit->SetActiveAction(GameObjectActionId::IDLE);
                         selUnit->SetCurrentAction(GameObjectActionId::BUILD_WALL);

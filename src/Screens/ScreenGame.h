@@ -35,7 +35,6 @@ class IsoLayer;
 class IsoMap;
 class MiniMap;
 class MoveIndicator;
-class PanelObjectActions;
 class Player;
 class PlayerAI;
 class StructureIndicator;
@@ -103,7 +102,6 @@ private:
 
     void CreateUI();
     void CreateDialogExit();
-    void HidePanelObjActions();
     void ClearNewElemDialog();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
@@ -166,7 +164,6 @@ private:
 
     // -- UI --
     GameHUD * mHUD = nullptr;
-    PanelObjectActions * mPanelObjActions = nullptr;
     DialogExit * mDialogExit = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
 

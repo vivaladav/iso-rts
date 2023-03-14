@@ -4,6 +4,7 @@
 #include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/MiniMap.h"
+#include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelResources.h"
 
 #include <sgl/graphic/Renderer.h>
@@ -78,6 +79,17 @@ GameHUD::GameHUD(Player * player, CameraMapController * camController,
             b->ClearUnit();
         }
     });
+
+    // OBJECT ACTIONS
+    mPanelObjActions = new PanelObjectActions(this);
+    mPanelObjActions->SetVisible(false);
+}
+
+
+void GameHUD::HidePanelObjActions()
+{
+    mPanelObjActions->ClearObject();
+    mPanelObjActions->SetVisible(false);
 }
 
 } // namespace game
