@@ -12,6 +12,8 @@ namespace game
 
 class ButtonMinimap;
 class CameraMapController;
+class DialogExit;
+class Game;
 class IsoMap;
 class MiniMap;
 class PanelObjectActions;
@@ -32,12 +34,19 @@ public:
     PanelObjectActions * GetPanelObjectActions() const;
     void HidePanelObjActions();
 
+    void ShowDialogExit();
+
 private:
     PanelResources * mPanelRes = nullptr;
     ButtonMinimap * mButtonMinimap = nullptr;
     MiniMap * mMiniMap = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     sgl::sgui::ButtonsGroup * mGroupUnitSel = nullptr;
+
+    DialogExit * mDialogExit = nullptr;
+
+    Game * mGame = nullptr;
+    ScreenGame * mScreen = nullptr;
 };
 
 inline MiniMap * GameHUD::GetMinimap() const { return mMiniMap; }

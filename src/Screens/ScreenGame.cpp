@@ -25,7 +25,6 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
-#include "Widgets/DialogExit.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameHUD.h"
 #include "Widgets/MiniMap.h"
@@ -479,7 +478,7 @@ MiniMap * ScreenGame::GetMiniMap() const
 
 void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
 {
-    CreateDialogExit();
+    mHUD->ShowDialogExit();
 
     event.SetConsumed();
 }
@@ -800,30 +799,6 @@ void ScreenGame::CreateUI()
     });
 }
 
-void ScreenGame::CreateDialogExit()
-{
-    if(mDialogExit != nullptr)
-        return ;
-
-    mDialogExit = new DialogExit(GetGame(), this);
-    mDialogExit->SetFocus();
-
-    mDialogExit->SetFunctionOnClose([this]
-    {
-        // schedule dialog deletion
-        mDialogExit->DeleteLater();
-        mDialogExit = nullptr;
-    });
-
-    // position dialog
-    auto renderer = sgl::graphic::Renderer::Instance();
-    const int rendW = renderer->GetWidth();
-    const int rendH = renderer->GetHeight();
-    const int posX = (rendW - mDialogExit->GetWidth()) / 2;
-    const int posY = (rendH - mDialogExit->GetHeight()) / 2;
-    mDialogExit->SetPosition(posX, posY);
-}
-
 void ScreenGame::ClearNewElemDialog()
 {
     // no dialog -> nothing to do
@@ -861,7 +836,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         mHUD->GetPanelObjectActions()->SetEnabled(!mPaused);
     }
     else if(key == KeyboardEvent::KEY_ESCAPE)
-        CreateDialogExit();
+        mHUD->ShowDialogExit();
     // SHIFT + B -> center camera on own base
     else if(key == KeyboardEvent::KEY_B)
     {

@@ -26,7 +26,6 @@ class AttackRangeIndicator;
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
-class DialogExit;
 class DialogNewElement;
 class GameHUD;
 class GameMap;
@@ -101,7 +100,6 @@ private:
     void CreateLayers();
 
     void CreateUI();
-    void CreateDialogExit();
     void ClearNewElemDialog();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
@@ -164,7 +162,7 @@ private:
 
     // -- UI --
     GameHUD * mHUD = nullptr;
-    DialogExit * mDialogExit = nullptr;
+
     DialogNewElement * mDialogNewElement = nullptr;
 
     GameMap * mGameMap = nullptr;
