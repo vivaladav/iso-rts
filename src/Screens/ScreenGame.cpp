@@ -565,10 +565,10 @@ void ScreenGame::CreateUI()
         });
 
         // position dialog
-        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-        const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
-        const int posY = panelObjActions->GetY() - mDialogNewElement->GetHeight();
-        panelObjActions->SetPosition(posX, posY);
+        auto renderer = sgl::graphic::Renderer::Instance();
+        const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
+        const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
+        mDialogNewElement->SetPosition(posX, posY);
     });
 
     // UNIT ACTIONS
@@ -604,9 +604,9 @@ void ScreenGame::CreateUI()
         });
 
         // position dialog
-        const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-        const int posX = (rendW - mDialogNewElement->GetWidth()) * 0.5f;
-        const int posY = panelObjActions->GetY() - mDialogNewElement->GetHeight();
+        auto renderer = sgl::graphic::Renderer::Instance();
+        const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
+        const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
         mDialogNewElement->SetPosition(posX, posY);
 
         ClearCellOverlays();
