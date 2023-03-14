@@ -23,7 +23,6 @@
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterSingleLaser.h"
-#include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogExit.h"
@@ -33,7 +32,6 @@
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelGameOver.h"
 #include "Widgets/PanelGameWon.h"
-#include "Widgets/PanelResources.h"
 
 #include <sgl/ai/Pathfinder.h>
 #include <sgl/core/event/ApplicationEvent.h>
@@ -122,10 +120,11 @@ ScreenGame::ScreenGame(Game * game)
         mIsoMap->SetVisibleArea(camX0, camY0, camW, camH);
 
         // update MiniMap
-        mMiniMap->SetCameraCells(mIsoMap->CellFromScreenPoint(camX0, camY0),
-                                 mIsoMap->CellFromScreenPoint(camX1, camY0),
-                                 mIsoMap->CellFromScreenPoint(camX0, camY1),
-                                 mIsoMap->CellFromScreenPoint(camX1, camY1));
+        MiniMap * mm = mHUD->GetMinimap();
+        mm->SetCameraCells(mIsoMap->CellFromScreenPoint(camX0, camY0),
+                           mIsoMap->CellFromScreenPoint(camX1, camY0),
+                           mIsoMap->CellFromScreenPoint(camX0, camY1),
+                           mIsoMap->CellFromScreenPoint(camX1, camY1));
     });
 
     // set reduced map area to cam controller so camera will stop closer to inside cells
@@ -169,14 +168,14 @@ ScreenGame::ScreenGame(Game * game)
             mDialogNewElement->CheckBuild();
     });
 
-    // apply initial visibility to the game map
-    mGameMap->ApplyVisibility(localPlayer);
-
     // UI
     CreateUI();
 
     // set initial camera position
     CenterCameraOverPlayerBase();
+
+    // apply initial visibility to the game map
+    mGameMap->InitVisibility(localPlayer);
 
     InitMusic();
 }
@@ -475,6 +474,11 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
     CenterCameraOverCell(cell->row, cell->col);
 }
 
+MiniMap * ScreenGame::GetMiniMap() const
+{
+    return mHUD->GetMinimap();
+}
+
 void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
 {
     CreateDialogExit();
@@ -532,14 +536,10 @@ void ScreenGame::CreateUI()
     const int rendW = graphic::Renderer::Instance()->GetWidth();
     const int rendH = graphic::Renderer::Instance()->GetHeight();
 
-    // init HUD layer
-    mHUD = new GameHUD;
-
     Player * player = GetGame()->GetLocalPlayer();
 
-    // top resources bar
-    mPanelResBar = new PanelResources(player, mHUD);
-    mPanelResBar->SetX((rendW - mPanelResBar->GetWidth()) * 0.5f);
+    // init HUD layer
+    mHUD = new GameHUD(player, mCamController, mIsoMap);
 
     // BASE ACTIONS
     mPanelObjActions = new PanelObjectActions(mHUD);
@@ -830,49 +830,6 @@ void ScreenGame::CreateUI()
             b->ClearUnit();
         }
     });
-
-    // MINIMAP
-    mButtonMinimap = new ButtonMinimap(mHUD);
-    mButtonMinimap->SetX(rendW - mButtonMinimap->GetWidth());
-
-    mButtonMinimap->AddOnClickFunction([this]
-    {
-        mButtonMinimap->SetVisible(false);
-        mMiniMap->SetVisible(true);
-    });
-
-    mMiniMap = new MiniMap(mCamController, mIsoMap, mHUD);
-    mMiniMap->SetVisible(false);
-    mMiniMap->SetX(rendW - mMiniMap->GetWidth());
-
-    mMiniMap->AddFunctionOnClose([this]
-    {
-        mButtonMinimap->SetVisible(true);
-        mMiniMap->SetVisible(false);
-    });
-
-    const std::vector<GameObject *> & objs = mGameMap->GetObjects();
-
-    for(GameObject * obj : objs)
-    {
-        if(!obj->IsVisible())
-            continue ;
-
-        const Player * p = obj->GetOwner();
-        PlayerFaction faction = NO_FACTION;
-        MiniMap::MiniMapElemType type = MiniMap::MME_SCENE;
-
-        if(p != nullptr)
-        {
-            faction = p->GetFaction();
-            type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-        }
-        else if(obj->CanBeConquered())
-            type = MiniMap::MME_CONQUERABLE;
-
-        mMiniMap->AddElement(obj->GetRow0(), obj->GetCol0(), obj->GetRows(), obj->GetCols(),
-                             type, faction);
-    }
 }
 
 void ScreenGame::CreateDialogExit()
@@ -1238,7 +1195,8 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
         {
             const PlayerFaction faction = player->GetFaction();
             const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-            mMiniMap->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
+            MiniMap * mm = mHUD->GetMinimap();
+            mm->AddElement(cell.row, cell.col, data.rows, data.cols, type, faction);
         }
 
         SetObjectActionCompleted(gen);
@@ -1285,8 +1243,9 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         const PlayerFaction faction = player->GetFaction();
         const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
 
-        mMiniMap->UpdateElement(objStruct->GetRow0(), objStruct->GetCol0(),
-                                objStruct->GetRows(), objStruct->GetCols(), type, faction);
+        MiniMap * mm = mHUD->GetMinimap();
+        mm->UpdateElement(objStruct->GetRow0(), objStruct->GetCol0(),
+                          objStruct->GetRows(), objStruct->GetCols(), type, faction);
 
         // clear action data once the action is completed
         SetObjectActionCompleted(unit);
@@ -1340,7 +1299,8 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
         {
             const PlayerFaction faction = player->GetFaction();
             const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-            mMiniMap->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, type, faction);
+            MiniMap * mm = mHUD->GetMinimap();
+            mm->AddElement(cellTarget.row, cellTarget.col, data.rows, data.cols, type, faction);
         }
 
         // clear action data once the action is completed

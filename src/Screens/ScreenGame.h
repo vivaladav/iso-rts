@@ -28,7 +28,7 @@ namespace game
 {
 
 class AttackRangeIndicator;
-class ButtonMinimap;
+
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
@@ -42,7 +42,6 @@ class IsoMap;
 class MiniMap;
 class MoveIndicator;
 class PanelObjectActions;
-class PanelResources;
 class Player;
 class PlayerAI;
 class StructureIndicator;
@@ -173,13 +172,10 @@ private:
 
     // -- UI --
     GameHUD * mHUD = nullptr;
-    PanelResources * mPanelResBar = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     DialogExit * mDialogExit = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
     sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
-    ButtonMinimap * mButtonMinimap = nullptr;
-    MiniMap * mMiniMap = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
@@ -197,7 +193,5 @@ private:
 
     bool mPaused = false;
 };
-
-inline MiniMap * ScreenGame::GetMiniMap() const { return mMiniMap; }
 
 } // namespace game
