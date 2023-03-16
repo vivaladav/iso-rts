@@ -8,6 +8,8 @@
 
 namespace sgl
 {
+    namespace graphic { class Image; }
+
     namespace sgui
     {
         class ButtonsGroup;
@@ -51,6 +53,9 @@ private:
 
     void CheckBuild(int ind);
 
+    void HandlePositionChanged() override;
+    void PositionElements();
+
 private:
     static const int PANELS_ATT_ROWS = 7;
     static const int PANELS_ATT_COLS = 2;
@@ -63,6 +68,10 @@ private:
     std::array<sgl::sgui::Label *, NUM_COSTS> mLabelsCost;
 
     const std::vector<ObjectData> & mData;
+
+    sgl::graphic::Image * mBgTop = nullptr;
+    sgl::graphic::Image * mBgMid = nullptr;
+    sgl::graphic::Image * mBgBtm = nullptr;
 
     sgl::sgui::Label * mTitle = nullptr;
     sgl::sgui::ButtonsGroup * mSlots = nullptr;

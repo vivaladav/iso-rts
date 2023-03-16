@@ -228,7 +228,7 @@ DialogExit::DialogExit(Game * game, Screen * screen)
     const int marginT = 8;
 
     // BACKGROUND
-    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_NE_DIALOG_BG);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_DIA_EX_BG);
     mBg = new graphic::Image(tex);
     RegisterRenderable(mBg);
 

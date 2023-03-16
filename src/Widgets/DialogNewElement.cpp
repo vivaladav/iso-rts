@@ -33,12 +33,12 @@ class ButtonLeft : public sgl::sgui::ImageButton
 {
 public:
     ButtonLeft(sgl::sgui::Widget * parent)
-        : ImageButton({ IND_NE_DIALOG_LEFT_NORMAL,
-                        IND_NE_DIALOG_LEFT_DISABLED,
-                        IND_NE_DIALOG_LEFT_OVER,
-                        IND_NE_DIALOG_LEFT_PUSHED,
-                        IND_NE_DIALOG_LEFT_NORMAL },
-                        SpriteFileNewElementDialog, parent)
+        : ImageButton({ IND_DLG_NEWE_LEFT_NORMAL,
+                        IND_DLG_NEWE_LEFT_DISABLED,
+                        IND_DLG_NEWE_LEFT_OVER,
+                        IND_DLG_NEWE_LEFT_PUSHED,
+                        IND_DLG_NEWE_LEFT_NORMAL },
+                        SpriteFileDialogNewElement, parent)
     {
     }
 
@@ -65,12 +65,12 @@ class ButtonRight : public sgl::sgui::ImageButton
 {
 public:
     ButtonRight(sgl::sgui::Widget * parent)
-        : ImageButton({ IND_NE_DIALOG_RIGHT_NORMAL,
-                        IND_NE_DIALOG_RIGHT_DISABLED,
-                        IND_NE_DIALOG_RIGHT_OVER,
-                        IND_NE_DIALOG_RIGHT_PUSHED,
-                        IND_NE_DIALOG_RIGHT_NORMAL },
-                        SpriteFileNewElementDialog, parent)
+        : ImageButton({ IND_DLG_NEWE_RIGHT_NORMAL,
+                        IND_DLG_NEWE_RIGHT_DISABLED,
+                        IND_DLG_NEWE_RIGHT_OVER,
+                        IND_DLG_NEWE_RIGHT_PUSHED,
+                        IND_DLG_NEWE_RIGHT_NORMAL },
+                        SpriteFileDialogNewElement, parent)
     {
     }
 
@@ -131,15 +131,15 @@ private:
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
-            IND_NE_DIALOG_CLOSE_NORMAL,
-            IND_NE_DIALOG_CLOSE_NORMAL,     // button can't be disabled
-            IND_NE_DIALOG_CLOSE_OVER,
-            IND_NE_DIALOG_CLOSE_PUSHED,
-            IND_NE_DIALOG_CLOSE_NORMAL,     // button can't be checked
+            IND_DLG_NEWE_CLOSE_NORMAL,
+            IND_DLG_NEWE_CLOSE_NORMAL,     // button can't be disabled
+            IND_DLG_NEWE_CLOSE_OVER,
+            IND_DLG_NEWE_CLOSE_PUSHED,
+            IND_DLG_NEWE_CLOSE_NORMAL,     // button can't be checked
         };
 
         auto tm = sgl::graphic::TextureManager::Instance();
-        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, texIds[state]);
         mBody->SetTexture(tex);
 
         SetSize(mBody->GetWidth(), mBody->GetHeight());
@@ -207,15 +207,15 @@ private:
         // BACKGROUND
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
-            IND_NE_DIALOG_BUILD_NORMAL,
-            IND_NE_DIALOG_BUILD_DISABLED,
-            IND_NE_DIALOG_BUILD_OVER,
-            IND_NE_DIALOG_BUILD_PUSHED,
-            IND_NE_DIALOG_BUILD_PUSHED,
+            IND_DLG_NEWE_BUILD_NORMAL,
+            IND_DLG_NEWE_BUILD_DISABLED,
+            IND_DLG_NEWE_BUILD_OVER,
+            IND_DLG_NEWE_BUILD_PUSHED,
+            IND_DLG_NEWE_BUILD_PUSHED,
         };
 
         auto tm = sgl::graphic::TextureManager::Instance();
-        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, texIds[state]);
         mBody->SetTexture(tex);
 
         SetSize(mBody->GetWidth(), mBody->GetHeight());
@@ -288,7 +288,7 @@ public:
 
         // TITLE
         auto tm = sgl::graphic::TextureManager::Instance();
-        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_PANEL_NORMAL);
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_PANEL_NORMAL);
         auto font = fm->GetFont("Lato-Regular.ttf", 16, Font::NORMAL);
         mTitle = new sgl::sgui::TextArea(tex->GetWidth(), TITLE_H, font, false, this);
         mTitle->setTextAlignment(sgl::sgui::TextArea::ALIGN_H_CENTER, sgl::sgui::TextArea::ALIGN_V_CENTER);
@@ -373,15 +373,15 @@ private:
     {
         const unsigned int texIds[NUM_VISUAL_STATES] =
         {
-            IND_NE_DIALOG_PANEL_NORMAL,
-            IND_NE_DIALOG_PANEL_DISABLED,
-            IND_NE_DIALOG_PANEL_OVER,
-            IND_NE_DIALOG_PANEL_SEL,
-            IND_NE_DIALOG_PANEL_SEL,
+            IND_DLG_NEWE_PANEL_NORMAL,
+            IND_DLG_NEWE_PANEL_DISABLED,
+            IND_DLG_NEWE_PANEL_OVER,
+            IND_DLG_NEWE_PANEL_SEL,
+            IND_DLG_NEWE_PANEL_SEL,
         };
 
         auto tm = sgl::graphic::TextureManager::Instance();
-        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, texIds[state]);
+        sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, texIds[state]);
         mBody->SetTexture(tex);
 
         SetSize(mBody->GetWidth(), mBody->GetHeight());
@@ -472,7 +472,7 @@ public:
         auto tm = TextureManager::Instance();
 
         // BACKGROUND
-        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_OFF);
+        Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ATT_OFF);
         mBg = new Image(tex);
         RegisterRenderable(mBg);
 
@@ -497,7 +497,7 @@ public:
 
         // BACKGROUND
         auto tm = TextureManager::Instance();
-        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_OFF);
+        Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ATT_OFF);
         mBg->SetTexture(tex);
 
         // LABEL
@@ -522,7 +522,7 @@ public:
 
         // BACKGROUND
         auto tm = TextureManager::Instance();
-        Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ATT_ON);
+        Texture * tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ATT_ON);
         mBg->SetTexture(tex);
 
         // LABEL
@@ -550,8 +550,8 @@ public:
         if(val > maxVal)
             val = maxVal;
 
-        const unsigned int texId = IND_NE_DIALOG_BAR0 + val;
-        tex = tm->GetSprite(SpriteFileNewElementDialog, texId);
+        const unsigned int texId = IND_DLG_NEWE_BAR0 + val;
+        tex = tm->GetSprite(SpriteFileDialogNewElement, texId);
         static_cast<Image *>(mValueBar)->SetTexture(tex);
 
         // update data flag
@@ -597,36 +597,54 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player *player)
+DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player)
     : mData(data)
     , mPlayer(player)
 {
-    using namespace sgl::sgui;
+    using namespace sgl;
 
     assert(!data.empty());
 
-    auto fm = sgl::graphic::FontManager::Instance();
-    auto tm = sgl::graphic::TextureManager::Instance();
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
 
     const int marginL = 40;
     const int marginT = 8;
 
     // BACKGROUND
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_BG);
-    auto imgBg = new Image(tex, this);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElementExp, IND_DLG_NEWE_BG_TOP);
+    tex->SetScaleMode(0);
+    mBgTop = new graphic::Image(tex);
+    RegisterRenderable(mBgTop);
+
+    tex = tm->GetSprite(SpriteFileDialogNewElementExp, IND_DLG_NEWE_BG_MID);
+    tex->SetScaleMode(0);
+    mBgMid = new graphic::Image(tex);
+    const int midBgH = 470;
+    mBgMid->SetHeight(midBgH);
+    RegisterRenderable(mBgMid);
+
+    tex = tm->GetSprite(SpriteFileDialogNewElementExp, IND_DLG_NEWE_BG_BTM);
+    tex->SetScaleMode(0);
+    mBgBtm = new graphic::Image(tex);
+    RegisterRenderable(mBgBtm);
+
+    const int w = mBgTop->GetWidth();
+    const int h = mBgTop->GetHeight() + mBgMid->GetHeight() + mBgBtm->GetHeight();
+    SetSize(w, h);
 
     // CLOSE BUTTON
     mBtnClose = new ButtonClose(this);
-    mBtnClose->SetX(imgBg->GetWidth() - mBtnClose->GetWidth());
+    mBtnClose->SetX(GetWidth() - mBtnClose->GetWidth());
 
     // TITLE
     auto font = fm->GetFont("Lato-Regular.ttf", 28, sgl::graphic::Font::NORMAL);
-    mTitle = new Label(title, font, this);
+    mTitle = new sgui::Label(title, font, this);
     mTitle->SetColor(0xf1f2f4ff);
     mTitle->SetPosition(marginL, marginT);
 
     // SLOTS
-    mSlots = new ButtonsGroup(ButtonsGroup::HORIZONTAL, this);
+    mSlots = new sgui::ButtonsGroup(sgui::ButtonsGroup::HORIZONTAL, this);
 
     for(int i = 0; i < NUM_SLOTS; ++i)
     {
@@ -686,8 +704,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const int slotsMarginBottom = 15;
 
     const int panelY0 = slotsY0 + mSlots->GetHeight() + slotsMarginBottom;
-    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_INFO);
-    auto panelInfo = new Image(tex, this);
+    tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_INFO);
+    auto panelInfo = new sgui::Image(tex, this);
     panelInfo->SetPosition(marginL, panelY0);
 
     const unsigned int colorHeader = 0xf1f2f4ff;
@@ -704,7 +722,7 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const int marginPanelDataV = 5;
 
     // header DESCRIPTION
-    auto headerDesc = new Label("DESCRIPTION", fontHeader, panelInfo);
+    auto headerDesc = new sgui::Label("DESCRIPTION", fontHeader, panelInfo);
     headerDesc->SetColor(colorHeader);
     headerDesc->SetPosition(marginPanelXY0, marginPanelXY0);
 
@@ -713,41 +731,41 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     // description text area
     const int areaW = panelInfo->GetWidth() - (2 * marginPanelXY0);
     const int areaH = 85;
-    mDescription = new TextArea(areaW, areaH, fontText, false, panelInfo);
+    mDescription = new sgui::TextArea(areaW, areaH, fontText, false, panelInfo);
     mDescription->SetColor(colorText);
     mDescription->SetPosition(marginPanelXY0, contY);
 
     contY += mDescription->GetHeight() + marginPanelBlock;
 
     // header category
-    auto headerCat = new Label("CATEGORY", fontHeader, panelInfo);
+    auto headerCat = new sgui::Label("CATEGORY", fontHeader, panelInfo);
     headerCat->SetColor(colorHeader);
     headerCat->SetPosition(marginPanelXY0, contY);
 
     contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelDataV;
 
     // text category
-    mCategory = new Label("-", fontText, panelInfo);
+    mCategory = new sgui::Label("-", fontText, panelInfo);
     mCategory->SetColor(colorText);
     mCategory->SetPosition(marginPanelXY0, contY);
 
     contY += mCategory->GetHeight() + marginPanelBlock;
 
     // header cost
-    headerCat = new Label("COST", fontHeader, panelInfo);
+    headerCat = new sgui::Label("COST", fontHeader, panelInfo);
     headerCat->SetColor(colorHeader);
     headerCat->SetPosition(marginPanelXY0, contY);
 
     contY = headerCat->GetY() + headerCat->GetHeight() + marginPanelDataV;
 
     // data cost 1
-    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_ENERGY);
-    auto imgIcon = new Image(tex, panelInfo);
+    tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ICON_ENERGY);
+    auto imgIcon = new sgui::Image(tex, panelInfo);
     imgIcon->SetPosition(marginPanelXY0, contY);
 
     int contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
 
-    mLabelsCost[0] = new Label("-", fontText, panelInfo);
+    mLabelsCost[0] = new sgui::Label("-", fontText, panelInfo);
     mLabelsCost[0]->SetColor(colorText);
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[0]->GetHeight()) * 0.5f;
     mLabelsCost[0]->SetPosition(contX, contY);
@@ -756,13 +774,13 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     contY = imgIcon->GetY();
 
     // data cost 2
-    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_MATERIAL);
-    imgIcon = new Image(tex, panelInfo);
+    tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ICON_MATERIAL);
+    imgIcon = new sgui::Image(tex, panelInfo);
     imgIcon->SetPosition(contX, contY);
 
     contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
 
-    mLabelsCost[1] = new Label("-", fontText, panelInfo);
+    mLabelsCost[1] = new sgui::Label("-", fontText, panelInfo);
     mLabelsCost[1]->SetColor(colorText);
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[1]->GetHeight()) * 0.5f;
     mLabelsCost[1]->SetPosition(contX, contY);
@@ -771,13 +789,13 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     contY = imgIcon->GetY();
 
     // data cost 3
-    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_DIAMOND);
-    imgIcon = new Image(tex, panelInfo);
+    tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ICON_DIAMOND);
+    imgIcon = new sgui::Image(tex, panelInfo);
     imgIcon->SetPosition(contX, contY);
 
     contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
 
-    mLabelsCost[2] = new Label("-", fontText, panelInfo);
+    mLabelsCost[2] = new sgui::Label("-", fontText, panelInfo);
     mLabelsCost[2]->SetColor(colorText);
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[2]->GetHeight()) * 0.5f;
     mLabelsCost[2]->SetPosition(contX, contY);
@@ -786,13 +804,13 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     contY = imgIcon->GetY();
 
     // data cost 4
-    tex = tm->GetSprite(SpriteFileNewElementDialog, IND_NE_DIALOG_ICON_BLOB);
-    imgIcon = new Image(tex, panelInfo);
+    tex = tm->GetSprite(SpriteFileDialogNewElement, IND_DLG_NEWE_ICON_BLOB);
+    imgIcon = new sgui::Image(tex, panelInfo);
     imgIcon->SetPosition(contX, contY);
 
     contX = imgIcon->GetX() + imgIcon->GetWidth() + marginPanelIconH;
 
-    mLabelsCost[3] = new Label("-", fontText, panelInfo);
+    mLabelsCost[3] = new sgui::Label("-", fontText, panelInfo);
     mLabelsCost[3]->SetColor(colorText);
     contY = imgIcon->GetY() + (imgIcon->GetHeight() - mLabelsCost[3]->GetHeight()) * 0.5f;
     mLabelsCost[3]->SetPosition(contX, contY);
@@ -834,6 +852,8 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
 
     // finally show data
     UpdateSlots();
+
+    PositionElements();
 
     // play sound
     auto ap = sgl::media::AudioManager::Instance()->GetPlayer();
@@ -950,6 +970,28 @@ void DialogNewElement::CheckBuild(int ind)
 
         mLabelsCost[i]->SetColor(COLORS[ind]);
     }
+}
+
+void DialogNewElement::HandlePositionChanged()
+{
+    PositionElements();
+}
+
+void DialogNewElement::PositionElements()
+{
+    const int x0 = GetScreenX();
+    const int y0 = GetScreenY();
+
+    // BACKGROUND
+    int y = y0;
+
+    mBgTop->SetPosition(x0, y);
+
+    y += mBgTop->GetHeight();
+    mBgMid->SetPosition(x0, y);
+
+    y += mBgMid->GetHeight();
+    mBgBtm->SetPosition(x0, y);
 }
 
 } // namespace game
