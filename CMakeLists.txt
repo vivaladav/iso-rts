@@ -184,6 +184,8 @@ add_executable(
     src/Widgets/ButtonQuickUnitSelection.cpp
     src/Widgets/ButtonUnitsSelector.h
     src/Widgets/ButtonUnitsSelector.cpp
+    src/Widgets/ButtonPanelTab.h
+    src/Widgets/ButtonPanelTab.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
