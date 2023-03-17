@@ -287,7 +287,7 @@ void ScreenMainMenu::CreateChangelog()
     int blockH = 240;
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
-                         "- Added option for disabling edge map scrolling."
+                         "- Added option for disabling edge map scrolling.\n"
                          "- Scrollable areas can be scrolled with mouse wheel."
                         );
     textNewFeat->SetPosition(contX, contY);
@@ -299,6 +299,7 @@ void ScreenMainMenu::CreateChangelog()
     blockH = 110;
     auto textImpr = new sgui::TextArea(contentW, blockH, font, true, content);
     textImpr->SetText("IMPROVEMENTS\n"
+                      "- New structure dialog now groups structures by category."
                      );
     textImpr->SetPosition(contX, contY);
     textImpr->SetColor(colorContent);
