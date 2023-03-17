@@ -35,7 +35,7 @@ const char * ObjectData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "CONQUEST"
 };
 
-const ObjectData ObjectData::NullObj(std::vector<int>{}, std::vector<int>{},
-                                     nullptr, 0, OC_NULL, -1, 0, 0, nullptr, nullptr);
+const ObjectData ObjectData::NullObj(std::vector<int>{}, std::vector<int>{}, nullptr, 0,
+                                     OC_NULL, OCAT_UNDEFINED, -1, 0, 0, nullptr, nullptr);
 
 } // namespace game

@@ -51,12 +51,28 @@ enum ObjStatId : unsigned int
     NUM_UNIT_STATS = NUM_TOT_OBJ_STATS - NUM_GEN_OBJ_STATS
 };
 
+enum ObjCategory : unsigned int
+{
+    // STRUCTURE
+    OCAT_GENERIC,
+    OCAT_DEFENSE,
+    OCAT_RESOURCES,
+    OCAT_TECHNOLOGY,
+
+    // UNIT
+    OCAT_UNIT,
+
+    NUM_OBJ_CATEGORIES,
+
+    OCAT_UNDEFINED
+};
+
 struct ObjectData
 {
     ObjectData(const std::vector<int> & sts,
                const std::vector<int> & cst,
                const char * file, unsigned int texId,
-               ObjClass oc, unsigned int type,
+               ObjClass oc, ObjCategory ocat, unsigned int type,
                unsigned int rs, unsigned int cs,
                const char * tit, const char * desc)
         : stats(sts)
@@ -64,6 +80,7 @@ struct ObjectData
         , iconFile(file)
         , iconTexId(texId)
         , objClass(oc)
+        , objCategory(ocat)
         , objType(type)
         , rows(rs)
         , cols(cs)
@@ -79,7 +96,7 @@ struct ObjectData
     unsigned int iconTexId;
 
     ObjClass objClass;
-
+    ObjCategory objCategory;
     unsigned int objType;
 
     unsigned int rows;
