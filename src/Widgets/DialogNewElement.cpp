@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
+#include "Widgets/ButtonPanelTab.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -597,19 +598,32 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player)
-    : mData(data)
-    , mPlayer(player)
+DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * player)
+    : mPlayer(player)
+    , mElemType(type)
 {
     using namespace sgl;
-
-    assert(!data.empty());
 
     auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
 
     const int marginL = 40;
     const int marginT = 8;
+
+    int midBgH = 0;
+    int slotsY0 = 0;
+
+    if(ETYPE_UNITS == type)
+    {
+        mData = player->GetAvailableUnits();
+        midBgH = 470;
+        slotsY0 = 65;
+    }
+    else
+    {
+        midBgH = 515;
+        slotsY0 = 110;
+    }
 
     // BACKGROUND
     graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewElementExp, IND_DLG_NEWE_BG_TOP);
@@ -620,7 +634,6 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     tex = tm->GetSprite(SpriteFileDialogNewElementExp, IND_DLG_NEWE_BG_MID);
     tex->SetScaleMode(0);
     mBgMid = new graphic::Image(tex);
-    const int midBgH = 470;
     mBgMid->SetHeight(midBgH);
     RegisterRenderable(mBgMid);
 
@@ -663,12 +676,11 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
         mSlots->AddButton(slot);
     }
 
-    const int slotsY0 = 65;
     mSlots->SetPosition(marginL, slotsY0);
 
     const int marginButtonsLR = 10;
 
-    const int numData = data.size();
+    const int numData = mData.size();
 
     mBtnLeft = new ButtonLeft(this);
     const int posLX = mSlots->GetX() - mBtnLeft->GetWidth() - marginButtonsLR;
@@ -850,8 +862,61 @@ DialogNewElement::DialogNewElement(const std::vector<ObjectData> & data, const c
     const int btnY = lastPanel->GetY() + lastPanel->GetHeight() + marginBtnTop;
     mBtnBuild->SetPosition(btnX, btnY);
 
-    // finally show data
-    UpdateSlots();
+    // structures are grouped by categoy
+    if(ETYPE_STRUCTURES == type)
+    {
+        mButtonsStructures = new sgl::sgui::AbstractButtonsGroup;
+
+        const int btnY = 55;
+        int btnX = marginL;
+
+        auto btn = new ButtonPanelTab("RESOURCES", this);
+        btn->SetPosition(btnX, btnY);
+        mButtonsStructures->AddButton(btn);
+
+        btnX += btn->GetWidth();
+
+        btn = new ButtonPanelTab("DEFENSE", this);
+        btn->SetPosition(btnX, btnY);
+        mButtonsStructures->AddButton(btn);
+
+        btnX += btn->GetWidth();
+
+        btn = new ButtonPanelTab("TECHNOLOGY", this);
+        btn->SetPosition(btnX, btnY);
+        mButtonsStructures->AddButton(btn);
+
+        btnX += btn->GetWidth();
+
+        btn = new ButtonPanelTab("GENERIC", this);
+        btn->SetPosition(btnX, btnY);
+        mButtonsStructures->AddButton(btn);
+
+        mButtonsStructures->SetFunctionOnToggle([this](unsigned int ind, bool checked)
+        {
+            if(!checked)
+                return ;
+
+            const unsigned int NUM_CAT = 4;
+
+            if(ind >= NUM_CAT)
+                return ;
+
+            const ObjCategory categories[NUM_CAT] =
+            {
+                OCAT_RESOURCES,
+                OCAT_DEFENSE,
+                OCAT_TECHNOLOGY,
+                OCAT_GENERIC
+            };
+
+            ShowStructuresByCategory(categories[ind]);
+        });
+
+        mButtonsStructures->SetButtonChecked(0, true);
+    }
+    else
+        UpdateSlots();
 
     PositionElements();
 
@@ -918,6 +983,26 @@ void DialogNewElement::UpdateSlots()
         slot->SetEnabled(false);
     }
 }
+
+ void DialogNewElement::ShowStructuresByCategory(ObjCategory cat)
+ {
+    // get data by category
+    const std::vector<ObjectData> & structures = mPlayer->GetAvailableStructures();
+
+    mData.clear();
+
+    for(const ObjectData & s : structures)
+    {
+        if(s.objCategory == cat)
+            mData.emplace_back(s);
+    }
+
+    // reset first element index
+    mFirstElem = 0;
+
+    // update slots
+    UpdateSlots();
+ }
 
 void DialogNewElement::ShowData(int ind)
 {

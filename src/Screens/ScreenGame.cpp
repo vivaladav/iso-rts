@@ -547,8 +547,8 @@ void ScreenGame::CreateUI()
         if(mDialogNewElement != nullptr)
             return ;
 
-        const std::vector<ObjectData> & unitsData = player->GetAvailableUnits();
-        mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW UNIT", player);
+        mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_UNITS,
+                                                 "CREATE NEW UNIT", player);
         mDialogNewElement->SetFocus();
 
         mDialogNewElement->SetFunctionOnClose([this]
@@ -580,7 +580,8 @@ void ScreenGame::CreateUI()
             return ;
 
         const std::vector<ObjectData> & unitsData = player->GetAvailableStructures();
-        mDialogNewElement = new DialogNewElement(unitsData, "CREATE NEW STRUCTURE", player);
+        mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_STRUCTURES,
+                                                 "CREATE NEW STRUCTURE",player);
         mDialogNewElement->SetFocus();
 
         // set unit's action to idle while dialog is open

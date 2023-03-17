@@ -12,6 +12,7 @@ namespace sgl
 
     namespace sgui
     {
+        class AbstractButtonsGroup;
         class ButtonsGroup;
         class Label;
         class TextArea;
@@ -31,12 +32,19 @@ class Player;
 
 struct ObjectData;
 
+enum ObjCategory : unsigned int;
 enum UnitType : unsigned int;
 
 class DialogNewElement : public sgl::sgui::Widget
 {
 public:
-    DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player);
+    enum ElemType : unsigned int
+    {
+        ETYPE_UNITS,
+        ETYPE_STRUCTURES,
+    };
+
+    DialogNewElement(ElemType type, const char * title, Player * player);
 
     void CheckBuild();
 
@@ -49,6 +57,7 @@ public:
 private:
     void UpdateSlots();
 
+    void ShowStructuresByCategory(ObjCategory cat);
     void ShowData(int ind);
 
     void CheckBuild(int ind);
@@ -67,7 +76,7 @@ private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
     std::array<sgl::sgui::Label *, NUM_COSTS> mLabelsCost;
 
-    const std::vector<ObjectData> & mData;
+    std::vector<ObjectData> mData;
 
     sgl::graphic::Image * mBgTop = nullptr;
     sgl::graphic::Image * mBgMid = nullptr;
@@ -84,7 +93,11 @@ private:
     ButtonLeft * mBtnLeft = nullptr;
     ButtonRight * mBtnRight = nullptr;
 
+    sgl::sgui::AbstractButtonsGroup * mButtonsStructures = nullptr;
+
     Player * mPlayer = nullptr;
+
+    ElemType mElemType;
 
     int mFirstElem = 0;
 };
