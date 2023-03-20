@@ -310,7 +310,8 @@ void ScreenMainMenu::CreateChangelog()
     blockH = 110;
     auto textChange = new sgui::TextArea(contentW, blockH, font, true, content);
     textChange->SetText("CHANGES\n"
-                        "- Map scrolling with W,A,S,D instead than arrows."
+                        "- Map scrolling with W,A,S,D instead than arrows.\n"
+                        "- Units move along the conquest path while conquering cells."
                      );
     textChange->SetPosition(contX, contY);
     textChange->SetColor(colorContent);
