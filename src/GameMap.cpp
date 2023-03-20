@@ -1544,7 +1544,8 @@ bool GameMap::MoveUnit(ObjectPath * path)
 
     // start path
     path->Start();
-    const bool started = path->GetState() == ObjectPath::RUNNING;
+
+    const bool started = path->GetState() == ObjectPath::MOVING;
 
     if(started)
         mPaths.emplace_back(path);
