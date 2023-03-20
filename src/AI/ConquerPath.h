@@ -18,10 +18,11 @@ public:
     enum ConquerState : unsigned int
     {
         READY,
-        CONQUERING_CELL,
-        CONQUER_NEXT,
+        MOVING,
+        CONQUERING,
         COMPLETED,
         FAILED,
+        ABORTING,
         ABORTED,
 
         NUM_PATH_STATES
@@ -49,13 +50,17 @@ public:
 
     void Update(float delta);
 
+    void Finish();
+
 private:
     void CreateIndicators();
 
     void InitNextConquest();
+    void InitNextMove();
+
+    void UpdateMove(float delta);
 
     void UpdatePathCost();
-
 
     void Fail();
 
@@ -80,6 +85,14 @@ private:
     unsigned int mNextCell = 0;
 
     float mCost = 0.f;
+
+    // movement
+    float mObjX = 0.f;
+    float mObjY = 0.f;
+    float mVelX = 0.f;
+    float mVelY = 0.f;
+    float mTargetX = 0.f;
+    float mTargetY = 0.f;
 
     bool mLocalPlayer = false;
 };
