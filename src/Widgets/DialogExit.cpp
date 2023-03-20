@@ -279,14 +279,14 @@ DialogExit::DialogExit(Game * game, Screen * screen)
 
     btnY += btn->GetHeight() + marginBtnV;
 
-    // BUTTON EXIT
+    // BUTTON MAIN MENU
     btn = new ButtonDialogExit(this);
-    btn->SetLabel("EXIT");
+    btn->SetLabel("MAIN MENU");
     btn->SetPosition(btnX, btnY);
 
     btn->AddOnClickFunction([game]
     {
-        game->Exit();
+        game->RequestNextActiveState(StateId::MAIN_MENU);
     });
 
     btnY += btn->GetHeight() + marginBtnV;
