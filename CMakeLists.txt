@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(virtueror LANGUAGES CXX VERSION 0.1.2)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set platform version for preprocessor checks
