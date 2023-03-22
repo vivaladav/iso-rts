@@ -34,6 +34,7 @@ private:
     void TestRotation();
     void TestTimer();
     void TestAudio();
+    void TestUtilities();
 
 private:
     std::vector<sgl::graphic::TexturedRenderable *> mRenderables;

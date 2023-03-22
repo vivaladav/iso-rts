@@ -26,6 +26,7 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/sgui/TextArea.h>
+#include <sgl/utilities/Filesystem.h>
 
 #include <chrono>
 #include <iostream>
@@ -112,6 +113,8 @@ ScreenTest::ScreenTest(Game * game)
     TestTimer();
 
     TestAudio();
+
+    TestUtilities();
 }
 
 ScreenTest::~ScreenTest()
@@ -594,6 +597,12 @@ void ScreenTest::TestAudio()
     ap->AddMusicToQueue("test/test.ogg");
     ap->AddMusicToQueue("test/menu_01.ogg");
     ap->PlayMusicQueue();
+}
+
+void ScreenTest::TestUtilities()
+{
+    sgl::utilities::Filesystem fs;
+    std::cout << "HOME DIR: " << fs.GetUserHomeDirectory() << std::endl;
 }
 
 } // namespace game
