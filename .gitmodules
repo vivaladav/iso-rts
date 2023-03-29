@@ -1,3 +1,4 @@
 [submodule "lib/sgl"]
 	path = lib/sgl
 	url = git@github.com:vivaladav/sgl.git
+	branch = master
