@@ -21,9 +21,11 @@ public:
     {
         READY,
         BUILDING,
+        MOVING,
         START_NEXT,
         COMPLETED,
         FAILED,
+        ABORTING,
         ABORTED,
 
         NUM_PATH_STATES
@@ -48,13 +50,15 @@ public:
     void Start();
 
     void Abort();
-    void InstantAbortion();
+    void InstantAbort();
 
     void SetOnCompleted(const std::function<void()> & f);
     void SetOnFailed(const std::function<void()> & f);
     void SetOnAborted(const std::function<void()> & f);
 
     void Update(float delta);
+
+    void Finish();
 
     void SetIndicatorsType(const std::vector<Cell2D> & cells,
                            const std::vector<WallIndicator *> & indicators);
@@ -63,6 +67,9 @@ private:
     void CreateIndicators();
 
     void InitNextBuild();
+    void InitNextMove();
+
+    void UpdateMove(float delta);
 
     void UpdatePathCost();
 
@@ -96,6 +103,8 @@ private:
 
     float mTargetX = 0.f;
     float mTargetY = 0.f;
+    unsigned int mTargetRow = 0;
+    unsigned int mTargetCol = 0;
 
     unsigned int mEnergyCost = 0.f;
     unsigned int mMaterialCost = 0.f;

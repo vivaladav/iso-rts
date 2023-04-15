@@ -26,37 +26,37 @@ WallBuildPath::~WallBuildPath()
 
 void WallBuildPath::CreateIndicators()
 {
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-
-    Player * player = mUnit->GetOwner();
-
+    const Player * player = mUnit->GetOwner();
     const PlayerFaction faction = player->GetFaction();
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
     std::vector<Cell2D> cellsPath;
     cellsPath.reserve(mCells.size());
 
-    // store coordinates of start cell
+    // store coordinates of first cell used only for moving (no indicator needed)
     const unsigned int pathInd0 = mCells[0];
     const unsigned int indRow0 = pathInd0 / mIsoMap->GetNumCols();
     const unsigned int indCol0 = pathInd0 % mIsoMap->GetNumCols();
     cellsPath.emplace_back(indRow0, indCol0);
 
-    // start from 1 as first cell is unit position
-    // first indicator is going to be destroyed immediately, but it's needed to keep the block type
-    for(unsigned int i = 1; i < mCells.size(); ++i)
-    {
-        auto ind = new WallIndicator;
-        mIndicators.emplace_back(ind);
+    // create indicators
+    const unsigned int first = 1;
+    const unsigned int limit = mCells.size();
 
-        // add indicator to layer
+    for(unsigned int i = first; i < limit; ++i)
+    {
+        // add cell to path
         const unsigned int pathInd = mCells[i];
         const unsigned int indRow = pathInd / mIsoMap->GetNumCols();
         const unsigned int indCol = pathInd % mIsoMap->GetNumCols();
         cellsPath.emplace_back(indRow, indCol);
 
-        layer->AddObject(ind, indRow, indCol);
-
+        // create indicator
+        auto ind = new WallIndicator;
         ind->SetFaction(faction);
+
+        mIndicators.emplace_back(ind);
+        layer->AddObject(ind, indRow, indCol);
     }
 
     SetIndicatorsType(cellsPath, mIndicators);
@@ -64,76 +64,194 @@ void WallBuildPath::CreateIndicators()
 
 void WallBuildPath::InitNextBuild()
 {
-    mState = BUILDING;
-
-    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-
+    // not enough energy -> FAIL
     if(!mUnit->HasEnergyForAction(BUILD_WALL))
     {
         Fail();
-
         return ;
     }
 
-    while(mNextCell < mCells.size())
-    {
-        const unsigned int nextInd = mCells[mNextCell];
-        const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-        const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-        const Cell2D nextCell(nextRow, nextCol);
+    const unsigned int nextInd = mCells[mNextCell];
+    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
+    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const Cell2D nextCell(nextRow, nextCol);
 
+    Player * player = mUnit->GetOwner();
+    IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
+
+    // check if building is possible
+    if(!mGameMap->CanBuildWall(nextCell, player, mLevel))
+    {
+        // remove current indicator
+        layerOverlay->ClearObject(mIndicators[mNextCell]);
+
+        --mNextCell;
+
+        if(mNextCell > 0)
+            InitNextMove();
+        else
+            Fail();
+
+        return;
+    }
+
+    // start building
+    mState = BUILDING;
+
+    mGameMap->StartBuildWall(nextCell, player, mLevel);
+
+    // clear indicator before starting construction
+    layerOverlay->ClearObject(mIndicators[mNextCell - 1]);
+
+    // TODO get conquer time from unit
+    constexpr float TIME_BUILD = 2.f;
+
+    mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
+                               [this, nextCell, player, layerOverlay]
+    {
+        const GameObjectType blockType = mIndicators[mNextCell - 1]->GetBlockType();
+        mGameMap->BuildWall(nextCell, player, blockType);
+
+        mUnit->ConsumeEnergy(BUILD_WALL);
+
+        --mNextCell;
+
+        InitNextMove();
+    });
+}
+
+void WallBuildPath::InitNextMove()
+{
+    // not enough energy -> FAIL
+    if(!mUnit->HasEnergyForAction(MOVE))
+    {
+        Fail();
+        return ;
+    }
+
+    if(0 == mNextCell)
+    {
+        Finish();
+        return ;
+    }
+
+    const unsigned int movCell = mNextCell - 1;
+    const unsigned int nextInd = mCells[movCell];
+    mTargetRow = nextInd / mIsoMap->GetNumCols();
+    mTargetCol = nextInd % mIsoMap->GetNumCols();
+
+    const GameMapCell & nextCell = mGameMap->GetCell(mTargetRow, mTargetCol);
+
+    // next cell not walkable -> FAIL
+    if(!nextCell.walkable || nextCell.walkTarget)
+    {
+        Fail();
+        return ;
+    }
+
+    const IsoObject * isoObj = mUnit->GetIsoObject();
+    const IsoLayer * layerObj = isoObj->GetLayer();
+
+    mObjX = isoObj->GetX();
+    mObjY = isoObj->GetY();
+
+    const sgl::core::Pointd2D target = layerObj->GetObjectPosition(isoObj, mTargetRow, mTargetCol);
+    mTargetX = target.x;
+    mTargetY = target.y;
+
+    mVelX = (mTargetX - mObjX) * mUnit->GetSpeed();
+    mVelY = (mTargetY - mObjY) * mUnit->GetSpeed();
+
+    mGameMap->SetCellWalkTarget(nextInd, true);
+
+    mState = MOVING;
+}
+
+void WallBuildPath::UpdateMove(float delta)
+{
+    int todo = 2;
+
+    // -- X --
+    mObjX += mVelX * delta;
+
+    if(mVelX < 0.f)
+    {
+        if(mObjX < mTargetX)
+        {
+            --todo;
+            mObjX = mTargetX;
+        }
+    }
+    else if(mVelX > 0.f)
+    {
+        if(mObjX > mTargetX)
+        {
+            --todo;
+            mObjX = mTargetX;
+        }
+    }
+    else
+        --todo;
+
+    // -- Y --
+    mObjY += mVelY * delta;
+
+    if(mVelY < 0.f)
+    {
+        if(mObjY < mTargetY)
+        {
+            --todo;
+            mObjY = mTargetY;
+        }
+    }
+    else if(mVelY > 0.f)
+    {
+        if(mObjY > mTargetY)
+        {
+            --todo;
+            mObjY = mTargetY;
+        }
+    }
+    else
+        --todo;
+
+    // position object
+    IsoObject * isoObj = mUnit->GetIsoObject();
+    isoObj->SetX(static_cast<int>(std::roundf(mObjX)));
+    isoObj->SetY(static_cast<int>(std::roundf(mObjY)));
+
+    // handle reached target
+    if(0 == todo)
+    {
         Player * player = mUnit->GetOwner();
 
-        const int indexInd = mNextCell - 1;
+        mGameMap->DelPlayerObjVisibility(mUnit, player);
 
-        // check if building is possible
-        if(!mGameMap->CanBuildWall(nextCell, player, mLevel))
+        const GameMapCell & targetCell = mGameMap->GetCell(mTargetRow, mTargetCol);
+
+        // collect collectable object, if any
+        if(targetCell.objTop != nullptr && targetCell.objTop->CanBeCollected())
         {
-            // remove current indicator
-            layerOverlay->ClearObject(mIndicators[indexInd]);
+            player->HandleCollectable(targetCell.objTop);
 
-            ++mNextCell;
-
-            continue;
+            mGameMap->RemoveAndDestroyObject(targetCell.objTop);
         }
 
-        // start building
-        mGameMap->StartBuildWall(nextCell, player, mLevel);
+        // handle moving object
+        mGameMap->MoveObjToCell(mUnit, mTargetRow, mTargetCol);
+        mGameMap->AddPlayerObjVisibility(mUnit, player);
+        mGameMap->ApplyVisibility(player);
 
-        // clear indicator before starting construction
-        layerOverlay->ClearObject(mIndicators[indexInd]);
+        mUnit->ConsumeEnergy(MOVE);
 
-        const GameObjectType blockType = mIndicators[indexInd]->GetBlockType();
-
-        // TODO get conquer time from unit
-        constexpr float TIME_BUILD = 2.f;
-
-        mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
-                                   [this, nextCell, player, blockType]
-        {
-            mGameMap->BuildWall(nextCell, player, blockType);
-
-            mUnit->ConsumeEnergy(BUILD_WALL);
-
-            ++mNextCell;
-
-            if(mNextCell < mCells.size())
-                mState = START_NEXT;
-            else
-            {
-                mState = COMPLETED;
-
-                // clear action data once the action is completed
-                mScreen->SetObjectActionCompleted(mUnit);
-
-                mOnCompleted();
-            }
-        });
-
-        return ;
+        // handle next step or termination
+        if(ABORTING == mState)
+            InstantAbort();
+        if(0 == mNextCell)
+            Finish();
+        else
+            InitNextBuild();
     }
-
-    Fail();
 }
 
 void WallBuildPath::UpdatePathCost()
@@ -151,19 +269,18 @@ void WallBuildPath::Start()
 
     CreateIndicators();
 
-    // skip first cell as it's unit location
-    mNextCell = 1;
+    // stat building from last cell
+    mNextCell = mCells.size() - 1;
 
-    // stat conquering first cell
     InitNextBuild();
 }
 
 void WallBuildPath::Abort()
 {
-    InstantAbortion();
+    InstantAbort();
 }
 
-void WallBuildPath::InstantAbortion()
+void WallBuildPath::InstantAbort()
 {
     // clear progress bar
     if(mNextCell < mCells.size())
@@ -190,8 +307,18 @@ void WallBuildPath::InstantAbortion()
 
 void WallBuildPath::Update(float delta)
 {
-    if(START_NEXT == mState)
-        InitNextBuild();
+    if(MOVING == mState)
+        UpdateMove(delta);
+}
+
+void WallBuildPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
+
+    mOnCompleted();
 }
 
 void WallBuildPath::SetIndicatorsType(const std::vector<Cell2D> & cells,

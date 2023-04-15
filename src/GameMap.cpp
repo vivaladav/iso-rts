@@ -2512,7 +2512,7 @@ void GameMap::DestroyObjectPaths(GameObject * obj)
 
         if(path->GetUnit() == unit)
         {
-            path->InstantAbortion();
+            path->InstantAbort();
             delete path;
             itWBP = mWallBuildPaths.erase(itWBP);
             break;

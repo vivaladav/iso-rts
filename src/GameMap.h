@@ -201,8 +201,9 @@ private:
 
 private:
     // to access visibility functions
-    friend class ObjectPath;
     friend class ConquerPath;
+    friend class ObjectPath;
+    friend class WallBuildPath;
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
