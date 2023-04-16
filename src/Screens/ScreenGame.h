@@ -180,6 +180,8 @@ private:
     float mTimerEnergy;
     float mTimerAI;
 
+    float mTimePlayed = 0.f;
+
     unsigned int mCurrPlayerAI = 0;
 
     bool mPaused = false;

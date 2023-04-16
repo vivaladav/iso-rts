@@ -215,6 +215,9 @@ void ScreenGame::Update(float delta)
     if(mPaused)
         return ;
 
+    // keep track of time played (while not paused)
+    mTimePlayed += delta;
+
     // -- CAMERA --
     mCamController->Update(delta);
 
