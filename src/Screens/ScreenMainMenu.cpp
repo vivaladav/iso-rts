@@ -311,7 +311,8 @@ void ScreenMainMenu::CreateChangelog()
     auto textChange = new sgui::TextArea(contentW, blockH, font, true, content);
     textChange->SetText("CHANGES\n"
                         "- Map scrolling with W,A,S,D instead than arrows.\n"
-                        "- Units move along the conquest path while conquering cells."
+                        "- Units move along the planned path while conquering cells.\n"
+                        "- Units move along the planned path while building walls.\n"
                      );
     textChange->SetPosition(contX, contY);
     textChange->SetColor(colorContent);
