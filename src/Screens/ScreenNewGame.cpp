@@ -39,17 +39,17 @@ ScreenNewGame::ScreenNewGame(Game * game)
     p->SetMaxUnits(MAX_UNITS0);
 
     // assign initial available structures
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_ENERGY));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_MATERIAL));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_DIAMONDS));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_STO_BLOBS));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_WALL_GATE));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_DEF_TOWER));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_GEN_MATERIAL_EXTRACTOR));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RES_GEN_SOLAR));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_RADAR_TOWER));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, STRUCT_TARGET));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_DEFENSIVE_TOWER));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_PRACTICE_TARGET));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RADAR_STATION));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RADAR_TOWER));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_GEN_ENERGY_SOLAR));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_BLOBS));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_DIAMONDS));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_ENERGY));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_MATERIAL));
+    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_WALL_GATE));
 
     // assign initial available units
     p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_1));
@@ -93,17 +93,17 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p->SetAI(ai);
 
         // assign initial available structures
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_ENERGY));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_MATERIAL));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_DIAMONDS));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_STO_BLOBS));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_WALL_GATE));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_DEF_TOWER));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RADAR_TOWER));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_GEN_MATERIAL_EXTRACTOR));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_RES_GEN_SOLAR));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, STRUCT_TARGET));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_DEFENSIVE_TOWER));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_PRACTICE_TARGET));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RADAR_STATION));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RADAR_TOWER));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_GEN_ENERGY_SOLAR));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_BLOBS));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_DIAMONDS));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_ENERGY));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_MATERIAL));
+        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_WALL_GATE));
 
         // assign initial available units
         p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_1));

@@ -8,12 +8,21 @@ namespace game
 class WallGate : public Structure
 {
 public:
-    WallGate(GameObjectType subtype, int rows, int cols);
+    enum GateOrientation : GameObjectVariantId
+    {
+        HORIZ,
+        VERT,
+
+        NUM_GATE_ORIENTATIONS
+    };
+
+public:
+    WallGate(GateOrientation orientation, int rows, int cols);
 
     bool IsOpen() const;
     bool Toggle();
 
-    void SetGateType(GameObjectType type);
+    void SetGateType(GateOrientation type);
 
     static unsigned int GetCostEnergy(unsigned int level);
     static unsigned int GetCostMaterial(unsigned int level);
@@ -25,7 +34,7 @@ private:
     void SetImage();
 
 private:
-    GameObjectType mSubtype;
+    GateOrientation mOrientation;
 
     bool mOpen = false;
 };

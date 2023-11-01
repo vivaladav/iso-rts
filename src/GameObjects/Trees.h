@@ -8,7 +8,7 @@ namespace game
 class Trees : public GameObject
 {
 public:
-    Trees(GameObjectType subtype, int rows, int cols);
+    Trees(int rows, int cols);
 
     void Update(float delta) override;
 
@@ -20,8 +20,6 @@ private:
     void SetObjColors();
 
 private:
-    int mSubtype = 0;
-
     int mLevel = 0;
     int mNumTrees = 1;
     int mVariant = 0;

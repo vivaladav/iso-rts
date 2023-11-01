@@ -1,11 +1,16 @@
 #pragma once
 
+#include "GameObjectTypes.h"
+
 #include <functional>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace game
 {
 
+/*
 enum class MapObjectId : unsigned int
 {
     // BASE START POINT
@@ -193,6 +198,7 @@ enum GameObjectType : unsigned int
     // SPECIAL IDs
     OBJ_NULL
 };
+*/
 
 enum GameObjectActionId : unsigned int
 {
@@ -224,7 +230,35 @@ struct GameMapCell;
 class GameObject
 {
 public:
-    GameObject(GameObjectType type, int rows, int cols);
+    static const GameObjectTypeId TYPE_NULL;
+
+    static const GameObjectTypeId TYPE_BASE;
+    static const GameObjectTypeId TYPE_BLOBS;
+    static const GameObjectTypeId TYPE_DEFENSIVE_TOWER;
+    static const GameObjectTypeId TYPE_DIAMONDS;
+    static const GameObjectTypeId TYPE_MOUNTAINS;
+    static const GameObjectTypeId TYPE_PRACTICE_TARGET;
+    static const GameObjectTypeId TYPE_RADAR_STATION;
+    static const GameObjectTypeId TYPE_RADAR_TOWER;
+    static const GameObjectTypeId TYPE_RES_GEN_ENERGY;
+    static const GameObjectTypeId TYPE_RES_GEN_ENERGY_SOLAR;
+    static const GameObjectTypeId TYPE_RES_GEN_MATERIAL;
+    static const GameObjectTypeId TYPE_RES_GEN_MATERIAL_EXTRACT;
+    static const GameObjectTypeId TYPE_RES_STORAGE_BLOBS;
+    static const GameObjectTypeId TYPE_RES_STORAGE_DIAMONDS;
+    static const GameObjectTypeId TYPE_RES_STORAGE_ENERGY;
+    static const GameObjectTypeId TYPE_RES_STORAGE_MATERIAL;
+    static const GameObjectTypeId TYPE_ROCKS;
+    static const GameObjectTypeId TYPE_TREES;
+    static const GameObjectTypeId TYPE_UNIT;
+    static const GameObjectTypeId TYPE_WALL;
+    static const GameObjectTypeId TYPE_WALL_GATE;
+
+    static const std::unordered_map<GameObjectTypeId, std::string> TITLES;
+    static const std::unordered_map<GameObjectTypeId, std::string> DESCRIPTIONS;
+
+public:
+    GameObject(GameObjectTypeId type, int rows, int cols);
     virtual ~GameObject();
 
     void SetGameMap(GameMap * map);
@@ -274,7 +308,7 @@ public:
     Player * GetOwner() const;
     void SetOwner(Player * owner);
 
-    GameObjectType GetObjectType() const;
+    GameObjectTypeId GetObjectType() const;
 
     float GetHealth() const;
     float GetMaxHealth() const;
@@ -342,7 +376,7 @@ private:
     const GameMapCell * mCell = nullptr;
 
     Player * mOwner = nullptr;
-    GameObjectType mType = OBJ_NULL;
+    GameObjectTypeId mType = TYPE_NULL;
 
     GameObjectActionId mActiveAction = IDLE;
     GameObjectActionId mCurrAction = IDLE;
@@ -412,7 +446,7 @@ inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 
 inline Player * GameObject::GetOwner() const { return mOwner; }
 
-inline GameObjectType GameObject::GetObjectType() const { return mType; }
+inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
 
 inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 {

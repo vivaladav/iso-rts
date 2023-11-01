@@ -10,7 +10,7 @@ namespace game
 {
 
 Base::Base(int rows, int cols)
-    : Structure(GameObjectType::OBJ_BASE, rows, cols)
+    : Structure(GameObject::TYPE_BASE, rows, cols)
 {
     SetVisibilityLevel(6);
     // base is linked to itself

@@ -10,9 +10,9 @@
 namespace game
 {
 
-WallGate::WallGate(GameObjectType subtype, int rows, int cols)
-    : Structure(GameObjectType::OBJ_WALL_GATE, rows, cols)
-    , mSubtype(subtype)
+WallGate::WallGate(GateOrientation orientation, int rows, int cols)
+    : Structure(GameObject::TYPE_WALL_GATE, rows, cols)
+    , mOrientation(orientation)
 {
     SetImage();
 }
@@ -35,9 +35,9 @@ bool WallGate::Toggle()
     return true;
 }
 
-void WallGate::SetGateType(GameObjectType type)
+void WallGate::SetGateType(GateOrientation type)
 {
-    mSubtype = type;
+    mOrientation = type;
 
     UpdateGraphics();
 }
@@ -80,8 +80,8 @@ void WallGate::SetImage()
 
     // set texture
     const unsigned int faction = owner->GetFaction();
-
-    const int ind0 = mSubtype == OBJ_WALL_GATE_HORIZ ? WALL_GATE_L1_F1_HORIZ_CLOSED : WALL_GATE_L1_F1_VERT_CLOSED;
+    
+    const int ind0 = mOrientation == HORIZ ? WALL_GATE_L1_F1_HORIZ_CLOSED : WALL_GATE_L1_F1_VERT_CLOSED;
     const int ind1 = ind0 + (NUM_SPRITES_PER_WALL_GATE_STATE * static_cast<int>(mOpen)) + static_cast<int>(IsSelected());
     const int ind = ind1 + NUM_SPRITES_PER_WALL_GATE * faction;
 

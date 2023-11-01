@@ -10,7 +10,7 @@ class CollectableGenerator;
 class Collectable : public GameObject
 {
 public:
-    Collectable(GameObjectType type, int rows, int cols);
+    Collectable(GameObjectTypeId type, int rows, int cols);
 
     void SetGenerator(CollectableGenerator * gen);
 
@@ -20,7 +20,7 @@ private:
     CollectableGenerator * mGen = nullptr;
 };
 
-inline Collectable::Collectable(GameObjectType type, int rows, int cols) : GameObject(type, rows, cols)
+inline Collectable::Collectable(GameObjectTypeId type, int rows, int cols) : GameObject(type, rows, cols)
 {
     SetCanBeCollected(true);
 }

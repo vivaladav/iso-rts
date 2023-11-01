@@ -9,8 +9,6 @@ namespace game
 
 struct ObjectData;
 
-enum StructureType : unsigned int;
-
 enum UnitType : unsigned int
 {
     UNIT_1,
@@ -42,8 +40,8 @@ public:
     void Update(float delta) override;
 
     void ClearStructureToBuild();
-    void SetStructureToBuild(StructureType type);
-    StructureType GetStructureToBuild() const;
+    void SetStructureToBuild(GameObjectTypeId type);
+    GameObjectTypeId GetStructureToBuild() const;
 
     bool HasEnergyForAction(GameObjectActionId action);
     void ConsumeEnergy(GameObjectActionId action);
@@ -79,7 +77,7 @@ private:
 
     UnitType mUnitType;
 
-    StructureType mStructToBuild;
+    GameObjectTypeId mStructToBuild;
 };
 
 inline UnitType Unit::GetUnitType() const { return mUnitType; }
@@ -88,8 +86,8 @@ inline int Unit::GetUnitLevel() const { return mLevel; }
 
 inline int Unit::GetAttackRange() const { return mAttackRange; }
 inline void Unit::ClearAttackTarget() { mTarget = nullptr; }
-inline void Unit::SetStructureToBuild(StructureType type) { mStructToBuild = type; }
-inline StructureType Unit::GetStructureToBuild() const { return mStructToBuild; }
+inline void Unit::SetStructureToBuild(GameObjectTypeId type) { mStructToBuild = type; }
+inline GameObjectTypeId Unit::GetStructureToBuild() const { return mStructToBuild; }
 
 } // namespace game
 

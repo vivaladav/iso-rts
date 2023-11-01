@@ -50,9 +50,9 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
 };
 
 Unit::Unit(const ObjectData & data, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
+    : GameObject(GameObject::TYPE_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))
-    , mStructToBuild(STRUCT_NULL)
+    , mStructToBuild(GameObject::TYPE_NULL)
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);
@@ -130,7 +130,7 @@ void Unit::Update(float delta)
     }
 }
 
-void Unit::ClearStructureToBuild() { mStructToBuild = STRUCT_NULL; }
+void Unit::ClearStructureToBuild() { mStructToBuild = GameObject::TYPE_NULL; }
 
 void Unit::ConsumeEnergy(GameObjectActionId action)
 {

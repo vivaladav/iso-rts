@@ -1,7 +1,6 @@
 #include "GameObjects/ObjectsDataRegistry.h"
 
 #include "GameData.h"
-#include "Structure.h"
 #include "Unit.h"
 
 namespace game
@@ -13,7 +12,7 @@ ObjectsDataRegistry::ObjectsDataRegistry()
     InitUnits();
 }
 
-const ObjectData & ObjectsDataRegistry::GetStructure(PlayerFaction f, StructureType type) const
+const ObjectData & ObjectsDataRegistry::GetStructure(PlayerFaction f, GameObjectTypeId type) const
 {
     auto res = mStructures[f].find(type);
 
@@ -37,407 +36,407 @@ const ObjectData & ObjectsDataRegistry::GetUnit(PlayerFaction f, UnitType type) 
 void ObjectsDataRegistry::InitStructures()
 {
     // -- FACTION 1 --
-    std::unordered_map<StructureType, ObjectData> & data1 = mStructures[FACTION_1];
+    std::unordered_map<GameObjectTypeId, ObjectData> & data1 = mStructures[FACTION_1];
 
     // target
     data1.emplace
-    (   STRUCT_TARGET,
+    (   GameObject::TYPE_PRACTICE_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, OCAT_GENERIC, STRUCT_TARGET, 1, 1,
-                   Structure::TITLES[STRUCT_TARGET],
-                   Structure::DESCRIPTIONS[STRUCT_TARGET])
+                   OCS_TARGET, OCAT_GENERIC, GameObject::TYPE_PRACTICE_TARGET, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_PRACTICE_TARGET).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_PRACTICE_TARGET).c_str())
     );
 
     // radar
     data1.emplace
     (
-        STRUCT_RADAR,
+        GameObject::TYPE_RADAR_STATION,
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F1,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR, 2, 2,
-                   Structure::TITLES[STRUCT_RADAR],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_STATION, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_STATION).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_STATION).c_str())
     );
 
     // radar tower
     data1.emplace
     (
-        STRUCT_RADAR_TOWER,
+        GameObject::TYPE_RADAR_TOWER,
         ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
                    std::vector<int>{ 100, 50, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F1,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_RADAR_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_TOWER).c_str())
     );
 
     // defensive tower
     data1.emplace
     (
-        STRUCT_DEF_TOWER,
+        GameObject::TYPE_DEFENSIVE_TOWER,
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F1,
-                   OCS_TOWER, OCAT_DEFENSE, STRUCT_DEF_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_DEF_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
+                   OCS_TOWER, OCAT_DEFENSE, GameObject::TYPE_DEFENSIVE_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str())
     );
 
     // material extractor
     data1.emplace
     (
-        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 10, 10 },
                    SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F1,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
-                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str())
     );
 
     // solar panel
     data1.emplace
     (
-        STRUCT_RES_GEN_SOLAR,
+        GameObject::TYPE_RES_GEN_ENERGY_SOLAR,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F1,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_SOLAR, 1, 1,
-                   Structure::TITLES[STRUCT_RES_GEN_SOLAR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_SOLAR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY_SOLAR, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str())
     );
 
     // storage energy
     data1.emplace
     (
-        STRUCT_RES_STO_ENERGY,
+        GameObject::TYPE_RES_GEN_ENERGY,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F1,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_ENERGY, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_ENERGY],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_ENERGY])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY).c_str())
     );
 
     // storage material
     data1.emplace
     (
-        STRUCT_RES_STO_MATERIAL,
+        GameObject::TYPE_RES_STORAGE_MATERIAL,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F1,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_MATERIAL, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_MATERIAL],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_MATERIAL])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_MATERIAL, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str())
     );
 
     // storage diamonds
     data1.emplace
     (
-        STRUCT_RES_STO_DIAMONDS,
+        GameObject::TYPE_RES_STORAGE_DIAMONDS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F1,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_DIAMONDS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_DIAMONDS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_DIAMONDS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str())
     );
 
     // storage blobs
     data1.emplace
     (
-        STRUCT_RES_STO_BLOBS,
+        GameObject::TYPE_RES_STORAGE_BLOBS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F1,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_BLOBS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_BLOBS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_BLOBS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str())
     );
 
     // wall gate
     data1.emplace
     (
-        STRUCT_WALL_GATE,
+        GameObject::TYPE_WALL_GATE,
         ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileWalls, WALL_GATE_L1_F1_HORIZ_CLOSED,
-                   OCS_WALL_GATE, OCAT_DEFENSE, STRUCT_WALL_GATE, 1, 1,
-                   Structure::TITLES[STRUCT_WALL_GATE],
-                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
+                   OCS_WALL_GATE, OCAT_DEFENSE, GameObject::TYPE_WALL_GATE, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_WALL_GATE).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_WALL_GATE).c_str())
     );
 
     // -- FACTION 2 --
-    std::unordered_map<StructureType, ObjectData> & data2 = mStructures[FACTION_2];
+    std::unordered_map<GameObjectTypeId, ObjectData> & data2 = mStructures[FACTION_2];
 
     // target
     data2.emplace
     (
-        STRUCT_TARGET,
+        GameObject::TYPE_PRACTICE_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, OCAT_GENERIC, STRUCT_TARGET, 1, 1,
-                   Structure::TITLES[STRUCT_TARGET],
-                   Structure::DESCRIPTIONS[STRUCT_TARGET])
+                   OCS_TARGET, OCAT_GENERIC, GameObject::TYPE_PRACTICE_TARGET, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_PRACTICE_TARGET).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_PRACTICE_TARGET).c_str())
     );
 
     // radar
     data2.emplace
     (
-        STRUCT_RADAR,
+        GameObject::TYPE_RADAR_STATION,
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F2,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR, 2, 2,
-                   Structure::TITLES[STRUCT_RADAR],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_STATION, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_STATION).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_STATION).c_str())
     );
 
     // radar tower
     data2.emplace
     (
-        STRUCT_RADAR_TOWER,
+        GameObject::TYPE_RADAR_TOWER,
         ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
                    std::vector<int>{ 100, 50, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F2,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_RADAR_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_TOWER).c_str())
     );
 
     // defensive tower
     data2.emplace
     (
-        STRUCT_DEF_TOWER,
+        GameObject::TYPE_DEFENSIVE_TOWER,
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F2,
-                   OCS_TOWER, OCAT_DEFENSE, STRUCT_DEF_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_DEF_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
+                   OCS_TOWER, OCAT_DEFENSE, GameObject::TYPE_DEFENSIVE_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str())
     );
 
     // material extractor
     data2.emplace
     (
-        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 10, 10 },
                    SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F2,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
-                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str())
     );
 
     // solar panel
     data2.emplace
     (
-        STRUCT_RES_GEN_SOLAR,
+        GameObject::TYPE_RES_GEN_ENERGY_SOLAR,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F2,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_SOLAR, 1, 1,
-                   Structure::TITLES[STRUCT_RES_GEN_SOLAR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_SOLAR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY_SOLAR, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str())
     );
 
     // storage energy
     data2.emplace
     (
-        STRUCT_RES_STO_ENERGY,
+        GameObject::TYPE_RES_GEN_ENERGY,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F2,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_ENERGY, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_ENERGY],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_ENERGY])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY).c_str())
     );
 
     // storage material
     data2.emplace
     (
-        STRUCT_RES_STO_MATERIAL,
+        GameObject::TYPE_RES_STORAGE_MATERIAL,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F2,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_MATERIAL, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_MATERIAL],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_MATERIAL])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_MATERIAL, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str())
     );
 
     // storage diamonds
     data2.emplace
     (
-        STRUCT_RES_STO_DIAMONDS,
+        GameObject::TYPE_RES_STORAGE_DIAMONDS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F2,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_DIAMONDS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_DIAMONDS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_DIAMONDS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str())
     );
 
     // storage blobs
     data2.emplace
     (
-        STRUCT_RES_STO_BLOBS,
+        GameObject::TYPE_RES_STORAGE_BLOBS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F2,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_BLOBS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_BLOBS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_BLOBS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str())
     );
 
     // wall gate
     data2.emplace
     (
-        STRUCT_WALL_GATE,
+        GameObject::TYPE_WALL_GATE,
         ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileWalls, WALL_GATE_L1_F2_HORIZ_CLOSED,
-                   OCS_WALL_GATE, OCAT_DEFENSE, STRUCT_WALL_GATE, 1, 1,
-                   Structure::TITLES[STRUCT_WALL_GATE],
-                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
+                   OCS_WALL_GATE, OCAT_DEFENSE, GameObject::TYPE_WALL_GATE, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_WALL_GATE).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_WALL_GATE).c_str())
     );
 
     // -- FACTION 3 --
-    std::unordered_map<StructureType, ObjectData> & data3 = mStructures[FACTION_3];
+    std::unordered_map<GameObjectTypeId, ObjectData> & data3 = mStructures[FACTION_3];
 
     // target
     data3.emplace
     (
-        STRUCT_TARGET,
+        GameObject::TYPE_PRACTICE_TARGET,
         ObjectData(std::vector<int>{ 8, 2, 0, 0, 0, 0, 5, 8, 8 },
                    std::vector<int>{ 50, 50, 0, 0 },
                    SpriteFileStructures, ID_PRACTICE_TARGET,
-                   OCS_TARGET, OCAT_GENERIC, STRUCT_TARGET, 1, 1,
-                   Structure::TITLES[STRUCT_TARGET],
-                   Structure::DESCRIPTIONS[STRUCT_TARGET])
+                   OCS_TARGET, OCAT_GENERIC, GameObject::TYPE_PRACTICE_TARGET, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_PRACTICE_TARGET).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_PRACTICE_TARGET).c_str())
     );
 
     // radar tower
     data3.emplace
     (
-        STRUCT_RADAR_TOWER,
+        GameObject::TYPE_RADAR_TOWER,
         ObjectData(std::vector<int>{ 3, 6, 0, 0, 0, 0, 3, 4, 2 },
                    std::vector<int>{ 100, 50, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_TOWER_F3,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_RADAR_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR_TOWER])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_TOWER).c_str())
     );
 
     // radar
     data3.emplace
     (
-        STRUCT_RADAR,
+        GameObject::TYPE_RADAR_STATION,
         ObjectData(std::vector<int>{ 4, 8, 0, 0, 0, 0, 4, 5, 3 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_RADAR_F3,
-                   OCS_RADAR, OCAT_TECHNOLOGY, STRUCT_RADAR, 2, 2,
-                   Structure::TITLES[STRUCT_RADAR],
-                   Structure::DESCRIPTIONS[STRUCT_RADAR])
+                   OCS_RADAR, OCAT_TECHNOLOGY, GameObject::TYPE_RADAR_STATION, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RADAR_STATION).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RADAR_STATION).c_str())
     );
 
     // defensive tower
     data3.emplace
     (
-        STRUCT_DEF_TOWER,
+        GameObject::TYPE_DEFENSIVE_TOWER,
         ObjectData(std::vector<int>{ 5, 4, 2, 4, 4, 5, 5, 5, 5 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_DTOWER_L1_F3,
-                   OCS_TOWER, OCAT_DEFENSE, STRUCT_DEF_TOWER, 1, 1,
-                   Structure::TITLES[STRUCT_DEF_TOWER],
-                   Structure::DESCRIPTIONS[STRUCT_DEF_TOWER])
+                   OCS_TOWER, OCAT_DEFENSE, GameObject::TYPE_DEFENSIVE_TOWER, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_DEFENSIVE_TOWER).c_str())
     );
 
     // material extractor
     data3.emplace
     (
-        STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
+        GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 10, 10 },
                    SpriteFileStructures, ID_MATERIAL_EXTRACTOR_F3,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_MATERIAL_EXTRACTOR, 2, 2,
-                   Structure::TITLES[STRUCT_RES_GEN_MATERIAL_EXTRACTOR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_MATERIAL_EXTRACTOR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, 2, 2,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT).c_str())
     );
 
     // solar panel
     data3.emplace
     (
-        STRUCT_RES_GEN_SOLAR,
+        GameObject::TYPE_RES_GEN_ENERGY_SOLAR,
         ObjectData(std::vector<int>{ 4, 2, 0, 0, 0, 0, 2, 2, 2 },
                    std::vector<int>{ 150, 150, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_SOLAR_PANEL_F3,
-                   OCS_GENERATOR, OCAT_RESOURCES, STRUCT_RES_GEN_SOLAR, 1, 1,
-                   Structure::TITLES[STRUCT_RES_GEN_SOLAR],
-                   Structure::DESCRIPTIONS[STRUCT_RES_GEN_SOLAR])
+                   OCS_GENERATOR, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY_SOLAR, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY_SOLAR).c_str())
     );
 
     // storage energy
     data3.emplace
     (
-        STRUCT_RES_STO_ENERGY,
+        GameObject::TYPE_RES_GEN_ENERGY,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY_F3,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_ENERGY, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_ENERGY],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_ENERGY])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_GEN_ENERGY, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_GEN_ENERGY).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_GEN_ENERGY).c_str())
     );
 
     // storage material
     data3.emplace
     (
-        STRUCT_RES_STO_MATERIAL,
+        GameObject::TYPE_RES_STORAGE_MATERIAL,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F3,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_MATERIAL, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_MATERIAL],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_MATERIAL])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_MATERIAL, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_MATERIAL).c_str())
     );
 
     // storage diamonds
     data3.emplace
     (
-        STRUCT_RES_STO_DIAMONDS,
+        GameObject::TYPE_RES_STORAGE_DIAMONDS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS_F3,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_DIAMONDS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_DIAMONDS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_DIAMONDS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_DIAMONDS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_DIAMONDS).c_str())
     );
 
     // storage blobs
     data3.emplace
     (
-        STRUCT_RES_STO_BLOBS,
+        GameObject::TYPE_RES_STORAGE_BLOBS,
         ObjectData(std::vector<int>{ 3, 2, 0, 0, 0, 0, 2, 3, 4 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS_F3,
-                   OCS_STORAGE, OCAT_RESOURCES, STRUCT_RES_STO_BLOBS, 1, 1,
-                   Structure::TITLES[STRUCT_RES_STO_BLOBS],
-                   Structure::DESCRIPTIONS[STRUCT_RES_STO_BLOBS])
+                   OCS_STORAGE, OCAT_RESOURCES, GameObject::TYPE_RES_STORAGE_BLOBS, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_RES_STORAGE_BLOBS).c_str())
     );
 
     // wall gate
     data3.emplace
     (
-        STRUCT_WALL_GATE,
+        GameObject::TYPE_WALL_GATE,
         ObjectData(std::vector<int>{ 5, 2, 0, 0, 0, 0, 5, 6, 6 },
                    std::vector<int>{ 100, 100, 0, 0 },
                    SpriteFileWalls, WALL_GATE_L1_F3_HORIZ_CLOSED,
-                   OCS_WALL_GATE, OCAT_DEFENSE, STRUCT_WALL_GATE, 1, 1,
-                   Structure::TITLES[STRUCT_WALL_GATE],
-                   Structure::DESCRIPTIONS[STRUCT_WALL_GATE])
+                   OCS_WALL_GATE, OCAT_DEFENSE, GameObject::TYPE_WALL_GATE, 1, 1,
+                   GameObject::TITLES.at(GameObject::TYPE_WALL_GATE).c_str(),
+                   GameObject::DESCRIPTIONS.at(GameObject::TYPE_WALL_GATE).c_str())
     );
 }
 

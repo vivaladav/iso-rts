@@ -10,7 +10,7 @@ namespace game
 {
 
 RadarStation::RadarStation(int rows, int cols)
-    : Structure(OBJ_RADAR_STATION, rows, cols)
+    : Structure(TYPE_RADAR_STATION, rows, cols)
 {
     SetCanBeConquered(true);
 

@@ -11,6 +11,7 @@
 
 #include <sgl/core/Math.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/utilities/HashCRC32.h>
 #include <sgl/utilities/UniformDistribution.h>
 
 namespace game
@@ -21,7 +22,74 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 
 unsigned int GameObject::counter = 0;
 
-GameObject::GameObject(GameObjectType type, int rows, int cols)
+using Hash = sgl::utilities::HashCRC32;
+
+const GameObjectTypeId GameObject::TYPE_NULL = 0;
+
+const GameObjectTypeId GameObject::TYPE_BASE = Hash::GetStringHash("TYPE_BASE");
+const GameObjectTypeId GameObject::TYPE_BLOBS = Hash::GetStringHash("TYPE_BLOBS");
+const GameObjectTypeId GameObject::TYPE_DEFENSIVE_TOWER = Hash::GetStringHash("TYPE_DEFENSIVE_TOWER");
+const GameObjectTypeId GameObject::TYPE_DIAMONDS = Hash::GetStringHash("TYPE_DIAMONDS");
+const GameObjectTypeId GameObject::TYPE_MOUNTAINS = Hash::GetStringHash("TYPE_MOUNTAINS");
+const GameObjectTypeId GameObject::TYPE_PRACTICE_TARGET = Hash::GetStringHash("TYPE_PRACTICE_TARGET");
+const GameObjectTypeId GameObject::TYPE_RADAR_STATION = Hash::GetStringHash("TYPE_RADAR_STATION");
+const GameObjectTypeId GameObject::TYPE_RADAR_TOWER = Hash::GetStringHash("TYPE_RADAR_TOWER");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY = Hash::GetStringHash("TYPE_RES_GEN_ENERGY");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY_SOLAR = Hash::GetStringHash("TYPE_RES_GEN_ENERGY_SOLAR");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL = Hash::GetStringHash("TYPE_RES_GEN_MATERIAL");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT = Hash::GetStringHash("TYPE_RES_GEN_MATERIAL_EXTRACT");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_BLOBS = Hash::GetStringHash("TYPE_RES_STORAGE_BLOBS");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_DIAMONDS = Hash::GetStringHash("TYPE_RES_STORAGE_DIAMONDS");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_ENERGY = Hash::GetStringHash("TYPE_RES_STORAGE_ENERGY");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_MATERIAL = Hash::GetStringHash("TYPE_RES_STORAGE_MATERIAL");
+const GameObjectTypeId GameObject::TYPE_ROCKS = Hash::GetStringHash("TYPE_ROCKS");
+const GameObjectTypeId GameObject::TYPE_TREES = Hash::GetStringHash("TYPE_TREES");
+const GameObjectTypeId GameObject::TYPE_UNIT = Hash::GetStringHash("TYPE_UNIT");
+const GameObjectTypeId GameObject::TYPE_WALL = Hash::GetStringHash("TYPE_WALL");
+const GameObjectTypeId GameObject::TYPE_WALL_GATE = Hash::GetStringHash("TYPE_WALL_GATE");
+
+const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
+{
+    { GameObject::TYPE_BASE, "BASE"},
+    { GameObject::TYPE_DEFENSIVE_TOWER, "DEFENSIVE TOWER"},
+    { GameObject::TYPE_PRACTICE_TARGET, "PRACTICE TARGET"},
+    { GameObject::TYPE_RADAR_STATION, "RADAR STATION"},
+    { GameObject::TYPE_RADAR_TOWER, "RADAR TOWER"},
+    { GameObject::TYPE_RES_GEN_ENERGY, "ENERGY GENERATOR"},
+    { GameObject::TYPE_RES_GEN_ENERGY_SOLAR, "SOLAR PANELS"},
+    { GameObject::TYPE_RES_GEN_MATERIAL, "MATERIAL GENERATOR"},
+    { GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, "MATERIAL EXTRACTOR"},
+    { GameObject::TYPE_RES_STORAGE_BLOBS, "BLOBS STORAGE"},
+    { GameObject::TYPE_RES_STORAGE_DIAMONDS, "DIAMONDS STORAGE"},
+    { GameObject::TYPE_RES_STORAGE_ENERGY, "ENERGY STORAGE"},
+    { GameObject::TYPE_RES_STORAGE_MATERIAL, "MATERIAL STORAGE"},
+    { GameObject::TYPE_WALL, "WALL"},
+    { GameObject::TYPE_WALL_GATE, "GATE"}
+};
+
+const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS =
+{
+    { GameObject::TYPE_BASE, "A control center. It can create units. "
+                             "You need to defend it if you don't want to lose a territory."},
+    { GameObject::TYPE_DEFENSIVE_TOWER, "A basic defensive tower."},
+    { GameObject::TYPE_PRACTICE_TARGET, "A practice target.\nIt can be used to train your units "
+                                        "and to improve their attack skills."},
+    { GameObject::TYPE_RADAR_STATION, "A powerful radar that can show a big portion of the map."},
+    { GameObject::TYPE_RADAR_TOWER, "A compact radar that can show a small portion of the map."},
+    { GameObject::TYPE_RES_GEN_ENERGY, "A generator of energy.\nConnect it to your base to produce energy."},
+    { GameObject::TYPE_RES_GEN_ENERGY_SOLAR, "A solar panel.\nConnect it to your base to produce energy."},
+    { GameObject::TYPE_RES_GEN_MATERIAL, "A generator of material.\nConnect it to your base to mine material."},
+    { GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, "A mine that can extract material from the ground.\n"
+                                                 "Connect it to your base to produce material."},
+    { GameObject::TYPE_RES_STORAGE_BLOBS, "Storage unit that can contain 100 units of blobs."},
+    { GameObject::TYPE_RES_STORAGE_DIAMONDS, "Storage unit that can contain 150 units of diamonds."},
+    { GameObject::TYPE_RES_STORAGE_ENERGY, "Storage unit that can contain 500 units of energy."},
+    { GameObject::TYPE_RES_STORAGE_MATERIAL, "Storage unit that can contain 250 units of material."},
+    { GameObject::TYPE_WALL, "A defensive wall."},
+    { GameObject::TYPE_WALL_GATE, "A gate that can be controlled to open a passage through a defensive wall."}
+};
+
+GameObject::GameObject(GameObjectTypeId type, int rows, int cols)
     : mOnValuesChanged([](){})
     , mIsoObj(new IsoObject(rows, cols))
     , mObjId(++counter)

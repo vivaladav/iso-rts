@@ -31,7 +31,7 @@ private:
     int mNum = 0;
 };
 
-inline Diamonds::Diamonds() : Collectable(GameObjectType::OBJ_DIAMONDS, 1, 1)
+inline Diamonds::Diamonds() : Collectable(GameObject::TYPE_DIAMONDS, 1, 1)
 {
     SetObjColors();
 }

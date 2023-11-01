@@ -56,18 +56,14 @@ void PlayerAI::PrepareData()
 
     for(GameObject * obj : objects)
     {
-        const GameObjectType type = obj->GetObjectType();
+        const GameObjectTypeId objType = obj->GetObjectType();
 
         //store objects based on type
-        switch(type)
-        {
-            case OBJ_RES_GEN:
-                mResGenerators.push_back(obj);
-            break;
-
-            default:
-            break;
-        }
+        if(objType == GameObject::TYPE_RES_GEN_ENERGY ||
+           objType == GameObject::TYPE_RES_GEN_ENERGY_SOLAR ||
+           objType == GameObject::TYPE_RES_GEN_MATERIAL ||
+           objType == GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT)
+            mResGenerators.push_back(obj);
 
         // store structures
         if(obj->IsStructure())
@@ -89,15 +85,10 @@ void PlayerAI::DecideActions()
     {
         Structure * s = mPlayer->GetStructure(i);
 
-        switch (s->GetObjectType())
-        {
-            case GameObjectType::OBJ_BASE:
-                AddActionsBase(s);
-            break;
+        const GameObjectTypeId objType = s->GetObjectType();
 
-            default:
-            break;
-        }
+        if(objType == GameObject::TYPE_BASE)
+            AddActionsBase(s);
     }
 
     // UNITS

@@ -64,46 +64,36 @@ void PanelObjectActions::SetObject(GameObject * obj)
     mButtons[BTN_CANCEL]->SetVisible(true);
 
     // ENABLE BUTTONS
-    switch(mObj->GetObjectType())
+    const GameObjectTypeId objType = mObj->GetObjectType();
+
+    if(objType == GameObject::TYPE_BASE)
     {
-        case GameObjectType::OBJ_BASE:
-        {
-            mButtons[BTN_BUILD_UNIT]->SetVisible(true);
+        mButtons[BTN_BUILD_UNIT]->SetVisible(true);
 
-            // TODO handle upgrades
-        }
-        break;
-
-        case GameObjectType::OBJ_UNIT:
-        {
-            mButtons[BTN_MOVE]->SetVisible(true);
-            mButtons[BTN_ATTACK]->SetVisible(true);
-            mButtons[BTN_CONQUER_CELL]->SetVisible(true);
-            mButtons[BTN_BUILD_WALL]->SetVisible(true);
-            mButtons[BTN_BUILD_STRUCT]->SetVisible(true);
-
-            // TODO handle upgrades
-        }
-        break;
-
-        case GameObjectType::OBJ_WALL_GATE:
-        {
-            auto gate = static_cast<WallGate *>(mObj);
-
-            if(gate->IsOpen())
-                mButtons[BTN_CLOSE_GATE]->SetVisible(true);
-            else
-                mButtons[BTN_OPEN_GATE]->SetVisible(true);
-        }
-        break;
-
-        // object not supported -> hide all buttons
-        default:
-        {
-            mButtons[BTN_CANCEL]->SetVisible(false);
-        }
-        break;
+        // TODO handle upgrades
     }
+    else if(objType == GameObject::TYPE_UNIT)
+    {
+        mButtons[BTN_MOVE]->SetVisible(true);
+        mButtons[BTN_ATTACK]->SetVisible(true);
+        mButtons[BTN_CONQUER_CELL]->SetVisible(true);
+        mButtons[BTN_BUILD_WALL]->SetVisible(true);
+        mButtons[BTN_BUILD_STRUCT]->SetVisible(true);
+
+        // TODO handle upgrades
+    }
+    else if(objType == GameObject::TYPE_WALL_GATE)
+    {
+        auto gate = static_cast<WallGate *>(mObj);
+
+        if(gate->IsOpen())
+            mButtons[BTN_CLOSE_GATE]->SetVisible(true);
+        else
+            mButtons[BTN_OPEN_GATE]->SetVisible(true);
+    }
+    // object not supported -> hide all buttons
+    else
+        mButtons[BTN_CANCEL]->SetVisible(false);
 
     // POSITION BUTTONS
     const int marginH = 15;

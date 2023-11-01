@@ -357,13 +357,14 @@ void GameMap::InitObjectVisibility(Player * player, GameObject * gameObj)
     }
 }
 
-void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
+void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, GameObjectVariantId variant,
                                    unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
-    if(objId >= MapObjectId::BASE_P1 && objId <= MapObjectId::BASE_P3)
+    /*
+    if(type >= MapObjectId::BASE_P1 && type <= MapObjectId::BASE_P3)
     {
-        const int playerInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::BASE_P1);
+        const int playerInd = static_cast<int>(type) - static_cast<int>(MapObjectId::BASE_P1);
 
         Player * owner =  mGame->GetPlayerByIndex(playerInd);
 
@@ -373,56 +374,56 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
 
         CreateObject(layerId, OBJ_BASE, owner, r0, c0, rows, cols);
     }
-    else if(MapObjectId::GEN_ENERGY == objId)
+    else if(MapObjectId::GEN_ENERGY == type)
         CreateObject(layerId, OBJ_RES_GEN_ENERGY, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::GEN_MATERIAL1 == objId)
+    else if(MapObjectId::GEN_MATERIAL1 == type)
         CreateObject(layerId, OBJ_RES_GEN_MATERIAL1, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_ENERGY == objId)
+    else if(MapObjectId::STORAGE_ENERGY == type)
         CreateObject(layerId, OBJ_RES_STORAGE_ENERGY, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_MATERIAL == objId)
+    else if(MapObjectId::STORAGE_MATERIAL == type)
         CreateObject(layerId, OBJ_RES_STORAGE_MATERIAL, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_DIAMONDS == objId)
+    else if(MapObjectId::STORAGE_DIAMONDS == type)
         CreateObject(layerId, OBJ_RES_STORAGE_DIAMONDS, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_BLOBS == objId)
+    else if(MapObjectId::STORAGE_BLOBS == type)
         CreateObject(layerId, OBJ_RES_STORAGE_BLOBS, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::RADAR_STATION == objId)
+    else if(MapObjectId::RADAR_STATION == type)
         CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::TREES_1 == objId)
+    else if(MapObjectId::TREES_1 == type)
         CreateObject(layerId, OBJ_TREES_1, nullptr, r0, c0, rows, cols);
-    else if(objId >= MapObjectId::MOUNTAINS_FIRST && objId <= MapObjectId::MOUNTAINS_LAST)
+    else if(type >= MapObjectId::MOUNTAINS_FIRST && type <= MapObjectId::MOUNTAINS_LAST)
     {
-        const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAINS_FIRST);
+        const int objInd = static_cast<int>(type) - static_cast<int>(MapObjectId::MOUNTAINS_FIRST);
 
         CreateObject(layerId, OBJ_MOUNTAINS_FIRST + objInd, nullptr, r0, c0, rows, cols);
     }
-    else if(objId >= MapObjectId::MOUNTAIN_FIRST && objId <= MapObjectId::MOUNTAIN_LAST)
+    else if(type >= MapObjectId::MOUNTAIN_FIRST && type <= MapObjectId::MOUNTAIN_LAST)
     {
-        const int objInd = static_cast<int>(objId) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
+        const int objInd = static_cast<int>(type) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
 
         CreateObject(layerId, OBJ_ROCKS_FIRST + objInd, nullptr, r0, c0, rows, cols);
     }
-    else if(MapObjectId::PRACTICE_TARGET == objId)
+    else if(MapObjectId::PRACTICE_TARGET == type)
         CreateObject(layerId, OBJ_PRACTICE_TARGET, nullptr, r0, c0, rows, cols);
-    else if(objId >= MapObjectId::UNIT_FIRST && objId <= MapObjectId::UNIT_LAST)
+    else if(type >= MapObjectId::UNIT_FIRST && type <= MapObjectId::UNIT_LAST)
     {
         Player * p = nullptr;
 
         unsigned int td = 0;
 
-        if(objId < MapObjectId::UNIT_1_P2)
+        if(type < MapObjectId::UNIT_1_P2)
         {
             p = mGame->GetPlayerByIndex(0);
-            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P1);
+            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P1);
         }
-        else if(objId < MapObjectId::UNIT_1_P3)
+        else if(type < MapObjectId::UNIT_1_P3)
         {
             p = mGame->GetPlayerByIndex(1);
-            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P2);
+            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P2);
         }
         else
         {
             p = mGame->GetPlayerByIndex(2);
-            td = static_cast<int>(objId) - static_cast<int>(MapObjectId::UNIT_1_P3);
+            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P3);
         }
 
         const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
@@ -430,12 +431,16 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
         const Cell2D dest(r0, c0);
         CreateUnit(data, nullptr, dest, p);
     }
+*/
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
                                    unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
+    return nullptr;
+
+    /*
     // object origin is out of map
     if(r0 >= mRows || c0 >= mCols)
         return nullptr;
@@ -498,11 +503,11 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
     else if(objId >= OBJ_ROCKS_FIRST && objId <= OBJ_ROCKS_LAST)
         obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
-    else if(objId >= OBJ_WALL_FIRST && objId <= OBJ_WALL_LAST)
+    else if(objId >= GameObject::TYPE_WALL_FIRST && objId <= GameObject::TYPE_WALL_LAST)
         obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);
-    else if(objId >= OBJ_WALL_GATE_FIRST && objId <= OBJ_WALL_GATE_LAST)
+    else if(objId >= GameObject::TYPE_WALL_GATE_FIRST && objId <= GameObject::TYPE_WALL_GATE_LAST)
         obj = new WallGate(static_cast<GameObjectType>(objId), rows, cols);
-    else if(OBJ_DEF_TOWER == objId)
+    else if(GameObject::TYPE_DEFENSIVE_TOWER == objId)
     {
         const ObjectData & data = owner->GetAvailableStructure(STRUCT_DEF_TOWER);
         obj = new DefensiveTower(data);
@@ -588,6 +593,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     }
 
     return obj;
+*/
 }
 
 bool GameMap::RemoveAndDestroyObject(GameObject * obj)
@@ -870,10 +876,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     // reset cell's changing flag
     gcell.changing = false;
 
-    // add object wall
-    const GameObjectType got = Structure::StructureToGameObject(static_cast<StructureType>(data.objType));
-
-    GameObject * obj = CreateObject(OBJECTS2, got, player, cell.row, cell.col, data.rows, data.cols);
+    GameObject * obj = CreateObject(OBJECTS2, data.objType, player, cell.row, cell.col, data.rows, data.cols);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -881,7 +884,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     UpdateLinkedCells(player);
 
     // update surrounding walls if building an object that can connect
-    if(obj->GetObjectType() == OBJ_DEF_TOWER || obj->GetObjectType() == OBJ_WALL_GATE)
+    if(obj->GetObjectType() == GameObject::TYPE_DEFENSIVE_TOWER || obj->GetObjectType() == GameObject::TYPE_WALL_GATE)
         UpdateWalls(cell);
 
     // update visibility map
@@ -937,7 +940,7 @@ void GameMap::StartBuildWall(const Cell2D & cell, Player * player, unsigned int 
     gcell.changing = true;
 }
 
-void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectType planned)
+void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId planned)
 {
     // check if cell was of another faction
     const int ind = cell.row * mCols + cell.col;
@@ -1123,8 +1126,11 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     // update player
     player->SumCells(1);
 
-    if(gcell1.objTop->GetObjectType() == OBJ_RES_GEN)
-        player->AddResourceGenerator(gcell1.GetResourceGenerator());
+    // track ResourceGenerator, if any
+    ResourceGenerator * resGen = gcell1.GetResourceGenerator();
+
+    if(resGen != nullptr)
+        player->AddResourceGenerator(resGen);
 
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
@@ -1153,7 +1159,7 @@ bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * 
         return false;
 
     // only base can generate units (for now)
-    if(gen->GetObjectType() != OBJ_BASE)
+    if(gen->GetObjectType() != GameObject::TYPE_BASE)
         return false;
 
     // generator is already busy
@@ -1432,7 +1438,7 @@ bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
         return false;
 
     // object is not an unit
-    if(obj->GetObjectType() != OBJ_UNIT)
+    if(obj->GetObjectType() != GameObject::TYPE_UNIT)
         return false;
 
     auto unit = static_cast<Unit *>(obj);
@@ -2253,7 +2259,7 @@ void GameMap::DestroyObject(GameObject * obj)
     if(owner != nullptr)
     {
         // remove unit from player
-        if(obj->GetObjectType() == OBJ_UNIT)
+        if(obj->GetObjectType() == GameObject::TYPE_UNIT)
             owner->RemoveUnit(static_cast<Unit *>(obj));
         // remove structure
         else if(obj->IsStructure())
@@ -2480,7 +2486,7 @@ void GameMap::DestroyObjectPaths(GameObject * obj)
     }
 
     // other paths are only for units
-    if(obj->GetObjectType() != OBJ_UNIT)
+    if(obj->GetObjectType() != GameObject::TYPE_UNIT)
         return ;
 
     auto unit = static_cast<Unit *>(obj);
@@ -2639,28 +2645,28 @@ void GameMap::UpdateWall(const Cell2D & cell)
     GameObject * obj = GetCell(cell.row, cell.col).objTop;
 
     // no wall or gate here
-    if(nullptr == obj || (obj->GetObjectType() != OBJ_WALL && obj->GetObjectType() != OBJ_WALL_GATE))
+    if(nullptr == obj || (obj->GetObjectType() != GameObject::TYPE_WALL && obj->GetObjectType() != GameObject::TYPE_WALL_GATE))
         return ;
 
     const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).objTop : nullptr;
-    const bool wallN = objN && (objN->GetObjectType() == OBJ_WALL ||
-                                objN->GetObjectType() == OBJ_DEF_TOWER ||
-                                objN->GetObjectType() == OBJ_WALL_GATE);
+    const bool wallN = objN && (objN->GetObjectType() == GameObject::TYPE_WALL ||
+                                objN->GetObjectType() == GameObject::TYPE_DEFENSIVE_TOWER ||
+                                objN->GetObjectType() == GameObject::TYPE_WALL_GATE);
 
     const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ? GetCell(cell.row + 1, cell.col).objTop : nullptr;
-    const bool wallS = objS && (objS->GetObjectType() == OBJ_WALL ||
-                                objS->GetObjectType() == OBJ_DEF_TOWER ||
-                                objS->GetObjectType() == OBJ_WALL_GATE);
+    const bool wallS = objS && (objS->GetObjectType() == GameObject::TYPE_WALL ||
+                                objS->GetObjectType() == GameObject::TYPE_DEFENSIVE_TOWER ||
+                                objS->GetObjectType() == GameObject::TYPE_WALL_GATE);
 
     const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).objTop : nullptr;
-    const bool wallW = objW && (objW->GetObjectType() == OBJ_WALL ||
-                                objW->GetObjectType() == OBJ_DEF_TOWER ||
-                                objW->GetObjectType() == OBJ_WALL_GATE);
+    const bool wallW = objW && (objW->GetObjectType() == GameObject::TYPE_WALL ||
+                                objW->GetObjectType() == GameObject::TYPE_DEFENSIVE_TOWER ||
+                                objW->GetObjectType() == GameObject::TYPE_WALL_GATE);
 
     const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ? GetCell(cell.row, cell.col + 1).objTop : nullptr;
-    const bool wallE = objE && (objE->GetObjectType() == OBJ_WALL ||
-                                objE->GetObjectType() == OBJ_DEF_TOWER ||
-                                objE->GetObjectType() == OBJ_WALL_GATE);
+    const bool wallE = objE && (objE->GetObjectType() == GameObject::TYPE_WALL ||
+                                objE->GetObjectType() == GameObject::TYPE_DEFENSIVE_TOWER ||
+                                objE->GetObjectType() == GameObject::TYPE_WALL_GATE);
 
     enum Flags
     {
@@ -2698,7 +2704,7 @@ void GameMap::UpdateWall(const Cell2D & cell)
                      WEST * static_cast<int>(wallW) +
                      EAST * static_cast<int>(wallE);
 
-    if(obj->GetObjectType() == OBJ_WALL)
+    if(obj->GetObjectType() == GameObject::TYPE_WALL)
     {
         auto wall = static_cast<Wall *>(obj);
 
@@ -2707,43 +2713,43 @@ void GameMap::UpdateWall(const Cell2D & cell)
             case HORIZ_1:
             case HORIZ_2:
             case HORIZ_3:
-                wall->SetWallType(OBJ_WALL_HORIZ);
+                wall->SetWallType(Wall::HORIZ);
             break;
 
             case VERT_1:
             case VERT_2:
             case VERT_3:
-                wall->SetWallType(OBJ_WALL_VERT);
+                wall->SetWallType(Wall::VERT);
             break;
 
             case TL:
-                wall->SetWallType(OBJ_WALL_TL);
+                wall->SetWallType(Wall::TL);
             break;
             case TR:
-                wall->SetWallType(OBJ_WALL_TR);
+                wall->SetWallType(Wall::TR);
             break;
             case BL:
-                wall->SetWallType(OBJ_WALL_BL);
+                wall->SetWallType(Wall::BL);
             break;
             case BR:
-                wall->SetWallType(OBJ_WALL_BR);
+                wall->SetWallType(Wall::BR);
             break;
 
             case INTN:
-                wall->SetWallType(OBJ_WALL_INTN);
+                wall->SetWallType(Wall::INTN);
             break;
             case INTS:
-                wall->SetWallType(OBJ_WALL_INTS);
+                wall->SetWallType(Wall::INTS);
             break;
             case INTW:
-                wall->SetWallType(OBJ_WALL_INTW);
+                wall->SetWallType(Wall::INTW);
             break;
             case INTE:
-                wall->SetWallType(OBJ_WALL_INTE);
+                wall->SetWallType(Wall::INTE);
             break;
 
             case CROSS:
-                wall->SetWallType(OBJ_WALL_CROSS);
+                wall->SetWallType(Wall::CROSS);
             break;
 
             default:
@@ -2751,7 +2757,7 @@ void GameMap::UpdateWall(const Cell2D & cell)
             break;
         }
     }
-    else if(obj->GetObjectType() == OBJ_WALL_GATE)
+    else if(obj->GetObjectType() == GameObject::TYPE_WALL_GATE)
     {
         auto gate = static_cast<WallGate *>(obj);
 
@@ -2760,13 +2766,13 @@ void GameMap::UpdateWall(const Cell2D & cell)
             case HORIZ_1:
             case HORIZ_2:
             case HORIZ_3:
-                gate->SetGateType(OBJ_WALL_GATE_HORIZ);
+                gate->SetGateType(WallGate::HORIZ);
             break;
 
             case VERT_1:
             case VERT_2:
             case VERT_3:
-                gate->SetGateType(OBJ_WALL_GATE_VERT);
+                gate->SetGateType(WallGate::VERT);
             break;
 
             default:

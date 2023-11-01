@@ -109,7 +109,7 @@ void WallBuildPath::InitNextBuild()
     mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
                                [this, nextCell, player, layerOverlay]
     {
-        const GameObjectType blockType = mIndicators[mNextCell - 1]->GetBlockType();
+        const GameObjectTypeId blockType = mIndicators[mNextCell - 1]->GetBlockType();
         mGameMap->BuildWall(nextCell, player, blockType);
 
         mUnit->ConsumeEnergy(BUILD_WALL);

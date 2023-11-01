@@ -410,12 +410,12 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
     obj->SetSelected(true);
 
-    const GameObjectType got = obj->GetObjectType();
+    const GameObjectTypeId got = obj->GetObjectType();
 
     // update quick selection buttons when selected unit
     sgl::sgui::ButtonsGroup * buttonsUnitSel = mHUD->GetButtonsGroupUnitSel();
 
-    if(OBJ_UNIT == got)
+    if(GameObject::TYPE_UNIT == got)
     {
         const int numButtons = buttonsUnitSel->GetNumButtons();
 
@@ -440,7 +440,7 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
             buttonsUnitSel->GetButton(checked)->SetChecked(false);
 
         // show attack range overlay for towers
-        if(OBJ_DEF_TOWER == got)
+        if(GameObject::TYPE_DEFENSIVE_TOWER == got)
         {
             auto tower = static_cast<DefensiveTower *>(obj);
             const int range = tower->GetAttackRange();
@@ -600,7 +600,7 @@ void ScreenGame::CreateUI()
         {
             unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
 
-            const auto stype = static_cast<StructureType>(mDialogNewElement->GetSelectedData().objType);
+            const auto stype = static_cast<GameObjectTypeId>(mDialogNewElement->GetSelectedData().objType);
             unit->SetStructureToBuild(stype);
 
             ClearNewElemDialog();
@@ -752,11 +752,11 @@ void ScreenGame::CreateUI()
 
             if(act.obj == selObj)
             {
-                const GameObjectType objType = act.obj->GetObjectType();
+                const GameObjectTypeId objType = act.obj->GetObjectType();
                 const GameObjectActionId objActId = act.actId;
 
                 // object is a Base
-                if(objType == OBJ_BASE)
+                if(objType == GameObject::TYPE_BASE)
                 {
                     // building a new unit
                     if(objActId == GameObjectActionId::BUILD_UNIT)
@@ -768,7 +768,7 @@ void ScreenGame::CreateUI()
                     }
                 }
                 // object is a Unit
-                else if(objType == OBJ_UNIT)
+                else if(objType == GameObject::TYPE_UNIT)
                 {
                     // moving
                     if(objActId == GameObjectActionId::MOVE)
@@ -896,7 +896,7 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
     GameObject * selObj = player->GetSelectedObject();
 
     // unit selected -> handle mouse motion
-    if(selObj && selObj->GetObjectType() == OBJ_UNIT)
+    if(selObj && selObj->GetObjectType() == GameObject::TYPE_UNIT)
         HandleUnitOnMouseMove(static_cast<Unit *>(selObj), currCell);
 
     // update previous cell before exit
@@ -1211,7 +1211,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
 bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
                                         const std::function<void()> & OnDone)
 {
-    const StructureType st = unit->GetStructureToBuild();
+    const GameObjectTypeId st = unit->GetStructureToBuild();
     const ObjectData & data = player->GetAvailableStructure(st);
 
     // check if building is possible
@@ -1719,7 +1719,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
     Player * player = GetGame()->GetLocalPlayer();
 
     // get an indicator
-    const StructureType st = unit->GetStructureToBuild();
+    const GameObjectTypeId st = unit->GetStructureToBuild();
 
     StructureIndicator * ind = nullptr;
     auto it = mStructIndicators.find(st);
@@ -1846,7 +1846,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
         const GameMapCell * gmc = unit->GetCell();
         const Cell2D cellUnit(gmc->row, gmc->col);
 
-        const StructureType st = unit->GetStructureToBuild();
+        const GameObjectTypeId st = unit->GetStructureToBuild();
         const ObjectData & data = player->GetAvailableStructure(st);
 
         // if unit is next to any target cell -> try to build
@@ -2078,7 +2078,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
     PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
 
     // selected object is a unit
-    if(selObj->GetObjectType() == OBJ_UNIT)
+    if(selObj->GetObjectType() == GameObject::TYPE_UNIT)
     {
         Unit * selUnit = static_cast<Unit *>(selObj);
 

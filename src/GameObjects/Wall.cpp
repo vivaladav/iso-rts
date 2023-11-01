@@ -9,16 +9,16 @@
 namespace game
 {
 
-Wall::Wall(GameObjectType subtype, int rows, int cols)
-    : Structure(GameObjectType::OBJ_WALL, rows, cols)
-    , mSubtypeInd(subtype - GameObjectType::OBJ_WALL_FIRST)
+Wall::Wall(GameObjectVariantId part, int rows, int cols)
+    : Structure(GameObject::TYPE_WALL, rows, cols)
+    , mPart(part)
 {
     SetImage();
 }
 
-void Wall::SetWallType(GameObjectType type)
+void Wall::SetWallType(GameObjectVariantId part)
 {
-    mSubtypeInd = type - GameObjectType::OBJ_WALL_FIRST;
+    mPart = part;
 
     UpdateGraphics();
 }
@@ -62,7 +62,7 @@ void Wall::SetImage()
     // set texture
     const unsigned int faction = owner->GetFaction();
 
-    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mSubtypeInd + (faction * NUM_OBJS_WALL);
+    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mPart + (faction * NUM_WALL_PARTS);
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);
     isoObj->SetTexture(tex);

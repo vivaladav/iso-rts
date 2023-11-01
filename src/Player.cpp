@@ -258,15 +258,15 @@ void Player::UpdateResources()
 
 void Player::HandleCollectable(GameObject * obj)
 {
-    const GameObjectType type = obj->GetObjectType();
+    const GameObjectTypeId type = obj->GetObjectType();
 
     // DIAMONDS
-    if(type == OBJ_DIAMONDS)
+    if(type == GameObject::TYPE_DIAMONDS)
     {
         auto d = static_cast<Diamonds *>(obj);
         mStats[Stat::DIAMONDS].SumValue(d->GetNum());
     }
-    else if(type == OBJ_BLOBS)
+    else if(type == GameObject::TYPE_BLOBS)
     {
         auto d = static_cast<Blobs *>(obj);
         mStats[Stat::BLOBS].SumValue(d->GetNum());
@@ -283,7 +283,7 @@ void Player::AddAvailableStructure(const ObjectData & data)
     mAvailableStructures.emplace_back(data);
 }
 
-const ObjectData & Player::GetAvailableStructure(StructureType type) const
+const ObjectData & Player::GetAvailableStructure(GameObjectTypeId type) const
 {
     for(const ObjectData & data : mAvailableStructures)
     {
@@ -292,6 +292,17 @@ const ObjectData & Player::GetAvailableStructure(StructureType type) const
     }
 
     return ObjectData::NullObj;
+}
+
+bool Player::IsStructureAvailable(GameObjectTypeId type) const
+{
+    for(const ObjectData & data : mAvailableStructures)
+    {
+        if(data.objType == type)
+            return true;
+    }
+
+    return false;
 }
 
 void Player::AddAvailableUnit(const ObjectData & data)
@@ -310,6 +321,17 @@ const ObjectData & Player::GetAvailableUnit(UnitType type) const
     return ObjectData::NullObj;
 }
 
+bool Player::IsUnitAvailable(UnitType type) const
+{
+    for(const ObjectData & data : mAvailableUnits)
+    {
+        if(data.objType == type)
+            return true;
+    }
+
+    return false;
+}
+
 void Player::ClearSelectedObject()
 {
     if(nullptr == mSelObj)
@@ -317,7 +339,7 @@ void Player::ClearSelectedObject()
 
     mSelObj->SetSelected(false);
 
-    if(mSelObj->GetObjectType() == OBJ_UNIT)
+    if(mSelObj->GetObjectType() == GameObject::TYPE_UNIT)
         static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::IDLE);
 
     mSelObj = nullptr;
@@ -331,7 +353,7 @@ void Player::SetSelectedObject(GameObject * obj)
     mSelObj = obj;
 
     // reset active action to move when unit is selected
-    if(mSelObj->GetObjectType() == OBJ_UNIT)
+    if(mSelObj->GetObjectType() == GameObject::TYPE_UNIT)
         static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::MOVE);
 
     mSelObj->SetSelected(true);

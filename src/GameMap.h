@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameMapCell.h"
+#include "GameObjects/GameObjectTypes.h"
 
 #include <sgl/ai/IPathMap.h>
 
@@ -27,9 +28,7 @@ struct Cell2D;
 struct GameMapCell;
 struct ObjectData;
 
-enum GameObjectType : unsigned int;
 enum UnitType : unsigned int;
-enum class MapObjectId : unsigned int;
 
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
@@ -75,7 +74,8 @@ public:
     bool IsCellChanging(unsigned int r, unsigned int c) const;
     void SetCellChanging(unsigned int r, unsigned int c, bool changing);
 
-    void CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
+    void CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type,
+                              GameObjectVariantId variant,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 
@@ -107,7 +107,7 @@ public:
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player, unsigned int level);
     void StartBuildWall(const Cell2D & cell, Player * player, unsigned int level);
-    void BuildWall(const Cell2D & cell, Player * player, GameObjectType planned);
+    void BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId planned);
     void BuildWalls(WallBuildPath * path);
     bool AbortBuildWalls(GameObject * obj);
 

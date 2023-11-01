@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cell2D.h"
+#include "GameObjects/GameObjectTypes.h"
 #include "Screen.h"
 #include "GameObjects/GameObjectAction.h"
 
@@ -40,9 +41,7 @@ class StructureIndicator;
 class Unit;
 class WallIndicator;
 
-enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
-enum StructureType : unsigned int;
 enum UnitType : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
@@ -147,7 +146,7 @@ private:
     std::vector<int> mProgressBarsToDelete;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
-    std::unordered_map<StructureType, StructureIndicator *> mStructIndicators;
+    std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
     std::vector<AttackRangeIndicator *> mAttIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;

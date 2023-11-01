@@ -2,7 +2,7 @@
 
 #include "GameConstants.h"
 #include "GameData.h"
-#include "GameObjects/GameObject.h"
+#include "GameObjects/Wall.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/graphic/Font.h>
@@ -90,20 +90,20 @@ void WallIndicator::SetBeforeAfterDirections(int br, int bc, int ar, int ac)
 }
 
 
-GameObjectType WallIndicator::GetBlockType() const
+GameObjectVariantId WallIndicator::GetBlockType() const
 {
-    static const GameObjectType types[] =
+    static const GameObjectVariantId types[] =
     {
-        OBJ_WALL_HORIZ,
-        OBJ_WALL_VERT,
-        OBJ_WALL_TL,
-        OBJ_WALL_TR,
-        OBJ_WALL_BL,
-        OBJ_WALL_BR
+        Wall::WallPart::HORIZ,
+        Wall::WallPart::VERT,
+        Wall::WallPart::TL,
+        Wall::WallPart::TR,
+        Wall::WallPart::BL,
+        Wall::WallPart::BR,
     };
 
     if(WB_INVALID == mBlock)
-        return OBJ_WALL_HORIZ;
+        return Wall::WallPart::HORIZ;
     else
         return types[mBlock];
 }

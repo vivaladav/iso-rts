@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IsoObject.h"
+#include "GameObjects/GameObjectTypes.h"
 
 namespace sgl
 {
@@ -14,7 +15,6 @@ namespace sgl
 namespace game
 {
 
-enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
 
 class WallIndicator : public IsoObject
@@ -22,7 +22,7 @@ class WallIndicator : public IsoObject
 public:
     WallIndicator();
 
-    GameObjectType GetBlockType() const;
+    game::GameObjectVariantId GetBlockType() const;
 
     void SetCost(unsigned int energy, unsigned int material);
     void ShowCost(bool val);

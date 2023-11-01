@@ -14,9 +14,8 @@ namespace
 namespace game
 {
 
-Trees::Trees(GameObjectType subtype, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_TREES, rows, cols)
-    , mSubtype(subtype)
+Trees::Trees(int rows, int cols)
+    : GameObject(TYPE_TREES, rows, cols)
 {
     SetStatic(true);
 

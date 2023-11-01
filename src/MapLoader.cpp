@@ -9,8 +9,6 @@
 namespace game
 {
 
-enum class MapObjectId : unsigned int;
-
 bool MapLoader::Load(const std::string & filename)
 {
     // map not set
@@ -94,17 +92,17 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         ss.clear();
         ss.str(line);
 
-        unsigned int layerId;
-        unsigned int objId;
-        unsigned int r0;
-        unsigned int c0;
-        unsigned int rows;
-        unsigned int cols;
+        unsigned int layerId = 0;
+        unsigned int objId = 0;
+        unsigned int variantId = 0;
+        unsigned int r0 = 0;
+        unsigned int c0 = 0;
+        unsigned int rows = 0;
+        unsigned int cols = 0;
 
-        ss >> layerId >> objId >> r0 >> c0 >> rows >> cols;
+        ss >> layerId >> objId >> variantId >> r0 >> c0 >> rows >> cols;
 
-        const auto moId = static_cast<MapObjectId>(objId);
-        mGameMap->CreateObjectFromFile(layerId, moId, r0, c0, rows, cols);
+        mGameMap->CreateObjectFromFile(layerId, objId, variantId, r0, c0, rows, cols);
     }
 }
 

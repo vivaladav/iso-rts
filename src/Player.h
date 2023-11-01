@@ -3,6 +3,7 @@
 #include "Cell2D.h"
 #include "StatValue.h"
 #include "GameObjects/ObjectData.h"
+#include "GameObjects/GameObjectTypes.h"
 
 #include <functional>
 #include <string>
@@ -20,7 +21,6 @@ class Unit;
 
 enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
-enum StructureType : unsigned int;
 enum UnitType : unsigned int;
 
 class Player
@@ -100,12 +100,14 @@ public:
     // available structures
     void AddAvailableStructure(const ObjectData & data);
     const std::vector<ObjectData> & GetAvailableStructures() const;
-    const ObjectData & GetAvailableStructure(StructureType type) const;
+    const ObjectData & GetAvailableStructure(GameObjectTypeId type) const;
+    bool IsStructureAvailable(GameObjectTypeId type) const;
 
     // available units
     void AddAvailableUnit(const ObjectData & data);
     const std::vector<ObjectData> & GetAvailableUnits() const;
     const ObjectData & GetAvailableUnit(UnitType type) const;
+    bool IsUnitAvailable(UnitType type) const;
 
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;

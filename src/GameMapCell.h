@@ -54,7 +54,6 @@ struct GameMapCell
     bool HasUnit() const;
 
     ResourceGenerator * GetResourceGenerator() const;
-    bool HasResourceGenerator() const;
 
     std::unordered_map<int, bool> influencers;
     PlayerFaction influencer;

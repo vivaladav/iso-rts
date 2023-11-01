@@ -10,15 +10,28 @@
 namespace game
 {
 
-ResourceStorage::ResourceStorage(ResourceType typeRes, int rows, int cols)
-    : Structure(OBJ_RES_STORAGE, rows, cols)
-    , mTypeRes(typeRes)
+ResourceStorage::ResourceStorage(GameObjectTypeId type, int rows, int cols)
+    : Structure(type, rows, cols)
 {
+    if(TYPE_RES_STORAGE_BLOBS == type)
+        mResource = RES_BLOBS;
+    else if(TYPE_RES_STORAGE_DIAMONDS == type)
+        mResource = RES_DIAMONDS;
+    else if(TYPE_RES_STORAGE_ENERGY == type)
+        mResource = RES_ENERGY;
+    else if(TYPE_RES_STORAGE_MATERIAL == type)
+        mResource = RES_MATERIAL1;
+    else
+    {
+        mResource = RES_INVALID;
+        return;
+    }
+
     SetCanBeConquered(true);
 
     // set capacity based on resource
     const int capacities[NUM_RESOURCES] = { 500, 250, 150, 100 };
-    mCapacity = capacities[mTypeRes];
+    mCapacity = capacities[mResource];
 
     SetImage();
 }
@@ -49,7 +62,7 @@ void ResourceStorage::OnLinkedChanged()
         Player::Stat::BLOBS
     };
 
-    p->SumResourceMax(statIds[mTypeRes], diff);
+    p->SumResourceMax(statIds[mResource], diff);
 }
 
 void ResourceStorage::SetImage()
@@ -69,28 +82,28 @@ void ResourceStorage::SetImage()
 
     unsigned int texId = 0;
 
-    if(RES_ENERGY == mTypeRes)
+    if(RES_ENERGY == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_ENERGY_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
             texId = ID_STRUCT_STORAGE_ENERGY;
     }
-    else if(RES_MATERIAL1 == mTypeRes)
+    else if(RES_MATERIAL1 == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_MATERIAL_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
             texId = ID_STRUCT_STORAGE_MATERIAL;
     }
-    else if(RES_DIAMONDS == mTypeRes)
+    else if(RES_DIAMONDS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_DIAMONDS_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
             texId = ID_STRUCT_STORAGE_DIAMONDS;
     }
-    else if(RES_BLOBS == mTypeRes)
+    else if(RES_BLOBS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_BLOBS_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
