@@ -22,7 +22,7 @@ void DiamondsGenerator::OnGeneration()
     const int c = GetCol();
 
     GameObject * obj = gm->CreateObject(MapLayers::OBJECTS2, GameObject::TYPE_DIAMONDS,
-                                        nullptr, r, c, 1, 1);
+                                        0, nullptr, r, c, 1, 1);
 
     if(nullptr == obj)
         return ;

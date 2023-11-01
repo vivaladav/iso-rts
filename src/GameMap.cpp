@@ -361,86 +361,35 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
                                    unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
-    /*
-    if(type >= MapObjectId::BASE_P1 && type <= MapObjectId::BASE_P3)
+    if(GameObject::TYPE_BASE == type)
     {
-        const int playerInd = static_cast<int>(type) - static_cast<int>(MapObjectId::BASE_P1);
-
-        Player * owner =  mGame->GetPlayerByIndex(playerInd);
+        Player * owner =  mGame->GetPlayerByIndex(variant);
 
         // no player in this map
         if(nullptr == owner)
             return ;
 
-        CreateObject(layerId, OBJ_BASE, owner, r0, c0, rows, cols);
+        CreateObject(layerId, type, variant, owner, r0, c0, rows, cols);
     }
-    else if(MapObjectId::GEN_ENERGY == type)
-        CreateObject(layerId, OBJ_RES_GEN_ENERGY, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::GEN_MATERIAL1 == type)
-        CreateObject(layerId, OBJ_RES_GEN_MATERIAL1, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_ENERGY == type)
-        CreateObject(layerId, OBJ_RES_STORAGE_ENERGY, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_MATERIAL == type)
-        CreateObject(layerId, OBJ_RES_STORAGE_MATERIAL, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_DIAMONDS == type)
-        CreateObject(layerId, OBJ_RES_STORAGE_DIAMONDS, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::STORAGE_BLOBS == type)
-        CreateObject(layerId, OBJ_RES_STORAGE_BLOBS, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::RADAR_STATION == type)
-        CreateObject(layerId, OBJ_RADAR_STATION, nullptr, r0, c0, rows, cols);
-    else if(MapObjectId::TREES_1 == type)
-        CreateObject(layerId, OBJ_TREES_1, nullptr, r0, c0, rows, cols);
-    else if(type >= MapObjectId::MOUNTAINS_FIRST && type <= MapObjectId::MOUNTAINS_LAST)
+    if(GameObject::TYPE_UNIT == type)
     {
-        const int objInd = static_cast<int>(type) - static_cast<int>(MapObjectId::MOUNTAINS_FIRST);
-
-        CreateObject(layerId, OBJ_MOUNTAINS_FIRST + objInd, nullptr, r0, c0, rows, cols);
-    }
-    else if(type >= MapObjectId::MOUNTAIN_FIRST && type <= MapObjectId::MOUNTAIN_LAST)
-    {
-        const int objInd = static_cast<int>(type) - static_cast<int>(MapObjectId::MOUNTAIN_FIRST);
-
-        CreateObject(layerId, OBJ_ROCKS_FIRST + objInd, nullptr, r0, c0, rows, cols);
-    }
-    else if(MapObjectId::PRACTICE_TARGET == type)
-        CreateObject(layerId, OBJ_PRACTICE_TARGET, nullptr, r0, c0, rows, cols);
-    else if(type >= MapObjectId::UNIT_FIRST && type <= MapObjectId::UNIT_LAST)
-    {
-        Player * p = nullptr;
-
-        unsigned int td = 0;
-
-        if(type < MapObjectId::UNIT_1_P2)
-        {
-            p = mGame->GetPlayerByIndex(0);
-            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P1);
-        }
-        else if(type < MapObjectId::UNIT_1_P3)
-        {
-            p = mGame->GetPlayerByIndex(1);
-            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P2);
-        }
-        else
-        {
-            p = mGame->GetPlayerByIndex(2);
-            td = static_cast<int>(type) - static_cast<int>(MapObjectId::UNIT_1_P3);
-        }
-
+        // TODO
+        /*
         const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
         const ObjectData & data = p->GetAvailableUnit(type);
         const Cell2D dest(r0, c0);
         CreateUnit(data, nullptr, dest, p);
+        */
     }
-*/
+    else
+        CreateObject(layerId, type, variant, nullptr, r0, c0, rows, cols);
 }
 
-GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
+GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
+                                   GameObjectVariantId variant, Player * owner,
                                    unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
-    return nullptr;
-
-    /*
     // object origin is out of map
     if(r0 >= mRows || c0 >= mCols)
         return nullptr;
@@ -454,7 +403,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
 
     const unsigned int ind0 = r0 * mCols + c0;
 
-    GameMapCell & gcell = mCells[ind0];
+    const GameMapCell & gcell = mCells[ind0];
 
     // cell is already full
     if(gcell.objTop)
@@ -463,15 +412,44 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     // create game object
     GameObject * obj = nullptr;
 
-    if(OBJ_RES_GEN_ENERGY == objId)
-        obj = new ResourceGenerator(RESG_ENERGY, ResourceType::RES_ENERGY, rows, cols);
-    else if(OBJ_RES_GEN_MATERIAL1 == objId)
-        obj = new ResourceGenerator(RESG_MATERIAL, ResourceType::RES_MATERIAL1, rows, cols);
-    else if(OBJ_RES_GEN_ENERGY_SOLAR == objId)
-        obj = new ResourceGenerator(RESG_ENERGY_SOLAR, ResourceType::RES_ENERGY, rows, cols);
-    else if(OBJ_RES_GEN_MATERIAL_EXTRACTOR == objId)
-        obj = new ResourceGenerator(RESG_MATERIAL_EXTRACTOR, ResourceType::RES_MATERIAL1, rows, cols);
-    else if(OBJ_BASE == objId)
+    bool isResGen = false;
+
+    if(GameObject::TYPE_MOUNTAINS == type ||
+       GameObject::TYPE_ROCKS == type)
+        obj = new SceneObject(type, variant, rows, cols);
+    else if(GameObject::TYPE_RES_GEN_ENERGY == type ||
+       GameObject::TYPE_RES_GEN_MATERIAL == type ||
+       GameObject::TYPE_RES_GEN_ENERGY_SOLAR == type ||
+       GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT == type)
+    {
+        obj = new ResourceGenerator(type, rows, cols);
+        isResGen = true;
+    }
+    else if(GameObject::TYPE_RES_STORAGE_BLOBS == type ||
+            GameObject::TYPE_RES_STORAGE_DIAMONDS == type ||
+            GameObject::TYPE_RES_STORAGE_ENERGY == type ||
+            GameObject::TYPE_RES_STORAGE_MATERIAL == type)
+        obj = new ResourceStorage(type, rows, cols);
+    else if(GameObject::TYPE_DIAMONDS == type)
+        obj = new Diamonds;
+    else if(GameObject::TYPE_BLOBS == type)
+        obj  = new Blobs;
+    else if(GameObject::TYPE_TREES == type)
+        obj  = new Trees(rows, cols);
+    else if(GameObject::TYPE_RADAR_STATION == type)
+        obj = new RadarStation(rows, cols);
+    else if(GameObject::TYPE_RADAR_TOWER == type)
+        obj = new RadarTower(rows, cols);
+    else if(GameObject::TYPE_DEFENSIVE_TOWER == type)
+    {
+        const ObjectData & data = owner->GetAvailableStructure(type);
+        obj = new DefensiveTower(data);
+    }
+    else if(GameObject::TYPE_WALL == type)
+        obj = new Wall(variant, rows, cols);
+    else if(GameObject::TYPE_WALL_GATE == type)
+        obj = new WallGate(variant, rows, cols);
+    else if(GameObject::TYPE_BASE == type)
     {
         obj = new Base(rows, cols);
 
@@ -493,43 +471,12 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
         owner->SetBaseCell(Cell2D(r0, c0));
         owner->SumCells(rows * cols);
     }
-    else if(OBJ_RADAR_STATION == objId)
-        obj = new RadarStation(rows, cols);
-    else if(OBJ_RADAR_TOWER == objId)
-        obj = new RadarTower(rows, cols);
-    else if(OBJ_PRACTICE_TARGET == objId)
+    else if(GameObject::TYPE_PRACTICE_TARGET == type)
         obj = new PracticeTarget(rows, cols);
-    else if(objId >= OBJ_MOUNTAINS_FIRST && objId <= OBJ_MOUNTAINS_LAST)
-        obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
-    else if(objId >= OBJ_ROCKS_FIRST && objId <= OBJ_ROCKS_LAST)
-        obj = new SceneObject(static_cast<GameObjectType>(objId), rows, cols);
-    else if(objId >= GameObject::TYPE_WALL_FIRST && objId <= GameObject::TYPE_WALL_LAST)
-        obj = new Wall(static_cast<GameObjectType>(objId), rows, cols);
-    else if(objId >= GameObject::TYPE_WALL_GATE_FIRST && objId <= GameObject::TYPE_WALL_GATE_LAST)
-        obj = new WallGate(static_cast<GameObjectType>(objId), rows, cols);
-    else if(GameObject::TYPE_DEFENSIVE_TOWER == objId)
-    {
-        const ObjectData & data = owner->GetAvailableStructure(STRUCT_DEF_TOWER);
-        obj = new DefensiveTower(data);
-    }
-    else if(OBJ_TREES_1 == objId)
-        obj = new Trees(OBJ_TREES_1, rows, cols);
-    else if(OBJ_DIAMONDS == objId)
-        obj = new Diamonds;
-    else if(OBJ_BLOBS == objId)
-        obj  = new Blobs;
-    else if(OBJ_RES_STORAGE_ENERGY == objId)
-        obj = new ResourceStorage(RES_ENERGY, 1, 1);
-    else if(OBJ_RES_STORAGE_MATERIAL == objId)
-        obj = new ResourceStorage(RES_MATERIAL1, 1, 1);
-    else if(OBJ_RES_STORAGE_DIAMONDS == objId)
-        obj = new ResourceStorage(RES_DIAMONDS, 1, 1);
-    else if(OBJ_RES_STORAGE_BLOBS == objId)
-        obj = new ResourceStorage(RES_BLOBS, 1, 1);
     // this should never happen
     else
     {
-        std::cerr << "[ERR] GameMap::CreateObject - unknown obj id: " << objId << std::endl;
+        std::cerr << "[ERR] GameMap::CreateObject - unknown obj type: " << type << std::endl;
         return nullptr;
     }
 
@@ -575,7 +522,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     if(owner != nullptr)
     {
         // register objects to Player
-        if(obj->GetObjectType() == OBJ_RES_GEN)
+        if(isResGen)
             owner->AddResourceGenerator(static_cast<ResourceGenerator *>(obj));
         else if(obj->IsStructure())
             owner->AddStructure(static_cast<Structure *>(obj));
@@ -593,7 +540,6 @@ GameObject * GameMap::CreateObject(unsigned int layerId, unsigned int objId, Pla
     }
 
     return obj;
-*/
 }
 
 bool GameMap::RemoveAndDestroyObject(GameObject * obj)
@@ -876,7 +822,8 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     // reset cell's changing flag
     gcell.changing = false;
 
-    GameObject * obj = CreateObject(OBJECTS2, data.objType, player, cell.row, cell.col, data.rows, data.cols);
+    GameObject * obj = CreateObject(OBJECTS2, data.objType, 0, player,
+                                   cell.row, cell.col, data.rows, data.cols);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -967,7 +914,7 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId p
     // add object wall
     const int rows = 1;
     const int cols = 1;
-    CreateObject(OBJECTS2, planned, player, cell.row, cell.col, rows, cols);
+    CreateObject(OBJECTS2, GameObject::TYPE_WALL, planned, player, cell.row, cell.col, rows, cols);
 
     // update minimap
     if(IsCellVisibleToLocalPlayer(cell.row, cell.col))
@@ -2629,7 +2576,7 @@ void GameMap::UpdateWalls(const Cell2D & center)
 
     // update south
     if(center.row + 1 < rows)
-    UpdateWall({center.row + 1, center.col});
+        UpdateWall({center.row + 1, center.col});
 
     // update west
     if(center.col > 0)

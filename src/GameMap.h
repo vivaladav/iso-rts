@@ -79,7 +79,8 @@ public:
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 
-    GameObject * CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
+    GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
+                             GameObjectVariantId variant, Player * owner,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 

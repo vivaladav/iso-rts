@@ -10,10 +10,19 @@
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(GameObjectTypeId type, ResourceType typeRes, int rows, int cols)
+ResourceGenerator::ResourceGenerator(GameObjectTypeId type, int rows, int cols)
     : Structure(type, rows, cols)
-    , mResource(typeRes)
 {
+    if(TYPE_RES_GEN_ENERGY == type || TYPE_RES_GEN_ENERGY_SOLAR == type)
+        mResource = RES_ENERGY;
+    if(TYPE_RES_GEN_MATERIAL == type || TYPE_RES_GEN_MATERIAL_EXTRACT == type)
+        mResource = RES_MATERIAL1;
+    else
+    {
+        mResource = RES_INVALID;
+        return ;
+    }
+
     SetCanBeConquered(true);
 
     SetImage();

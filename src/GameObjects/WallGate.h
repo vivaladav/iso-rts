@@ -17,7 +17,7 @@ public:
     };
 
 public:
-    WallGate(GateOrientation orientation, int rows, int cols);
+    WallGate(GameObjectVariantId orientation, int rows, int cols);
 
     bool IsOpen() const;
     bool Toggle();
@@ -34,7 +34,7 @@ private:
     void SetImage();
 
 private:
-    GateOrientation mOrientation;
+    GameObjectVariantId mOrientation;
 
     bool mOpen = false;
 };
