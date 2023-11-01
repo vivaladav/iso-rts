@@ -365,13 +365,13 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
 
     if(GameObject::TYPE_UNIT == type)
     {
-        // TODO
-        /*
-        const UnitType type = static_cast<UnitType>(UnitType::UNIT_1 + td);
-        const ObjectData & data = p->GetAvailableUnit(type);
+        if(nullptr == owner)
+            return ;
+
+        const ObjectData & data = owner->GetAvailableUnit(static_cast<UnitType>(variant));
         const Cell2D dest(r0, c0);
-        CreateUnit(data, nullptr, dest, p);
-        */
+
+        CreateUnit(data, nullptr, dest, owner);
     }
     else
         CreateObject(layerId, type, variant, owner, r0, c0, rows, cols);
