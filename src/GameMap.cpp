@@ -358,19 +358,11 @@ void GameMap::InitObjectVisibility(Player * player, GameObject * gameObj)
 }
 
 void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, GameObjectVariantId variant,
-                                   unsigned int r0, unsigned int c0,
+                                   unsigned int faction, unsigned int r0, unsigned int c0,
                                    unsigned int rows, unsigned int cols)
 {
-    if(GameObject::TYPE_BASE == type)
-    {
-        Player * owner =  mGame->GetPlayerByIndex(variant);
+    Player * owner =  mGame->GetPlayerByIndex(faction);
 
-        // no player in this map
-        if(nullptr == owner)
-            return ;
-
-        CreateObject(layerId, type, variant, owner, r0, c0, rows, cols);
-    }
     if(GameObject::TYPE_UNIT == type)
     {
         // TODO
@@ -382,7 +374,7 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
         */
     }
     else
-        CreateObject(layerId, type, variant, nullptr, r0, c0, rows, cols);
+        CreateObject(layerId, type, variant, owner, r0, c0, rows, cols);
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,

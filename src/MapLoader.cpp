@@ -1,5 +1,6 @@
 #include "MapLoader.h"
 
+#include "GameConstants.h"
 #include "GameMap.h"
 #include "IsoMap.h"
 
@@ -95,14 +96,15 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         unsigned int layerId = 0;
         unsigned int objId = 0;
         unsigned int variantId = 0;
+        unsigned int faction = NO_FACTION;
         unsigned int r0 = 0;
         unsigned int c0 = 0;
         unsigned int rows = 0;
         unsigned int cols = 0;
 
-        ss >> layerId >> objId >> variantId >> r0 >> c0 >> rows >> cols;
+        ss >> layerId >> objId >> variantId >> faction >> r0 >> c0 >> rows >> cols;
 
-        mGameMap->CreateObjectFromFile(layerId, objId, variantId, r0, c0, rows, cols);
+        mGameMap->CreateObjectFromFile(layerId, objId, variantId, faction, r0, c0, rows, cols);
     }
 }
 

@@ -75,7 +75,7 @@ public:
     void SetCellChanging(unsigned int r, unsigned int c, bool changing);
 
     void CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type,
-                              GameObjectVariantId variant,
+                              GameObjectVariantId variant, unsigned int faction,
                               unsigned int r0, unsigned int c0,
                               unsigned int rows, unsigned int cols);
 
