@@ -11,7 +11,6 @@
 
 #include <sgl/core/Math.h>
 #include <sgl/graphic/TextureManager.h>
-#include <sgl/utilities/HashCRC32.h>
 #include <sgl/utilities/UniformDistribution.h>
 
 namespace game
@@ -22,31 +21,29 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 
 unsigned int GameObject::counter = 0;
 
-using Hash = sgl::utilities::HashCRC32;
-
 const GameObjectTypeId GameObject::TYPE_NULL = 0;
 
-const GameObjectTypeId GameObject::TYPE_BASE = Hash::GetStringHash("TYPE_BASE");
-const GameObjectTypeId GameObject::TYPE_BLOBS = Hash::GetStringHash("TYPE_BLOBS");
-const GameObjectTypeId GameObject::TYPE_DEFENSIVE_TOWER = Hash::GetStringHash("TYPE_DEFENSIVE_TOWER");
-const GameObjectTypeId GameObject::TYPE_DIAMONDS = Hash::GetStringHash("TYPE_DIAMONDS");
-const GameObjectTypeId GameObject::TYPE_MOUNTAINS = Hash::GetStringHash("TYPE_MOUNTAINS");
-const GameObjectTypeId GameObject::TYPE_PRACTICE_TARGET = Hash::GetStringHash("TYPE_PRACTICE_TARGET");
-const GameObjectTypeId GameObject::TYPE_RADAR_STATION = Hash::GetStringHash("TYPE_RADAR_STATION");
-const GameObjectTypeId GameObject::TYPE_RADAR_TOWER = Hash::GetStringHash("TYPE_RADAR_TOWER");
-const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY = Hash::GetStringHash("TYPE_RES_GEN_ENERGY");
-const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY_SOLAR = Hash::GetStringHash("TYPE_RES_GEN_ENERGY_SOLAR");
-const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL = Hash::GetStringHash("TYPE_RES_GEN_MATERIAL");
-const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT = Hash::GetStringHash("TYPE_RES_GEN_MATERIAL_EXTRACT");
-const GameObjectTypeId GameObject::TYPE_RES_STORAGE_BLOBS = Hash::GetStringHash("TYPE_RES_STORAGE_BLOBS");
-const GameObjectTypeId GameObject::TYPE_RES_STORAGE_DIAMONDS = Hash::GetStringHash("TYPE_RES_STORAGE_DIAMONDS");
-const GameObjectTypeId GameObject::TYPE_RES_STORAGE_ENERGY = Hash::GetStringHash("TYPE_RES_STORAGE_ENERGY");
-const GameObjectTypeId GameObject::TYPE_RES_STORAGE_MATERIAL = Hash::GetStringHash("TYPE_RES_STORAGE_MATERIAL");
-const GameObjectTypeId GameObject::TYPE_ROCKS = Hash::GetStringHash("TYPE_ROCKS");
-const GameObjectTypeId GameObject::TYPE_TREES = Hash::GetStringHash("TYPE_TREES");
-const GameObjectTypeId GameObject::TYPE_UNIT = Hash::GetStringHash("TYPE_UNIT");
-const GameObjectTypeId GameObject::TYPE_WALL = Hash::GetStringHash("TYPE_WALL");
-const GameObjectTypeId GameObject::TYPE_WALL_GATE = Hash::GetStringHash("TYPE_WALL_GATE");
+const GameObjectTypeId GameObject::TYPE_BASE = std::hash<std::string>{}("BASE");
+const GameObjectTypeId GameObject::TYPE_BLOBS = std::hash<std::string>{}("BLOBS");
+const GameObjectTypeId GameObject::TYPE_DEFENSIVE_TOWER = std::hash<std::string>{}("DEF_TOWER");
+const GameObjectTypeId GameObject::TYPE_DIAMONDS = std::hash<std::string>{}("DIAMONDS");
+const GameObjectTypeId GameObject::TYPE_MOUNTAINS = std::hash<std::string>{}("MOUNTAINS");
+const GameObjectTypeId GameObject::TYPE_PRACTICE_TARGET = std::hash<std::string>{}("TARGET");
+const GameObjectTypeId GameObject::TYPE_RADAR_STATION = std::hash<std::string>{}("RADAR_STATION");
+const GameObjectTypeId GameObject::TYPE_RADAR_TOWER = std::hash<std::string>{}("RADAR_TOWER");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY = std::hash<std::string>{}("RESGEN_ENER");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_ENERGY_SOLAR = std::hash<std::string>{}("RESGEN_SOLAR");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL = std::hash<std::string>{}("RESGEN_MAT");
+const GameObjectTypeId GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT = std::hash<std::string>{}("RESGEN_MAT_EXT");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_BLOBS = std::hash<std::string>{}("RESSTOR_BLOBS");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_DIAMONDS = std::hash<std::string>{}("RESSTOR_DIAM");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_ENERGY = std::hash<std::string>{}("RESSTOR_ENER");
+const GameObjectTypeId GameObject::TYPE_RES_STORAGE_MATERIAL = std::hash<std::string>{}("RESSTOR_MAT");
+const GameObjectTypeId GameObject::TYPE_ROCKS = std::hash<std::string>{}("ROCKS");
+const GameObjectTypeId GameObject::TYPE_TREES = std::hash<std::string>{}("TREES");
+const GameObjectTypeId GameObject::TYPE_UNIT = std::hash<std::string>{}("UNIT");
+const GameObjectTypeId GameObject::TYPE_WALL = std::hash<std::string>{}("WALL");
+const GameObjectTypeId GameObject::TYPE_WALL_GATE = std::hash<std::string>{}("WALL_GATE");
 
 const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
 {

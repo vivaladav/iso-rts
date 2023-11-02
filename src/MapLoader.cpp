@@ -94,7 +94,7 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         ss.str(line);
 
         unsigned int layerId = 0;
-        unsigned int objId = 0;
+        std::string objIdStr;
         unsigned int variantId = 0;
         unsigned int faction = NO_FACTION;
         unsigned int r0 = 0;
@@ -102,7 +102,8 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         unsigned int rows = 0;
         unsigned int cols = 0;
 
-        ss >> layerId >> objId >> variantId >> faction >> r0 >> c0 >> rows >> cols;
+        ss >> layerId >> objIdStr >> variantId >> faction >> r0 >> c0 >> rows >> cols;
+        const std::size_t objId = std::hash<std::string>{}(objIdStr);
 
         mGameMap->CreateObjectFromFile(layerId, objId, variantId, faction, r0, c0, rows, cols);
     }
