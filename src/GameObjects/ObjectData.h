@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameObjectTypes.h"
+
 #include <vector>
 
 namespace game
@@ -72,7 +74,7 @@ struct ObjectData
     ObjectData(const std::vector<int> & sts,
                const std::vector<int> & cst,
                const char * file, unsigned int texId,
-               ObjClass oc, ObjCategory ocat, unsigned int type,
+               ObjClass oc, ObjCategory ocat, GameObjectTypeId type,
                unsigned int rs, unsigned int cs,
                const char * tit, const char * desc)
         : stats(sts)
@@ -97,7 +99,7 @@ struct ObjectData
 
     ObjClass objClass;
     ObjCategory objCategory;
-    unsigned int objType;
+    GameObjectTypeId objType;
 
     unsigned int rows;
     unsigned int cols;
