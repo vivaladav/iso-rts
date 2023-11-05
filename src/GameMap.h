@@ -28,8 +28,6 @@ struct Cell2D;
 struct GameMapCell;
 struct ObjectData;
 
-enum UnitType : unsigned int;
-
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
 {

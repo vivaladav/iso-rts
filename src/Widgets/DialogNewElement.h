@@ -33,7 +33,6 @@ class Player;
 struct ObjectData;
 
 enum ObjCategory : unsigned int;
-enum UnitType : unsigned int;
 
 class DialogNewElement : public sgl::sgui::Widget
 {
