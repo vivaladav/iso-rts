@@ -23,7 +23,6 @@ private:
 inline Collectable::Collectable(GameObjectTypeId type, int rows, int cols) :
     GameObject(type, GameObject::CAT_COLLECTABLE, rows, cols)
 {
-    SetCanBeCollected(true);
 }
 
 inline void Collectable::SetGenerator(CollectableGenerator * gen) { mGen = gen; }

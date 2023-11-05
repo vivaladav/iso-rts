@@ -230,7 +230,8 @@ void WallBuildPath::UpdateMove(float delta)
         const GameMapCell & targetCell = mGameMap->GetCell(mTargetRow, mTargetCol);
 
         // collect collectable object, if any
-        if(targetCell.objTop != nullptr && targetCell.objTop->CanBeCollected())
+        if(targetCell.objTop != nullptr &&
+           targetCell.objTop->GetObjectCategory() == GameObject::CAT_COLLECTABLE)
         {
             player->HandleCollectable(targetCell.objTop);
 
