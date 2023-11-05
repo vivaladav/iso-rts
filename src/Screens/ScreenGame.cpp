@@ -410,12 +410,10 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
     obj->SetSelected(true);
 
-    const GameObjectTypeId got = obj->GetObjectType();
-
     // update quick selection buttons when selected unit
     sgl::sgui::ButtonsGroup * buttonsUnitSel = mHUD->GetButtonsGroupUnitSel();
 
-    if(GameObject::TYPE_UNIT == got)
+    if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
     {
         const int numButtons = buttonsUnitSel->GetNumButtons();
 
@@ -440,7 +438,7 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
             buttonsUnitSel->GetButton(checked)->SetChecked(false);
 
         // show attack range overlay for towers
-        if(GameObject::TYPE_DEFENSIVE_TOWER == got)
+        if(GameObject::TYPE_DEFENSIVE_TOWER == obj->GetObjectType())
         {
             auto tower = static_cast<DefensiveTower *>(obj);
             const int range = tower->GetAttackRange();
@@ -768,7 +766,7 @@ void ScreenGame::CreateUI()
                     }
                 }
                 // object is a Unit
-                else if(objType == GameObject::TYPE_UNIT)
+                else if(act.obj->GetObjectCategory() == GameObject::CAT_UNIT)
                 {
                     // moving
                     if(objActId == GameObjectActionId::MOVE)
@@ -896,7 +894,7 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
     GameObject * selObj = player->GetSelectedObject();
 
     // unit selected -> handle mouse motion
-    if(selObj && selObj->GetObjectType() == GameObject::TYPE_UNIT)
+    if(selObj && selObj->GetObjectCategory() == GameObject::CAT_UNIT)
         HandleUnitOnMouseMove(static_cast<Unit *>(selObj), currCell);
 
     // update previous cell before exit
@@ -2078,7 +2076,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
     PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
 
     // selected object is a unit
-    if(selObj->GetObjectType() == GameObject::TYPE_UNIT)
+    if(selObj->GetObjectCategory() == GameObject::CAT_UNIT)
     {
         Unit * selUnit = static_cast<Unit *>(selObj);
 

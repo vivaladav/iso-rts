@@ -11,7 +11,7 @@ namespace game
 {
 
 WallGate::WallGate(GameObjectVariantId orientation, int rows, int cols)
-    : Structure(GameObject::TYPE_WALL_GATE, rows, cols)
+    : Structure(GameObject::TYPE_WALL_GATE, GameObject::CAT_GENERIC, rows, cols)
     , mOrientation(orientation)
 {
     SetImage();

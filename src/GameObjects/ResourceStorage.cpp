@@ -11,7 +11,7 @@ namespace game
 {
 
 ResourceStorage::ResourceStorage(GameObjectTypeId type, int rows, int cols)
-    : Structure(type, rows, cols)
+    : Structure(type, CAT_RES_STORAGE, rows, cols)
 {
     if(TYPE_RES_STORAGE_BLOBS == type)
         mResource = RES_BLOBS;

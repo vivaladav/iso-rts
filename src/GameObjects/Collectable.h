@@ -20,7 +20,8 @@ private:
     CollectableGenerator * mGen = nullptr;
 };
 
-inline Collectable::Collectable(GameObjectTypeId type, int rows, int cols) : GameObject(type, rows, cols)
+inline Collectable::Collectable(GameObjectTypeId type, int rows, int cols) :
+    GameObject(type, GameObject::CAT_COLLECTABLE, rows, cols)
 {
     SetCanBeCollected(true);
 }

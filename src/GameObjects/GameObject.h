@@ -40,6 +40,7 @@ struct GameMapCell;
 class GameObject
 {
 public:
+    // -- OBJECT TYPE --
     static const GameObjectTypeId TYPE_NULL;
 
     static const GameObjectTypeId TYPE_BASE;
@@ -60,15 +61,28 @@ public:
     static const GameObjectTypeId TYPE_RES_STORAGE_MATERIAL;
     static const GameObjectTypeId TYPE_ROCKS;
     static const GameObjectTypeId TYPE_TREES;
-    static const GameObjectTypeId TYPE_UNIT;
+    static const GameObjectTypeId TYPE_UNIT_SCOUT1;
+    static const GameObjectTypeId TYPE_UNIT_SOLDIER1;
+    static const GameObjectTypeId TYPE_UNIT_SOLDIER2;
+    static const GameObjectTypeId TYPE_UNIT_WORKER1;
     static const GameObjectTypeId TYPE_WALL;
     static const GameObjectTypeId TYPE_WALL_GATE;
 
     static const std::unordered_map<GameObjectTypeId, std::string> TITLES;
     static const std::unordered_map<GameObjectTypeId, std::string> DESCRIPTIONS;
 
+    // -- OBJECT CATEGORY --
+    static const GameObjectCategoryId CAT_NULL;
+
+    static const GameObjectCategoryId CAT_COLLECTABLE;
+    static const GameObjectCategoryId CAT_GENERIC;
+    static const GameObjectCategoryId CAT_RES_GENERATOR;
+    static const GameObjectCategoryId CAT_RES_STORAGE;
+    static const GameObjectCategoryId CAT_SCENE_OBJ;
+    static const GameObjectCategoryId CAT_UNIT;
+
 public:
-    GameObject(GameObjectTypeId type, int rows, int cols);
+    GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols);
     virtual ~GameObject();
 
     void SetGameMap(GameMap * map);
@@ -119,6 +133,7 @@ public:
     void SetOwner(Player * owner);
 
     GameObjectTypeId GetObjectType() const;
+    GameObjectCategoryId GetObjectCategory() const;
 
     float GetHealth() const;
     float GetMaxHealth() const;
@@ -187,6 +202,7 @@ private:
 
     Player * mOwner = nullptr;
     GameObjectTypeId mType = TYPE_NULL;
+    GameObjectCategoryId mCategory = CAT_NULL;
 
     GameObjectActionId mActiveAction = IDLE;
     GameObjectActionId mCurrAction = IDLE;
@@ -257,6 +273,8 @@ inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 inline Player * GameObject::GetOwner() const { return mOwner; }
 
 inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
+
+inline GameObjectCategoryId GameObject::GetObjectCategory() const { return mCategory; }
 
 inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
 {

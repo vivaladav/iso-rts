@@ -29,7 +29,7 @@ void ObjectPath::InitNextMove()
 {
     // not enough energy -> FAIL
     // TODO remove type check if mObj is changed into mUnit like for other paths
-    if(mObj->GetObjectType() == GameObject::TYPE_UNIT &&
+    if(mObj->GetObjectCategory() == GameObject::CAT_UNIT &&
        !static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE))
     {
         Fail();
@@ -173,7 +173,7 @@ void ObjectPath::Update(float delta)
         mGameMap->ApplyVisibility(player);
 
         // TODO remove check if mObj is changed into mUnit like for other paths
-        if(mObj->GetObjectType() == GameObject::TYPE_UNIT)
+        if(mObj->GetObjectCategory() == GameObject::CAT_UNIT)
             static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
 
         // update cell counter

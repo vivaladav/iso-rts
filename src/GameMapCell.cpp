@@ -18,7 +18,7 @@ GameMapCell::GameMapCell()
 
 Unit * GameMapCell::GetUnit() const
 {
-    if(objTop != nullptr && objTop->GetObjectType() == GameObject::TYPE_UNIT)
+    if(objTop != nullptr && objTop->GetObjectCategory() == GameObject::CAT_UNIT)
         return static_cast<Unit *>(objTop);
     else
         return nullptr;
@@ -26,16 +26,12 @@ Unit * GameMapCell::GetUnit() const
 
 bool GameMapCell::HasUnit() const
 {
-    return objTop != nullptr && objTop->GetObjectType() == GameObject::TYPE_UNIT;
+    return objTop != nullptr && objTop->GetObjectCategory() == GameObject::CAT_UNIT;
 }
 
 ResourceGenerator * GameMapCell::GetResourceGenerator() const
 {
-    if(objTop != nullptr &&
-      (objTop->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY ||
-       objTop->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY_SOLAR ||
-       objTop->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL ||
-       objTop->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT))
+    if(objTop != nullptr && objTop->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
         return static_cast<ResourceGenerator *>(objTop);
     else
         return nullptr;

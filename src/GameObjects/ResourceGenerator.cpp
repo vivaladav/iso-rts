@@ -11,7 +11,7 @@ namespace game
 {
 
 ResourceGenerator::ResourceGenerator(GameObjectTypeId type, int rows, int cols)
-    : Structure(type, rows, cols)
+    : Structure(type, CAT_RES_GENERATOR, rows, cols)
 {
     if(TYPE_RES_GEN_ENERGY == type || TYPE_RES_GEN_ENERGY_SOLAR == type)
         mResource = RES_ENERGY;

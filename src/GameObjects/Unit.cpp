@@ -50,7 +50,7 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
 };
 
 Unit::Unit(const ObjectData & data, int rows, int cols)
-    : GameObject(GameObject::TYPE_UNIT, rows, cols)
+    : GameObject(data.objType, GameObject::CAT_UNIT, rows, cols)
     , mUnitType(static_cast<UnitType>(data.objType))
     , mStructToBuild(GameObject::TYPE_NULL)
 {

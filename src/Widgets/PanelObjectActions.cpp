@@ -72,7 +72,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
 
         // TODO handle upgrades
     }
-    else if(objType == GameObject::TYPE_UNIT)
+    else if(mObj->GetObjectCategory() == GameObject::CAT_UNIT)
     {
         mButtons[BTN_MOVE]->SetVisible(true);
         mButtons[BTN_ATTACK]->SetVisible(true);
@@ -91,6 +91,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
         else
             mButtons[BTN_OPEN_GATE]->SetVisible(true);
     }
+
     // object not supported -> hide all buttons
     else
         mButtons[BTN_CANCEL]->SetVisible(false);

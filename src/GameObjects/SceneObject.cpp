@@ -9,7 +9,7 @@ namespace game
 {
 
 SceneObject::SceneObject(GameObjectTypeId type, GameObjectVariantId part, int rows, int cols)
-    : GameObject(type, rows, cols)
+    : GameObject(type, CAT_SCENE_OBJ, rows, cols)
     , mPart(part)
 {
     SetStatic(true);

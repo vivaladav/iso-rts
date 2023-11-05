@@ -56,13 +56,10 @@ void PlayerAI::PrepareData()
 
     for(GameObject * obj : objects)
     {
-        const GameObjectTypeId objType = obj->GetObjectType();
+        const GameObjectCategoryId objCat = obj->GetObjectCategory();
 
         //store objects based on type
-        if(objType == GameObject::TYPE_RES_GEN_ENERGY ||
-           objType == GameObject::TYPE_RES_GEN_ENERGY_SOLAR ||
-           objType == GameObject::TYPE_RES_GEN_MATERIAL ||
-           objType == GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT)
+        if(objCat == GameObject::CAT_RES_GENERATOR)
             mResGenerators.push_back(obj);
 
         // store structures

@@ -21,6 +21,7 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 
 unsigned int GameObject::counter = 0;
 
+// -- OBJECT TYPE --
 const GameObjectTypeId GameObject::TYPE_NULL = 0;
 
 const GameObjectTypeId GameObject::TYPE_BASE = std::hash<std::string>{}("BASE");
@@ -41,7 +42,10 @@ const GameObjectTypeId GameObject::TYPE_RES_STORAGE_ENERGY = std::hash<std::stri
 const GameObjectTypeId GameObject::TYPE_RES_STORAGE_MATERIAL = std::hash<std::string>{}("RESSTOR_MAT");
 const GameObjectTypeId GameObject::TYPE_ROCKS = std::hash<std::string>{}("ROCKS");
 const GameObjectTypeId GameObject::TYPE_TREES = std::hash<std::string>{}("TREES");
-const GameObjectTypeId GameObject::TYPE_UNIT = std::hash<std::string>{}("UNIT");
+const GameObjectTypeId GameObject::TYPE_UNIT_SCOUT1 = std::hash<std::string>{}("UNIT_SCOUT1");
+const GameObjectTypeId GameObject::TYPE_UNIT_SOLDIER1 = std::hash<std::string>{}("UNIT_SOLDIER1");
+const GameObjectTypeId GameObject::TYPE_UNIT_SOLDIER2 = std::hash<std::string>{}("UNIT_SOLDIER2");
+const GameObjectTypeId GameObject::TYPE_UNIT_WORKER1 = std::hash<std::string>{}("UNIT_WORKER1");
 const GameObjectTypeId GameObject::TYPE_WALL = std::hash<std::string>{}("WALL");
 const GameObjectTypeId GameObject::TYPE_WALL_GATE = std::hash<std::string>{}("WALL_GATE");
 
@@ -86,11 +90,23 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
     { GameObject::TYPE_WALL_GATE, "A gate that can be controlled to open a passage through a defensive wall."}
 };
 
-GameObject::GameObject(GameObjectTypeId type, int rows, int cols)
+// -- OBJECT CATEGORY --
+const GameObjectCategoryId GameObject::CAT_NULL = 0;
+
+const GameObjectCategoryId GameObject::CAT_COLLECTABLE = std::hash<std::string>{}("COLLECTABLE");
+const GameObjectCategoryId GameObject::CAT_GENERIC = std::hash<std::string>{}("GENERIC");
+const GameObjectCategoryId GameObject::CAT_RES_GENERATOR = std::hash<std::string>{}("RES_GEN");
+const GameObjectCategoryId GameObject::CAT_RES_STORAGE = std::hash<std::string>{}("RES_STORAGE");
+const GameObjectCategoryId GameObject::CAT_SCENE_OBJ = std::hash<std::string>{}("SCENE_OBJ");
+const GameObjectCategoryId GameObject::CAT_UNIT = std::hash<std::string>{}("UNIT");
+
+// -- CONSTRUCTOR & DESTRUCTOR --
+GameObject::GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols)
     : mOnValuesChanged([](){})
     , mIsoObj(new IsoObject(rows, cols))
     , mObjId(++counter)
     , mType(type)
+    , mCategory(cat)
 {
     // default colors to mark objects that haven't set any
     mObjColors.push_back(0xFFFFFFFF);

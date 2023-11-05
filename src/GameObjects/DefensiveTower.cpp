@@ -19,7 +19,7 @@ namespace game
 {
 
 DefensiveTower::DefensiveTower(const ObjectData & data)
-    : Structure(TYPE_DEFENSIVE_TOWER, data.rows, data.cols)
+    : Structure(TYPE_DEFENSIVE_TOWER, CAT_GENERIC, data.rows, data.cols)
 {
     // set attack range converting attribute
     const int maxAttVal = 11;

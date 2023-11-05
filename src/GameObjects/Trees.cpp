@@ -15,7 +15,7 @@ namespace game
 {
 
 Trees::Trees(int rows, int cols)
-    : GameObject(TYPE_TREES, rows, cols)
+    : GameObject(TYPE_TREES, CAT_SCENE_OBJ, rows, cols)
 {
     SetStatic(true);
 

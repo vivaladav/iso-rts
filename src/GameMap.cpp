@@ -363,7 +363,8 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
 {
     Player * owner =  mGame->GetPlayerByIndex(faction);
 
-    if(GameObject::TYPE_UNIT == type)
+    if(GameObject::TYPE_UNIT_SCOUT1 == type || GameObject::TYPE_UNIT_SOLDIER1 == type ||
+       GameObject::TYPE_UNIT_SOLDIER2 == type || GameObject::TYPE_UNIT_WORKER1 == type)
     {
         if(nullptr == owner)
             return ;
@@ -1377,7 +1378,7 @@ bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
         return false;
 
     // object is not an unit
-    if(obj->GetObjectType() != GameObject::TYPE_UNIT)
+    if(obj->GetObjectCategory() != GameObject::CAT_UNIT)
         return false;
 
     auto unit = static_cast<Unit *>(obj);
@@ -2198,7 +2199,7 @@ void GameMap::DestroyObject(GameObject * obj)
     if(owner != nullptr)
     {
         // remove unit from player
-        if(obj->GetObjectType() == GameObject::TYPE_UNIT)
+        if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
             owner->RemoveUnit(static_cast<Unit *>(obj));
         // remove structure
         else if(obj->IsStructure())
@@ -2425,7 +2426,7 @@ void GameMap::DestroyObjectPaths(GameObject * obj)
     }
 
     // other paths are only for units
-    if(obj->GetObjectType() != GameObject::TYPE_UNIT)
+    if(obj->GetObjectCategory() != GameObject::CAT_UNIT)
         return ;
 
     auto unit = static_cast<Unit *>(obj);
