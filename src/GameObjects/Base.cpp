@@ -9,8 +9,8 @@
 namespace game
 {
 
-Base::Base(int rows, int cols)
-    : Structure(GameObject::TYPE_BASE, GameObject::CAT_GENERIC, rows, cols)
+Base::Base()
+    : Structure(GameObject::TYPE_BASE, GameObject::CAT_GENERIC, 3, 3)
 {
     SetVisibilityLevel(6);
     // base is linked to itself

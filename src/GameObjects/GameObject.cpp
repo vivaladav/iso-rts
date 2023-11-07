@@ -121,6 +121,8 @@ GameObject::GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows
     , mObjId(++counter)
     , mType(type)
     , mCategory(cat)
+    , mRows(rows)
+    , mCols(cols)
 {
     // default colors to mark objects that haven't set any
     mObjColors.push_back(0xFFFFFFFF);

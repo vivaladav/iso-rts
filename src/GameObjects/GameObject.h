@@ -126,7 +126,6 @@ public:
     int GetRow1() const;
     int GetCol1() const;
 
-    void SetSize(unsigned int rows, unsigned int cols);
     unsigned int GetRows() const;
     unsigned int GetCols() const;
 
@@ -273,12 +272,6 @@ inline Player * GameObject::GetOwner() const { return mOwner; }
 inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
 
 inline GameObjectCategoryId GameObject::GetObjectCategory() const { return mCategory; }
-
-inline void GameObject::SetSize(unsigned int rows, unsigned int cols)
-{
-    mRows = rows;
-    mCols = cols;
-}
 
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }

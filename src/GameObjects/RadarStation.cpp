@@ -9,8 +9,8 @@
 namespace game
 {
 
-RadarStation::RadarStation(int rows, int cols)
-    : Structure(TYPE_RADAR_STATION, CAT_GENERIC, rows, cols)
+RadarStation::RadarStation()
+    : Structure(TYPE_RADAR_STATION, CAT_GENERIC, 2, 2)
 {
     SetCanBeConquered(true);
 

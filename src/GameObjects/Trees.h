@@ -8,7 +8,7 @@ namespace game
 class Trees : public GameObject
 {
 public:
-    Trees(int rows, int cols);
+    Trees();
 
     void Update(float delta) override;
 

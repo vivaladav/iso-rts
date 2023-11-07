@@ -26,7 +26,7 @@ public:
     };
 
 public:
-    Wall(GameObjectVariantId part, int rows, int cols);
+    Wall(GameObjectVariantId part);
 
     void SetWallType(GameObjectVariantId part);
 

@@ -9,8 +9,8 @@
 namespace game
 {
 
-Wall::Wall(GameObjectVariantId part, int rows, int cols)
-    : Structure(GameObject::TYPE_WALL, GameObject::CAT_GENERIC, rows, cols)
+Wall::Wall(GameObjectVariantId part)
+    : Structure(GameObject::TYPE_WALL, GameObject::CAT_GENERIC, 1, 1)
     , mPart(part)
 {
     SetImage();

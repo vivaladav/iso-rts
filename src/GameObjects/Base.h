@@ -8,7 +8,7 @@ namespace game
 class Base : public Structure
 {
 public:
-    Base(int rows, int cols);
+    Base();
 
 protected:
     void UpdateGraphics() override;

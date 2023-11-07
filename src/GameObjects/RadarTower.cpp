@@ -9,8 +9,8 @@
 namespace game
 {
 
-RadarTower::RadarTower(int rows, int cols)
-    : Structure(TYPE_RADAR_TOWER, CAT_GENERIC, rows, cols)
+RadarTower::RadarTower()
+    : Structure(TYPE_RADAR_TOWER, CAT_GENERIC, 1, 1)
 {
     SetCanBeConquered(true);
 

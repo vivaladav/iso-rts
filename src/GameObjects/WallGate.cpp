@@ -10,8 +10,8 @@
 namespace game
 {
 
-WallGate::WallGate(GameObjectVariantId orientation, int rows, int cols)
-    : Structure(GameObject::TYPE_WALL_GATE, GameObject::CAT_GENERIC, rows, cols)
+WallGate::WallGate(GameObjectVariantId orientation)
+    : Structure(GameObject::TYPE_WALL_GATE, GameObject::CAT_GENERIC, 1, 1)
     , mOrientation(orientation)
 {
     SetImage();

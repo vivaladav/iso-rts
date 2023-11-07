@@ -35,6 +35,10 @@ const ObjectFactionData & ObjectsDataRegistry::GetFactionData(PlayerFaction f, G
 
 void ObjectsDataRegistry::InitObjectData()
 {
+    mData.emplace(GameObject::TYPE_BASE,
+                  ObjectBasicData(GameObject::TYPE_BASE,
+                                  OCS_BASE, OCAT_GENERIC, 3, 3));
+
     mData.emplace(GameObject::TYPE_BLOBS,
                   ObjectBasicData(GameObject::TYPE_BLOBS,
                                   OCO_COLLECTABLE, OCAT_UNDEFINED, 1, 1));

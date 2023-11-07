@@ -75,13 +75,11 @@ public:
 
     void CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type,
                               GameObjectVariantId variant, unsigned int faction,
-                              unsigned int r0, unsigned int c0,
-                              unsigned int rows, unsigned int cols);
+                              unsigned int r0, unsigned int c0);
 
     GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
                              GameObjectVariantId variant, Player * owner,
-                              unsigned int r0, unsigned int c0,
-                              unsigned int rows, unsigned int cols);
+                              unsigned int r0, unsigned int c0);
 
     bool HasObject(GameObject * obj) const;
 
