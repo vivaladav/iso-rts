@@ -14,14 +14,15 @@ namespace sgl
 namespace game
 {
 
-struct ObjectData;
+struct ObjectBasicData;
+struct ObjectFactionData;
 
 enum PlayerFaction : unsigned int;
 
 class StructureIndicator : public IsoObject
 {
 public:
-    StructureIndicator(const ObjectData & data);
+    StructureIndicator(const ObjectBasicData & objData, const ObjectFactionData & fData);
 
     void SetCost(float energy, float material);
     void ShowCost(bool val);

@@ -19,6 +19,7 @@
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
 #include "GameObjects/ObjectData.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/PracticeTarget.h"
 #include "GameObjects/RadarStation.h"
 #include "GameObjects/RadarTower.h"
@@ -369,10 +370,9 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
         if(nullptr == owner)
             return ;
 
-        const ObjectData & data = owner->GetAvailableUnit(static_cast<UnitType>(variant));
         const Cell2D dest(r0, c0);
 
-        CreateUnit(data, nullptr, dest, owner);
+        CreateUnit(type, nullptr, dest, owner);
     }
     else
         CreateObject(layerId, type, variant, owner, r0, c0, rows, cols);
@@ -435,8 +435,10 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         obj = new RadarTower(rows, cols);
     else if(GameObject::TYPE_DEFENSIVE_TOWER == type)
     {
-        const ObjectData & data = owner->GetAvailableStructure(type);
-        obj = new DefensiveTower(data);
+        const ObjectBasicData & data = GetObjectData(type);
+        const ObjectFactionData & fData = GetFactionData(owner->GetFaction(), type);
+
+        obj = new DefensiveTower(data, fData);
     }
     else if(GameObject::TYPE_WALL == type)
         obj = new Wall(variant, rows, cols);
@@ -722,20 +724,24 @@ bool GameMap::AbortCellConquest(GameObject * obj)
     return false;
 }
 
-bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, const ObjectData & data)
+bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, GameObjectTypeId st)
 {
     const unsigned int r = static_cast<unsigned int>(cell.row);
     const unsigned int c = static_cast<unsigned int>(cell.col);
+
+    const ObjectBasicData & data = GetObjectData(st);
 
     // out of bounds
     if((data.rows - 1) > r || (data.cols - 1) > c || r >= mRows || c >= mCols)
         return false;
 
+    const ObjectFactionData & fData = GetFactionData(player->GetFaction(), st);
+
     // check costs
-    const bool costOk = player->HasEnough(Player::ENERGY, data.costs[RES_ENERGY]) &&
-                        player->HasEnough(Player::MATERIAL, data.costs[RES_MATERIAL1]) &&
-                        player->HasEnough(Player::DIAMONDS, data.costs[RES_DIAMONDS]) &&
-                        player->HasEnough(Player::BLOBS, data.costs[RES_BLOBS]);
+    const bool costOk = player->HasEnough(Player::ENERGY, fData.costs[RES_ENERGY]) &&
+                        player->HasEnough(Player::MATERIAL, fData.costs[RES_MATERIAL1]) &&
+                        player->HasEnough(Player::DIAMONDS, fData.costs[RES_DIAMONDS]) &&
+                        player->HasEnough(Player::BLOBS, fData.costs[RES_BLOBS]);
 
     if(!costOk)
         return false;
@@ -766,8 +772,11 @@ bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * playe
     return true;
 }
 
-void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
+void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st)
 {
+    const ObjectBasicData & data = GetObjectData(st);
+    const ObjectFactionData & fData = GetFactionData(player->GetFaction(), st);
+
     // mark cell as changing
     const unsigned int r0 = 1 + cell.row - data.rows;
     const unsigned int c0 = 1 + cell.col - data.cols;
@@ -785,17 +794,17 @@ void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, const Ob
     }
 
     // make player pay
-    if(data.costs[RES_ENERGY] > 0)
-        player->SumResource(Player::ENERGY, -data.costs[RES_ENERGY]);
-    if(data.costs[RES_MATERIAL1] > 0)
-        player->SumResource(Player::MATERIAL, -data.costs[RES_MATERIAL1]);
-    if(data.costs[RES_DIAMONDS] > 0)
-        player->SumResource(Player::DIAMONDS, -data.costs[RES_DIAMONDS]);
-    if(data.costs[RES_BLOBS] > 0)
-        player->SumResource(Player::BLOBS, -data.costs[RES_BLOBS]);
+    if(fData.costs[RES_ENERGY] > 0)
+        player->SumResource(Player::ENERGY, -fData.costs[RES_ENERGY]);
+    if(fData.costs[RES_MATERIAL1] > 0)
+        player->SumResource(Player::MATERIAL, -fData.costs[RES_MATERIAL1]);
+    if(fData.costs[RES_DIAMONDS] > 0)
+        player->SumResource(Player::DIAMONDS, -fData.costs[RES_DIAMONDS]);
+    if(fData.costs[RES_BLOBS] > 0)
+        player->SumResource(Player::BLOBS, -fData.costs[RES_BLOBS]);
 }
 
-void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectData & data)
+void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st)
 {
     // check if cell was of another faction
     const int ind = cell.row * mCols + cell.col;
@@ -815,8 +824,10 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, const ObjectD
     // reset cell's changing flag
     gcell.changing = false;
 
-    GameObject * obj = CreateObject(OBJECTS2, data.objType, 0, player,
-                                   cell.row, cell.col, data.rows, data.cols);
+    const ObjectBasicData & data = GetObjectData(st);
+
+    GameObject * obj = CreateObject(OBJECTS2, st, 0, player, cell.row,
+                                    cell.col, data.rows, data.cols);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -1088,7 +1099,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     ApplyLocalVisibility();
 }
 
-bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player)
+bool GameMap::CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player)
 {
     // generator is not owned by the player
     if(gen->GetOwner() != player)
@@ -1106,11 +1117,13 @@ bool GameMap::CanCreateUnit(const ObjectData & data, GameObject * gen, Player * 
     if(gen->IsBusy())
        return false;
 
+    const ObjectFactionData & fdata = GetFactionData(player->GetFaction(), ut);
+
     // check if player has enough resources
-    if(!player->HasEnough(Player::Stat::ENERGY, data.costs[RES_ENERGY]) ||
-       !player->HasEnough(Player::Stat::MATERIAL, data.costs[RES_MATERIAL1]) ||
-       !player->HasEnough(Player::Stat::DIAMONDS, data.costs[RES_DIAMONDS]) ||
-       !player->HasEnough(Player::Stat::BLOBS, data.costs[RES_BLOBS]))
+    if(!player->HasEnough(Player::Stat::ENERGY, fdata.costs[RES_ENERGY]) ||
+       !player->HasEnough(Player::Stat::MATERIAL, fdata.costs[RES_MATERIAL1]) ||
+       !player->HasEnough(Player::Stat::DIAMONDS, fdata.costs[RES_DIAMONDS]) ||
+       !player->HasEnough(Player::Stat::BLOBS, fdata.costs[RES_BLOBS]))
         return false;
 
     // check if there's at least 1 free cell where to place the new unit
@@ -1312,16 +1325,18 @@ Cell2D GameMap::GetNewUnitDestination(GameObject * gen)
     return Cell2D(-1, -1);
 }
 
-void GameMap::StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const int ind = dest.row * mCols + dest.col;
     GameMapCell & gcell = mCells[ind];
 
     // make player pay
-    player->SumResource(Player::Stat::ENERGY, -data.costs[RES_ENERGY]);
-    player->SumResource(Player::Stat::MATERIAL, -data.costs[RES_MATERIAL1]);
-    player->SumResource(Player::Stat::DIAMONDS, -data.costs[RES_DIAMONDS]);
-    player->SumResource(Player::Stat::BLOBS, -data.costs[RES_BLOBS]);
+    const ObjectFactionData & fData = GetFactionData(player->GetFaction(), ut);
+
+    player->SumResource(Player::Stat::ENERGY, -fData.costs[RES_ENERGY]);
+    player->SumResource(Player::Stat::MATERIAL, -fData.costs[RES_MATERIAL1]);
+    player->SumResource(Player::Stat::DIAMONDS, -fData.costs[RES_DIAMONDS]);
+    player->SumResource(Player::Stat::BLOBS, -fData.costs[RES_BLOBS]);
 
     // mark cell as changing
     gcell.changing = true;
@@ -1330,7 +1345,7 @@ void GameMap::StartCreateUnit(const ObjectData & data, GameObject * gen, const C
     gen->SetBusy(true);
 }
 
-void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player)
+void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player)
 {
     const unsigned int r = static_cast<unsigned int>(dest.row);
     const unsigned int c = static_cast<unsigned int>(dest.col);
@@ -1338,7 +1353,10 @@ void GameMap::CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
-    Unit * unit = new Unit(data, 1, 1);
+    const ObjectBasicData & data = GetObjectData(ut);
+    const ObjectFactionData & fData = GetFactionData(player->GetFaction(), ut);
+
+    Unit * unit = new Unit(data, fData);
     unit->SetOwner(player);
     unit->SetCell(&mCells[ind]);
 
@@ -2720,6 +2738,18 @@ void GameMap::UpdateWall(const Cell2D & cell)
             break;
         }
     }
+}
+
+const ObjectBasicData & GameMap::GetObjectData(GameObjectTypeId t) const
+{
+    const ObjectsDataRegistry * objReg = mGame->GetObjectsRegistry();
+    return objReg->GetObjectData(t);
+}
+
+const ObjectFactionData & GameMap::GetFactionData(PlayerFaction f, GameObjectTypeId t) const
+{
+    const ObjectsDataRegistry * objReg = mGame->GetObjectsRegistry();
+    return objReg->GetFactionData(f, t);
 }
 
 } // namespace game

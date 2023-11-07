@@ -21,13 +21,13 @@
 namespace game
 {
 
-StructureIndicator::StructureIndicator(const ObjectData & data)
-    : IsoObject(data.rows, data.cols)
+StructureIndicator::StructureIndicator(const ObjectBasicData & objData, const ObjectFactionData & fData)
+    : IsoObject(objData.rows, objData.cols)
     , mFaction(NO_FACTION)
 {
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    SetTexture(tm->GetSprite(data.iconFile, data.iconTexId));
+    SetTexture(tm->GetSprite(fData.iconFile, fData.iconTexId));
 
     const int alpha = 100;
     SetAlpha(alpha);

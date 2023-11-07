@@ -42,7 +42,6 @@ class Unit;
 class WallIndicator;
 
 enum PlayerFaction : unsigned int;
-enum UnitType : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
 {
@@ -109,7 +108,7 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
     bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player,
                                 const std::function<void()> & OnDone = []{});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,

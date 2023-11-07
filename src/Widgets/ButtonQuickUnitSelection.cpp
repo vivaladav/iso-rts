@@ -131,9 +131,10 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
 
     const Player * owner = unit->GetOwner();
     const unsigned int faction = owner->GetFaction();
-    const UnitType type = unit->GetUnitType();
+    const GameObjectTypeId type = unit->GetObjectType();
+    const unsigned int ind = Unit::TypeToIndex(type);
 
-    const unsigned int texInd = IND_UQS_UNIT1_F1 + (NUM_UQS_UNIT_SPRITE_PER_FACTION * faction) + type;
+    const unsigned int texInd = IND_UQS_UNIT1_F1 + (NUM_UQS_UNIT_SPRITE_PER_FACTION * faction) + ind;
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileUnitQuickSel, texInd);
 
     mImgUnit->SetTexture(tex);

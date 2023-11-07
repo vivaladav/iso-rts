@@ -4,9 +4,7 @@
 #include "GameConstants.h"
 #include "Player.h"
 #include "AI/PlayerAI.h"
-#include "GameObjects/ObjectsDataRegistry.h"
-#include "GameObjects/Structure.h"
-#include "GameObjects/Unit.h"
+#include "GameObjects/GameObject.h"
 #include "States/StatesIds.h"
 
 #include <sgl/sgui/Stage.h>
@@ -22,8 +20,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
 {
-    const ObjectsDataRegistry * dataReg = mGame->GetObjectsRegistry();
-
     const int MAX_UNITS0 = 5;
     const int startEnergy = 800;
     const int startMaterial = 250;
@@ -39,24 +35,24 @@ ScreenNewGame::ScreenNewGame(Game * game)
     p->SetMaxUnits(MAX_UNITS0);
 
     // assign initial available structures
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_DEFENSIVE_TOWER));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_PRACTICE_TARGET));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RADAR_STATION));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RADAR_TOWER));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_GEN_ENERGY_SOLAR));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_BLOBS));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_DIAMONDS));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_ENERGY));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_RES_STORAGE_MATERIAL));
-    p->AddAvailableStructure(dataReg->GetStructure(pf, GameObject::TYPE_WALL_GATE));
+    p->AddAvailableStructure(GameObject::TYPE_DEFENSIVE_TOWER);
+    p->AddAvailableStructure(GameObject::TYPE_PRACTICE_TARGET);
+    p->AddAvailableStructure(GameObject::TYPE_RADAR_STATION);
+    p->AddAvailableStructure(GameObject::TYPE_RADAR_TOWER);
+    p->AddAvailableStructure(GameObject::TYPE_RES_GEN_ENERGY_SOLAR);
+    p->AddAvailableStructure(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT);
+    p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_BLOBS);
+    p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_DIAMONDS);
+    p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_ENERGY);
+    p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_MATERIAL);
+    p->AddAvailableStructure(GameObject::TYPE_WALL_GATE);
 
     // assign initial available units
-    p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_1));
-    p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_2));
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_WORKER1);
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER1);
     // TODO temporary for testing. In the future start only with 2 types
-    p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_3));
-    p->AddAvailableUnit(dataReg->GetUnit(pf, UNIT_4));
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
 
     // assign initial resources
     p->SetResource(Player::Stat::BLOBS, startBlobs);
@@ -89,28 +85,28 @@ ScreenNewGame::ScreenNewGame(Game * game)
         p = game->AddPlayer(strPlayers[i], playerId);
         p->SetFaction(facAI);
         p->SetMaxUnits(MAX_UNITS0);
-        auto * ai = new PlayerAI(p);
+        auto * ai = new PlayerAI(p, game->GetObjectsRegistry());
         p->SetAI(ai);
 
         // assign initial available structures
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_DEFENSIVE_TOWER));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_PRACTICE_TARGET));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RADAR_STATION));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RADAR_TOWER));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_GEN_ENERGY_SOLAR));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_BLOBS));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_DIAMONDS));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_ENERGY));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_RES_STORAGE_MATERIAL));
-        p->AddAvailableStructure(dataReg->GetStructure(facAI, GameObject::TYPE_WALL_GATE));
+        p->AddAvailableStructure(GameObject::TYPE_DEFENSIVE_TOWER);
+        p->AddAvailableStructure(GameObject::TYPE_PRACTICE_TARGET);
+        p->AddAvailableStructure(GameObject::TYPE_RADAR_STATION);
+        p->AddAvailableStructure(GameObject::TYPE_RADAR_TOWER);
+        p->AddAvailableStructure(GameObject::TYPE_RES_GEN_ENERGY_SOLAR);
+        p->AddAvailableStructure(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT);
+        p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_BLOBS);
+        p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_DIAMONDS);
+        p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_ENERGY);
+        p->AddAvailableStructure(GameObject::TYPE_RES_STORAGE_MATERIAL);
+        p->AddAvailableStructure(GameObject::TYPE_WALL_GATE);
 
         // assign initial available units
-        p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_1));
-        p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_2));
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_WORKER1);
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER1);
         // TODO temporary for testing. In the future start only with 2 types
-        p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_3));
-        p->AddAvailableUnit(dataReg->GetUnit(facAI, UNIT_4));
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
 
         // assign initial resources
         p->SetResource(Player::Stat::BLOBS, startBlobs);

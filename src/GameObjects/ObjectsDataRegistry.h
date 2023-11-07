@@ -10,23 +10,21 @@
 namespace game
 {
 
-enum UnitType : unsigned int;
-
 class ObjectsDataRegistry
 {
 public:
     ObjectsDataRegistry();
 
-    const ObjectData & GetStructure(PlayerFaction f, GameObjectTypeId type) const;
-    const ObjectData & GetUnit(PlayerFaction f, UnitType type) const;
+    const ObjectBasicData & GetObjectData(GameObjectTypeId type) const;
+    const ObjectFactionData & GetFactionData(PlayerFaction f, GameObjectTypeId type) const;
 
 private:
-    void InitStructures();
-    void InitUnits();
+    void InitObjectData();
+    void InitFactionData();
 
 private:
-    std::array<std::unordered_map<GameObjectTypeId, ObjectData>, NUM_FACTIONS> mStructures;
-    std::array<std::unordered_map<UnitType, ObjectData>, NUM_FACTIONS> mUnits;
+    std::unordered_map<GameObjectTypeId, ObjectBasicData> mData;
+    std::array<std::unordered_map<GameObjectTypeId, ObjectFactionData>, NUM_FACTIONS> mFactionData;
 };
 
 } // namespace game

@@ -5,7 +5,6 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
-#include "GameObjects/ObjectData.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
@@ -26,6 +25,7 @@ Player::Player(const char * name, int pid)
     , mOnNumUnitsChanged([](){})
     , mOnResourcesChanged([](){})
     , mPlayerId(pid)
+    , mFaction(NO_FACTION)
 {
     mStats.emplace_back(Stat::BLOBS, 0);
     mStats.emplace_back(Stat::DIAMONDS, 0);
@@ -278,54 +278,32 @@ void Player::HandleCollectable(GameObject * obj)
     static_cast<Collectable *>(obj)->Collected();
 }
 
-void Player::AddAvailableStructure(const ObjectData & data)
+void Player::AddAvailableStructure(GameObjectTypeId type)
 {
-    mAvailableStructures.emplace_back(data);
-}
-
-const ObjectData & Player::GetAvailableStructure(GameObjectTypeId type) const
-{
-    for(const ObjectData & data : mAvailableStructures)
-    {
-        if(data.objType == type)
-            return data;
-    }
-
-    return ObjectData::NullObj;
+    mAvailableStructures.emplace_back(type);
 }
 
 bool Player::IsStructureAvailable(GameObjectTypeId type) const
 {
-    for(const ObjectData & data : mAvailableStructures)
+    for(const GameObjectTypeId t : mAvailableStructures)
     {
-        if(data.objType == type)
+        if(t == type)
             return true;
     }
 
     return false;
 }
 
-void Player::AddAvailableUnit(const ObjectData & data)
+void Player::AddAvailableUnit(GameObjectTypeId type)
 {
-    mAvailableUnits.emplace_back(data);
+    mAvailableUnits.emplace_back(type);
 }
 
-const ObjectData & Player::GetAvailableUnit(UnitType type) const
+bool Player::IsUnitAvailable(GameObjectTypeId type) const
 {
-    for(const ObjectData & data : mAvailableUnits)
+    for(const GameObjectTypeId t : mAvailableUnits)
     {
-        if(data.objType == type)
-            return data;
-    }
-
-    return ObjectData::NullObj;
-}
-
-bool Player::IsUnitAvailable(UnitType type) const
-{
-    for(const ObjectData & data : mAvailableUnits)
-    {
-        if(data.objType == type)
+        if(t == type)
             return true;
     }
 

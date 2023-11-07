@@ -1,9 +1,11 @@
 #include "ObjectData.h"
 
+#include "GameObjects/GameObject.h"
+
 namespace game
 {
 
-const char * ObjectData::STR_CLASS[NUM_OBJ_CLASSES] =
+const char * ObjectBasicData::STR_CLASS[NUM_OBJ_CLASSES] =
 {
     "BASE",
     "GENERATOR",
@@ -11,15 +13,19 @@ const char * ObjectData::STR_CLASS[NUM_OBJ_CLASSES] =
     "STORAGE",
     "TARGET",
     "TOWER",
+    "WALL",
     "GATE",
 
     "GENERIC",
     "SCOUT",
     "SOLDIER",
-    "WORKER"
+    "WORKER",
+
+    "COLLECTABLE",
+    "SCENE"
 };
 
-const char * ObjectData::STR_STAT[NUM_TOT_OBJ_STATS] =
+const char * ObjectFactionData::STR_STAT[NUM_TOT_OBJ_STATS] =
 {
     "ENERGY",
     "VIEW RADIUS",
@@ -35,7 +41,8 @@ const char * ObjectData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "CONQUEST"
 };
 
-const ObjectData ObjectData::NullObj(std::vector<int>{}, std::vector<int>{}, nullptr, 0,
-                                     OC_NULL, OCAT_UNDEFINED, -1, 0, 0, nullptr, nullptr);
+const ObjectBasicData ObjectBasicData::NullObj(GameObject::TYPE_NULL, OC_NULL, OCAT_UNDEFINED, 0, 0);
+
+const ObjectFactionData ObjectFactionData::NullObj({}, {}, nullptr, 0);
 
 } // namespace game

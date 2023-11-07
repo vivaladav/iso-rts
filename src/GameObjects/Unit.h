@@ -7,26 +7,13 @@
 namespace game
 {
 
-struct ObjectData;
-
-enum UnitType : unsigned int
-{
-    UNIT_1,
-    UNIT_2,
-    UNIT_3,
-    UNIT_4,
-
-    NUM_UNIT_TYPES,
-
-    UNIT_NULL
-};
+struct ObjectBasicData;
+struct ObjectFactionData;
 
 class Unit : public GameObject
 {
 public:
-    Unit(const ObjectData & data, int rows, int cols);
-
-    UnitType GetUnitType() const;
+    Unit(const ObjectBasicData & objData, const ObjectFactionData & facData);
 
     int GetUnitLevel() const;
     void IncreaseUnitLevel();
@@ -49,8 +36,8 @@ public:
     int GetStat(unsigned int index) const;
 
 public:
-    static const char * TITLES[NUM_UNIT_TYPES];
-    static const char * DESCRIPTIONS[NUM_UNIT_TYPES];
+    static unsigned int TypeToIndex(GameObjectTypeId type);
+    static GameObjectTypeId IndexToType(unsigned int ind);
 
 private:
     void UpdateGraphics() override;
@@ -75,12 +62,8 @@ private:
 
     GameObject * mTarget = nullptr;
 
-    UnitType mUnitType;
-
     GameObjectTypeId mStructToBuild;
 };
-
-inline UnitType Unit::GetUnitType() const { return mUnitType; }
 
 inline int Unit::GetUnitLevel() const { return mLevel; }
 

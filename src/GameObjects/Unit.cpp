@@ -6,7 +6,6 @@
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/ObjectData.h"
-#include "GameObjects/Structure.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
@@ -15,26 +14,11 @@
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 
+#include <unordered_map>
 #include <cmath>
 
 namespace game
 {
-
-const char * Unit::TITLES[NUM_UNIT_TYPES] =
-{
-    "WORKER",
-    "SOLDIER",
-    "GENERIC",
-    "SCOUT"
-};
-
-const char * Unit::DESCRIPTIONS[NUM_UNIT_TYPES] =
-{
-    "A basic worker unit.\nIt is specialized in construction and conquest.",
-    "A basic soldier unit.\nUseful for defense and exploration.",
-    "A slow, but versatile unit.",
-    "A light and fast unit ideal for exploring, but not for fighting."
-};
 
 const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
 {
@@ -49,14 +33,13 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
     0.f     // TOGGLE_GATE
 };
 
-Unit::Unit(const ObjectData & data, int rows, int cols)
-    : GameObject(data.objType, GameObject::CAT_UNIT, rows, cols)
-    , mUnitType(static_cast<UnitType>(data.objType))
+Unit::Unit(const ObjectBasicData & objData, const ObjectFactionData & facData)
+    : GameObject(objData.objType, GameObject::CAT_UNIT, objData.rows, objData.cols)
     , mStructToBuild(GameObject::TYPE_NULL)
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);
-    mStats = data.stats;
+    mStats = facData.stats;
 
     // set attack range converting attribute
     const int maxAttVal = 11;
@@ -187,11 +170,12 @@ void Unit::SetImage()
         return ;
 
     const unsigned int faction = owner->GetFaction();
+    const GameObjectTypeId type = GetObjectType();
+    const unsigned int ind = TypeToIndex(type);
 
     const unsigned int texInd = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
-                                (NUM_UNIT_SPRITES_PER_TYPE * mUnitType) +
+                                (NUM_UNIT_SPRITES_PER_TYPE * ind) +
                                  static_cast<unsigned int>(IsSelected());
-
     auto * tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 
@@ -270,6 +254,32 @@ void Unit::Shoot()
     };
 
     pu->AddParticle(pd);
+}
+
+unsigned int Unit::TypeToIndex(GameObjectTypeId type)
+{
+    const std::unordered_map<GameObjectTypeId, unsigned int> indexes =
+    {
+        {GameObject::TYPE_UNIT_WORKER1, 0},
+        {GameObject::TYPE_UNIT_SOLDIER1, 1},
+        {GameObject::TYPE_UNIT_SOLDIER2, 2},
+        {GameObject::TYPE_UNIT_SCOUT1, 3}
+    };
+
+    return indexes.at(type);
+}
+
+GameObjectTypeId Unit::IndexToType(unsigned int ind)
+{
+    const GameObjectTypeId types[] =
+    {
+        GameObject::TYPE_UNIT_WORKER1,
+        GameObject::TYPE_UNIT_SOLDIER1,
+        GameObject::TYPE_UNIT_SOLDIER2,
+        GameObject::TYPE_UNIT_SCOUT1
+    };
+
+    return types[ind];
 }
 
 } // namespace game

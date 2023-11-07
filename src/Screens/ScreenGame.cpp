@@ -14,6 +14,7 @@
 #include "AI/PlayerAI.h"
 #include "AI/WallBuildPath.h"
 #include "GameObjects/DefensiveTower.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/WallGate.h"
 #include "Indicators/AttackRangeIndicator.h"
@@ -548,7 +549,8 @@ void ScreenGame::CreateUI()
             return ;
 
         mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_UNITS,
-                                                 "CREATE NEW UNIT", player);
+                                                 "CREATE NEW UNIT", player,
+                                                 GetGame()->GetObjectsRegistry());
         mDialogNewElement->SetFocus();
 
         mDialogNewElement->SetFunctionOnClose([this]
@@ -558,7 +560,7 @@ void ScreenGame::CreateUI()
 
         mDialogNewElement->SetFunctionOnBuild([this, player]
         {
-            const auto type = static_cast<UnitType>(mDialogNewElement->GetSelectedData().objType);
+            const GameObjectTypeId type = mDialogNewElement->GetSelectedType();
             SetupNewUnit(type, player->GetSelectedObject(), player);
 
             ClearNewElemDialog();
@@ -579,9 +581,9 @@ void ScreenGame::CreateUI()
         if(mDialogNewElement != nullptr)
             return ;
 
-        const std::vector<ObjectData> & unitsData = player->GetAvailableStructures();
         mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_STRUCTURES,
-                                                 "CREATE NEW STRUCTURE",player);
+                                                 "CREATE NEW STRUCTURE", player,
+                                                 GetGame()->GetObjectsRegistry());
         mDialogNewElement->SetFocus();
 
         // set unit's action to idle while dialog is open
@@ -598,7 +600,7 @@ void ScreenGame::CreateUI()
         {
             unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
 
-            const auto stype = static_cast<GameObjectTypeId>(mDialogNewElement->GetSelectedData().objType);
+            const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
             unit->SetStructureToBuild(stype);
 
             ClearNewElemDialog();
@@ -1095,13 +1097,11 @@ int ScreenGame::CellToIndex(const Cell2D & cell) const
     return cell.row * mIsoMap->GetNumCols() + cell.col;
 }
 
-bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
+bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player,
                               const std::function<void ()> & OnDone)
 {
-    const ObjectData & data = player->GetAvailableUnit(type);
-
     // check if create is possible
-    if(!mGameMap->CanCreateUnit(data, gen, player))
+    if(!mGameMap->CanCreateUnit(type, gen, player))
         return false;
 
     Cell2D cell = mGameMap->GetNewUnitDestination(gen);
@@ -1113,7 +1113,7 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     }
 
     // start create
-    mGameMap->StartCreateUnit(data, gen, cell, player);
+    mGameMap->StartCreateUnit(type, gen, cell, player);
 
     gen->SetActiveAction(GameObjectActionId::IDLE);
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
@@ -1121,16 +1121,18 @@ bool ScreenGame::SetupNewUnit(UnitType type, GameObject * gen, Player * player,
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, data, OnDone]
+    pb->SetFunctionOnCompleted([this, cell, player, gen, type, OnDone]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
-        mGameMap->CreateUnit(data, gen, cell, player);
+        mGameMap->CreateUnit(type, gen, cell, player);
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         // add unit to map if cell is visible to local player
         if(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col))
         {
+            const ObjectBasicData & data = GetGame()->GetObjectsRegistry()->GetObjectData(type);
+
             const PlayerFaction faction = player->GetFaction();
             const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
             MiniMap * mm = mHUD->GetMinimap();
@@ -1210,26 +1212,27 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
                                         const std::function<void()> & OnDone)
 {
     const GameObjectTypeId st = unit->GetStructureToBuild();
-    const ObjectData & data = player->GetAvailableStructure(st);
 
     // check if building is possible
-    if(!mGameMap->CanBuildStructure(unit, cellTarget, player, data))
+    if(!mGameMap->CanBuildStructure(unit, cellTarget, player, st))
         return false;
 
-    mGameMap->StartBuildStructure(cellTarget, player, data);
+    mGameMap->StartBuildStructure(cellTarget, player, st);
 
     // create and init progress bar
     // TODO get time from unit
     CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, data, OnDone]
+    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, st, OnDone]
     {
-        mGameMap->BuildStructure(cellTarget, player, data);
+        mGameMap->BuildStructure(cellTarget, player, st);
         mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
 
         unit->ConsumeEnergy(BUILD_STRUCTURE);
 
         // add unit to map if cell is visible to local player
+        const ObjectBasicData & data = GetGame()->GetObjectsRegistry()->GetObjectData(st);
+
         const unsigned int rTL = cellTarget.row - data.rows + 1;
         const unsigned int cTL = cellTarget.col - data.cols + 1;
 
@@ -1726,8 +1729,10 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
         ind = it->second;
     else
     {
-        const ObjectData & data = player->GetAvailableStructure(st);
-        ind = new StructureIndicator(data);
+        const ObjectsDataRegistry * dataReg = GetGame()->GetObjectsRegistry();
+        const ObjectBasicData & objData = dataReg->GetObjectData(st);
+        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetOwner()->GetFaction(), st);
+        ind = new StructureIndicator(objData, factData);
         mStructIndicators.emplace(st, ind);
     }
 
@@ -1845,11 +1850,13 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
         const Cell2D cellUnit(gmc->row, gmc->col);
 
         const GameObjectTypeId st = unit->GetStructureToBuild();
-        const ObjectData & data = player->GetAvailableStructure(st);
+        const ObjectsDataRegistry * dataReg = GetGame()->GetObjectsRegistry();
+        const ObjectBasicData & objData = dataReg->GetObjectData(st);
+        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetOwner()->GetFaction(), st);
 
         // if unit is next to any target cell -> try to build
-        const int indRows = data.rows;
-        const int indCols = data.cols;
+        const int indRows = objData.rows;
+        const int indCols = objData.cols;
         const int r0 = clickCell.row >= indRows ? 1 + clickCell.row - indRows : 0;
         const int c0 = clickCell.col >= indCols ? 1 + clickCell.col - indCols : 0;
 
@@ -1881,7 +1888,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
                 return ;
 
             // add temporary indicator for tower
-            mTempStructIndicator = new StructureIndicator(data);
+            mTempStructIndicator = new StructureIndicator(objData, factData);
             mTempStructIndicator->SetFaction(player->GetFaction());
 
             IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS2);

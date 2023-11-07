@@ -3,6 +3,7 @@
 #include "GameConstants.h"
 #include "GameMap.h"
 #include "Player.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
@@ -20,8 +21,9 @@ constexpr int MAX_PRIORITY = 100;
 namespace game
 {
 
-PlayerAI::PlayerAI(Player * player)
+PlayerAI::PlayerAI(Player * player, const ObjectsDataRegistry * dataReg)
     : mPlayer(player)
+    , mDataReg(dataReg)
 {
 }
 
@@ -243,9 +245,9 @@ void PlayerAI::AddActionsBase(Structure * s)
     // DECIDE UNIT TYPE
     // TODO keep into consideration faction attitude
     // (i.e.: if faction is more inclined to attack then prefer soldier over builder)
-    std::vector<int> priorities(NUM_UNIT_TYPES, priority);
-    std::vector<int> costs(NUM_UNIT_TYPES, 0);
-    std::vector<int> relCosts(NUM_UNIT_TYPES, 0);
+    std::vector<int> priorities(GameObject::NUM_UNIT_TYPES, priority);
+    std::vector<int> costs(GameObject::NUM_UNIT_TYPES, 0);
+    std::vector<int> relCosts(GameObject::NUM_UNIT_TYPES, 0);
 
     // 1- exclude units that can't be built and check cost
     const int multEnergy = 1;
@@ -255,20 +257,24 @@ void PlayerAI::AddActionsBase(Structure * s)
     int maxCost = 0;
     int validUnits = 0;
 
-    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    for(unsigned int i = 0; i < GameObject::NUM_UNIT_TYPES; ++i)
     {
-        const ObjectData & data = mPlayer->GetAvailableUnit(static_cast<UnitType>(i));
+        const GameObjectTypeId ut = Unit::IndexToType(i);
 
-        if(data.objClass == OC_NULL || !mGm->CanCreateUnit(data, s, mPlayer))
+        if(!mPlayer->IsUnitAvailable(ut))
+            continue;
+
+        if(!mGm->CanCreateUnit(ut, s, mPlayer))
         {
             priorities[i] = 0;
             continue;
         }
 
-        // total cost
-        costs[i] = data.costs[RES_ENERGY] * multEnergy + data.costs[RES_MATERIAL1] * multMaterial +
-                   data.costs[RES_BLOBS] * multBlobs + data.costs[RES_DIAMONDS] * multDiamonds;
+        const ObjectFactionData & fData = mDataReg->GetFactionData(mPlayer->GetFaction(), ut);
 
+        // total cost
+        costs[i] = fData.costs[RES_ENERGY] * multEnergy + fData.costs[RES_MATERIAL1] * multMaterial +
+                   fData.costs[RES_BLOBS] * multBlobs + fData.costs[RES_DIAMONDS] * multDiamonds;
 
         if(costs[i] > maxCost)
             maxCost = costs[i];
@@ -283,22 +289,22 @@ void PlayerAI::AddActionsBase(Structure * s)
 
         if(energy > 0)
         {
-            relCosts[i] += data.costs[RES_ENERGY] * 100 / energy;
+            relCosts[i] += fData.costs[RES_ENERGY] * 100 / energy;
             ++costsIncluded;
         }
         if(material > 0)
         {
-            relCosts[i] += data.costs[RES_MATERIAL1] * 100 / material;
+            relCosts[i] += fData.costs[RES_MATERIAL1] * 100 / material;
             ++costsIncluded;
         }
         if(blobs > 0)
         {
-            relCosts[i] += data.costs[RES_BLOBS] * 100 / blobs;
+            relCosts[i] += fData.costs[RES_BLOBS] * 100 / blobs;
             ++costsIncluded;
         }
         if(diamonds > 0)
         {
-            relCosts[i] += data.costs[RES_DIAMONDS] * 100 / diamonds;
+            relCosts[i] += fData.costs[RES_DIAMONDS] * 100 / diamonds;
             ++costsIncluded;
         }
 
@@ -318,19 +324,20 @@ void PlayerAI::AddActionsBase(Structure * s)
     for(unsigned int i = 0; i < mPlayer->GetNumUnits(); ++i)
     {
         Unit * u = mPlayer->GetUnit(i);
-        const unsigned int typeId = u->GetUnitType();
+        const GameObjectTypeId typeId = u->GetObjectType();
+        const unsigned int ind = Unit::TypeToIndex(typeId);
 
-        if(priorities[typeId] <= 0)
+        if(priorities[ind] <= 0)
             continue ;
 
-        priorities[typeId] += bonusExistingUnit;
+        priorities[ind] += bonusExistingUnit;
     }
 
     // 3- apply bonuses based on unit type
     const int bonusCost = -15;
     const int bonusRelCost = -20;
 
-    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    for(unsigned int i = 0; i < GameObject::NUM_UNIT_TYPES; ++i)
     {
         if(priorities[i] <= 0)
             continue ;
@@ -345,7 +352,7 @@ void PlayerAI::AddActionsBase(Structure * s)
     // check at least 1 priority is enough
     bool priorityOk = false;
 
-    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    for(unsigned int i = 0; i < GameObject::NUM_UNIT_TYPES; ++i)
     {
         if(priorities[i] >= mMinPriority)
         {
@@ -363,20 +370,20 @@ void PlayerAI::AddActionsBase(Structure * s)
     action->type = AIA_NEW_UNIT;
     action->ObjSrc = s;
     action->priority = 0;
-    action->unitType = UNIT_NULL;
+    action->unitType = GameObject::TYPE_NULL;
 
     // for now picking first of list when priorities are the same
-    for(unsigned int i = 0; i < NUM_UNIT_TYPES; ++i)
+    for(unsigned int i = 0; i < GameObject::NUM_UNIT_TYPES; ++i)
     {
         if(priorities[i] > action->priority)
         {
             action->priority = priorities[i];
-            action->unitType = static_cast<UnitType>(i);
+            action->unitType = Unit::IndexToType(i);
         }
     }
 
     // no valid unit was found -> exit
-    if(UNIT_NULL == action->unitType)
+    if(GameObject::TYPE_NULL == action->unitType)
     {
         mActionsDone.push_back(action);
         return ;
@@ -576,11 +583,11 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
 
     // bonus unit speed
     const int bonusSpeed = 10;
-    priority += bonusSpeed * u->GetStat(OSTAT_SPEED) / ObjectData::MAX_STAT_VAL;
+    priority += bonusSpeed * u->GetStat(OSTAT_SPEED) / ObjectFactionData::MAX_STAT_VAL;
 
     // bonus unit conquest
     const int bonusConquest = 20;
-    priority += bonusConquest * u->GetStat(OSTAT_CONQUEST) / ObjectData::MAX_STAT_VAL;
+    priority += bonusConquest * u->GetStat(OSTAT_CONQUEST) / ObjectFactionData::MAX_STAT_VAL;
 
     // can't find something that's worth an action
     if(priority < mMinPriority)

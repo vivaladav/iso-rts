@@ -16,6 +16,7 @@ enum ObjClass : unsigned int
     OCS_STORAGE,
     OCS_TARGET,
     OCS_TOWER,
+    OCS_WALL,
     OCS_WALL_GATE,
 
     // UNITS
@@ -23,6 +24,10 @@ enum ObjClass : unsigned int
     OCU_SCOUT,
     OCU_SOLDIER,
     OCU_WORKER,
+
+    // OTHERS
+    OCO_COLLECTABLE,
+    OCO_SCENE,
 
     NUM_OBJ_CLASSES,
 
@@ -53,7 +58,7 @@ enum ObjStatId : unsigned int
     NUM_UNIT_STATS = NUM_TOT_OBJ_STATS - NUM_GEN_OBJ_STATS
 };
 
-enum ObjCategory : unsigned int
+enum ObjFamily : unsigned int
 {
     // STRUCTURE
     OCAT_GENERIC,
@@ -69,25 +74,39 @@ enum ObjCategory : unsigned int
     OCAT_UNDEFINED
 };
 
-struct ObjectData
+struct ObjectBasicData
 {
-    ObjectData(const std::vector<int> & sts,
-               const std::vector<int> & cst,
-               const char * file, unsigned int texId,
-               ObjClass oc, ObjCategory ocat, GameObjectTypeId type,
-               unsigned int rs, unsigned int cs,
-               const char * tit, const char * desc)
+    ObjectBasicData(GameObjectTypeId type, ObjClass oc, ObjFamily ofam,
+                    unsigned int rs, unsigned int cs)
+        : objType(type)
+        , objClass(oc)
+        , objFamily(ofam)
+        , rows(rs)
+        , cols(cs)
+    {
+    }
+
+    GameObjectTypeId objType;
+    ObjClass objClass;
+    ObjFamily objFamily;
+
+    unsigned int rows;
+    unsigned int cols;
+
+    static const char * STR_CLASS[NUM_OBJ_CLASSES];
+
+    static const ObjectBasicData NullObj;
+};
+
+struct ObjectFactionData
+{
+    ObjectFactionData(const std::vector<int> & sts,
+                      const std::vector<int> & cst,
+                      const char * file, unsigned int texId)
         : stats(sts)
         , costs(cst)
         , iconFile(file)
         , iconTexId(texId)
-        , objClass(oc)
-        , objCategory(ocat)
-        , objType(type)
-        , rows(rs)
-        , cols(cs)
-        , title(tit)
-        , description(desc)
     {
     }
 
@@ -97,20 +116,9 @@ struct ObjectData
     const char * iconFile = nullptr;
     unsigned int iconTexId;
 
-    ObjClass objClass;
-    ObjCategory objCategory;
-    GameObjectTypeId objType;
-
-    unsigned int rows;
-    unsigned int cols;
-
-    const char * title = nullptr;
-    const char * description = nullptr;
-
-    static const char * STR_CLASS[NUM_OBJ_CLASSES];
     static const char * STR_STAT[NUM_TOT_OBJ_STATS];
 
-    static const ObjectData NullObj;
+    static const ObjectFactionData NullObj;
 
     static const int MAX_STAT_VAL = 10;
 };

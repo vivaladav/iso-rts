@@ -53,6 +53,7 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
 {
     { GameObject::TYPE_BASE, "BASE"},
     { GameObject::TYPE_DEFENSIVE_TOWER, "DEFENSIVE TOWER"},
+    { GameObject::TYPE_MOUNTAINS, "MOUNTAINS"},
     { GameObject::TYPE_PRACTICE_TARGET, "PRACTICE TARGET"},
     { GameObject::TYPE_RADAR_STATION, "RADAR STATION"},
     { GameObject::TYPE_RADAR_TOWER, "RADAR TOWER"},
@@ -64,6 +65,12 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
     { GameObject::TYPE_RES_STORAGE_DIAMONDS, "DIAMONDS STORAGE"},
     { GameObject::TYPE_RES_STORAGE_ENERGY, "ENERGY STORAGE"},
     { GameObject::TYPE_RES_STORAGE_MATERIAL, "MATERIAL STORAGE"},
+    { GameObject::TYPE_ROCKS, "ROCKS"},
+    { GameObject::TYPE_TREES, "TREES"},
+    { GameObject::TYPE_UNIT_WORKER1, "WORKER"},
+    { GameObject::TYPE_UNIT_SOLDIER1, "SOLDIER"},
+    { GameObject::TYPE_UNIT_SOLDIER2, "SOLDIER"},
+    { GameObject::TYPE_UNIT_SCOUT1, "SCOUT"},
     { GameObject::TYPE_WALL, "WALL"},
     { GameObject::TYPE_WALL_GATE, "GATE"}
 };
@@ -73,6 +80,7 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
     { GameObject::TYPE_BASE, "A control center. It can create units. "
                              "You need to defend it if you don't want to lose a territory."},
     { GameObject::TYPE_DEFENSIVE_TOWER, "A basic defensive tower."},
+    { GameObject::TYPE_MOUNTAINS, "Some mountains"},
     { GameObject::TYPE_PRACTICE_TARGET, "A practice target.\nIt can be used to train your units "
                                         "and to improve their attack skills."},
     { GameObject::TYPE_RADAR_STATION, "A powerful radar that can show a big portion of the map."},
@@ -86,6 +94,12 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
     { GameObject::TYPE_RES_STORAGE_DIAMONDS, "Storage unit that can contain 150 units of diamonds."},
     { GameObject::TYPE_RES_STORAGE_ENERGY, "Storage unit that can contain 500 units of energy."},
     { GameObject::TYPE_RES_STORAGE_MATERIAL, "Storage unit that can contain 250 units of material."},
+    { GameObject::TYPE_ROCKS, "Some rocks."},
+    { GameObject::TYPE_TREES, "A bunch of growing trees."},
+    { GameObject::TYPE_UNIT_WORKER1, "A basic worker unit.\nIt is specialized in construction and conquest."},
+    { GameObject::TYPE_UNIT_SOLDIER1, "A basic soldier unit.\nUseful for defense and exploration."},
+    { GameObject::TYPE_UNIT_SOLDIER2, "A slow, but versatile unit."},
+    { GameObject::TYPE_UNIT_SCOUT1, "A light and fast unit ideal for exploring, but not for fighting."},
     { GameObject::TYPE_WALL, "A defensive wall."},
     { GameObject::TYPE_WALL_GATE, "A gate that can be controlled to open a passage through a defensive wall."}
 };

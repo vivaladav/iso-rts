@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Cell2D.h"
+#include "GameObjects/GameObjectTypes.h"
 
 namespace game
 {
 
 class GameObject;
-
-enum UnitType : unsigned int;
 
 enum AIActionType : unsigned int
 {
@@ -44,7 +43,7 @@ struct ActionAiComp
 
 struct ActionAINewUnit : public ActionAI
 {
-    UnitType unitType;
+    GameObjectTypeId unitType;
 };
 
 

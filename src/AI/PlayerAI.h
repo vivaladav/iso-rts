@@ -9,6 +9,7 @@ namespace game
 
 class GameMap;
 class GameObject;
+class ObjectsDataRegistry;
 class Player;
 class Structure;
 class Unit;
@@ -20,7 +21,7 @@ enum ResourceType : unsigned int;
 class PlayerAI
 {
 public:
-    PlayerAI(Player * player);
+    PlayerAI(Player * player, const ObjectsDataRegistry * dataReg);
     ~PlayerAI();
 
     void SetGameMap(GameMap * gm);
@@ -71,6 +72,8 @@ private:
     std::vector<GameObject *> mStructures;
 
     Player * mPlayer = nullptr;
+
+    const ObjectsDataRegistry * mDataReg;
 
     GameMap * mGm = nullptr;
 

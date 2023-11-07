@@ -26,7 +26,8 @@ class WallBuildPath;
 
 struct Cell2D;
 struct GameMapCell;
-struct ObjectData;
+struct ObjectBasicData;
+struct ObjectFactionData;
 
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
@@ -99,9 +100,9 @@ public:
     bool AbortCellConquest(GameObject * obj);
 
     // structure building
-    bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, const ObjectData & data);
-    void StartBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
-    void BuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
+    bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, GameObjectTypeId st);
+    void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
+    void BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
 
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player, unsigned int level);
@@ -117,10 +118,10 @@ public:
     void ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
-    bool CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player);
+    bool CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
-    void StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
-    void CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
+    void StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
+    void CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade
     bool CanUpgradeUnit(GameObject * obj, Player * player);
@@ -197,6 +198,9 @@ private:
 
     void UpdateWalls(const Cell2D & center);
     void UpdateWall(const Cell2D & cell);
+
+    const ObjectBasicData & GetObjectData(GameObjectTypeId t) const;
+    const ObjectFactionData & GetFactionData(PlayerFaction f, GameObjectTypeId t) const;
 
 private:
     // to access visibility functions

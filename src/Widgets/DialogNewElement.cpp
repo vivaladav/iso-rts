@@ -2,7 +2,9 @@
 
 #include "GameConstants.h"
 #include "Player.h"
+#include "GameObjects/GameObject.h"
 #include "GameObjects/ObjectData.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "Widgets/ButtonPanelTab.h"
 #include "Widgets/GameUIData.h"
 
@@ -598,8 +600,10 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * player)
+DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * player,
+                                   const ObjectsDataRegistry * dataReg)
     : mPlayer(player)
+    , mDataReg(dataReg)
     , mElemType(type)
 {
     using namespace sgl;
@@ -615,7 +619,7 @@ DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * p
 
     if(ETYPE_UNITS == type)
     {
-        mData = player->GetAvailableUnits();
+        mTypes = player->GetAvailableUnits();
         midBgH = 470;
         slotsY0 = 65;
     }
@@ -680,7 +684,7 @@ DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * p
 
     const int marginButtonsLR = 10;
 
-    const int numData = mData.size();
+    const int numData = mTypes.size();
 
     mBtnLeft = new ButtonLeft(this);
     const int posLX = mSlots->GetX() - mBtnLeft->GetWidth() - marginButtonsLR;
@@ -902,7 +906,7 @@ DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * p
             if(ind >= NUM_CAT)
                 return ;
 
-            const ObjCategory categories[NUM_CAT] =
+            const ObjFamily categories[NUM_CAT] =
             {
                 OCAT_RESOURCES,
                 OCAT_DEFENSE,
@@ -910,7 +914,7 @@ DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * p
                 OCAT_GENERIC
             };
 
-            ShowStructuresByCategory(categories[ind]);
+            ShowStructuresByFamily(categories[ind]);
         });
 
         mButtonsStructures->SetButtonChecked(0, true);
@@ -946,14 +950,14 @@ int DialogNewElement::GetSelectedIndex() const
     return mFirstElem + mSlots->GetIndexChecked();
 }
 
-const ObjectData & DialogNewElement::GetSelectedData() const
+GameObjectTypeId DialogNewElement::GetSelectedType() const
 {
-    return mData[GetSelectedIndex()];
+    return mTypes[GetSelectedIndex()];
 }
 
 void DialogNewElement::UpdateSlots()
 {
-    const int numData = mData.size();
+    const int numData = mTypes.size();
     const int leftData = numData - mFirstElem;
     const int limitData = leftData < NUM_SLOTS ? leftData : NUM_SLOTS;
 
@@ -964,11 +968,12 @@ void DialogNewElement::UpdateSlots()
         ButtonSlot * slot = static_cast<ButtonSlot *>(mSlots->GetButton(i));
         slot->SetEnabled(true);
 
-        const int indData = mFirstElem + i;
-        const ObjectData & data = mData[indData];
+        const PlayerFaction f = mPlayer->GetFaction();
+        const GameObjectTypeId t = mTypes[mFirstElem + i];
+        const ObjectFactionData & data = mDataReg->GetFactionData(f, t);
 
         auto tex = tm->GetSprite(data.iconFile, data.iconTexId);
-        slot->SetData(data.title, tex);
+        slot->SetData(GameObject::TITLES.at(t).c_str(), tex);
 
         // check first
         slot->SetChecked(false);
@@ -984,17 +989,19 @@ void DialogNewElement::UpdateSlots()
     }
 }
 
- void DialogNewElement::ShowStructuresByCategory(ObjCategory cat)
+void DialogNewElement::ShowStructuresByFamily(ObjFamily fam)
  {
     // get data by category
-    const std::vector<ObjectData> & structures = mPlayer->GetAvailableStructures();
+    const std::vector<GameObjectTypeId> & structures = mPlayer->GetAvailableStructures();
 
-    mData.clear();
+    mTypes.clear();
 
-    for(const ObjectData & s : structures)
+    for(const GameObjectTypeId s : structures)
     {
-        if(s.objCategory == cat)
-            mData.emplace_back(s);
+        const ObjectBasicData & data = mDataReg->GetObjectData(s);
+
+        if(data.objFamily == fam)
+            mTypes.emplace_back(s);
     }
 
     // reset first element index
@@ -1006,25 +1013,28 @@ void DialogNewElement::UpdateSlots()
 
 void DialogNewElement::ShowData(int ind)
 {
-    assert(ind < mData.size());
+    assert(ind < mTypes.size());
 
-    const ObjectData & data = mData[ind];
+    const GameObjectTypeId t = mTypes[ind];
+    const PlayerFaction f = mPlayer->GetFaction();
+    const ObjectBasicData & data = mDataReg->GetObjectData(t);
+    const ObjectFactionData & fData = mDataReg->GetFactionData(f, t);
 
     // DESCRIPTION
-    mDescription->SetText(data.description);
+    mDescription->SetText(GameObject::DESCRIPTIONS.at(t).c_str());
 
     // CLASS
-    mCategory->SetText(ObjectData::STR_CLASS[data.objClass]);
+    mCategory->SetText(ObjectBasicData::STR_CLASS[data.objClass]);
 
     // COSTS
     for(int i = 0; i < NUM_COSTS; ++i)
-        mLabelsCost[i]->SetText(std::to_string(data.costs[i]).c_str());
+        mLabelsCost[i]->SetText(std::to_string(fData.costs[i]).c_str());
 
     // STATS
-    const int numStats = data.stats.size();
+    const int numStats = fData.stats.size();
 
     for(int i = 0; i < numStats; ++i)
-        mPanelsAtt[i]->SetData(ObjectData::STR_STAT[i], data.stats[i]);
+        mPanelsAtt[i]->SetData(ObjectFactionData::STR_STAT[i], fData.stats[i]);
 
     for(int i = numStats; i < NUM_PANELS_ATT; ++i)
         mPanelsAtt[i]->ClearData();
@@ -1032,7 +1042,11 @@ void DialogNewElement::ShowData(int ind)
 
 void DialogNewElement::CheckBuild(int ind)
 {
-    const std::vector<int> & costs = mData[ind].costs;
+    const GameObjectTypeId t = mTypes[ind];
+    const PlayerFaction f = mPlayer->GetFaction();
+    const ObjectFactionData & fData = mDataReg->GetFactionData(f, t);
+
+    const std::vector<int> & costs = fData.costs;
 
     const bool CAN_SPEND[NUM_COSTS] =
     {

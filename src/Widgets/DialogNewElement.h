@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameObjects/GameObjectTypes.h"
+
 #include <sgl/sgui/Widget.h>
 
 #include <array>
@@ -27,12 +29,11 @@ class ButtonClose;
 class ButtonLeft;
 class ButtonRight;
 class ButtonSlot;
+class ObjectsDataRegistry;
 class PanelAttribute;
 class Player;
 
-struct ObjectData;
-
-enum ObjCategory : unsigned int;
+enum ObjFamily : unsigned int;
 
 class DialogNewElement : public sgl::sgui::Widget
 {
@@ -43,7 +44,8 @@ public:
         ETYPE_STRUCTURES,
     };
 
-    DialogNewElement(ElemType type, const char * title, Player * player);
+    DialogNewElement(ElemType type, const char * title, Player * player,
+                     const ObjectsDataRegistry * dataReg);
 
     void CheckBuild();
 
@@ -51,12 +53,12 @@ public:
     void SetFunctionOnClose(const std::function<void()> & f);
 
     int GetSelectedIndex() const;
-    const ObjectData & GetSelectedData() const;
+    GameObjectTypeId GetSelectedType() const;
 
 private:
     void UpdateSlots();
 
-    void ShowStructuresByCategory(ObjCategory cat);
+    void ShowStructuresByFamily(ObjFamily fam);
     void ShowData(int ind);
 
     void CheckBuild(int ind);
@@ -75,7 +77,7 @@ private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
     std::array<sgl::sgui::Label *, NUM_COSTS> mLabelsCost;
 
-    std::vector<ObjectData> mData;
+    std::vector<GameObjectTypeId> mTypes;
 
     sgl::graphic::Image * mBgTop = nullptr;
     sgl::graphic::Image * mBgMid = nullptr;
@@ -95,6 +97,8 @@ private:
     sgl::sgui::AbstractButtonsGroup * mButtonsStructures = nullptr;
 
     Player * mPlayer = nullptr;
+
+    const ObjectsDataRegistry * mDataReg;
 
     ElemType mElemType;
 
