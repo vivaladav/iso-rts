@@ -95,7 +95,7 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
     { GameObject::TYPE_RES_STORAGE_ENERGY, "Storage unit that can contain 500 units of energy."},
     { GameObject::TYPE_RES_STORAGE_MATERIAL, "Storage unit that can contain 250 units of material."},
     { GameObject::TYPE_ROCKS, "Some rocks."},
-    { GameObject::TYPE_TREES, "A bunch of growing trees."},
+    { GameObject::TYPE_TREES, "A single tree which will slowly grow into a forest."},
     { GameObject::TYPE_UNIT_WORKER1, "A basic worker unit.\nIt is specialized in construction and conquest."},
     { GameObject::TYPE_UNIT_SOLDIER1, "A basic soldier unit.\nUseful for defense and exploration."},
     { GameObject::TYPE_UNIT_SOLDIER2, "A slow, but versatile unit."},
