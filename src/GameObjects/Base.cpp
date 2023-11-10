@@ -34,16 +34,17 @@ void Base::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     const Player * owner = GetOwner();
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    // avoid to set an image when there's no owner set
+    unsigned int texInd = ID_STRUCT_BASE_L1;
+
     if(nullptr == owner)
-        return ;
-
-    const unsigned int faction = owner->GetFaction();
-
-    const unsigned int texInd = SpriteIdStructures::ID_STRUCT_BASE_L1_F1 +
-                                (faction * NUM_BASE_SPRITES_PER_FAC) +
-                                static_cast<int>(IsSelected());
+        texInd = ID_STRUCT_BASE_L1 + sel;
+    else
+    {
+        const unsigned int faction = owner->GetFaction();
+        texInd = ID_STRUCT_BASE_L1_F1 + (faction * NUM_BASE_SPRITES_PER_FAC) + sel;
+    }
 
     auto * tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);

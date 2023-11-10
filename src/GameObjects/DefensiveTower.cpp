@@ -80,19 +80,19 @@ void DefensiveTower::SetImage()
         isoObj->SetColor(COLOR_FOW);
 
     const Player * owner = GetOwner();
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    // avoid to set an image when there's no owner set
+    unsigned int texInd = ID_STRUCT_DTOWER_L1;
+
     if(nullptr == owner)
-        return ;
+        texInd = ID_STRUCT_DTOWER_L1 + sel;
+    else
+    {
+        const unsigned int faction = owner->GetFaction();
+        texInd = ID_STRUCT_DTOWER_L1_F1 + (faction * NUM_DTOWER_SPRITES_PER_FAC) + sel;
+    }
 
-    // set texture
-    const unsigned int faction = owner->GetFaction();
-
-    const int ind = SpriteIdStructures::ID_STRUCT_DTOWER_L1_F1 +
-                    (faction * NUM_DTOWER_SPRITES_PER_FAC) +
-                    static_cast<int>(IsSelected());
-
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
     isoObj->SetTexture(tex);
 }
 

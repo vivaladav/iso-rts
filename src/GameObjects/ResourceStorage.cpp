@@ -87,28 +87,28 @@ void ResourceStorage::SetImage()
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_ENERGY_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_STORAGE_ENERGY;
+            texId = ID_STRUCT_STORAGE_ENERGY + sel;
     }
     else if(RES_MATERIAL1 == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_MATERIAL_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_STORAGE_MATERIAL;
+            texId = ID_STRUCT_STORAGE_MATERIAL + sel;
     }
     else if(RES_DIAMONDS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_DIAMONDS_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_STORAGE_DIAMONDS;
+            texId = ID_STRUCT_STORAGE_DIAMONDS + sel;
     }
     else if(RES_BLOBS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_BLOBS_F1 + (faction * NUM_ENE_STO_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_STORAGE_BLOBS;
+            texId = ID_STRUCT_STORAGE_BLOBS + sel;
     }
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
