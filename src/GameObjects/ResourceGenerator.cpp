@@ -15,7 +15,7 @@ ResourceGenerator::ResourceGenerator(GameObjectTypeId type, int rows, int cols)
 {
     if(TYPE_RES_GEN_ENERGY == type || TYPE_RES_GEN_ENERGY_SOLAR == type)
         mResource = RES_ENERGY;
-    if(TYPE_RES_GEN_MATERIAL == type || TYPE_RES_GEN_MATERIAL_EXTRACT == type)
+    else if(TYPE_RES_GEN_MATERIAL == type || TYPE_RES_GEN_MATERIAL_EXTRACT == type)
         mResource = RES_MATERIAL1;
     else
     {
