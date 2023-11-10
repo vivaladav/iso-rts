@@ -438,9 +438,14 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     else if(GameObject::TYPE_DEFENSIVE_TOWER == type)
     {
         const ObjectBasicData & data = GetObjectData(type);
-        const ObjectFactionData & fData = GetFactionData(owner->GetFaction(), type);
 
-        obj = new DefensiveTower(data, fData);
+        if(owner != nullptr)
+        {
+            const ObjectFactionData & fData = GetFactionData(owner->GetFaction(), type);
+            obj = new DefensiveTower(data, fData);
+        }
+        else
+            obj = new DefensiveTower(data);
     }
     else if(GameObject::TYPE_WALL == type)
         obj = new Wall(variant);

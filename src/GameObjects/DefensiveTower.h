@@ -11,6 +11,7 @@ struct ObjectFactionData;
 class DefensiveTower : public Structure
 {
 public:
+    DefensiveTower(const ObjectBasicData & objData);
     DefensiveTower(const ObjectBasicData & objData, const ObjectFactionData & facData);
 
     int GetAttackRange() const;
