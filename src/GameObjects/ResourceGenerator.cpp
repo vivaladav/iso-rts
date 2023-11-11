@@ -3,7 +3,6 @@
 #include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -48,8 +47,7 @@ void ResourceGenerator::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
-    const unsigned int faction = owner ? owner->GetFaction() : NO_FACTION;
+    const unsigned int faction = GetFaction();
     const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
     unsigned int texId = 0;

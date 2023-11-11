@@ -261,7 +261,7 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
     // update visibility if status changed
     if(visible != go->IsVisible())
     {
-        Player * objPlayer = go->GetOwner();
+        const PlayerFaction objFaction = go->GetFaction();
         MiniMap * mm = mScreenGame->GetMiniMap();
 
         // hide objects if not visited or not a structure
@@ -269,7 +269,7 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
         {
             layer->SetObjectVisible(obj, false);
 
-            if(objPlayer != nullptr && mm != nullptr)
+            if(objFaction != NO_FACTION && mm != nullptr)
                 mm->RemoveElement(go->GetRow0(), go->GetCol0());
         }
         else
@@ -278,15 +278,14 @@ void GameMap::ApplyVisibilityToObject(Player * player, GameObject * go)
 
             if(mm != nullptr)
             {
-                if(objPlayer != nullptr)
+                if(objFaction != NO_FACTION)
                 {
-                    const PlayerFaction faction = objPlayer->GetFaction();
-                    const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
-                    mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(), type, faction);
+                    const auto type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + objFaction);
+                    mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(), type, objFaction);
                 }
                 else
                 {
-                    const MiniMap::MiniMapElemType type = go->CanBeConquered() ? MiniMap::MME_CONQUERABLE : MiniMap::MME_SCENE;
+                    const auto type = go->CanBeConquered() ? MiniMap::MME_CONQUERABLE : MiniMap::MME_SCENE;
                     mm->AddElement(go->GetRow0(), go->GetCol0(), go->GetRows(), go->GetCols(),
                                    type, NO_FACTION);
                 }
@@ -337,12 +336,11 @@ void GameMap::InitObjectVisibility(Player * player, GameObject * gameObj)
     // add visible objects to minimap
     if(visible)
     {
-        Player * objPlayer = gameObj->GetOwner();
+        const PlayerFaction faction = gameObj->GetFaction();
         MiniMap * mm = mScreenGame->GetMiniMap();
 
-        if(objPlayer != nullptr)
+        if(faction != NO_FACTION)
         {
-            const PlayerFaction faction = objPlayer->GetFaction();
             const MiniMap::MiniMapElemType type = static_cast<MiniMap::MiniMapElemType>(MiniMap::MME_FACTION1 + faction);
             mm->AddElement(gameObj->GetRow0(), gameObj->GetCol0(), gameObj->GetRows(), gameObj->GetCols(), type, faction);
         }
@@ -404,6 +402,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     if(gcell.objTop)
         return nullptr;
 
+    const PlayerFaction ownerFaction = owner != nullptr ? owner->GetFaction() : NO_FACTION;
+
     // create game object
     GameObject * obj = nullptr;
 
@@ -441,7 +441,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
 
         if(owner != nullptr)
         {
-            const ObjectFactionData & fData = GetFactionData(owner->GetFaction(), type);
+            const ObjectFactionData & fData = GetFactionData(ownerFaction, type);
             obj = new DefensiveTower(data, fData);
         }
         else
@@ -483,7 +483,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     }
 
     // assign owner
-    obj->SetOwner(owner);
+    obj->SetFaction(ownerFaction);
 
     // set object properties
     obj->SetCell(&mCells[ind0]);
@@ -975,7 +975,7 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
         return false;
 
     // not player's unit
-    if(unit->GetOwner() != player)
+    if(unit->GetFaction() != player->GetFaction())
         return false;
 
     // unit doesn't have enough energy
@@ -1074,8 +1074,8 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     }
 
     // assign owner to object
-    Player * prevOwner = obj->GetOwner();
-    obj->SetOwner(player);
+    Player * prevOwner = mGame->GetPlayerByFaction(obj->GetFaction());
+    obj->SetFaction(player->GetFaction());
 
     // update player
     player->SumCells(1);
@@ -1105,7 +1105,7 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
 bool GameMap::CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player)
 {
     // generator is not owned by the player
-    if(gen->GetOwner() != player)
+    if(gen->GetFaction() != player->GetFaction())
         return false;
 
     // already has enough units
@@ -1356,11 +1356,12 @@ void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & d
     const int ind = r * mCols + c;
     GameMapCell & gcell = mCells[ind];
 
+    const PlayerFaction faction = player->GetFaction();
     const ObjectBasicData & data = GetObjectData(ut);
-    const ObjectFactionData & fData = GetFactionData(player->GetFaction(), ut);
+    const ObjectFactionData & fData = GetFactionData(faction, ut);
 
     Unit * unit = new Unit(data, fData);
-    unit->SetOwner(player);
+    unit->SetFaction(faction);
     unit->SetCell(&mCells[ind]);
 
     // links to other objects
@@ -1479,7 +1480,7 @@ bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * pla
         return false;
 
     // trying to move an enemy unit
-    if(unit0->GetOwner() != player)
+    if(unit0->GetFaction() != player->GetFaction())
         return false;
 
     const int ind1 = r1 * mCols + c1;
@@ -1782,7 +1783,7 @@ void GameMap::Update(float delta)
 
             DestroyObjectPaths(obj);
 
-            Player * p = obj->GetOwner();
+            Player * p = mGame->GetPlayerByFaction(obj->GetFaction());
 
             if(p != nullptr && p->IsAI())
                 p->GetAI()->HandleObjectDestroyed(obj);
@@ -1923,7 +1924,7 @@ void GameMap::UpdateLinkedCells(Player * player)
 
                 GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
 
-                if(o != nullptr && o->GetOwner() == player && o->IsStructure())
+                if(o != nullptr && o->GetFaction() == player->GetFaction() && o->IsStructure())
                     objs.insert(o);
             }
         }
@@ -2210,7 +2211,7 @@ Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> &
 void GameMap::DestroyObject(GameObject * obj)
 {
     Player * localPlayer = mGame->GetLocalPlayer();
-    Player * owner = obj->GetOwner();
+    Player * owner = mGame->GetPlayerByFaction(obj->GetFaction());
 
     // update visibility map
     // NOTE only local player for now

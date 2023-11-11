@@ -175,7 +175,7 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     const int rBR = obj->GetRow0();
     const int cBR = obj->GetCol0();
 
-    const PlayerFaction faction = obj->GetOwner()->GetFaction();
+    const PlayerFaction faction = obj->GetFaction();
 
     // TODO get max points from object
     const int maxPoints = 7;

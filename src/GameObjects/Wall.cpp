@@ -1,8 +1,8 @@
 #include "GameObjects/Wall.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -53,15 +53,13 @@ void Wall::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     // set texture
-    const unsigned int faction = owner->GetFaction();
-
     const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mPart + (faction * NUM_WALL_PARTS);
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);

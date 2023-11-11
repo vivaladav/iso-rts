@@ -1,5 +1,6 @@
 #include "Widgets/ButtonQuickUnitSelection.h"
 
+#include "Game.h"
 #include "GameUIData.h"
 #include "Player.h"
 #include "GameObjects/Unit.h"
@@ -71,8 +72,7 @@ ButtonQuickUnitSelection::ButtonQuickUnitSelection(int index, ScreenGame * sg, s
         if(mUnit->IsSelected())
             return;
 
-        Player * p = mUnit->GetOwner();
-
+        Player * p = mScreenGame->GetGame()->GetPlayerByFaction(mUnit->GetFaction());
         mScreenGame->ClearSelection(p);
         mScreenGame->SelectObject(mUnit, p);
     });
@@ -129,8 +129,7 @@ void ButtonQuickUnitSelection::SetUnit(Unit * unit)
         RegisterRenderable(mImgUnit);
     }
 
-    const Player * owner = unit->GetOwner();
-    const unsigned int faction = owner->GetFaction();
+    const unsigned int faction = unit->GetFaction();
     const GameObjectTypeId type = unit->GetObjectType();
     const unsigned int ind = Unit::TypeToIndex(type);
 

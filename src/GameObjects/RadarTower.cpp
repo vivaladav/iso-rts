@@ -1,8 +1,8 @@
 #include "GameObjects/RadarTower.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -45,18 +45,15 @@ void RadarTower::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
     const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
     unsigned int texInd = ID_STRUCT_RADAR_TOWER;
 
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         texInd = ID_STRUCT_RADAR_TOWER + sel;
     else
-    {
-        const unsigned int faction = owner->GetFaction();
         texInd = ID_STRUCT_RADAR_TOWER_F1 + (faction * NUM_RADAR_TOWER_SPRITES_PER_FAC) + sel;
-    }
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
     isoObj->SetTexture(tex);

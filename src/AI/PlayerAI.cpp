@@ -414,12 +414,14 @@ void PlayerAI::AddActionUnitConnectStructure(Unit * u)
     unsigned int bestStructInd = numStructures;
     int minDist = maxDist;
 
+    const PlayerFaction faction = mPlayer->GetFaction();
+
     for(unsigned int i = 0; i < numStructures; ++i)
     {
         auto s = static_cast<Structure *>(mStructures[i]);
 
         // own structure which is not linked
-        if(s->GetOwner() == mPlayer && !s->IsLinked())
+        if(s->GetFaction() == faction && !s->IsLinked())
         {
             const int dist = mGm->ApproxDistance(u, s);
 
@@ -540,9 +542,10 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
 
         ++totGenerators;
 
-        const Player * owner = resGen->GetOwner();
+        const PlayerFaction playerFaction = mPlayer->GetFaction();
+        const PlayerFaction resGenFaction = resGen->GetFaction();
 
-        if(owner == mPlayer)
+        if(playerFaction == resGenFaction)
         {
             ++ownedGenerators;
 
@@ -559,7 +562,7 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
         loopPriority += bonusDist * dist / maxDist;
 
         // bonus owned by enemy
-        const int owned = owner != nullptr;
+        const int owned = resGenFaction != NO_FACTION;
         loopPriority += owned * bonusOwned;
 
         if(loopPriority > maxPriority)

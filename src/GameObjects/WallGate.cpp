@@ -1,9 +1,9 @@
 #include "GameObjects/WallGate.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "GameMap.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -72,15 +72,13 @@ void WallGate::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     // set texture
-    const unsigned int faction = owner->GetFaction();
-
     const int ind0 = mOrientation == HORIZ ? WALL_GATE_L1_F1_HORIZ_CLOSED : WALL_GATE_L1_F1_VERT_CLOSED;
     const int ind1 = ind0 + (NUM_SPRITES_PER_WALL_GATE_STATE * static_cast<int>(mOpen)) + static_cast<int>(IsSelected());
     const int ind = ind1 + NUM_SPRITES_PER_WALL_GATE * faction;

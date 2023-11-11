@@ -4,7 +4,6 @@
 #include "GameData.h"
 #include "GameMapCell.h"
 #include "IsoObject.h"
-#include "Player.h"
 #include "Particles/DataParticleDamage.h"
 #include "Particles/UpdaterDamage.h"
 #include "Screens/ScreenGame.h"
@@ -119,6 +118,7 @@ GameObject::GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows
     : mOnValuesChanged([](){})
     , mIsoObj(new IsoObject(rows, cols))
     , mObjId(++counter)
+    , mFaction(NO_FACTION)
     , mType(type)
     , mCategory(cat)
     , mRows(rows)
@@ -172,13 +172,12 @@ int GameObject::GetCol0() const { return mCell->col; }
 int GameObject::GetRow1() const { return 1 + mCell->row - mRows; }
 int GameObject::GetCol1() const { return 1 + mCell->col - mCols; }
 
-void GameObject::SetOwner(Player * owner)
+void GameObject::SetFaction(PlayerFaction f)
 {
-    // setting same owner again -> nothing to do
-    if(owner == mOwner)
+    if(f == mFaction)
         return ;
 
-    mOwner = owner;
+    mFaction = f;
 
     UpdateGraphics();
 }
@@ -348,10 +347,7 @@ void GameObject::SetDefaultColors()
     mObjColors.clear();
 
     // assign new colors based on faction
-    Player * p = GetOwner();
-    const PlayerFaction faction = p != nullptr ? p->GetFaction() : NO_FACTION;
-
-    switch(faction)
+    switch(mFaction)
     {
         case FACTION_1:
             mObjColors.push_back(0xd9938cff);

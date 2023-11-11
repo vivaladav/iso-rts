@@ -37,6 +37,8 @@ class Player;
 class ScreenGame;
 struct GameMapCell;
 
+enum PlayerFaction : unsigned int;
+
 class GameObject
 {
 public:
@@ -129,8 +131,8 @@ public:
     unsigned int GetRows() const;
     unsigned int GetCols() const;
 
-    Player * GetOwner() const;
-    void SetOwner(Player * owner);
+    PlayerFaction GetFaction() const;
+    void SetFaction(PlayerFaction f);
 
     GameObjectTypeId GetObjectType() const;
     GameObjectCategoryId GetObjectCategory() const;
@@ -199,7 +201,7 @@ private:
 
     const GameMapCell * mCell = nullptr;
 
-    Player * mOwner = nullptr;
+    PlayerFaction mFaction;
     GameObjectTypeId mType = TYPE_NULL;
     GameObjectCategoryId mCategory = CAT_NULL;
 
@@ -267,7 +269,7 @@ inline const GameMapCell * GameObject::GetCell() const { return mCell; }
 
 inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 
-inline Player * GameObject::GetOwner() const { return mOwner; }
+inline PlayerFaction GameObject::GetFaction() const { return mFaction; }
 
 inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
 

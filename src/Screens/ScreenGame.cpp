@@ -1316,7 +1316,7 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     ClearCellOverlays();
 
     // disable actions panel (if action is done by local player)
-    if(unit->GetOwner() == GetGame()->GetLocalPlayer())
+    if(unit->GetFaction() == GetGame()->GetLocalPlayerFaction())
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     // store active action
@@ -1330,7 +1330,7 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
 
 bool ScreenGame::SetupConnectCells(Unit * unit, const std::function<void()> & OnDone)
 {
-    const Player * player = unit->GetOwner();
+    const Player * player = GetGame()->GetPlayerByFaction(unit->GetFaction());
     const Cell2D startCell(unit->GetRow0(), unit->GetCol0());
 
     // find closest linked cell
@@ -1731,7 +1731,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D &
     {
         const ObjectsDataRegistry * dataReg = GetGame()->GetObjectsRegistry();
         const ObjectBasicData & objData = dataReg->GetObjectData(st);
-        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetOwner()->GetFaction(), st);
+        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetFaction(), st);
         ind = new StructureIndicator(objData, factData);
         mStructIndicators.emplace(st, ind);
     }
@@ -1852,7 +1852,7 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
         const GameObjectTypeId st = unit->GetStructureToBuild();
         const ObjectsDataRegistry * dataReg = GetGame()->GetObjectsRegistry();
         const ObjectBasicData & objData = dataReg->GetObjectData(st);
-        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetOwner()->GetFaction(), st);
+        const ObjectFactionData & factData = dataReg->GetFactionData(unit->GetFaction(), st);
 
         // if unit is next to any target cell -> try to build
         const int indRows = objData.rows;
@@ -2035,7 +2035,7 @@ void ScreenGame::HandleSelectionClick(sgl::core::MouseButtonEvent & event)
     // get clicked object, if any
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
     GameObject * clickObj = clickGameCell.objTop ? clickGameCell.objTop : clickGameCell.objBottom;
-    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetOwner() == player;
+    const bool isClickObjOwn = clickObj != nullptr && clickObj->GetFaction() == player->GetFaction();
 
     // clicked non-own or no object -> nothing to do
     if(!isClickObjOwn)
@@ -2239,7 +2239,7 @@ void ScreenGame::ShowAttackIndicators(const GameObject * obj, int range)
     }
 
     // init needed indicators
-    const PlayerFaction faction = obj->GetOwner()->GetFaction();
+    const PlayerFaction faction = obj->GetFaction();
 
     for(int i = 0; i < neededInd; ++i)
     {

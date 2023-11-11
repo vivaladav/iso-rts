@@ -4,7 +4,6 @@
 #include "GameData.h"
 #include "GameMap.h"
 #include "IsoObject.h"
-#include "Player.h"
 #include "GameObjects/ObjectData.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
@@ -163,13 +162,12 @@ bool Unit::IsTargetInRange(GameObject * obj) const
 
 void Unit::SetImage()
 {
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
-    const unsigned int faction = owner->GetFaction();
     const GameObjectTypeId type = GetObjectType();
     const unsigned int ind = TypeToIndex(type);
 
@@ -188,10 +186,10 @@ void Unit::Shoot()
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     // consume energy
@@ -199,7 +197,7 @@ void Unit::Shoot()
 
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
+    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + faction;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
     IsoObject * isoObj = GetIsoObject();

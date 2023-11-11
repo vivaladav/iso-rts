@@ -1,5 +1,6 @@
 #include "AI/ObjectPath.h"
 
+#include "Game.h"
 #include "GameMap.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
@@ -149,7 +150,7 @@ void ObjectPath::Update(float delta)
     // handle reached target
     if(0 == todo)
     {
-        Player * player = mObj->GetOwner();
+        Player * player = mScreen->GetGame()->GetPlayerByFaction(mObj->GetFaction());
 
         mGameMap->DelPlayerObjVisibility(mObj, player);
 

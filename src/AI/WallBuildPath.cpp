@@ -1,5 +1,6 @@
 #include "AI/WallBuildPath.h"
 
+#include "Game.h"
 #include "GameConstants.h"
 #include "GameMap.h"
 #include "IsoLayer.h"
@@ -26,8 +27,7 @@ WallBuildPath::~WallBuildPath()
 
 void WallBuildPath::CreateIndicators()
 {
-    const Player * player = mUnit->GetOwner();
-    const PlayerFaction faction = player->GetFaction();
+    const PlayerFaction faction = mUnit->GetFaction();
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
     std::vector<Cell2D> cellsPath;
@@ -76,7 +76,7 @@ void WallBuildPath::InitNextBuild()
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
     const Cell2D nextCell(nextRow, nextCol);
 
-    Player * player = mUnit->GetOwner();
+    Player * player = mScreen->GetGame()->GetPlayerByFaction(mUnit->GetFaction());
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
     // check if building is possible
@@ -223,7 +223,7 @@ void WallBuildPath::UpdateMove(float delta)
     // handle reached target
     if(0 == todo)
     {
-        Player * player = mUnit->GetOwner();
+        Player * player = mScreen->GetGame()->GetPlayerByFaction(mUnit->GetFaction());
 
         mGameMap->DelPlayerObjVisibility(mUnit, player);
 

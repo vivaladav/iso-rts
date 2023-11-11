@@ -1,5 +1,6 @@
 #include "AI/ConquerPath.h"
 
+#include "Game.h"
 #include "GameConstants.h"
 #include "GameMap.h"
 #include "IsoLayer.h"
@@ -26,7 +27,7 @@ ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg
     , mGameMap(gm)
     , mScreen(sg)
 {
-    mLocalPlayer = unit->GetOwner()->IsLocal();
+    mLocalPlayer = sg->GetGame()->GetPlayerByFaction(unit->GetFaction())->IsLocal();
 }
 
 ConquerPath::~ConquerPath()
@@ -102,9 +103,8 @@ void ConquerPath::Finish()
 void ConquerPath::CreateIndicators()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
-    Player * player = mUnit->GetOwner();
 
-    const PlayerFaction faction = player->GetFaction();
+    const PlayerFaction faction = mUnit->GetFaction();
 
     // do not create indicator for cell 0 as it's current under conquest
     for(unsigned int i = 1; i < mCells.size(); ++i)
@@ -137,7 +137,7 @@ void ConquerPath::InitNextConquest()
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
     const Cell2D nextCell(nextRow, nextCol);
 
-    Player * player = mUnit->GetOwner();
+    Player * player = mScreen->GetGame()->GetPlayerByFaction(mUnit->GetFaction());
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
 
     // can't conquer current cell -> try to move to next one
@@ -283,7 +283,7 @@ void ConquerPath::UpdateMove(float delta)
     // handle reached target
     if(0 == todo)
     {
-        Player * player = mUnit->GetOwner();
+        Player * player = mScreen->GetGame()->GetPlayerByFaction(mUnit->GetFaction());
 
         mGameMap->DelPlayerObjVisibility(mUnit, player);
 

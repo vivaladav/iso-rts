@@ -1,9 +1,11 @@
 #include "GameObjects/ResourceStorage.h"
 
+#include "Game.h"
 #include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
 #include "Player.h"
+#include "Screens/ScreenGame.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -47,9 +49,7 @@ void ResourceStorage::OnLinkedChanged()
 {
     GameObject::OnLinkedChanged();
 
-    Player * p = GetOwner();
-
-    if(nullptr == p)
+    if(NO_FACTION == GetFaction())
         return ;
 
     const int diff = IsLinked() ? mCapacity : -mCapacity;
@@ -62,6 +62,7 @@ void ResourceStorage::OnLinkedChanged()
         Player::Stat::BLOBS
     };
 
+    Player * p = GetScreen()->GetGame()->GetPlayerByFaction(GetFaction());
     p->SumResourceMax(statIds[mResource], diff);
 }
 
@@ -76,8 +77,7 @@ void ResourceStorage::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
-    const unsigned int faction = owner ? owner->GetFaction() : NO_FACTION;
+    const unsigned int faction = GetFaction();
     const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
     unsigned int texId = 0;
