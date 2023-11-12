@@ -7,6 +7,21 @@
 namespace game
 {
 
+const std::unordered_set<CellTypes> GameMapCell::PRIMARY_TYPES =
+{
+    SCENE_ROCKS,
+    SCENE_RESOURCE,
+    BLOBS_SOURCE,
+    DIAMONDS_SOURCE,
+    TREES1,
+    F1,
+    F1_CONNECTED,
+    F2,
+    F2_CONNECTED,
+    F3,
+    F3_CONNECTED,
+};
+
 GameMapCell::GameMapCell()
     : influencer(NO_FACTION)
 {

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <unordered_map>
+#include <unordered_set>
 
 namespace game
 {
@@ -55,6 +56,8 @@ struct GameMapCell
 
     ResourceGenerator * GetResourceGenerator() const;
 
+    static bool IsTypePrimary(CellTypes t);
+
     std::unordered_map<int, bool> influencers;
     PlayerFaction influencer;
 
@@ -71,6 +74,14 @@ struct GameMapCell
     bool walkTarget = false;
     bool changing = false;
     bool linked = false;
+
+private:
+    static const std::unordered_set<CellTypes> PRIMARY_TYPES;
 };
+
+inline bool GameMapCell::IsTypePrimary(CellTypes t)
+{
+    return PRIMARY_TYPES.find(t) != PRIMARY_TYPES.end();
+}
 
 } // namespace game
