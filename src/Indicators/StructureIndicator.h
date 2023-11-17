@@ -22,6 +22,7 @@ enum PlayerFaction : unsigned int;
 class StructureIndicator : public IsoObject
 {
 public:
+    StructureIndicator(const ObjectBasicData & objData);
     StructureIndicator(const ObjectBasicData & objData, const ObjectFactionData & fData);
 
     void SetCost(float energy, float material);
