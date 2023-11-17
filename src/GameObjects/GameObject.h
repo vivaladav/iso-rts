@@ -43,7 +43,7 @@ class GameObject
 {
 public:
     // -- OBJECT TYPE --
-    static const GameObjectTypeId TYPE_NULL;
+    static const GameObjectTypeId TYPE_NULL = 0;
 
     static const GameObjectTypeId TYPE_BASE;
     static const GameObjectTypeId TYPE_BLOBS;
@@ -76,7 +76,7 @@ public:
     static const unsigned int NUM_UNIT_TYPES = 4;
 
     // -- OBJECT CATEGORY --
-    static const GameObjectCategoryId CAT_NULL;
+    static const GameObjectCategoryId CAT_NULL = 0;
 
     static const GameObjectCategoryId CAT_COLLECTABLE;
     static const GameObjectCategoryId CAT_GENERIC;
@@ -84,6 +84,9 @@ public:
     static const GameObjectCategoryId CAT_RES_STORAGE;
     static const GameObjectCategoryId CAT_SCENE_OBJ;
     static const GameObjectCategoryId CAT_UNIT;
+
+    // -- OBJECT VARIANT --
+    static const GameObjectVariantId VAR_0 = 0;
 
 public:
     GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols);
@@ -136,6 +139,8 @@ public:
 
     GameObjectTypeId GetObjectType() const;
     GameObjectCategoryId GetObjectCategory() const;
+    GameObjectVariantId GetObjectVariant() const;
+    void SetObjectVariant(GameObjectVariantId var);
 
     float GetHealth() const;
     float GetMaxHealth() const;
@@ -185,6 +190,8 @@ protected:
     static const unsigned int COLOR_VIS;
 
     std::vector<unsigned int> mObjColors;
+
+    GameObjectVariantId mVariant = VAR_0;
 
 private:
     static unsigned int counter;
@@ -274,6 +281,8 @@ inline PlayerFaction GameObject::GetFaction() const { return mFaction; }
 inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
 
 inline GameObjectCategoryId GameObject::GetObjectCategory() const { return mCategory; }
+
+inline GameObjectVariantId GameObject::GetObjectVariant() const { return mVariant; }
 
 inline unsigned int GameObject::GetRows() const { return mRows; }
 inline unsigned int GameObject::GetCols() const { return mCols; }

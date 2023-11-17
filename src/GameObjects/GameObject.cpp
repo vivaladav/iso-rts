@@ -21,8 +21,6 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 unsigned int GameObject::counter = 0;
 
 // -- OBJECT TYPE --
-const GameObjectTypeId GameObject::TYPE_NULL = 0;
-
 const GameObjectTypeId GameObject::TYPE_BASE = std::hash<std::string>{}("BASE");
 const GameObjectTypeId GameObject::TYPE_BLOBS = std::hash<std::string>{}("BLOBS");
 const GameObjectTypeId GameObject::TYPE_DEFENSIVE_TOWER = std::hash<std::string>{}("DEF_TOWER");
@@ -104,8 +102,6 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
 };
 
 // -- OBJECT CATEGORY --
-const GameObjectCategoryId GameObject::CAT_NULL = 0;
-
 const GameObjectCategoryId GameObject::CAT_COLLECTABLE = std::hash<std::string>{}("COLLECTABLE");
 const GameObjectCategoryId GameObject::CAT_GENERIC = std::hash<std::string>{}("GENERIC");
 const GameObjectCategoryId GameObject::CAT_RES_GENERATOR = std::hash<std::string>{}("RES_GEN");
@@ -178,6 +174,17 @@ void GameObject::SetFaction(PlayerFaction f)
         return ;
 
     mFaction = f;
+
+    UpdateGraphics();
+}
+
+
+void GameObject::SetObjectVariant(GameObjectVariantId var)
+{
+    if(var == mVariant)
+        return ;
+
+    mVariant = var;
 
     UpdateGraphics();
 }

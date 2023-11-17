@@ -28,8 +28,6 @@ public:
 public:
     Wall(GameObjectVariantId part);
 
-    void SetWallType(GameObjectVariantId part);
-
     static unsigned int GetCostEnergy(unsigned int level);
     static unsigned int GetCostMaterial(unsigned int level);
 
@@ -38,9 +36,6 @@ protected:
 
 private:
     void SetImage();
-
-private:
-    int mPart = 0;
 };
 
 } // namespace game

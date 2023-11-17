@@ -60,9 +60,6 @@ private:
     void SetImage();
 
     void SetObjColors();
-
-private:
-    GameObjectVariantId mPart;
 };
 
 } // namespace game

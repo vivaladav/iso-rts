@@ -12,8 +12,9 @@ namespace game
 
 WallGate::WallGate(GameObjectVariantId orientation)
     : Structure(GameObject::TYPE_WALL_GATE, GameObject::CAT_GENERIC, 1, 1)
-    , mOrientation(orientation)
 {
+    mVariant = orientation;
+
     SetImage();
 }
 
@@ -33,13 +34,6 @@ bool WallGate::Toggle()
     SetImage();
 
     return true;
-}
-
-void WallGate::SetGateType(GateOrientation type)
-{
-    mOrientation = type;
-
-    UpdateGraphics();
 }
 
 unsigned int WallGate::GetCostEnergy(unsigned int level)
@@ -79,8 +73,9 @@ void WallGate::SetImage()
         return ;
 
     // set texture
-    const int ind0 = mOrientation == HORIZ ? WALL_GATE_L1_F1_HORIZ_CLOSED : WALL_GATE_L1_F1_VERT_CLOSED;
-    const int ind1 = ind0 + (NUM_SPRITES_PER_WALL_GATE_STATE * static_cast<int>(mOpen)) + static_cast<int>(IsSelected());
+    const int ind0 = mVariant == HORIZ ? WALL_GATE_L1_F1_HORIZ_CLOSED : WALL_GATE_L1_F1_VERT_CLOSED;
+    const int ind1 = ind0 + (NUM_SPRITES_PER_WALL_GATE_STATE * static_cast<int>(mOpen)) +
+                     static_cast<int>(IsSelected());
     const int ind = ind1 + NUM_SPRITES_PER_WALL_GATE * faction;
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);

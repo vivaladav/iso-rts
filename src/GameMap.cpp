@@ -2675,43 +2675,43 @@ void GameMap::UpdateWall(const Cell2D & cell)
             case HORIZ_1:
             case HORIZ_2:
             case HORIZ_3:
-                wall->SetWallType(Wall::HORIZ);
+                wall->SetObjectVariant(Wall::HORIZ);
             break;
 
             case VERT_1:
             case VERT_2:
             case VERT_3:
-                wall->SetWallType(Wall::VERT);
+                wall->SetObjectVariant(Wall::VERT);
             break;
 
             case TL:
-                wall->SetWallType(Wall::TL);
+                wall->SetObjectVariant(Wall::TL);
             break;
             case TR:
-                wall->SetWallType(Wall::TR);
+                wall->SetObjectVariant(Wall::TR);
             break;
             case BL:
-                wall->SetWallType(Wall::BL);
+                wall->SetObjectVariant(Wall::BL);
             break;
             case BR:
-                wall->SetWallType(Wall::BR);
+                wall->SetObjectVariant(Wall::BR);
             break;
 
             case INTN:
-                wall->SetWallType(Wall::INTN);
+                wall->SetObjectVariant(Wall::INTN);
             break;
             case INTS:
-                wall->SetWallType(Wall::INTS);
+                wall->SetObjectVariant(Wall::INTS);
             break;
             case INTW:
-                wall->SetWallType(Wall::INTW);
+                wall->SetObjectVariant(Wall::INTW);
             break;
             case INTE:
-                wall->SetWallType(Wall::INTE);
+                wall->SetObjectVariant(Wall::INTE);
             break;
 
             case CROSS:
-                wall->SetWallType(Wall::CROSS);
+                wall->SetObjectVariant(Wall::CROSS);
             break;
 
             default:
@@ -2728,13 +2728,13 @@ void GameMap::UpdateWall(const Cell2D & cell)
             case HORIZ_1:
             case HORIZ_2:
             case HORIZ_3:
-                gate->SetGateType(WallGate::HORIZ);
+                gate->SetObjectVariant(WallGate::HORIZ);
             break;
 
             case VERT_1:
             case VERT_2:
             case VERT_3:
-                gate->SetGateType(WallGate::VERT);
+                gate->SetObjectVariant(WallGate::VERT);
             break;
 
             default:

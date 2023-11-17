@@ -11,16 +11,10 @@ namespace game
 
 Wall::Wall(GameObjectVariantId part)
     : Structure(GameObject::TYPE_WALL, GameObject::CAT_GENERIC, 1, 1)
-    , mPart(part)
 {
+    mVariant = part;
+
     SetImage();
-}
-
-void Wall::SetWallType(GameObjectVariantId part)
-{
-    mPart = part;
-
-    UpdateGraphics();
 }
 
 unsigned int Wall::GetCostEnergy(unsigned int level)
@@ -60,7 +54,7 @@ void Wall::SetImage()
         return ;
 
     // set texture
-    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mPart + (faction * NUM_WALL_PARTS);
+    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mVariant + (faction * NUM_WALL_PARTS);
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);
     isoObj->SetTexture(tex);

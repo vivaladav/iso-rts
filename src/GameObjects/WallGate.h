@@ -22,8 +22,6 @@ public:
     bool IsOpen() const;
     bool Toggle();
 
-    void SetGateType(GateOrientation type);
-
     static unsigned int GetCostEnergy(unsigned int level);
     static unsigned int GetCostMaterial(unsigned int level);
 
@@ -34,8 +32,6 @@ private:
     void SetImage();
 
 private:
-    GameObjectVariantId mOrientation;
-
     bool mOpen = false;
 };
 

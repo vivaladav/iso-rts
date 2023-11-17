@@ -10,9 +10,10 @@ namespace game
 
 SceneObject::SceneObject(GameObjectTypeId type, GameObjectVariantId part, int rows, int cols)
     : GameObject(type, CAT_SCENE_OBJ, rows, cols)
-    , mPart(part)
 {
     SetStatic(true);
+
+    mVariant = part;
 
     // set object health
     float health = 1000.f;
@@ -51,12 +52,12 @@ void SceneObject::SetImage()
 
     if(type == TYPE_ROCKS)
     {
-        const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + mPart;
+        const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + mVariant;
         tex = tm->GetSprite(SpriteRocksFile, spriteId);
     }
     else if(type == TYPE_MOUNTAINS)
     {
-        const unsigned int spriteId = SpriteIdSceneElements::ID_SCENE_MOUNTAIN_L + mPart;
+        const unsigned int spriteId = SpriteIdSceneElements::ID_SCENE_MOUNTAIN_L + mVariant;
         tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
     }
     // this should never happen
