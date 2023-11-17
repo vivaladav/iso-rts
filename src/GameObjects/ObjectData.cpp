@@ -41,7 +41,8 @@ const char * ObjectFactionData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "CONQUEST"
 };
 
-const ObjectBasicData ObjectBasicData::NullObj(GameObject::TYPE_NULL, OC_NULL, OCAT_UNDEFINED, 0, 0);
+const ObjectBasicData ObjectBasicData::NullObj(GameObject::TYPE_NULL, OC_NULL,
+                                               OCAT_UNDEFINED, nullptr, 0, 0, 0);
 
 const ObjectFactionData ObjectFactionData::NullObj({}, {}, nullptr, 0);
 

@@ -36,100 +36,100 @@ const ObjectFactionData & ObjectsDataRegistry::GetFactionData(PlayerFaction f, G
 void ObjectsDataRegistry::InitObjectData()
 {
     mData.emplace(GameObject::TYPE_BASE,
-                  ObjectBasicData(GameObject::TYPE_BASE,
-                                  OCS_BASE, OCAT_GENERIC, 3, 3));
+                  ObjectBasicData(GameObject::TYPE_BASE, OCS_BASE, OCAT_GENERIC,
+                                  SpriteFileStructures, ID_STRUCT_BASE_L1, 3, 3));
 
     mData.emplace(GameObject::TYPE_BLOBS,
-                  ObjectBasicData(GameObject::TYPE_BLOBS,
-                                  OCO_COLLECTABLE, OCAT_UNDEFINED, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_BLOBS, OCO_COLLECTABLE, OCAT_UNDEFINED,
+                                  SpriteCollectiblesFile, BLOBS_1, 1, 1));
 
     mData.emplace(GameObject::TYPE_DIAMONDS,
-                  ObjectBasicData(GameObject::TYPE_DIAMONDS,
-                                  OCO_COLLECTABLE, OCAT_UNDEFINED, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_DIAMONDS, OCO_COLLECTABLE, OCAT_UNDEFINED,
+                                  SpriteCollectiblesFile, DIAMONDS_1, 1, 1));
 
     mData.emplace(GameObject::TYPE_DEFENSIVE_TOWER,
-                  ObjectBasicData(GameObject::TYPE_DEFENSIVE_TOWER,
-                                  OCS_TOWER, OCAT_DEFENSE, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_DEFENSIVE_TOWER, OCS_TOWER, OCAT_DEFENSE,
+                                  SpriteFileStructures, ID_STRUCT_DTOWER_L1, 1, 1));
 
     mData.emplace(GameObject::TYPE_MOUNTAINS,
-                  ObjectBasicData(GameObject::TYPE_MOUNTAINS,
-                                  OCO_SCENE, OCAT_UNDEFINED, 2, 2));
+                  ObjectBasicData(GameObject::TYPE_MOUNTAINS, OCO_SCENE, OCAT_UNDEFINED,
+                                  SpriteFileSceneElements, ID_SCENE_MOUNTAIN_1, 2, 2));
 
     mData.emplace(GameObject::TYPE_PRACTICE_TARGET,
-                  ObjectBasicData(GameObject::TYPE_PRACTICE_TARGET,
-                                  OCS_TARGET, OCAT_GENERIC, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_PRACTICE_TARGET, OCS_TARGET, OCAT_GENERIC,
+                                  SpriteFileStructures, ID_PRACTICE_TARGET, 1, 1));
 
     mData.emplace(GameObject::TYPE_RADAR_STATION,
-                  ObjectBasicData(GameObject::TYPE_RADAR_STATION,
-                                  OCS_RADAR, OCAT_TECHNOLOGY, 2, 2));
+                  ObjectBasicData(GameObject::TYPE_RADAR_STATION, OCS_RADAR, OCAT_TECHNOLOGY,
+                                  SpriteFileStructures, ID_STRUCT_RADAR, 2, 2));
 
     mData.emplace(GameObject::TYPE_RADAR_TOWER,
-                  ObjectBasicData(GameObject::TYPE_RADAR_STATION,
-                                  OCS_RADAR, OCAT_TECHNOLOGY, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RADAR_STATION, OCS_RADAR, OCAT_TECHNOLOGY,
+                                  SpriteFileStructures, ID_STRUCT_RADAR_TOWER, 1, 1));
 
     mData.emplace(GameObject::TYPE_RES_GEN_ENERGY,
-                  ObjectBasicData(GameObject::TYPE_RES_GEN_ENERGY,
-                                  OCS_GENERATOR, OCAT_RESOURCES, 2, 2));
+                  ObjectBasicData(GameObject::TYPE_RES_GEN_ENERGY, OCS_GENERATOR, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_GEN_ENERGY, 2, 2));
 
     mData.emplace(GameObject::TYPE_RES_GEN_ENERGY_SOLAR,
-                  ObjectBasicData(GameObject::TYPE_RES_GEN_ENERGY_SOLAR,
-                                  OCS_GENERATOR, OCAT_RESOURCES, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RES_GEN_ENERGY_SOLAR, OCS_GENERATOR, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_SOLAR_PANEL, 1, 1));
 
     mData.emplace(GameObject::TYPE_RES_GEN_MATERIAL,
-                  ObjectBasicData(GameObject::TYPE_RES_GEN_MATERIAL,
-                                  OCS_GENERATOR, OCAT_RESOURCES, 2, 2));
+                  ObjectBasicData(GameObject::TYPE_RES_GEN_MATERIAL, OCS_GENERATOR, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_GEN_MATERIAL, 2, 2));
 
     mData.emplace(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT,
-                  ObjectBasicData(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT,
-                                  OCS_GENERATOR, OCAT_RESOURCES, 2, 2));
+                  ObjectBasicData(GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, OCS_GENERATOR, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_MATERIAL_EXTRACTOR, 2, 2));
 
     mData.emplace(GameObject::TYPE_RES_STORAGE_BLOBS,
-                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_BLOBS,
-                                  OCS_STORAGE, OCAT_RESOURCES, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_BLOBS, OCS_STORAGE, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_STORAGE_BLOBS, 1, 1));
 
     mData.emplace(GameObject::TYPE_RES_STORAGE_DIAMONDS,
-                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_DIAMONDS,
-                                  OCS_STORAGE, OCAT_RESOURCES, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_DIAMONDS, OCS_STORAGE, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_STORAGE_DIAMONDS, 1, 1));
 
     mData.emplace(GameObject::TYPE_RES_STORAGE_ENERGY,
-                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_ENERGY,
-                                  OCS_STORAGE, OCAT_RESOURCES, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_ENERGY, OCS_STORAGE, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_STORAGE_ENERGY, 1, 1));
 
     mData.emplace(GameObject::TYPE_RES_STORAGE_MATERIAL,
-                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_MATERIAL,
-                                  OCS_STORAGE, OCAT_RESOURCES, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_RES_STORAGE_MATERIAL, OCS_STORAGE, OCAT_RESOURCES,
+                                  SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL, 1, 1));
 
     mData.emplace(GameObject::TYPE_ROCKS,
-                  ObjectBasicData(GameObject::TYPE_ROCKS,
-                                  OCO_SCENE, OCAT_UNDEFINED, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_ROCKS, OCO_SCENE, OCAT_UNDEFINED,
+                                  SpriteRocksFile, ROCKS_ROW_1, 1, 1));
 
     mData.emplace(GameObject::TYPE_TREES,
-                  ObjectBasicData(GameObject::TYPE_TREES,
-                                  OCO_SCENE, OCAT_UNDEFINED, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_TREES, OCO_SCENE, OCAT_UNDEFINED,
+                                  SpriteFileTrees, TREE1_1T_1, 1, 1));
 
     mData.emplace(GameObject::TYPE_UNIT_SCOUT1,
-                  ObjectBasicData(GameObject::TYPE_UNIT_SCOUT1,
-                                  OCU_SCOUT, OCAT_UNIT, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_UNIT_SCOUT1, OCU_SCOUT, OCAT_UNIT,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_UNIT_SOLDIER1,
-                  ObjectBasicData(GameObject::TYPE_UNIT_SOLDIER1,
-                                  OCU_SOLDIER, OCAT_UNIT, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_UNIT_SOLDIER1, OCU_SOLDIER, OCAT_UNIT,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_UNIT_SOLDIER2,
-                  ObjectBasicData(GameObject::TYPE_UNIT_SOLDIER2,
-                                  OCU_SOLDIER, OCAT_UNIT, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_UNIT_SOLDIER2, OCU_SOLDIER, OCAT_UNIT,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_UNIT_WORKER1,
-                  ObjectBasicData(GameObject::TYPE_UNIT_WORKER1,
-                                  OCU_WORKER, OCAT_UNIT, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_UNIT_WORKER1, OCU_WORKER, OCAT_UNIT,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_WALL,
-                  ObjectBasicData(GameObject::TYPE_WALL,
-                                  OCS_WALL, OCAT_DEFENSE, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_WALL, OCS_WALL, OCAT_DEFENSE,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_WALL_GATE,
-                  ObjectBasicData(GameObject::TYPE_WALL_GATE,
-                                  OCS_WALL, OCAT_DEFENSE, 1, 1));
+                  ObjectBasicData(GameObject::TYPE_WALL_GATE, OCS_WALL, OCAT_DEFENSE,
+                                  nullptr, 0, 1, 1));
 }
 
 void ObjectsDataRegistry::InitFactionData()

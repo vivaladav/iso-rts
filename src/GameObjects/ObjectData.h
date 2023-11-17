@@ -77,10 +77,13 @@ enum ObjFamily : unsigned int
 struct ObjectBasicData
 {
     ObjectBasicData(GameObjectTypeId type, ObjClass oc, ObjFamily ofam,
+                    const char * file, unsigned int texId,
                     unsigned int rs, unsigned int cs)
         : objType(type)
         , objClass(oc)
         , objFamily(ofam)
+        , noFactionIconFile(file)
+        , noFactionIconTexId(texId)
         , rows(rs)
         , cols(cs)
     {
@@ -89,6 +92,9 @@ struct ObjectBasicData
     GameObjectTypeId objType;
     ObjClass objClass;
     ObjFamily objFamily;
+
+    const char * noFactionIconFile = nullptr;
+    unsigned int noFactionIconTexId;
 
     unsigned int rows;
     unsigned int cols;
