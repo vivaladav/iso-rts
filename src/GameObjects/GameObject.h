@@ -89,6 +89,8 @@ public:
     // -- OBJECT VARIANT --
     static const GameObjectVariantId VAR_0;
 
+    static std::string GetObjectTypeStr(const GameObjectTypeId type);
+
 public:
     GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols);
     virtual ~GameObject();
@@ -139,6 +141,7 @@ public:
     void SetFaction(PlayerFaction f);
 
     GameObjectTypeId GetObjectType() const;
+    std::string GetObjectTypeStr() const;
     GameObjectCategoryId GetObjectCategory() const;
     GameObjectVariantId GetObjectVariant() const;
     void SetObjectVariant(GameObjectVariantId var);
@@ -280,6 +283,11 @@ inline int GameObject::GetVisibilityLevel() const { return mVisLevel; }
 inline PlayerFaction GameObject::GetFaction() const { return mFaction; }
 
 inline GameObjectTypeId GameObject::GetObjectType() const { return mType; }
+
+inline std::string GameObject::GetObjectTypeStr() const
+{
+    return GetObjectTypeStr(mType);
+}
 
 inline GameObjectCategoryId GameObject::GetObjectCategory() const { return mCategory; }
 
