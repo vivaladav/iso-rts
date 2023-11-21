@@ -21,7 +21,10 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 unsigned int GameObject::counter = 0;
 
 // -- OBJECT TYPE --
+const GameObjectTypeId GameObject::TYPE_NULL = 0;
+
 const GameObjectTypeId GameObject::TYPE_BASE = std::hash<std::string>{}("BASE");
+const GameObjectTypeId GameObject::TYPE_BASE_SPOT = std::hash<std::string>{}("BASE_SPOT");
 const GameObjectTypeId GameObject::TYPE_BLOBS = std::hash<std::string>{}("BLOBS");
 const GameObjectTypeId GameObject::TYPE_DEFENSIVE_TOWER = std::hash<std::string>{}("DEF_TOWER");
 const GameObjectTypeId GameObject::TYPE_DIAMONDS = std::hash<std::string>{}("DIAMONDS");
@@ -49,6 +52,7 @@ const GameObjectTypeId GameObject::TYPE_WALL_GATE = std::hash<std::string>{}("WA
 const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
 {
     { GameObject::TYPE_BASE, "BASE"},
+    { GameObject::TYPE_BASE_SPOT, "BASE SPOT"},
     { GameObject::TYPE_DEFENSIVE_TOWER, "DEFENSIVE TOWER"},
     { GameObject::TYPE_MOUNTAINS, "MOUNTAINS"},
     { GameObject::TYPE_PRACTICE_TARGET, "PRACTICE TARGET"},
@@ -76,6 +80,8 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
 {
     { GameObject::TYPE_BASE, "A control center. It can create units. "
                              "You need to defend it if you don't want to lose a territory."},
+    { GameObject::TYPE_BASE_SPOT, "This represents where a faction base will be placed. "
+                                  "Numbers identify the factions in a map."},
     { GameObject::TYPE_DEFENSIVE_TOWER, "A basic defensive tower."},
     { GameObject::TYPE_MOUNTAINS, "Some mountains"},
     { GameObject::TYPE_PRACTICE_TARGET, "A practice target.\nIt can be used to train your units "
@@ -102,12 +108,17 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
 };
 
 // -- OBJECT CATEGORY --
+const GameObjectCategoryId GameObject::CAT_NULL = 0;
+
 const GameObjectCategoryId GameObject::CAT_COLLECTABLE = std::hash<std::string>{}("COLLECTABLE");
 const GameObjectCategoryId GameObject::CAT_GENERIC = std::hash<std::string>{}("GENERIC");
 const GameObjectCategoryId GameObject::CAT_RES_GENERATOR = std::hash<std::string>{}("RES_GEN");
 const GameObjectCategoryId GameObject::CAT_RES_STORAGE = std::hash<std::string>{}("RES_STORAGE");
 const GameObjectCategoryId GameObject::CAT_SCENE_OBJ = std::hash<std::string>{}("SCENE_OBJ");
 const GameObjectCategoryId GameObject::CAT_UNIT = std::hash<std::string>{}("UNIT");
+
+// -- OBJECT VARIANT --
+const GameObjectVariantId GameObject::VAR_0 = 0;
 
 // -- CONSTRUCTOR & DESTRUCTOR --
 GameObject::GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols)

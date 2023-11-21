@@ -39,6 +39,10 @@ void ObjectsDataRegistry::InitObjectData()
                   ObjectBasicData(GameObject::TYPE_BASE, OCS_BASE, OCAT_GENERIC,
                                   SpriteFileStructures, ID_STRUCT_BASE_L1, 3, 3));
 
+    mData.emplace(GameObject::TYPE_BASE_SPOT,
+                  ObjectBasicData(GameObject::TYPE_BASE_SPOT, OCS_BASE, OCAT_GENERIC,
+                                  SpriteFileStructures, ID_STRUCT_BASE_L1, 3, 3));
+
     mData.emplace(GameObject::TYPE_BLOBS,
                   ObjectBasicData(GameObject::TYPE_BLOBS, OCO_COLLECTABLE, OCAT_UNDEFINED,
                                   SpriteCollectiblesFile, BLOBS_1, 1, 1));

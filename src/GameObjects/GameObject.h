@@ -43,9 +43,10 @@ class GameObject
 {
 public:
     // -- OBJECT TYPE --
-    static const GameObjectTypeId TYPE_NULL = 0;
+    static const GameObjectTypeId TYPE_NULL;
 
     static const GameObjectTypeId TYPE_BASE;
+    static const GameObjectTypeId TYPE_BASE_SPOT;
     static const GameObjectTypeId TYPE_BLOBS;
     static const GameObjectTypeId TYPE_DEFENSIVE_TOWER;
     static const GameObjectTypeId TYPE_DIAMONDS;
@@ -76,7 +77,7 @@ public:
     static const unsigned int NUM_UNIT_TYPES = 4;
 
     // -- OBJECT CATEGORY --
-    static const GameObjectCategoryId CAT_NULL = 0;
+    static const GameObjectCategoryId CAT_NULL;
 
     static const GameObjectCategoryId CAT_COLLECTABLE;
     static const GameObjectCategoryId CAT_GENERIC;
@@ -86,7 +87,7 @@ public:
     static const GameObjectCategoryId CAT_UNIT;
 
     // -- OBJECT VARIANT --
-    static const GameObjectVariantId VAR_0 = 0;
+    static const GameObjectVariantId VAR_0;
 
 public:
     GameObject(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols);
