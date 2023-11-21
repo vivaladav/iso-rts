@@ -11,6 +11,9 @@ class IsoMap;
 class MapLoader
 {
 public:
+    static const std::string MAP_VERSION;
+
+public:
     MapLoader(GameMap * gm, IsoMap * im);
 
     void SetMaps(GameMap * gm, IsoMap * im);

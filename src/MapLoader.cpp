@@ -10,6 +10,8 @@
 namespace game
 {
 
+const std::string MapLoader::MAP_VERSION("0.1.0");
+
 bool MapLoader::Load(const std::string & filename)
 {
     // map not set
