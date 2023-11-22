@@ -76,6 +76,8 @@ private:
     };
 
 private:
+    void ClearElements();
+
     void PositionElement(MiniMapElem * elem);
 
     void MoveContentHorizontal(int val);
