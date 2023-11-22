@@ -46,7 +46,7 @@ void MapLoader::ReadBaseData(std::fstream & fs)
     unsigned int cols = 0;
     ss >> rows >> cols;
 
-    mIsoMap->SetSize(rows, cols);
+    mIsoMap->SetSize(rows, cols, true);
 
     // READ BASE MAP
     for(unsigned int r = 0; r < rows; ++r)

@@ -22,30 +22,23 @@ IsoLayer::IsoLayer(const IsoMap * map)
 
     mObjectsMap.reserve(size);
     mObjectsMap.assign(size, nullptr);
-
-    mObjectsList.reserve(size);
-    mRenderList.reserve(size);
 }
 
 // ==================== PUBLIC METHODS ====================
 
-void IsoLayer::UpdateSize()
+void IsoLayer::UpdateSize(bool force)
 {
     const unsigned int size = mMap->GetNumRows() * mMap->GetNumCols();
 
-    if(size == mObjectsMap.size())
+    if(!force && size == mObjectsMap.size())
         return ;
 
-    mObjectsMap.resize(size);
+    mObjectsMap.clear();
+    mObjectsMap.resize(size, nullptr);
 
     // update objects list
+    mObjectsList.clear();
     mRenderList.clear();
-
-    for(unsigned int ind = 0; ind < size; ++ind)
-    {
-        if(mObjectsMap[ind] != nullptr)
-            mRenderList.emplace_back(mObjectsMap[ind]);
-    }
 }
 
 /**

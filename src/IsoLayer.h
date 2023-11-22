@@ -35,7 +35,7 @@ class IsoLayer
 public:
     IsoLayer(const IsoMap * map);
 
-    void UpdateSize();
+    void UpdateSize(bool force);
 
     bool ContainsObject(unsigned int r, unsigned int c) const;
     bool AddObject(IsoObject * obj, unsigned int r, unsigned int c);

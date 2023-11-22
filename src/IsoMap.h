@@ -24,7 +24,9 @@ public:
     IsoMap(int rows, int cols, int tileW);
     ~IsoMap();
 
-    void SetSize(unsigned int rows, unsigned int cols);
+    void Clear();
+
+    void SetSize(unsigned int rows, unsigned int cols, bool force);
 
     int GetNumRows() const;
     int GetNumCols() const;
