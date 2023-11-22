@@ -57,7 +57,8 @@ void SceneObject::SetImage()
     }
     else if(type == TYPE_MOUNTAINS)
     {
-        const unsigned int spriteId = SpriteIdSceneElements::ID_SCENE_MOUNTAIN_L + mVariant;
+        const int sel = static_cast<int>(IsSelected());
+        const unsigned int spriteId = ID_SCENE_MOUNTAIN_L + mVariant + (sel * NUM_MOUNTAINS_SPRITES);
         tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
     }
     // this should never happen
