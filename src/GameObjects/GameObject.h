@@ -200,6 +200,34 @@ protected:
 private:
     static unsigned int counter;
 
+    static const std::string TYPE_STR_BASE;
+    static const std::string TYPE_STR_BASE_SPOT;
+    static const std::string TYPE_STR_BLOBS;
+    static const std::string TYPE_STR_DEFENSIVE_TOWER;
+    static const std::string TYPE_STR_DIAMONDS;
+    static const std::string TYPE_STR_MOUNTAINS;
+    static const std::string TYPE_STR_PRACTICE_TARGET;
+    static const std::string TYPE_STR_RADAR_STATION;
+    static const std::string TYPE_STR_RADAR_TOWER;
+    static const std::string TYPE_STR_RES_GEN_ENERGY;
+    static const std::string TYPE_STR_RES_GEN_ENERGY_SOLAR;
+    static const std::string TYPE_STR_RES_GEN_MATERIAL;
+    static const std::string TYPE_STR_RES_GEN_MATERIAL_EXTRACT;
+    static const std::string TYPE_STR_RES_STORAGE_BLOBS;
+    static const std::string TYPE_STR_RES_STORAGE_DIAMONDS;
+    static const std::string TYPE_STR_RES_STORAGE_ENERGY;
+    static const std::string TYPE_STR_RES_STORAGE_MATERIAL;
+    static const std::string TYPE_STR_ROCKS;
+    static const std::string TYPE_STR_TREES;
+    static const std::string TYPE_STR_UNIT_SCOUT1;
+    static const std::string TYPE_STR_UNIT_SOLDIER1;
+    static const std::string TYPE_STR_UNIT_SOLDIER2;
+    static const std::string TYPE_STR_UNIT_WORKER1;
+    static const std::string TYPE_STR_WALL;
+    static const std::string TYPE_STR_WALL_GATE;
+
+    static const std::unordered_map<GameObjectTypeId, std::string> TYPE_STR_MAP;
+
 private:
     std::function<void()> mOnValuesChanged;
 

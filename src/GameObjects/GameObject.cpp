@@ -23,58 +23,31 @@ const unsigned int GameObject::COLOR_VIS = 0xFFFFFFFF;
 unsigned int GameObject::counter = 0;
 
 // -- OBJECT TYPE --
-const std::string TYPE_STR_BASE("BASE");
-const std::string TYPE_STR_BASE_SPOT("BASE_SPOT");
-const std::string TYPE_STR_BLOBS("BLOBS");
-const std::string TYPE_STR_DEFENSIVE_TOWER("DEF_TOWER");
-const std::string TYPE_STR_DIAMONDS("DIAMONDS");
-const std::string TYPE_STR_MOUNTAINS("MOUNTAINS");
-const std::string TYPE_STR_PRACTICE_TARGET("TARGET");
-const std::string TYPE_STR_RADAR_STATION("RADAR_STATION");
-const std::string TYPE_STR_RADAR_TOWER("RADAR_TOWER");
-const std::string TYPE_STR_RES_GEN_ENERGY("RESGEN_ENER");
-const std::string TYPE_STR_RES_GEN_ENERGY_SOLAR("RESGEN_SOLAR");
-const std::string TYPE_STR_RES_GEN_MATERIAL("RESGEN_MAT");
-const std::string TYPE_STR_RES_GEN_MATERIAL_EXTRACT("RESGEN_MAT_EXT");
-const std::string TYPE_STR_RES_STORAGE_BLOBS("RESSTOR_BLOBS");
-const std::string TYPE_STR_RES_STORAGE_DIAMONDS("RESSTOR_DIAM");
-const std::string TYPE_STR_RES_STORAGE_ENERGY("RESSTOR_ENER");
-const std::string TYPE_STR_RES_STORAGE_MATERIAL("RESSTOR_MAT");
-const std::string TYPE_STR_ROCKS("ROCKS");
-const std::string TYPE_STR_TREES("TREES");
-const std::string TYPE_STR_UNIT_SCOUT1("UNIT_SCOUT1");
-const std::string TYPE_STR_UNIT_SOLDIER1("UNIT_SOLDIER1");
-const std::string TYPE_STR_UNIT_SOLDIER2("UNIT_SOLDIER2");
-const std::string TYPE_STR_UNIT_WORKER1("UNIT_WORKER1");
-const std::string TYPE_STR_WALL("WALL");
-const std::string TYPE_STR_WALL_GATE("WALL_GATE");
-
-const std::unordered_map<GameObjectTypeId, std::string> TYPE_STR_MAP =
-{
-    { GameObject::TYPE_BASE, TYPE_STR_BASE},
-    { GameObject::TYPE_BASE_SPOT, TYPE_STR_BASE_SPOT},
-    { GameObject::TYPE_DEFENSIVE_TOWER, TYPE_STR_DEFENSIVE_TOWER },
-    { GameObject::TYPE_MOUNTAINS, TYPE_STR_MOUNTAINS },
-    { GameObject::TYPE_PRACTICE_TARGET, TYPE_STR_PRACTICE_TARGET },
-    { GameObject::TYPE_RADAR_STATION, TYPE_STR_RADAR_STATION },
-    { GameObject::TYPE_RADAR_TOWER, TYPE_STR_RADAR_TOWER },
-    { GameObject::TYPE_RES_GEN_ENERGY, TYPE_STR_RES_GEN_ENERGY },
-    { GameObject::TYPE_RES_GEN_ENERGY_SOLAR, TYPE_STR_RES_GEN_ENERGY_SOLAR },
-    { GameObject::TYPE_RES_GEN_MATERIAL, TYPE_STR_RES_GEN_MATERIAL },
-    { GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, TYPE_STR_RES_GEN_MATERIAL_EXTRACT },
-    { GameObject::TYPE_RES_STORAGE_BLOBS, TYPE_STR_RES_STORAGE_BLOBS },
-    { GameObject::TYPE_RES_STORAGE_DIAMONDS, TYPE_STR_RES_STORAGE_DIAMONDS },
-    { GameObject::TYPE_RES_STORAGE_ENERGY, TYPE_STR_RES_STORAGE_ENERGY },
-    { GameObject::TYPE_RES_STORAGE_MATERIAL, TYPE_STR_RES_STORAGE_MATERIAL },
-    { GameObject::TYPE_ROCKS, TYPE_STR_ROCKS },
-    { GameObject::TYPE_TREES, TYPE_STR_TREES },
-    { GameObject::TYPE_UNIT_WORKER1, TYPE_STR_UNIT_WORKER1 },
-    { GameObject::TYPE_UNIT_SOLDIER1, TYPE_STR_UNIT_SOLDIER1 },
-    { GameObject::TYPE_UNIT_SOLDIER2, TYPE_STR_UNIT_SOLDIER2 },
-    { GameObject::TYPE_UNIT_SCOUT1, TYPE_STR_UNIT_SCOUT1 },
-    { GameObject::TYPE_WALL, TYPE_STR_WALL },
-    { GameObject::TYPE_WALL_GATE, TYPE_STR_WALL_GATE }
-};
+const std::string GameObject::TYPE_STR_BASE("BASE");
+const std::string GameObject::TYPE_STR_BASE_SPOT("BASE_SPOT");
+const std::string GameObject::TYPE_STR_BLOBS("BLOBS");
+const std::string GameObject::TYPE_STR_DEFENSIVE_TOWER("DEF_TOWER");
+const std::string GameObject::TYPE_STR_DIAMONDS("DIAMONDS");
+const std::string GameObject::TYPE_STR_MOUNTAINS("MOUNTAINS");
+const std::string GameObject::TYPE_STR_PRACTICE_TARGET("TARGET");
+const std::string GameObject::TYPE_STR_RADAR_STATION("RADAR_STATION");
+const std::string GameObject::TYPE_STR_RADAR_TOWER("RADAR_TOWER");
+const std::string GameObject::TYPE_STR_RES_GEN_ENERGY("RESGEN_ENER");
+const std::string GameObject::TYPE_STR_RES_GEN_ENERGY_SOLAR("RESGEN_SOLAR");
+const std::string GameObject::TYPE_STR_RES_GEN_MATERIAL("RESGEN_MAT");
+const std::string GameObject::TYPE_STR_RES_GEN_MATERIAL_EXTRACT("RESGEN_MAT_EXT");
+const std::string GameObject::TYPE_STR_RES_STORAGE_BLOBS("RESSTOR_BLOBS");
+const std::string GameObject::TYPE_STR_RES_STORAGE_DIAMONDS("RESSTOR_DIAM");
+const std::string GameObject::TYPE_STR_RES_STORAGE_ENERGY("RESSTOR_ENER");
+const std::string GameObject::TYPE_STR_RES_STORAGE_MATERIAL("RESSTOR_MAT");
+const std::string GameObject::TYPE_STR_ROCKS("ROCKS");
+const std::string GameObject::TYPE_STR_TREES("TREES");
+const std::string GameObject::TYPE_STR_UNIT_SCOUT1("UNIT_SCOUT1");
+const std::string GameObject::TYPE_STR_UNIT_SOLDIER1("UNIT_SOLDIER1");
+const std::string GameObject::TYPE_STR_UNIT_SOLDIER2("UNIT_SOLDIER2");
+const std::string GameObject::TYPE_STR_UNIT_WORKER1("UNIT_WORKER1");
+const std::string GameObject::TYPE_STR_WALL("WALL");
+const std::string GameObject::TYPE_STR_WALL_GATE("WALL_GATE");
 
 const GameObjectTypeId GameObject::TYPE_NULL = 0;
 
@@ -103,6 +76,33 @@ const GameObjectTypeId GameObject::TYPE_UNIT_SOLDIER2 = h{}(TYPE_STR_UNIT_SOLDIE
 const GameObjectTypeId GameObject::TYPE_UNIT_WORKER1 = h{}(TYPE_STR_UNIT_WORKER1);
 const GameObjectTypeId GameObject::TYPE_WALL = h{}(TYPE_STR_WALL);
 const GameObjectTypeId GameObject::TYPE_WALL_GATE = h{}(TYPE_STR_WALL_GATE);
+
+const std::unordered_map<GameObjectTypeId, std::string> GameObject::TYPE_STR_MAP =
+{
+    { GameObject::TYPE_BASE, TYPE_STR_BASE},
+    { GameObject::TYPE_BASE_SPOT, TYPE_STR_BASE_SPOT},
+    { GameObject::TYPE_DEFENSIVE_TOWER, TYPE_STR_DEFENSIVE_TOWER },
+    { GameObject::TYPE_MOUNTAINS, TYPE_STR_MOUNTAINS },
+    { GameObject::TYPE_PRACTICE_TARGET, TYPE_STR_PRACTICE_TARGET },
+    { GameObject::TYPE_RADAR_STATION, TYPE_STR_RADAR_STATION },
+    { GameObject::TYPE_RADAR_TOWER, TYPE_STR_RADAR_TOWER },
+    { GameObject::TYPE_RES_GEN_ENERGY, TYPE_STR_RES_GEN_ENERGY },
+    { GameObject::TYPE_RES_GEN_ENERGY_SOLAR, TYPE_STR_RES_GEN_ENERGY_SOLAR },
+    { GameObject::TYPE_RES_GEN_MATERIAL, TYPE_STR_RES_GEN_MATERIAL },
+    { GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT, TYPE_STR_RES_GEN_MATERIAL_EXTRACT },
+    { GameObject::TYPE_RES_STORAGE_BLOBS, TYPE_STR_RES_STORAGE_BLOBS },
+    { GameObject::TYPE_RES_STORAGE_DIAMONDS, TYPE_STR_RES_STORAGE_DIAMONDS },
+    { GameObject::TYPE_RES_STORAGE_ENERGY, TYPE_STR_RES_STORAGE_ENERGY },
+    { GameObject::TYPE_RES_STORAGE_MATERIAL, TYPE_STR_RES_STORAGE_MATERIAL },
+    { GameObject::TYPE_ROCKS, TYPE_STR_ROCKS },
+    { GameObject::TYPE_TREES, TYPE_STR_TREES },
+    { GameObject::TYPE_UNIT_WORKER1, TYPE_STR_UNIT_WORKER1 },
+    { GameObject::TYPE_UNIT_SOLDIER1, TYPE_STR_UNIT_SOLDIER1 },
+    { GameObject::TYPE_UNIT_SOLDIER2, TYPE_STR_UNIT_SOLDIER2 },
+    { GameObject::TYPE_UNIT_SCOUT1, TYPE_STR_UNIT_SCOUT1 },
+    { GameObject::TYPE_WALL, TYPE_STR_WALL },
+    { GameObject::TYPE_WALL_GATE, TYPE_STR_WALL_GATE }
+};
 
 std::string GameObject::GetObjectTypeStr(const GameObjectTypeId type)
 {
