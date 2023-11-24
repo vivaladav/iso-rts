@@ -1,8 +1,6 @@
 #include "MapLoader.h"
 
 #include "GameConstants.h"
-#include "GameMap.h"
-#include "IsoMap.h"
 
 #include <fstream>
 #include <sstream>
@@ -12,12 +10,19 @@ namespace game
 
 const std::string MapLoader::MAP_VERSION("0.1.0");
 
+void MapLoader::Clear()
+{
+    mObjEntries.clear();
+    mCellTypes.clear();
+
+    mVer.clear();
+
+    mRows = 0 ;
+    mCols = 0 ;
+}
+
 bool MapLoader::Load(const std::string & filename)
 {
-    // map not set
-    if(nullptr == mIsoMap)
-        return false;
-
     // open map file
     std::fstream fs(filename);
 
@@ -38,49 +43,38 @@ void MapLoader::ReadBaseData(std::fstream & fs)
     std::string line;
     std::istringstream ss;
 
+    // reading file version
+    std::getline(fs, line);
+    ss.str(line);
+
+    ss >> mVer;
+    ss.clear();
+
     // reading map size
     std::getline(fs, line);
     ss.str(line);
 
-    unsigned int rows = 0;
-    unsigned int cols = 0;
-    ss >> rows >> cols;
-
-    mIsoMap->SetSize(rows, cols, true);
+    ss >> mRows >> mCols;
 
     // READ BASE MAP
-    for(unsigned int r = 0; r < rows; ++r)
+    for(unsigned int r = 0; r < mRows; ++r)
     {
         std::getline(fs, line);
         ss.clear();
         ss.str(line);
 
-        const unsigned int ind0 = r * cols;
-
-        for(unsigned int c = 0; c < cols; ++c)
+        for(unsigned int c = 0; c < mCols; ++c)
         {
             unsigned int type;
-
             ss >> type;
 
-            const unsigned int ind = ind0 + c;
-
-            mIsoMap->SetCellType(ind, type);
+            mCellTypes.push_back(type);
         }
-    }
-
-    // update game map
-    if(mGameMap)
-    {
-        mGameMap->SetSize(rows, cols);
-        mGameMap->SyncMapCells();
     }
 }
 
 void MapLoader::ReadObjectsData(std::fstream & fs)
 {
-    if(nullptr == mGameMap)
-        return ;
 
     std::string line;
     std::istringstream ss;
@@ -95,17 +89,13 @@ void MapLoader::ReadObjectsData(std::fstream & fs)
         ss.clear();
         ss.str(line);
 
-        unsigned int layerId = 0;
+        MapObjectEntry e;
         std::string objIdStr;
-        unsigned int variantId = 0;
-        unsigned int faction = NO_FACTION;
-        unsigned int r0 = 0;
-        unsigned int c0 = 0;
 
-        ss >> layerId >> objIdStr >> variantId >> faction >> r0 >> c0;
-        const std::size_t objId = std::hash<std::string>{}(objIdStr);
+        ss >> e.layerId >> objIdStr >> e.variantId >> e.faction >> e.r0 >> e.c0;
+        e.typeId = std::hash<std::string>{}(objIdStr);
 
-        mGameMap->CreateObjectFromFile(layerId, objId, variantId, faction, r0, c0);
+        mObjEntries.emplace_back(e);
     }
 }
 

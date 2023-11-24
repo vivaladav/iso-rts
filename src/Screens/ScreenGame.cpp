@@ -94,10 +94,7 @@ ScreenGame::ScreenGame(Game * game)
     // create game map
     mGameMap = new GameMap(GetGame(), this, mIsoMap);
 
-    // load map file
-    const std::string & mapFile = game->GetCurrentMapFile();
-    MapLoader ml(mGameMap, mIsoMap);
-    ml.Load(mapFile);
+    LoadMapFile();
 
     // center map on screen
     const int mapH = mIsoMap->GetHeight();
@@ -811,6 +808,48 @@ void ScreenGame::ClearNewElemDialog()
     // schedule dialog deletion
     mDialogNewElement->DeleteLater();
     mDialogNewElement = nullptr;
+}
+
+void ScreenGame::LoadMapFile()
+{
+    const std::string & mapFile = GetGame()->GetCurrentMapFile();
+
+    MapLoader ml;
+    ml.Load(mapFile);
+
+    const unsigned int rows = ml.GetMapRows();
+    const unsigned int cols = ml.GetMapCols();
+
+    // update iso map
+    mIsoMap->SetSize(rows, cols, true);
+
+    const std::vector<unsigned int> & cells = ml.GetCellTypes();
+
+    for(unsigned int r = 0; r < rows; ++r)
+    {
+        const unsigned int ind0 = r * cols;
+
+        for(unsigned int c = 0; c < cols; ++c)
+        {
+            const unsigned int ind = ind0 + c;
+            mIsoMap->SetCellType(ind, cells[ind]);
+        }
+    }
+
+    // update game map
+    mGameMap->SetSize(rows, cols);
+    mGameMap->SyncMapCells();
+
+    // create objects
+    const std::vector<MapObjectEntry> & objEntries = ml.GetObjectEntries();
+    const unsigned int numEntries = objEntries.size();
+
+    for(unsigned int i = 0; i < numEntries; ++i)
+    {
+        const auto & e = objEntries[i];
+
+        mGameMap->CreateObjectFromFile(e.layerId, e.typeId, e.variantId, e.faction, e.r0, e.c0);
+    }
 }
 
 void ScreenGame::OnKeyDown(sgl::core::KeyboardEvent & event)

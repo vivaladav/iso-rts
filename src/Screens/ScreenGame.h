@@ -100,6 +100,8 @@ private:
     void CreateUI();
     void ClearNewElemDialog();
 
+    void LoadMapFile();
+
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
 
