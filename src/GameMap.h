@@ -78,7 +78,7 @@ public:
                               unsigned int r0, unsigned int c0);
 
     GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
-                             GameObjectVariantId variant, Player * owner,
+                             GameObjectVariantId variant, PlayerFaction faction,
                               unsigned int r0, unsigned int c0);
 
     bool HasObject(GameObject * obj) const;

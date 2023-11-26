@@ -359,11 +359,13 @@ void GameMap::InitObjectVisibility(Player * player, GameObject * gameObj)
 void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, GameObjectVariantId variant,
                                    unsigned int faction, unsigned int r0, unsigned int c0)
 {
-    Player * owner =  mGame->GetPlayerByIndex(faction);
+    const auto pf = static_cast<PlayerFaction>(faction);
 
     if(GameObject::TYPE_UNIT_SCOUT1 == type || GameObject::TYPE_UNIT_SOLDIER1 == type ||
        GameObject::TYPE_UNIT_SOLDIER2 == type || GameObject::TYPE_UNIT_WORKER1 == type)
     {
+        Player * owner =  mGame->GetPlayerByFaction(pf);
+
         if(nullptr == owner)
             return ;
 
@@ -372,11 +374,11 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
         CreateUnit(type, nullptr, dest, owner);
     }
     else
-        CreateObject(layerId, type, variant, owner, r0, c0);
+        CreateObject(layerId, type, variant, pf, r0, c0);
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
-                                   GameObjectVariantId variant, Player * owner,
+                                   GameObjectVariantId variant, PlayerFaction faction,
                                    unsigned int r0, unsigned int c0)
 {
     // object origin is out of map
@@ -402,10 +404,9 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     if(gcell.objTop)
         return nullptr;
 
-    const PlayerFaction ownerFaction = owner != nullptr ? owner->GetFaction() : NO_FACTION;
-
     // create game object
     GameObject * obj = nullptr;
+    Player * owner = mGame->GetPlayerByFaction(faction);
 
     bool isResGen = false;
 
@@ -441,7 +442,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
 
         if(owner != nullptr)
         {
-            const ObjectFactionData & fData = GetFactionData(ownerFaction, type);
+            const ObjectFactionData & fData = GetFactionData(faction, type);
             obj = new DefensiveTower(data, fData);
         }
         else
@@ -451,8 +452,14 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         obj = new Wall(variant);
     else if(GameObject::TYPE_WALL_GATE == type)
         obj = new WallGate(variant);
-    else if(GameObject::TYPE_BASE == type)
+    else if(GameObject::TYPE_BASE == type || GameObject::TYPE_BASE_SPOT == type)
     {
+        if(GameObject::TYPE_BASE_SPOT == type)
+        {
+            owner = mGame->GetPlayerByIndex(variant);
+            faction = owner->GetFaction();
+        }
+
         obj = new Base;
 
         // base cells update
@@ -483,7 +490,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     }
 
     // assign owner
-    obj->SetFaction(ownerFaction);
+    obj->SetFaction(faction);
 
     // set object properties
     obj->SetCell(&mCells[ind0]);
@@ -830,7 +837,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     // reset cell's changing flag
     gcell.changing = false;
 
-    GameObject * obj = CreateObject(OBJECTS2, st, 0, player, cell.row, cell.col);
+    GameObject * obj = CreateObject(OBJECTS2, st, 0, player->GetFaction(), cell.row, cell.col);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -919,7 +926,7 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId p
     UpdateLinkedCells(player);
 
     // add object wall
-    CreateObject(OBJECTS2, GameObject::TYPE_WALL, planned, player, cell.row, cell.col);
+    CreateObject(OBJECTS2, GameObject::TYPE_WALL, planned, player->GetFaction(), cell.row, cell.col);
 
     // update minimap
     if(IsCellVisibleToLocalPlayer(cell.row, cell.col))
