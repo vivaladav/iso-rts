@@ -31,6 +31,7 @@ public:
     void SetSpeed(int val);
 
     void CenterCameraToPoint(int x, int y);
+    void ResetPosition();
 
     void HandleKeyDown(sgl::core::KeyboardEvent & event);
     void HandleKeyUp(sgl::core::KeyboardEvent & event);

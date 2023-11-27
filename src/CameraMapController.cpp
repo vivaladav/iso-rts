@@ -79,6 +79,11 @@ void CameraMapController::CenterCameraToPoint(int x, int y)
     mCamera->CenterToPoint(x, y);
 }
 
+void CameraMapController::ResetPosition()
+{
+    mCamera->ResetPosition();
+}
+
 void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;
