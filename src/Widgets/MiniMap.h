@@ -1,13 +1,13 @@
-#include <sgl/sgui/Widget.h>
-
 #include "Cell2D.h"
+
+#include <sgl/graphic/Image.h>
+#include <sgl/sgui/Widget.h>
 
 #include <functional>
 #include <vector>
 
 namespace sgl
 {
-    namespace graphic { class Image; }
     namespace sgui { class ImageButton; }
 }
 
@@ -63,6 +63,8 @@ private:
             , faction(pf)
             , img(i)
         {}
+
+        ~MiniMapElem() { delete img; }
 
         int brR;
         int brC;
