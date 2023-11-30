@@ -1,13 +1,13 @@
-#include <sgl/sgui/Widget.h>
-
 #include "Cell2D.h"
+
+#include <sgl/graphic/Image.h>
+#include <sgl/sgui/Widget.h>
 
 #include <functional>
 #include <vector>
 
 namespace sgl
 {
-    namespace graphic { class Image; }
     namespace sgui { class ImageButton; }
 }
 
@@ -34,7 +34,7 @@ public:
     };
 
 public:
-    MiniMap(CameraMapController * cameraController, IsoMap * im);
+    MiniMap(CameraMapController * cameraController, IsoMap * im, sgl::sgui::Widget * parent);
     ~MiniMap();
 
     void AddFunctionOnClose(const std::function<void()> & f);
@@ -64,6 +64,8 @@ private:
             , img(i)
         {}
 
+        ~MiniMapElem() { delete img; }
+
         int brR;
         int brC;
         int tlR;
@@ -76,6 +78,8 @@ private:
     };
 
 private:
+    void ClearElements();
+
     void PositionElement(MiniMapElem * elem);
 
     void MoveContentHorizontal(int val);

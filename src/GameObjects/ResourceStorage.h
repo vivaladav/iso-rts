@@ -7,11 +7,10 @@ namespace game
 
 enum ResourceType : unsigned int;
 
-
 class ResourceStorage : public Structure
 {
 public:
-    ResourceStorage(ResourceType typeRes, int rows, int cols);
+    ResourceStorage(GameObjectTypeId type, int rows, int cols);
 
     ResourceType GetResourceType() const;
 
@@ -24,12 +23,12 @@ private:
     void SetImage();
 
 private:
-    ResourceType mTypeRes;
+    ResourceType mResource;
 
     int mCapacity = 0;
 };
 
-inline ResourceType ResourceStorage::GetResourceType() const { return mTypeRes; }
+inline ResourceType ResourceStorage::GetResourceType() const { return mResource; }
 
 } // namespace game
 

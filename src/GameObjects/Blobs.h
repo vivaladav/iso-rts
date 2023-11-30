@@ -31,7 +31,7 @@ private:
     int mNum = 0;
 };
 
-inline Blobs::Blobs() : Collectable(GameObjectType::OBJ_BLOBS, 1, 1)
+inline Blobs::Blobs() : Collectable(GameObject::TYPE_BLOBS, 1, 1)
 {
     SetObjColors();
 }

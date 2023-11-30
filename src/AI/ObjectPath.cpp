@@ -1,5 +1,6 @@
 #include "AI/ObjectPath.h"
 
+#include "Game.h"
 #include "GameMap.h"
 #include "IsoLayer.h"
 #include "IsoMap.h"
@@ -25,27 +26,45 @@ ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame *
 {
 }
 
-void ObjectPath::InitNextMoveStep()
+void ObjectPath::InitNextMove()
 {
-    const IsoObject * isoObj = mObj->GetIsoObject();
-    const IsoLayer * layerObj = isoObj->GetLayer();
+    // not enough energy -> FAIL
+    // TODO remove type check if mObj is changed into mUnit like for other paths
+    if(mObj->GetObjectCategory() == GameObject::CAT_UNIT &&
+       !static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE))
+    {
+        Fail();
+        return ;
+    }
 
-    mObjX = isoObj->GetX();
-    mObjY = isoObj->GetY();
-
+    // check if next destination is walkable
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
+    const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
+
+    if(!nextCell.walkable || nextCell.walkTarget)
+    {
+        Fail();
+        return ;
+    }
+
+    // set target for movement
+    const IsoObject * isoObj = mObj->GetIsoObject();
+    const IsoLayer * layerObj = isoObj->GetLayer();
     const sgl::core::Pointd2D target = layerObj->GetObjectPosition(isoObj, nextRow, nextCol);
+
+    mObjX = isoObj->GetX();
+    mObjY = isoObj->GetY();
     mTargetX = target.x;
     mTargetY = target.y;
-
     mVelX = (mTargetX - mObjX) * mObj->GetSpeed();
     mVelY = (mTargetY - mObjY) * mObj->GetSpeed();
 
+    // mark next cell in game map
     mGameMap->SetCellWalkTarget(nextInd, true);
 
-    ++mNextCell;
+    mState = MOVING;
 }
 
 void ObjectPath::Start()
@@ -56,27 +75,7 @@ void ObjectPath::Start()
 
     mNextCell = 1;
 
-    const unsigned int nextInd = mCells[mNextCell];
-    const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-    const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-
-    // check if next destination is walkable
-    const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
-
-    bool canMove = nextCell.walkable && !nextCell.walkTarget;
-
-    // TODO remove check if mObj is changed into mUnit like for other paths
-    if(mObj->GetObjectType() == OBJ_UNIT)
-        canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
-
-    if(canMove)
-    {
-        mState = RUNNING;
-
-        InitNextMoveStep();
-    }
-    else
-        Fail();
+    InitNextMove();
 }
 
 void ObjectPath::InstantAbort()
@@ -151,18 +150,19 @@ void ObjectPath::Update(float delta)
     // handle reached target
     if(0 == todo)
     {
-        Player * player = mObj->GetOwner();
+        Player * player = mScreen->GetGame()->GetPlayerByFaction(mObj->GetFaction());
 
         mGameMap->DelPlayerObjVisibility(mObj, player);
 
-        const unsigned int targetInd = mCells[mNextCell - 1];
+        const unsigned int targetInd = mCells[mNextCell];
         const unsigned int targetRow = targetInd / mIsoMap->GetNumCols();
         const unsigned int targetCol = targetInd % mIsoMap->GetNumCols();
 
         const GameMapCell & targetCell = mGameMap->GetCell(targetRow, targetCol);
 
         // collect collectable object, if any
-        if(targetCell.objTop != nullptr && targetCell.objTop->CanBeCollected())
+        if(targetCell.objTop != nullptr &&
+           targetCell.objTop->GetObjectCategory() == GameObject::CAT_COLLECTABLE)
         {
             player->HandleCollectable(targetCell.objTop);
 
@@ -175,42 +175,30 @@ void ObjectPath::Update(float delta)
         mGameMap->ApplyVisibility(player);
 
         // TODO remove check if mObj is changed into mUnit like for other paths
-        if(mObj->GetObjectType() == OBJ_UNIT)
+        if(mObj->GetObjectCategory() == GameObject::CAT_UNIT)
             static_cast<Unit *>(mObj)->ConsumeEnergy(MOVE);
+
+        // update cell counter
+        ++mNextCell;
 
         // handle next step or termination
         if(ABORTING == mState)
             InstantAbort();
         else if(mNextCell < mCells.size())
-        {
-            const unsigned int nextInd = mCells[mNextCell];
-            const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
-            const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-
-            // check if next destination is walkable
-            const GameMapCell & nextCell = mGameMap->GetCell(nextRow, nextCol);
-
-            bool canMove = nextCell.walkable && !nextCell.walkTarget;
-
-            // TODO remove check if mObj is changed into mUnit like for other paths
-            if(mObj->GetObjectType() == OBJ_UNIT)
-                canMove = canMove && static_cast<Unit *>(mObj)->HasEnergyForAction(MOVE);
-
-            if(canMove)
-                InitNextMoveStep();
-            else
-                Fail();
-        }
+            InitNextMove();
         else
-        {
-            mState = COMPLETED;
-
-            // clear action data once the action is completed
-            mScreen->SetObjectActionCompleted(mObj);
-
-            mOnCompleted();
-        }
+            Finish();
     }
+}
+
+void ObjectPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mObj);
+
+    mOnCompleted();
 }
 
 void ObjectPath::UpdatePathCost()

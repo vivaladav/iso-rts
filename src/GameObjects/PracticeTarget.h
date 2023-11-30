@@ -8,7 +8,7 @@ namespace game
 class PracticeTarget : public Structure
 {
 public:
-    PracticeTarget(int rows, int cols);
+    PracticeTarget();
 
 protected:
     void UpdateGraphics() override;

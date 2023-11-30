@@ -15,8 +15,9 @@
 namespace game
 {
 
-PanelResources::PanelResources(Player * player)
-    : mBg(new sgl::graphic::Image)
+PanelResources::PanelResources(Player * player, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
+    , mBg(new sgl::graphic::Image)
     , mPlayer(player)
 {
     RegisterRenderable(mBg);

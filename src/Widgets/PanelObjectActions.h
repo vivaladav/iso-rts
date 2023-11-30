@@ -36,7 +36,7 @@ public:
     };
 
 public:
-    PanelObjectActions();
+    PanelObjectActions(sgl::sgui::Widget * parent);
     ~PanelObjectActions();
 
     void ClearObject();

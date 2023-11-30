@@ -8,16 +8,17 @@
 namespace game
 {
 
-SceneObject::SceneObject(GameObjectType subtype, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_SCENE_OBJECT, rows, cols)
-    , mSubtype(subtype)
+SceneObject::SceneObject(GameObjectTypeId type, GameObjectVariantId part, int rows, int cols)
+    : GameObject(type, CAT_SCENE_OBJ, rows, cols)
 {
     SetStatic(true);
+
+    mVariant = part;
 
     // set object health
     float health = 1000.f;
 
-    if(mSubtype >= OBJ_MOUNTAINS_FIRST && mSubtype <= OBJ_MOUNTAINS_LAST)
+    if(TYPE_MOUNTAINS == type)
         const float health = 10000.f;
 
     SetMaxHealth(health);
@@ -47,16 +48,17 @@ void SceneObject::SetImage()
 
     sgl::graphic::Texture * tex = nullptr;
 
-    if(mSubtype >= OBJ_ROCKS_FIRST && mSubtype <= OBJ_ROCKS_LAST)
+    const GameObjectTypeId type = GetObjectType();
+
+    if(type == TYPE_ROCKS)
     {
-        const unsigned int ind = (mSubtype - OBJ_ROCKS_FIRST);
-        const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + ind;
+        const unsigned int spriteId = SpriteRocksId::ROCKS_ROW_END_L_1 + mVariant;
         tex = tm->GetSprite(SpriteRocksFile, spriteId);
     }
-    else if(mSubtype >= OBJ_MOUNTAINS_FIRST && mSubtype <= OBJ_MOUNTAINS_LAST)
+    else if(type == TYPE_MOUNTAINS)
     {
-        const unsigned int ind = (mSubtype - OBJ_MOUNTAINS_FIRST);
-        const unsigned int spriteId = SpriteIdSceneElements::ID_SCENE_MOUNTAIN_L + ind;
+        const int sel = static_cast<int>(IsSelected());
+        const unsigned int spriteId = ID_SCENE_MOUNTAIN_L + mVariant + (sel * NUM_MOUNTAINS_SPRITES);
         tex = tm->GetSprite(SpriteFileSceneElements, spriteId);
     }
     // this should never happen

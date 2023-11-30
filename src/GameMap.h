@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameMapCell.h"
+#include "GameObjects/GameObjectTypes.h"
 
 #include <sgl/ai/IPathMap.h>
 
@@ -25,11 +26,8 @@ class WallBuildPath;
 
 struct Cell2D;
 struct GameMapCell;
-struct ObjectData;
-
-enum GameObjectType : unsigned int;
-enum UnitType : unsigned int;
-enum class MapObjectId : unsigned int;
+struct ObjectBasicData;
+struct ObjectFactionData;
 
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
@@ -64,22 +62,24 @@ public:
 
     void ApplyLocalVisibility();
     void ApplyVisibility(Player * player);
+    void InitVisibility(Player * player);
 
     void ApplyLocalVisibilityToObject(GameObject * go);
     void ApplyVisibilityToObject(Player * player, GameObject * go);
+    void InitObjectVisibility(Player * player, GameObject * go);
 
     Player * GetCellOwner(unsigned int r, unsigned int c) const;
 
     bool IsCellChanging(unsigned int r, unsigned int c) const;
     void SetCellChanging(unsigned int r, unsigned int c, bool changing);
 
-    void CreateObjectFromFile(unsigned int layerId, MapObjectId objId,
-                              unsigned int r0, unsigned int c0,
-                              unsigned int rows, unsigned int cols);
+    void CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type,
+                              GameObjectVariantId variant, unsigned int faction,
+                              unsigned int r0, unsigned int c0);
 
-    GameObject * CreateObject(unsigned int layerId, unsigned int objId, Player * owner,
-                              unsigned int r0, unsigned int c0,
-                              unsigned int rows, unsigned int cols);
+    GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
+                             GameObjectVariantId variant, PlayerFaction faction,
+                              unsigned int r0, unsigned int c0);
 
     bool HasObject(GameObject * obj) const;
 
@@ -98,14 +98,14 @@ public:
     bool AbortCellConquest(GameObject * obj);
 
     // structure building
-    bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, const ObjectData & data);
-    void StartBuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
-    void BuildStructure(const Cell2D & cell, Player * player, const ObjectData & data);
+    bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, GameObjectTypeId st);
+    void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
+    void BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
 
     // wall building
     bool CanBuildWall(const Cell2D & cell, Player * player, unsigned int level);
     void StartBuildWall(const Cell2D & cell, Player * player, unsigned int level);
-    void BuildWall(const Cell2D & cell, Player * player, GameObjectType planned);
+    void BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId planned);
     void BuildWalls(WallBuildPath * path);
     bool AbortBuildWalls(GameObject * obj);
 
@@ -116,10 +116,10 @@ public:
     void ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
 
     // unit create
-    bool CanCreateUnit(const ObjectData & data, GameObject * gen, Player * player);
+    bool CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
-    void StartCreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
-    void CreateUnit(const ObjectData & data, GameObject * gen, const Cell2D & dest, Player * player);
+    void StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
+    void CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
 
     // unit upgrade
     bool CanUpgradeUnit(GameObject * obj, Player * player);
@@ -166,6 +166,8 @@ private:
 
     void UpdateInfluencedCells(int row, int col);
 
+    void UpdateVisibility(Player * player, bool init);
+
     bool MoveObjToCell(GameObject * obj, int row, int col);
 
     Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> & targets) const;
@@ -195,10 +197,14 @@ private:
     void UpdateWalls(const Cell2D & center);
     void UpdateWall(const Cell2D & cell);
 
+    const ObjectBasicData & GetObjectData(GameObjectTypeId t) const;
+    const ObjectFactionData & GetFactionData(PlayerFaction f, GameObjectTypeId t) const;
+
 private:
     // to access visibility functions
-    friend class ObjectPath;
     friend class ConquerPath;
+    friend class ObjectPath;
+    friend class WallBuildPath;
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;

@@ -1,9 +1,9 @@
 #include "GameObjects/DefensiveTower.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "GameMap.h"
 #include "IsoObject.h"
-#include "Player.h"
 #include "GameObjects/ObjectData.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
@@ -18,13 +18,23 @@
 namespace game
 {
 
-DefensiveTower::DefensiveTower(const ObjectData & data)
-    : Structure(GameObjectType::OBJ_DEF_TOWER, data.rows, data.cols)
+const int maxAttVal = 11;
+const int attRanges[maxAttVal] = { 0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
+
+DefensiveTower::DefensiveTower(const ObjectBasicData & objData)
+    : Structure(TYPE_DEFENSIVE_TOWER, CAT_GENERIC, objData.rows, objData.cols)
+{
+    mAttackRange = attRanges[0];
+
+    SetImage();
+
+}
+
+DefensiveTower::DefensiveTower(const ObjectBasicData & objData, const ObjectFactionData & facData)
+    : Structure(TYPE_DEFENSIVE_TOWER, CAT_GENERIC, objData.rows, objData.cols)
 {
     // set attack range converting attribute
-    const int maxAttVal = 11;
-    const int attRanges[maxAttVal] = { 0, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15 };
-    mAttackRange = attRanges[data.stats[OSTAT_FIRE_RANGE]];
+    mAttackRange = attRanges[facData.stats[OSTAT_FIRE_RANGE]];
 
     SetImage();
 }
@@ -79,20 +89,17 @@ void DefensiveTower::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const unsigned int faction = GetFaction();
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    // avoid to set an image when there's no owner set
-    if(nullptr == owner)
-        return ;
+    unsigned int texInd = ID_STRUCT_DTOWER_L1;
 
-    // set texture
-    const unsigned int faction = owner->GetFaction();
+    if(NO_FACTION == faction)
+        texInd = ID_STRUCT_DTOWER_L1 + sel;
+    else
+        texInd = ID_STRUCT_DTOWER_L1_F1 + (faction * NUM_DTOWER_SPRITES_PER_FAC) + sel;
 
-    const int ind = SpriteIdStructures::ID_STRUCT_DTOWER_L1_F1 +
-                    (faction * NUM_DTOWER_SPRITES_PER_FAC) +
-                    static_cast<int>(IsSelected());
-
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, ind);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
     isoObj->SetTexture(tex);
 }
 
@@ -105,6 +112,8 @@ void DefensiveTower::CheckForEnemies()
 
     const int mapRows = gm->GetNumRows();
     const int mapCols = gm->GetNumCols();
+
+    const PlayerFaction faction = GetFaction();
 
     std::vector<GameObject *> objs;
 
@@ -126,7 +135,7 @@ void DefensiveTower::CheckForEnemies()
                 GameObject * obj = cell.objTop;
 
                 // only visible enemy objects
-                if(obj && obj->GetOwner() != nullptr && obj->GetOwner() != GetOwner() && obj->IsVisible())
+                if(obj && obj->GetFaction() != NO_FACTION && obj->GetFaction() != faction && obj->IsVisible())
                     objs.push_back(cell.objTop);
             }
         }
@@ -150,15 +159,15 @@ void DefensiveTower::Shoot()
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
+    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + faction;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
     IsoObject * isoObj = GetIsoObject();

@@ -18,8 +18,8 @@ const std::array<unsigned int, sgl::sgui::PushButton::NUM_VISUAL_STATES> texIds 
     IND_MINIMAP_BUTTON_NORMAL
 };
 
-ButtonMinimap::ButtonMinimap()
-    : sgl::sgui::ImageButton(texIds, SpriteFileMapPanels, nullptr)
+ButtonMinimap::ButtonMinimap(sgl::sgui::Widget * parent)
+    : sgl::sgui::ImageButton(texIds, SpriteFileMapPanels, parent)
 {
 }
 

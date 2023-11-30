@@ -1,16 +1,16 @@
 #include "GameObjects/Base.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
 namespace game
 {
 
-Base::Base(int rows, int cols)
-    : Structure(GameObjectType::OBJ_BASE, rows, cols)
+Base::Base()
+    : Structure(GameObject::TYPE_BASE, GameObject::CAT_GENERIC, 3, 3)
 {
     SetVisibilityLevel(6);
     // base is linked to itself
@@ -33,17 +33,15 @@ void Base::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const unsigned int faction = GetFaction();
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    // avoid to set an image when there's no owner set
-    if(nullptr == owner)
-        return ;
+    unsigned int texInd = ID_STRUCT_BASE_L1;
 
-    const unsigned int faction = owner->GetFaction();
-
-    const unsigned int texInd = SpriteIdStructures::ID_STRUCT_BASE_L1_F1 +
-                                (faction * NUM_BASE_SPRITES_PER_FAC) +
-                                static_cast<int>(IsSelected());
+    if(NO_FACTION == faction)
+        texInd = ID_STRUCT_BASE_L1 + sel;
+    else
+        texInd = ID_STRUCT_BASE_L1_F1 + (faction * NUM_BASE_SPRITES_PER_FAC) + sel;
 
     auto * tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);

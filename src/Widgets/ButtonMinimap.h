@@ -8,7 +8,7 @@ namespace game
 class ButtonMinimap : public sgl::sgui::ImageButton
 {
 public:
-    ButtonMinimap();
+    ButtonMinimap(sgl::sgui::Widget * parent);
 
 private:
     void HandleMouseOver() override;

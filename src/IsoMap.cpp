@@ -33,7 +33,7 @@ IsoMap::IsoMap(int tileW)
 IsoMap::IsoMap(int rows, int cols, int tileW)
     : IsoMap(tileW)
 {
-    SetSize(rows, cols);
+    SetSize(rows, cols, false);
 }
 
 /// Destructor, deletes Images used for the tiles and IsoLayers.
@@ -49,9 +49,19 @@ IsoMap::~IsoMap()
 
 // ==================== PUBLIC METHODS ====================
 
-void IsoMap::SetSize(unsigned int rows, unsigned int cols)
+void IsoMap::Clear()
 {
-    if(rows == mRows && cols == mCols)
+    const int mapSize = mRows * mCols;
+
+    mMap.assign(mapSize, 0);
+    mTilePositions.assign(mapSize, sgl::core::Pointd2D());
+
+    mLayersRenderList.clear();
+}
+
+void IsoMap::SetSize(unsigned int rows, unsigned int cols, bool force)
+{
+    if(!force && (rows == mRows && cols == mCols))
         return ;
 
     mRows = rows;
@@ -62,20 +72,23 @@ void IsoMap::SetSize(unsigned int rows, unsigned int cols)
     mRenderingR1 = rows;
     mRenderingC1 = cols;
 
+    // update map
     const int mapSize = rows * cols;
 
+    mMap.clear();
     mMap.reserve(mapSize);
     mMap.assign(mapSize, 0);
 
+    // update tiles
+    mTilePositions.clear();
     mTilePositions.reserve(mapSize);
     mTilePositions.assign(mapSize, sgl::core::Pointd2D());
 
+    UpdateTilePositions();
+
     // update layers
     for(IsoLayer * layer : mLayers)
-        layer->UpdateSize();
-
-    // update tiles
-    UpdateTilePositions();
+        layer->UpdateSize(force);
 }
 
 /**

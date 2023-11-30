@@ -17,7 +17,7 @@ public:
     enum PathState : unsigned int
     {
         READY,
-        RUNNING,
+        MOVING,
         COMPLETED,
         FAILED,
         ABORTING,
@@ -48,8 +48,10 @@ public:
 
     void Update(float delta);
 
+    void Finish();
+
 private:
-    void InitNextMoveStep();
+    void InitNextMove();
 
     void UpdatePathCost();
 

@@ -2,7 +2,7 @@
 
 #include "Cell2D.h"
 #include "StatValue.h"
-#include "GameObjects/ObjectData.h"
+#include "GameObjects/GameObjectTypes.h"
 
 #include <functional>
 #include <string>
@@ -20,8 +20,6 @@ class Unit;
 
 enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
-enum StructureType : unsigned int;
-enum UnitType : unsigned int;
 
 class Player
 {
@@ -98,14 +96,14 @@ public:
     void SumTotalUnitsLevel(int val);
 
     // available structures
-    void AddAvailableStructure(const ObjectData & data);
-    const std::vector<ObjectData> & GetAvailableStructures() const;
-    const ObjectData & GetAvailableStructure(StructureType type) const;
+    void AddAvailableStructure(GameObjectTypeId type);
+    const std::vector<GameObjectTypeId> & GetAvailableStructures() const;
+    bool IsStructureAvailable(GameObjectTypeId type) const;
 
     // available units
-    void AddAvailableUnit(const ObjectData & data);
-    const std::vector<ObjectData> & GetAvailableUnits() const;
-    const ObjectData & GetAvailableUnit(UnitType type) const;
+    void AddAvailableUnit(GameObjectTypeId type);
+    const std::vector<GameObjectTypeId> & GetAvailableUnits() const;
+    bool IsUnitAvailable(GameObjectTypeId type) const;
 
     void ClearSelectedObject();
     GameObject * GetSelectedObject() const;
@@ -137,8 +135,8 @@ private:
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
 
-    std::vector<ObjectData> mAvailableStructures;
-    std::vector<ObjectData> mAvailableUnits;
+    std::vector<GameObjectTypeId> mAvailableStructures;
+    std::vector<GameObjectTypeId> mAvailableUnits;
 
     std::string mName;
 
@@ -231,12 +229,12 @@ inline void Player::SetOnNumUnitsChanged(const std::function<void()> & f)
 inline int Player::GetTotalUnitsLevel() const { return mTotUnitsLevel; }
 inline void Player::SumTotalUnitsLevel(int val) { mTotUnitsLevel += val; }
 
-inline const std::vector<ObjectData> & Player::GetAvailableStructures() const
+inline const std::vector<GameObjectTypeId> &Player::GetAvailableStructures() const
 {
     return mAvailableStructures;
 }
 
-inline const std::vector<ObjectData> & Player::GetAvailableUnits() const
+inline const std::vector<GameObjectTypeId> & Player::GetAvailableUnits() const
 {
     return mAvailableUnits;
 }

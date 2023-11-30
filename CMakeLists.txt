@@ -2,14 +2,15 @@ cmake_minimum_required(VERSION 3.5.1)
 
 project(virtueror LANGUAGES CXX VERSION 0.1.2)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set platform version for preprocessor checks
 add_compile_definitions($<$<PLATFORM_ID:Linux>:LINUX=1>
                         $<$<PLATFORM_ID:Windows>:WINDOWS=1>
                         $<$<CONFIG:Debug>:DEBUG=1>
-                        $<$<CONFIG:Release>:RELEASE=1>)
+                        $<$<CONFIG:Release>:RELEASE=1>
+                        $<$<CONFIG:RelWithDebInfo>:RELEASE=1>)
 
 # include internal libraries
 add_subdirectory(lib)
@@ -78,6 +79,7 @@ add_executable(
     src/GameObjects/GameObject.h
     src/GameObjects/GameObject.cpp
     src/GameObjects/GameObjectAction.h
+    src/GameObjects/GameObjectTypes.h
     src/GameObjects/ObjectData.h
     src/GameObjects/ObjectData.cpp
     src/GameObjects/ObjectsDataRegistry.h
@@ -183,6 +185,8 @@ add_executable(
     src/Widgets/ButtonQuickUnitSelection.cpp
     src/Widgets/ButtonUnitsSelector.h
     src/Widgets/ButtonUnitsSelector.cpp
+    src/Widgets/ButtonPanelTab.h
+    src/Widgets/ButtonPanelTab.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
@@ -199,6 +203,8 @@ add_executable(
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
+    src/Widgets/GameHUD.h
+    src/Widgets/GameHUD.cpp
     src/Widgets/GameSimpleTooltip.h
     src/Widgets/GameSimpleTooltip.cpp
     src/Widgets/GameSliderH.h

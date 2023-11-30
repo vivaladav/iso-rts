@@ -3,18 +3,25 @@
 #include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
 namespace game
 {
 
-ResourceGenerator::ResourceGenerator(ResourceGeneratorType typeGen, ResourceType typeRes, int rows, int cols)
-    : Structure(OBJ_RES_GEN, rows, cols)
-    , mTypeGen(typeGen)
-    , mTypeRes(typeRes)
+ResourceGenerator::ResourceGenerator(GameObjectTypeId type, int rows, int cols)
+    : Structure(type, CAT_RES_GENERATOR, rows, cols)
 {
+    if(TYPE_RES_GEN_ENERGY == type || TYPE_RES_GEN_ENERGY_SOLAR == type)
+        mResource = RES_ENERGY;
+    else if(TYPE_RES_GEN_MATERIAL == type || TYPE_RES_GEN_MATERIAL_EXTRACT == type)
+        mResource = RES_MATERIAL1;
+    else
+    {
+        mResource = RES_INVALID;
+        return ;
+    }
+
     SetCanBeConquered(true);
 
     SetImage();
@@ -40,39 +47,40 @@ void ResourceGenerator::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
-    const unsigned int faction = owner ? owner->GetFaction() : NO_FACTION;
+    const unsigned int faction = GetFaction();
     const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
     unsigned int texId = 0;
 
-    if(RESG_ENERGY == mTypeGen)
+    const GameObjectTypeId type = GetObjectType();
+
+    if(type == TYPE_RES_GEN_ENERGY)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_GEN_ENERGY_F1 + (faction * NUM_ENE_GEN_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_GEN_ENERGY;
+            texId = ID_STRUCT_GEN_ENERGY + sel;
     }
-    else if(RESG_MATERIAL == mTypeGen)
+    else if(type == TYPE_RES_GEN_MATERIAL)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_GEN_MATERIAL_F1 + (faction * NUM_MAT_GEN_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_GEN_MATERIAL;
+            texId = ID_STRUCT_GEN_MATERIAL + sel;
     }
-    else if(RESG_ENERGY_SOLAR == mTypeGen)
+    else if(type == TYPE_RES_GEN_ENERGY_SOLAR)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_SOLAR_PANEL_F1 + (faction * NUM_SOLAR_PANEL_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_STRUCT_SOLAR_PANEL;
+            texId = ID_STRUCT_SOLAR_PANEL + sel;
     }
-    else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)
+    else if(type == TYPE_RES_GEN_MATERIAL_EXTRACT)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_MATERIAL_EXTRACTOR_F1 + (faction * NUM_MATERIAL_EXTRACTOR_SPRITES_PER_FAC) + sel;
         else
-            texId = ID_MATERIAL_EXTRACTOR;
+            texId = ID_MATERIAL_EXTRACTOR + sel;
     }
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texId);
@@ -81,13 +89,15 @@ void ResourceGenerator::SetImage()
 
 void ResourceGenerator::UpdateOutput()
 {
-    if(RESG_ENERGY == mTypeGen)
+    const GameObjectTypeId type = GetObjectType();
+
+    if(type == TYPE_RES_GEN_ENERGY)
         mOutput = 50;
-    else if(RESG_MATERIAL == mTypeGen)
+    else if(type == TYPE_RES_GEN_MATERIAL)
         mOutput = 25;
-    else if(RESG_ENERGY_SOLAR == mTypeGen)
+    else if(type == TYPE_RES_GEN_ENERGY_SOLAR)
         mOutput = 15;
-    else if(RESG_MATERIAL_EXTRACTOR == mTypeGen)
+    else if(type == TYPE_RES_GEN_MATERIAL_EXTRACT)
         mOutput = 10;
     // default
     else

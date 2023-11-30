@@ -5,7 +5,6 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
-#include "GameObjects/ObjectData.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
@@ -26,6 +25,7 @@ Player::Player(const char * name, int pid)
     , mOnNumUnitsChanged([](){})
     , mOnResourcesChanged([](){})
     , mPlayerId(pid)
+    , mFaction(NO_FACTION)
 {
     mStats.emplace_back(Stat::BLOBS, 0);
     mStats.emplace_back(Stat::DIAMONDS, 0);
@@ -258,15 +258,15 @@ void Player::UpdateResources()
 
 void Player::HandleCollectable(GameObject * obj)
 {
-    const GameObjectType type = obj->GetObjectType();
+    const GameObjectTypeId type = obj->GetObjectType();
 
     // DIAMONDS
-    if(type == OBJ_DIAMONDS)
+    if(type == GameObject::TYPE_DIAMONDS)
     {
         auto d = static_cast<Diamonds *>(obj);
         mStats[Stat::DIAMONDS].SumValue(d->GetNum());
     }
-    else if(type == OBJ_BLOBS)
+    else if(type == GameObject::TYPE_BLOBS)
     {
         auto d = static_cast<Blobs *>(obj);
         mStats[Stat::BLOBS].SumValue(d->GetNum());
@@ -278,36 +278,36 @@ void Player::HandleCollectable(GameObject * obj)
     static_cast<Collectable *>(obj)->Collected();
 }
 
-void Player::AddAvailableStructure(const ObjectData & data)
+void Player::AddAvailableStructure(GameObjectTypeId type)
 {
-    mAvailableStructures.emplace_back(data);
+    mAvailableStructures.emplace_back(type);
 }
 
-const ObjectData & Player::GetAvailableStructure(StructureType type) const
+bool Player::IsStructureAvailable(GameObjectTypeId type) const
 {
-    for(const ObjectData & data : mAvailableStructures)
+    for(const GameObjectTypeId t : mAvailableStructures)
     {
-        if(data.objType == type)
-            return data;
+        if(t == type)
+            return true;
     }
 
-    return ObjectData::NullObj;
+    return false;
 }
 
-void Player::AddAvailableUnit(const ObjectData & data)
+void Player::AddAvailableUnit(GameObjectTypeId type)
 {
-    mAvailableUnits.emplace_back(data);
+    mAvailableUnits.emplace_back(type);
 }
 
-const ObjectData & Player::GetAvailableUnit(UnitType type) const
+bool Player::IsUnitAvailable(GameObjectTypeId type) const
 {
-    for(const ObjectData & data : mAvailableUnits)
+    for(const GameObjectTypeId t : mAvailableUnits)
     {
-        if(data.objType == type)
-            return data;
+        if(t == type)
+            return true;
     }
 
-    return ObjectData::NullObj;
+    return false;
 }
 
 void Player::ClearSelectedObject()
@@ -317,7 +317,7 @@ void Player::ClearSelectedObject()
 
     mSelObj->SetSelected(false);
 
-    if(mSelObj->GetObjectType() == OBJ_UNIT)
+    if(mSelObj->GetObjectCategory() == GameObject::CAT_UNIT)
         static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::IDLE);
 
     mSelObj = nullptr;
@@ -331,7 +331,7 @@ void Player::SetSelectedObject(GameObject * obj)
     mSelObj = obj;
 
     // reset active action to move when unit is selected
-    if(mSelObj->GetObjectType() == OBJ_UNIT)
+    if(mSelObj->GetObjectCategory() == GameObject::CAT_UNIT)
         static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::MOVE);
 
     mSelObj->SetSelected(true);

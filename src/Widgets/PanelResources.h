@@ -20,7 +20,7 @@ class Player;
 class PanelResources : public sgl::sgui::Widget
 {
 public:
-    PanelResources(Player * player);
+    PanelResources(Player * player, sgl::sgui::Widget * parent);
     ~PanelResources();
 
 private:

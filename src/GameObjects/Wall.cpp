@@ -1,26 +1,20 @@
 #include "GameObjects/Wall.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
 namespace game
 {
 
-Wall::Wall(GameObjectType subtype, int rows, int cols)
-    : Structure(GameObjectType::OBJ_WALL, rows, cols)
-    , mSubtypeInd(subtype - GameObjectType::OBJ_WALL_FIRST)
+Wall::Wall(GameObjectVariantId part)
+    : Structure(GameObject::TYPE_WALL, GameObject::CAT_GENERIC, 1, 1)
 {
+    mVariant = part;
+
     SetImage();
-}
-
-void Wall::SetWallType(GameObjectType type)
-{
-    mSubtypeInd = type - GameObjectType::OBJ_WALL_FIRST;
-
-    UpdateGraphics();
 }
 
 unsigned int Wall::GetCostEnergy(unsigned int level)
@@ -53,16 +47,14 @@ void Wall::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     // set texture
-    const unsigned int faction = owner->GetFaction();
-
-    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mSubtypeInd + (faction * NUM_OBJS_WALL);
+    const int ind = SpriteWallsId::WALL_L1_F1_HORIZ + mVariant + (faction * NUM_WALL_PARTS);
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileWalls, ind);
     isoObj->SetTexture(tex);

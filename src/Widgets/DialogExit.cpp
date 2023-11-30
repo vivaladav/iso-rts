@@ -67,7 +67,7 @@ public:
                                  IND_DIA_EX_BTN_X_OVER, IND_DIA_EX_BTN_X_PUSHED,
                                  IND_DIA_EX_BTN_X_PUSHED }, SpriteFileDialogExit, parent)
     {
-        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESC);
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_ESCAPE);
     }
 
 private:
@@ -228,7 +228,7 @@ DialogExit::DialogExit(Game * game, Screen * screen)
     const int marginT = 8;
 
     // BACKGROUND
-    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_NE_DIALOG_BG);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, IND_DIA_EX_BG);
     mBg = new graphic::Image(tex);
     RegisterRenderable(mBg);
 
@@ -279,14 +279,14 @@ DialogExit::DialogExit(Game * game, Screen * screen)
 
     btnY += btn->GetHeight() + marginBtnV;
 
-    // BUTTON EXIT
+    // BUTTON MAIN MENU
     btn = new ButtonDialogExit(this);
-    btn->SetLabel("EXIT");
+    btn->SetLabel("MAIN MENU");
     btn->SetPosition(btnX, btnY);
 
     btn->AddOnClickFunction([game]
     {
-        game->Exit();
+        game->RequestNextActiveState(StateId::MAIN_MENU);
     });
 
     btnY += btn->GetHeight() + marginBtnV;

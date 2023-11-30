@@ -21,8 +21,8 @@ void BlobsGenerator::OnGeneration()
     const int r = GetRow();
     const int c = GetCol();
 
-    GameObject * obj = gm->CreateObject(MapLayers::OBJECTS2, GameObjectType::OBJ_BLOBS,
-                                        nullptr, r, c, 1, 1);
+    GameObject * obj = gm->CreateObject(MapLayers::OBJECTS2, GameObject::TYPE_BLOBS,
+                                       0, NO_FACTION, r, c);
 
     if(nullptr == obj)
         return ;

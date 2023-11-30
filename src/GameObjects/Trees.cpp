@@ -14,23 +14,21 @@ namespace
 namespace game
 {
 
-Trees::Trees(GameObjectType subtype, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_TREES, rows, cols)
-    , mSubtype(subtype)
+Trees::Trees(GameObjectVariantId var)
+    : GameObject(TYPE_TREES, CAT_SCENE_OBJ, 1, 1)
 {
+    mVariant = var;
+
     SetStatic(true);
 
-    // randomize initial variant
-    sgl::utilities::UniformDistribution dis(0, NUM_TREE1_VARIANTS - 1);
-    mVariant = dis.GetNextValue();
-
+    // health
     SetMaxHealth(treeHealth);
     SetHealth(treeHealth);
 
     //randomize time for change (1-5 mins)
     const int minTime = 60;
     const int maxTime = 60 * 5;
-    dis.SetParameters(minTime, maxTime);
+    sgl::utilities::UniformDistribution dis(minTime, maxTime);
 
     mTimeChange = dis.GetNextValue();
     mTimerChange = mTimeChange;

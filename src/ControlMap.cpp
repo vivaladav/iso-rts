@@ -11,6 +11,7 @@
 #include <sgl/graphic/Texture.h>
 
 #include <iostream>
+#include <cmath>
 
 namespace game
 {
@@ -174,7 +175,7 @@ void ControlMap::AddControlPointsForObject(GameObject * obj)
     const int rBR = obj->GetRow0();
     const int cBR = obj->GetCol0();
 
-    const PlayerFaction faction = obj->GetOwner()->GetFaction();
+    const PlayerFaction faction = obj->GetFaction();
 
     // TODO get max points from object
     const int maxPoints = 7;
@@ -220,6 +221,19 @@ void ControlMap::UpdateVisualAreas()
             }
         }
     }
+}
+
+int ControlMap::GetPercentageControlledByFaction(PlayerFaction f)
+{
+    const int size = mRows * mCols;
+
+    int controlled = 0;
+
+    for(int i = 0; i < size; ++i)
+        controlled += static_cast<int>(mMap[i].controller == f);
+
+    const float h = 100.f;
+    return std::roundf(controlled * h / size);
 }
 
 void ControlMap::AddControlPointsToArea(int rTL, int cTL,

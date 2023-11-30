@@ -1,5 +1,6 @@
 #include "CameraMapController.h"
 
+#include "Game.h"
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/core/event/MouseMotionEvent.h>
 #include <sgl/graphic/Camera.h>
@@ -18,8 +19,9 @@ constexpr int SCROLL_U = -1;
 constexpr int SCROLL_D = 1;
 constexpr int NO_SCROLL = 0;
 
-CameraMapController::CameraMapController(sgl::graphic::Camera * cam)
+CameraMapController::CameraMapController(sgl::graphic::Camera * cam, Game * game)
     : mCamera(cam)
+    , mGame(game)
     , mSpeed(DEF_SPEED)
     , mDirX(NO_SCROLL)
     , mDirY(NO_SCROLL)
@@ -77,13 +79,18 @@ void CameraMapController::CenterCameraToPoint(int x, int y)
     mCamera->CenterToPoint(x, y);
 }
 
+void CameraMapController::ResetPosition()
+{
+    mCamera->ResetPosition();
+}
+
 void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
 {
     using namespace sgl::core;
 
     const int key = event.GetKey();
 
-    if(key == KeyboardEvent::KEY_LEFT)
+    if(key == KeyboardEvent::KEY_A)
     {
         if(!mMouseScrollX)
         {
@@ -91,7 +98,7 @@ void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
             mKeyScrollX = true;
         }
     }
-    else if(key == KeyboardEvent::KEY_RIGHT)
+    else if(key == KeyboardEvent::KEY_D)
     {
         if(!mMouseScrollX)
         {
@@ -99,7 +106,7 @@ void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
             mKeyScrollX = true;
         }
     }
-    else if(key == KeyboardEvent::KEY_UP)
+    else if(key == KeyboardEvent::KEY_W)
     {
         if(!mMouseScrollY)
         {
@@ -107,7 +114,7 @@ void CameraMapController::HandleKeyDown(sgl::core::KeyboardEvent & event)
             mKeyScrollY = true;
         }
     }
-    else if(key == KeyboardEvent::KEY_DOWN)
+    else if(key == KeyboardEvent::KEY_S)
     {
         if(!mMouseScrollY)
         {
@@ -123,28 +130,28 @@ void CameraMapController::HandleKeyUp(sgl::core::KeyboardEvent & event)
 
     const int key = event.GetKey();
 
-    if(key == KeyboardEvent::KEY_LEFT)
+    if(key == KeyboardEvent::KEY_A)
     {
         if(!mMouseScrollX)
             mDirX = NO_SCROLL;
 
         mKeyScrollX = false;
     }
-    else if(key == KeyboardEvent::KEY_RIGHT)
+    else if(key == KeyboardEvent::KEY_D)
     {
         if(!mMouseScrollX)
             mDirX = NO_SCROLL;
 
         mKeyScrollX = false;
     }
-    else if(key == KeyboardEvent::KEY_UP)
+    else if(key == KeyboardEvent::KEY_W)
     {
         if(!mMouseScrollY)
             mDirY = NO_SCROLL;
 
         mKeyScrollY = false;
     }
-    else if(key == KeyboardEvent::KEY_DOWN)
+    else if(key == KeyboardEvent::KEY_S)
     {
         if(!mMouseScrollY)
             mDirY = NO_SCROLL;
@@ -155,6 +162,9 @@ void CameraMapController::HandleKeyUp(sgl::core::KeyboardEvent & event)
 
 void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
 {
+    if(!mGame->IsMapScrollingOnEdges())
+        return ;
+
     const int screenX = event.GetX();
     const int screenY = event.GetY();
 

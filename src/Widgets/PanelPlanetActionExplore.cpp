@@ -141,7 +141,7 @@ void PanelPlanetActionExplore::CreateContentStart(int money, int energy, int mat
     const int contH = 80;
     const char * txt = "Send a squad of scouts to explore the territory.\n\n"
                        "This will cost you:";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentStart);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentStart);
     text->SetColor(textColor);
 
     // COSTS
@@ -211,7 +211,7 @@ void PanelPlanetActionExplore::CreateContentFailure()
     const char * txt = "Sorry Commander,\n"
                        "but the exploration failed.\n\n"
                        "Your squad has been destroyed by the enemy.";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentFailure);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentFailure);
     text->SetColor(textColor);
 }
 
@@ -235,7 +235,7 @@ void PanelPlanetActionExplore::CreateContentSuccess()
     const char * txt = "Good news Commander,\n"
                        "the exploration was successful!\n\n"
                        "Check out the other panels for the results.";
-    auto text = new sgui::TextArea(contW, contH, txt, fnt, mContentSuccess);
+    auto text = new sgui::TextArea(contW, contH, txt, fnt, false, mContentSuccess);
     text->SetColor(textColor);
 }
 

@@ -8,9 +8,25 @@ namespace game
 class Wall : public Structure
 {
 public:
-    Wall(GameObjectType subtype, int rows, int cols);
+    enum WallPart : GameObjectVariantId
+    {
+        HORIZ,
+        VERT,
+        TL,
+        TR,
+        BL,
+        BR,
+        INTN,
+        INTS,
+        INTW,
+        INTE,
+        CROSS,
 
-    void SetWallType(GameObjectType type);
+        NUM_WALL_PARTS
+    };
+
+public:
+    Wall(GameObjectVariantId part);
 
     static unsigned int GetCostEnergy(unsigned int level);
     static unsigned int GetCostMaterial(unsigned int level);
@@ -20,9 +36,6 @@ protected:
 
 private:
     void SetImage();
-
-private:
-    int mSubtypeInd = 0;
 };
 
 } // namespace game

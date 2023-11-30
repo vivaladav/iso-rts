@@ -2,48 +2,20 @@
 
 #include "GameObject.h"
 
+#include <string>
+#include <unordered_map>
+
 namespace game
 {
-
-enum StructureType : unsigned int
-{
-    STRUCT_BASE,
-    STRUCT_DEF_TOWER,
-    STRUCT_RADAR,
-    STRUCT_RADAR_TOWER,
-    STRUCT_RES_GEN_ENERGY,
-    STRUCT_RES_GEN_MATERIAL,
-    STRUCT_RES_GEN_MATERIAL_EXTRACTOR,
-    STRUCT_RES_GEN_SOLAR,
-    STRUCT_RES_STO_ENERGY,
-    STRUCT_RES_STO_MATERIAL,
-    STRUCT_RES_STO_DIAMONDS,
-    STRUCT_RES_STO_BLOBS,
-    STRUCT_TARGET,
-    STRUCT_WALL,
-    STRUCT_WALL_GATE,
-
-    NUM_STRUCT_TYPES,
-
-    STRUCT_NULL
-};
-
-enum GameObjectType : unsigned int;
 
 class Structure : public GameObject
 {
 public:
-    Structure(GameObjectType type, int rows, int cols);
-
-public:
-    static GameObjectType StructureToGameObject(StructureType st);
-
-    static const char * TITLES[NUM_STRUCT_TYPES];
-    static const char * DESCRIPTIONS[NUM_STRUCT_TYPES];
+    Structure(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols);
 };
 
-inline Structure::Structure(GameObjectType type, int rows, int cols)
-    : GameObject(type, rows, cols)
+inline Structure::Structure(GameObjectTypeId type, GameObjectCategoryId cat, int rows, int cols)
+    : GameObject(type, cat, rows, cols)
 {
     SetStructure(true);
     SetStatic(true);

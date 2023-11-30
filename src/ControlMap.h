@@ -23,6 +23,8 @@ public:
 
     void UpdateVisualAreas();
 
+    int GetPercentageControlledByFaction(PlayerFaction f);
+
 private:
     void AddControlPointsToArea(int rTL, int cTL, int rBR, int cBR,
                                 PlayerFaction faction, int maxPoints);

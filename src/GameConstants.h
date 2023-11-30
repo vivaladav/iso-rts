@@ -37,7 +37,7 @@ enum PlayerFaction : unsigned int
 
     NUM_FACTIONS,
 
-    NO_FACTION
+    NO_FACTION = 99
 };
 
 enum ResourceType : unsigned int

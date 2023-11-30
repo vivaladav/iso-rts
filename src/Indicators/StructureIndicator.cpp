@@ -21,16 +21,28 @@
 namespace game
 {
 
-StructureIndicator::StructureIndicator(const ObjectData & data)
-    : IsoObject(data.rows, data.cols)
+const int ALPHA = 115;
+
+StructureIndicator::StructureIndicator(const ObjectBasicData & objData)
+    : IsoObject(objData.rows, objData.cols)
     , mFaction(NO_FACTION)
 {
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    SetTexture(tm->GetSprite(data.iconFile, data.iconTexId));
+    SetTexture(tm->GetSprite(objData.noFactionIconFile, objData.noFactionIconTexId));
 
-    const int alpha = 100;
-    SetAlpha(alpha);
+    SetAlpha(ALPHA);
+}
+
+StructureIndicator::StructureIndicator(const ObjectBasicData & objData, const ObjectFactionData & fData)
+    : IsoObject(objData.rows, objData.cols)
+    , mFaction(NO_FACTION)
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
+    SetTexture(tm->GetSprite(fData.iconFile, fData.iconTexId));
+
+    SetAlpha(ALPHA);
 }
 
 void StructureIndicator::SetFaction(PlayerFaction faction)

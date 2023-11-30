@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Cell2D.h"
+#include "GameObjects/GameObjectTypes.h"
 #include "Screen.h"
 #include "GameObjects/GameObjectAction.h"
 
@@ -17,41 +18,30 @@ namespace sgl
         class ParticlesManager;
         class ParticlesUpdater;
     }
-    namespace sgui
-    {
-        class ButtonsGroup;
-        class Widget;
-    }
 }
 
 namespace game
 {
 
 class AttackRangeIndicator;
-class ButtonMinimap;
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
-class DialogExit;
 class DialogNewElement;
+class GameHUD;
 class GameMap;
 class GameObject;
 class IsoLayer;
 class IsoMap;
 class MiniMap;
 class MoveIndicator;
-class PanelObjectActions;
-class PanelResources;
 class Player;
 class PlayerAI;
 class StructureIndicator;
 class Unit;
 class WallIndicator;
 
-enum GameObjectType : unsigned int;
 enum PlayerFaction : unsigned int;
-enum StructureType : unsigned int;
-enum UnitType : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
 {
@@ -108,9 +98,9 @@ private:
     void CreateLayers();
 
     void CreateUI();
-    void CreateDialogExit();
-    void HidePanelObjActions();
     void ClearNewElemDialog();
+
+    void LoadMapFile();
 
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
@@ -120,7 +110,7 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(UnitType type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
     bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player,
                                 const std::function<void()> & OnDone = []{});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
@@ -138,9 +128,12 @@ private:
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
+    void HandleUnitBuildWallOnMouseUp(Unit * unit, const Cell2D & clickCell);
 
     void HandleSelectionClick(sgl::core::MouseButtonEvent & event);
     void HandleActionClick(sgl::core::MouseButtonEvent & event);
+
+    void StartUnitBuildWall(Unit * unit);
 
     void ShowAttackIndicators(const GameObject * obj, int range);
     void ClearCellOverlays();
@@ -154,7 +147,7 @@ private:
     std::vector<int> mProgressBarsToDelete;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
-    std::unordered_map<StructureType, StructureIndicator *> mStructIndicators;
+    std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
     std::vector<AttackRangeIndicator *> mAttIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
@@ -171,13 +164,9 @@ private:
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
     // -- UI --
-    PanelResources * mPanelResBar = nullptr;
-    PanelObjectActions * mPanelObjActions = nullptr;
-    DialogExit * mDialogExit = nullptr;
+    GameHUD * mHUD = nullptr;
+
     DialogNewElement * mDialogNewElement = nullptr;
-    sgl::sgui::ButtonsGroup  * mGroupQuickUnitSel = nullptr;
-    ButtonMinimap * mButtonMinimap = nullptr;
-    MiniMap * mMiniMap = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
@@ -191,11 +180,11 @@ private:
     float mTimerEnergy;
     float mTimerAI;
 
+    float mTimePlayed = 0.f;
+
     unsigned int mCurrPlayerAI = 0;
 
     bool mPaused = false;
 };
-
-inline MiniMap * ScreenGame::GetMiniMap() const { return mMiniMap; }
 
 } // namespace game

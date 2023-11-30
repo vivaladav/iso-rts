@@ -4,9 +4,7 @@
 #include "GameData.h"
 #include "GameMap.h"
 #include "IsoObject.h"
-#include "Player.h"
 #include "GameObjects/ObjectData.h"
-#include "GameObjects/Structure.h"
 #include "Particles/DataParticleSingleLaser.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
@@ -15,26 +13,11 @@
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>
 
+#include <unordered_map>
 #include <cmath>
 
 namespace game
 {
-
-const char * Unit::TITLES[NUM_UNIT_TYPES] =
-{
-    "WORKER",
-    "SOLDIER",
-    "GENERIC",
-    "SCOUT"
-};
-
-const char * Unit::DESCRIPTIONS[NUM_UNIT_TYPES] =
-{
-    "A basic worker unit.\nIt is specialized in construction and conquest.",
-    "A basic soldier unit.\nUseful for defense and exploration.",
-    "A slow, but versatile unit.",
-    "A light and fast unit ideal for exploring, but not for fighting."
-};
 
 const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
 {
@@ -49,14 +32,13 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
     0.f     // TOGGLE_GATE
 };
 
-Unit::Unit(const ObjectData & data, int rows, int cols)
-    : GameObject(GameObjectType::OBJ_UNIT, rows, cols)
-    , mUnitType(static_cast<UnitType>(data.objType))
-    , mStructToBuild(STRUCT_NULL)
+Unit::Unit(const ObjectBasicData & objData, const ObjectFactionData & facData)
+    : GameObject(objData.objType, GameObject::CAT_UNIT, objData.rows, objData.cols)
+    , mStructToBuild(GameObject::TYPE_NULL)
 {
     // SET STATS values in range [1-10]
     mStats.resize(NUM_UNIT_STATS);
-    mStats = data.stats;
+    mStats = facData.stats;
 
     // set attack range converting attribute
     const int maxAttVal = 11;
@@ -130,7 +112,7 @@ void Unit::Update(float delta)
     }
 }
 
-void Unit::ClearStructureToBuild() { mStructToBuild = STRUCT_NULL; }
+void Unit::ClearStructureToBuild() { mStructToBuild = GameObject::TYPE_NULL; }
 
 void Unit::ConsumeEnergy(GameObjectActionId action)
 {
@@ -180,18 +162,18 @@ bool Unit::IsTargetInRange(GameObject * obj) const
 
 void Unit::SetImage()
 {
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
-    const unsigned int faction = owner->GetFaction();
+    const GameObjectTypeId type = GetObjectType();
+    const unsigned int ind = TypeToIndex(type);
 
     const unsigned int texInd = (NUM_UNIT_SPRITES_PER_FACTION * faction) +
-                                (NUM_UNIT_SPRITES_PER_TYPE * mUnitType) +
+                                (NUM_UNIT_SPRITES_PER_TYPE * ind) +
                                  static_cast<unsigned int>(IsSelected());
-
     auto * tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex =tm->GetSprite(SpriteFileUnits, texInd);
 
@@ -204,10 +186,10 @@ void Unit::Shoot()
     // TODO calculate chance of hitting based on attack and defense attributes
     // for now assuming it's always hit
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
 
     // avoid to set an image when there's no owner set
-    if(nullptr == owner)
+    if(NO_FACTION == faction)
         return ;
 
     // consume energy
@@ -215,7 +197,7 @@ void Unit::Shoot()
 
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + owner->GetFaction();
+    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + faction;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
     IsoObject * isoObj = GetIsoObject();
@@ -270,6 +252,32 @@ void Unit::Shoot()
     };
 
     pu->AddParticle(pd);
+}
+
+unsigned int Unit::TypeToIndex(GameObjectTypeId type)
+{
+    const std::unordered_map<GameObjectTypeId, unsigned int> indexes =
+    {
+        {GameObject::TYPE_UNIT_WORKER1, 0},
+        {GameObject::TYPE_UNIT_SOLDIER1, 1},
+        {GameObject::TYPE_UNIT_SOLDIER2, 2},
+        {GameObject::TYPE_UNIT_SCOUT1, 3}
+    };
+
+    return indexes.at(type);
+}
+
+GameObjectTypeId Unit::IndexToType(unsigned int ind)
+{
+    const GameObjectTypeId types[] =
+    {
+        GameObject::TYPE_UNIT_WORKER1,
+        GameObject::TYPE_UNIT_SOLDIER1,
+        GameObject::TYPE_UNIT_SOLDIER2,
+        GameObject::TYPE_UNIT_SCOUT1
+    };
+
+    return types[ind];
 }
 
 } // namespace game

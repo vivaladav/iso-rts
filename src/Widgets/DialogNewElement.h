@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameObjects/GameObjectTypes.h"
+
 #include <sgl/sgui/Widget.h>
 
 #include <array>
@@ -8,8 +10,11 @@
 
 namespace sgl
 {
+    namespace graphic { class Image; }
+
     namespace sgui
     {
+        class AbstractButtonsGroup;
         class ButtonsGroup;
         class Label;
         class TextArea;
@@ -24,17 +29,23 @@ class ButtonClose;
 class ButtonLeft;
 class ButtonRight;
 class ButtonSlot;
+class ObjectsDataRegistry;
 class PanelAttribute;
 class Player;
 
-struct ObjectData;
-
-enum UnitType : unsigned int;
+enum ObjFamily : unsigned int;
 
 class DialogNewElement : public sgl::sgui::Widget
 {
 public:
-    DialogNewElement(const std::vector<ObjectData> & data, const char * title, Player * player);
+    enum ElemType : unsigned int
+    {
+        ETYPE_UNITS,
+        ETYPE_STRUCTURES,
+    };
+
+    DialogNewElement(ElemType type, const char * title, Player * player,
+                     const ObjectsDataRegistry * dataReg);
 
     void CheckBuild();
 
@@ -42,14 +53,18 @@ public:
     void SetFunctionOnClose(const std::function<void()> & f);
 
     int GetSelectedIndex() const;
-    const ObjectData & GetSelectedData() const;
+    GameObjectTypeId GetSelectedType() const;
 
 private:
     void UpdateSlots();
 
+    void ShowStructuresByFamily(ObjFamily fam);
     void ShowData(int ind);
 
     void CheckBuild(int ind);
+
+    void HandlePositionChanged() override;
+    void PositionElements();
 
 private:
     static const int PANELS_ATT_ROWS = 7;
@@ -62,7 +77,11 @@ private:
     std::array<PanelAttribute *, NUM_PANELS_ATT> mPanelsAtt;
     std::array<sgl::sgui::Label *, NUM_COSTS> mLabelsCost;
 
-    const std::vector<ObjectData> & mData;
+    std::vector<GameObjectTypeId> mTypes;
+
+    sgl::graphic::Image * mBgTop = nullptr;
+    sgl::graphic::Image * mBgMid = nullptr;
+    sgl::graphic::Image * mBgBtm = nullptr;
 
     sgl::sgui::Label * mTitle = nullptr;
     sgl::sgui::ButtonsGroup * mSlots = nullptr;
@@ -75,7 +94,13 @@ private:
     ButtonLeft * mBtnLeft = nullptr;
     ButtonRight * mBtnRight = nullptr;
 
+    sgl::sgui::AbstractButtonsGroup * mButtonsStructures = nullptr;
+
     Player * mPlayer = nullptr;
+
+    const ObjectsDataRegistry * mDataReg;
+
+    ElemType mElemType;
 
     int mFirstElem = 0;
 };

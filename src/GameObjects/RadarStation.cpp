@@ -1,16 +1,16 @@
 #include "GameObjects/RadarStation.h"
 
+#include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Player.h"
 
 #include <sgl/graphic/TextureManager.h>
 
 namespace game
 {
 
-RadarStation::RadarStation(int rows, int cols)
-    : Structure(OBJ_RADAR_STATION, rows, cols)
+RadarStation::RadarStation()
+    : Structure(TYPE_RADAR_STATION, CAT_GENERIC, 2, 2)
 {
     SetCanBeConquered(true);
 
@@ -45,20 +45,15 @@ void RadarStation::SetImage()
     else
         isoObj->SetColor(COLOR_FOW);
 
-    const Player * owner = GetOwner();
+    const PlayerFaction faction = GetFaction();
+    const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    unsigned int texInd;
+    unsigned int texInd = ID_STRUCT_RADAR;
 
-    if(nullptr == owner)
-        texInd = ID_STRUCT_RADAR;
+    if(NO_FACTION == faction)
+        texInd = ID_STRUCT_RADAR + sel;
     else
-    {
-        const unsigned int faction = owner->GetFaction();
-
-        texInd = SpriteIdStructures::ID_STRUCT_RADAR_F1 +
-                 (faction * NUM_RADAR_SPRITES_PER_FAC) +
-                 static_cast<int>(IsSelected());
-    }
+        texInd = ID_STRUCT_RADAR_F1 + (faction * NUM_RADAR_SPRITES_PER_FAC) + sel;
 
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
     isoObj->SetTexture(tex);

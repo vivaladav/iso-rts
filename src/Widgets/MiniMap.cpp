@@ -148,8 +148,8 @@ const unsigned int MINIMAP_COLORS[MiniMap::NUM_MM_ELEM_TYPES] =
     0x604739ff
 };
 
-MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im)
-    : sgl::sgui::Widget(nullptr)
+MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im, sgl::sgui::Widget * parent)
+    : sgl::sgui::Widget(parent)
     , mCamController(cameraController)
     , mIsoMap(im)
 {
@@ -302,9 +302,7 @@ MiniMap::MiniMap(CameraMapController * cameraController, IsoMap * im)
 
 MiniMap::~MiniMap()
 {
-    // delete elements
-    for(auto elem : mElementsRenderingList)
-        delete elem;
+    ClearElements();
 
     // delete camera corners
     delete mCameraCornerTL;
@@ -504,9 +502,23 @@ void MiniMap::SetCameraCells(const Cell2D & tl, const Cell2D & tr, const Cell2D 
 
 void MiniMap::Refresh()
 {
+    ClearElements();
+
     UpdateMapArea();
 
     HandlePositionChanged();
+}
+
+void MiniMap::ClearElements()
+{
+    // rendering list
+    for(auto elem : mElementsRenderingList)
+        delete elem;
+
+    mElementsRenderingList.clear();
+
+    // elements map
+    mElementsMap.clear();
 }
 
 void MiniMap::PositionElement(MiniMapElem * elem)
@@ -556,10 +568,12 @@ void MiniMap::UpdateAreaButtons()
 
 void MiniMap::UpdateMapArea()
 {
+    const int mapRows = mIsoMap->GetNumRows();
+    const int mapCols = mIsoMap->GetNumCols();
     const int maxSize = 240;
     const int maxCells = (maxSize / MAP_SCALE) - 1;
-    const int mapW0 = mIsoMap->GetNumCols() * MAP_SCALE;
-    const int mapH0 = mIsoMap->GetNumRows() * MAP_SCALE;
+    const int mapW0 = mapCols * MAP_SCALE;
+    const int mapH0 = mapRows * MAP_SCALE;
     const bool mapBiggerThanW = mapW0 > maxSize;
     const bool mapBiggerThanH = mapH0 > maxSize;
     mMapW = mapBiggerThanW ? maxSize : mapW0;
@@ -571,6 +585,9 @@ void MiniMap::UpdateMapArea()
     // update map area size
     mMapBg->SetWidth(mMapW);
     mMapBg->SetHeight(mMapH);
+
+    // init elements data
+    mElementsMap.assign(mapRows * mapCols, nullptr);
 }
 
 void MiniMap::HandlePositionChanged()

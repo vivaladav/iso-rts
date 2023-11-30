@@ -69,7 +69,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mBg = new graphic::Image(tex);
 
     // PANEL PLAYER RESOURCES TOP BAR
-    mPanelPlayerRes = new PanelResources(player);
+    mPanelPlayerRes = new PanelResources(player, nullptr);
     mPanelPlayerRes->SetX((rendW - mPanelPlayerRes->GetWidth()) * 0.5f);
 
     // PANEL PLANET NAME

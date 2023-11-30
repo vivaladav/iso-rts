@@ -26,6 +26,7 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/sgui/TextArea.h>
+#include <sgl/utilities/Filesystem.h>
 
 #include <chrono>
 #include <iostream>
@@ -112,6 +113,8 @@ ScreenTest::ScreenTest(Game * game)
     TestTimer();
 
     TestAudio();
+
+    TestUtilities();
 }
 
 ScreenTest::~ScreenTest()
@@ -130,7 +133,7 @@ void ScreenTest::OnKeyUp(sgl::core::KeyboardEvent & event)
     const int key = event.GetKey();
 
     // ESC -> go back to main menu
-    if(key == sgl::core::KeyboardEvent::KEY_ESC)
+    if(key == sgl::core::KeyboardEvent::KEY_ESCAPE)
         GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
 }
 
@@ -239,7 +242,7 @@ void ScreenTest::TestSGui()
     const char * text = "This is a pretty long text.(NN)\n\nOver multiple lines, well, at least 4 and I bet that "
                         "this line will wrap at some point before the newline.(N)\nHere it is the end!";
     font = fm->GetFont("Lato-Regular.ttf", 22, Font::NORMAL);
-    auto ta = new TextArea(taW, taH, text, font, container);
+    auto ta = new TextArea(taW, taH, text, font, false, container);
     ta->SetY(buttonY);
     ta->SetColor(0x99FFAAFF);
 
@@ -360,12 +363,12 @@ void ScreenTest::TestSGui()
     button->AddOnClickFunction([container2]{ container2->SetAlpha(128); });
 
     button = new ButtonMainMenu("ALPHA 100%", container2);
-    wY += button->GetHeight() * 2;
+    wY += button->GetHeight() * 1.2f;
     button->SetY(wY);
     button->AddOnClickFunction([container2]{ container2->SetAlpha(255); });
 
     // -- COMBO BOX --
-    wY = 550;
+    wY = 500;
 
     auto container3 = new Widget;
     container3->SetPosition(wX, wY);
@@ -390,7 +393,7 @@ void ScreenTest::TestSGui()
     });
 
     // SLIDER
-    wY = 725;
+    wY = 650;
     auto container4 = new Widget;
     container4->SetPosition(wX, wY);
 
@@ -428,6 +431,14 @@ void ScreenTest::TestSGui()
         label->SetText(std::to_string(val).c_str());
     });
 
+    // SCROLL BAR
+    wY = 850;
+    auto container5 = new Widget;
+    container5->SetPosition(wX, wY);
+
+    font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
+    label = new Label("SCROLLBAR", font, container5);
+    wY = label->GetHeight() * 2;
 }
 
 void ScreenTest::TestSprite()
@@ -586,6 +597,12 @@ void ScreenTest::TestAudio()
     ap->AddMusicToQueue("test/test.ogg");
     ap->AddMusicToQueue("test/menu_01.ogg");
     ap->PlayMusicQueue();
+}
+
+void ScreenTest::TestUtilities()
+{
+    sgl::utilities::Filesystem fs;
+    std::cout << "HOME DIR: " << fs.GetUserHomeDirectory() << std::endl;
 }
 
 } // namespace game
