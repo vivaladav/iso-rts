@@ -431,7 +431,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     else if(GameObject::TYPE_BLOBS == type)
         obj  = new Blobs;
     else if(GameObject::TYPE_TREES == type)
-        obj  = new Trees;
+        obj  = new Trees(variant);
     else if(GameObject::TYPE_RADAR_STATION == type)
         obj = new RadarStation;
     else if(GameObject::TYPE_RADAR_TOWER == type)
