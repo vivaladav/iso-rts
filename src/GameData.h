@@ -405,6 +405,43 @@ enum SpriteIdTrees : unsigned int
     TREE1_4T_6,
     TREE1_4T_7,
     TREE1_4T_8,
+    // TREE TYPE 1 SELECTED
+    // 1 tree
+    TREE1_1T_1_SEL,
+    TREE1_1T_2_SEL,
+    TREE1_1T_3_SEL,
+    TREE1_1T_4_SEL,
+    TREE1_1T_5_SEL,
+    TREE1_1T_6_SEL,
+    TREE1_1T_7_SEL,
+    TREE1_1T_8_SEL,
+    // 2 trees
+    TREE1_2T_1_SEL,
+    TREE1_2T_2_SEL,
+    TREE1_2T_3_SEL,
+    TREE1_2T_4_SEL,
+    TREE1_2T_5_SEL,
+    TREE1_2T_6_SEL,
+    TREE1_2T_7_SEL,
+    TREE1_2T_8_SEL,
+    // 3 trees
+    TREE1_3T_1_SEL,
+    TREE1_3T_2_SEL,
+    TREE1_3T_3_SEL,
+    TREE1_3T_4_SEL,
+    TREE1_3T_5_SEL,
+    TREE1_3T_6_SEL,
+    TREE1_3T_7_SEL,
+    TREE1_3T_8_SEL,
+    // 4 trees
+    TREE1_4T_1_SEL,
+    TREE1_4T_2_SEL,
+    TREE1_4T_3_SEL,
+    TREE1_4T_4_SEL,
+    TREE1_4T_5_SEL,
+    TREE1_4T_6_SEL,
+    TREE1_4T_7_SEL,
+    TREE1_4T_8_SEL,
 
     NUM_TREE1_VARIANTS = 8,
     MAX_TREE1_TREES = 4

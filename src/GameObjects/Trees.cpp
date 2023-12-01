@@ -92,7 +92,8 @@ void Trees::SetImage()
     // set texture
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    const unsigned int baseSpriteId = TREE1_1T_1 + (NUM_TREE1_VARIANTS * (mNumTrees - 1));
+    const unsigned int spriteId0 = IsSelected() ? TREE1_1T_1_SEL : TREE1_1T_1;
+    const unsigned int baseSpriteId = spriteId0 + (NUM_TREE1_VARIANTS * (mNumTrees - 1));
     const unsigned int spriteId = baseSpriteId + mVariant;
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTrees, spriteId);
 
