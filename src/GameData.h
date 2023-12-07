@@ -8,31 +8,27 @@ extern const char SpriteFileCells[];
 
 enum SpriteIdCells : unsigned int
 {
-    // SCENE
-    IND_EMPTY,
+    IND_EMPTY,                          // 0
     IND_SCENE_ROCKS,
     IND_SCENE_ROCKS_SURR,
-    IND_SCENE_RESOURCE,
+    IND_NO_FACTION_OBJ,
     IND_BLOBS_SOURCE,
     IND_DIAMONDS_SOURCE,
     IND_BLOBS_SURR,
     IND_DIAMONDS_SURR,
     IND_TREES1,
     IND_TREES1_SURR,
-    // F1
-    IND_F1,
+    IND_F1,                             // 10
     IND_F1_CONNECTED,
     IND_F1_INFLUENCED,
-    // F2
     IND_F2,
     IND_F2_CONNECTED,
     IND_F2_INFLUENCED,
-    // F3
     IND_F3,
     IND_F3_CONNECTED,
     IND_F3_INFLUENCED,
-    // SPECIAL
     IND_FOG_OF_WAR,
+    IND_NO_FACTION_OBJ_SURR,            // 20
 
     NUM_IND_CELLS
 };

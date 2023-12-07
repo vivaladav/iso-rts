@@ -374,8 +374,8 @@ void ScreenInit::SetupTextures()
     // CELLS
     mJobs.emplace_back([this, tm]
     {
-        const int indRows = 2;
-        const int indCols = 10;
+        const int indRows = 4;
+        const int indCols = 6;
         const int cellW = 96;
         const int cellH = 48;
         const int blockW = cellW + 1;
