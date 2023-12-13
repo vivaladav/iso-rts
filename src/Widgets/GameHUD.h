@@ -28,6 +28,7 @@ public:
     GameHUD(Player * player, CameraMapController * camController,
             IsoMap * isoMap, ScreenGame * screen);
 
+    void SetMiniMapEnabled(bool val);
     MiniMap * GetMinimap() const;
     sgl::sgui::ButtonsGroup * GetButtonsGroupUnitSel() const;
 

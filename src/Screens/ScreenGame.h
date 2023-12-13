@@ -87,6 +87,7 @@ public:
     void CenterCameraOverObject(GameObject * obj);
 
     MiniMap * GetMiniMap() const;
+    void SetMiniMapEnabled(bool val);
 
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;

@@ -474,6 +474,11 @@ MiniMap * ScreenGame::GetMiniMap() const
     return mHUD->GetMinimap();
 }
 
+void ScreenGame::SetMiniMapEnabled(bool val)
+{
+    mHUD->SetMiniMapEnabled(val);
+}
+
 void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
 {
     mHUD->ShowDialogExit();
@@ -535,6 +540,8 @@ void ScreenGame::CreateUI()
 
     // init HUD layer
     mHUD = new GameHUD(player, mCamController, mIsoMap, this);
+
+    mHUD->SetMiniMapEnabled(false);
 
     PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
 

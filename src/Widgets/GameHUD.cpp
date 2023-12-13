@@ -89,6 +89,15 @@ GameHUD::GameHUD(Player * player, CameraMapController * camController,
     mPanelObjActions->SetVisible(false);
 }
 
+void GameHUD::SetMiniMapEnabled(bool val)
+{
+    mButtonMinimap->SetEnabled(val);
+    mButtonMinimap->SetVisible(val);
+
+    mMiniMap->SetEnabled(val);
+    mMiniMap->SetVisible(false);
+}
+
 void GameHUD::HidePanelObjActions()
 {
     mPanelObjActions->ClearObject();
