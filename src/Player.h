@@ -55,6 +55,8 @@ public:
     void AddStructure(Structure * s);
     void RemoveStructure(Structure * s);
     Structure * GetStructure(unsigned int index);
+    std::vector<Structure *> GetStructuresByType(GameObjectTypeId type) const;
+    const std::vector<Structure *> & GetStructures() const;
 
     // visibility map
     void InitVisibility(int rows, int cols);
@@ -173,6 +175,8 @@ inline void Player::SetMaxUnits(int val) { mMaxUnits = val; }
 inline unsigned int Player::GetNumUnits() const { return mUnits.size(); }
 
 inline unsigned int Player::GetNumStructures() const { return mStructures.size(); }
+
+inline const std::vector<Structure *> & Player::GetStructures() const { return mStructures; }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {

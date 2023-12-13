@@ -1911,7 +1911,7 @@ int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
 
 void GameMap::UpdateLinkedCells(Player * player)
 {
-    std::unordered_set<GameObject *> objs;
+    const std::vector<Structure *> & structures = player->GetStructures();
     std::unordered_map<GameObject *, bool> objsLink;
     std::unordered_map<int, bool> cells;
 
@@ -1926,19 +1926,12 @@ void GameMap::UpdateLinkedCells(Player * player)
             const GameMapCell & cell = mCells[ind];
 
             if(cell.owner == player)
-            {
                 cells.emplace(ind, false);
-
-                GameObject * o = (cell.objTop != nullptr) ? cell.objTop : cell.objBottom;
-
-                if(o != nullptr && o->GetFaction() == player->GetFaction() && o->IsStructure())
-                    objs.insert(o);
-            }
         }
     }
 
     // reset all objects linked flag and remove visibility
-    for(GameObject * obj : objs)
+    for(GameObject * obj : structures)
     {
         DelPlayerObjVisibility(obj, player);
 
@@ -1960,7 +1953,6 @@ void GameMap::UpdateLinkedCells(Player * player)
 
         const GameMapCell & currCell = mCells[currInd];
         cells[currInd] = true;
-        //currCell.linked = true;
 
         // mark object as linked
         if(currCell.objTop != nullptr)
@@ -2032,17 +2024,29 @@ void GameMap::UpdateLinkedCells(Player * player)
     }
 
     // UPDATE LINK STATUS OBJECTS
-    for(GameObject * obj : objs)
+    bool radarLinked = false;
+
+    for(GameObject * obj : structures)
     {
         if(obj->IsLinked() != objsLink[obj])
         {
             obj->SetLinked(objsLink[obj]);
 
-            // add control points of new linked object
             if(obj->IsLinked())
+            {
+                // add control points of new linked object
                 mControlMap->AddControlPointsForObject(obj);
+
+                // mark linked radar
+                if(obj->GetObjectType() == GameObject::TYPE_RADAR_STATION)
+                    radarLinked = true;
+            }
         }
     }
+
+    // enable minimap for local player if a radar is linked
+    if(player->IsLocal())
+        mScreenGame->SetMiniMapEnabled(radarLinked);
 
     // UPDATE INFLUENCE
     for(unsigned int ind : done)
@@ -2065,7 +2069,7 @@ void GameMap::UpdateLinkedCells(Player * player)
     }
 
     // UPDATE OBJECTS VISIBILITY
-    for(GameObject * obj : objs)
+    for(GameObject * obj : structures)
         AddPlayerObjVisibility(obj, player);
 
    ApplyLocalVisibility();

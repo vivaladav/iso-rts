@@ -121,6 +121,19 @@ Structure * Player::GetStructure(unsigned int index)
         return nullptr;
 }
 
+std::vector<Structure *> Player::GetStructuresByType(GameObjectTypeId type) const
+{
+    std::vector<Structure *> structures;
+
+    for(Structure * s : mStructures)
+    {
+        if(s->GetObjectType() == type)
+            structures.push_back(s);
+    }
+
+    return structures;
+}
+
 void Player::InitVisibility(int rows, int cols)
 {
     const unsigned int size = rows * cols;

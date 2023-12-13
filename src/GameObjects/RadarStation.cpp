@@ -3,7 +3,6 @@
 #include "GameConstants.h"
 #include "GameData.h"
 #include "IsoObject.h"
-#include "Screens/ScreenGame.h"
 
 #include <sgl/graphic/TextureManager.h>
 
@@ -36,9 +35,6 @@ void RadarStation::OnLinkedChanged()
     // update object visibility level
     const int maxVis = 15;
     SetVisibilityLevel(maxVis * static_cast<int>(linked));
-
-    // enable minimap when connected
-    GetScreen()->SetMiniMapEnabled(linked);
 }
 
 void RadarStation::SetImage()
