@@ -50,6 +50,7 @@ public:
     static const GameObjectTypeId TYPE_BLOBS;
     static const GameObjectTypeId TYPE_DEFENSIVE_TOWER;
     static const GameObjectTypeId TYPE_DIAMONDS;
+    static const GameObjectTypeId TYPE_LOOTBOX;
     static const GameObjectTypeId TYPE_MOUNTAINS;
     static const GameObjectTypeId TYPE_PRACTICE_TARGET;
     static const GameObjectTypeId TYPE_RADAR_STATION;
@@ -205,6 +206,7 @@ private:
     static const std::string TYPE_STR_BLOBS;
     static const std::string TYPE_STR_DEFENSIVE_TOWER;
     static const std::string TYPE_STR_DIAMONDS;
+    static const std::string TYPE_STR_LOOTBOX;
     static const std::string TYPE_STR_MOUNTAINS;
     static const std::string TYPE_STR_PRACTICE_TARGET;
     static const std::string TYPE_STR_RADAR_STATION;

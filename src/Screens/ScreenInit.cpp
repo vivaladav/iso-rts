@@ -478,7 +478,11 @@ void ScreenInit::SetupTextures()
             { 0, 70, 96, 48 },
             { 96, 70, 96, 48 },
             { 192, 70, 96, 48 },
-            { 288, 70, 96, 58 }
+            { 288, 70, 96, 58 },
+
+            // loot box
+            { 385, 0, 96, 60 },
+            { 385, 61, 96, 60 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteCollectiblesFile, rects);
@@ -774,7 +778,7 @@ void ScreenInit::SetupTextures()
             { 386, 1342, 192, 96 },
             { 386, 1439, 192, 96 },
             { 579, 1342, 192, 96 },
-            { 579, 1439, 192, 96 }
+            { 579, 1439, 192, 96 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);

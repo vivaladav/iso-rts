@@ -5,6 +5,7 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
+#include "GameObjects/LootBox.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
@@ -283,6 +284,10 @@ void Player::HandleCollectable(GameObject * obj)
     {
         auto d = static_cast<Blobs *>(obj);
         mStats[Stat::BLOBS].SumValue(d->GetNum());
+    }
+    else if(type == GameObject::TYPE_LOOTBOX)
+    {
+
     }
 
     mOnResourcesChanged();

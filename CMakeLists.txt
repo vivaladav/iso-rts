@@ -80,6 +80,8 @@ add_executable(
     src/GameObjects/GameObject.cpp
     src/GameObjects/GameObjectAction.h
     src/GameObjects/GameObjectTypes.h
+    src/GameObjects/LootBox.h
+    src/GameObjects/LootBox.cpp
     src/GameObjects/ObjectData.h
     src/GameObjects/ObjectData.cpp
     src/GameObjects/ObjectsDataRegistry.h

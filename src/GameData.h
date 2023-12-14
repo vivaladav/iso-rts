@@ -38,15 +38,21 @@ extern const char SpriteCollectiblesFile[];
 
 enum SpriteCollectiblesId : unsigned int
 {
+    // DIAMONDS
     DIAMONDS_1,
     DIAMONDS_2,
     DIAMONDS_3,
     DIAMONDS_4,
 
+    // BLOBS
     BLOBS_1,
     BLOBS_2,
     BLOBS_3,
-    BLOBS_4
+    BLOBS_4,
+
+    // LOOT BOX
+    IND_LOOTBOX,
+    IND_LOOTBOX_SEL,
 };
 
 // INDICATORS
