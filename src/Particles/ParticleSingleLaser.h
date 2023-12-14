@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgl/graphic/Particle.h>
+#include <sgl/graphic/TexturedParticle.h>
 
 namespace game
 {
@@ -10,7 +10,7 @@ class GameObject;
 
 struct DataParticleSingleLaser;
 
-class ParticleSingleLaser : public sgl::graphic::Particle
+class ParticleSingleLaser : public sgl::graphic::TexturedParticle
 {
 public:
     void SetData(const DataParticleSingleLaser & data);

@@ -9,9 +9,9 @@ namespace game
 
 void ParticleDamage::SetData(const DataParticleDamage & data)
 {
-    SetTexture(data.tex);
-    SetRotation(data.angle);
-    SetColor(data.color);
+    mRenderable.SetTexture(data.tex);
+    mRenderable.SetRotation(data.angle);
+    mRenderable.SetColor(data.color);
 
     SetScale(data.scale);
     SetStart(data.x0, data.y0);
@@ -27,21 +27,21 @@ void ParticleDamage::SetData(const DataParticleDamage & data)
 
 void ParticleDamage::SetScale(float scale)
 {
-    RestoreOriginalSize();
-    Scale(scale);
+    mRenderable.RestoreOriginalSize();
+    mRenderable.Scale(scale);
 }
 
 void ParticleDamage::SetStart(int x0, int y0)
 {
     // adjust initial position based on rotation
-    const int rdX = roundf((GetWidth() - GetRotatedWidth()) * 0.5f);
-    const int rdY = roundf((GetHeight() - GetRotatedHeight()) * 0.5f);
+    const int rdX = roundf((mRenderable.GetWidth() - mRenderable.GetRotatedWidth()) * 0.5f);
+    const int rdY = roundf((mRenderable.GetHeight() - mRenderable.GetRotatedHeight()) * 0.5f);
 
     mPosXf = x0 - rdX;
     mPosYf = y0 - rdY;
 
     // set initial position
-    SetPosition(static_cast<int>(mPosXf), static_cast<int>(mPosYf));
+    mRenderable.SetPosition(static_cast<int>(mPosXf), static_cast<int>(mPosYf));
 }
 
 void ParticleDamage::Update(float delta)
@@ -51,16 +51,16 @@ void ParticleDamage::Update(float delta)
 
     // update alpha
     mAlpha -= alphaDecay;
-    SetAlpha(static_cast<unsigned char>(mAlpha));
+    mRenderable.SetAlpha(static_cast<unsigned char>(mAlpha));
 
     // move particle
     mPosXf += mVelX * speed;
     const int posX = roundf(mPosXf);
-    SetX(posX);
+    mRenderable.SetX(posX);
 
     mPosYf += mVelY * speed;
     int posY = roundf(mPosYf);
-    SetY(posY);
+    mRenderable.SetY(posY);
 
     // DONE!
     const int minAlpha = 1.f;
