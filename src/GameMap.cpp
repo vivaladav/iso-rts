@@ -18,6 +18,7 @@
 #include "GameObjects/DefensiveTower.h"
 #include "GameObjects/Diamonds.h"
 #include "GameObjects/DiamondsGenerator.h"
+#include "GameObjects/LootBox.h"
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/PracticeTarget.h"
@@ -452,6 +453,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         obj = new Wall(variant);
     else if(GameObject::TYPE_WALL_GATE == type)
         obj = new WallGate(variant);
+    else if(GameObject::TYPE_LOOTBOX == type)
+        obj = new LootBox;
     else if(GameObject::TYPE_BASE == type || GameObject::TYPE_BASE_SPOT == type)
     {
         if(GameObject::TYPE_BASE_SPOT == type)
@@ -514,7 +517,7 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
 
             GameMapCell & cell = mCells[ind];
 
-            cell.walkable = false;
+            cell.walkable = obj->CanBeCollected();
             cell.objTop = obj;
             cell.owner = owner;
 

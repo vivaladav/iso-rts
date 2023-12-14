@@ -4,6 +4,7 @@
 #include "IsoObject.h"
 
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 namespace game
 {
@@ -14,6 +15,34 @@ LootBox::LootBox()
     SetImage();
 
     SetObjColors();
+
+    // define TYPE of prize
+    sgl::utilities::UniformDistribution d(0, NUM_LB_PRIZES - 1);
+    mPrizeType = static_cast<LootBox::Prize>(d.GetNextValue());
+
+    // define QUANTITY of prize
+    int min;
+    int max;
+
+    if(LB_MONEY == mPrizeType)
+    {
+        min = 100;
+        max = 1000;
+    }
+    else if(LB_BLOBS == mPrizeType || LB_DIAMONDS == mPrizeType)
+    {
+        min = 10;
+        max = 100;
+    }
+    else
+    {
+        min = 100;
+        max = 500;
+    }
+
+    d.SetParameters(min, max);
+
+    mPrizeQuantity = d.GetNextValue();
 }
 
 void LootBox::UpdateGraphics()

@@ -106,6 +106,8 @@ public:
     bool IsStructure() const;
     bool CanBeConquered() const;
 
+    bool CanBeCollected() const;
+
     bool IsSelected() const;
     void SetSelected(bool val);
 
@@ -285,6 +287,8 @@ inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 inline bool GameObject::IsStructure() const { return mStructure; }
 
 inline bool GameObject::CanBeConquered() const { return mCanBeConq; }
+
+inline bool GameObject::CanBeCollected() const { return GameObject::CAT_COLLECTABLE == mCategory; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 

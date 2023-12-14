@@ -287,7 +287,13 @@ void Player::HandleCollectable(GameObject * obj)
     }
     else if(type == GameObject::TYPE_LOOTBOX)
     {
+        auto lb = static_cast<LootBox *>(obj);
+        auto type = static_cast<Player::Stat>(lb->GetPrizeType());
 
+        std::cout << "Player::HandleCollectable | LootBox type: " << type
+                  << " - quantity: " << lb->GetPrizeQuantity() << std::endl;
+
+        mStats[type].SumValue(lb->GetPrizeQuantity());
     }
 
     mOnResourcesChanged();
