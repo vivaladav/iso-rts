@@ -572,7 +572,14 @@ void ScreenInit::SetupTextures()
     {
         const std::vector<sgl::core::Rectd> rects
         {
-            { 0, 0, 4, 4 }
+            { 0, 0, 4, 4 },
+
+            // RESOURCE ICONS
+            { 5, 0, 24, 24 },
+            { 30, 0, 24, 24 },
+            { 55, 0, 24, 24 },
+            { 80, 0, 24, 24 },
+            { 105, 0, 24, 24 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileParticles, rects);

@@ -23,6 +23,7 @@
 #include "Indicators/StructureIndicator.h"
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
+#include "Particles/UpdaterLootboxPrize.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
@@ -503,6 +504,10 @@ void ScreenGame::InitParticlesSystem()
     // DAMAGE
     updater = new UpdaterDamage;
     mPartMan->RegisterUpdater(PU_DAMAGE, updater);
+
+    // LOOTBOX PRIZE
+    updater = new UpdaterLootboxPrize;
+    mPartMan->RegisterUpdater(PU_LOOTBOX_PRIZE, updater);
 
     // SINGLE LASER
     updater = new UpdaterSingleLaser;

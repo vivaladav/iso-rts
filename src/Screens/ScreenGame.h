@@ -46,6 +46,7 @@ enum PlayerFaction : unsigned int;
 enum ParticlesUpdaterId : unsigned int
 {
     PU_DAMAGE,
+    PU_LOOTBOX_PRIZE,
     PU_SINGLE_LASER
 };
 

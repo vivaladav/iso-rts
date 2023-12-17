@@ -27,6 +27,8 @@ public:
     int GetPrizeQuantity() const;
     Prize GetPrizeType() const;
 
+    void Collected() override;
+
 protected:
     void UpdateGraphics() override;
 

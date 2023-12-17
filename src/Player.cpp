@@ -295,6 +295,11 @@ void Player::HandleCollectable(GameObject * obj)
 
         mStats[type].SumValue(lb->GetPrizeQuantity());
     }
+    else
+    {
+        std::cerr << "Player::HandleCollectable | don't know how to handle this object type: " << type << std::endl;
+        return ;
+    }
 
     mOnResourcesChanged();
 

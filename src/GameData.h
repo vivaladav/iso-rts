@@ -181,7 +181,14 @@ extern const char SpriteFileParticles[];
 
 enum SpriteIdParticles : unsigned int
 {
-    ID_PART_RECT_4x4
+    ID_PART_RECT_4x4,
+
+    // RESOURCE ICONS
+    ID_PART_ICON_MONEY,
+    ID_PART_ICON_ENERGY,
+    ID_PART_ICON_MATERIAL,
+    ID_PART_ICON_DIAMONDS,
+    ID_PART_ICON_BLOBS,
 };
 
 // SCENE ELEMENTS
