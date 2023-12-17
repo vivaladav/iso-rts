@@ -288,7 +288,8 @@ void ScreenMainMenu::CreateChangelog()
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added option for disabling edge map scrolling.\n"
-                         "- Scrollable areas can be scrolled with mouse wheel."
+                         "- Scrollable areas can be scrolled with mouse wheel.\n"
+                         "- New map object: loot box."
                         );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
@@ -299,7 +300,8 @@ void ScreenMainMenu::CreateChangelog()
     blockH = 110;
     auto textImpr = new sgui::TextArea(contentW, blockH, font, true, content);
     textImpr->SetText("IMPROVEMENTS\n"
-                      "- New structure dialog now groups structures by category."
+                      "- New structure dialog now groups structures by category.\n"
+                      "- MiniMap now requires a connected radar station to work."
                      );
     textImpr->SetPosition(contX, contY);
     textImpr->SetColor(colorContent);
