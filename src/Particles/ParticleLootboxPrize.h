@@ -29,8 +29,6 @@ public:
     void Render() override;
 
 private:
-    void OnDone() override;
-
     void SetStart(int x0, int y0);
 
 private:

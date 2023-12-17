@@ -140,8 +140,4 @@ void ParticleLootboxPrize::Render()
     mTxt->Render();
 }
 
-void ParticleLootboxPrize::OnDone()
-{
-}
-
 } // namespace game

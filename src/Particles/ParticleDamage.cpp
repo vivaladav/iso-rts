@@ -69,8 +69,4 @@ void ParticleDamage::Update(float delta)
         SetDone();
 }
 
-void ParticleDamage::OnDone()
-{
-}
-
 } // namespace game
