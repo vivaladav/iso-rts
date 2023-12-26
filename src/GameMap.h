@@ -37,6 +37,7 @@ public:
     ~GameMap();
 
     bool HasObject(unsigned int r, unsigned int c) const;
+    bool HasObject(GameObject * obj) const;
 
     const std::vector<GameMapCell>  & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
@@ -78,10 +79,8 @@ public:
                               unsigned int r0, unsigned int c0);
 
     GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
-                             GameObjectVariantId variant, PlayerFaction faction,
+                              GameObjectVariantId variant, PlayerFaction faction,
                               unsigned int r0, unsigned int c0);
-
-    bool HasObject(GameObject * obj) const;
 
     bool RemoveAndDestroyObject(GameObject * obj);
 
@@ -234,6 +233,11 @@ inline bool GameMap::HasObject(unsigned int r, unsigned int c) const
     return ind < mCells.size() && mCells[ind].objTop != nullptr;
 }
 
+inline bool GameMap::HasObject(GameObject * obj) const
+{
+    return mObjectsSet.find(obj) != mObjectsSet.end();
+}
+
 inline const std::vector<GameMapCell> & GameMap::GetCells() const
 {
     return mCells;
@@ -304,11 +308,6 @@ inline void GameMap::SetCellChanging(unsigned int r, unsigned int c, bool changi
 {
     if(r < mRows && c < mCols)
         mCells[r * mCols + c].changing = changing;
-}
-
-inline bool GameMap::HasObject(GameObject * obj) const
-{
-    return mObjectsSet.find(obj) != mObjectsSet.end();
 }
 
 /**
