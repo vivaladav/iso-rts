@@ -472,7 +472,10 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
 
 MiniMap * ScreenGame::GetMiniMap() const
 {
-    return mHUD->GetMinimap();
+    if(mHUD)
+        return mHUD->GetMinimap();
+    else
+        return nullptr;
 }
 
 void ScreenGame::SetMiniMapEnabled(bool val)
