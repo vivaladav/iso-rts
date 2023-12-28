@@ -284,12 +284,13 @@ void ScreenMainMenu::CreateChangelog()
     contY += title->GetHeight() + paddingV;
 
     // CONTENT BLOCK: NEW FEATURES
-    int blockH = 240;
+    int blockH = 250;
     auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added option for disabling edge map scrolling.\n"
                          "- Scrollable areas can be scrolled with mouse wheel.\n"
-                         "- New map object: loot box."
+                         "- New map object: loot box.\n"
+                         "- Trees now can grow into surrounding cells.\n"
                         );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
@@ -325,6 +326,7 @@ void ScreenMainMenu::CreateChangelog()
     blockH = 210;
     auto textFix = new sgui::TextArea(contentW, blockH, font, true, content);
     textFix->SetText("FIXES\n"
+                     "- several minor fixes.\n"
                     );
     textFix->SetPosition(contX, contY);
     textFix->SetColor(colorContent);
