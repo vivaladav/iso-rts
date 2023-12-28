@@ -131,6 +131,23 @@ bool GameMap::IsAnyNeighborCellWalkable(unsigned int r, unsigned int c) const
            (checkS && checkE && IsCellWalkable(r + 1, c + 1));
 }
 
+void GameMap::SetCellType(unsigned int ind, CellTypes type)
+{
+    mCells[ind].currType = type;
+    mCells[ind].basicType = type;
+
+    mIsoMap->SetCellType(ind, type);
+}
+
+void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
+{
+    const auto type = static_cast<CellTypes>(DefineCellType(ind, cell));
+
+    mCells[ind].currType = type;
+
+    mIsoMap->SetCellType(ind, type);
+}
+
 bool GameMap::IsCellObjectVisited(unsigned int cellInd) const
 {
     if(cellInd < mRows * mCols)
@@ -173,36 +190,20 @@ void GameMap::SetSize(unsigned int rows, unsigned int cols)
     mControlMap->SetSize(rows, cols);
 }
 
-void GameMap::SyncMapCells()
+void GameMap::CreateCollectableGenerator(unsigned int r, unsigned int c, ResourceType type)
 {
-    const unsigned int size = mRows * mCols;
+    CollectableGenerator * gen = nullptr;
 
-    for(unsigned int i = 0; i < size; ++i)
-    {
-        const auto type = static_cast<CellTypes>(mIsoMap->GetCellType(i));
+    if(RES_DIAMONDS == type)
+        gen = new DiamondsGenerator(this);
+    else if(RES_BLOBS == type)
+        gen = new BlobsGenerator(this);
+    else
+        return ;
 
-        mCells[i].currType = type;
-        mCells[i].basicType = type;
+    gen->SetCell(r, c);
 
-        const int row = i / mCols;
-        const int col = i % mCols;
-
-        // DIAMONDS GENERATOR
-        if(DIAMONDS_SOURCE == type)
-        {
-           auto gen = new DiamondsGenerator(this);
-           gen->SetCell(row, col);
-
-           mCollGen.emplace_back(gen);
-        }
-        else if(BLOBS_SOURCE == type)
-        {
-           auto gen = new BlobsGenerator(this);
-           gen->SetCell(row, col);
-
-           mCollGen.emplace_back(gen);
-        }
-    }
+    mCollGen.emplace_back(gen);
 }
 
 void GameMap::ApplyLocalVisibility()
@@ -375,26 +376,31 @@ void GameMap::CreateObjectFromFile(unsigned int layerId, GameObjectTypeId type, 
         CreateUnit(type, nullptr, dest, owner);
     }
     else
-        CreateObject(layerId, type, variant, pf, r0, c0);
+        CreateObject(layerId, type, variant, pf, r0, c0, true);
 }
 
 GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
                                    GameObjectVariantId variant, PlayerFaction faction,
-                                   unsigned int r0, unsigned int c0)
+                                   unsigned int r0, unsigned int c0, bool instantAdd)
 {
     // object origin is out of map
     if(r0 >= mRows || c0 >= mCols)
         return nullptr;
 
+    ObjectToAdd o2a;
+
     const ObjectBasicData & objData = GetObjectData(type);
     const unsigned int rows = objData.rows;
     const unsigned int cols = objData.cols;
 
-    // full size is out of map
-    const unsigned int r1 = 1 + r0 - rows;
-    const unsigned int c1 = 1 + c0 - cols;
+    o2a.r0 = r0;
+    o2a.c0 = c0;
+    o2a.r1 = 1 + r0 - rows;
+    o2a.c1 = 1 + c0 - cols;
+    o2a.layer = layerId;
 
-    if(r1 >= mRows || c1 >= mCols)
+    // full size is out of map
+    if(o2a.r1 >= mRows || o2a.c1 >= mCols)
         return nullptr;
 
     const unsigned int ind0 = r0 * mCols + c0;
@@ -406,85 +412,80 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         return nullptr;
 
     // create game object
-    GameObject * obj = nullptr;
-    Player * owner = mGame->GetPlayerByFaction(faction);
-
-    bool isResGen = false;
+    o2a.obj = nullptr;
+    o2a.owner = mGame->GetPlayerByFaction(faction);
 
     if(GameObject::TYPE_MOUNTAINS == type ||
        GameObject::TYPE_ROCKS == type)
-        obj = new SceneObject(type, variant, rows, cols);
+        o2a.obj = new SceneObject(type, variant, rows, cols);
     else if(GameObject::TYPE_RES_GEN_ENERGY == type ||
        GameObject::TYPE_RES_GEN_MATERIAL == type ||
        GameObject::TYPE_RES_GEN_ENERGY_SOLAR == type ||
        GameObject::TYPE_RES_GEN_MATERIAL_EXTRACT == type)
-    {
-        obj = new ResourceGenerator(type, rows, cols);
-        isResGen = true;
-    }
+        o2a.obj = new ResourceGenerator(type, rows, cols);
     else if(GameObject::TYPE_RES_STORAGE_BLOBS == type ||
             GameObject::TYPE_RES_STORAGE_DIAMONDS == type ||
             GameObject::TYPE_RES_STORAGE_ENERGY == type ||
             GameObject::TYPE_RES_STORAGE_MATERIAL == type)
-        obj = new ResourceStorage(type, rows, cols);
+        o2a.obj = new ResourceStorage(type, rows, cols);
     else if(GameObject::TYPE_DIAMONDS == type)
-        obj = new Diamonds;
+        o2a.obj = new Diamonds;
     else if(GameObject::TYPE_BLOBS == type)
-        obj  = new Blobs;
+        o2a.obj  = new Blobs;
     else if(GameObject::TYPE_TREES == type)
-        obj  = new Trees(variant);
+        o2a.obj  = new Trees(variant);
     else if(GameObject::TYPE_RADAR_STATION == type)
-        obj = new RadarStation;
+        o2a.obj = new RadarStation;
     else if(GameObject::TYPE_RADAR_TOWER == type)
-        obj = new RadarTower;
+        o2a.obj = new RadarTower;
     else if(GameObject::TYPE_DEFENSIVE_TOWER == type)
     {
         const ObjectBasicData & data = GetObjectData(type);
 
-        if(owner != nullptr)
+        if(o2a.owner != nullptr)
         {
             const ObjectFactionData & fData = GetFactionData(faction, type);
-            obj = new DefensiveTower(data, fData);
+            o2a.obj = new DefensiveTower(data, fData);
         }
         else
-            obj = new DefensiveTower(data);
+            o2a.obj = new DefensiveTower(data);
     }
     else if(GameObject::TYPE_WALL == type)
-        obj = new Wall(variant);
+        o2a.obj = new Wall(variant);
     else if(GameObject::TYPE_WALL_GATE == type)
-        obj = new WallGate(variant);
+        o2a.obj = new WallGate(variant);
     else if(GameObject::TYPE_LOOTBOX == type)
-        obj = new LootBox;
+        o2a.obj = new LootBox;
     else if(GameObject::TYPE_BASE == type || GameObject::TYPE_BASE_SPOT == type)
     {
         if(GameObject::TYPE_BASE_SPOT == type)
         {
-            owner = mGame->GetPlayerByIndex(variant);
-            faction = owner->GetFaction();
+            o2a.owner = mGame->GetPlayerByIndex(variant);
+            faction = o2a.owner->GetFaction();
         }
 
-        obj = new Base;
+        o2a.obj = new Base;
 
         // base cells update
-        for(unsigned int r = r1; r <= r0; ++r)
+        for(unsigned int r = o2a.r1; r <= r0; ++r)
         {
             const unsigned int indBase = r * mCols;
 
-            for(unsigned int c = c1; c <= c0; ++c)
+            for(unsigned int c = o2a.c1; c <= c0; ++c)
             {
                 const unsigned int ind = indBase + c;
-                mCells[ind].owner = owner;
+                mCells[ind].owner = o2a.owner;
                 mCells[ind].linked = true;
 
                 UpdateInfluencedCells(r, c);
             }
         }
 
-        owner->SetBaseCell(Cell2D(r0, c0));
-        owner->SumCells(rows * cols);
+        o2a.owner->SetBaseCell(Cell2D(r0, c0));
+        o2a.owner->SumCells(rows * cols);
     }
     else if(GameObject::TYPE_PRACTICE_TARGET == type)
-        obj = new PracticeTarget;
+        o2a.obj = new PracticeTarget;
     // this should never happen
     else
     {
@@ -493,64 +494,22 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
     }
 
     // assign owner
-    obj->SetFaction(faction);
+    o2a.obj->SetFaction(faction);
 
     // set object properties
-    obj->SetCell(&mCells[ind0]);
+    o2a.obj->SetCell(&mCells[ind0]);
 
     // links to other objects
-    obj->SetGameMap(this);
-    obj->SetScreen(mScreenGame);
+    o2a.obj->SetGameMap(this);
+    o2a.obj->SetScreen(mScreenGame);
 
-    // store object in map list and in registry
-    mObjects.push_back(obj);
-    mObjectsSet.insert(obj);
+    // schedule object for map addition
+    if(instantAdd)
+        AddObjectToMap(o2a);
+    else
+        mObjectsToAdd.emplace_back(o2a);
 
-    // generic cells update
-    for(unsigned int r = r1; r <= r0; ++r)
-    {
-        const unsigned int indBase = r * mCols;
-
-        for(unsigned int c = c1; c <= c0; ++c)
-        {
-            const unsigned int ind = indBase + c;
-
-            GameMapCell & cell = mCells[ind];
-
-            cell.walkable = obj->CanBeCollected();
-            cell.objTop = obj;
-            cell.owner = owner;
-
-            // update cell image
-            UpdateCellType(ind, cell);
-        }
-    }
-
-    // create object in iso map
-    mIsoMap->GetLayer(layerId)->AddObject(obj->GetIsoObject(), r0, c0);
-
-    // handle owned object
-    if(owner != nullptr)
-    {
-        // register objects to Player
-        if(isResGen)
-            owner->AddResourceGenerator(static_cast<ResourceGenerator *>(obj));
-        else if(obj->IsStructure())
-            owner->AddStructure(static_cast<Structure *>(obj));
-
-        // update control points
-        if(obj->IsLinked())
-            mControlMap->AddControlPointsForObject(obj);
-
-        // update visibility map
-        // NOTE only for human player for now
-        Player * localPlayer = mGame->GetLocalPlayer();
-
-        if(owner == localPlayer)
-            AddPlayerObjVisibility(obj, localPlayer);
-    }
-
-    return obj;
+    return o2a.obj;
 }
 
 bool GameMap::RemoveAndDestroyObject(GameObject * obj)
@@ -840,7 +799,7 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     // reset cell's changing flag
     gcell.changing = false;
 
-    GameObject * obj = CreateObject(OBJECTS2, st, 0, player->GetFaction(), cell.row, cell.col);
+    GameObject * obj = CreateObject(OBJECTS2, st, 0, player->GetFaction(), cell.row, cell.col, true);
 
     // propagate effects of conquest
     UpdateInfluencedCells(cell.row, cell.col);
@@ -929,7 +888,7 @@ void GameMap::BuildWall(const Cell2D & cell, Player * player, GameObjectTypeId p
     UpdateLinkedCells(player);
 
     // add object wall
-    CreateObject(OBJECTS2, GameObject::TYPE_WALL, planned, player->GetFaction(), cell.row, cell.col);
+    CreateObject(OBJECTS2, GameObject::TYPE_WALL, planned, player->GetFaction(), cell.row, cell.col, true);
 
     // update minimap
     if(IsCellVisibleToLocalPlayer(cell.row, cell.col))
@@ -1808,8 +1767,12 @@ void GameMap::Update(float delta)
             ++itObj;
     }
 
+    // update generators
     for(CollectableGenerator * dg : mCollGen)
         dg->Update(delta);
+
+    // add new objects to map
+    UpdateObjectsToAdd();
 
     // paths
     UpdateObjectPaths(delta);
@@ -1847,12 +1810,6 @@ void GameMap::StopCellChange(GameMapCell & gcell)
 
     const Cell2D cell(gcell.row, gcell.col);
     mScreenGame->CancelProgressBar(cell);
-}
-
-void GameMap::UpdateCellType(unsigned int ind, const GameMapCell & cell)
-{
-    const int cellType = DefineCellType(ind, cell);
-    mIsoMap->SetCellType(ind, cellType);
 }
 
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
@@ -2222,6 +2179,60 @@ Cell2D GameMap::GetClosestCell(const Cell2D & start, const std::vector<Cell2D> &
     return targets[minInd];
 }
 
+void GameMap::AddObjectToMap(const ObjectToAdd & o2a)
+{
+    // add object to map containers
+    mObjects.push_back(o2a.obj);
+    mObjectsSet.insert(o2a.obj);
+
+    // generic cells update
+    for(unsigned int r = o2a.r1; r <= o2a.r0; ++r)
+    {
+        const unsigned int indBase = r * mCols;
+
+        for(unsigned int c = o2a.c1; c <= o2a.c0; ++c)
+        {
+            const unsigned int ind = indBase + c;
+
+            GameMapCell & cell = mCells[ind];
+
+            cell.walkable = o2a.obj->CanBeCollected();
+            cell.objTop = o2a.obj;
+            cell.owner = o2a.owner;
+
+            // update cell image
+            UpdateCellType(ind, cell);
+        }
+    }
+
+    // handle owned object
+    if(o2a.owner != nullptr)
+    {
+        // register objects to Player
+        if(o2a.obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
+            o2a.owner->AddResourceGenerator(static_cast<ResourceGenerator *>(o2a.obj));
+        else if(o2a.obj->IsStructure())
+            o2a.owner->AddStructure(static_cast<Structure *>(o2a.obj));
+
+        // update control points
+        if(o2a.obj->IsLinked())
+            mControlMap->AddControlPointsForObject(o2a.obj);
+
+        // update visibility map
+        // NOTE only for human player for now
+        Player * localPlayer = mGame->GetLocalPlayer();
+
+        if(o2a.owner == localPlayer)
+            AddPlayerObjVisibility(o2a.obj, localPlayer);
+    }
+
+    // create object in iso map
+    mIsoMap->GetLayer(o2a.layer)->AddObject(o2a.obj->GetIsoObject(), o2a.r0, o2a.c0);
+
+    // apply visibility
+    ApplyLocalVisibilityToObject(o2a.obj);
+}
+
 void GameMap::DestroyObject(GameObject * obj)
 {
     Player * localPlayer = mGame->GetLocalPlayer();
@@ -2585,6 +2596,16 @@ void GameMap::UpdateWallBuildPaths(float delta)
         }
         else
             ++it;
+    }
+}
+
+void GameMap::UpdateObjectsToAdd()
+{
+    while(!mObjectsToAdd.empty())
+    {
+        AddObjectToMap(mObjectsToAdd.back());
+
+        mObjectsToAdd.pop_back();
     }
 }
 

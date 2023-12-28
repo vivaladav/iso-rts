@@ -4,8 +4,6 @@
 #include "GameMap.h"
 #include "GameObjects/Diamonds.h"
 
-#include <sgl/utilities/UniformDistribution.h>
-
 namespace game
 {
 
@@ -22,22 +20,13 @@ void DiamondsGenerator::OnGeneration()
     const int c = GetCol();
 
     GameObject * obj = gm->CreateObject(MapLayers::OBJECTS2, GameObject::TYPE_DIAMONDS,
-                                        0, NO_FACTION, r, c);
+                                        0, NO_FACTION, r, c, true);
 
     if(nullptr == obj)
         return ;
 
     auto diamonds = static_cast<Diamonds *>(obj);
-
-    // set number of diamonds in cell
-    sgl::utilities::UniformDistribution ran(Diamonds::MIN_UNITS, Diamonds::MAX_UNITS);
-    const int num = ran.GetNextValue();
-    diamonds->SetNum(num);
-
     diamonds->SetGenerator(this);
-
-    // update visibility
-    gm->ApplyLocalVisibilityToObject(obj);
 
     // make the cell walkable for collection
     gm->SetCellWalkable(r, c, true);

@@ -4,8 +4,6 @@
 #include "GameMap.h"
 #include "GameObjects/Blobs.h"
 
-#include <sgl/utilities/UniformDistribution.h>
-
 namespace game
 {
 
@@ -22,22 +20,13 @@ void BlobsGenerator::OnGeneration()
     const int c = GetCol();
 
     GameObject * obj = gm->CreateObject(MapLayers::OBJECTS2, GameObject::TYPE_BLOBS,
-                                       0, NO_FACTION, r, c);
+                                       0, NO_FACTION, r, c, true);
 
     if(nullptr == obj)
         return ;
 
     auto blobs = static_cast<Blobs *>(obj);
-
-    // set number of Blobs in cell
-    sgl::utilities::UniformDistribution ran(Blobs::MIN_UNITS, Blobs::MAX_UNITS);
-    const int num = ran.GetNextValue();
-    blobs->SetNum(num);
-
     blobs->SetGenerator(this);
-
-    // update visibility
-    gm->ApplyLocalVisibilityToObject(obj);
 
     // make the cell walkable for collection
     gm->SetCellWalkable(r, c, true);

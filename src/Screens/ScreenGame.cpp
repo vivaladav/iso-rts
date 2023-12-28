@@ -838,6 +838,9 @@ void ScreenGame::LoadMapFile()
     // update iso map
     mIsoMap->SetSize(rows, cols, true);
 
+    // update game map
+    mGameMap->SetSize(rows, cols);
+
     const std::vector<unsigned int> & cells = ml.GetCellTypes();
 
     for(unsigned int r = 0; r < rows; ++r)
@@ -847,13 +850,16 @@ void ScreenGame::LoadMapFile()
         for(unsigned int c = 0; c < cols; ++c)
         {
             const unsigned int ind = ind0 + c;
-            mIsoMap->SetCellType(ind, cells[ind]);
+            const auto t = static_cast<CellTypes>(cells[ind]);
+            mGameMap->SetCellType(ind, t);
+
+            // create collectable generators
+            if(t == BLOBS_SOURCE)
+                mGameMap->CreateCollectableGenerator(r, c, RES_BLOBS);
+            else if(t == DIAMONDS_SOURCE)
+                mGameMap->CreateCollectableGenerator(r, c, RES_DIAMONDS);
         }
     }
-
-    // update game map
-    mGameMap->SetSize(rows, cols);
-    mGameMap->SyncMapCells();
 
     // create objects
     const std::vector<MapObjectEntry> & objEntries = ml.GetObjectEntries();

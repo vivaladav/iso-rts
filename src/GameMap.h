@@ -29,6 +29,8 @@ struct GameMapCell;
 struct ObjectBasicData;
 struct ObjectFactionData;
 
+enum ResourceType : unsigned int;
+
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
 {
@@ -36,6 +38,7 @@ public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
 
+    bool HasObject(unsigned int ind) const;
     bool HasObject(unsigned int r, unsigned int c) const;
     bool HasObject(GameObject * obj) const;
 
@@ -53,13 +56,16 @@ public:
     void SetCellWalkable(unsigned int cellInd, bool val);
     void SetCellWalkable(unsigned int r, unsigned int c, bool val);
     void SetCellWalkTarget(unsigned int cellInd, bool val);
+    void SetCellType(unsigned int r, unsigned int c, CellTypes type);
+    void SetCellType(unsigned int ind, CellTypes type);
+    void UpdateCellType(unsigned int ind, const GameMapCell & cell);
 
     bool IsCellObjectVisited(unsigned int cellInd) const;
     bool IsCellObjectVisited(unsigned int r, unsigned int c) const;
 
     void SetSize(unsigned int rows, unsigned int cols);
 
-    void SyncMapCells();
+    void CreateCollectableGenerator(unsigned int r, unsigned int c, ResourceType type);
 
     void ApplyLocalVisibility();
     void ApplyVisibility(Player * player);
@@ -80,7 +86,7 @@ public:
 
     GameObject * CreateObject(unsigned int layerId, GameObjectTypeId type,
                               GameObjectVariantId variant, PlayerFaction faction,
-                              unsigned int r0, unsigned int c0);
+                              unsigned int r0, unsigned int c0, bool instantAdd);
 
     bool RemoveAndDestroyObject(GameObject * obj);
 
@@ -139,6 +145,7 @@ public:
     Cell2D GetOrthoAdjacentMoveTarget(const Cell2D & start, const Cell2D & targetTL, const Cell2D & targetBR) const;
 
     const GameMapCell & GetCell(unsigned int r, unsigned int c) const;
+    const GameMapCell & GetCell(unsigned int ind) const;
 
     bool MoveObjectDown(GameObject * obj);
     bool MoveObjectUp(GameObject * obj);
@@ -158,7 +165,7 @@ private:
 
     void StopCellChange(GameMapCell & gcell);
 
-    void UpdateCellType(unsigned int ind, const GameMapCell & cell);
+
     int DefineCellType(unsigned int ind, const GameMapCell & cell);
 
     void UpdateLinkedCells(Player * player);
@@ -171,6 +178,8 @@ private:
 
     Cell2D GetClosestCell(const Cell2D & start, const std::vector<Cell2D> & targets) const;
 
+    struct ObjectToAdd;
+    void AddObjectToMap(const ObjectToAdd & o2a);
     void DestroyObject(GameObject * obj);
 
     // -- player visibility --
@@ -192,6 +201,7 @@ private:
     void UpdateObjectPaths(float delta);
     void UpdateConquerPaths(float delta);
     void UpdateWallBuildPaths(float delta);
+    void UpdateObjectsToAdd();
 
     void UpdateWalls(const Cell2D & center);
     void UpdateWall(const Cell2D & cell);
@@ -200,6 +210,17 @@ private:
     const ObjectFactionData & GetFactionData(PlayerFaction f, GameObjectTypeId t) const;
 
 private:
+    struct ObjectToAdd
+    {
+        GameObject * obj;
+        unsigned int r0;
+        unsigned int c0;
+        unsigned int r1;
+        unsigned int c1;
+        Player * owner;
+        unsigned int layer;
+    };
+
     // to access visibility functions
     friend class ConquerPath;
     friend class ObjectPath;
@@ -207,6 +228,7 @@ private:
 
     std::vector<GameMapCell> mCells;
     std::vector<GameObject *> mObjects;
+    std::vector<ObjectToAdd> mObjectsToAdd;
     std::unordered_set<GameObject *> mObjectsSet;
     std::vector<CollectableGenerator *> mCollGen;
     std::vector<ObjectPath *> mPaths;
@@ -225,6 +247,11 @@ private:
 };
 
 // ==================== INLINE METHODS ====================
+
+inline bool GameMap::HasObject(unsigned int ind) const
+{
+    return mCells[ind].objTop != nullptr;
+}
 
 inline bool GameMap::HasObject(unsigned int r, unsigned int c) const
 {
@@ -268,6 +295,13 @@ inline void GameMap::SetCellWalkable(unsigned int r, unsigned int c, bool val)
 inline void GameMap::SetCellWalkTarget(unsigned int cellInd, bool val)
 {
     mCells[cellInd].walkTarget = val;
+}
+
+inline void GameMap::SetCellType(unsigned int r, unsigned int c, CellTypes type)
+{
+    const unsigned int ind = r * mCols + c;
+
+    SetCellType(ind, type);
 }
 
 inline bool GameMap::IsCellObjectVisited(unsigned int r, unsigned int c) const
@@ -319,6 +353,11 @@ inline void GameMap::SetCellChanging(unsigned int r, unsigned int c, bool changi
 inline const GameMapCell & GameMap::GetCell(unsigned int r, unsigned int c) const
 {
     return mCells[r * mCols + c];
+}
+
+inline const GameMapCell & GameMap::GetCell(unsigned int ind) const
+{
+    return mCells[ind];
 }
 
 /**

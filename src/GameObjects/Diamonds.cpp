@@ -4,19 +4,19 @@
 #include "IsoObject.h"
 
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 namespace game
 {
 
-void Diamonds::SetNum(int num)
+Diamonds::Diamonds() : Collectable(GameObject::TYPE_DIAMONDS, 1, 1)
 {
-    if(num < MIN_UNITS)
-        mNum = MIN_UNITS;
-    else if(num > MAX_UNITS)
-        mNum = MAX_UNITS;
-    else
-        mNum = num;
+    const int MIN_UNITS = 1;
+    const int MAX_UNITS = 4;
+    sgl::utilities::UniformDistribution ran(MIN_UNITS, MAX_UNITS);
+    mNum = ran.GetNextValue();
 
+    SetObjColors();
     SetImage();
 }
 

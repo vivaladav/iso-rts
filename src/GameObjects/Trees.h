@@ -13,6 +13,8 @@ public:
     void Update(float delta) override;
 
 private:
+    void SpawnTree(int r0, int c0);
+
     void UpdateGraphics() override;
 
     void SetImage();
