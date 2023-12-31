@@ -374,8 +374,8 @@ void ScreenInit::SetupTextures()
     // CELLS
     mJobs.emplace_back([this, tm]
     {
-        const int indRows = 2;
-        const int indCols = 10;
+        const int indRows = 4;
+        const int indCols = 6;
         const int cellW = 96;
         const int cellH = 48;
         const int blockW = cellW + 1;
@@ -478,7 +478,11 @@ void ScreenInit::SetupTextures()
             { 0, 70, 96, 48 },
             { 96, 70, 96, 48 },
             { 192, 70, 96, 48 },
-            { 288, 70, 96, 58 }
+            { 288, 70, 96, 58 },
+
+            // loot box
+            { 385, 0, 96, 60 },
+            { 385, 61, 96, 60 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteCollectiblesFile, rects);
@@ -568,7 +572,14 @@ void ScreenInit::SetupTextures()
     {
         const std::vector<sgl::core::Rectd> rects
         {
-            { 0, 0, 4, 4 }
+            { 0, 0, 4, 4 },
+
+            // RESOURCE ICONS
+            { 5, 0, 24, 24 },
+            { 30, 0, 24, 24 },
+            { 55, 0, 24, 24 },
+            { 80, 0, 24, 24 },
+            { 105, 0, 24, 24 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileParticles, rects);
@@ -774,7 +785,7 @@ void ScreenInit::SetupTextures()
             { 386, 1342, 192, 96 },
             { 386, 1439, 192, 96 },
             { 579, 1342, 192, 96 },
-            { 579, 1439, 192, 96 }
+            { 579, 1439, 192, 96 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
@@ -822,6 +833,43 @@ void ScreenInit::SetupTextures()
             { 485, 199, 96, 66 },
             { 582, 199, 96, 66 },
             { 679, 199, 96, 63 },
+            // TREE TYPE 1 - SELECTED
+            // 1 tree
+            { 0, 268, 96, 48 },
+            { 97, 268, 96, 51 },
+            { 194, 268, 96, 52 },
+            { 291, 268, 96, 54 },
+            { 388, 268, 96, 57 },
+            { 485, 268, 96, 59 },
+            { 582, 268, 96, 62 },
+            { 679, 268, 96, 65 },
+            // 2 trees
+            { 0, 334, 96, 63 },
+            { 97, 334, 96, 60 },
+            { 194, 334, 96, 55 },
+            { 291, 334, 96, 62 },
+            { 388, 334, 96, 61 },
+            { 485, 334, 96, 61 },
+            { 582, 334, 96, 60 },
+            { 679, 334, 96, 58 },
+            // 3 trees
+            { 0, 398, 96, 62 },
+            { 97, 398, 96, 65 },
+            { 194, 398, 96, 65 },
+            { 291, 398, 96, 68 },
+            { 388, 398, 96, 68 },
+            { 485, 398, 96, 58 },
+            { 582, 398, 96, 63 },
+            { 679, 398, 96, 60 },
+            // 4 trees
+            { 0, 467, 96, 65 },
+            { 97, 467, 96, 61 },
+            { 194, 467, 96, 67 },
+            { 291, 467, 96, 69 },
+            { 388, 467, 96, 67 },
+            { 485, 467, 96, 66 },
+            { 582, 467, 96, 66 },
+            { 679, 467, 96, 63 }
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileTrees, rects);

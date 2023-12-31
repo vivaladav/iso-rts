@@ -55,6 +55,10 @@ void ObjectsDataRegistry::InitObjectData()
                   ObjectBasicData(GameObject::TYPE_DEFENSIVE_TOWER, OCS_TOWER, OCAT_DEFENSE,
                                   SpriteFileStructures, ID_STRUCT_DTOWER_L1, 1, 1));
 
+    mData.emplace(GameObject::TYPE_LOOTBOX,
+                  ObjectBasicData(GameObject::TYPE_LOOTBOX, OCO_COLLECTABLE, OCAT_UNDEFINED,
+                                  SpriteCollectiblesFile, IND_LOOTBOX, 1, 1));
+
     mData.emplace(GameObject::TYPE_MOUNTAINS,
                   ObjectBasicData(GameObject::TYPE_MOUNTAINS, OCO_SCENE, OCAT_UNDEFINED,
                                   SpriteFileSceneElements, ID_SCENE_MOUNTAIN_1, 2, 2));

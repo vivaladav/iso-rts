@@ -10,7 +10,7 @@ namespace game
 const std::unordered_set<CellTypes> GameMapCell::PRIMARY_TYPES =
 {
     SCENE_ROCKS,
-    SCENE_RESOURCE,
+    NO_FACTION_OBJ,
     BLOBS_SOURCE,
     DIAMONDS_SOURCE,
     TREES1,

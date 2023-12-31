@@ -144,7 +144,7 @@ void ConquerPath::InitNextConquest()
     if(!mGameMap->CanConquerCell(nextCell, player))
     {
         // remove current indicator
-        if(mLocalPlayer)
+        if(mLocalPlayer && mNextCell < mIndicators.size())
             layerOverlay->ClearObject(mIndicators[mNextCell]);
 
         ++mNextCell;

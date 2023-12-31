@@ -80,6 +80,8 @@ add_executable(
     src/GameObjects/GameObject.cpp
     src/GameObjects/GameObjectAction.h
     src/GameObjects/GameObjectTypes.h
+    src/GameObjects/LootBox.h
+    src/GameObjects/LootBox.cpp
     src/GameObjects/ObjectData.h
     src/GameObjects/ObjectData.cpp
     src/GameObjects/ObjectsDataRegistry.h
@@ -117,13 +119,18 @@ add_executable(
     src/Indicators/WallIndicator.h
     src/Indicators/WallIndicator.cpp
     src/Particles/DataParticleDamage.h
+    src/Particles/DataParticleLootboxPrize.h
     src/Particles/DataParticleSingleLaser.h
     src/Particles/ParticleDamage.h
     src/Particles/ParticleDamage.cpp
+    src/Particles/ParticleLootboxPrize.h
+    src/Particles/ParticleLootboxPrize.cpp
     src/Particles/ParticleSingleLaser.h
     src/Particles/ParticleSingleLaser.cpp
     src/Particles/UpdaterDamage.h
     src/Particles/UpdaterDamage.cpp
+    src/Particles/UpdaterLootboxPrize.h
+    src/Particles/UpdaterLootboxPrize.cpp
     src/Particles/UpdaterSingleLaser.h
     src/Particles/UpdaterSingleLaser.cpp
     src/Screens/Screen.h

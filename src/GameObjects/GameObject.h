@@ -50,6 +50,7 @@ public:
     static const GameObjectTypeId TYPE_BLOBS;
     static const GameObjectTypeId TYPE_DEFENSIVE_TOWER;
     static const GameObjectTypeId TYPE_DIAMONDS;
+    static const GameObjectTypeId TYPE_LOOTBOX;
     static const GameObjectTypeId TYPE_MOUNTAINS;
     static const GameObjectTypeId TYPE_PRACTICE_TARGET;
     static const GameObjectTypeId TYPE_RADAR_STATION;
@@ -104,6 +105,8 @@ public:
 
     bool IsStructure() const;
     bool CanBeConquered() const;
+
+    bool CanBeCollected() const;
 
     bool IsSelected() const;
     void SetSelected(bool val);
@@ -205,6 +208,7 @@ private:
     static const std::string TYPE_STR_BLOBS;
     static const std::string TYPE_STR_DEFENSIVE_TOWER;
     static const std::string TYPE_STR_DIAMONDS;
+    static const std::string TYPE_STR_LOOTBOX;
     static const std::string TYPE_STR_MOUNTAINS;
     static const std::string TYPE_STR_PRACTICE_TARGET;
     static const std::string TYPE_STR_RADAR_STATION;
@@ -283,6 +287,8 @@ inline IsoObject * GameObject::GetIsoObject() const { return mIsoObj; }
 inline bool GameObject::IsStructure() const { return mStructure; }
 
 inline bool GameObject::CanBeConquered() const { return mCanBeConq; }
+
+inline bool GameObject::CanBeCollected() const { return GameObject::CAT_COLLECTABLE == mCategory; }
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 

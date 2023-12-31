@@ -5,6 +5,7 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/Blobs.h"
 #include "GameObjects/Diamonds.h"
+#include "GameObjects/LootBox.h"
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
@@ -119,6 +120,19 @@ Structure * Player::GetStructure(unsigned int index)
         return mStructures[index];
     else
         return nullptr;
+}
+
+std::vector<Structure *> Player::GetStructuresByType(GameObjectTypeId type) const
+{
+    std::vector<Structure *> structures;
+
+    for(Structure * s : mStructures)
+    {
+        if(s->GetObjectType() == type)
+            structures.push_back(s);
+    }
+
+    return structures;
 }
 
 void Player::InitVisibility(int rows, int cols)
@@ -270,6 +284,21 @@ void Player::HandleCollectable(GameObject * obj)
     {
         auto d = static_cast<Blobs *>(obj);
         mStats[Stat::BLOBS].SumValue(d->GetNum());
+    }
+    else if(type == GameObject::TYPE_LOOTBOX)
+    {
+        auto lb = static_cast<LootBox *>(obj);
+        auto type = static_cast<Player::Stat>(lb->GetPrizeType());
+
+        std::cout << "Player::HandleCollectable | LootBox type: " << type
+                  << " - quantity: " << lb->GetPrizeQuantity() << std::endl;
+
+        mStats[type].SumValue(lb->GetPrizeQuantity());
+    }
+    else
+    {
+        std::cerr << "Player::HandleCollectable | don't know how to handle this object type: " << type << std::endl;
+        return ;
     }
 
     mOnResourcesChanged();

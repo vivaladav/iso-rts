@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sgl/graphic/Particle.h>
+#include <sgl/graphic/TexturedParticle.h>
 
 namespace game
 {
@@ -10,7 +10,7 @@ class GameObject;
 
 struct DataParticleDamage;
 
-class ParticleDamage : public sgl::graphic::Particle
+class ParticleDamage : public sgl::graphic::TexturedParticle
 {
 public:
     void SetData(const DataParticleDamage & data);
@@ -20,8 +20,6 @@ public:
     void Update(float delta) override;
 
 private:
-    void OnDone() override;
-
     void SetScale(float scale);
     void SetStart(int x0, int y0);
 

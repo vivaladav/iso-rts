@@ -11,8 +11,8 @@ namespace game
 
 void ParticleSingleLaser::SetData(const DataParticleSingleLaser & data)
 {
-    SetTexture(data.tex);
-    SetRotation(data.angle);
+    mRenderable.SetTexture(data.tex);
+    mRenderable.SetRotation(data.angle);
     SetSpeed(data.speed);
     // this has to be called after SetRotation
     SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
@@ -25,12 +25,12 @@ void ParticleSingleLaser::SetData(const DataParticleSingleLaser & data)
 void ParticleSingleLaser::SetStartAndTarget(int x0, int y0, int tx, int ty)
 {
     // adjust initial position based on rotation
-    const double rot = GetRotation();
+    const double rot = mRenderable.GetRotation();
     int x = x0;
     int y = y0;
 
-    const int rdX = roundf((GetWidth() - GetRotatedWidth()) * 0.5f);
-    const int rdY = roundf((GetHeight() - GetRotatedHeight()) * 0.5f);
+    const int rdX = roundf((mRenderable.GetWidth() - mRenderable.GetRotatedWidth()) * 0.5f);
+    const int rdY = roundf((mRenderable.GetHeight() - mRenderable.GetRotatedHeight()) * 0.5f);
 
     if(rot < 90)
     {
@@ -39,12 +39,12 @@ void ParticleSingleLaser::SetStartAndTarget(int x0, int y0, int tx, int ty)
     }
     else if(rot < 180)
     {
-        x = x0 - GetRotatedWidth() - rdX;
+        x = x0 - mRenderable.GetRotatedWidth() - rdX;
         y = y0 - rdY;
     }
     else if(rot < 270)
     {
-        x = x0 - GetRotatedWidth() - rdX;
+        x = x0 - mRenderable.GetRotatedWidth() - rdX;
         y = y0;
     }
     // rot < 360
@@ -69,7 +69,7 @@ void ParticleSingleLaser::SetStartAndTarget(int x0, int y0, int tx, int ty)
     mTargetY = ty;
 
     // set initial position
-    SetPosition(x, y);
+    mRenderable.SetPosition(x, y);
 
     // reset done flags
     mDoneX = false;
@@ -92,7 +92,7 @@ void ParticleSingleLaser::Update(float delta)
             mDoneX = true;
         }
 
-        SetX(posX);
+        mRenderable.SetX(posX);
     }
 
     if(!mDoneY)
@@ -107,7 +107,7 @@ void ParticleSingleLaser::Update(float delta)
             mDoneY = true;
         }
 
-        SetY(posY);
+        mRenderable.SetY(posY);
     }
 
     // DONE!

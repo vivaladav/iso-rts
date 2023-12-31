@@ -13,11 +13,6 @@ public:
     Diamonds();
 
     int GetNum() const;
-    void SetNum(int num);
-
-public:
-    static const int MIN_UNITS = 1;
-    static const int MAX_UNITS = 4;
 
 protected:
     void UpdateGraphics() override;
@@ -30,11 +25,6 @@ private:
 private:
     int mNum = 0;
 };
-
-inline Diamonds::Diamonds() : Collectable(GameObject::TYPE_DIAMONDS, 1, 1)
-{
-    SetObjColors();
-}
 
 inline int Diamonds::GetNum() const { return mNum; }
 

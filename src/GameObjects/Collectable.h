@@ -14,7 +14,7 @@ public:
 
     void SetGenerator(CollectableGenerator * gen);
 
-    void Collected();
+    virtual void Collected();
 
 private:
     CollectableGenerator * mGen = nullptr;

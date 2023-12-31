@@ -1,6 +1,8 @@
 #include "GameObjects/Trees.h"
 
 #include "GameData.h"
+#include "GameConstants.h"
+#include "GameMap.h"
 #include "IsoObject.h"
 
 #include <sgl/graphic/TextureManager.h>
@@ -8,7 +10,7 @@
 
 namespace
 {
-    constexpr float treeHealth = 80.f;
+    constexpr float treeHealth = 40.f;
 }
 
 namespace game
@@ -33,6 +35,7 @@ Trees::Trees(GameObjectVariantId var)
     mTimeChange = dis.GetNextValue();
     mTimerChange = mTimeChange;
 
+    SetObjColors();
     SetImage();
 }
 
@@ -44,14 +47,14 @@ void Trees::Update(float delta)
 
     if(mTimerChange < zeroTime)
     {
+        mTimerChange = mTimeChange;
+
         // still growing 1 tree
         if(1 == mNumTrees && mVariant < (NUM_TREE1_VARIANTS - 1))
         {
             ++mVariant;
 
             SetImage();
-
-            mTimerChange = mTimeChange;
         }
         // grow more trees
         else if(mNumTrees < MAX_TREE1_TREES)
@@ -64,11 +67,78 @@ void Trees::Update(float delta)
 
             SetImage();
 
-
             SetMaxHealth(GetMaxHealth() + treeHealth);
             SumHealth(treeHealth);
+        }
+        else
+        {
+            GameMap * gm = GetGameMap();
 
-            mTimerChange = mTimeChange;
+            const int r0 = GetRow0();
+            const int c0 = GetCol0();
+            const int rows = gm->GetNumRows();
+            const int cols = gm->GetNumCols();
+
+            const int rTL = (r0 > 0) ? r0 - 1 : r0;
+            const int cTL = (c0 > 0) ? c0 - 1 : c0;
+            const int rBR = (r0 < (rows - 1)) ? r0 + 1 : r0;
+            const int cBR = (c0 < (cols -1)) ? c0 + 1 : c0;
+
+            for(int r = rTL; r <= rBR; ++r)
+            {
+                const int ind0 = r * cols;
+
+                for(int c = cTL; c <= cBR; ++c)
+                {
+                    const int ind = ind0 + c;
+
+                    if(!gm->HasObject(ind))
+                    {
+                        SpawnTree(r, c);
+
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Trees::SpawnTree(int r0, int c0)
+{
+    GameMap * gm = GetGameMap();
+
+    sgl::utilities::UniformDistribution dis(0, NUM_TREE1_VARIANTS - 1);
+    const int variant = dis.GetNextValue();
+
+    gm->CreateObject(MapLayers::OBJECTS1, GameObject::TYPE_TREES, variant, NO_FACTION, r0, c0, false);
+
+    // set cell type of new tree
+    gm->SetCellType(r0, c0, TREES1);
+
+    // set cell type of surrounding cells
+    const int rows = gm->GetNumRows();
+    const int cols = gm->GetNumCols();
+    const int rTL = (r0 > 0) ? r0 - 1: r0;
+    const int cTL = (c0 > 0) ? c0 - 1: c0;
+    const int rBR = (r0 < (rows - 1)) ? r0 + 1 : r0;
+    const int cBR = (c0 < (cols -1)) ? c0 + 1 : c0;
+
+    for(int r = rTL; r <= rBR; ++r)
+    {
+        const int ind0 = r * cols;
+
+        for(int c = cTL; c <= cBR; ++c)
+        {
+            const int ind = ind0 + c;
+
+            const GameMapCell & cell = gm->GetCell(ind);
+
+            if(!GameMapCell::IsTypePrimary(cell.basicType))
+            {
+                gm->SetCellType(r, c, TREES1_SURR);
+                gm->UpdateCellType(ind, cell);
+            }
         }
     }
 }
@@ -92,7 +162,8 @@ void Trees::SetImage()
     // set texture
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    const unsigned int baseSpriteId = TREE1_1T_1 + (NUM_TREE1_VARIANTS * (mNumTrees - 1));
+    const unsigned int spriteId0 = IsSelected() ? TREE1_1T_1_SEL : TREE1_1T_1;
+    const unsigned int baseSpriteId = spriteId0 + (NUM_TREE1_VARIANTS * (mNumTrees - 1));
     const unsigned int spriteId = baseSpriteId + mVariant;
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileTrees, spriteId);
 

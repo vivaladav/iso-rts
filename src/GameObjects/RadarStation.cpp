@@ -30,8 +30,11 @@ void RadarStation::OnLinkedChanged()
 {
     GameObject::OnLinkedChanged();
 
+    const bool linked = IsLinked();
+
+    // update object visibility level
     const int maxVis = 15;
-    SetVisibilityLevel(maxVis * static_cast<int>(IsLinked()));
+    SetVisibilityLevel(maxVis * static_cast<int>(linked));
 }
 
 void RadarStation::SetImage()

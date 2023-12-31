@@ -8,31 +8,27 @@ extern const char SpriteFileCells[];
 
 enum SpriteIdCells : unsigned int
 {
-    // SCENE
-    IND_EMPTY,
+    IND_EMPTY,                          // 0
     IND_SCENE_ROCKS,
     IND_SCENE_ROCKS_SURR,
-    IND_SCENE_RESOURCE,
+    IND_NO_FACTION_OBJ,
     IND_BLOBS_SOURCE,
     IND_DIAMONDS_SOURCE,
     IND_BLOBS_SURR,
     IND_DIAMONDS_SURR,
     IND_TREES1,
     IND_TREES1_SURR,
-    // F1
-    IND_F1,
+    IND_F1,                             // 10
     IND_F1_CONNECTED,
     IND_F1_INFLUENCED,
-    // F2
     IND_F2,
     IND_F2_CONNECTED,
     IND_F2_INFLUENCED,
-    // F3
     IND_F3,
     IND_F3_CONNECTED,
     IND_F3_INFLUENCED,
-    // SPECIAL
     IND_FOG_OF_WAR,
+    IND_NO_FACTION_OBJ_SURR,            // 20
 
     NUM_IND_CELLS
 };
@@ -42,15 +38,21 @@ extern const char SpriteCollectiblesFile[];
 
 enum SpriteCollectiblesId : unsigned int
 {
+    // DIAMONDS
     DIAMONDS_1,
     DIAMONDS_2,
     DIAMONDS_3,
     DIAMONDS_4,
 
+    // BLOBS
     BLOBS_1,
     BLOBS_2,
     BLOBS_3,
-    BLOBS_4
+    BLOBS_4,
+
+    // LOOT BOX
+    IND_LOOTBOX,
+    IND_LOOTBOX_SEL,
 };
 
 // INDICATORS
@@ -179,7 +181,14 @@ extern const char SpriteFileParticles[];
 
 enum SpriteIdParticles : unsigned int
 {
-    ID_PART_RECT_4x4
+    ID_PART_RECT_4x4,
+
+    // RESOURCE ICONS
+    ID_PART_ICON_MONEY,
+    ID_PART_ICON_ENERGY,
+    ID_PART_ICON_MATERIAL,
+    ID_PART_ICON_DIAMONDS,
+    ID_PART_ICON_BLOBS,
 };
 
 // SCENE ELEMENTS
@@ -405,6 +414,43 @@ enum SpriteIdTrees : unsigned int
     TREE1_4T_6,
     TREE1_4T_7,
     TREE1_4T_8,
+    // TREE TYPE 1 SELECTED
+    // 1 tree
+    TREE1_1T_1_SEL,
+    TREE1_1T_2_SEL,
+    TREE1_1T_3_SEL,
+    TREE1_1T_4_SEL,
+    TREE1_1T_5_SEL,
+    TREE1_1T_6_SEL,
+    TREE1_1T_7_SEL,
+    TREE1_1T_8_SEL,
+    // 2 trees
+    TREE1_2T_1_SEL,
+    TREE1_2T_2_SEL,
+    TREE1_2T_3_SEL,
+    TREE1_2T_4_SEL,
+    TREE1_2T_5_SEL,
+    TREE1_2T_6_SEL,
+    TREE1_2T_7_SEL,
+    TREE1_2T_8_SEL,
+    // 3 trees
+    TREE1_3T_1_SEL,
+    TREE1_3T_2_SEL,
+    TREE1_3T_3_SEL,
+    TREE1_3T_4_SEL,
+    TREE1_3T_5_SEL,
+    TREE1_3T_6_SEL,
+    TREE1_3T_7_SEL,
+    TREE1_3T_8_SEL,
+    // 4 trees
+    TREE1_4T_1_SEL,
+    TREE1_4T_2_SEL,
+    TREE1_4T_3_SEL,
+    TREE1_4T_4_SEL,
+    TREE1_4T_5_SEL,
+    TREE1_4T_6_SEL,
+    TREE1_4T_7_SEL,
+    TREE1_4T_8_SEL,
 
     NUM_TREE1_VARIANTS = 8,
     MAX_TREE1_TREES = 4

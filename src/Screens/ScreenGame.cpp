@@ -23,6 +23,7 @@
 #include "Indicators/StructureIndicator.h"
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
+#include "Particles/UpdaterLootboxPrize.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
@@ -471,7 +472,15 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
 
 MiniMap * ScreenGame::GetMiniMap() const
 {
-    return mHUD->GetMinimap();
+    if(mHUD)
+        return mHUD->GetMinimap();
+    else
+        return nullptr;
+}
+
+void ScreenGame::SetMiniMapEnabled(bool val)
+{
+    mHUD->SetMiniMapEnabled(val);
 }
 
 void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
@@ -498,6 +507,10 @@ void ScreenGame::InitParticlesSystem()
     // DAMAGE
     updater = new UpdaterDamage;
     mPartMan->RegisterUpdater(PU_DAMAGE, updater);
+
+    // LOOTBOX PRIZE
+    updater = new UpdaterLootboxPrize;
+    mPartMan->RegisterUpdater(PU_LOOTBOX_PRIZE, updater);
 
     // SINGLE LASER
     updater = new UpdaterSingleLaser;
@@ -535,6 +548,8 @@ void ScreenGame::CreateUI()
 
     // init HUD layer
     mHUD = new GameHUD(player, mCamController, mIsoMap, this);
+
+    mHUD->SetMiniMapEnabled(false);
 
     PanelObjectActions * panelObjActions = mHUD->GetPanelObjectActions();
 
@@ -823,6 +838,9 @@ void ScreenGame::LoadMapFile()
     // update iso map
     mIsoMap->SetSize(rows, cols, true);
 
+    // update game map
+    mGameMap->SetSize(rows, cols);
+
     const std::vector<unsigned int> & cells = ml.GetCellTypes();
 
     for(unsigned int r = 0; r < rows; ++r)
@@ -832,13 +850,16 @@ void ScreenGame::LoadMapFile()
         for(unsigned int c = 0; c < cols; ++c)
         {
             const unsigned int ind = ind0 + c;
-            mIsoMap->SetCellType(ind, cells[ind]);
+            const auto t = static_cast<CellTypes>(cells[ind]);
+            mGameMap->SetCellType(ind, t);
+
+            // create collectable generators
+            if(t == BLOBS_SOURCE)
+                mGameMap->CreateCollectableGenerator(r, c, RES_BLOBS);
+            else if(t == DIAMONDS_SOURCE)
+                mGameMap->CreateCollectableGenerator(r, c, RES_DIAMONDS);
         }
     }
-
-    // update game map
-    mGameMap->SetSize(rows, cols);
-    mGameMap->SyncMapCells();
 
     // create objects
     const std::vector<MapObjectEntry> & objEntries = ml.GetObjectEntries();

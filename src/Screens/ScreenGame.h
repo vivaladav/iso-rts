@@ -46,6 +46,7 @@ enum PlayerFaction : unsigned int;
 enum ParticlesUpdaterId : unsigned int
 {
     PU_DAMAGE,
+    PU_LOOTBOX_PRIZE,
     PU_SINGLE_LASER
 };
 
@@ -87,6 +88,7 @@ public:
     void CenterCameraOverObject(GameObject * obj);
 
     MiniMap * GetMiniMap() const;
+    void SetMiniMapEnabled(bool val);
 
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
