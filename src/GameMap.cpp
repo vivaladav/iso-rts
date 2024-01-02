@@ -2211,7 +2211,7 @@ void GameMap::AddObjectToMap(const ObjectToAdd & o2a)
         // register objects to Player
         if(o2a.obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
             o2a.owner->AddResourceGenerator(static_cast<ResourceGenerator *>(o2a.obj));
-        else if(o2a.obj->IsStructure())
+        if(o2a.obj->IsStructure())
             o2a.owner->AddStructure(static_cast<Structure *>(o2a.obj));
 
         // update control points
