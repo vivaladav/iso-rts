@@ -44,10 +44,10 @@ Player::Player(const char * name, int pid)
     mStats[Stat::MONEY].SetMax(99999999);
 
     // init vectors of resource generators
-    mResGenerators.insert({ RES_ENERGY, {} });
-    mResGenerators.insert({ RES_MATERIAL1, {} });
-    mResGenerators.insert({ RES_DIAMONDS, {} });
-    mResGenerators.insert({ RES_BLOBS, {} });
+    mResGeneratorsMap.insert({ RES_ENERGY, {} });
+    mResGeneratorsMap.insert({ RES_MATERIAL1, {} });
+    mResGeneratorsMap.insert({ RES_DIAMONDS, {} });
+    mResGeneratorsMap.insert({ RES_BLOBS, {} });
 }
 
 Player::~Player()
@@ -370,25 +370,41 @@ void Player::AddResourceGenerator(ResourceGenerator * gen)
 {
     const ResourceType type = gen->GetResourceType();
 
-    mResGenerators[type].push_back(gen);
+    mResGeneratorsMap[type].push_back(gen);
+    mResGenerators.push_back(gen);
 }
 
 void Player::RemoveResourceGenerator(ResourceGenerator * gen)
 {
     const ResourceType type = gen->GetResourceType();
-    std::vector<ResourceGenerator *> & generators = mResGenerators[type];
+    std::vector<ResourceGenerator *> & generators = mResGeneratorsMap[type];
 
-    auto it = generators.begin();
+    // remove generator from map
+    auto itM = generators.begin();
 
-    while(it != generators.end())
+    while(itM != generators.end())
     {
-        if(*it == gen)
+        if(*itM == gen)
         {
-            generators.erase(it);
-            return ;
+            generators.erase(itM);
+            break;
         }
         else
-            ++it;
+            ++itM;
+    }
+
+    // remove generator from list
+    auto itL = mResGenerators.begin();
+
+    while(itL != mResGenerators.end())
+    {
+        if(*itL == gen)
+        {
+            mResGenerators.erase(itL);
+            break;
+        }
+        else
+            ++itL;
     }
 }
 
@@ -396,10 +412,10 @@ int Player::GetResourceProduction(ResourceType type) const
 {
     int res = 0;
 
-    auto it = mResGenerators.find(type);
+    auto it = mResGeneratorsMap.find(type);
 
     // can't find resource type
-    if(mResGenerators.end() == it)
+    if(mResGeneratorsMap.end() == it)
         return 0;
 
     const std::vector<ResourceGenerator *> & generators = it->second;

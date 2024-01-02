@@ -1049,11 +1049,26 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     // update player
     player->SumCells(1);
 
-    // track ResourceGenerator, if any
-    ResourceGenerator * resGen = gcell1.GetResourceGenerator();
+    // update tracking of structures and resource generators
+    if(obj->IsStructure())
+    {
+        auto st = static_cast<Structure *>(obj);
 
-    if(resGen != nullptr)
-        player->AddResourceGenerator(resGen);
+        player->AddStructure(st);
+
+        if(prevOwner)
+            prevOwner->RemoveStructure(st);
+
+        if(obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
+        {
+            auto rg = static_cast<ResourceGenerator *>(obj);
+
+            player->AddResourceGenerator(rg);
+
+            if(prevOwner)
+                prevOwner->RemoveResourceGenerator(rg);
+        }
+    }
 
     // reset start changing flag
     const int ind0 = start.row * mCols + start.col;
@@ -2250,7 +2265,13 @@ void GameMap::DestroyObject(GameObject * obj)
             owner->RemoveUnit(static_cast<Unit *>(obj));
         // remove structure
         else if(obj->IsStructure())
+        {
             owner->RemoveStructure(static_cast<Structure *>(obj));
+
+            // remove resource generator
+            if(obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
+                owner->RemoveResourceGenerator(static_cast<ResourceGenerator *>(obj));
+        }
     }
 
     // generic cells update

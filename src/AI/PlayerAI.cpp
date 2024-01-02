@@ -60,13 +60,15 @@ void PlayerAI::PrepareData()
     {
         const GameObjectCategoryId objCat = obj->GetObjectCategory();
 
-        //store objects based on type
-        if(objCat == GameObject::CAT_RES_GENERATOR)
-            mResGenerators.push_back(obj);
-
         // store structures
         if(obj->IsStructure())
+        {
             mStructures.push_back(obj);
+
+            // store resource generators
+            if(objCat == GameObject::CAT_RES_GENERATOR)
+                mResGenerators.push_back(obj);
+        }
     }
 }
 
