@@ -200,6 +200,8 @@ add_executable(
     src/Widgets/CellProgressBar.cpp
     src/Widgets/DialogChangelog.h
     src/Widgets/DialogChangelog.cpp
+    src/Widgets/DialogEndMission.h
+    src/Widgets/DialogEndMission.cpp
     src/Widgets/DialogExit.h
     src/Widgets/DialogExit.cpp
     src/Widgets/DialogNewElement.h

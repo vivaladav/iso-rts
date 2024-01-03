@@ -27,6 +27,7 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
+#include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameHUD.h"
 #include "Widgets/MiniMap.h"
@@ -175,6 +176,9 @@ ScreenGame::ScreenGame(Game * game)
     mGameMap->InitVisibility(localPlayer);
 
     InitMusic();
+
+    // record start time
+    mTimeStart = std::chrono::steady_clock::now();
 }
 
 ScreenGame::~ScreenGame()
@@ -922,6 +926,28 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
             p->RemVisibilityToAll();
             mGameMap->ApplyVisibility(p);
         }
+    }
+    // DEBUG: end mission dialog
+    else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
+    {
+        // TESTING
+        const auto now = std::chrono::steady_clock::now();
+        const std::chrono::duration<double> played = now - mTimeStart;
+        auto dialog = new DialogEndMission(played.count(), 30, 10, 5, true);
+
+        dialog->SetFunctionOnClose([this, dialog]
+        {
+            dialog->SetVisible(false);
+            sgl::sgui::Stage::Instance()->DeleteLater(dialog);
+        });
+
+        // position dialog
+        auto renderer = sgl::graphic::Renderer::Instance();
+        const int rendW = renderer->GetWidth();
+        const int rendH = renderer->GetHeight();
+        const int posX = (rendW - dialog->GetWidth()) / 2;
+        const int posY = (rendH - dialog->GetHeight()) / 2;
+        dialog->SetPosition(posX, posY);
     }
 }
 

@@ -3,6 +3,21 @@
 namespace game
 {
 
+// DIALOG END MISSION
+extern const char SpriteFileDialogEndMission[];
+
+enum SpriteIdDialogEndMission : unsigned int
+{
+    // BACKGROUND
+    IND_DIA_EM_BG,
+
+    // BUTTON
+    IND_DIA_EM_BTN_NORMAL,
+    IND_DIA_EM_BTN_DISABLED,
+    IND_DIA_EM_BTN_OVER,
+    IND_DIA_EM_BTN_PUSHED,
+};
+
 // DIALOG EXIT
 extern const char SpriteFileDialogExit[];
 

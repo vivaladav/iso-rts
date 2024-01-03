@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Cell2D.h"
-#include "GameObjects/GameObjectTypes.h"
 #include "Screen.h"
 #include "GameObjects/GameObjectAction.h"
+#include "GameObjects/GameObjectTypes.h"
 
+#include <chrono>
 #include <functional>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -164,6 +164,8 @@ private:
     unsigned int mIdOnSettingsChanged = 0;
 
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
+
+    std::chrono::time_point<std::chrono::steady_clock> mTimeStart;
 
     // -- UI --
     GameHUD * mHUD = nullptr;

@@ -999,6 +999,24 @@ void ScreenInit::SetupTextures()
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileWalls, rects);
     });
 
+    // END MISSION DIALOG
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 800, 500 },
+
+            // BUTTON
+            { 0, 501, 300, 44 },
+            { 301, 501, 300, 44 },
+            { 0, 546, 300, 44 },
+            { 301, 546, 300, 44 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogEndMission, rects);
+    });
+
     // NEW ELEMENT DIALOG
     mJobs.emplace_back([this, tm]
     {
