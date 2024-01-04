@@ -1,6 +1,7 @@
 ﻿#include "Screens/ScreenGame.h"
 
 #include "CameraMapController.h"
+#include "ControlMap.h"
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameData.h"
@@ -933,7 +934,11 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         // TESTING
         const auto now = std::chrono::steady_clock::now();
         const std::chrono::duration<double> played = now - mTimeStart;
-        auto dialog = new DialogEndMission(played.count(), 30, 10, 5, true);
+
+        const PlayerFaction pf = GetGame()->GetLocalPlayerFaction();
+        const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
+
+        auto dialog = new DialogEndMission(played.count(), territory, 10, 5, true);
 
         dialog->SetFunctionOnClose([this, dialog]
         {

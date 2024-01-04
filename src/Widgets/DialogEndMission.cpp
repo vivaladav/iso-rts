@@ -154,8 +154,6 @@ DialogEndMission::DialogEndMission(int time, int territoryConquered, int enemies
     label->SetColor(colorHeader);
     label->SetPosition(widgetX, widgetY);
 
-    ss.width(fieldW);
-    ss.fill('0');
     ss << territoryConquered << "%";
 
     label = new sgui::Label(ss.str().c_str(), font, this);

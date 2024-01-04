@@ -20,7 +20,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
 {
-    const int MAX_UNITS0 = 5;
+    const int MAX_UNITS0 = 4;
     const int startEnergy = 800;
     const int startMaterial = 250;
     const int startMoney = 1000;

@@ -223,7 +223,7 @@ void ControlMap::UpdateVisualAreas()
     }
 }
 
-int ControlMap::GetPercentageControlledByFaction(PlayerFaction f)
+int ControlMap::GetPercentageControlledByFaction(PlayerFaction f) const
 {
     const int size = mRows * mCols;
 

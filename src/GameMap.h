@@ -38,6 +38,8 @@ public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
 
+    const ControlMap * GetControlMap() const;
+
     bool HasObject(unsigned int ind) const;
     bool HasObject(unsigned int r, unsigned int c) const;
     bool HasObject(GameObject * obj) const;
@@ -247,6 +249,8 @@ private:
 };
 
 // ==================== INLINE METHODS ====================
+
+inline const ControlMap * GameMap::GetControlMap() const { return mControlMap; }
 
 inline bool GameMap::HasObject(unsigned int ind) const
 {
