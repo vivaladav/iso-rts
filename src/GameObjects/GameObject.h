@@ -165,7 +165,7 @@ public:
 
     float GetSpeed() const;
 
-    void Hit(float damage);
+    void Hit(float damage, PlayerFaction attacker);
 
     GameObjectActionId GetActiveAction() const;
     void SetActiveAction(GameObjectActionId action);

@@ -10,6 +10,8 @@ class GameObject;
 
 struct DataParticleSingleLaser;
 
+enum PlayerFaction : unsigned int;
+
 class ParticleSingleLaser : public sgl::graphic::TexturedParticle
 {
 public:
@@ -34,6 +36,8 @@ private:
 private:
     GameMap * mGameMap = nullptr;
     GameObject * mTarget = nullptr;
+
+    PlayerFaction mShooter;
 
     float mPosXf = 0.f;
     float mPosYf = 0.f;

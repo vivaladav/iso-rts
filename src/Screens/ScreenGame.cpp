@@ -935,10 +935,13 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         const auto now = std::chrono::steady_clock::now();
         const std::chrono::duration<double> played = now - mTimeStart;
 
+        // stats
         const PlayerFaction pf = GetGame()->GetLocalPlayerFaction();
         const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
+        const unsigned int killed = mGameMap->GetEnemiesKilled(pf);
+        const unsigned int casualties = mGameMap->GetCasualties(pf);
 
-        auto dialog = new DialogEndMission(played.count(), territory, 10, 5, true);
+        auto dialog = new DialogEndMission(played.count(), territory, killed, pf, true);
 
         dialog->SetFunctionOnClose([this, dialog]
         {

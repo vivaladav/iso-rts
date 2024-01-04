@@ -53,6 +53,16 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     , mIsoMap(isoMap)
 {
     SetSize(isoMap->GetNumRows(), isoMap->GetNumCols());
+
+    mEnemiesKilled[FACTION_1] = 0;
+    mEnemiesKilled[FACTION_2] = 0;
+    mEnemiesKilled[FACTION_3] = 0;
+    mEnemiesKilled[NO_FACTION] = 0;
+
+    mCasualties[FACTION_1] = 0;
+    mCasualties[FACTION_2] = 0;
+    mCasualties[FACTION_3] = 0;
+    mCasualties[NO_FACTION] = 0;
 }
 
 GameMap::~GameMap()

@@ -248,7 +248,8 @@ void Unit::Shoot()
         tX,
         tY,
         speed,
-        mWeaponDamage
+        mWeaponDamage,
+        GetFaction()
     };
 
     pu->AddParticle(pd);

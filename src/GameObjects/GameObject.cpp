@@ -2,6 +2,7 @@
 
 #include "GameConstants.h"
 #include "GameData.h"
+#include "GameMap.h"
 #include "GameMapCell.h"
 #include "IsoObject.h"
 #include "Particles/DataParticleDamage.h"
@@ -318,7 +319,7 @@ void GameObject::SumEnergy(float val)
     SetEnergy(mEnergy + val);
 }
 
-void GameObject::Hit(float damage)
+void GameObject::Hit(float damage, PlayerFaction attacker)
 {
     using namespace sgl::graphic;
 
@@ -348,6 +349,13 @@ void GameObject::Hit(float damage)
         numPart *= multPart;
 
         numQuad = maxQuad;
+
+        // record stats for players
+        // NOTE register kills only when destroying enemies
+        if(mFaction != NO_FACTION)
+            mGameMap->RegisterEnemyKill(attacker);
+
+        mGameMap->RegisterCasualty(mFaction);
     }
 
     float ang1 = ang0 + angInc;
