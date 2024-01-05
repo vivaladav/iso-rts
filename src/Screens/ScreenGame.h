@@ -56,6 +56,8 @@ public:
     ScreenGame(Game * game);
     ~ScreenGame();
 
+    unsigned int GetPlayTimeInSec() const;
+
     void Update(float delta) override;
     void Render() override;
 

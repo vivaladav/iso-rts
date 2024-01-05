@@ -14,6 +14,7 @@ class ButtonMinimap;
 class CameraMapController;
 class DialogExit;
 class Game;
+class GameMap;
 class IsoMap;
 class MiniMap;
 class PanelObjectActions;
@@ -26,7 +27,7 @@ class GameHUD : public sgl::sgui::Widget
 {
 public:
     GameHUD(Player * player, CameraMapController * camController,
-            IsoMap * isoMap, ScreenGame * screen);
+            IsoMap * isoMap, ScreenGame * screen, GameMap * gameMap);
 
     void SetMiniMapEnabled(bool val);
     MiniMap * GetMinimap() const;
@@ -36,6 +37,8 @@ public:
     void HidePanelObjActions();
 
     void ShowDialogExit();
+
+    void ShowDialogEndMission();
 
 private:
     PanelResources * mPanelRes = nullptr;
@@ -47,6 +50,7 @@ private:
     DialogExit * mDialogExit = nullptr;
 
     Game * mGame = nullptr;
+    GameMap * mGameMap = nullptr;
     ScreenGame * mScreen = nullptr;
 };
 

@@ -41,6 +41,8 @@ public:
         graphic::Font * fnt = fm->GetFont(fileFont, size, graphic::Font::NORMAL);
         SetLabelFont(fnt);
         SetLabel("CONTINUE");
+
+        SetShortcutKey(sgl::core::KeyboardEvent::KEY_RETURN);
     }
 
     void HandleMouseOver() override

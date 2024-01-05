@@ -1,9 +1,13 @@
 #include "GameHUD.h"
 
+#include "ControlMap.h"
+#include "Game.h"
+#include "GameMap.h"
 #include "Player.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
+#include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogExit.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
@@ -11,13 +15,15 @@
 
 #include <sgl/graphic/Renderer.h>
 #include <sgl/sgui/ButtonsGroup.h>
+#include <sgl/sgui/Stage.h>
 
 namespace game
 {
 
 GameHUD::GameHUD(Player * player, CameraMapController * camController,
-                 IsoMap * isoMap, ScreenGame * screen)
+                 IsoMap * isoMap, ScreenGame * screen, GameMap * gameMap)
     : mGame(screen->GetGame())
+    , mGameMap(gameMap)
     , mScreen(screen)
 {
     using namespace sgl;
@@ -129,6 +135,35 @@ void GameHUD::ShowDialogExit()
     const int posX = (rendW - mDialogExit->GetWidth()) / 2;
     const int posY = (rendH - mDialogExit->GetHeight()) / 2;
     mDialogExit->SetPosition(posX, posY);
+}
+
+void GameHUD::ShowDialogEndMission()
+{
+    // stats
+    const PlayerFaction pf = mGame->GetLocalPlayerFaction();
+    const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
+    const unsigned int killed = mGameMap->GetEnemiesKilled(pf);
+    const unsigned int casualties = mGameMap->GetCasualties(pf);
+    const unsigned int played = mScreen->GetPlayTimeInSec();
+
+    // create dialog
+    auto dialog = new DialogEndMission(played, territory, killed, pf, true);
+    dialog->SetFocus();
+
+    dialog->SetFunctionOnClose([this, dialog]
+                               {
+                                   sgl::sgui::Stage::Instance()->DeleteLater(dialog);
+
+                                   // TODO handle end of mission
+                               });
+
+    // position dialog
+    auto renderer = sgl::graphic::Renderer::Instance();
+    const int rendW = renderer->GetWidth();
+    const int rendH = renderer->GetHeight();
+    const int posX = (rendW - dialog->GetWidth()) / 2;
+    const int posY = (rendH - dialog->GetHeight()) / 2;
+    dialog->SetPosition(posX, posY);
 }
 
 } // namespace game

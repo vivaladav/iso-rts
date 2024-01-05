@@ -1,7 +1,6 @@
 ﻿#include "Screens/ScreenGame.h"
 
 #include "CameraMapController.h"
-#include "ControlMap.h"
 #include "Game.h"
 #include "GameConstants.h"
 #include "GameData.h"
@@ -28,7 +27,6 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
-#include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameHUD.h"
 #include "Widgets/MiniMap.h"
@@ -44,7 +42,6 @@
 #include <sgl/graphic/Camera.h>
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Renderer.h>
-#include <sgl/graphic/TextureManager.h>
 #include <sgl/media/AudioManager.h>
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/ButtonsGroup.h>
@@ -211,6 +208,14 @@ ScreenGame::~ScreenGame()
     stage->ClearWidgets();
     // make sure to reset stage visibility in case it was off before exit
     stage->SetVisible(true);
+}
+
+unsigned int ScreenGame::GetPlayTimeInSec() const
+{
+    const auto now = std::chrono::steady_clock::now();
+    const std::chrono::duration<double> played = now - mTimeStart;
+
+    return played.count();
 }
 
 void ScreenGame::Update(float delta)
@@ -552,7 +557,7 @@ void ScreenGame::CreateUI()
     Player * player = GetGame()->GetLocalPlayer();
 
     // init HUD layer
-    mHUD = new GameHUD(player, mCamController, mIsoMap, this);
+    mHUD = new GameHUD(player, mCamController, mIsoMap, this, mGameMap);
 
     mHUD->SetMiniMapEnabled(false);
 
@@ -930,33 +935,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
     }
     // DEBUG: end mission dialog
     else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
-    {
-        // TESTING
-        const auto now = std::chrono::steady_clock::now();
-        const std::chrono::duration<double> played = now - mTimeStart;
-
-        // stats
-        const PlayerFaction pf = GetGame()->GetLocalPlayerFaction();
-        const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
-        const unsigned int killed = mGameMap->GetEnemiesKilled(pf);
-        const unsigned int casualties = mGameMap->GetCasualties(pf);
-
-        auto dialog = new DialogEndMission(played.count(), territory, killed, pf, true);
-
-        dialog->SetFunctionOnClose([this, dialog]
-        {
-            dialog->SetVisible(false);
-            sgl::sgui::Stage::Instance()->DeleteLater(dialog);
-        });
-
-        // position dialog
-        auto renderer = sgl::graphic::Renderer::Instance();
-        const int rendW = renderer->GetWidth();
-        const int rendH = renderer->GetHeight();
-        const int posX = (rendW - dialog->GetWidth()) / 2;
-        const int posY = (rendH - dialog->GetHeight()) / 2;
-        dialog->SetPosition(posX, posY);
-    }
+        mHUD->ShowDialogEndMission();
 }
 
 void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
