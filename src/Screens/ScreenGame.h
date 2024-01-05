@@ -70,9 +70,6 @@ public:
     void OnWindowMouseEntered(sgl::graphic::WindowEvent & event) override;
     void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
-    void GameOver();
-    void GameWon();
-
     void CancelProgressBar(CellProgressBar * pb);
     void CancelProgressBar(const Cell2D & cell);
     void CreateProgressBar(const Cell2D & cell, float time, Player * player,

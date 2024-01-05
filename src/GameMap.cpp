@@ -1733,29 +1733,7 @@ int GameMap::ApproxDistance(GameObject * obj1, GameObject * obj2) const
 
 void GameMap::CheckGameEnd()
 {
-    const int numPlayers = mGame->GetNumPlayers();
-    int defeated = 0;
-
-    // check for game over and defeated opponents
-    for(int i = 0; i < numPlayers; ++i)
-    {
-        const Player * p = mGame->GetPlayerByIndex(i);
-
-        if(p->GetNumCells() == 0)
-        {
-            if(p->IsLocal())
-            {
-                mScreenGame->GameOver();
-                return;
-            }
-            else
-                ++defeated;
-        }
-    }
-
-    // check for victory - assuming players is always > 1
-    if(defeated == (numPlayers - 1))
-        mScreenGame->GameWon();
+    //TODO
 }
 
 void GameMap::Update(float delta)

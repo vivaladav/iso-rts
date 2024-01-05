@@ -31,8 +31,6 @@
 #include "Widgets/GameHUD.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
-#include "Widgets/PanelGameOver.h"
-#include "Widgets/PanelGameWon.h"
 
 #include <sgl/ai/Pathfinder.h>
 #include <sgl/core/event/ApplicationEvent.h>
@@ -265,32 +263,6 @@ void ScreenGame::Render()
     mIsoMap->Render();
 
     mPartMan->Render();
-}
-
-void ScreenGame::GameOver()
-{
-    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
-
-    auto panel = new PanelGameOver(GetGame());
-
-    const int x = (rendW - panel->GetWidth()) * 0.5f;
-    const int y = rendH * 0.25f;
-
-    panel->SetPosition(x, y);
-}
-
-void ScreenGame::GameWon()
-{
-    const int rendW = sgl::graphic::Renderer::Instance()->GetWidth();
-    const int rendH = sgl::graphic::Renderer::Instance()->GetHeight();
-
-    auto panel = new PanelGameWon(GetGame());
-
-    const int x = (rendW - panel->GetWidth()) * 0.5f;
-    const int y = rendH * 0.25f;
-
-    panel->SetPosition(x, y);
 }
 
 void ScreenGame::CancelProgressBar(CellProgressBar * pb)

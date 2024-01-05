@@ -224,10 +224,6 @@ add_executable(
     src/Widgets/MiniMap.cpp
     src/Widgets/ObjectActionButton.h
     src/Widgets/ObjectActionButton.cpp
-    src/Widgets/PanelGameOver.h
-    src/Widgets/PanelGameOver.cpp
-    src/Widgets/PanelGameWon.h
-    src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlanetActionConquer.h
     src/Widgets/PanelPlanetActionConquer.cpp
     src/Widgets/PanelPlanetActionConquerAI.h
