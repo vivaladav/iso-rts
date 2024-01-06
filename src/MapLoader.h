@@ -11,6 +11,8 @@ namespace game
 class GameMap;
 class IsoMap;
 
+enum MissionType : unsigned int;
+
 struct MapObjectEntry
 {
     unsigned int layerId;
@@ -36,6 +38,10 @@ public:
 
     const std::vector<MapObjectEntry> & GetObjectEntries() const;
 
+    // Mission data
+    MissionType GetMissionType() const;
+    unsigned int GetMissionTime() const;
+
     void Clear();
 
 public:
@@ -52,6 +58,9 @@ private:
 
     unsigned int mRows = 0 ;
     unsigned int mCols = 0 ;
+
+    MissionType mMissionType;
+    unsigned int mMissionTime = 0;
 };
 
 inline unsigned int MapLoader::GetMapRows() const { return mRows; }
@@ -62,5 +71,9 @@ inline const std::string &  MapLoader::GetMapVersion() const { return mVer; }
 inline const std::vector<unsigned int> & MapLoader::GetCellTypes() const { return mCellTypes; }
 
 inline const std::vector<MapObjectEntry> & MapLoader::GetObjectEntries() const { return mObjEntries; }
+
+// Mission data
+inline MissionType MapLoader::GetMissionType() const { return mMissionType; }
+inline unsigned int MapLoader::GetMissionTime() const { return mMissionTime; }
 
 } // namespace game

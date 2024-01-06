@@ -29,6 +29,12 @@ enum MapLayers : unsigned int
     NUM_LAYERS,
 };
 
+enum MissionType : unsigned int
+{
+    MISSION_DESTROY_ENEMIES,
+    MISSION_RESIST_TIME,
+};
+
 enum PlayerFaction : unsigned int
 {
     FACTION_1,

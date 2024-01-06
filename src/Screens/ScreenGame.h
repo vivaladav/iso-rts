@@ -41,6 +41,7 @@ class StructureIndicator;
 class Unit;
 class WallIndicator;
 
+enum MissionType : unsigned int;
 enum PlayerFaction : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
@@ -186,6 +187,9 @@ private:
     float mTimePlayed = 0.f;
 
     unsigned int mCurrPlayerAI = 0;
+
+    MissionType mMissionType;
+    unsigned int mMissionTime = 0;
 
     bool mPaused = false;
 };

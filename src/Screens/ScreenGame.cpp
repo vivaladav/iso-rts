@@ -853,6 +853,10 @@ void ScreenGame::LoadMapFile()
 
         mGameMap->CreateObjectFromFile(e.layerId, e.typeId, e.variantId, e.faction, e.r0, e.c0);
     }
+
+    // get mission data
+    mMissionType = ml.GetMissionType();
+    mMissionTime = ml.GetMissionTime();
 }
 
 void ScreenGame::OnKeyDown(sgl::core::KeyboardEvent & event)
