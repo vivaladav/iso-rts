@@ -38,7 +38,7 @@ public:
 
     void ShowDialogExit();
 
-    void ShowDialogEndMission();
+    void ShowDialogEndMission(bool won);
 
 private:
     PanelResources * mPanelRes = nullptr;

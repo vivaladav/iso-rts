@@ -1731,11 +1731,6 @@ int GameMap::ApproxDistance(GameObject * obj1, GameObject * obj2) const
            std::abs(obj1->GetCol0() - obj2->GetCol0());
 }
 
-void GameMap::CheckGameEnd()
-{
-    //TODO
-}
-
 void GameMap::Update(float delta)
 {
     // -- game objects --

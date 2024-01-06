@@ -55,10 +55,14 @@ public:
     void AddStructure(Structure * s);
     void RemoveStructure(Structure * s);
     Structure * GetStructure(unsigned int index);
+    bool HasStructure(GameObjectTypeId type) const;
     std::vector<Structure *> GetStructuresByType(GameObjectTypeId type) const;
     const std::vector<Structure *> & GetStructures() const;
 
     const std::vector<ResourceGenerator *> & GetResourceGenerators() const;
+
+    unsigned int GetNumObjects() const;
+    bool HasObjects() const;
 
     // visibility map
     void InitVisibility(int rows, int cols);
@@ -181,6 +185,13 @@ inline unsigned int Player::GetNumStructures() const { return mStructures.size()
 
 inline const std::vector<Structure *> & Player::GetStructures() const { return mStructures; }
 inline const std::vector<ResourceGenerator *> & Player::GetResourceGenerators() const { return mResGenerators; }
+
+inline unsigned int Player::GetNumObjects() const
+{
+    return GetNumStructures() + GetNumUnits();
+}
+
+inline bool Player::HasObjects() const { return GetNumObjects() > 0; }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {

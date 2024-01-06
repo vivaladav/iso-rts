@@ -256,6 +256,9 @@ void ScreenGame::Update(float delta)
     // -- AI --
     if(!mAiPlayers.empty())
         UpdateAI(delta);
+
+    // check game end
+    UpdateGameEnd();
 }
 
 void ScreenGame::Render()
@@ -910,8 +913,16 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         }
     }
     // DEBUG: end mission dialog
-    else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
-        mHUD->ShowDialogEndMission();
+    else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_W)
+    {
+        mPaused = true;
+        mHUD->ShowDialogEndMission(true);
+    }
+    else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_L)
+    {
+        mPaused = true;
+        mHUD->ShowDialogEndMission(false);
+    }
 }
 
 void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
@@ -1139,6 +1150,79 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
         if(done)
             ai->RegisterActionInProgress(action);
     }
+}
+
+void ScreenGame::UpdateGameEnd()
+{
+    // check if player has base
+    if(CheckGameOverForLocalPlayer())
+        return ;
+
+    switch(mMissionType)
+    {
+        case MISSION_DESTROY_ENEMY_BASE:
+        {
+        // check if destroyed all enemy bases
+            bool bases = false;
+
+            for(Player * p : mAiPlayers)
+                bases |= p->HasStructure(GameObject::TYPE_BASE);
+
+            if(!bases)
+            {
+                mPaused = true;
+                mHUD->ShowDialogEndMission(true);
+            }
+        }
+        break;
+
+        case MISSION_DESTROY_ALL_ENEMIES:
+        {
+            // check if destroyed all enemies
+            int totEnemies = 0;
+
+            for(Player * p : mAiPlayers)
+                totEnemies += p->GetNumObjects();
+
+            if(0 == totEnemies)
+            {
+                mPaused = true;
+                mHUD->ShowDialogEndMission(true);
+            }
+        }
+        break;
+
+        case MISSION_RESIST_TIME:
+        {
+            // check elapsed time
+            const unsigned int playedTime = GetPlayTimeInSec();
+
+            if(playedTime >= mMissionTime)
+            {
+                mPaused = true;
+                mHUD->ShowDialogEndMission(true);
+            }
+        }
+        break;
+
+        default:
+        break;
+    }
+}
+
+bool ScreenGame::CheckGameOverForLocalPlayer()
+{
+    // check if player has objects
+    const Player * player = GetGame()->GetLocalPlayer();
+
+    if(!player->HasStructure(GameObject::TYPE_BASE))
+    {
+        mPaused = true;
+        mHUD->ShowDialogEndMission(false);
+        return true;
+    }
+    else
+        return false;
 }
 
 int ScreenGame::CellToIndex(const Cell2D & cell) const

@@ -110,6 +110,9 @@ private:
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
 
+    void UpdateGameEnd();
+    bool CheckGameOverForLocalPlayer();
+
     int CellToIndex(const Cell2D & cell) const;
 
     bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});

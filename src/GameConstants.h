@@ -31,7 +31,8 @@ enum MapLayers : unsigned int
 
 enum MissionType : unsigned int
 {
-    MISSION_DESTROY_ENEMIES,
+    MISSION_DESTROY_ENEMY_BASE,
+    MISSION_DESTROY_ALL_ENEMIES,
     MISSION_RESIST_TIME,
 };
 

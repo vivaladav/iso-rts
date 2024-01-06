@@ -137,7 +137,7 @@ void GameHUD::ShowDialogExit()
     mDialogExit->SetPosition(posX, posY);
 }
 
-void GameHUD::ShowDialogEndMission()
+void GameHUD::ShowDialogEndMission(bool won)
 {
     // stats
     const PlayerFaction pf = mGame->GetLocalPlayerFaction();
@@ -147,7 +147,7 @@ void GameHUD::ShowDialogEndMission()
     const unsigned int played = mScreen->GetPlayTimeInSec();
 
     // create dialog
-    auto dialog = new DialogEndMission(played, territory, killed, pf, true);
+    auto dialog = new DialogEndMission(played, territory, killed, pf, won);
     dialog->SetFocus();
 
     dialog->SetFunctionOnClose([this, dialog]

@@ -122,6 +122,17 @@ Structure * Player::GetStructure(unsigned int index)
         return nullptr;
 }
 
+bool Player::HasStructure(GameObjectTypeId type) const
+{
+    for(Structure * s : mStructures)
+    {
+        if(s->GetObjectType() == type)
+            return true;
+    }
+
+    return false;
+}
+
 std::vector<Structure *> Player::GetStructuresByType(GameObjectTypeId type) const
 {
     std::vector<Structure *> structures;
