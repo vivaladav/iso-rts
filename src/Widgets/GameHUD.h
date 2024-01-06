@@ -12,6 +12,7 @@ namespace game
 
 class ButtonMinimap;
 class CameraMapController;
+class CountdownLabel;
 class DialogExit;
 class Game;
 class GameMap;
@@ -36,9 +37,11 @@ public:
     PanelObjectActions * GetPanelObjectActions() const;
     void HidePanelObjActions();
 
+    void ShowDialogEndMission(bool won);
     void ShowDialogExit();
 
-    void ShowDialogEndMission(bool won);
+    void ShowMissionCountdown(int secs);
+    void HideMissionCountdown();
 
 private:
     PanelResources * mPanelRes = nullptr;
@@ -46,6 +49,7 @@ private:
     MiniMap * mMiniMap = nullptr;
     PanelObjectActions * mPanelObjActions = nullptr;
     sgl::sgui::ButtonsGroup * mGroupUnitSel = nullptr;
+    CountdownLabel * mCountdownLabel = nullptr;
 
     DialogExit * mDialogExit = nullptr;
 

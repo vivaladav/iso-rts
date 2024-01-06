@@ -198,6 +198,8 @@ add_executable(
     src/Widgets/ButtonsPanel.cpp
     src/Widgets/CellProgressBar.h
     src/Widgets/CellProgressBar.cpp
+    src/Widgets/CountdownLabel.h
+    src/Widgets/CountdownLabel.cpp
     src/Widgets/DialogChangelog.h
     src/Widgets/DialogChangelog.cpp
     src/Widgets/DialogEndMission.h

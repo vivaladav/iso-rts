@@ -129,15 +129,16 @@ DialogEndMission::DialogEndMission(int time, int territoryConquered, int enemies
     const int timeS = time;
 
     const int fieldW = 2;
+    const char fieldF = '0';
     std::ostringstream ss;
     ss.width(fieldW);
-    ss.fill('0');
+    ss.fill(fieldF);
     ss << timeH << ":";
     ss.width(fieldW);
-    ss.fill('0');
+    ss.fill(fieldF);
     ss << timeM << ":";
     ss.width(fieldW);
-    ss.fill('0');
+    ss.fill(fieldF);
     ss << timeS;
 
     label = new sgui::Label(ss.str().c_str(), font, this);

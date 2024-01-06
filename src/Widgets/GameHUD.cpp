@@ -3,10 +3,14 @@
 #include "ControlMap.h"
 #include "Game.h"
 #include "GameMap.h"
+#include "IsoObject.h"
 #include "Player.h"
+#include "GameObjects/GameObject.h"
+#include "GameObjects/Structure.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
+#include "Widgets/CountdownLabel.h"
 #include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogExit.h"
 #include "Widgets/MiniMap.h"
@@ -113,30 +117,6 @@ void GameHUD::HidePanelObjActions()
     mPanelObjActions->SetVisible(false);
 }
 
-void GameHUD::ShowDialogExit()
-{
-    if(mDialogExit != nullptr)
-        return ;
-
-    mDialogExit = new DialogExit(mGame, mScreen);
-    mDialogExit->SetFocus();
-
-    mDialogExit->SetFunctionOnClose([this]
-    {
-        // schedule dialog deletion
-        mDialogExit->DeleteLater();
-        mDialogExit = nullptr;
-    });
-
-    // position dialog
-    auto renderer = sgl::graphic::Renderer::Instance();
-    const int rendW = renderer->GetWidth();
-    const int rendH = renderer->GetHeight();
-    const int posX = (rendW - mDialogExit->GetWidth()) / 2;
-    const int posY = (rendH - mDialogExit->GetHeight()) / 2;
-    mDialogExit->SetPosition(posX, posY);
-}
-
 void GameHUD::ShowDialogEndMission(bool won)
 {
     // stats
@@ -164,6 +144,57 @@ void GameHUD::ShowDialogEndMission(bool won)
     const int posX = (rendW - dialog->GetWidth()) / 2;
     const int posY = (rendH - dialog->GetHeight()) / 2;
     dialog->SetPosition(posX, posY);
+}
+
+void GameHUD::ShowDialogExit()
+{
+    if(mDialogExit != nullptr)
+        return ;
+
+    mDialogExit = new DialogExit(mGame, mScreen);
+    mDialogExit->SetFocus();
+
+    mDialogExit->SetFunctionOnClose([this]
+                                    {
+                                        // schedule dialog deletion
+                                        mDialogExit->DeleteLater();
+                                        mDialogExit = nullptr;
+                                    });
+
+    // position dialog
+    auto renderer = sgl::graphic::Renderer::Instance();
+    const int rendW = renderer->GetWidth();
+    const int rendH = renderer->GetHeight();
+    const int posX = (rendW - mDialogExit->GetWidth()) / 2;
+    const int posY = (rendH - mDialogExit->GetHeight()) / 2;
+    mDialogExit->SetPosition(posX, posY);
+}
+
+void GameHUD::ShowMissionCountdown(int secs)
+{
+    const Player * p = mGame->GetLocalPlayer();
+    const PlayerFaction pf = p->GetFaction();
+    const auto bases = p->GetStructuresByType(GameObject::TYPE_BASE);
+
+    // this shouldn't happen
+    if(bases.empty())
+        return ;
+
+    const Structure * base = bases[0];
+    const IsoObject * isoObj = base->GetIsoObject();
+
+    mCountdownLabel = new CountdownLabel(pf, secs);
+
+    const int x0 = isoObj->GetX() + (isoObj->GetWidth() - mCountdownLabel->GetWidth()) / 2;
+    const int y0 = isoObj->GetY() - mCountdownLabel->GetHeight();
+
+    mCountdownLabel->SetPosition(x0, y0);
+}
+
+void GameHUD::HideMissionCountdown()
+{
+    delete mCountdownLabel;
+    mCountdownLabel = nullptr;
 }
 
 } // namespace game

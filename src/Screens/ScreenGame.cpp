@@ -797,6 +797,10 @@ void ScreenGame::CreateUI()
                 ++it;
         }
     });
+
+    // MISSION COUNTDOWN
+    if(MISSION_RESIST_TIME == mMissionType)
+        mHUD->ShowMissionCountdown(mMissionTime);
 }
 
 void ScreenGame::ClearNewElemDialog()
@@ -1200,6 +1204,7 @@ void ScreenGame::UpdateGameEnd()
             if(playedTime >= mMissionTime)
             {
                 mPaused = true;
+                mHUD->HideMissionCountdown();
                 mHUD->ShowDialogEndMission(true);
             }
         }
