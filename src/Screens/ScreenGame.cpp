@@ -158,8 +158,10 @@ ScreenGame::ScreenGame(Game * game)
     // react to local player changes in stats
     localPlayer->SetOnResourcesChanged([this]
     {
-        if(mDialogNewElement != nullptr)
-            mDialogNewElement->CheckBuild();
+        DialogNewElement * dialog = mHUD->GetDialogNewElement();
+
+        if(dialog != nullptr)
+            dialog->CheckBuild();
     });
 
     // UI
@@ -387,7 +389,7 @@ void ScreenGame::ClearSelection(Player * player)
 
     ClearCellOverlays();
 
-    ClearNewElemDialog();
+    mHUD->HideDialogNewElement();
 }
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
@@ -542,32 +544,18 @@ void ScreenGame::CreateUI()
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT,
                                        [this, player, panelObjActions]
     {
-        if(mDialogNewElement != nullptr)
+        if(mHUD->IsDialogNewElementVisible())
             return ;
 
-        mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_UNITS,
-                                                 "CREATE NEW UNIT", player,
-                                                 GetGame()->GetObjectsRegistry());
-        mDialogNewElement->SetFocus();
+        DialogNewElement * dialog = mHUD->ShowDialogNewElement(DialogNewElement::ETYPE_UNITS);
 
-        mDialogNewElement->SetFunctionOnClose([this]
+        dialog->SetFunctionOnBuild([this, dialog, player]
         {
-            ClearNewElemDialog();
-        });
-
-        mDialogNewElement->SetFunctionOnBuild([this, player]
-        {
-            const GameObjectTypeId type = mDialogNewElement->GetSelectedType();
+            const GameObjectTypeId type = dialog->GetSelectedType();
             SetupNewUnit(type, player->GetSelectedObject(), player);
 
-            ClearNewElemDialog();
+            mHUD->HideDialogNewElement();
         });
-
-        // position dialog
-        auto renderer = sgl::graphic::Renderer::Instance();
-        const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
-        const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
-        mDialogNewElement->SetPosition(posX, posY);
     });
 
     // UNIT ACTIONS
@@ -575,39 +563,10 @@ void ScreenGame::CreateUI()
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT,
                                        [this, player, panelObjActions]
     {
-        if(mDialogNewElement != nullptr)
+        if(mHUD->IsDialogNewElementVisible())
             return ;
 
-        mDialogNewElement = new DialogNewElement(DialogNewElement::ETYPE_STRUCTURES,
-                                                 "CREATE NEW STRUCTURE", player,
-                                                 GetGame()->GetObjectsRegistry());
-        mDialogNewElement->SetFocus();
-
-        // set unit's action to idle while dialog is open
-        auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObjectActionId::IDLE);
-
-        mDialogNewElement->SetFunctionOnClose([this, unit]
-        {
-            unit->SetActiveActionToDefault();
-            ClearNewElemDialog();
-        });
-
-        mDialogNewElement->SetFunctionOnBuild([this, unit]
-        {
-            unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
-
-            const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
-            unit->SetStructureToBuild(stype);
-
-            ClearNewElemDialog();
-        });
-
-        // position dialog
-        auto renderer = sgl::graphic::Renderer::Instance();
-        const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
-        const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
-        mDialogNewElement->SetPosition(posX, posY);
+        mHUD->ShowDialogNewElement(DialogNewElement::ETYPE_STRUCTURES);
 
         ClearCellOverlays();
     });
@@ -801,17 +760,6 @@ void ScreenGame::CreateUI()
     // MISSION COUNTDOWN
     if(MISSION_RESIST_TIME == mMissionType)
         mHUD->ShowMissionCountdown(mMissionTime);
-}
-
-void ScreenGame::ClearNewElemDialog()
-{
-    // no dialog -> nothing to do
-    if(nullptr == mDialogNewElement)
-        return ;
-
-    // schedule dialog deletion
-    mDialogNewElement->DeleteLater();
-    mDialogNewElement = nullptr;
 }
 
 void ScreenGame::LoadMapFile()

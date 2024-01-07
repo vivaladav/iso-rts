@@ -7,19 +7,20 @@
 #include "Player.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/Structure.h"
+#include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/ButtonMinimap.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CountdownLabel.h"
 #include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogExit.h"
+#include "Widgets/DialogNewElement.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
 #include "Widgets/PanelResources.h"
 
 #include <sgl/graphic/Renderer.h>
 #include <sgl/sgui/ButtonsGroup.h>
-#include <sgl/sgui/Stage.h>
 
 namespace game
 {
@@ -132,7 +133,7 @@ void GameHUD::ShowDialogEndMission(bool won)
 
     dialog->SetFunctionOnClose([this, dialog]
                                {
-                                   sgl::sgui::Stage::Instance()->DeleteLater(dialog);
+                                   dialog->DeleteLater();
 
                                    // TODO handle end of mission
                                });
@@ -168,6 +169,67 @@ void GameHUD::ShowDialogExit()
     const int posX = (rendW - mDialogExit->GetWidth()) / 2;
     const int posY = (rendH - mDialogExit->GetHeight()) / 2;
     mDialogExit->SetPosition(posX, posY);
+}
+
+DialogNewElement * GameHUD::ShowDialogNewElement(unsigned int type)
+{
+    if(mDialogNewElement != nullptr)
+        return mDialogNewElement;
+
+    Player * player = mGame->GetLocalPlayer();
+
+    auto t = static_cast<DialogNewElement::ElemType>(type);
+    mDialogNewElement = new DialogNewElement(t, player, mGame->GetObjectsRegistry());
+    mDialogNewElement->SetFocus();
+
+    if(DialogNewElement::ETYPE_STRUCTURES == t)
+    {
+        // set unit's action to idle while dialog is open
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(GameObjectActionId::IDLE);
+
+        mDialogNewElement->SetFunctionOnClose([this, unit]
+                                          {
+                                              unit->SetActiveActionToDefault();
+                                              HideDialogNewElement();
+                                          });
+
+        mDialogNewElement->SetFunctionOnBuild([this, unit]
+                                          {
+                                              unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
+
+                                              const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
+                                              unit->SetStructureToBuild(stype);
+
+                                              HideDialogNewElement();
+                                          });
+    }
+    else
+    {
+        mDialogNewElement->SetFunctionOnClose([this]
+                                              {
+                                                  HideDialogNewElement();
+                                              });
+    }
+
+    // position dialog
+    auto renderer = sgl::graphic::Renderer::Instance();
+    const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
+    const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
+    mDialogNewElement->SetPosition(posX, posY);
+
+    return mDialogNewElement;
+}
+
+void GameHUD::HideDialogNewElement()
+{
+    // no dialog -> nothing to do
+    if(nullptr == mDialogNewElement)
+        return ;
+
+    // schedule dialog deletion
+    mDialogNewElement->DeleteLater();
+    mDialogNewElement = nullptr;
 }
 
 void GameHUD::ShowMissionCountdown(int secs)

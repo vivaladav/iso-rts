@@ -27,7 +27,6 @@ class AttackRangeIndicator;
 class CameraMapController;
 class CellProgressBar;
 class ConquestIndicator;
-class DialogNewElement;
 class GameHUD;
 class GameMap;
 class GameObject;
@@ -100,7 +99,6 @@ private:
     void CreateLayers();
 
     void CreateUI();
-    void ClearNewElemDialog();
 
     void LoadMapFile();
 
@@ -170,10 +168,8 @@ private:
 
     std::chrono::time_point<std::chrono::steady_clock> mTimeStart;
 
-    // -- UI --
+    // UI
     GameHUD * mHUD = nullptr;
-
-    DialogNewElement * mDialogNewElement = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
