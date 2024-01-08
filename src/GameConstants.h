@@ -34,6 +34,10 @@ enum MissionType : unsigned int
     MISSION_DESTROY_ENEMY_BASE,
     MISSION_DESTROY_ALL_ENEMIES,
     MISSION_RESIST_TIME,
+
+    NUM_MISSION_TYPES,
+
+    MISSION_UNKNOWN
 };
 
 enum PlayerFaction : unsigned int
@@ -83,6 +87,7 @@ enum Planets : unsigned int
 };
 
 extern const char * FACTIONS_NAME[NUM_FACTIONS];
+extern const char * MISSIONS_TITLE[NUM_MISSION_TYPES];
 extern const char * PLANETS_NAME[NUM_PLANETS];
 
 } // namespace game

@@ -20,10 +20,13 @@
 namespace game
 {
 
+const char * fileFont = "Lato-Regular.ttf";
+
 PanelPlanetInfo::PanelPlanetInfo()
     : sgl::sgui::Widget(nullptr)
     , mOccupier(NO_FACTION)
     , mStatus(TER_ST_UNKNOWN)
+    , mMission(MISSION_UNKNOWN)
 {
     using namespace sgl;
 
@@ -38,7 +41,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // TITLE
-    const char * fileFont = "Lato-Regular.ttf";
+
     const unsigned int colorTitle = 0xe9f7fbcc;
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
@@ -87,6 +90,15 @@ PanelPlanetInfo::PanelPlanetInfo()
     mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelOccupier);
 
+    // LINE MISSION
+    mHeaderMission = new graphic::Text("MISSION", fntData);
+    mHeaderMission->SetColor(WidgetsConstants::colorPlanetMapHeader);
+    RegisterRenderable(mHeaderMission);
+
+    mLabelMission = new graphic::Text("?", fntData);
+    mLabelMission->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelMission);
+
     // position elements
     UpdatePositions();
 }
@@ -109,17 +121,20 @@ void PanelPlanetInfo::ClearData()
     UpdatePositions();
 }
 
-void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction faction, unsigned int value)
+void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction faction,
+                              unsigned int value, MissionType mission)
 {
     const bool sizeChanged = size != mSize;
     const bool statusChanged = status != mStatus;
     const bool factionChanged = faction != mOccupier;
     const bool valueChanged = value != mValue;
+    const bool missionChanged = mission != mMission;
 
     mValue = value;
     mSize = size;
     mStatus = status;
     mOccupier = faction;
+    mMission = mission;
 
     if(sizeChanged)
         UpdateTerritorySize();
@@ -133,6 +148,8 @@ void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction fa
     if(valueChanged)
         UpdateTerritoryValue();
 
+    if(missionChanged)
+        UpdateMissionType();
 
     UpdatePositions();
 }
@@ -177,7 +194,7 @@ void PanelPlanetInfo::UpdatePositions()
     mTitle->SetPosition(x, y);
 
     const int marginTitleB = 30;
-    const int marginHeaderB = 20;
+    const int marginHeaderB = 10;
 
     // LINE SIZE
     y += mTitle->GetHeight() + marginTitleB;
@@ -208,6 +225,13 @@ void PanelPlanetInfo::UpdatePositions()
 
     dataX = x1 - mLabelOccupier->GetWidth();
     mLabelOccupier->SetPosition(dataX, y);
+
+    // LINE MISSION
+    y += mHeaderSize->GetHeight() + marginHeaderB;
+    mHeaderMission->SetPosition(x, y);
+
+    dataX = x1 - mLabelMission->GetWidth();
+    mLabelMission->SetPosition(dataX, y);
 }
 
 void PanelPlanetInfo::UpdateTerritorySize()
@@ -221,7 +245,6 @@ void PanelPlanetInfo::UpdateTerritorySize()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -250,7 +273,6 @@ void PanelPlanetInfo::UpdateTerritoryStatus()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -286,7 +308,6 @@ void PanelPlanetInfo::UpdateTerritoryOccupier()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -315,6 +336,29 @@ void PanelPlanetInfo::UpdateTerritoryValue()
     auto tm = graphic::TextureManager::Instance();
     graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS + mValue);
     mBarValue->SetTexture(tex);
+}
+
+void PanelPlanetInfo::UpdateMissionType()
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelMission);
+    delete mLabelMission;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                         graphic::Font::NORMAL);
+
+    if(mMission < NUM_MISSION_TYPES)
+        mLabelMission = new graphic::Text(MISSIONS_TITLE[mMission], fntData);
+    else
+        mLabelMission = new graphic::Text("?", fntData);
+
+    mLabelMission->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelMission);
 }
 
 } // namespace game

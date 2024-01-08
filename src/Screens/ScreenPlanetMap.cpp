@@ -167,9 +167,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
                 // PANEL INFO
                 const int size = 0;
                 const int value = 0;
+                const MissionType mission = MISSION_UNKNOWN;
 
                 mPanelInfo->SetEnabled(true);
-                mPanelInfo->SetData(size, TER_ST_OCCUPIED_UNEXPLORED, occupier, value);
+                mPanelInfo->SetData(size, TER_ST_OCCUPIED_UNEXPLORED, occupier, value, mission);
             }
 
             mPanelExplore->ShowResult(res);
@@ -306,10 +307,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             {
                 const int size = 0;
                 const int value = 0;
+                const MissionType mission = MISSION_UNKNOWN;
 
                 mPanelInfo->SetEnabled(true);
 
-                mPanelInfo->SetData(size, status, faction, value);
+                mPanelInfo->SetData(size, status, faction, value, mission);
             }
         }
 
@@ -403,18 +405,20 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         {
             const int size = 0;
             const int value = 0;
+            const MissionType mission = MISSION_UNKNOWN;
 
             mPanelInfo->SetEnabled(true);
-            mPanelInfo->SetData(size, status, occupier, value);
+            mPanelInfo->SetData(size, status, occupier, value, mission);
         }
         else
         {
             const int size = 0;
             const int value = 0;
+            const MissionType mission = MISSION_UNKNOWN;
 
             mPanelResources->SetEnabled(false);
 
-            mPanelInfo->SetData(size, status, occupier, value);
+            mPanelInfo->SetData(size, status, occupier, value, mission);
         }
 
         mPanelExplore->ShowAction();
@@ -488,9 +492,10 @@ void ScreenPlanetMap::ShowInfo(int territory)
     const int value = mapReg->GetMapValue(planetId, territory);
     const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
     const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+    const MissionType mission = mapReg->GetMapMission(planetId, territory);
 
     mPanelInfo->SetEnabled(true);
-    mPanelInfo->SetData(size, status, occupier, value);
+    mPanelInfo->SetData(size, status, occupier, value, mission);
 }
 
 bool ScreenPlanetMap::TryToConquerTerritory(int index)
