@@ -41,6 +41,10 @@ public:
     void ClearData();
 
 private:
+    void ExpandTerritoryReach(unsigned int planetId, int index);
+    void ConvertTerritoryUnreachableToUnexplored(unsigned int planetId, int index);
+
+private:
     struct MapData
     {
         MapData(const std::string & file, int energy, int material, int diamonds,

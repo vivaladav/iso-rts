@@ -229,7 +229,12 @@ void MapsRegistry::SetMapMissionCompleted(unsigned int planetId, unsigned int in
         auto & data = mData.at(planetId);
 
         if(index < data.size())
+        {
             data[index].mMission = MISSION_COMPLETED;
+
+            // expand player's reach once a territory is conquered
+            ExpandTerritoryReach(planetId, index);
+        }
     }
 }
 
@@ -237,5 +242,81 @@ void MapsRegistry::ClearData()
 {
     mData.clear();
 }
+
+void MapsRegistry::ExpandTerritoryReach(unsigned int planetId, int index)
+{
+    switch (index)
+    {
+        case 0:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+        break;
+
+        case 1:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+        break;
+
+        case 2:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 0);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+        break;
+
+        case 3:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 1);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+        break;
+
+        case 4:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+        break;
+
+        case 5:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 4);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+        break;
+
+        case 6:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 7);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+        break;
+
+        case 7:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+        break;
+
+        case 8:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 10);
+        break;
+
+        case 9:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 11);
+        break;
+
+        case 10:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+        break;
+
+        case 11:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+        break;
+
+        default:
+        break;
+    }
+}
+
+void MapsRegistry::ConvertTerritoryUnreachableToUnexplored(unsigned int planetId, int index)
+{
+    if(GetMapStatus(planetId, index) == TER_ST_UNREACHABLE)
+        SetMapStatus(planetId, index, TER_ST_UNEXPLORED);
+}
+
 
 } // namespace game

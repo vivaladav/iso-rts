@@ -252,8 +252,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             const TerritoryStatus status = TER_ST_OCCUPIED;
             mapReg->SetMapStatus(planetId, territory, status);
             mapReg->SetMapOccupier(planetId, territory, pf);
+            mapReg->SetMapMissionCompleted(planetId, territory);
 
-            ExpandTerritoryReach(territory);
+            UpdatePlanetButtons();
 
             // update resources
             const int multMoney = 500;
@@ -362,18 +363,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     const int planetY = (mBg->GetHeight() - mPlanet->GetHeight()) * 0.5f;
     mPlanet->SetPosition(planetX, planetY);
 
-    const int planetId = game->GetCurrentPlanet();
-    auto mapReg = game->GetMapsRegistry();
-
-    const int numMaps = mapReg->GetNumMaps(planetId);
-
-    for(int i = 0; i < numMaps; ++i)
-    {
-        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
-        const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
-
-        mPlanet->SetButtonState(i, occupier, ts);
-    }
+    UpdatePlanetButtons();
 
     mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
     {
@@ -425,6 +415,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         mPanelConquerAI->ShowAction();
     });
 
+    const int planetId = game->GetCurrentPlanet();
     SetPlanetName(PLANETS_NAME[planetId]);
 
     // TEST - REMOVE LATER
@@ -527,87 +518,21 @@ bool ScreenPlanetMap::TryToConquerTerritory(int index)
     return die.GetNextValue();;
 }
 
-void ScreenPlanetMap::ExpandTerritoryReach(int index)
+void ScreenPlanetMap::UpdatePlanetButtons()
 {
-    switch (index)
-    {
-        case 0:
-            TryToMakeTerrytoryUnexplored(2);
-        break;
+    Game * game = GetGame();
 
-        case 1:
-            TryToMakeTerrytoryUnexplored(3);
-        break;
-
-        case 2:
-            TryToMakeTerrytoryUnexplored(0);
-            TryToMakeTerrytoryUnexplored(3);
-            TryToMakeTerrytoryUnexplored(5);
-        break;
-
-        case 3:
-            TryToMakeTerrytoryUnexplored(1);
-            TryToMakeTerrytoryUnexplored(2);
-            TryToMakeTerrytoryUnexplored(6);
-        break;
-
-        case 4:
-            TryToMakeTerrytoryUnexplored(5);
-        break;
-
-        case 5:
-            TryToMakeTerrytoryUnexplored(2);
-            TryToMakeTerrytoryUnexplored(4);
-            TryToMakeTerrytoryUnexplored(8);
-        break;
-
-        case 6:
-            TryToMakeTerrytoryUnexplored(3);
-            TryToMakeTerrytoryUnexplored(7);
-            TryToMakeTerrytoryUnexplored(9);
-        break;
-
-        case 7:
-            TryToMakeTerrytoryUnexplored(6);
-        break;
-
-        case 8:
-            TryToMakeTerrytoryUnexplored(5);
-            TryToMakeTerrytoryUnexplored(9);
-            TryToMakeTerrytoryUnexplored(10);
-        break;
-
-        case 9:
-            TryToMakeTerrytoryUnexplored(6);
-            TryToMakeTerrytoryUnexplored(8);
-            TryToMakeTerrytoryUnexplored(11);
-        break;
-
-        case 10:
-            TryToMakeTerrytoryUnexplored(8);
-        break;
-
-        case 11:
-            TryToMakeTerrytoryUnexplored(9);
-        break;
-
-        default:
-        break;
-    }
-}
-
-void ScreenPlanetMap::TryToMakeTerrytoryUnexplored(int index)
-{
-    auto game = GetGame();
     const int planetId = game->GetCurrentPlanet();
     auto mapReg = game->GetMapsRegistry();
 
-    if(mapReg->GetMapStatus(planetId, index) == TER_ST_UNREACHABLE)
-    {
-        mapReg->SetMapStatus(planetId, index, TER_ST_UNEXPLORED);
+    const int numMaps = mapReg->GetNumMaps(planetId);
 
-        const PlayerFaction faction = mapReg->GetMapOccupier(planetId, index);
-        mPlanet->SetButtonState(index, faction, TER_ST_UNEXPLORED);
+    for(int i = 0; i < numMaps; ++i)
+    {
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
+        const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
+
+        mPlanet->SetButtonState(i, occupier, ts);
     }
 }
 
