@@ -8,6 +8,7 @@
 #include "IsoLayer.h"
 #include "IsoMap.h"
 #include "MapLoader.h"
+#include "MapsRegistry.h"
 #include "Player.h"
 #include "AI/ConquerPath.h"
 #include "AI/ObjectPath.h"
@@ -25,6 +26,7 @@
 #include "Particles/UpdaterDamage.h"
 #include "Particles/UpdaterLootboxPrize.h"
 #include "Particles/UpdaterSingleLaser.h"
+#include "States/StatesIds.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
 #include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
@@ -1108,13 +1110,17 @@ void ScreenGame::UpdateGameEnd()
 {
     // check if player has base
     if(CheckGameOverForLocalPlayer())
+    {
+        mPaused = true;
+        mHUD->ShowDialogEndMission(false);
         return ;
+    }
 
     switch(mMissionType)
     {
         case MISSION_DESTROY_ENEMY_BASE:
         {
-        // check if destroyed all enemy bases
+            // check if destroyed all enemy bases
             bool bases = false;
 
             for(Player * p : mAiPlayers)
@@ -1163,19 +1169,59 @@ void ScreenGame::UpdateGameEnd()
     }
 }
 
+void ScreenGame::HandleGameOver()
+{
+    // decide winner
+    unsigned int winner = 0;
+    int topObjs = 0;
+
+    for(unsigned int i = 0; i < mAiPlayers.size(); ++i)
+    {
+        Player * p = mAiPlayers[i];
+
+        const int numObjs = p->GetNumObjects();
+
+        if(numObjs > topObjs)
+        {
+            winner = i;
+            topObjs = numObjs;
+        }
+    }
+
+    // assign territory to winner
+    const PlayerFaction faction = mAiPlayers[winner]->GetFaction();
+    AssignMapToFaction(faction);
+}
+
+void ScreenGame::HandleGameWon()
+{
+    const PlayerFaction faction = GetGame()->GetLocalPlayerFaction();
+    AssignMapToFaction(faction);
+}
+
+void ScreenGame::AssignMapToFaction(PlayerFaction faction)
+{
+    Game * game = GetGame();
+    MapsRegistry * mapReg = game->GetMapsRegistry();
+
+    const unsigned int territory = game->GetCurrentTerritory();
+    const Planets planet = game->GetCurrentPlanet();
+
+    mapReg->SetMapOccupier(planet, territory, faction);
+    mapReg->SetMapStatus(planet, territory, TER_ST_OCCUPIED);
+
+    if(faction == game->GetLocalPlayerFaction())
+        mapReg->SetMapMissionCompleted(planet, territory);
+
+    game->RequestNextActiveState(StateId::PLANET_MAP);
+}
+
 bool ScreenGame::CheckGameOverForLocalPlayer()
 {
-    // check if player has objects
+    // check if player still has base
     const Player * player = GetGame()->GetLocalPlayer();
 
-    if(!player->HasStructure(GameObject::TYPE_BASE))
-    {
-        mPaused = true;
-        mHUD->ShowDialogEndMission(false);
-        return true;
-    }
-    else
-        return false;
+    return !player->HasStructure(GameObject::TYPE_BASE);
 }
 
 int ScreenGame::CellToIndex(const Cell2D & cell) const

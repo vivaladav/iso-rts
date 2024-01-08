@@ -354,6 +354,9 @@ void PanelPlanetInfo::UpdateMissionType()
 
     if(mMission < NUM_MISSION_TYPES)
         mLabelMission = new graphic::Text(MISSIONS_TITLE[mMission], fntData);
+    else if(MISSION_COMPLETED == mMission)
+        mLabelMission = new graphic::Text("-", fntData);
+    // UNKNOWN
     else
         mLabelMission = new graphic::Text("?", fntData);
 

@@ -131,12 +131,15 @@ void GameHUD::ShowDialogEndMission(bool won)
     auto dialog = new DialogEndMission(played, territory, killed, pf, won);
     dialog->SetFocus();
 
-    dialog->SetFunctionOnClose([this, dialog]
-                               {
+    dialog->SetFunctionOnClose([this, dialog, won]
+    {
                                    dialog->DeleteLater();
 
-                                   // TODO handle end of mission
-                               });
+        if(won)
+            mScreen->HandleGameWon();
+        else
+            mScreen->HandleGameOver();
+});
 
     // position dialog
     auto renderer = sgl::graphic::Renderer::Instance();

@@ -36,6 +36,7 @@ public:
 
     void SetMapStatus(unsigned int planetId, unsigned int index, TerritoryStatus status);
     void SetMapOccupier(unsigned int planetId, unsigned int index, PlayerFaction occupier);
+    void SetMapMissionCompleted(unsigned int planetId, unsigned int index);
 
     void ClearData();
 

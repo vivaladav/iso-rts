@@ -222,6 +222,17 @@ void MapsRegistry::SetMapOccupier(unsigned int planetId, unsigned int index, Pla
     }
 }
 
+void MapsRegistry::SetMapMissionCompleted(unsigned int planetId, unsigned int index)
+{
+    if(mData.find(planetId) != mData.end())
+    {
+        auto & data = mData.at(planetId);
+
+        if(index < data.size())
+            data[index].mMission = MISSION_COMPLETED;
+    }
+}
+
 void MapsRegistry::ClearData()
 {
     mData.clear();

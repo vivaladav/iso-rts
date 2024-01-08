@@ -109,6 +109,9 @@ private:
     void ExecuteAIAction(PlayerAI * ai);
 
     void UpdateGameEnd();
+    void HandleGameOver();
+    void HandleGameWon();
+    void AssignMapToFaction(PlayerFaction faction);
     bool CheckGameOverForLocalPlayer();
 
     int CellToIndex(const Cell2D & cell) const;
@@ -144,6 +147,8 @@ private:
     void CenterCameraOverPlayerBase();
 
 private:
+    friend class GameHUD;
+
     std::vector<Player *> mAiPlayers;
 
     std::unordered_map<int, CellProgressBar *> mProgressBars;

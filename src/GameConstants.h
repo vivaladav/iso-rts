@@ -37,6 +37,7 @@ enum MissionType : unsigned int
 
     NUM_MISSION_TYPES,
 
+    MISSION_COMPLETED,
     MISSION_UNKNOWN
 };
 

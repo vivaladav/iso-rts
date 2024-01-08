@@ -23,7 +23,6 @@ void StateGame::OnActive()
     mGame->AddMouseListener(mScreen);
 
     sgl::graphic::Window::Instance()->AddWindowListener(mScreen);
-
 }
 
 void StateGame::OnInactive()
