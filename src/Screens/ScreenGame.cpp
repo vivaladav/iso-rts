@@ -154,18 +154,6 @@ ScreenGame::ScreenGame(Game * game)
         }
     }
 
-    // LOCAL PLAYER
-    Player * localPlayer = game->GetLocalPlayer();
-
-    // react to local player changes in stats
-    localPlayer->SetOnResourcesChanged([this]
-    {
-        DialogNewElement * dialog = mHUD->GetDialogNewElement();
-
-        if(dialog != nullptr)
-            dialog->CheckBuild();
-    });
-
     // UI
     CreateUI();
 
@@ -173,6 +161,7 @@ ScreenGame::ScreenGame(Game * game)
     CenterCameraOverPlayerBase();
 
     // apply initial visibility to the game map
+    Player * localPlayer = game->GetLocalPlayer();
     mGameMap->InitVisibility(localPlayer);
 
     InitMusic();
@@ -536,7 +525,7 @@ void ScreenGame::CreateUI()
     Player * player = GetGame()->GetLocalPlayer();
 
     // init HUD layer
-    mHUD = new GameHUD(player, mCamController, mIsoMap, this, mGameMap);
+    mHUD = new GameHUD(mCamController, mIsoMap, this, mGameMap);
 
     mHUD->SetMiniMapEnabled(false);
 

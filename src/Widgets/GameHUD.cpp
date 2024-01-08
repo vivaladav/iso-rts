@@ -25,8 +25,8 @@
 namespace game
 {
 
-GameHUD::GameHUD(Player * player, CameraMapController * camController,
-                 IsoMap * isoMap, ScreenGame * screen, GameMap * gameMap)
+GameHUD::GameHUD(CameraMapController * camController, IsoMap * isoMap,
+                 ScreenGame * screen, GameMap * gameMap)
     : mGame(screen->GetGame())
     , mGameMap(gameMap)
     , mScreen(screen)
@@ -37,6 +37,16 @@ GameHUD::GameHUD(Player * player, CameraMapController * camController,
     const int rendH = graphic::Renderer::Instance()->GetHeight();
 
     SetSize(rendW, rendH);
+
+    // LOCAL PLAYER
+    Player * player = mGame->GetLocalPlayer();
+
+    // react to local player changes in stats
+    player->SetOnResourcesChanged([this]
+    {
+        if(mDialogNewElement != nullptr)
+            mDialogNewElement->CheckBuild();
+    });
 
     // TOP RESOURCE BAR
     mPanelRes = new PanelResources(player, this);
@@ -98,6 +108,14 @@ GameHUD::GameHUD(Player * player, CameraMapController * camController,
     // OBJECT ACTIONS
     mPanelObjActions = new PanelObjectActions(this);
     mPanelObjActions->SetVisible(false);
+}
+
+GameHUD::~GameHUD()
+{
+    Player * player = mGame->GetLocalPlayer();
+
+    player->SetOnNumUnitsChanged([]{});
+    player->SetOnResourcesChanged([]{});
 }
 
 void GameHUD::SetMiniMapEnabled(bool val)

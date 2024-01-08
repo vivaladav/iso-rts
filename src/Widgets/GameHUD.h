@@ -21,15 +21,15 @@ class IsoMap;
 class MiniMap;
 class PanelObjectActions;
 class PanelResources;
-class Player;
 class ScreenGame;
 
 // UI
 class GameHUD : public sgl::sgui::Widget
 {
 public:
-    GameHUD(Player * player, CameraMapController * camController,
-            IsoMap * isoMap, ScreenGame * screen, GameMap * gameMap);
+    GameHUD(CameraMapController * camController, IsoMap * isoMap,
+            ScreenGame * screen, GameMap * gameMap);
+    ~GameHUD();
 
     void SetMiniMapEnabled(bool val);
     MiniMap * GetMinimap() const;
