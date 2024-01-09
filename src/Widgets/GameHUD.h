@@ -40,10 +40,8 @@ public:
 
     void ShowDialogEndMission(bool won);
     void ShowDialogExit();
-    DialogNewElement * GetDialogNewElement() const;
-    DialogNewElement * ShowDialogNewElement(unsigned int type);
+    void ShowDialogNewElement(unsigned int type);
     void HideDialogNewElement();
-    bool IsDialogNewElementVisible() const;
 
     void ShowMissionCountdown(int secs);
     void HideMissionCountdown();
@@ -69,8 +67,5 @@ inline MiniMap * GameHUD::GetMinimap() const { return mMiniMap; }
 inline sgl::sgui::ButtonsGroup * GameHUD::GetButtonsGroupUnitSel() const { return mGroupUnitSel; }
 
 inline PanelObjectActions * GameHUD::GetPanelObjectActions() const { return mPanelObjActions; }
-
-inline DialogNewElement * GameHUD::GetDialogNewElement() const { return mDialogNewElement; }
-inline bool GameHUD::IsDialogNewElementVisible() const { return mDialogNewElement != nullptr; }
 
 } // namespace game

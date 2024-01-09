@@ -535,18 +535,7 @@ void ScreenGame::CreateUI()
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_UNIT,
                                        [this, player, panelObjActions]
     {
-        if(mHUD->IsDialogNewElementVisible())
-            return ;
-
-        DialogNewElement * dialog = mHUD->ShowDialogNewElement(DialogNewElement::ETYPE_UNITS);
-
-        dialog->SetFunctionOnBuild([this, dialog, player]
-        {
-            const GameObjectTypeId type = dialog->GetSelectedType();
-            SetupNewUnit(type, player->GetSelectedObject(), player);
-
-            mHUD->HideDialogNewElement();
-        });
+        mHUD->ShowDialogNewElement(DialogNewElement::ETYPE_UNITS);
     });
 
     // UNIT ACTIONS
@@ -554,9 +543,6 @@ void ScreenGame::CreateUI()
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT,
                                        [this, player, panelObjActions]
     {
-        if(mHUD->IsDialogNewElementVisible())
-            return ;
-
         mHUD->ShowDialogNewElement(DialogNewElement::ETYPE_STRUCTURES);
 
         ClearCellOverlays();

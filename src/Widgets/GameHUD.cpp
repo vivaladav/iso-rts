@@ -192,10 +192,10 @@ void GameHUD::ShowDialogExit()
     mDialogExit->SetPosition(posX, posY);
 }
 
-DialogNewElement * GameHUD::ShowDialogNewElement(unsigned int type)
+void GameHUD::ShowDialogNewElement(unsigned int type)
 {
     if(mDialogNewElement != nullptr)
-        return mDialogNewElement;
+        return;
 
     Player * player = mGame->GetLocalPlayer();
 
@@ -209,28 +209,36 @@ DialogNewElement * GameHUD::ShowDialogNewElement(unsigned int type)
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
         unit->SetActiveAction(GameObjectActionId::IDLE);
 
-        mDialogNewElement->SetFunctionOnClose([this, unit]
-                                          {
-                                              unit->SetActiveActionToDefault();
-                                              HideDialogNewElement();
-                                          });
-
         mDialogNewElement->SetFunctionOnBuild([this, unit]
-                                          {
-                                              unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
+        {
+            unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
 
-                                              const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
-                                              unit->SetStructureToBuild(stype);
+            const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
+            unit->SetStructureToBuild(stype);
 
-                                              HideDialogNewElement();
-                                          });
+            HideDialogNewElement();
+        });
+
+        mDialogNewElement->SetFunctionOnClose([this, unit]
+        {
+            unit->SetActiveActionToDefault();
+            HideDialogNewElement();
+        });
     }
     else
     {
+        mDialogNewElement->SetFunctionOnBuild([this, player]
+        {
+            const GameObjectTypeId type = mDialogNewElement->GetSelectedType();
+            mScreen->SetupNewUnit(type, player->GetSelectedObject(), player);
+
+            HideDialogNewElement();
+        });
+
         mDialogNewElement->SetFunctionOnClose([this]
-                                              {
-                                                  HideDialogNewElement();
-                                              });
+        {
+            HideDialogNewElement();
+        });
     }
 
     // position dialog
@@ -238,8 +246,6 @@ DialogNewElement * GameHUD::ShowDialogNewElement(unsigned int type)
     const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
     const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
     mDialogNewElement->SetPosition(posX, posY);
-
-    return mDialogNewElement;
 }
 
 void GameHUD::HideDialogNewElement()
