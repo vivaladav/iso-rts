@@ -45,7 +45,7 @@ public:
     bool HasObject(unsigned int r, unsigned int c) const;
     bool HasObject(GameObject * obj) const;
 
-    const std::vector<GameMapCell>  & GetCells() const;
+    const std::vector<GameMapCell> & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
 
     bool IsCellVisibleToLocalPlayer(unsigned int ind) const;
