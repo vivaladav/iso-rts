@@ -172,7 +172,17 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
-    GetGame()->RemoveOnSettingsChangedFunction(mIdOnSettingsChanged);
+    // clear Players
+    Game * game = GetGame();
+
+    for(int i = 0; i < game->GetNumPlayers(); ++i)
+    {
+        Player * p = game->GetPlayerByIndex(i);
+        p->ClearMissionObjects();
+        p->ClearSelectedObject();
+    }
+
+    game->RemoveOnSettingsChangedFunction(mIdOnSettingsChanged);
 
     delete mPartMan;
 

@@ -61,6 +61,8 @@ public:
 
     const std::vector<ResourceGenerator *> & GetResourceGenerators() const;
 
+    void ClearMissionObjects();
+
     unsigned int GetNumObjects() const;
     bool HasObjects() const;
 
@@ -185,6 +187,13 @@ inline unsigned int Player::GetNumStructures() const { return mStructures.size()
 
 inline const std::vector<Structure *> & Player::GetStructures() const { return mStructures; }
 inline const std::vector<ResourceGenerator *> & Player::GetResourceGenerators() const { return mResGenerators; }
+
+inline void Player::ClearMissionObjects()
+{
+    mUnits.clear();
+    mStructures.clear();
+    mResGenerators.clear();
+}
 
 inline unsigned int Player::GetNumObjects() const
 {
