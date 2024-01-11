@@ -316,6 +316,7 @@ void ScreenMainMenu::CreateChangelog()
                         "- Map scrolling with W,A,S,D instead than arrows.\n"
                         "- Units move along the planned path while conquering cells.\n"
                         "- Units move along the planned path while building walls.\n"
+                        "- Planet screen redesigned.\n"
                      );
     textChange->SetPosition(contX, contY);
     textChange->SetColor(colorContent);
