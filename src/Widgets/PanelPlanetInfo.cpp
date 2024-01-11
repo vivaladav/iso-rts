@@ -173,19 +173,17 @@ void PanelPlanetInfo::UpdatePositions()
 {
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();
+    const int w = mBg->GetWidth();
 
     const int marginL = 20;
     const int marginR = 30;
     const int marginT = 15;
 
-    const int x1 = x0 + GetWidth() - marginR;
-
-    int x;
-    int y;
-    int dataX;
+    int x = x0;
+    int y = y0;
 
     // BACKGROUND
-    mBg->SetPosition(x0, y0);
+    mBg->SetPosition(x, y);
 
     // TITLE
     x = x0 + marginL;
@@ -193,45 +191,54 @@ void PanelPlanetInfo::UpdatePositions()
 
     mTitle->SetPosition(x, y);
 
-    const int marginTitleB = 30;
-    const int marginHeaderB = 10;
+    const int marginTitleB = 15;
+    const int marginHeaderB = 5;
+    const int marginDataB = 25;
 
     // LINE SIZE
+    x = x0 + (w - mHeaderSize->GetWidth()) / 2;
     y += mTitle->GetHeight() + marginTitleB;
     mHeaderSize->SetPosition(x, y);
 
-    dataX = x1 - mLabelSize->GetWidth();
-    mLabelSize->SetPosition(dataX, y);
+    x = x0 + (w - mLabelSize->GetWidth()) / 2;
+    y += mHeaderSize->GetHeight() + marginHeaderB;
+    mLabelSize->SetPosition(x, y);
 
     // LINE STATUS
-    y += mHeaderSize->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderStatus->GetWidth()) / 2;
+    y += mLabelSize->GetHeight() + marginDataB;
     mHeaderStatus->SetPosition(x, y);
 
-    dataX = x1 - mLabelStatus->GetWidth();
-    mLabelStatus->SetPosition(dataX, y);
+    x = x0 + (w - mLabelStatus->GetWidth()) / 2;
+    y += mHeaderStatus->GetHeight() + marginHeaderB;
+    mLabelStatus->SetPosition(x, y);
 
     // LINE VALUE
-    y += mHeaderStatus->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderValue->GetWidth()) / 2;
+    y += mHeaderStatus->GetHeight() + marginDataB;
     mHeaderValue->SetPosition(x, y);
 
-    dataX = x1 - mBarValue->GetWidth();
-    const int marginValueT = -2;
-    const int barY = y + marginValueT;
-    mBarValue->SetPosition(dataX, barY);
+    x = x0 + (w - mBarValue->GetWidth()) / 2;
+    y += mHeaderValue->GetHeight() + marginHeaderB;
+    mBarValue->SetPosition(x, y);
 
     // LINE OCCUPIER
-    y += mHeaderValue->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderOccupier->GetWidth()) / 2;
+    y += mBarValue->GetHeight() + marginDataB;
     mHeaderOccupier->SetPosition(x, y);
 
-    dataX = x1 - mLabelOccupier->GetWidth();
-    mLabelOccupier->SetPosition(dataX, y);
+    x = x0 + (w - mLabelOccupier->GetWidth()) / 2;
+    y += mHeaderOccupier->GetHeight() + marginHeaderB;
+    mLabelOccupier->SetPosition(x, y);
 
     // LINE MISSION
-    y += mHeaderSize->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderMission->GetWidth()) / 2;
+    y += mLabelOccupier->GetHeight() + marginDataB;
     mHeaderMission->SetPosition(x, y);
 
-    dataX = x1 - mLabelMission->GetWidth();
-    mLabelMission->SetPosition(dataX, y);
+    x = x0 + (w - mLabelMission->GetWidth()) / 2;
+    y += mHeaderMission->GetHeight() + marginHeaderB;
+    mLabelMission->SetPosition(x, y);
 }
 
 void PanelPlanetInfo::UpdateTerritorySize()

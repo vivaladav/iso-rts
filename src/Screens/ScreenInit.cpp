@@ -1167,7 +1167,12 @@ void ScreenInit::SetupTextures()
             { 918, 763, 32, 32 },
             { 951, 763, 32, 32 },
             { 984, 763, 32, 32 },
-            { 1017, 763, 32, 32 }
+            { 1017, 763, 32, 32 },
+            // BUTTON LEAVE
+            { 0, 868, 350, 44 },
+            { 0, 913, 350, 44 },
+            { 351, 868, 350, 44 },
+            { 351, 913, 350, 44 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap, rects);
@@ -1183,9 +1188,8 @@ void ScreenInit::SetupTextures()
             { 401, 0, 400, 50 },
             { 0, 51, 475, 200 },
             { 0, 252, 475, 400 },
-            { 0, 653, 475, 280 },
-            { 476, 51, 475, 775 },
-            { 476, 827, 475, 135 }
+            { 476, 52, 475, 500 },
+            { 476, 552, 475, 85 }
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap2, rects);
