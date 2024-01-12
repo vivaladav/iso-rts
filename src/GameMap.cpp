@@ -27,6 +27,7 @@
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/ResourceStorage.h"
 #include "GameObjects/SceneObject.h"
+#include "GameObjects/Temple.h"
 #include "GameObjects/Trees.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
@@ -466,6 +467,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         o2a.obj = new WallGate(variant);
     else if(GameObject::TYPE_LOOTBOX == type)
         o2a.obj = new LootBox;
+    else if(GameObject::TYPE_TEMPLE == type)
+        o2a.obj = new Temple;
     else if(GameObject::TYPE_BASE == type || GameObject::TYPE_BASE_SPOT == type)
     {
         if(GameObject::TYPE_BASE_SPOT == type)
