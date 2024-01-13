@@ -15,6 +15,9 @@ Temple::Temple()
     SetCanBeConquered(true);
 
     SetVisibilityLevel(4);
+
+    SetImage();
+    SetObjColors();
 }
 
 void Temple::UpdateGraphics()
