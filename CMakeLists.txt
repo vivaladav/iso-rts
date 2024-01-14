@@ -208,6 +208,8 @@ add_executable(
     src/Widgets/DialogEndMission.cpp
     src/Widgets/DialogExit.h
     src/Widgets/DialogExit.cpp
+    src/Widgets/DialogExploreTemple.h
+    src/Widgets/DialogExploreTemple.cpp
     src/Widgets/DialogNewElement.h
     src/Widgets/DialogNewElement.cpp
     src/Widgets/DialogSettings.h
