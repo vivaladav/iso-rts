@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Widgets/GameButton.h"
+#include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -12,6 +13,7 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/media/AudioManager.h>
 #include <sgl/media/AudioPlayer.h>
+#include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
 
 namespace game
@@ -67,6 +69,7 @@ DialogExploreTemple::DialogExploreTemple()
 
     const char * headerFontFile = "Lato-Regular.ttf";
     const int headerFontSize = 22;
+    const char * labelFontFile = "Lato-Regular.ttf";
     const unsigned int colorHeader = 0x9dcbe2ff;
     const unsigned int colorLabel = 0x70a7c2ff;
 
@@ -80,9 +83,9 @@ DialogExploreTemple::DialogExploreTemple()
     SetSize(w, h);
 
     // TITLE
-    auto font = fm->GetFont("Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+    auto fontTitle = fm->GetFont("Lato-Regular.ttf", 32, graphic::Font::NORMAL);
 
-    sgui::Label * title = new sgui::Label("EXPLORE ABANDONED TEMPLE", font, this);
+    sgui::Label * title = new sgui::Label("EXPLORE ABANDONED TEMPLE", fontTitle, this);
 
     const int titleX = (w - title->GetWidth()) / 2;
     const int titleY = 10;
@@ -99,28 +102,139 @@ DialogExploreTemple::DialogExploreTemple()
     RegisterRenderable(mLineH2);
 
     // -- INVESTING PANEL --
-    font = fm->GetFont(headerFontFile, headerFontSize, graphic::Font::NORMAL);
+    const int sliderLabelFontSize = 18;
+    const int iconsX0 = marginSide;
+    const int iconsY0 = 135;
+    const int iconsX1 = 510;
+    const int iconsY1 = 215;
+    const int marginIconR = 20;
+    const int marginSliderR = 20;
+
+    graphic::Texture * texSliderBg = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_SLIDER_BG);
+    graphic::Texture * texSliderBar = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_SLIDER_BAR);
+    graphic::Texture * texSliderBtn = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_SLIDER_BTN);
+
+    auto fontHeader = fm->GetFont(headerFontFile, headerFontSize, graphic::Font::NORMAL);
+    auto fontLabel = fm->GetFont(labelFontFile, sliderLabelFontSize, graphic::Font::NORMAL);
 
     // HEADER INVEST
-    mHeaderInvest = new graphic::Text("INVEST RESOURCES", font);
+    mHeaderInvest = new graphic::Text("INVEST RESOURCES", fontHeader);
     mHeaderInvest->SetColor(colorHeader);
     RegisterRenderable(mHeaderInvest);
 
-    // -- OUTCOME PANEL --
-    font = fm->GetFont(headerFontFile, headerFontSize, graphic::Font::NORMAL);
+    // MONEY
+    tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_ICON_MONEY);
 
-    mHeaderTime = new graphic::Text("TIME REQUIRED", font);
+    auto icon = new sgui::Image(tex, this);
+    icon->SetColor(colorHeader);
+    icon->SetPosition(iconsX0, iconsY0);
+
+    mSliderMoney = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, this);
+    mSliderMoney->SetMinMax(0, 100);
+    mSliderMoney->SetValue(10);
+    mSliderMoney->SetPosition(icon->GetX() + icon->GetWidth() + marginIconR,
+                              icon->GetY() + (icon->GetHeight() - mSliderMoney->GetHeight()) / 2);
+
+    auto label = new sgui::Label(std::to_string(mSliderMoney->GetValue()).c_str(), fontLabel, this);
+    label->SetColor(colorLabel);
+    label->SetPosition(mSliderMoney->GetX() + mSliderMoney->GetWidth() + marginSliderR,
+                       mSliderMoney->GetY());
+
+    mSliderMoney->SetOnValueChanged([this, label](int val)
+    {
+        label->SetText(std::to_string(val).c_str());
+
+        OnInvestmentChanged();
+    });
+
+    // MATERIAL
+    tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_ICON_MATERIAL);
+
+    icon = new sgui::Image(tex, this);
+    icon->SetColor(colorHeader);
+    icon->SetPosition(iconsX0, iconsY1);
+
+    mSliderMaterial = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, this);
+    mSliderMaterial->SetMinMax(0, 100);
+    mSliderMaterial->SetValue(10);
+    mSliderMaterial->SetPosition(icon->GetX() + icon->GetWidth() + marginIconR,
+                                 icon->GetY() + (icon->GetHeight() - mSliderMoney->GetHeight()) / 2);
+
+    label = new sgui::Label(std::to_string(mSliderMaterial->GetValue()).c_str(), fontLabel, this);
+    label->SetColor(colorLabel);
+    label->SetPosition(mSliderMaterial->GetX() + mSliderMaterial->GetWidth() + marginSliderR,
+                       mSliderMaterial->GetY());
+
+    mSliderMaterial->SetOnValueChanged([this, label](int val)
+    {
+        label->SetText(std::to_string(val).c_str());
+
+        OnInvestmentChanged();
+    });
+
+    // BLOBS
+    tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_ICON_BLOBS);
+
+    icon = new sgui::Image(tex, this);
+    icon->SetColor(colorHeader);
+    icon->SetPosition(iconsX1, iconsY0);
+
+    mSliderBlobs = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, this);
+    mSliderBlobs->SetMinMax(0, 100);
+    mSliderBlobs->SetValue(10);
+    mSliderBlobs->SetPosition(icon->GetX() + icon->GetWidth() + marginIconR,
+                              icon->GetY() + (icon->GetHeight() - mSliderBlobs->GetHeight()) / 2);
+
+    label = new sgui::Label(std::to_string(mSliderBlobs->GetValue()).c_str(), fontLabel, this);
+    label->SetColor(colorLabel);
+    label->SetPosition(mSliderBlobs->GetX() + mSliderBlobs->GetWidth() + marginSliderR,
+                       mSliderBlobs->GetY());
+
+    mSliderBlobs->SetOnValueChanged([this, label](int val)
+    {
+        label->SetText(std::to_string(val).c_str());
+
+        OnInvestmentChanged();
+    });
+
+    // DIAMONDS
+    tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_ICON_DIAMONDS);
+
+    icon = new sgui::Image(tex, this);
+    icon->SetColor(colorHeader);
+    icon->SetPosition(iconsX1, iconsY1);
+
+    mSliderDiamonds = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, this);
+    mSliderDiamonds->SetMinMax(0, 100);
+    mSliderDiamonds->SetValue(10);
+    mSliderDiamonds->SetPosition(icon->GetX() + icon->GetWidth() + marginIconR,
+                                 icon->GetY() + (icon->GetHeight() - mSliderDiamonds->GetHeight()) / 2);
+
+    label = new sgui::Label(std::to_string(mSliderDiamonds->GetValue()).c_str(), fontLabel, this);
+    label->SetColor(colorLabel);
+    label->SetPosition(mSliderDiamonds->GetX() + mSliderDiamonds->GetWidth() + marginSliderR,
+                       mSliderDiamonds->GetY());
+
+    mSliderDiamonds->SetOnValueChanged([this, label](int val)
+    {
+        label->SetText(std::to_string(val).c_str());
+
+        OnInvestmentChanged();
+    });
+
+    // -- OUTCOME PANEL --
+    mHeaderTime = new graphic::Text("TIME REQUIRED", fontHeader);
     mHeaderTime->SetColor(colorHeader);
     RegisterRenderable(mHeaderTime);
 
-    mLabelTime = new sgui::Label("?", font, this);
+    mLabelTime = new sgui::Label("?", fontLabel, this);
     mLabelTime->SetColor(colorLabel);
 
-    mHeaderSuccess = new graphic::Text("SUCCESS PROBABILITY", font);
+    mHeaderSuccess = new graphic::Text("SUCCESS PROBABILITY", fontHeader);
     mHeaderSuccess->SetColor(colorHeader);
     RegisterRenderable(mHeaderSuccess);
 
-    mLabelSuccess = new sgui::Label("?", font, this);
+    mLabelSuccess = new sgui::Label("?", fontLabel, this);
     mLabelSuccess->SetColor(colorLabel);
 
     // -- BUTTONS --
@@ -155,6 +269,11 @@ void DialogExploreTemple::HandlePositionChanged()
     SetPositions();
 }
 
+void DialogExploreTemple::OnInvestmentChanged()
+{
+
+}
+
 void DialogExploreTemple::SetPositions()
 {
     const int x0 = GetScreenX();
@@ -183,7 +302,7 @@ void DialogExploreTemple::SetPositions()
     mHeaderInvest->SetPosition(headerInvestX, headerInvestY);
 
     // -- OUTCOME PANEL --
-    const int marginPanel2V = 37;
+    const int marginPanel2V = 40;
     const int marginHeaderB = 5;
 
     // HEADER TIME

@@ -306,8 +306,8 @@ void ScreenInit::SetupTextures()
 
             // SLIDER
             { 854, 205, 204, 16 },
-            { 1059, 205, 10, 12 },
-            { 1070, 205, 24, 24 },
+            { 854, 222, 200, 12 },
+            { 1059, 205, 24, 24 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExploreTemple, rects);

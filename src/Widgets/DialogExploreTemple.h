@@ -20,6 +20,7 @@ namespace game
 
 class Game;
 class GameButton;
+class GameSliderH;
 class Screen;
 
 class DialogExploreTemple : public sgl::sgui::Widget
@@ -32,6 +33,8 @@ public:
 protected:
     void HandlePositionChanged() override;
 
+    void OnInvestmentChanged();
+
 private:
     void SetPositions();
 
@@ -39,11 +42,6 @@ private:
     sgl::graphic::Image * mBg = nullptr;
     sgl::graphic::Image * mLineH1 = nullptr;
     sgl::graphic::Image * mLineH2 = nullptr;
-
-    sgl::graphic::Image * mIconMoney = nullptr;
-    sgl::graphic::Image * mIconMaterial = nullptr;
-    sgl::graphic::Image * mIconBlobs = nullptr;
-    sgl::graphic::Image * mIconDiamonds = nullptr;
 
     sgl::graphic::Text * mHeaderInvest = nullptr;
     sgl::graphic::Text * mHeaderTime = nullptr;
@@ -53,6 +51,11 @@ private:
 
     GameButton * mBtnAbort = nullptr;
     GameButton * mBtnExplore = nullptr;
+
+    GameSliderH * mSliderMoney = nullptr;
+    GameSliderH * mSliderMaterial = nullptr;
+    GameSliderH * mSliderBlobs = nullptr;
+    GameSliderH * mSliderDiamonds = nullptr;
 };
 
 } // namespace game
