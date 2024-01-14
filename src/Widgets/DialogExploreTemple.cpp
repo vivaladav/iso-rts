@@ -1,6 +1,8 @@
 #include "Widgets/DialogExploreTemple.h"
 
 #include "Game.h"
+#include "Player.h"
+#include "GameObjects/Temple.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
@@ -15,6 +17,8 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
+
+#include <sstream>
 
 namespace game
 {
@@ -60,7 +64,9 @@ public:
 // ===== DIALOG EXPLORE =====
 const int marginSide = 40;
 
-DialogExploreTemple::DialogExploreTemple()
+DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
+    : mPlayer(player)
+    , mTemple(temple)
 {
     using namespace sgl;
 
@@ -227,14 +233,14 @@ DialogExploreTemple::DialogExploreTemple()
     mHeaderTime->SetColor(colorHeader);
     RegisterRenderable(mHeaderTime);
 
-    mLabelTime = new sgui::Label("?", fontLabel, this);
+    mLabelTime = new sgui::Label(fontLabel, this);
     mLabelTime->SetColor(colorLabel);
 
     mHeaderSuccess = new graphic::Text("SUCCESS PROBABILITY", fontHeader);
     mHeaderSuccess->SetColor(colorHeader);
     RegisterRenderable(mHeaderSuccess);
 
-    mLabelSuccess = new sgui::Label("?", fontLabel, this);
+    mLabelSuccess = new sgui::Label(fontLabel, this);
     mLabelSuccess->SetColor(colorLabel);
 
     // -- BUTTONS --
@@ -257,6 +263,9 @@ DialogExploreTemple::DialogExploreTemple()
 
     const int button2X0 = marginSide + blockW + (blockW - mBtnExplore->GetWidth()) / 2;
     mBtnExplore->SetPosition(button2X0, buttonsY);
+
+    // INIT VALUES
+    OnInvestmentChanged();
 }
 
 void DialogExploreTemple::SetFunctionOnClose(const std::function<void()> & f)
@@ -271,7 +280,43 @@ void DialogExploreTemple::HandlePositionChanged()
 
 void DialogExploreTemple::OnInvestmentChanged()
 {
+    // update invested resources
+    mTemple->SetInvestedResources(mSliderMoney->GetValue(), mSliderMaterial->GetValue(),
+                                  mSliderBlobs->GetValue(), mSliderDiamonds->GetValue());
 
+    // update time
+    int time = mTemple->GetExplorationTime();
+    // mins
+    const int secsInM = 60;
+    const int timeM = time / secsInM;
+    // secs
+    time -= timeM * secsInM;
+    const int timeS = time;
+
+    const int fieldW = 2;
+    const char fieldF = '0';
+    std::ostringstream ss;
+    ss.width(fieldW);
+    ss.fill(fieldF);
+    ss << timeM << ":";
+    ss.width(fieldW);
+    ss.fill(fieldF);
+    ss << timeS;
+
+    mLabelTime->SetText(ss.str().c_str());
+
+    ss.str(std::string());
+    ss.clear();
+
+    // update success rate
+    const int success = mTemple->GetExplorationSuccessRate();
+
+    ss << success << "%";
+
+    mLabelSuccess->SetText(ss.str().c_str());
+
+    // reposition elements
+    SetPositions();
 }
 
 void DialogExploreTemple::SetPositions()

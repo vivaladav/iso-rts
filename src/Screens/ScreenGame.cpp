@@ -16,6 +16,7 @@
 #include "AI/WallBuildPath.h"
 #include "GameObjects/DefensiveTower.h"
 #include "GameObjects/ObjectsDataRegistry.h"
+#include "GameObjects/Temple.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/WallGate.h"
 #include "Indicators/AttackRangeIndicator.h"
@@ -866,7 +867,20 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
     else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
     {
         mPaused = true;
-        mHUD->ShowDialogExploreTemple();
+
+        auto objs = mGameMap->GetObjects();
+
+        for(GameObject * o : objs)
+        {
+            // assign first Temple found
+            if(o->GetObjectType() == GameObject::TYPE_TEMPLE)
+            {
+                Player * p = GetGame()->GetLocalPlayer();
+                mHUD->ShowDialogExploreTemple(p, static_cast<Temple *>(o));
+
+                break;
+            }
+        }
     }
 }
 

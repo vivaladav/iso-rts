@@ -183,12 +183,12 @@ void GameHUD::ShowDialogExit()
     CenterWidget(mDialogExit);
 }
 
-void GameHUD::ShowDialogExploreTemple()
+void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
 {
     if(mDialogExploreTemple != nullptr)
         return ;
 
-    mDialogExploreTemple = new DialogExploreTemple;
+    mDialogExploreTemple = new DialogExploreTemple(player, temple);
 
     mDialogExploreTemple->SetFunctionOnClose([this]
     {

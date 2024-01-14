@@ -22,7 +22,9 @@ class IsoMap;
 class MiniMap;
 class PanelObjectActions;
 class PanelResources;
+class Player;
 class ScreenGame;
+class Temple;
 
 // UI
 class GameHUD : public sgl::sgui::Widget
@@ -41,7 +43,7 @@ public:
 
     void ShowDialogEndMission(bool won);
     void ShowDialogExit();
-    void ShowDialogExploreTemple();
+    void ShowDialogExploreTemple(Player * player, Temple * temple);
     void ShowDialogNewElement(unsigned int type);
     void HideDialogNewElement();
 

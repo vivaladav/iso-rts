@@ -21,12 +21,14 @@ namespace game
 class Game;
 class GameButton;
 class GameSliderH;
+class Player;
 class Screen;
+class Temple;
 
 class DialogExploreTemple : public sgl::sgui::Widget
 {
 public:
-    DialogExploreTemple();
+    DialogExploreTemple(Player * player, Temple * temple);
 
     void SetFunctionOnClose(const std::function<void()> & f);
 
@@ -56,6 +58,9 @@ private:
     GameSliderH * mSliderMaterial = nullptr;
     GameSliderH * mSliderBlobs = nullptr;
     GameSliderH * mSliderDiamonds = nullptr;
+
+    Player * mPlayer = nullptr;
+    Temple * mTemple = nullptr;
 };
 
 } // namespace game
