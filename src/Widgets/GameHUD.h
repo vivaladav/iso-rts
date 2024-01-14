@@ -14,6 +14,7 @@ class ButtonMinimap;
 class CameraMapController;
 class CountdownLabel;
 class DialogExit;
+class DialogExploreTemple;
 class DialogNewElement;
 class Game;
 class GameMap;
@@ -40,11 +41,15 @@ public:
 
     void ShowDialogEndMission(bool won);
     void ShowDialogExit();
+    void ShowDialogExploreTemple();
     void ShowDialogNewElement(unsigned int type);
     void HideDialogNewElement();
 
     void ShowMissionCountdown(int secs);
     void HideMissionCountdown();
+
+private:
+    void CenterWidget(sgl::sgui::Widget * w);
 
 private:
     PanelResources * mPanelRes = nullptr;
@@ -55,6 +60,7 @@ private:
     CountdownLabel * mCountdownLabel = nullptr;
 
     DialogExit * mDialogExit = nullptr;
+    DialogExploreTemple * mDialogExploreTemple = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
 
     Game * mGame = nullptr;

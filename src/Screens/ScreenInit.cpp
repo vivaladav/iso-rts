@@ -282,6 +282,37 @@ void ScreenInit::SetupTextures()
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExit, rects);
     });
 
+    // DIALOG EXPLORE TEMPLE
+    mJobs.emplace_back([this, tm]
+    {
+        std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 850, 500 },
+            { 0, 501, 770, 2 },
+            { 851, 0, 2, 400 },
+
+            // BUTTON
+            { 854, 0, 260, 44 },
+            { 854, 45, 260, 44 },
+            { 854, 90, 260, 44 },
+            { 854, 135, 260, 44 },
+
+            // ICONS
+            { 854, 180, 24, 24 },
+            { 879, 180, 24, 24 },
+            { 904, 180, 24, 24 },
+            { 929, 180, 24, 24 },
+
+            // SLIDER
+            { 854, 205, 204, 16 },
+            { 1059, 205, 10, 12 },
+            { 1070, 205, 24, 24 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExploreTemple, rects);
+    });
+
     // MAIN MENU
     mJobs.emplace_back([this, tm]
     {

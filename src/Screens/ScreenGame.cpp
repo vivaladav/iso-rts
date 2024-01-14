@@ -862,6 +862,12 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
         mPaused = true;
         mHUD->ShowDialogEndMission(false);
     }
+    // DEBUG: explore temple dialog
+    else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
+    {
+        mPaused = true;
+        mHUD->ShowDialogExploreTemple();
+    }
 }
 
 void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)

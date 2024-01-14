@@ -49,6 +49,34 @@ enum SpriteIdDialogExit : unsigned int
     IND_DIA_ICON_STEAM_PUSHED,
 };
 
+// DIALOG EXPLORE TEMPLE
+extern const char SpriteFileDialogExploreTemple[];
+
+enum SpriteIdDialogExploreTemple : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_EXTM_BACKGROUND,
+    ID_DLG_EXTM_LINE_H,
+    ID_DLG_EXTM_LINE_V,
+
+    // BUTTON
+    ID_DLG_EXTM_BTN_NORMAL,
+    ID_DLG_EXTM_BTN_DISABLED,
+    ID_DLG_EXTM_BTN_OVER,
+    ID_DLG_EXTM_BTN_PUSHED,
+
+    // ICONS
+    ID_DLG_EXTM_ICON_MONEY,
+    ID_DLG_EXTM_ICON_MATERIAL,
+    ID_DLG_EXTM_ICON_BLOBS,
+    ID_DLG_EXTM_ICON_DIAMONDS,
+
+    // SLIDER
+    ID_DLG_EXTM_SLIDER_BG,
+    ID_DLG_EXTM_SLIDER_BAR,
+    ID_DLG_EXTM_SLIDER_BTN,
+};
+
 // NEW ELEMENT DIALOG
 extern const char SpriteFileDialogNewElement[];
 

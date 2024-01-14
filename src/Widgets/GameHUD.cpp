@@ -14,6 +14,7 @@
 #include "Widgets/CountdownLabel.h"
 #include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogExit.h"
+#include "Widgets/DialogExploreTemple.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
@@ -157,15 +158,10 @@ void GameHUD::ShowDialogEndMission(bool won)
             mScreen->HandleGameWon();
         else
             mScreen->HandleGameOver();
-});
+    });
 
     // position dialog
-    auto renderer = sgl::graphic::Renderer::Instance();
-    const int rendW = renderer->GetWidth();
-    const int rendH = renderer->GetHeight();
-    const int posX = (rendW - dialog->GetWidth()) / 2;
-    const int posY = (rendH - dialog->GetHeight()) / 2;
-    dialog->SetPosition(posX, posY);
+    CenterWidget(dialog);
 }
 
 void GameHUD::ShowDialogExit()
@@ -177,19 +173,31 @@ void GameHUD::ShowDialogExit()
     mDialogExit->SetFocus();
 
     mDialogExit->SetFunctionOnClose([this]
-                                    {
-                                        // schedule dialog deletion
-                                        mDialogExit->DeleteLater();
-                                        mDialogExit = nullptr;
-                                    });
+    {
+        // schedule dialog deletion
+        mDialogExit->DeleteLater();
+        mDialogExit = nullptr;
+    });
 
     // position dialog
-    auto renderer = sgl::graphic::Renderer::Instance();
-    const int rendW = renderer->GetWidth();
-    const int rendH = renderer->GetHeight();
-    const int posX = (rendW - mDialogExit->GetWidth()) / 2;
-    const int posY = (rendH - mDialogExit->GetHeight()) / 2;
-    mDialogExit->SetPosition(posX, posY);
+    CenterWidget(mDialogExit);
+}
+
+void GameHUD::ShowDialogExploreTemple()
+{
+    if(mDialogExploreTemple != nullptr)
+        return ;
+
+    mDialogExploreTemple = new DialogExploreTemple;
+
+    mDialogExploreTemple->SetFunctionOnClose([this]
+    {
+        mDialogExploreTemple->DeleteLater();
+        mDialogExploreTemple = nullptr;
+    });
+
+    // position dialog
+    CenterWidget(mDialogExploreTemple);
 }
 
 void GameHUD::ShowDialogNewElement(unsigned int type)
@@ -242,10 +250,7 @@ void GameHUD::ShowDialogNewElement(unsigned int type)
     }
 
     // position dialog
-    auto renderer = sgl::graphic::Renderer::Instance();
-    const int posX = (renderer->GetWidth() - mDialogNewElement->GetWidth()) / 2;
-    const int posY = (renderer->GetHeight() - mDialogNewElement->GetHeight()) / 2;
-    mDialogNewElement->SetPosition(posX, posY);
+    CenterWidget(mDialogNewElement);
 }
 
 void GameHUD::HideDialogNewElement()
@@ -284,6 +289,14 @@ void GameHUD::HideMissionCountdown()
 {
     delete mCountdownLabel;
     mCountdownLabel = nullptr;
+}
+
+void GameHUD::CenterWidget(sgl::sgui::Widget * w)
+{
+    auto renderer = sgl::graphic::Renderer::Instance();
+    const int posX = (renderer->GetWidth() - w->GetWidth()) / 2;
+    const int posY = (renderer->GetHeight() - w->GetHeight()) / 2;
+    w->SetPosition(posX, posY);
 }
 
 } // namespace game

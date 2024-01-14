@@ -5,6 +5,7 @@ namespace game
 
 const char SpriteFileDialogEndMission[] = "UI/end_mission_dialog.png";
 const char SpriteFileDialogExit[] = "UI/exit_dialog.png";
+const char SpriteFileDialogExploreTemple[] = "UI/dialog_explore_temple.png";
 const char SpriteFileDialogNewElement[] = "UI/new_element_dalog.png";
 const char SpriteFileDialogNewElementExp[] = "UI/new_element_dalog-exp.png";
 const char SpriteFileFactionSelection[] = "UI/faction_selection.png";
