@@ -8,11 +8,12 @@
 namespace game
 {
 
-class WallIndicator;
+class CellProgressBar;
 class GameMap;
 class IsoMap;
 class ScreenGame;
 class Unit;
+class WallIndicator;
 
 class WallBuildPath
 {
@@ -83,6 +84,8 @@ private:
     std::function<void()> mOnCompleted;
     std::function<void()> mOnFailed;
     std::function<void()> mOnAborted;
+
+    CellProgressBar * mProgressBar = nullptr;
 
     Unit * mUnit = nullptr;
 

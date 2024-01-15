@@ -171,8 +171,6 @@ public:
 private:
     void ClearCell(GameMapCell & gcell);
 
-    void StopCellChange(GameMapCell & gcell);
-
     int DefineCellType(unsigned int ind, const GameMapCell & cell);
 
     void UpdateLinkedCells(Player * player);

@@ -107,9 +107,9 @@ void WallBuildPath::InitNextBuild()
     // TODO get conquer time from unit
     constexpr float TIME_BUILD = 2.f;
 
-    CellProgressBar * pb = mScreen->CreateProgressBar(nextCell, TIME_BUILD, player->GetFaction());
+    mProgressBar = mScreen->CreateProgressBar(nextCell, TIME_BUILD, player->GetFaction());
 
-    pb->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
+    mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
         const GameObjectTypeId blockType = mIndicators[mNextCell - 1]->GetBlockType();
         mGameMap->BuildWall(nextCell, player, blockType);
@@ -291,11 +291,10 @@ void WallBuildPath::InstantAbort()
         const unsigned int nextInd = mCells[mNextCell];
         const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
         const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-        const Cell2D cell(nextRow, nextCol);
 
         mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-        mScreen->CancelProgressBar(cell);
+        mScreen->CancelProgressBar(mProgressBar);
     }
 
     // clear indicators

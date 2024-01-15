@@ -71,7 +71,6 @@ public:
     void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
     void CancelProgressBar(CellProgressBar * pb);
-    void CancelProgressBar(const Cell2D & cell);
     CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction);
 
     void ClearObjectAction(GameObject * obj);

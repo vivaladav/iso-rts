@@ -69,11 +69,10 @@ void ConquerPath::InstantAbort()
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const Cell2D cell(nextRow, nextCol);
-
-    mScreen->CancelProgressBar(cell);
 
     mGameMap->SetCellChanging(nextRow, nextCol, false);
+
+    mScreen->CancelProgressBar(mProgressBar);
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -166,9 +165,9 @@ void ConquerPath::InitNextConquest()
     // TODO get conquer time from unit
     constexpr float TIME_CONQ_CELL = 1.f;
 
-    CellProgressBar * pb = mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player->GetFaction());
+    mProgressBar = mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player->GetFaction());
 
-    pb->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
+    mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
         mGameMap->ConquerCell(nextCell, player);
 

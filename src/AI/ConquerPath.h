@@ -6,6 +6,7 @@
 namespace game
 {
 
+class CellProgressBar;
 class ConquestIndicator;
 class GameMap;
 class IsoMap;
@@ -72,6 +73,8 @@ private:
     std::function<void()> mOnCompleted;
     std::function<void()> mOnFailed;
     std::function<void()> mOnAborted;
+
+    CellProgressBar * mProgressBar = nullptr;
 
     Unit * mUnit = nullptr;
 

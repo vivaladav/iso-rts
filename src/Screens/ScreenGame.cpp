@@ -289,26 +289,6 @@ void ScreenGame::CancelProgressBar(CellProgressBar * pb)
     }
 }
 
-void ScreenGame::CancelProgressBar(const Cell2D & cell)
-{
-    const int cellInd = CellToIndex(cell);
-
-    // delete progress bar
-    auto it = mProgressBars.find(cellInd);
-
-    if(it != mProgressBars.end())
-    {
-        delete it->second;
-        mProgressBars.erase(it);
-    }
-
-    // remove index from bars to delete (unlikely, but just in case)
-    auto it2 = std::find(mProgressBarsToDelete.begin(), mProgressBarsToDelete.end(), cellInd);
-
-    if(it2 != mProgressBarsToDelete.end())
-        mProgressBarsToDelete.erase(it2);
-}
-
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
 {
     CellProgressBar *  pb = new CellProgressBar(faction, 0.f, time);
@@ -713,7 +693,7 @@ void ScreenGame::CreateUI()
                     // building a new unit
                     if(objActId == GameObjectActionId::BUILD_UNIT)
                     {
-                        CancelProgressBar(act.actionCell);
+                        CancelProgressBar(act.progressBar);
 
                         selObj->SetCurrentAction(GameObjectActionId::IDLE);
                         selObj->SetBusy(false);
@@ -730,7 +710,10 @@ void ScreenGame::CreateUI()
                     else if(objActId == GameObjectActionId::BUILD_WALL)
                         mGameMap->AbortBuildWalls(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
+                    {
                         mGameMap->AbortConquerStructure(act.actionCell, act.target);
+                        CancelProgressBar(act.progressBar);
+                    }
                     else if(objActId == GameObjectActionId::ATTACK)
                     {
                         auto unit = static_cast<Unit *>(selObj);

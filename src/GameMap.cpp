@@ -1034,9 +1034,6 @@ void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target
             mCells[ind].changing = false;
         }
     }
-
-    // stop progress bar
-    mScreenGame->CancelProgressBar(unitCell);
 }
 
 void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
@@ -1809,14 +1806,6 @@ void GameMap::ClearCell(GameMapCell & gcell)
     }
 
     gcell.currType = EMPTY;
-}
-
-void GameMap::StopCellChange(GameMapCell & gcell)
-{
-    gcell.changing = false;
-
-    const Cell2D cell(gcell.row, gcell.col);
-    mScreenGame->CancelProgressBar(cell);
 }
 
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
