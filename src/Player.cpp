@@ -152,6 +152,32 @@ void Player::InitVisibility(int rows, int cols)
 
     mVisMap.resize(size);
     mVisMap.assign(size, 0);
+
+    mVisMapRows = rows;
+    mVisMapCols = cols;
+}
+
+bool Player::IsObjectVisible(const GameObject * obj) const
+{
+    const unsigned int tlR = obj->GetRow1();
+    const unsigned int tlC = obj->GetCol1();
+    const unsigned int brR = obj->GetRow0();
+    const unsigned int brC = obj->GetCol0();
+
+    for(unsigned int r = tlR; r <= brR; ++r)
+    {
+        const unsigned int ind0 = r * mVisMapCols;
+
+        for(unsigned int c = tlC; r <= brC; ++c)
+        {
+            const unsigned int ind = ind0 + c;
+
+            if(mVisMap[ind])
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void Player::AddVisibilityToAll()

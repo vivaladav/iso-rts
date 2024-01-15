@@ -83,6 +83,12 @@ GameMap::~GameMap()
         delete cp;
 }
 
+bool GameMap::IsObjectVisibleToLocalPlayer(const GameObject * obj) const
+{
+    Player * p = mGame->GetLocalPlayer();
+    return p->IsObjectVisible(obj);
+}
+
 bool GameMap::IsCellVisibleToLocalPlayer(unsigned int ind) const
 {
     Player * p = mGame->GetLocalPlayer();

@@ -69,6 +69,7 @@ public:
     // visibility map
     void InitVisibility(int rows, int cols);
     bool IsCellVisible(unsigned int ind) const;
+    bool IsObjectVisible(const GameObject *obj) const;
     void AddVisibility(unsigned int ind);
     void RemVisibility(unsigned int ind);
     void AddVisibilityToAll();
@@ -142,6 +143,8 @@ private:
     std::vector<ResourceGenerator *> mResGenerators;
 
     std::vector<int> mVisMap;
+    unsigned int mVisMapRows = 0;
+    unsigned int mVisMapCols = 0;
 
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
