@@ -194,6 +194,8 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
     {
         mDialogExploreTemple->DeleteLater();
         mDialogExploreTemple = nullptr;
+
+        mScreen->SetPause(false);
     });
 
     // position dialog

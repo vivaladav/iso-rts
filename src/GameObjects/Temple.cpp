@@ -24,10 +24,10 @@ Temple::Temple()
 
 void Temple::SetInvestedResources(int money, int material, int blobs, int diamonds)
 {
-    const int maxMoney = 9999;
-    const int maxMaterial = 9999;
-    const int maxBlobs = 999;
-    const int maxDiamonds = 999;
+    const int maxMoney = GetMaxInvestableMoney();
+    const int maxMaterial = GetMaxInvestableMaterial();
+    const int maxBlobs = GetMaxInvestableBlobs();
+    const int maxDiamonds = GetMaxInvestableDiamonds();
 
     if(money > maxMoney)
         money = maxMoney;
@@ -47,8 +47,8 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     const float minSuccess = 0.f;
 
     // TIME
-    const float timeInfluenceMoney = 35.f;
-    const float timeInfluenceMaterial = 35.f;
+    const float timeInfluenceMoney = 40.f;
+    const float timeInfluenceMaterial = 30.f;
     const float timeInfluenceBlobs = 15.f;
     const float timeInfluenceDiamonds = 15.f;
 
@@ -65,10 +65,10 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
         mExplorationTime = minTime;
 
     // SUCCESS
-    const float successInfluenceMoney = 15.f;
+    const float successInfluenceMoney = 25.f;
     const float successInfluenceMaterial = 15.f;
-    const float successInfluenceBlobs = 35.f;
-    const float successInfluenceDiamonds = 35.f;
+    const float successInfluenceBlobs = 30.f;
+    const float successInfluenceDiamonds = 30.f;
 
     const float successCostMoney = successInfluenceMoney / maxMoney;
     const float successCostMaterial = successInfluenceMaterial / maxMaterial;

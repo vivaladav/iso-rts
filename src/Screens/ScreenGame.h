@@ -89,6 +89,9 @@ public:
     MiniMap * GetMiniMap() const;
     void SetMiniMapEnabled(bool val);
 
+    bool GetPaused() const;
+    void SetPause(bool paused);
+
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
 
@@ -198,5 +201,8 @@ private:
 
     bool mPaused = false;
 };
+
+inline bool ScreenGame::GetPaused() const { return mPaused; }
+inline void ScreenGame::SetPause(bool paused) { mPaused = paused; }
 
 } // namespace game
