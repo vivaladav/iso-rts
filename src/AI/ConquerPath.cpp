@@ -11,6 +11,7 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/CellProgressBar.h"
 
 #include <cmath>
 #include <unordered_set>
@@ -165,8 +166,9 @@ void ConquerPath::InitNextConquest()
     // TODO get conquer time from unit
     constexpr float TIME_CONQ_CELL = 1.f;
 
-    mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player,
-                               [this, nextCell, player, layerOverlay]
+    CellProgressBar * pb = mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player->GetFaction());
+
+    pb->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
         mGameMap->ConquerCell(nextCell, player);
 

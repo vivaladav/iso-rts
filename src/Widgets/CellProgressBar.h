@@ -12,7 +12,6 @@ enum PlayerFaction : unsigned int;
 class CellProgressBar : public sgl::sgui::ProgressBar
 {
 public:
-    CellProgressBar(PlayerFaction faction, sgl::sgui::Widget * parent = nullptr);
     CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent = nullptr);
 
 private:

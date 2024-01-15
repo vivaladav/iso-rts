@@ -10,14 +10,6 @@
 namespace game
 {
 
-CellProgressBar::CellProgressBar(PlayerFaction faction, sgl::sgui::Widget * parent)
-    : CellProgressBar(faction, 0, 100.f, parent)
-{
-    SetCamera(sgl::graphic::Camera::GetDefaultCamera());
-
-    HandleProgressUpdate();
-}
-
 CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent)
     : sgl::sgui::ProgressBar(min, max, parent)
 {

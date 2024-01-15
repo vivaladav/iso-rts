@@ -12,6 +12,7 @@
 #include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/CellProgressBar.h"
 
 #include <cmath>
 
@@ -106,8 +107,9 @@ void WallBuildPath::InitNextBuild()
     // TODO get conquer time from unit
     constexpr float TIME_BUILD = 2.f;
 
-    mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
-                               [this, nextCell, player, layerOverlay]
+    CellProgressBar * pb = mScreen->CreateProgressBar(nextCell, TIME_BUILD, player->GetFaction());
+
+    pb->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
         const GameObjectTypeId blockType = mIndicators[mNextCell - 1]->GetBlockType();
         mGameMap->BuildWall(nextCell, player, blockType);

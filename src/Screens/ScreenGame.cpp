@@ -309,20 +309,28 @@ void ScreenGame::CancelProgressBar(const Cell2D & cell)
         mProgressBarsToDelete.erase(it2);
 }
 
-void ScreenGame::CreateProgressBar(const Cell2D & cell, float time, Player * player,
-                                  const std::function<void()> & onCompleted)
+CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
 {
-    CellProgressBar * pb = CreateProgressBar(cell, time, player->GetFaction());
+    CellProgressBar *  pb = new CellProgressBar(faction, 0.f, time);
+    pb->SetValue(0.f);
+    auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
+    const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
+    const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
+    pb->SetPosition(pbX, pbY);
 
-    // TODO make widgets accept multiple callback functions so that this code can be changed
-    // returning the ProgressBar and letting the caller set another callback while the
-    // callback handling the deletion is added here
-    pb->SetFunctionOnCompleted([this, cell, onCompleted]
+    const int cellInd = CellToIndex(cell);
+    mProgressBars.emplace(cellInd, pb);
+
+    // progress bar visibility depends on local player's visibility map
+    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
+
+    // schedule to delete progress bar when done
+    pb->AddFunctionOnCompleted([this, cell]
     {
-        onCompleted();
-
         mProgressBarsToDelete.emplace_back(CellToIndex(cell));
     });
+
+    return pb;
 }
 
 void ScreenGame::ClearObjectAction(GameObject * obj)
@@ -941,24 +949,6 @@ void ScreenGame::OnWindowMouseLeft(sgl::graphic::WindowEvent & event)
     mCamController->HandleMouseLeftWindow();
 }
 
-CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction)
-{
-    auto pb = new CellProgressBar(playerFaction, 0.f, time);
-    pb->SetValue(0.f);
-    auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
-    const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
-    const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
-    pb->SetPosition(pbX, pbY);
-
-    const int cellInd = CellToIndex(cell);
-    mProgressBars.emplace(cellInd, pb);
-
-    // progress bar visibility depends on local player's visibility map
-    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
-
-    return pb;
-}
-
 void ScreenGame::UpdateProgressBars(float delta)
 {
     for(auto pb : mProgressBars)
@@ -1308,12 +1298,11 @@ bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * 
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, player, gen, type, OnDone]
+    pb->AddFunctionOnCompleted([this, cell, player, gen, type, OnDone]
     {
         gen->SetCurrentAction(GameObjectActionId::IDLE);
 
         mGameMap->CreateUnit(type, gen, cell, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         // add unit to map if cell is visible to local player
         if(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col))
@@ -1357,10 +1346,9 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, start, end, player, unit, OnDone]
+    pb->AddFunctionOnCompleted([this, start, end, player, unit, OnDone]
     {
         mGameMap->ConquerStructure(start, end, player);
-        mProgressBarsToDelete.emplace_back(CellToIndex(start));
 
         unit->ConsumeEnergy(CONQUER_STRUCTURE);
 
@@ -1410,10 +1398,9 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     // TODO get time from unit
     CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, unit, cellTarget, player, st, OnDone]
+    pb->AddFunctionOnCompleted([this, unit, cellTarget, player, st, OnDone]
     {
         mGameMap->BuildStructure(cellTarget, player, st);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cellTarget));
 
         unit->ConsumeEnergy(BUILD_STRUCTURE);
 
@@ -1467,10 +1454,9 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player, const std::
     // create and init progress bar
     CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
 
-    pb->SetFunctionOnCompleted([this, cell, OnDone]
+    pb->AddFunctionOnCompleted([this, cell, OnDone]
     {
         mGameMap->UpgradeUnit(cell);
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
 
         OnDone();
     });

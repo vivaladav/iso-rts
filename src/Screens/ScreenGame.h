@@ -72,8 +72,7 @@ public:
 
     void CancelProgressBar(CellProgressBar * pb);
     void CancelProgressBar(const Cell2D & cell);
-    void CreateProgressBar(const Cell2D & cell, float time, Player * player,
-                           const std::function<void()> & onCompleted);
+    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction);
 
     void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
@@ -105,7 +104,6 @@ private:
 
     void LoadMapFile();
 
-    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
     void UpdateProgressBars(float delta);
 
     void UpdateAI(float delta);
