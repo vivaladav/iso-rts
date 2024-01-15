@@ -152,8 +152,7 @@ private:
 
     std::vector<Player *> mAiPlayers;
 
-    std::unordered_map<int, CellProgressBar *> mProgressBars;
-    std::vector<int> mProgressBarsToDelete;
+    std::vector<CellProgressBar *> mProgressBars;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;

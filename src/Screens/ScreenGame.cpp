@@ -274,19 +274,14 @@ void ScreenGame::Render()
 
 void ScreenGame::CancelProgressBar(CellProgressBar * pb)
 {
-    auto it = mProgressBars.begin();
+    // remove from update list
+    auto it = std::find(mProgressBars.begin(), mProgressBars.end(), pb);
 
-    while(it != mProgressBars.end())
-    {
-        if(it->second == pb)
-        {
+    if(it != mProgressBars.end())
             mProgressBars.erase(it);
-            delete pb;
-            break;
-        }
 
-        ++it;
-    }
+    // delete
+    pb->DeleteLater();
 }
 
 CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
@@ -298,16 +293,15 @@ CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time,
     const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
     pb->SetPosition(pbX, pbY);
 
-    const int cellInd = CellToIndex(cell);
-    mProgressBars.emplace(cellInd, pb);
+    mProgressBars.emplace_back(pb);
 
     // progress bar visibility depends on local player's visibility map
     pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
 
     // schedule to delete progress bar when done
-    pb->AddFunctionOnCompleted([this, cell]
+    pb->AddFunctionOnCompleted([this, pb]
     {
-        mProgressBarsToDelete.emplace_back(CellToIndex(cell));
+        CancelProgressBar(pb);
     });
 
     return pb;
@@ -935,22 +929,7 @@ void ScreenGame::OnWindowMouseLeft(sgl::graphic::WindowEvent & event)
 void ScreenGame::UpdateProgressBars(float delta)
 {
     for(auto pb : mProgressBars)
-        pb.second->IncValue(delta);
-
-    // delete progress bars when they finish
-    while(!mProgressBarsToDelete.empty())
-    {
-        const int cellInd = mProgressBarsToDelete.back();
-        mProgressBarsToDelete.pop_back();
-
-        auto it = mProgressBars.find(cellInd);
-
-        if(it != mProgressBars.end())
-        {
-            delete it->second;
-            mProgressBars.erase(it);
-        }
-    }
+        pb->IncValue(delta);
 }
 
 void ScreenGame::UpdateAI(float delta)
