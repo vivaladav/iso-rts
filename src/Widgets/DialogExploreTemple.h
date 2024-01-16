@@ -30,7 +30,8 @@ class DialogExploreTemple : public sgl::sgui::Widget
 public:
     DialogExploreTemple(Player * player, Temple * temple);
 
-    void SetFunctionOnClose(const std::function<void()> & f);
+    void SetFunctionOnCancel(const std::function<void()> & f);
+    void SetFunctionOnExplore(const std::function<void()> & f);
 
 protected:
     void HandlePositionChanged() override;

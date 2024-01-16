@@ -286,9 +286,14 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     OnInvestmentChanged();
 }
 
-void DialogExploreTemple::SetFunctionOnClose(const std::function<void()> & f)
+void DialogExploreTemple::SetFunctionOnCancel(const std::function<void()> & f)
 {
     mBtnAbort->AddOnClickFunction(f);
+}
+
+void DialogExploreTemple::SetFunctionOnExplore(const std::function<void()> & f)
+{
+    mBtnExplore->AddOnClickFunction(f);
 }
 
 void DialogExploreTemple::HandlePositionChanged()

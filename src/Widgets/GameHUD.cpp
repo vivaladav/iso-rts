@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "GameObjects/GameObject.h"
 #include "GameObjects/Structure.h"
+#include "GameObjects/Temple.h"
 #include "GameObjects/Unit.h"
 #include "Screens/ScreenGame.h"
 #include "Widgets/ButtonMinimap.h"
@@ -200,16 +201,43 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
 
     mDialogExploreTemple = new DialogExploreTemple(player, temple);
 
-    mDialogExploreTemple->SetFunctionOnClose([this]
+    mDialogExploreTemple->SetFunctionOnCancel([this]
     {
-        mDialogExploreTemple->DeleteLater();
-        mDialogExploreTemple = nullptr;
+        HideDialogExploreTemple();
+    });
 
-        mScreen->SetPause(false);
+    mDialogExploreTemple->SetFunctionOnExplore([this, temple]
+    {
+        HideDialogExploreTemple();
+
+        // start progress bar
+        const int time = temple->GetExplorationTime();
+        const Cell2D cell(temple->GetRow1(), temple->GetCol1());
+        const PlayerFaction faction = mScreen->GetGame()->GetLocalPlayerFaction();
+
+        GameMapProgressBar * pb = CreateProgressBarInCell(cell, time, faction);
+
+        pb->AddFunctionOnCompleted([this]
+        {
+
+        });
     });
 
     // position dialog
     CenterWidget(mDialogExploreTemple);
+}
+
+void GameHUD::HideDialogExploreTemple()
+{
+    if(nullptr == mDialogExploreTemple)
+        return ;
+
+    // delete dialog
+    mDialogExploreTemple->DeleteLater();
+    mDialogExploreTemple = nullptr;
+
+    // un-pause game
+    mScreen->SetPause(false);
 }
 
 void GameHUD::ShowDialogNewElement(unsigned int type)

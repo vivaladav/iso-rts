@@ -1244,6 +1244,19 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     if(!mGameMap->CanConquerStructure(unit, end, player))
         return false;
 
+    // handle special case: TEMPLE
+    if(player == GetGame()->GetLocalPlayer())
+    {
+        const GameMapCell & gameCell = mGameMap->GetCell(end.row, end.col);
+        GameObject * obj = gameCell.objTop;
+
+        if(obj != nullptr && obj->GetObjectType() == GameObject::TYPE_TEMPLE)
+        {
+            mHUD->ShowDialogExploreTemple(player, static_cast<Temple *>(obj));
+            return false;
+        }
+    }
+
     // start conquest
     mGameMap->StartConquerStructure(start, end, player);
 

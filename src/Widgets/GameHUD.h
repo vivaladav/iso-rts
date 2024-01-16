@@ -44,6 +44,7 @@ public:
     void ShowDialogEndMission(bool won);
     void ShowDialogExit();
     void ShowDialogExploreTemple(Player * player, Temple * temple);
+    void HideDialogExploreTemple();
     void ShowDialogNewElement(unsigned int type);
     void HideDialogNewElement();
 
