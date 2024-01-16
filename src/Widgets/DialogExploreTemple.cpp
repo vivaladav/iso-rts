@@ -17,6 +17,7 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/Label.h>
+#include <sgl/sgui/TextArea.h>
 
 #include <sstream>
 
@@ -37,7 +38,7 @@ public:
         using namespace sgl;
 
         const char * fileFont = "Lato-Regular.ttf";
-        const int size = 24;
+        const int size = 22;
 
         auto fm = graphic::FontManager::Instance();
         graphic::Font * fnt = fm->GetFont(fileFont, size, graphic::Font::NORMAL);
@@ -61,8 +62,9 @@ public:
     }
 };
 
-// ===== DIALOG EXPLORE =====
+// ===== DIALOG EXPLORE TEMPLE =====
 const int marginSide = 40;
+const int marginButtonsB = 20;
 
 DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     : mPlayer(player)
@@ -273,7 +275,6 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     mBtnExplore->SetLabel("EXPLORE");
 
     // position buttons
-    const int marginButtonsB = 20;
     const int button1X0 = marginSide + (blockW - mBtnAbort->GetWidth()) / 2;
     const int buttonsY = h - marginButtonsB - mBtnAbort->GetHeight();
 
@@ -390,6 +391,202 @@ void DialogExploreTemple::SetPositions()
     // LABEL SUCCESS
     const int labelSuccessX = headerSuccessX + (mHeaderSuccess->GetWidth() - mLabelSuccess->GetWidth()) / 2  - x0;
     mLabelSuccess->SetPosition(labelSuccessX, labelTimeY);
+}
+
+// ===== DIALOG EXPLORE TEMPLE OUTCOME =====
+DialogExploreTempleOutcome::DialogExploreTempleOutcome(Player * player, Temple * temple)
+    : mPlayer(player)
+    , mTemple(temple)
+{
+    using namespace sgl;
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+
+    const char * headerFontFile = "Lato-Regular.ttf";
+    const int headerFontSize = 22;
+    const char * labelFontFile = "Lato-Regular.ttf";
+    const int labelFontSize = 22;
+    const unsigned int colorHeader = 0x9dcbe2ff;
+    const unsigned int colorLabel = 0x70a7c2ff;
+
+    const int marginPanel1V = 85;
+
+    auto fontLabel = fm->GetFont(labelFontFile, labelFontSize, graphic::Font::NORMAL);
+
+    const Temple::ExplorationOutcomeCategory oc = temple->GetExplorationOutcomeCategory();
+    Temple::ExplorationOutcome o1;
+    Temple::ExplorationOutcome o2;
+    temple->GetExplorationOutcomeCouple(o1, o2);
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_BACKGROUND);
+    mBg = new graphic::Image(tex);
+    RegisterRenderable(mBg);
+
+    const int w = mBg->GetWidth();
+    const int h = mBg->GetHeight();
+    SetSize(w, h);
+
+    // TITLE
+    auto fontTitle = fm->GetFont("Lato-Regular.ttf", 32, graphic::Font::NORMAL);
+
+    sgui::Label * title = new sgui::Label("TEMPLE EXPLORATION OUTCOME", fontTitle, this);
+
+    const int titleX = (w - title->GetWidth()) / 2;
+    const int titleY = 10;
+    title->SetPosition(titleX, titleY);
+    title->SetColor(0xf1f3f4ff);
+
+    // EXPLANATION
+    const int descAreaW = w - (marginSide * 2);
+    const int descAreaH = 115;
+
+    auto textDesc = new sgui::TextArea(descAreaW, descAreaH, fontLabel, false, this);
+    textDesc->SetColor(colorLabel);
+
+    const int textX = marginSide;
+    const int textY = marginPanel1V;
+    textDesc->SetPosition(textX, textY);
+
+    // EXPLORATION GAVE NOTHING
+    if(oc == Temple::EXP_OUTC_NOTHING)
+    {
+        const char * text = "The exploration failed, but at least nothing bad happened!\n\n"
+                            "You can try again, good luck.";
+        textDesc->SetText(text);
+
+        mBtnClose = new ButtonExploreTemple(this);
+        mBtnClose->SetLabel("LEAVE");
+
+        const int buttonX = (w - mBtnClose->GetWidth()) / 2;
+        const int buttonY = h - marginButtonsB - mBtnClose->GetHeight();
+        mBtnClose->SetPosition(buttonX, buttonY);
+    }
+    // EXPLORATION GAVE REWARD OR PUNISHMENT
+    else
+    {
+        // VERTICAL BAR
+        tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_LINE_V);
+        mLine = new graphic::Image(tex);
+        RegisterRenderable(mLine);
+
+        // -- BUTTONS --
+        mBtnOutcome1 = new ButtonExploreTemple(this);
+        mBtnOutcome2 = new ButtonExploreTemple(this);
+
+        // -- HEADER --
+        auto fontHeader = fm->GetFont(headerFontFile, headerFontSize, graphic::Font::NORMAL);
+
+        // -- OUTCOME TEXT --
+        const int outcAreaW = w / 2 - (marginSide * 2);
+        const int outcAreaH = 150;
+
+        const char * desc1 = temple->GetExplorationOutcomeString(o1);
+        mDescOutc1 = new sgui::TextArea(outcAreaW, outcAreaH, desc1, fontLabel, false, this);
+        mDescOutc1->SetColor(colorLabel);
+
+        const char * desc2 = temple->GetExplorationOutcomeString(o2);
+        mDescOutc2 = new sgui::TextArea(outcAreaW, outcAreaH, desc2, fontLabel, false, this);
+        mDescOutc2->SetColor(colorLabel);
+
+        // GOOD OUTCOME
+        if(oc == Temple::EXP_OUTC_GOOD)
+        {
+            const char * text = "The exploration revealed a powerful talisman that can be used to help your mission.\n"
+                                "Pick your reward between these 2.";
+            textDesc->SetText(text);
+
+            mHeaderOutc1 = new graphic::Text("REWARD 1", fontHeader);
+            mHeaderOutc2 = new graphic::Text("REWARD 2", fontHeader);
+
+            mBtnOutcome1->SetLabel("REWARD 1");
+            mBtnOutcome2->SetLabel("REWARD 2");
+        }
+        // BAD OUTCOME
+        else
+        {
+            const char * text = "The exploration failed and unlocked a powerful curse that will punish your attempt.\n"
+                                "Pick your punishment between these 2.";
+            textDesc->SetText(text);
+
+            mHeaderOutc1 = new graphic::Text("CURSE 1", fontHeader);
+            mHeaderOutc2 = new graphic::Text("CURSE 2", fontHeader);
+
+            mBtnOutcome1->SetLabel("CURSE 1");
+            mBtnOutcome2->SetLabel("CURSE 2");
+        }
+
+        RegisterRenderable(mHeaderOutc1);
+        RegisterRenderable(mHeaderOutc2);
+
+        // position buttons
+        const int blockW = (w - (marginSide * 2)) / 2;
+        const int button1X0 = marginSide + (blockW - mBtnOutcome1->GetWidth()) / 2;
+        const int buttonsY = h - marginButtonsB - mBtnOutcome1->GetHeight();
+
+        mBtnOutcome1->SetPosition(button1X0, buttonsY);
+
+        const int button2X0 = marginSide + blockW + (blockW - mBtnOutcome2->GetWidth()) / 2;
+        mBtnOutcome2->SetPosition(button2X0, buttonsY);
+    }
+}
+
+void DialogExploreTempleOutcome::SetFunctionOnClose(const std::function<void()> & f)
+{
+    if(mBtnClose)
+        mBtnClose->AddOnClickFunction(f);
+}
+
+void DialogExploreTempleOutcome::SetFunctionOnOutcome1(const std::function<void()> & f)
+{
+    if(mBtnOutcome1)
+        mBtnOutcome1->AddOnClickFunction(f);
+}
+
+void DialogExploreTempleOutcome::SetFunctionOnOutcome2(const std::function<void()> & f)
+{
+    if(mBtnOutcome2)
+        mBtnOutcome2->AddOnClickFunction(f);
+}
+
+void DialogExploreTempleOutcome::HandlePositionChanged()
+{
+    SetPositions();
+}
+
+void DialogExploreTempleOutcome::SetPositions()
+{
+    const int x0 = GetScreenX();
+    const int y0 = GetScreenY();
+    const int w = mBg->GetWidth();
+    const int h = mBg->GetHeight();
+    const int blockW = (w - (marginSide * 2)) / 2;
+
+    // BACKGROUND
+    mBg->SetPosition(x0, y0);
+
+    // VERTICAL LINE
+    if(mLine != nullptr)
+    {
+        const int lineX = x0 + (w - mLine->GetWidth()) / 2;
+        const int line1Y = y0 + h - marginButtonsB - mLine->GetHeight();
+        mLine->SetPosition(lineX, line1Y);
+
+        const int header1X = x0 + marginSide;
+        const int headersY = y0 + 209;
+        mHeaderOutc1->SetPosition(header1X, headersY);
+
+        const int header2X = lineX + mLine->GetWidth() + marginSide;
+        mHeaderOutc2->SetPosition(header2X, headersY);
+
+        const int desc1X = header1X - x0;
+        const int descY = 255;
+        mDescOutc1->SetPosition(desc1X, descY);
+
+        const int desc2X = header2X - x0;
+        mDescOutc2->SetPosition(desc2X, descY);
+    }
 }
 
 } // namespace game

@@ -290,7 +290,7 @@ void ScreenInit::SetupTextures()
             // BACKGROUND
             { 0, 0, 850, 500 },
             { 0, 501, 770, 2 },
-            { 851, 0, 2, 400 },
+            { 851, 0, 2, 270 },
 
             // BUTTON
             { 854, 0, 260, 44 },

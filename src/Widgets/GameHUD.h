@@ -15,6 +15,7 @@ class CameraMapController;
 class CountdownLabel;
 class DialogExit;
 class DialogExploreTemple;
+class DialogExploreTempleOutcome;
 class DialogNewElement;
 class GameMapProgressBar;
 class MiniMap;
@@ -54,6 +55,9 @@ public:
     GameMapProgressBar * CreateProgressBarInCell(const Cell2D & cell, float time, PlayerFaction faction);
 
 private:
+    void ShowDialogExploreTempleOutcome(Player * player, Temple * temple);
+    void HideDialogExploreTempleOutcome();
+
     GameMapProgressBar * CreateProgressBar(float time, PlayerFaction faction);
 
     void CenterWidget(sgl::sgui::Widget * w);
@@ -68,6 +72,7 @@ private:
 
     DialogExit * mDialogExit = nullptr;
     DialogExploreTemple * mDialogExploreTemple = nullptr;
+    DialogExploreTempleOutcome * mDialogExploreTempleOutcome = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
 
     ScreenGame * mScreen = nullptr;

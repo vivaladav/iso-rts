@@ -12,7 +12,11 @@ namespace sgl
         class Text;
     }
 
-    namespace sgui { class Label; }
+    namespace sgui
+    {
+        class Label;
+        class TextArea;
+    }
 }
 
 namespace game
@@ -25,6 +29,7 @@ class Player;
 class Screen;
 class Temple;
 
+// == DIALOG EXPLORE TEMPLE ==
 class DialogExploreTemple : public sgl::sgui::Widget
 {
 public:
@@ -59,6 +64,40 @@ private:
     GameSliderH * mSliderMaterial = nullptr;
     GameSliderH * mSliderBlobs = nullptr;
     GameSliderH * mSliderDiamonds = nullptr;
+
+    Player * mPlayer = nullptr;
+    Temple * mTemple = nullptr;
+};
+
+// == DIALOG EXPLORE TEMPLE OUTCOME ==
+class DialogExploreTempleOutcome : public sgl::sgui::Widget
+{
+public:
+    DialogExploreTempleOutcome(Player * player, Temple * temple);
+
+    void SetFunctionOnClose(const std::function<void()> & f);
+    void SetFunctionOnOutcome1(const std::function<void()> & f);
+    void SetFunctionOnOutcome2(const std::function<void()> & f);
+
+protected:
+    void HandlePositionChanged() override;
+
+private:
+    void SetPositions();
+
+private:
+    sgl::graphic::Image * mBg = nullptr;
+    sgl::graphic::Image * mLine = nullptr;
+
+    GameButton * mBtnClose = nullptr;
+    GameButton * mBtnOutcome1 = nullptr;
+    GameButton * mBtnOutcome2 = nullptr;
+
+    sgl::graphic::Text * mHeaderOutc1 = nullptr;
+    sgl::graphic::Text * mHeaderOutc2 = nullptr;
+
+    sgl::sgui::TextArea * mDescOutc1 = nullptr;
+    sgl::sgui::TextArea * mDescOutc2 = nullptr;
 
     Player * mPlayer = nullptr;
     Temple * mTemple = nullptr;

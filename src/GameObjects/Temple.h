@@ -74,7 +74,7 @@ public:
 
     void Explore();
     ExplorationOutcomeCategory GetExplorationOutcomeCategory() const;
-    void GetExplorationOucomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2);
+    void GetExplorationOutcomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2);
     const char * GetExplorationOutcomeString(ExplorationOutcome o) const;
 
     int GetMaxInvestableMoney() const;
@@ -109,7 +109,7 @@ inline Temple::ExplorationOutcomeCategory Temple::GetExplorationOutcomeCategory(
     return mOutcomeCat;
 }
 
-inline void Temple::GetExplorationOucomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2)
+inline void Temple::GetExplorationOutcomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2)
 {
     o1 = mOutcome1;
     o2 = mOutcome2;

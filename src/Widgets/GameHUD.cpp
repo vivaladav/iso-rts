@@ -207,20 +207,24 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
         HideDialogExploreTemple();
     });
 
-    mDialogExploreTemple->SetFunctionOnExplore([this, temple]
+    mDialogExploreTemple->SetFunctionOnExplore([this, player, temple]
     {
         HideDialogExploreTemple();
 
         // start progress bar
         const int time = temple->GetExplorationTime();
         const Cell2D cell(temple->GetRow1(), temple->GetCol1());
-        const PlayerFaction faction = mScreen->GetGame()->GetLocalPlayerFaction();
+        const PlayerFaction faction = player->GetFaction();
 
         GameMapProgressBar * pb = CreateProgressBarInCell(cell, time, faction);
 
-        pb->AddFunctionOnCompleted([this]
+        pb->AddFunctionOnCompleted([this, player, temple]
         {
+            temple->Explore();
 
+            mScreen->CenterCameraOverObject(temple);
+
+            ShowDialogExploreTempleOutcome(player, temple);
         });
     });
 
@@ -353,6 +357,52 @@ GameMapProgressBar * GameHUD::CreateProgressBarInCell(const Cell2D & cell, float
     pb->SetVisible(mScreen->mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
 
     return pb;
+}
+
+void GameHUD::ShowDialogExploreTempleOutcome(Player * player, Temple * temple)
+{
+    if(mDialogExploreTempleOutcome != nullptr)
+        return ;
+
+    mScreen->SetPause(true);
+
+    mDialogExploreTempleOutcome = new DialogExploreTempleOutcome(player, temple);
+
+    mDialogExploreTempleOutcome->SetFunctionOnClose([this]
+    {
+        HideDialogExploreTempleOutcome();
+    });
+
+    mDialogExploreTempleOutcome->SetFunctionOnOutcome1([this]
+    {
+        HideDialogExploreTempleOutcome();
+
+        // TODO
+    });
+
+    mDialogExploreTempleOutcome->SetFunctionOnOutcome2([this]
+    {
+        HideDialogExploreTempleOutcome();
+
+        // TODO
+    });
+
+    // position dialog
+    CenterWidget(mDialogExploreTempleOutcome);
+}
+
+void GameHUD::HideDialogExploreTempleOutcome()
+{
+    // no dialog -> nothing to do
+    if(nullptr == mDialogExploreTempleOutcome)
+        return ;
+
+    // schedule dialog deletion
+    mDialogExploreTempleOutcome->DeleteLater();
+    mDialogExploreTempleOutcome = nullptr;
+
+    // un-pause game
+    mScreen->SetPause(false);
 }
 
 GameMapProgressBar * GameHUD::CreateProgressBar(float time, PlayerFaction faction)

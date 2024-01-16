@@ -66,9 +66,6 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     if(mExplorationTime < minTime)
         mExplorationTime = minTime;
 
-    // TEMP DEBUG
-    mExplorationTime = 5;
-
     // SUCCESS
     const float successInfluenceMoney = 25.f;
     const float successInfluenceMaterial = 15.f;
@@ -86,25 +83,40 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
 
     if(mExplorationSuccess > maxSuccess)
         mExplorationSuccess = maxSuccess;
+
+    // TEMP DEBUG
+    mExplorationTime = 2;
+    mExplorationSuccess = 50;
 }
 
 void Temple::Explore()
 {
+    // DEBUG GOOD
+    // mOutcomeCat = EXP_OUTC_GOOD;
+    // DecideRewards();
+
+    // DEBUG BAD
+    // mOutcomeCat = EXP_OUTC_BAD;
+    // DecidePunishments();
+
+    // DEBUG NOTHING
+    //mOutcomeCat = EXP_OUTC_NOTHING;
+
     const float probSuccess = mExplorationSuccess;
     const float probFail = 100.f - mExplorationSuccess;
-    sgl::utilities::LoadedDie die({ EXP_OUTC_GOOD, EXP_OUTC_BAD }, {probSuccess, probFail});
+    sgl::utilities::LoadedDie die({ EXP_OUTC_GOOD, EXP_OUTC_BAD }, { probSuccess, probFail });
 
     mOutcomeCat = static_cast<ExplorationOutcomeCategory>(die.GetNextValue());
 
     // GOOD -> positive reward
     if(mOutcomeCat == EXP_OUTC_GOOD)
     {
-        DecideRewards();
+            DecideRewards();
         return ;
     }
 
     // BAD route -> decide if NOTHING or BAD
-    sgl::utilities::LoadedDie die2({ EXP_OUTC_NOTHING, EXP_OUTC_BAD }, {probSuccess, probFail});
+    sgl::utilities::LoadedDie die2({ EXP_OUTC_NOTHING, EXP_OUTC_BAD }, { probSuccess, probFail });
 
     mOutcomeCat = static_cast<ExplorationOutcomeCategory>(die2.GetNextValue());
 
