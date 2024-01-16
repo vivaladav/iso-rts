@@ -18,6 +18,7 @@ class DialogExploreTemple;
 class DialogNewElement;
 class Game;
 class GameMap;
+class GameMapProgressBar;
 class IsoMap;
 class MiniMap;
 class PanelObjectActions;
@@ -25,6 +26,9 @@ class PanelResources;
 class Player;
 class ScreenGame;
 class Temple;
+struct Cell2D;
+
+enum PlayerFaction : unsigned int;
 
 // UI
 class GameHUD : public sgl::sgui::Widget
@@ -50,7 +54,11 @@ public:
     void ShowMissionCountdown(int secs);
     void HideMissionCountdown();
 
+    GameMapProgressBar * CreateProgressBarInCell(const Cell2D & cell, float time, PlayerFaction faction);
+
 private:
+    GameMapProgressBar * CreateProgressBar(float time, PlayerFaction faction);
+
     void CenterWidget(sgl::sgui::Widget * w);
 
 private:

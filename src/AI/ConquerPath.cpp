@@ -11,6 +11,7 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/GameHUD.h"
 #include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
@@ -72,7 +73,7 @@ void ConquerPath::InstantAbort()
 
     mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-    mScreen->CancelProgressBar(mProgressBar);
+    mProgressBar->DeleteLater();
     mProgressBar = nullptr;
 
     // clear indicators
@@ -166,7 +167,8 @@ void ConquerPath::InitNextConquest()
     // TODO get conquer time from unit
     constexpr float TIME_CONQ_CELL = 1.f;
 
-    mProgressBar = mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player->GetFaction());
+    GameHUD * HUD = mScreen->GetHUD();
+    mProgressBar = HUD->CreateProgressBarInCell(nextCell, TIME_CONQ_CELL, player->GetFaction());
 
     mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {

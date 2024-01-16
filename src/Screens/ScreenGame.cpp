@@ -269,32 +269,6 @@ void ScreenGame::Render()
     mPartMan->Render();
 }
 
-void ScreenGame::CancelProgressBar(GameMapProgressBar * pb)
-{
-    pb->DeleteLater();
-}
-
-GameMapProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
-{
-    GameMapProgressBar *  pb = new GameMapProgressBar(faction, time, mHUD);
-
-    auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
-    const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
-    const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
-    pb->SetPosition(pbX, pbY);
-
-    // progress bar visibility depends on local player's visibility map
-    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
-
-    // schedule to delete progress bar when done
-    pb->AddFunctionOnCompleted([this, pb]
-    {
-        CancelProgressBar(pb);
-    });
-
-    return pb;
-}
-
 void ScreenGame::ClearObjectAction(GameObject * obj)
 {
     auto it = mActiveObjActions.begin();
@@ -304,7 +278,7 @@ void ScreenGame::ClearObjectAction(GameObject * obj)
     {
         if(it->obj == obj)
         {
-            CancelProgressBar(it->progressBar);
+            it->progressBar->DeleteLater();
 
             mActiveObjActions.erase(it);
 
@@ -682,7 +656,7 @@ void ScreenGame::CreateUI()
                     // building a new unit
                     if(objActId == GameObjectActionId::BUILD_UNIT)
                     {
-                        CancelProgressBar(act.progressBar);
+                        act.progressBar->DeleteLater();
 
                         selObj->SetCurrentAction(GameObjectActionId::IDLE);
                         selObj->SetBusy(false);
@@ -701,7 +675,7 @@ void ScreenGame::CreateUI()
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
                     {
                         mGameMap->AbortConquerStructure(act.actionCell, act.target);
-                        CancelProgressBar(act.progressBar);
+                        act.progressBar->DeleteLater();
                     }
                     else if(objActId == GameObjectActionId::ATTACK)
                     {
@@ -1226,7 +1200,7 @@ bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * 
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
 
     // create and init progress bar
-    GameMapProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
+    GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(cell, TIME_NEW_UNIT, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, cell, player, gen, type, OnDone]
     {
@@ -1274,7 +1248,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     mGameMap->StartConquerStructure(start, end, player);
 
     // create and init progress bar
-    GameMapProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
+    GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, start, end, player, unit, OnDone]
     {
@@ -1326,7 +1300,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
     // create and init progress bar
     // TODO get time from unit
-    GameMapProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
+    GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, unit, cellTarget, player, st, OnDone]
     {
@@ -1382,7 +1356,7 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player, const std::
     const Cell2D cell(obj->GetRow0(), obj->GetCol0());
 
     // create and init progress bar
-    GameMapProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
+    GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(cell, TIME_UPG_UNIT, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, cell, OnDone]
     {

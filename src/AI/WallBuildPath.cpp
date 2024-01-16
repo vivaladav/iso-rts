@@ -12,6 +12,7 @@
 #include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/GameHUD.h"
 #include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
@@ -107,7 +108,8 @@ void WallBuildPath::InitNextBuild()
     // TODO get conquer time from unit
     constexpr float TIME_BUILD = 2.f;
 
-    mProgressBar = mScreen->CreateProgressBar(nextCell, TIME_BUILD, player->GetFaction());
+    GameHUD * HUD = mScreen->GetHUD();
+    mProgressBar = HUD->CreateProgressBarInCell(nextCell, TIME_BUILD, player->GetFaction());
 
     mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
@@ -294,7 +296,7 @@ void WallBuildPath::InstantAbort()
 
         mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-        mScreen->CancelProgressBar(mProgressBar);
+        mProgressBar->DeleteLater();
         mProgressBar = nullptr;
     }
 

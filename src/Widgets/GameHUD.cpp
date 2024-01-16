@@ -1,8 +1,10 @@
 #include "GameHUD.h"
 
+#include "Cell2D.h"
 #include "ControlMap.h"
 #include "Game.h"
 #include "GameMap.h"
+#include "IsoMap.h"
 #include "IsoObject.h"
 #include "Player.h"
 #include "GameObjects/GameObject.h"
@@ -15,6 +17,7 @@
 #include "Widgets/DialogEndMission.h"
 #include "Widgets/DialogExit.h"
 #include "Widgets/DialogExploreTemple.h"
+#include "Widgets/GameMapProgressBar.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
@@ -299,6 +302,36 @@ void GameHUD::HideMissionCountdown()
 {
     delete mCountdownLabel;
     mCountdownLabel = nullptr;
+}
+
+GameMapProgressBar * GameHUD::CreateProgressBarInCell(const Cell2D & cell, float time, PlayerFaction faction)
+{
+    GameMapProgressBar * pb = CreateProgressBar(time, faction);
+
+    // set position
+    IsoMap * isoMap = mScreen->mIsoMap;
+    auto posCell = isoMap->GetCellPosition(cell.row, cell.col);
+    const int pbX = posCell.x + (isoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
+    const int pbY = posCell.y + (isoMap->GetTileHeight() * 0.75f - pb->GetHeight());
+    pb->SetPosition(pbX, pbY);
+
+    // progress bar visibility depends on local player's visibility map
+    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
+
+    return pb;
+}
+
+GameMapProgressBar * GameHUD::CreateProgressBar(float time, PlayerFaction faction)
+{
+    GameMapProgressBar * pb = new GameMapProgressBar(faction, time, this);
+
+    // schedule to delete progress bar when done
+    pb->AddFunctionOnCompleted([pb]
+    {
+        pb->DeleteLater();
+    });
+
+    return pb;
 }
 
 void GameHUD::CenterWidget(sgl::sgui::Widget * w)

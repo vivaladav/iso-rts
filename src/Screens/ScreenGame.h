@@ -25,7 +25,6 @@ namespace game
 
 class AttackRangeIndicator;
 class CameraMapController;
-class GameMapProgressBar;
 class ConquestIndicator;
 class GameHUD;
 class GameMap;
@@ -70,9 +69,6 @@ public:
     void OnWindowMouseEntered(sgl::graphic::WindowEvent & event) override;
     void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
-    void CancelProgressBar(GameMapProgressBar * pb);
-    GameMapProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction);
-
     void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
 
@@ -83,6 +79,8 @@ public:
 
     void CenterCameraOverCell(int row, int col);
     void CenterCameraOverObject(GameObject * obj);
+
+    GameHUD * GetHUD() const;
 
     MiniMap * GetMiniMap() const;
     void SetMiniMapEnabled(bool val);
@@ -193,6 +191,8 @@ private:
 
     bool mPaused = false;
 };
+
+inline GameHUD * ScreenGame::GetHUD() const { return mHUD; }
 
 inline bool ScreenGame::GetPaused() const { return mPaused; }
 
