@@ -16,10 +16,7 @@ class CountdownLabel;
 class DialogExit;
 class DialogExploreTemple;
 class DialogNewElement;
-class Game;
-class GameMap;
 class GameMapProgressBar;
-class IsoMap;
 class MiniMap;
 class PanelObjectActions;
 class PanelResources;
@@ -34,8 +31,7 @@ enum PlayerFaction : unsigned int;
 class GameHUD : public sgl::sgui::Widget
 {
 public:
-    GameHUD(CameraMapController * camController, IsoMap * isoMap,
-            ScreenGame * screen, GameMap * gameMap);
+    GameHUD(ScreenGame * screen);
     ~GameHUD();
 
     void SetMiniMapEnabled(bool val);
@@ -73,8 +69,6 @@ private:
     DialogExploreTemple * mDialogExploreTemple = nullptr;
     DialogNewElement * mDialogNewElement = nullptr;
 
-    Game * mGame = nullptr;
-    GameMap * mGameMap = nullptr;
     ScreenGame * mScreen = nullptr;
 };
 

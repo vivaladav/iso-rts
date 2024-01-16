@@ -29,11 +29,8 @@
 namespace game
 {
 
-GameHUD::GameHUD(CameraMapController * camController, IsoMap * isoMap,
-                 ScreenGame * screen, GameMap * gameMap)
-    : mGame(screen->GetGame())
-    , mGameMap(gameMap)
-    , mScreen(screen)
+GameHUD::GameHUD(ScreenGame * screen)
+    : mScreen(screen)
 {
     using namespace sgl;
 
@@ -43,7 +40,7 @@ GameHUD::GameHUD(CameraMapController * camController, IsoMap * isoMap,
     SetSize(rendW, rendH);
 
     // LOCAL PLAYER
-    Player * player = mGame->GetLocalPlayer();
+    Player * player = mScreen->GetGame()->GetLocalPlayer();
 
     // react to local player changes in stats
     player->SetOnResourcesChanged([this]
@@ -66,7 +63,7 @@ GameHUD::GameHUD(CameraMapController * camController, IsoMap * isoMap,
         mMiniMap->SetVisible(true);
     });
 
-    mMiniMap = new MiniMap(camController, isoMap, this);
+    mMiniMap = new MiniMap(mScreen->mCamController, mScreen->mIsoMap, this);
     mMiniMap->SetVisible(false);
     mMiniMap->SetX(rendW - mMiniMap->GetWidth());
 
@@ -116,7 +113,7 @@ GameHUD::GameHUD(CameraMapController * camController, IsoMap * isoMap,
 
 GameHUD::~GameHUD()
 {
-    Player * player = mGame->GetLocalPlayer();
+    Player * player = mScreen->GetGame()->GetLocalPlayer();
 
     player->SetOnNumUnitsChanged([]{});
     player->SetOnResourcesChanged([]{});
@@ -145,10 +142,12 @@ void GameHUD::ShowDialogEndMission(bool won)
     mScreen->SetPause(true);
 
     // stats
-    const PlayerFaction pf = mGame->GetLocalPlayerFaction();
-    const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
-    const unsigned int killed = mGameMap->GetEnemiesKilled(pf);
-    const unsigned int casualties = mGameMap->GetCasualties(pf);
+    GameMap * gm = mScreen->mGameMap;
+
+    const PlayerFaction pf = mScreen->GetGame()->GetLocalPlayerFaction();
+    const int territory = gm->GetControlMap()->GetPercentageControlledByFaction(pf);
+    const unsigned int killed = gm->GetEnemiesKilled(pf);
+    const unsigned int casualties = gm->GetCasualties(pf);
     const unsigned int played = mScreen->GetPlayTimeInSec();
 
     // create dialog
@@ -176,7 +175,7 @@ void GameHUD::ShowDialogExit()
 
     mScreen->SetPause(true);
 
-    mDialogExit = new DialogExit(mGame, mScreen);
+    mDialogExit = new DialogExit(mScreen->GetGame(), mScreen);
     mDialogExit->SetFocus();
 
     mDialogExit->SetFunctionOnClose([this]
@@ -218,10 +217,11 @@ void GameHUD::ShowDialogNewElement(unsigned int type)
     if(mDialogNewElement != nullptr)
         return;
 
-    Player * player = mGame->GetLocalPlayer();
+    Game * game = mScreen->GetGame();
+    Player * player = game->GetLocalPlayer();
 
     auto t = static_cast<DialogNewElement::ElemType>(type);
-    mDialogNewElement = new DialogNewElement(t, player, mGame->GetObjectsRegistry());
+    mDialogNewElement = new DialogNewElement(t, player, game->GetObjectsRegistry());
     mDialogNewElement->SetFocus();
 
     if(DialogNewElement::ETYPE_STRUCTURES == t)
@@ -279,7 +279,7 @@ void GameHUD::HideDialogNewElement()
 
 void GameHUD::ShowMissionCountdown(int secs)
 {
-    const Player * p = mGame->GetLocalPlayer();
+    const Player * p = mScreen->GetGame()->GetLocalPlayer();
     const PlayerFaction pf = p->GetFaction();
     const auto bases = p->GetStructuresByType(GameObject::TYPE_BASE);
 
@@ -316,7 +316,7 @@ GameMapProgressBar * GameHUD::CreateProgressBarInCell(const Cell2D & cell, float
     pb->SetPosition(pbX, pbY);
 
     // progress bar visibility depends on local player's visibility map
-    pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
+    pb->SetVisible(mScreen->mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
 
     return pb;
 }

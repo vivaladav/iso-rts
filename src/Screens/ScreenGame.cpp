@@ -487,7 +487,7 @@ void ScreenGame::CreateUI()
     Player * player = GetGame()->GetLocalPlayer();
 
     // init HUD layer
-    mHUD = new GameHUD(mCamController, mIsoMap, this, mGameMap);
+    mHUD = new GameHUD(this);
 
     mHUD->SetMiniMapEnabled(false);
 
