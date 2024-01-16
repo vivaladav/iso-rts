@@ -139,6 +139,8 @@ void GameHUD::HidePanelObjActions()
 
 void GameHUD::ShowDialogEndMission(bool won)
 {
+    mScreen->SetPause(true);
+
     // stats
     const PlayerFaction pf = mGame->GetLocalPlayerFaction();
     const int territory = mGameMap->GetControlMap()->GetPercentageControlledByFaction(pf);
@@ -169,11 +171,15 @@ void GameHUD::ShowDialogExit()
     if(mDialogExit != nullptr)
         return ;
 
+    mScreen->SetPause(true);
+
     mDialogExit = new DialogExit(mGame, mScreen);
     mDialogExit->SetFocus();
 
     mDialogExit->SetFunctionOnClose([this]
     {
+        mScreen->SetPause(false);
+
         // schedule dialog deletion
         mDialogExit->DeleteLater();
         mDialogExit = nullptr;
@@ -187,6 +193,8 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
 {
     if(mDialogExploreTemple != nullptr)
         return ;
+
+    mScreen->SetPause(true);
 
     mDialogExploreTemple = new DialogExploreTemple(player, temple);
 
@@ -279,7 +287,7 @@ void GameHUD::ShowMissionCountdown(int secs)
     const Structure * base = bases[0];
     const IsoObject * isoObj = base->GetIsoObject();
 
-    mCountdownLabel = new CountdownLabel(pf, secs);
+    mCountdownLabel = new CountdownLabel(pf, secs, this);
 
     const int x0 = isoObj->GetX() + (isoObj->GetWidth() - mCountdownLabel->GetWidth()) / 2;
     const int y0 = isoObj->GetY() - mCountdownLabel->GetHeight();

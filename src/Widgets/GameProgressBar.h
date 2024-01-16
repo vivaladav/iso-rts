@@ -9,10 +9,10 @@ namespace game
 
 enum PlayerFaction : unsigned int;
 
-class CellProgressBar : public sgl::sgui::ProgressBar
+class GameProgressBar : public sgl::sgui::ProgressBar
 {
 public:
-    CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent = nullptr);
+    GameProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent = nullptr);
 
 private:
     void HandlePositionChanged() override;

@@ -25,7 +25,7 @@ namespace game
 
 class AttackRangeIndicator;
 class CameraMapController;
-class CellProgressBar;
+class GameMapProgressBar;
 class ConquestIndicator;
 class GameHUD;
 class GameMap;
@@ -70,8 +70,8 @@ public:
     void OnWindowMouseEntered(sgl::graphic::WindowEvent & event) override;
     void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
-    void CancelProgressBar(CellProgressBar * pb);
-    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction);
+    void CancelProgressBar(GameMapProgressBar * pb);
+    GameMapProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction);
 
     void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
@@ -102,8 +102,6 @@ private:
     void CreateUI();
 
     void LoadMapFile();
-
-    void UpdateProgressBars(float delta);
 
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
@@ -152,8 +150,6 @@ private:
 
     std::vector<Player *> mAiPlayers;
 
-    std::vector<CellProgressBar *> mProgressBars;
-
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
@@ -199,6 +195,5 @@ private:
 };
 
 inline bool ScreenGame::GetPaused() const { return mPaused; }
-inline void ScreenGame::SetPause(bool paused) { mPaused = paused; }
 
 } // namespace game

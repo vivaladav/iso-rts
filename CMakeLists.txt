@@ -198,8 +198,6 @@ add_executable(
     src/Widgets/ButtonPanelTab.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
-    src/Widgets/CellProgressBar.h
-    src/Widgets/CellProgressBar.cpp
     src/Widgets/CountdownLabel.h
     src/Widgets/CountdownLabel.cpp
     src/Widgets/DialogChangelog.h
@@ -220,6 +218,10 @@ add_executable(
     src/Widgets/GameButton.cpp
     src/Widgets/GameHUD.h
     src/Widgets/GameHUD.cpp
+    src/Widgets/GameMapProgressBar.h
+    src/Widgets/GameMapProgressBar.cpp
+    src/Widgets/GameProgressBar.h
+    src/Widgets/GameProgressBar.cpp
     src/Widgets/GameSimpleTooltip.h
     src/Widgets/GameSimpleTooltip.cpp
     src/Widgets/GameSliderH.h

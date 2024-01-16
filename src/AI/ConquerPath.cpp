@@ -11,7 +11,7 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Screens/ScreenGame.h"
-#include "Widgets/CellProgressBar.h"
+#include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
 #include <unordered_set>
@@ -73,6 +73,7 @@ void ConquerPath::InstantAbort()
     mGameMap->SetCellChanging(nextRow, nextCol, false);
 
     mScreen->CancelProgressBar(mProgressBar);
+    mProgressBar = nullptr;
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);

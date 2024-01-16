@@ -1,4 +1,4 @@
-#include "CellProgressBar.h"
+#include "GameProgressBar.h"
 
 #include "GameConstants.h"
 #include "Widgets/GameUIData.h"
@@ -10,12 +10,12 @@
 namespace game
 {
 
-CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent)
+GameProgressBar::GameProgressBar(PlayerFaction faction, float min, float max, sgl::sgui::Widget * parent)
     : sgl::sgui::ProgressBar(min, max, parent)
 {
     using namespace sgl::graphic;
 
-    // CellProgressBar is part of the game scene
+    // GameProgressBar is part of the game scene
     SetCamera(Camera::GetDefaultCamera());
 
     auto tm = TextureManager::Instance();
@@ -38,7 +38,7 @@ CellProgressBar::CellProgressBar(PlayerFaction faction, float min, float max, sg
     mBarH = mBar->GetHeight();
 }
 
-void CellProgressBar::HandlePositionChanged()
+void GameProgressBar::HandlePositionChanged()
 {
     const int x = GetScreenX();
     const int y = GetScreenY();
@@ -48,7 +48,7 @@ void CellProgressBar::HandlePositionChanged()
     mBar->SetPosition(x + border, y + border);
 }
 
-void CellProgressBar::HandleProgressUpdate()
+void GameProgressBar::HandleProgressUpdate()
 {
     const float perc = GetValuePerc();
 

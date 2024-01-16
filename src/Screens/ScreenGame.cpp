@@ -29,9 +29,9 @@
 #include "Particles/UpdaterSingleLaser.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonQuickUnitSelection.h"
-#include "Widgets/CellProgressBar.h"
 #include "Widgets/DialogNewElement.h"
 #include "Widgets/GameHUD.h"
+#include "Widgets/GameMapProgressBar.h"
 #include "Widgets/MiniMap.h"
 #include "Widgets/PanelObjectActions.h"
 
@@ -57,8 +57,8 @@ namespace game
 {
 
 // NOTE these will be replaced by dynamic values soon
-constexpr float TIME_NEW_UNIT = 1.f;
-constexpr float TIME_CONQ_RES_GEN = 1.f;
+constexpr float TIME_NEW_UNIT = 2.f;
+constexpr float TIME_CONQ_RES_GEN = 2.f;
 constexpr float TIME_UPG_UNIT = 5.f;
 
 constexpr float TIME_ENERGY_USE = 8.f;
@@ -254,9 +254,6 @@ void ScreenGame::Update(float delta)
     // -- GAME MAP AND OBJECTS --
     mGameMap->Update(delta);
 
-    // -- PROGRESS BARS --
-    UpdateProgressBars(delta);
-
     // -- AI --
     if(!mAiPlayers.empty())
         UpdateAI(delta);
@@ -272,28 +269,19 @@ void ScreenGame::Render()
     mPartMan->Render();
 }
 
-void ScreenGame::CancelProgressBar(CellProgressBar * pb)
+void ScreenGame::CancelProgressBar(GameMapProgressBar * pb)
 {
-    // remove from update list
-    auto it = std::find(mProgressBars.begin(), mProgressBars.end(), pb);
-
-    if(it != mProgressBars.end())
-            mProgressBars.erase(it);
-
-    // delete
     pb->DeleteLater();
 }
 
-CellProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
+GameMapProgressBar * ScreenGame::CreateProgressBar(const Cell2D & cell, float time, PlayerFaction faction)
 {
-    CellProgressBar *  pb = new CellProgressBar(faction, 0.f, time);
-    pb->SetValue(0.f);
+    GameMapProgressBar *  pb = new GameMapProgressBar(faction, time, mHUD);
+
     auto posCell = mIsoMap->GetCellPosition(cell.row, cell.col);
     const int pbX = posCell.x + (mIsoMap->GetTileWidth() - pb->GetWidth()) * 0.5f;
     const int pbY = posCell.y + (mIsoMap->GetTileHeight() * 0.75f - pb->GetHeight());
     pb->SetPosition(pbX, pbY);
-
-    mProgressBars.emplace_back(pb);
 
     // progress bar visibility depends on local player's visibility map
     pb->SetVisible(mGameMap->IsCellVisibleToLocalPlayer(cell.row, cell.col));
@@ -452,6 +440,13 @@ MiniMap * ScreenGame::GetMiniMap() const
 void ScreenGame::SetMiniMapEnabled(bool val)
 {
     mHUD->SetMiniMapEnabled(val);
+}
+
+void ScreenGame::SetPause(bool paused)
+{
+    mPaused = paused;
+
+    mHUD->SetEnabled(!paused);
 }
 
 void ScreenGame::OnApplicationQuit(sgl::core::ApplicationEvent & event)
@@ -806,12 +801,7 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 
     // P -> PAUSE
     if(key == KeyboardEvent::KEY_P)
-    {
-        mPaused = !mPaused;
-
-        // disable actions panel when paused
-        mHUD->GetPanelObjectActions()->SetEnabled(!mPaused);
-    }
+        SetPause(!mPaused);
     else if(key == KeyboardEvent::KEY_ESCAPE)
         mHUD->ShowDialogExit();
     // SHIFT + B -> center camera on own base
@@ -839,20 +829,12 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
     }
     // DEBUG: end mission dialog
     else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_W)
-    {
-        mPaused = true;
         mHUD->ShowDialogEndMission(true);
-    }
     else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_L)
-    {
-        mPaused = true;
         mHUD->ShowDialogEndMission(false);
-    }
     // DEBUG: explore temple dialog
     else if(event.IsModCtrlDown() && key == KeyboardEvent::KEY_E)
     {
-        mPaused = true;
-
         auto objs = mGameMap->GetObjects();
 
         for(GameObject * o : objs)
@@ -909,12 +891,12 @@ void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
 
 void ScreenGame::OnWindowExposed(sgl::graphic::WindowEvent &)
 {
-    mPaused = false;
+    SetPause(false);
 }
 
 void ScreenGame::OnWindowHidden(sgl::graphic::WindowEvent &)
 {
-    mPaused = true;
+    SetPause(true);
 }
 
 void ScreenGame::OnWindowMouseEntered(sgl::graphic::WindowEvent & event)
@@ -924,12 +906,6 @@ void ScreenGame::OnWindowMouseEntered(sgl::graphic::WindowEvent & event)
 void ScreenGame::OnWindowMouseLeft(sgl::graphic::WindowEvent & event)
 {
     mCamController->HandleMouseLeftWindow();
-}
-
-void ScreenGame::UpdateProgressBars(float delta)
-{
-    for(auto pb : mProgressBars)
-        pb->IncValue(delta);
 }
 
 void ScreenGame::UpdateAI(float delta)
@@ -1068,7 +1044,6 @@ void ScreenGame::UpdateGameEnd()
     // check if player has base
     if(CheckGameOverForLocalPlayer())
     {
-        mPaused = true;
         mHUD->ShowDialogEndMission(false);
         return ;
     }
@@ -1084,10 +1059,7 @@ void ScreenGame::UpdateGameEnd()
                 bases |= p->HasStructure(GameObject::TYPE_BASE);
 
             if(!bases)
-            {
-                mPaused = true;
                 mHUD->ShowDialogEndMission(true);
-            }
         }
         break;
 
@@ -1100,10 +1072,7 @@ void ScreenGame::UpdateGameEnd()
                 totEnemies += p->GetNumObjects();
 
             if(0 == totEnemies)
-            {
-                mPaused = true;
                 mHUD->ShowDialogEndMission(true);
-            }
         }
         break;
 
@@ -1114,7 +1083,6 @@ void ScreenGame::UpdateGameEnd()
 
             if(playedTime >= mMissionTime)
             {
-                mPaused = true;
                 mHUD->HideMissionCountdown();
                 mHUD->ShowDialogEndMission(true);
             }
@@ -1258,7 +1226,7 @@ bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * 
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
+    GameMapProgressBar * pb = CreateProgressBar(cell, TIME_NEW_UNIT, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, cell, player, gen, type, OnDone]
     {
@@ -1306,7 +1274,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     mGameMap->StartConquerStructure(start, end, player);
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
+    GameMapProgressBar * pb = CreateProgressBar(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, start, end, player, unit, OnDone]
     {
@@ -1358,7 +1326,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 
     // create and init progress bar
     // TODO get time from unit
-    CellProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
+    GameMapProgressBar * pb = CreateProgressBar(cellTarget, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, unit, cellTarget, player, st, OnDone]
     {
@@ -1414,7 +1382,7 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player, const std::
     const Cell2D cell(obj->GetRow0(), obj->GetCol0());
 
     // create and init progress bar
-    CellProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
+    GameMapProgressBar * pb = CreateProgressBar(cell, TIME_UPG_UNIT, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, cell, OnDone]
     {

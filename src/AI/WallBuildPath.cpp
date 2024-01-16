@@ -12,7 +12,7 @@
 #include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
-#include "Widgets/CellProgressBar.h"
+#include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
 
@@ -295,6 +295,7 @@ void WallBuildPath::InstantAbort()
         mGameMap->SetCellChanging(nextRow, nextCol, false);
 
         mScreen->CancelProgressBar(mProgressBar);
+        mProgressBar = nullptr;
     }
 
     // clear indicators
