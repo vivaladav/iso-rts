@@ -181,11 +181,12 @@ void GameHUD::ShowDialogExit()
 
     mDialogExit->SetFunctionOnClose([this]
     {
-        mScreen->SetPause(false);
-
         // schedule dialog deletion
         mDialogExit->DeleteLater();
         mDialogExit = nullptr;
+
+        // un-pause game
+        mScreen->SetPause(false);
     });
 
     // position dialog
@@ -245,6 +246,8 @@ void GameHUD::ShowDialogNewElement(unsigned int type)
     if(mDialogNewElement != nullptr)
         return;
 
+    mScreen->SetPause(true);
+
     Game * game = mScreen->GetGame();
     Player * player = game->GetLocalPlayer();
 
@@ -303,6 +306,9 @@ void GameHUD::HideDialogNewElement()
     // schedule dialog deletion
     mDialogNewElement->DeleteLater();
     mDialogNewElement = nullptr;
+
+    // un-pause game
+    mScreen->SetPause(false);
 }
 
 void GameHUD::ShowMissionCountdown(int secs)
