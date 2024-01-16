@@ -5,6 +5,8 @@
 #include "IsoObject.h"
 
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/utilities/LoadedDie.h>
+#include <sgl/utilities/UniformDistribution.h>
 
 #include <cmath>
 
@@ -41,7 +43,7 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     if(diamonds > maxDiamonds)
         diamonds = maxDiamonds;
 
-    const float maxTime = 300.f;
+    const float maxTime = 60.f;
     const float minTime = 0.f;
     const float maxSuccess = 100.f;
     const float minSuccess = 0.f;
@@ -64,6 +66,9 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     if(mExplorationTime < minTime)
         mExplorationTime = minTime;
 
+    // TEMP DEBUG
+    mExplorationTime = 5;
+
     // SUCCESS
     const float successInfluenceMoney = 25.f;
     const float successInfluenceMaterial = 15.f;
@@ -81,6 +86,110 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
 
     if(mExplorationSuccess > maxSuccess)
         mExplorationSuccess = maxSuccess;
+}
+
+void Temple::Explore()
+{
+    const float probSuccess = mExplorationSuccess;
+    const float probFail = 100.f - mExplorationSuccess;
+    sgl::utilities::LoadedDie die({ EXP_OUTC_GOOD, EXP_OUTC_BAD }, {probSuccess, probFail});
+
+    mOutcomeCat = static_cast<ExplorationOutcomeCategory>(die.GetNextValue());
+
+    // GOOD -> positive reward
+    if(mOutcomeCat == EXP_OUTC_GOOD)
+    {
+        DecideRewards();
+        return ;
+    }
+
+    // BAD route -> decide if NOTHING or BAD
+    sgl::utilities::LoadedDie die2({ EXP_OUTC_NOTHING, EXP_OUTC_BAD }, {probSuccess, probFail});
+
+    mOutcomeCat = static_cast<ExplorationOutcomeCategory>(die2.GetNextValue());
+
+    // NOTHING
+    if(mOutcomeCat == EXP_OUTC_NOTHING)
+    {
+        mOutcome1 = EXP_OUT_NULL;
+        mOutcome2 = EXP_OUT_NULL;
+    }
+    // BAD
+    else
+        DecidePunishments();
+}
+
+const char * Temple::GetExplorationOutcomeString(ExplorationOutcome o) const
+{
+    if(o >= NUM_EXPLORATION_OUTCOMES)
+        return nullptr;
+
+    static const char * strings[NUM_EXPLORATION_OUTCOMES] =
+    {
+        // -- REWARDS --
+        // INCREASE EXISTING RESOURCES
+        "Your money will be increased 10 times.",
+        "Your energy will be maximized.",
+        "Your material will be maximized.",
+        "Your blobs will be maximized.",
+        "Your diamonds will be maximized.",
+        "All your resources will be maximized.",
+        // INCREASE PRODUCTION
+        "The production of all your energy generators will double.",
+        "The production of all your material generators will double.",
+        // MAXIMIZE COLLECTIBLES
+        "All the existing blobs on the map will be maximized.",
+        "All the existing diamonds on the map will be maximized.",
+
+        // -- PUNISHMENTS --
+        // DECREASE EXISTING RESOURCES
+        "Your money will go down to 0.",
+        "Your energy will go down to 0.",
+        "Your material will go down to 0.",
+        "Your blobs will go down to 0.",
+        "Your diamonds will go down to 0.",
+        "All your resources will go down to 0.",
+        // DECREASE PRODUCTION
+        "The production of all your energy generators will halve.",
+        "The production of all your material generators will halve.",
+        // MINIMIZE COLLECTIBLES
+        "All the existing blobs on the map will be minimized.",
+        "All the existing diamonds on the map will be minimized.",
+    };
+
+    return strings[o];
+}
+
+void Temple::DecideRewards()
+{
+    sgl::utilities::UniformDistribution dist(FIRST_EXP_REW, LAST_EXP_REW);
+
+    mOutcome1 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+    mOutcome2 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+
+    // same result -> try again
+    if(mOutcome2 == mOutcome1)
+        mOutcome2 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+
+    // same result again -> pick next
+    if(mOutcome2 == mOutcome1)
+        mOutcome2 = static_cast<ExplorationOutcome>(FIRST_EXP_REW + ((mOutcome2 + 1) % (LAST_EXP_REW + 1)));
+}
+
+void Temple::DecidePunishments()
+{
+    sgl::utilities::UniformDistribution dist(FIRST_EXP_PUN, LAST_EXP_PUN);
+
+    mOutcome1 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+    mOutcome2 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+
+    // same result -> try again
+    if(mOutcome2 == mOutcome1)
+        mOutcome2 = static_cast<ExplorationOutcome>(dist.GetNextValue());
+
+    // same result again -> pick next
+    if(mOutcome2 == mOutcome1)
+        mOutcome2 = static_cast<ExplorationOutcome>(FIRST_EXP_PUN + ((mOutcome2 + 1) % (LAST_EXP_PUN + 1)));
 }
 
 void Temple::UpdateGraphics()
