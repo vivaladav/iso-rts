@@ -2036,10 +2036,6 @@ void GameMap::UpdateInfluencedCells(int row, int col)
     const unsigned int ind0 = row * mCols + col;
     GameMapCell & gcell = mCells[ind0];
 
-    // not linked cells have no influence
-    if(!gcell.linked)
-        return ;
-
     const PlayerFaction faction = gcell.owner->GetFaction();
 
     const unsigned int r0 = (row > 0) ? row - 1 : row;
