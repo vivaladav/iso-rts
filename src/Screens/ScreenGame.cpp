@@ -677,7 +677,7 @@ void ScreenGame::CreateUI()
                         mGameMap->AbortBuildWalls(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_STRUCTURE)
                     {
-                        mGameMap->AbortConquerStructure(act.actionCell, act.target);
+                        mGameMap->AbortConquerStructure(act.target);
                         act.progressBar->DeleteLater();
                     }
                     else if(objActId == GameObjectActionId::ATTACK)
@@ -1261,14 +1261,14 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     }
 
     // start conquest
-    mGameMap->StartConquerStructure(start, end, player);
+    mGameMap->StartConquerStructure(end, player);
 
     // create and init progress bar
     GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(start, TIME_CONQ_RES_GEN, player->GetFaction());
 
     pb->AddFunctionOnCompleted([this, start, end, player, unit, OnDone]
     {
-        mGameMap->ConquerStructure(start, end, player);
+        mGameMap->ConquerStructure(end, player);
 
         unit->ConsumeEnergy(CONQUER_STRUCTURE);
 
@@ -1509,7 +1509,8 @@ void ScreenGame::HandleTempleOutcome(unsigned int outcome, Player * p, Temple * 
     // -- REWARDS --
     if(outcome >= Temple::FIRST_EXP_REW && outcome <= Temple::LAST_EXP_REW)
     {
-        temple->SetFaction(p->GetFaction());
+        const Cell2D cell0(temple->GetRow0(), temple->GetCol0());
+        mGameMap->ConquerStructure(cell0, p);
 
         switch(outcome)
         {

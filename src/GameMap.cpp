@@ -981,8 +981,8 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
     if(!gcell1.objTop->CanBeConquered())
         return false;
 
-    // player already owns the res gen
-    if(gcell1.owner == player)
+    // player already owns the structure
+    if(gcell1.objTop->GetFaction() == player->GetFaction())
         return false;
 
     // TEMP - no conquest while another is in progress
@@ -992,14 +992,10 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
     return true;
 }
 
-void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::StartConquerStructure(const Cell2D & end, Player * player)
 {
     // take player's energy
     player->SumResource(Player::Stat::ENERGY, -COST_CONQUEST_RES_GEN);
-
-    // mark start as changing
-    const int ind0 = start.row * mCols + start.col;
-    mCells[ind0].changing = true;
 
     // mark object cells as changing
     const int ind1 = end.row * mCols + end.col;
@@ -1017,12 +1013,8 @@ void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Pl
     }
 }
 
-void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target)
+void GameMap::AbortConquerStructure(GameObject * target)
 {
-    // mark start as not changing
-    const int ind0 = unitCell.row * mCols + unitCell.col;
-    mCells[ind0].changing = false;
-
     // mark object cells as not changing
     for(int r = target->GetRow1(); r <= target->GetRow0(); ++r)
     {
@@ -1036,7 +1028,7 @@ void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target
     }
 }
 
-void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::ConquerStructure(const Cell2D & end, Player * player)
 {
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
@@ -1085,10 +1077,6 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
                 prevOwner->RemoveResourceGenerator(rg);
         }
     }
-
-    // reset start changing flag
-    const int ind0 = start.row * mCols + start.col;
-    mCells[ind0].changing = false;
 
     // update map
     UpdateLinkedCells(player);
