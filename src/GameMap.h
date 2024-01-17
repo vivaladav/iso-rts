@@ -22,6 +22,7 @@ class IsoMap;
 class ObjectPath;
 class Player;
 class ScreenGame;
+class Temple;
 class Unit;
 class WallBuildPath;
 
@@ -129,6 +130,8 @@ public:
     void StartConquerStructure(const Cell2D & end, Player * player);
     void AbortConquerStructure(GameObject * target);
     void ConquerStructure(const Cell2D & end, Player * player);
+
+    void HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple);
 
     // unit create
     bool CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player);

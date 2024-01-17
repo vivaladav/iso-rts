@@ -36,7 +36,6 @@ class MoveIndicator;
 class Player;
 class PlayerAI;
 class StructureIndicator;
-class Temple;
 class Unit;
 class WallIndicator;
 
@@ -125,8 +124,6 @@ private:
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & OnDone = []{});
     bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
-
-    void HandleTempleOutcome(unsigned int outcome, Player * p, Temple * temple);
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);

@@ -85,6 +85,8 @@ public:
     int GetMaxInvestableDiamonds() const;
 
 private:
+    void DefineMaxValues();
+
     void DecideRewards();
     void DecidePunishments();
 
@@ -94,6 +96,11 @@ private:
     void SetObjColors();
 
 private:
+    int mMaxMoney = 0;
+    int mMaxMaterial = 0;
+    int mMaxBlobs = 0;
+    int mMaxDiamonds = 0;
+
     int mInvestedMoney = 0;
     int mInvestedMaterial = 0;
     int mInvestedBlobs = 0;
@@ -124,9 +131,9 @@ inline Temple::ExplorationOutcomeCategory Temple::GetExplorationOutcomeCategory(
 inline Temple::ExplorationOutcome Temple::GetExplorationOutcome1() const { return mOutcome1; }
 inline Temple::ExplorationOutcome Temple::GetExplorationOutcome2() const { return mOutcome2; }
 
-inline int Temple::GetMaxInvestableMoney() const { return 5000; }
-inline int Temple::GetMaxInvestableMaterial() const { return 5000; }
-inline int Temple::GetMaxInvestableBlobs() const { return 400; }
-inline int Temple::GetMaxInvestableDiamonds() const { return 400; }
+inline int Temple::GetMaxInvestableMoney() const { return mMaxMoney; }
+inline int Temple::GetMaxInvestableMaterial() const { return mMaxMaterial; }
+inline int Temple::GetMaxInvestableBlobs() const { return mMaxBlobs; }
+inline int Temple::GetMaxInvestableDiamonds() const { return mMaxDiamonds; }
 
 } // namespace game

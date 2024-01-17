@@ -383,14 +383,16 @@ void GameHUD::ShowDialogExploreTempleOutcome(Player * player, Temple * temple)
     {
         HideDialogExploreTempleOutcome();
 
-        mScreen->HandleTempleOutcome(temple->GetExplorationOutcome1(), player, temple);
+        const unsigned int outcome = temple->GetExplorationOutcome1();
+        mScreen->mGameMap->HandleTempleExplorationOutcome(outcome, player, temple);
     });
 
     mDialogExploreTempleOutcome->SetFunctionOnOutcome2([this, player, temple]
     {
         HideDialogExploreTempleOutcome();
 
-        mScreen->HandleTempleOutcome(temple->GetExplorationOutcome2(), player, temple);
+        const unsigned int outcome = temple->GetExplorationOutcome2();
+        mScreen->mGameMap->HandleTempleExplorationOutcome(outcome, player, temple);
     });
 
     // position dialog

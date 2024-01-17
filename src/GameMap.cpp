@@ -1090,6 +1090,198 @@ void GameMap::ConquerStructure(const Cell2D & end, Player * player)
     ApplyLocalVisibility();
 }
 
+
+void GameMap::HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple)
+{
+    const StatValue & money = p->GetStat(Player::Stat::MONEY);
+    const StatValue & energy = p->GetStat(Player::Stat::ENERGY);
+    const StatValue & material = p->GetStat(Player::Stat::MATERIAL);
+    const StatValue & blobs = p->GetStat(Player::Stat::BLOBS);
+    const StatValue & diamonds = p->GetStat(Player::Stat::DIAMONDS);
+    const PlayerFaction faction = p->GetFaction();
+
+    // -- REWARDS --
+    if(outcome >= Temple::FIRST_EXP_REW && outcome <= Temple::LAST_EXP_REW)
+    {
+        const Cell2D cell0(temple->GetRow0(), temple->GetCol0());
+        ConquerStructure(cell0, p);
+
+        switch(outcome)
+        {
+            // INCREASE EXISTING RESOURCES
+            case Temple::EXP_REW_MULT10_MONEY:
+            {
+                const int mult = 10;
+                p->SetResource(Player::Stat::MONEY, money.GetIntValue() * mult);
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RES_ENE_MAT:
+            {
+                p->SetResource(Player::Stat::ENERGY, energy.GetIntMax());
+                p->SetResource(Player::Stat::MATERIAL, material.GetIntMax());
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RES_BLO_DIA:
+            {
+                p->SetResource(Player::Stat::BLOBS, blobs.GetIntMax());
+                p->SetResource(Player::Stat::DIAMONDS, diamonds.GetIntMax());
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RESOURCES:
+            {
+                p->SetResource(Player::Stat::ENERGY, energy.GetIntMax());
+                p->SetResource(Player::Stat::MATERIAL, material.GetIntMax());
+                p->SetResource(Player::Stat::BLOBS, blobs.GetIntMax());
+                p->SetResource(Player::Stat::DIAMONDS, diamonds.GetIntMax());
+            }
+            break;
+
+            // INCREASE PRODUCTION
+            case Temple::EXP_REW_INC_ENERGY_PRODUCTION:
+            {
+                const float mult = 2.f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            case Temple::EXP_REW_INC_MATERIAL_PRODUCTION:
+            {
+                const float mult = 2.f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            // MAXIMIZE COLLECTIBLES
+            case Temple::EXP_REW_MAX_BLOBS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_BLOBS)
+                        static_cast<Blobs *>(o)->MaximizeUnits();
+                }
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_DIAMONDS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_DIAMONDS)
+                        static_cast<Diamonds *>(o)->MaximizeUnits();
+                }
+            }
+            break;
+
+            // unexpected
+            default:
+            break;
+        }
+    }
+    // -- PUNISHMENTS --
+    else
+    {
+        switch(outcome)
+        {
+            // DECREASE EXISTING RESOURCES
+            case Temple::EXP_PUN_ZERO_MONEY:
+            {
+                p->SetResource(Player::Stat::MONEY, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RES_ENE_MAT:
+            {
+                p->SetResource(Player::Stat::ENERGY, 0);
+                p->SetResource(Player::Stat::MATERIAL, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RES_BLO_DIA:
+            {
+                p->SetResource(Player::Stat::BLOBS, 0);
+                p->SetResource(Player::Stat::DIAMONDS, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RESOURCES:
+            {
+                p->SetResource(Player::Stat::ENERGY, 0);
+                p->SetResource(Player::Stat::MATERIAL, 0);
+                p->SetResource(Player::Stat::BLOBS, 0);
+                p->SetResource(Player::Stat::DIAMONDS, 0);
+            }
+            break;
+
+                // DECREASE PRODUCTION
+            case Temple::EXP_PUN_DEC_ENERGY_PRODUCTION:
+            {
+                const float mult = 0.5f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            case Temple::EXP_PUN_DEC_MATERIAL_PRODUCTION:
+            {
+                const float mult = 0.5f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+                // MINIMIZE COLLECTIBLES
+            case Temple::EXP_PUN_MIN_BLOBS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_BLOBS)
+                        static_cast<Blobs *>(o)->MinimizeUnits();
+                }
+            }
+            break;
+
+            case Temple::EXP_PUN_MIN_DIAMONDS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_DIAMONDS)
+                        static_cast<Diamonds *>(o)->MinimizeUnits();
+                }
+            }
+            break;
+
+            // unexpected
+            default:
+            break;
+        }
+    }
+}
+
 bool GameMap::CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player)
 {
     // generator is not owned by the player
