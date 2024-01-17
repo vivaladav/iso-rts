@@ -141,29 +141,25 @@ const char * Temple::GetExplorationOutcomeString(ExplorationOutcome o) const
         // -- REWARDS --
         // INCREASE EXISTING RESOURCES
         "Your money will be increased 10 times.",
-        "Your energy will be maximized.",
-        "Your material will be maximized.",
-        "Your blobs will be maximized.",
-        "Your diamonds will be maximized.",
+        "Your energy and material will be maximized.",
+        "Your blobs and diamonds will be maximized.",
         "All your resources will be maximized.",
         // INCREASE PRODUCTION
-        "The production of all your energy generators will double.",
-        "The production of all your material generators will double.",
+        "The production of all your current energy generators will double.",
+        "The production of all your current material generators will double.",
         // MAXIMIZE COLLECTIBLES
         "All the existing blobs on the map will be maximized.",
         "All the existing diamonds on the map will be maximized.",
 
         // -- PUNISHMENTS --
         // DECREASE EXISTING RESOURCES
-        "Your money will go down to 0.",
-        "Your energy will go down to 0.",
-        "Your material will go down to 0.",
-        "Your blobs will go down to 0.",
-        "Your diamonds will go down to 0.",
+        "Your money will go down to `0.",
+        "Your energy and material will go down to 0.",
+        "Your blobs and diamonds will go down to 0.",
         "All your resources will go down to 0.",
         // DECREASE PRODUCTION
-        "The production of all your energy generators will halve.",
-        "The production of all your material generators will halve.",
+        "The production of all your current energy generators will halve.",
+        "The production of all your current material generators will halve.",
         // MINIMIZE COLLECTIBLES
         "All the existing blobs on the map will be minimized.",
         "All the existing diamonds on the map will be minimized.",

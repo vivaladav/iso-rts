@@ -9,15 +9,30 @@
 namespace game
 {
 
+const int MIN_UNITS = 1;
+const int MAX_UNITS = 4;
+
 Blobs::Blobs() : Collectable(GameObject::TYPE_BLOBS, 1, 1)
 {
-    const int MIN_UNITS = 1;
-    const int MAX_UNITS = 4;
     sgl::utilities::UniformDistribution ran(MIN_UNITS, MAX_UNITS);
     mNum = ran.GetNextValue();
 
     SetObjColors();
     SetImage();
+}
+
+void Blobs::MaximizeUnits()
+{
+    mNum = MAX_UNITS;
+
+    UpdateGraphics();
+}
+
+void Blobs::MinimizeUnits()
+{
+    mNum = MIN_UNITS;
+
+    UpdateGraphics();
 }
 
 void Blobs::UpdateGraphics()

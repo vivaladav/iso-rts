@@ -36,6 +36,7 @@ class MoveIndicator;
 class Player;
 class PlayerAI;
 class StructureIndicator;
+class Temple;
 class Unit;
 class WallIndicator;
 
@@ -48,6 +49,8 @@ enum ParticlesUpdaterId : unsigned int
     PU_LOOTBOX_PRIZE,
     PU_SINGLE_LASER
 };
+
+
 
 class ScreenGame : public Screen
 {
@@ -122,6 +125,8 @@ private:
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void()> & OnDone = []{});
     bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
+
+    void HandleTempleOutcome(unsigned int outcome, Player * p, Temple * temple);
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);

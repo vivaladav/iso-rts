@@ -373,18 +373,18 @@ void GameHUD::ShowDialogExploreTempleOutcome(Player * player, Temple * temple)
         HideDialogExploreTempleOutcome();
     });
 
-    mDialogExploreTempleOutcome->SetFunctionOnOutcome1([this]
+    mDialogExploreTempleOutcome->SetFunctionOnOutcome1([this, player, temple]
     {
         HideDialogExploreTempleOutcome();
 
-        // TODO
+        mScreen->HandleTempleOutcome(temple->GetExplorationOutcome1(), player, temple);
     });
 
-    mDialogExploreTempleOutcome->SetFunctionOnOutcome2([this]
+    mDialogExploreTempleOutcome->SetFunctionOnOutcome2([this, player, temple]
     {
         HideDialogExploreTempleOutcome();
 
-        // TODO
+        mScreen->HandleTempleOutcome(temple->GetExplorationOutcome2(), player, temple);
     });
 
     // position dialog

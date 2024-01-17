@@ -24,10 +24,8 @@ public:
         // -- REWARDS --
         // INCREASE EXISTING RESOURCES
         EXP_REW_MULT10_MONEY,
-        EXP_REW_MAX_RES_ENERGY,
-        EXP_REW_MAX_RES_MATERIAL,
-        EXP_REW_MAX_RES_BLOBS,
-        EXP_REW_MAX_RES_DIAMONDS,
+        EXP_REW_MAX_RES_ENE_MAT,
+        EXP_REW_MAX_RES_BLO_DIA,
         EXP_REW_MAX_RESOURCES,
         // INCREASE PRODUCTION
         EXP_REW_INC_ENERGY_PRODUCTION,
@@ -39,10 +37,8 @@ public:
         // -- PUNISHMENTS --
         // DECREASE EXISTING RESOURCES
         EXP_PUN_ZERO_MONEY,
-        EXP_PUN_ZERO_RES_ENERGY,
-        EXP_PUN_ZERO_RES_MATERIAL,
-        EXP_PUN_ZERO_RES_BLOBS,
-        EXP_PUN_ZERO_RES_DIAMONDS,
+        EXP_PUN_ZERO_RES_ENE_MAT,
+        EXP_PUN_ZERO_RES_BLO_DIA,
         EXP_PUN_ZERO_RESOURCES,
         // DECREASE PRODUCTION
         EXP_PUN_DEC_ENERGY_PRODUCTION,
@@ -74,7 +70,8 @@ public:
 
     void Explore();
     ExplorationOutcomeCategory GetExplorationOutcomeCategory() const;
-    void GetExplorationOutcomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2);
+    ExplorationOutcome GetExplorationOutcome1() const;
+    ExplorationOutcome GetExplorationOutcome2() const;
     const char * GetExplorationOutcomeString(ExplorationOutcome o) const;
 
     int GetMaxInvestableMoney() const;
@@ -109,11 +106,8 @@ inline Temple::ExplorationOutcomeCategory Temple::GetExplorationOutcomeCategory(
     return mOutcomeCat;
 }
 
-inline void Temple::GetExplorationOutcomeCouple(ExplorationOutcome & o1, ExplorationOutcome & o2)
-{
-    o1 = mOutcome1;
-    o2 = mOutcome2;
-}
+inline Temple::ExplorationOutcome Temple::GetExplorationOutcome1() const { return mOutcome1; }
+inline Temple::ExplorationOutcome Temple::GetExplorationOutcome2() const { return mOutcome2; }
 
 inline int Temple::GetMaxInvestableMoney() const { return 5000; }
 inline int Temple::GetMaxInvestableMaterial() const { return 5000; }

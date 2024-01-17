@@ -415,9 +415,6 @@ DialogExploreTempleOutcome::DialogExploreTempleOutcome(Player * player, Temple *
     auto fontLabel = fm->GetFont(labelFontFile, labelFontSize, graphic::Font::NORMAL);
 
     const Temple::ExplorationOutcomeCategory oc = temple->GetExplorationOutcomeCategory();
-    Temple::ExplorationOutcome o1;
-    Temple::ExplorationOutcome o2;
-    temple->GetExplorationOutcomeCouple(o1, o2);
 
     // BACKGROUND
     graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_BACKGROUND);
@@ -466,6 +463,9 @@ DialogExploreTempleOutcome::DialogExploreTempleOutcome(Player * player, Temple *
     // EXPLORATION GAVE REWARD OR PUNISHMENT
     else
     {
+        const Temple::ExplorationOutcome o1 = temple->GetExplorationOutcome1();
+        const Temple::ExplorationOutcome o2 = temple->GetExplorationOutcome2();
+
         // VERTICAL BAR
         tex = tm->GetSprite(SpriteFileDialogExploreTemple, ID_DLG_EXTM_LINE_V);
         mLine = new graphic::Image(tex);
@@ -493,7 +493,8 @@ DialogExploreTempleOutcome::DialogExploreTempleOutcome(Player * player, Temple *
         // GOOD OUTCOME
         if(oc == Temple::EXP_OUTC_GOOD)
         {
-            const char * text = "The exploration revealed a powerful talisman that can be used to help your mission.\n"
+            const char * text = "The exploration revealed a powerful talisman that can be used to "
+                                "help your mission.\n"
                                 "Pick your reward between these 2.";
             textDesc->SetText(text);
 
@@ -506,7 +507,8 @@ DialogExploreTempleOutcome::DialogExploreTempleOutcome(Player * player, Temple *
         // BAD OUTCOME
         else
         {
-            const char * text = "The exploration failed and unlocked a powerful curse that will punish your attempt.\n"
+            const char * text = "The exploration failed and unlocked a powerful curse that will "
+                                "punish your attempt.\n"
                                 "Pick your punishment between these 2.";
             textDesc->SetText(text);
 
