@@ -211,6 +211,12 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
     {
         HideDialogExploreTemple();
 
+        // spend allocated resources
+        player->SumResource(Player::Stat::MONEY, -temple->GetInvestedMoney());
+        player->SumResource(Player::Stat::MATERIAL, -temple->GetInvestedMaterial());
+        player->SumResource(Player::Stat::BLOBS, -temple->GetInvestedBlobs());
+        player->SumResource(Player::Stat::DIAMONDS, -temple->GetInvestedDiamonds());
+
         // start progress bar
         const int time = temple->GetExplorationTime();
         const Cell2D cell(temple->GetRow1(), temple->GetCol1());

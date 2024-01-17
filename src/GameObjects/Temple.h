@@ -65,6 +65,11 @@ public:
     Temple();
 
     void SetInvestedResources(int money, int material, int blobs, int diamonds);
+    int GetInvestedMoney() const;
+    int GetInvestedMaterial() const;
+    int GetInvestedBlobs() const;
+    int GetInvestedDiamonds() const;
+
     int GetExplorationTime() const;
     int GetExplorationSuccessRate() const;
 
@@ -89,6 +94,11 @@ private:
     void SetObjColors();
 
 private:
+    int mInvestedMoney = 0;
+    int mInvestedMaterial = 0;
+    int mInvestedBlobs = 0;
+    int mInvestedDiamonds = 0;
+
     int mExplorationTime = 0;
     int mExplorationSuccess = 0;
 
@@ -96,6 +106,11 @@ private:
     ExplorationOutcome mOutcome1 = EXP_OUT_NULL;
     ExplorationOutcome mOutcome2 = EXP_OUT_NULL;
 };
+
+inline int Temple::GetInvestedMoney() const { return mInvestedMoney; }
+inline int Temple::GetInvestedMaterial() const { return mInvestedMaterial; }
+inline int Temple::GetInvestedBlobs() const { return mInvestedBlobs; }
+inline int Temple::GetInvestedDiamonds() const { return mInvestedDiamonds; }
 
 inline int Temple::GetExplorationTime() const { return mExplorationTime; }
 inline int Temple::GetExplorationSuccessRate() const { return mExplorationSuccess; }

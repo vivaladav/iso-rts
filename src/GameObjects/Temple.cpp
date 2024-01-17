@@ -31,17 +31,22 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     const int maxBlobs = GetMaxInvestableBlobs();
     const int maxDiamonds = GetMaxInvestableDiamonds();
 
-    if(money > maxMoney)
-        money = maxMoney;
+    mInvestedMoney = money;
+    mInvestedMaterial = material;
+    mInvestedBlobs = blobs;
+    mInvestedDiamonds = diamonds;
 
-    if(material > maxMaterial)
-        material = maxMaterial;
+    if(mInvestedMoney > maxMoney)
+        mInvestedMoney = maxMoney;
 
-    if(blobs > maxBlobs)
-        blobs = maxBlobs;
+    if(mInvestedMaterial > maxMaterial)
+        mInvestedMaterial = maxMaterial;
 
-    if(diamonds > maxDiamonds)
-        diamonds = maxDiamonds;
+    if(mInvestedBlobs > maxBlobs)
+        mInvestedBlobs = maxBlobs;
+
+    if(mInvestedDiamonds > maxDiamonds)
+        mInvestedDiamonds = maxDiamonds;
 
     const float maxTime = 60.f;
     const float minTime = 0.f;
@@ -59,8 +64,8 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     const float timeCostBlobs = timeInfluenceBlobs / maxBlobs;
     const float timeCostDiamonds = timeInfluenceDiamonds / maxDiamonds;
 
-    const float timePerc = timeCostMoney * money + timeCostMaterial * material +
-                           timeCostBlobs * blobs + timeCostDiamonds * diamonds;
+    const float timePerc = timeCostMoney * mInvestedMoney + timeCostMaterial * mInvestedMaterial +
+                           timeCostBlobs * mInvestedBlobs + timeCostDiamonds * mInvestedDiamonds;
     mExplorationTime = std::roundf(maxTime - maxTime * timePerc / 100.f);
 
     if(mExplorationTime < minTime)
@@ -77,8 +82,8 @@ void Temple::SetInvestedResources(int money, int material, int blobs, int diamon
     const float successCostBlobs = successInfluenceBlobs / maxBlobs;
     const float successCostDiamonds = successInfluenceDiamonds / maxDiamonds;
 
-    const float successPerc = successCostMoney * money + successCostMaterial * material +
-                           successCostBlobs * blobs + successCostDiamonds * diamonds;
+    const float successPerc = successCostMoney * mInvestedMoney + successCostMaterial * mInvestedMaterial +
+                           successCostBlobs * mInvestedBlobs + successCostDiamonds * mInvestedDiamonds;
     mExplorationSuccess = std::roundf(minSuccess + maxSuccess * successPerc / 100.f);
 
     if(mExplorationSuccess > maxSuccess)
@@ -103,7 +108,7 @@ void Temple::Explore()
     //mOutcomeCat = EXP_OUTC_NOTHING;
 
     const float probSuccess = mExplorationSuccess;
-    const float probFail = 100.f - mExplorationSuccess;
+    const float probFail = 100.f - probSuccess;
     sgl::utilities::LoadedDie die({ EXP_OUTC_GOOD, EXP_OUTC_BAD }, { probSuccess, probFail });
 
     mOutcomeCat = static_cast<ExplorationOutcomeCategory>(die.GetNextValue());
@@ -153,7 +158,7 @@ const char * Temple::GetExplorationOutcomeString(ExplorationOutcome o) const
 
         // -- PUNISHMENTS --
         // DECREASE EXISTING RESOURCES
-        "Your money will go down to `0.",
+        "Your money will go down to 0.",
         "Your energy and material will go down to 0.",
         "Your blobs and diamonds will go down to 0.",
         "All your resources will go down to 0.",
@@ -219,7 +224,7 @@ void Temple::SetImage()
     const unsigned int faction = GetFaction();
     const unsigned int sel = static_cast<unsigned int>(IsSelected());
 
-    unsigned int texInd;
+    unsigned int texInd = ID_STRUCT_TEMPLE;
 
     if(NO_FACTION == faction)
         texInd = ID_STRUCT_TEMPLE + sel;
@@ -228,7 +233,6 @@ void Temple::SetImage()
 
     auto * tm = sgl::graphic::TextureManager::Instance();
     sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileStructures, texInd);
-
     isoObj->SetTexture(tex);
 }
 

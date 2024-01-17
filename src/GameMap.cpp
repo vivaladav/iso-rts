@@ -2022,7 +2022,7 @@ void GameMap::UpdateLinkedCells(Player * player)
 void GameMap::UpdateInfluencedCells(int row, int col)
 {
     const unsigned int ind0 = row * mCols + col;
-    GameMapCell & gcell = mCells[ind0];
+    const GameMapCell & gcell = mCells[ind0];
 
     const PlayerFaction faction = gcell.owner->GetFaction();
 
