@@ -291,6 +291,7 @@ void ScreenMainMenu::CreateChangelog()
                          "- Added option for disabling edge map scrolling.\n"
                          "- Scrollable areas can be scrolled with mouse wheel.\n"
                          "- New map object: loot box.\n"
+                         "- New map object: abandoned temple.\n"
                          "- Trees now can grow into surrounding cells.\n"
                          "- Missions can be completed and that reflects on the planet map.\n"
                         );
