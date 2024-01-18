@@ -21,7 +21,7 @@ public:
 
     Game * GetGame() const;
 
-    void ShowDialogSettings();
+    DialogSettings * ShowDialogSettings();
 
     virtual void Update(float delta) = 0;
 

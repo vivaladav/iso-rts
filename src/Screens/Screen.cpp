@@ -26,7 +26,7 @@ Screen::~Screen()
     delete mSharedListener;
 }
 
-void Screen::ShowDialogSettings()
+DialogSettings * Screen::ShowDialogSettings()
 {
     using namespace sgl;
 
@@ -44,6 +44,8 @@ void Screen::ShowDialogSettings()
         mSettings->DeleteLater();
         mSettings = nullptr;
     });
+
+    return mSettings;
 }
 
 } // namespace game

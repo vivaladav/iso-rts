@@ -179,6 +179,18 @@ void GameHUD::ShowDialogExit()
     mDialogExit = new DialogExit(mScreen->GetGame(), mScreen);
     mDialogExit->SetFocus();
 
+    mDialogExit->SetFunctionOnShowingDialogSettings([this]
+    {
+        // keep game paused
+        mScreen->SetPause(true);
+    });
+
+    mDialogExit->SetFunctionOnHidingDialogSettings([this]
+    {
+        // un-pause game
+        mScreen->SetPause(false);
+    });
+
     mDialogExit->SetFunctionOnClose([this]
     {
         // schedule dialog deletion
