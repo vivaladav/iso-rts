@@ -1,7 +1,6 @@
 
 #include "GameButton.h"
 
-#include <sgl/graphic/Camera.h>
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/TextureManager.h>
 

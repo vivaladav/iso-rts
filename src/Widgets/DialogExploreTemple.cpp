@@ -7,7 +7,6 @@
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
 
-#include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>

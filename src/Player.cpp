@@ -10,7 +10,6 @@
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 
-#include <cassert>
 #include <iostream>
 
 namespace game

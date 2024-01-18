@@ -5,7 +5,6 @@
 #include "Widgets/SimpleResourceDisplay.h"
 #include "Widgets/GameUIData.h"
 
-#include <sgl/graphic/Camera.h>
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Texture.h>
 #include <sgl/graphic/TextureManager.h>

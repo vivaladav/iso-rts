@@ -3,9 +3,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Screens/Screen.h"
-#include "States/StatesIds.h"
 
-#include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Window.h>
 

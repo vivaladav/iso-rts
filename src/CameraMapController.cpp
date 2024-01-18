@@ -5,10 +5,6 @@
 #include <sgl/core/event/MouseMotionEvent.h>
 #include <sgl/graphic/Camera.h>
 
-#include <limits>
-
-#include <iostream>
-
 namespace game
 {
 

@@ -26,8 +26,6 @@
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/StateManager.h>
 
-#include <iostream>
-
 namespace game
 {
 

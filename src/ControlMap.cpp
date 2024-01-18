@@ -10,7 +10,6 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Texture.h>
 
-#include <iostream>
 #include <cmath>
 
 namespace game

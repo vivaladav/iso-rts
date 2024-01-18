@@ -4,10 +4,7 @@
 #include "Widgets/ObjectActionButton.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
-#include <sgl/graphic/Image.h>
 #include <sgl/graphic/Renderer.h>
-#include <sgl/graphic/Texture.h>
-#include <sgl/graphic/TextureManager.h>
 
 namespace game
 {
