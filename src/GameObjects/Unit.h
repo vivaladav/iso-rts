@@ -20,6 +20,7 @@ public:
 
     int GetAttackRange() const;
     void ClearAttackTarget();
+    bool IsTargetInRange(GameObject * obj) const;
     bool SetAttackTarget(GameObject * obj);
 
     void SetActiveActionToDefault() override;
@@ -41,8 +42,6 @@ public:
 
 private:
     void UpdateGraphics() override;
-
-    bool IsTargetInRange(GameObject * obj) const;
 
     void SetImage();
 

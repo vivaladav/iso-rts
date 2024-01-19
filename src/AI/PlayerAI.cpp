@@ -52,6 +52,7 @@ void PlayerAI::PrepareData()
     // clear data
     mResGenerators.clear();
     mStructures.clear();
+    mUnits.clear();
 
     // collect data
     const std::vector<GameObject *> & objects = mGm->GetObjects();
@@ -69,6 +70,8 @@ void PlayerAI::PrepareData()
             if(objCat == GameObject::CAT_RES_GENERATOR)
                 mResGenerators.push_back(obj);
         }
+        else if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
+            mUnits.push_back(obj);
     }
 }
 
@@ -397,12 +400,69 @@ void PlayerAI::AddActionsBase(Structure * s)
 
 void PlayerAI::AddActionsUnit(Unit * u)
 {
+    // ATTACK ENEMY
+    AddActionUnitAttackEnemyUnit(u);
+
     // CONNECT STRUCTURES
     AddActionUnitConnectStructure(u);
 
     // CONQUEST RESOURCE GENERATORS
     AddActionUnitConquestResGen(u, RES_ENERGY);
     AddActionUnitConquestResGen(u, RES_MATERIAL1);
+}
+
+void PlayerAI::AddActionUnitAttackEnemyUnit(Unit * u)
+{
+    // nothing to do if there's no units on the map
+    if(mUnits.empty())
+        return ;
+
+    const PlayerFaction faction = mPlayer->GetFaction();
+    const unsigned int numUnits = mUnits.size();
+
+    // check if there's any unit to shoot at
+    const int maxDist = mGm->GetNumRows() + mGm->GetNumCols();
+
+    unsigned int bestUnitInd = numUnits;
+    int minDist = maxDist;
+    int priority = 100;
+
+    for(unsigned int i = 0; i < numUnits; ++i)
+    {
+        auto unit = static_cast<Unit *>(mUnits[i]);
+
+        const PlayerFaction unitFaction = unit->GetFaction();
+
+        // skip own faction units
+        if(unitFaction == faction)
+            continue;
+
+        // skip targets out of range
+        if(!u->IsTargetInRange(unit))
+            continue;
+
+        // basic logic, attack closest one
+        const int dist = mGm->ApproxDistance(u, unit);
+
+        if(dist < minDist)
+        {
+            minDist = dist;
+            bestUnitInd = i;
+        }
+    }
+
+    // didn't find any
+    if(bestUnitInd == numUnits)
+        return ;
+
+    auto action = new ActionAI;
+    action->type = AIA_UNIT_ATTACK_ENEMY_UNIT;
+    action->ObjSrc = u;
+    action->ObjDst = mUnits[bestUnitInd];
+    action->priority = priority;
+
+    // push action to the queue
+    AddNewAction(action);
 }
 
 void PlayerAI::AddActionUnitConnectStructure(Unit * u)

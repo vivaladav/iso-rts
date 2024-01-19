@@ -57,6 +57,7 @@ private:
 
     void AddActionsBase(Structure * s);
     void AddActionsUnit(Unit * u);
+    void AddActionUnitAttackEnemyUnit(Unit * u);
     void AddActionUnitConnectStructure(Unit * u);
     void AddActionUnitConquestResGen(Unit * u, ResourceType type);
 
@@ -70,6 +71,7 @@ private:
     // shared data,
     std::vector<GameObject *> mResGenerators;
     std::vector<GameObject *> mStructures;
+    std::vector<GameObject *> mUnits;
 
     Player * mPlayer = nullptr;
 

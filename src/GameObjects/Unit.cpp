@@ -67,6 +67,20 @@ void Unit::IncreaseUnitLevel()
     SetImage();
 }
 
+bool Unit::IsTargetInRange(GameObject * obj) const
+{
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            if(std::abs(GetRow0() - r) <= mAttackRange && std::abs(GetCol0() - c) <= mAttackRange)
+                return true;
+        }
+    }
+
+    return false;
+}
+
 bool Unit::SetAttackTarget(GameObject * obj)
 {
    if(nullptr == obj || !IsTargetInRange(obj) || !obj->IsVisible() || obj == this)
@@ -144,20 +158,6 @@ void Unit::UpdateGraphics()
     SetImage();
 
     SetDefaultColors();
-}
-
-bool Unit::IsTargetInRange(GameObject * obj) const
-{
-    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
-    {
-        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
-        {
-            if(std::abs(GetRow0() - r) <= mAttackRange && std::abs(GetCol0() - c) <= mAttackRange)
-                return true;
-        }
-    }
-
-    return false;
 }
 
 void Unit::SetImage()

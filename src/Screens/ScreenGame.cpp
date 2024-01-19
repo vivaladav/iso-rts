@@ -925,6 +925,18 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         switch(action->type)
         {
+            case AIA_UNIT_ATTACK_ENEMY_UNIT:
+            {
+                auto unit = static_cast<Unit *>(action->ObjSrc);
+
+                const bool res = unit->SetAttackTarget(action->ObjDst);
+
+                std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
+                          << " - ATTACK ENEMY UNIT "
+                          << (done ? "DOING" : "FAILED") << std::endl;
+            }
+            break;
+
             case AIA_UNIT_CONQUER_GEN:
             {
                 auto unit = static_cast<Unit *>(action->ObjSrc);
