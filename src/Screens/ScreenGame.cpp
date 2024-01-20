@@ -888,7 +888,6 @@ void ScreenGame::UpdateAI(float delta)
 
     if(mTimerAI < 0.f)
     {
-
         PlayerAI * ai = mAiPlayers[mCurrPlayerAI]->GetAI();
         ai->Update(delta);
         ExecuteAIAction(ai);
@@ -929,7 +928,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             {
                 auto unit = static_cast<Unit *>(action->ObjSrc);
 
-                const bool res = unit->SetAttackTarget(action->ObjDst);
+                done = unit->SetAttackTarget(action->ObjDst);
 
                 std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
                           << " - ATTACK ENEMY UNIT "
