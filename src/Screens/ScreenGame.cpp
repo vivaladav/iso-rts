@@ -1243,7 +1243,7 @@ bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * 
     gen->SetCurrentAction(GameObjectActionId::BUILD_UNIT);
 
     // disable actions panel (if action is done by local player)
-    if(player == GetGame()->GetLocalPlayer())
+    if(player->IsLocal())
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     return true;
@@ -1257,7 +1257,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
         return false;
 
     // handle special case: TEMPLE
-    if(player == GetGame()->GetLocalPlayer())
+    if(player->IsLocal())
     {
         const GameMapCell & gameCell = mGameMap->GetCell(end.row, end.col);
         GameObject * obj = gameCell.objTop;
@@ -1306,7 +1306,7 @@ bool ScreenGame::SetupStructureConquest(Unit * unit, const Cell2D & start, const
     unit->SetCurrentAction(GameObjectActionId::CONQUER_STRUCTURE);
 
     // disable actions panel (if action is done by local player)
-    if(player == GetGame()->GetLocalPlayer())
+    if(player->IsLocal())
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     return true;
@@ -1357,7 +1357,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     mActiveObjActions.emplace_back(unit, GameObjectActionId::BUILD_STRUCTURE, cellTarget, pb);
 
     // disable actions panel (if action is done by local player)
-    if(player == GetGame()->GetLocalPlayer())
+    if(player->IsLocal())
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     unit->SetActiveAction(GameObjectActionId::IDLE);

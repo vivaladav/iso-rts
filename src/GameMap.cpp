@@ -2264,7 +2264,8 @@ void GameMap::UpdateInfluencedCells(int row, int col)
 
 void GameMap::UpdateVisibility(Player * player, bool init)
 {
-    if(player != mGame->GetLocalPlayer())
+    // no visibility for AI
+    if(player->IsAI())
         return ;
 
     // update cells

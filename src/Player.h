@@ -135,7 +135,6 @@ public:
     void SetAI(PlayerAI * ai);
 
     bool IsLocal() const;
-    void SetLocal(bool val);
 
 private:
     std::vector<Unit *> mUnits;
@@ -175,8 +174,6 @@ private:
     int mNumUnits = 0;
     int mTotUnitsLevel = 0;
     unsigned int mMaxUnits = 0;
-
-    bool mLocal = false;
 };
 
 inline PlayerFaction Player::GetFaction() const { return mFaction; }
@@ -277,7 +274,6 @@ inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }
 inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
 
-inline bool Player::IsLocal() const { return mLocal; }
-inline void Player::SetLocal(bool val) { mLocal = val; }
+inline bool Player::IsLocal() const { return nullptr == mAI; }
 
 } // namespace game

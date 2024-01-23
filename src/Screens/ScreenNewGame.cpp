@@ -30,7 +30,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // create human player
     const PlayerFaction pf = game->GetLocalPlayerFaction();
     Player * p = game->AddPlayer("PLAYER 1", 0);
-    p->SetLocal(true);
     p->SetFaction(pf);
     p->SetMaxUnits(MAX_UNITS0);
 
