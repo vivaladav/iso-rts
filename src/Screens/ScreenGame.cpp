@@ -667,7 +667,6 @@ void ScreenGame::CreateUI()
                 // object is a Unit
                 else if(act.obj->GetObjectCategory() == GameObject::CAT_UNIT)
                 {
-                    // moving
                     if(objActId == GameObjectActionId::MOVE)
                         mGameMap->AbortMove(selObj);
                     else if(objActId == GameObjectActionId::CONQUER_CELL)
@@ -965,7 +964,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                             const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
                             SetupStructureConquest(unit, currCell, end, player, ClearAction);
-                        });
+                        }, ClearAction);
                     }
                 }
 
@@ -995,7 +994,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                         done = SetupUnitMove(unit, unitCell, target, [this, unit, ClearAction]
                         {
                             SetupConnectCells(unit, ClearAction);
-                        });
+                        }, ClearAction);
                     }
                 }
 
@@ -1394,7 +1393,8 @@ bool ScreenGame::SetupUnitUpgrade(GameObject * obj, Player * player, const std::
 }
 
 bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                               const std::function<void()> & OnDone)
+                               const std::function<void()> & OnDone,
+                               const std::function<void()> & OnFail)
 {
     const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col,
                                             sgl::ai::Pathfinder::ALL_OPTIONS);
@@ -1406,8 +1406,8 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     auto op = new ObjectPath(unit, mIsoMap, mGameMap, this);
     op->SetPathCells(path);
     op->SetOnCompleted(OnDone);
-    op->SetOnFailed(OnDone);
-    op->SetOnAborted(OnDone);
+    op->SetOnFailed(OnFail);
+    op->SetOnAborted(OnFail);
 
     const bool res = mGameMap->MoveUnit(op);
 
@@ -1997,21 +1997,18 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
             layer->AddObject(mTempStructIndicator, clickCell.row, clickCell.col);
 
             // move
-            SetupUnitMove(unit, cellUnit, target, [this, unit, clickCell, player]
+            SetupUnitMove(unit, cellUnit, target,
+            [this, unit, clickCell, player]
             {
                 const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
 
                 SetupStructureBuilding(unit, clickCell, player);
 
-                // get rid of temporary indicator
-                if(mTempStructIndicator)
-                {
-                    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS2);
-                    layer->ClearObject(mTempStructIndicator);
-
-                    delete mTempStructIndicator;
-                    mTempStructIndicator = nullptr;
-                }
+                ClearTempStructIndicator();
+            },
+            [this]
+            {
+                ClearTempStructIndicator();
             });
         }
     }
@@ -2381,6 +2378,18 @@ void ScreenGame::ClearCellOverlays()
     // delete move indicator
     delete mMoveInd;
     mMoveInd = nullptr;
+}
+
+void ScreenGame::ClearTempStructIndicator()
+{
+    if(mTempStructIndicator)
+    {
+        IsoLayer * layer = mIsoMap->GetLayer(MapLayers::OBJECTS2);
+        layer->ClearObject(mTempStructIndicator);
+
+        delete mTempStructIndicator;
+        mTempStructIndicator = nullptr;
+    }
 }
 
 void ScreenGame::CenterCameraOverPlayerBase()

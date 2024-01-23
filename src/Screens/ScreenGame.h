@@ -122,7 +122,8 @@ private:
                                 const std::function<void()> & OnDone = []{});
     bool SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void()> & OnDone = []{});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                       const std::function<void()> & OnDone = []{});
+                       const std::function<void()> & OnDone = []{},
+                       const std::function<void()> & OnFail = []{});
     bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
@@ -142,6 +143,7 @@ private:
 
     void ShowAttackIndicators(const GameObject * obj, int range);
     void ClearCellOverlays();
+    void ClearTempStructIndicator();
 
     void CenterCameraOverPlayerBase();
 

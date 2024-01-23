@@ -327,7 +327,8 @@ void ScreenMainMenu::CreateChangelog()
     // CONTENT BLOCK: FIXES
     auto textFix = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textFix->SetText("FIXES\n"
-                     "- Action panel is re-enabled only when own units complete their task.\n"
+                     "- Action panel re-enabled randomly by any unit.\n"
+                     "- Moving unit conquering structrure after action is cancelled.\n"
                      "- Several minor fixes.\n"
                     );
     textFix->SetPosition(contX, contY);
