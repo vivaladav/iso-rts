@@ -302,8 +302,9 @@ void ScreenGame::SetObjectActionCompleted(GameObject * obj)
             // remove pending action
             mActiveObjActions.erase(it);
 
-            // re-enable actions panel
-            mHUD->GetPanelObjectActions()->SetActionsEnabled(true);
+            // re-enable actions panel if obj is local
+            if(obj->GetFaction() == GetGame()->GetLocalPlayerFaction())
+                mHUD->GetPanelObjectActions()->SetActionsEnabled(true);
 
             // reset object's active action to default
             obj->SetActiveActionToDefault();

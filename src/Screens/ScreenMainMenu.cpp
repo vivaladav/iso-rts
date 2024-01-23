@@ -327,7 +327,8 @@ void ScreenMainMenu::CreateChangelog()
     // CONTENT BLOCK: FIXES
     auto textFix = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textFix->SetText("FIXES\n"
-                     "- several minor fixes.\n"
+                     "- Action panel is re-enabled only when own units complete their task.\n"
+                     "- Several minor fixes.\n"
                     );
     textFix->SetPosition(contX, contY);
     textFix->SetColor(colorContent);
