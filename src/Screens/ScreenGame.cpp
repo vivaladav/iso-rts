@@ -278,7 +278,8 @@ void ScreenGame::ClearObjectAction(GameObject * obj)
     {
         if(it->obj == obj)
         {
-            it->progressBar->DeleteLater();
+            if(it->progressBar != nullptr)
+                it->progressBar->DeleteLater();
 
             mActiveObjActions.erase(it);
 
@@ -958,7 +959,6 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                         done = false;
                     else
                     {
-
                         done = SetupUnitMove(unit, start, target, [this, unit, end, player, ClearAction]
                         {
                             const Cell2D currCell(unit->GetRow0(), unit->GetCol0());
