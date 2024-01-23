@@ -2407,16 +2407,24 @@ void GameMap::AddObjectToMap(const ObjectToAdd & o2a)
 
 void GameMap::DestroyObject(GameObject * obj)
 {
-    Player * localPlayer = mGame->GetLocalPlayer();
     Player * owner = mGame->GetPlayerByFaction(obj->GetFaction());
-
-    // update visibility map
-    // NOTE only local player for now
-    if(owner == localPlayer)
-        DelPlayerObjVisibility(obj, localPlayer);
 
     if(owner != nullptr)
     {
+        Player * localPlayer = mGame->GetLocalPlayer();
+
+        // owner is local Player
+        if(owner == localPlayer)
+        {
+            // clear selection if object is selected
+            if(owner->GetSelectedObject() == obj)
+                mScreenGame->ClearSelection(owner);
+
+            // update visibility map
+            // NOTE only local player for now
+            DelPlayerObjVisibility(obj, localPlayer);
+        }
+
         // remove unit from player
         if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
             owner->RemoveUnit(static_cast<Unit *>(obj));
