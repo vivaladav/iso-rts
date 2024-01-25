@@ -122,6 +122,8 @@ private:
                                 const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
                                 const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
+                         const std::function<void(bool)> & onDone = [](bool){});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void(bool)> & onDone = [](bool){});
     bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});

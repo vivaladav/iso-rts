@@ -904,8 +904,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             case AIA_UNIT_ATTACK_ENEMY_UNIT:
             {
                 auto unit = static_cast<Unit *>(action->ObjSrc);
-
-                done = unit->SetAttackTarget(action->ObjDst);
+                done = SetupUnitAttack(unit, action->ObjDst, player, basicOnDone);
 
                 std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
                           << " - ATTACK ENEMY UNIT "
@@ -1375,6 +1374,26 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     unit->ClearStructureToBuild();
 
     ClearCellOverlays();
+
+    return true;
+}
+
+bool ScreenGame::SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
+                                 const std::function<void(bool)> & onDone)
+{
+    const bool res = unit->SetAttackTarget(target);
+
+    if(!res)
+        return false;
+
+    unit->SetActiveAction(GameObjectActionType::IDLE);
+    unit->SetCurrentAction(GameObjectActionType::ATTACK);
+
+    // disable actions panel (if action is done by local player)
+    if(player->IsLocal())
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
+
+    mObjActionsToDo.emplace_back(unit, GameObjectActionType::ATTACK, onDone);
 
     return true;
 }
@@ -2182,21 +2201,8 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
             if(diffClick)
                 HandleUnitMoveOnMouseUp(selUnit, clickCell);
         }
-        if(action == GameObjectActionType::ATTACK)
-        {
-            const bool res = selUnit->SetAttackTarget(clickObj);
-
-            if(!res)
-                return ;
-
-            selUnit->SetActiveAction(GameObjectActionType::IDLE);
-            selUnit->SetCurrentAction(GameObjectActionType::ATTACK);
-
-            // disable action buttons
-            panelObjActions->SetActionsEnabled(false);
-
-            mObjActionsToDo.emplace_back(selUnit, GameObjectActionType::ATTACK, [](bool){});
-        }
+        else if(action == GameObjectActionType::ATTACK)
+            SetupUnitAttack(selUnit, clickObj, player);
         else if(action == GameObjectActionType::CONQUER_CELL)
         {
             const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
