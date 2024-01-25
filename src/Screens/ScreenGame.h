@@ -49,8 +49,6 @@ enum ParticlesUpdaterId : unsigned int
     PU_SINGLE_LASER
 };
 
-
-
 class ScreenGame : public Screen
 {
 public:
@@ -73,6 +71,7 @@ public:
 
     void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
+    void SetObjectActionFailed(GameObject * obj);
 
     sgl::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 
@@ -106,6 +105,8 @@ private:
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
 
+    void SetObjectActionDone(GameObject * obj, bool successful);
+
     void UpdateGameEnd();
     void HandleGameOver();
     void HandleGameWon();
@@ -115,16 +116,15 @@ private:
 
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player,
+                      const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player,
-                                const std::function<void()> & OnDone = []{});
+                                const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
-                                const std::function<void()> & OnDone = []{});
-    bool SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void()> & OnDone = []{});
+                                const std::function<void(bool)> & onDone = [](bool){});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                       const std::function<void()> & OnDone = []{},
-                       const std::function<void()> & OnFail = []{});
-    bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
+                       const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
     void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
@@ -161,7 +161,7 @@ private:
     std::vector<unsigned int> mConquestPath;
     std::vector<unsigned int> mWallPath;
 
-    std::vector<GameObjectAction> mActiveObjActions;
+    std::vector<GameObjectAction> mObjActions;
 
     CameraMapController * mCamController = nullptr;
 
@@ -195,6 +195,15 @@ private:
 
     bool mPaused = false;
 };
+
+inline void ScreenGame::SetObjectActionCompleted(GameObject * obj)
+{
+    SetObjectActionDone(obj, true);
+}
+inline void ScreenGame::SetObjectActionFailed(GameObject * obj)
+{
+    SetObjectActionDone(obj, false);
+}
 
 inline GameHUD * ScreenGame::GetHUD() const { return mHUD; }
 

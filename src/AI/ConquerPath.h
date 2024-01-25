@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <vector>
 
 namespace game
@@ -41,10 +40,6 @@ public:
 
     void SetPathCells(const std::vector<unsigned int> & cells);
 
-    void SetOnCompleted(const std::function<void()> & f);
-    void SetOnFailed(const std::function<void()> & f);
-    void SetOnAborted(const std::function<void()> & f);
-
     void Start();
     void Abort();
     void InstantAbort();
@@ -69,10 +64,6 @@ private:
     std::vector<unsigned int> mCells;
 
     std::vector<ConquestIndicator *> mIndicators;
-
-    std::function<void()> mOnCompleted;
-    std::function<void()> mOnFailed;
-    std::function<void()> mOnAborted;
 
     GameMapProgressBar * mProgressBar = nullptr;
 
@@ -112,9 +103,5 @@ inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells)
 
     UpdatePathCost();
 }
-
-inline void ConquerPath::SetOnCompleted(const std::function<void()> & f) {  mOnCompleted = f; }
-inline void ConquerPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
-inline void ConquerPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 } // namespace game

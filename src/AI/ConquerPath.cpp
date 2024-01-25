@@ -21,10 +21,7 @@ namespace game
 {
 
 ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{})
-    , mOnFailed([]{})
-    , mOnAborted([]{})
-    , mUnit(unit)
+    : mUnit(unit)
     , mIsoMap(im)
     , mGameMap(gm)
     , mScreen(sg)
@@ -82,8 +79,6 @@ void ConquerPath::InstantAbort()
 
     // set new state
     mState = ABORTED;
-
-    mOnAborted();
 }
 
 void ConquerPath::Update(float delta)
@@ -98,8 +93,6 @@ void ConquerPath::Finish()
 
     // clear action data once the action is completed
     mScreen->SetObjectActionCompleted(mUnit);
-
-    mOnCompleted();
 }
 
 void ConquerPath::CreateIndicators()
@@ -338,9 +331,7 @@ void ConquerPath::Fail()
     layerOverlay->ClearObjects();
 
     // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
-
-    mOnFailed();
+    mScreen->SetObjectActionFailed(mUnit);
 }
 
 } // namespace game

@@ -139,6 +139,8 @@ void PlayerAI::SetActionDone(const ActionAI * action)
         else
             ++it;
     }
+
+    std::cout << "PlayerAI::SetActionDone - ACTION DONE - can't find action" << std::endl;
 }
 
 void PlayerAI::ClearActionsDone()

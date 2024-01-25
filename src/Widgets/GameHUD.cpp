@@ -281,11 +281,11 @@ void GameHUD::ShowDialogNewElement(unsigned int type)
     {
         // set unit's action to idle while dialog is open
         auto unit = static_cast<Unit *>(player->GetSelectedObject());
-        unit->SetActiveAction(GameObjectActionId::IDLE);
+        unit->SetActiveAction(GameObjectActionType::IDLE);
 
         mDialogNewElement->SetFunctionOnBuild([this, unit]
         {
-            unit->SetActiveAction(GameObjectActionId::BUILD_STRUCTURE);
+            unit->SetActiveAction(GameObjectActionType::BUILD_STRUCTURE);
 
             const GameObjectTypeId stype = mDialogNewElement->GetSelectedType();
             unit->SetStructureToBuild(stype);

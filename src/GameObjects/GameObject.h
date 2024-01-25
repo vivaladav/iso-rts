@@ -10,7 +10,7 @@
 namespace game
 {
 
-enum GameObjectActionId : unsigned int
+enum GameObjectActionType : unsigned int
 {
     IDLE,
 
@@ -168,11 +168,11 @@ public:
 
     void Hit(float damage, PlayerFaction attacker);
 
-    GameObjectActionId GetActiveAction() const;
-    void SetActiveAction(GameObjectActionId action);
+    GameObjectActionType GetActiveAction() const;
+    void SetActiveAction(GameObjectActionType action);
     virtual void SetActiveActionToDefault();
-    GameObjectActionId GetCurrentAction() const;
-    void SetCurrentAction(GameObjectActionId action);
+    GameObjectActionType GetCurrentAction() const;
+    void SetCurrentAction(GameObjectActionType action);
 
     virtual void Update(float delta);
 
@@ -250,8 +250,8 @@ private:
     GameObjectTypeId mType = TYPE_NULL;
     GameObjectCategoryId mCategory = CAT_NULL;
 
-    GameObjectActionId mActiveAction = IDLE;
-    GameObjectActionId mCurrAction = IDLE;
+    GameObjectActionType mActiveAction = IDLE;
+    GameObjectActionType mCurrAction = IDLE;
 
     unsigned int mRows = 1;
     unsigned int mCols = 1;
@@ -356,9 +356,9 @@ inline void GameObject::SetOnValuesChanged(const std::function<void()> & f)
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 
-inline GameObjectActionId GameObject::GetActiveAction() const { return mActiveAction; }
-inline void GameObject::SetActiveAction(GameObjectActionId action) { mActiveAction = action; }
-inline GameObjectActionId GameObject::GetCurrentAction() const { return mCurrAction; }
-inline void GameObject::SetCurrentAction(GameObjectActionId action) { mCurrAction = action; }
+inline GameObjectActionType GameObject::GetActiveAction() const { return mActiveAction; }
+inline void GameObject::SetActiveAction(GameObjectActionType action) { mActiveAction = action; }
+inline GameObjectActionType GameObject::GetCurrentAction() const { return mCurrAction; }
+inline void GameObject::SetCurrentAction(GameObjectActionType action) { mCurrAction = action; }
 
 } // namespace game

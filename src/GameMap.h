@@ -139,11 +139,6 @@ public:
     void StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
     void CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
 
-    // unit upgrade
-    bool CanUpgradeUnit(GameObject * obj, Player * player);
-    void StartUpgradeUnit(GameObject * obj, Player * player);
-    void UpgradeUnit(const Cell2D & cell);
-
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
     bool MoveUnit(ObjectPath * path);

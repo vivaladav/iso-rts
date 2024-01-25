@@ -1573,61 +1573,6 @@ void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & d
     ApplyLocalVisibility();
 }
 
-bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
-{
-    // this should never happen
-    if(nullptr == obj)
-        return false;
-
-    // object is not an unit
-    if(obj->GetObjectCategory() != GameObject::CAT_UNIT)
-        return false;
-
-    auto unit = static_cast<Unit *>(obj);
-
-    // check if reached max level for units
-    const int unitLevel = unit->GetUnitLevel();
-
-    if(MAX_UNITS_LEVEL == unitLevel)
-        return false;
-
-    // check if player has enough energy - LAST CHECK
-    const int cost = COST_UNIT_UPGRADE[unitLevel];
-    return player->HasEnough(Player::Stat::ENERGY, cost);
-}
-
-void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)
-{
-    const int ind = obj->GetRow0() * mCols + obj->GetCol0();
-    GameMapCell & gcell = mCells[ind];
-
-    // make player pay
-    const Unit * unit = static_cast<Unit *>(obj);
-    const int unitLevel = unit->GetUnitLevel();
-    const int cost = -COST_UNIT_UPGRADE[unitLevel];
-    player->SumResource(Player::Stat::ENERGY, cost);
-
-    // mark cell as changing
-    gcell.changing = true;
-}
-
-void GameMap::UpgradeUnit(const Cell2D & cell)
-{
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    Unit * unit = gcell.GetUnit();
-    unit->IncreaseUnitLevel();
-
-    // update player
-    gcell.owner->SumTotalUnitsLevel(1);
-
-    // reset cell's changing flag
-    gcell.changing = false;
-}
-
 bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const
 {
     const unsigned int r0 = static_cast<unsigned int>(start.row);

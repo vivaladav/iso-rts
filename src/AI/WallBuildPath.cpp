@@ -306,8 +306,6 @@ void WallBuildPath::InstantAbort()
 
     // set new state
     mState = ABORTED;
-
-    mOnAborted();
 }
 
 void WallBuildPath::Update(float delta)
@@ -322,8 +320,6 @@ void WallBuildPath::Finish()
 
     // clear action data once the action is completed
     mScreen->SetObjectActionCompleted(mUnit);
-
-    mOnCompleted();
 }
 
 void WallBuildPath::SetIndicatorsType(const std::vector<Cell2D> & cells,
@@ -374,11 +370,9 @@ void WallBuildPath::Fail()
     layerOverlay->ClearObjects();
 
     // clear action data
-    mScreen->SetObjectActionCompleted(mUnit);
+    mScreen->SetObjectActionFailed(mUnit);
 
     mState = FAILED;
-
-    mOnCompleted();
 }
 
 } // namespace game

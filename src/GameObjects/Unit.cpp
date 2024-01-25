@@ -118,7 +118,7 @@ void Unit::Update(float delta)
 
                 // mark attack action as completed
                 GetScreen()->SetObjectActionCompleted(this);
-                SetCurrentAction(GameObjectActionId::IDLE);
+                SetCurrentAction(GameObjectActionType::IDLE);
             }
 
             mTimerAttack = mTimeAttack;
@@ -128,7 +128,7 @@ void Unit::Update(float delta)
 
 void Unit::ClearStructureToBuild() { mStructToBuild = GameObject::TYPE_NULL; }
 
-void Unit::ConsumeEnergy(GameObjectActionId action)
+void Unit::ConsumeEnergy(GameObjectActionType action)
 {
     if(action < NUM_OBJ_ACTIONS)
        SumEnergy(-ACTION_COSTS[action]);
@@ -142,7 +142,7 @@ int Unit::GetStat(unsigned int index) const
         return 0;
 }
 
-bool Unit::HasEnergyForAction(GameObjectActionId action)
+bool Unit::HasEnergyForAction(GameObjectActionType action)
 {
     if(action < NUM_OBJ_ACTIONS)
     {
