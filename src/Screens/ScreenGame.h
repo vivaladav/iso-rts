@@ -162,6 +162,7 @@ private:
     std::vector<unsigned int> mWallPath;
 
     std::vector<GameObjectAction> mObjActions;
+    std::vector<GameObjectAction> mObjActionsToDo;
 
     CameraMapController * mCamController = nullptr;
 
