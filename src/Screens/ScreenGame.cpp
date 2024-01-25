@@ -2207,6 +2207,12 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
             if(player->IsCellVisible(clickInd) &&
                (mGameMap->IsCellWalkable(clickCell.row, clickCell.col) || clickCell == selCell))
             {
+                // init start for empty path
+                sgl::ai::Pathfinder::PathOptions po = sgl::ai::Pathfinder::INCLUDE_START;
+                unsigned int startR = selCell.row;
+                unsigned int startC = selCell.col;
+
+                // continue building path
                 if(!mConquestPath.empty())
                 {
                     // reclicked on same cell of last path -> double click -> finalize path
@@ -2233,28 +2239,15 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
 
                         return ;
                     }
-                }
+                    // continue pathfinfing from latest click
+                    else
+                    {
+                        po = sgl::ai::Pathfinder::NO_OPTION;
 
-                sgl::ai::Pathfinder::PathOptions po;
-                unsigned int startR;
-                unsigned int startC;
-
-                // start pathfinding from unit position
-                if(mConquestPath.empty())
-                {
-                    po = sgl::ai::Pathfinder::INCLUDE_START;
-
-                    startR = selCell.row;
-                    startC = selCell.col;
-                }
-                // continue pathfinfing from latest click
-                else
-                {
-                    po = sgl::ai::Pathfinder::NO_OPTION;
-
-                    const unsigned int pathInd = mConquestPath.back();
-                    startR = pathInd / mIsoMap->GetNumCols();
-                    startC = pathInd % mIsoMap->GetNumCols();
+                        const unsigned int pathInd = mConquestPath.back();
+                        startR = pathInd / mIsoMap->GetNumCols();
+                        startC = pathInd % mIsoMap->GetNumCols();
+                    }
                 }
 
                 const auto path = mPathfinder->MakePath(startR, startC, clickCell.row,
