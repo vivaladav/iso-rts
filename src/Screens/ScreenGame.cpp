@@ -637,7 +637,6 @@ void ScreenGame::CreateUI()
                         act.progressBar->DeleteLater();
 
                         selObj->SetCurrentAction(GameObjectActionType::IDLE);
-                        selObj->SetBusy(false);
                     }
                 }
                 // object is a Unit
@@ -1221,9 +1220,6 @@ bool ScreenGame::SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * 
 
     // start create
     mGameMap->StartCreateUnit(type, gen, cell, player);
-
-    gen->SetActiveAction(GameObjectActionType::IDLE);
-    gen->SetCurrentAction(GameObjectActionType::BUILD_UNIT);
 
     // create and init progress bar
     GameMapProgressBar * pb = mHUD->CreateProgressBarInCell(cell, TIME_NEW_UNIT, player->GetFaction());

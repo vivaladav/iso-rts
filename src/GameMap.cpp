@@ -1523,9 +1523,6 @@ void GameMap::StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2
 
     // mark cell as changing
     gcell.changing = true;
-
-    // mark generator as busy
-    gen->SetBusy(true);
 }
 
 void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player)
@@ -1558,10 +1555,6 @@ void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & d
     // store unit in map list and in registry
     mObjects.push_back(unit);
     mObjectsSet.insert(unit);
-
-    // update generator, if any
-    if(gen)
-        gen->SetBusy(false);
 
     // update player
     player->AddUnit(unit);

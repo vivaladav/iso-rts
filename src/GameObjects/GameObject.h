@@ -113,7 +113,6 @@ public:
     void SetSelected(bool val);
 
     bool IsBusy() const;
-    void SetBusy(bool val);
 
     bool IsVisited() const;
     void SetVisited();
@@ -272,8 +271,6 @@ private:
 
     bool mSelected = false;
 
-    bool mBusy = false;
-
     bool mVisible = true;
     bool mVisited = false;
     bool mLinked = false;
@@ -294,8 +291,7 @@ inline bool GameObject::CanBeCollected() const { return GameObject::CAT_COLLECTA
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 
-inline bool GameObject::IsBusy() const { return mBusy; }
-inline void GameObject::SetBusy(bool val) { mBusy = val; }
+inline bool GameObject::IsBusy() const { return mCurrAction != IDLE; }
 
 inline bool GameObject::IsVisited() const { return mVisited; }
 inline void GameObject::SetVisited() { mVisited = true; }
