@@ -105,6 +105,7 @@ private:
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
 
+    void CancelObjectAction(GameObject * obj);
     void SetObjectActionDone(GameObject * obj, bool successful);
 
     void UpdateGameEnd();

@@ -616,63 +616,7 @@ void ScreenGame::CreateUI()
             return ;
         }
 
-        auto it = mObjActions.begin();
-
-        // search selected object in active actions
-        while(it != mObjActions.end())
-        {
-            GameObjectAction & act = *it;
-
-            if(act.obj == selObj)
-            {
-                const GameObjectTypeId objType = act.obj->GetObjectType();
-                const GameObjectActionType objActId = act.actId;
-
-                // object is a Base
-                if(objType == GameObject::TYPE_BASE)
-                {
-                    // building a new unit
-                    if(objActId == GameObjectActionType::BUILD_UNIT)
-                    {
-                        act.progressBar->DeleteLater();
-
-                        selObj->SetCurrentAction(GameObjectActionType::IDLE);
-                    }
-                }
-                // object is a Unit
-                else if(act.obj->GetObjectCategory() == GameObject::CAT_UNIT)
-                {
-                    if(objActId == GameObjectActionType::MOVE)
-                        mGameMap->AbortMove(selObj);
-                    else if(objActId == GameObjectActionType::CONQUER_CELL)
-                        mGameMap->AbortCellConquest(selObj);
-                    else if(objActId == GameObjectActionType::BUILD_WALL)
-                        mGameMap->AbortBuildWalls(selObj);
-                    else if(objActId == GameObjectActionType::CONQUER_STRUCTURE)
-                    {
-                        mGameMap->AbortConquerStructure(act.target);
-                        act.progressBar->DeleteLater();
-                    }
-                    else if(objActId == GameObjectActionType::ATTACK)
-                    {
-                        auto unit = static_cast<Unit *>(selObj);
-                        unit->ClearAttackTarget();
-                    }
-
-                    selObj->SetCurrentAction(GameObjectActionType::IDLE);
-                }
-
-                mObjActions.erase(it);
-
-                // re-enable actions
-                panelObjActions->SetActionsEnabled(true);
-                selObj->SetActiveActionToDefault();
-
-                break;
-            }
-            else
-                ++it;
-        }
+        CancelObjectAction(selObj);
     });
 
     // MISSION COUNTDOWN
@@ -1004,6 +948,65 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
 
         if(done)
             ai->RegisterActionInProgress(action);
+    }
+}
+
+void ScreenGame::CancelObjectAction(GameObject * obj)
+{
+    auto it = mObjActions.begin();
+
+    // search selected object in active actions
+    while(it != mObjActions.end())
+    {
+        GameObjectAction & act = *it;
+
+        if(act.obj == obj)
+        {
+            const GameObjectTypeId objType = act.obj->GetObjectType();
+            const GameObjectActionType objActId = act.actId;
+
+            // object is a Base
+            if(objType == GameObject::TYPE_BASE)
+            {
+                // building a new unit
+                if(objActId == GameObjectActionType::BUILD_UNIT)
+                    act.progressBar->DeleteLater();
+            }
+            // object is a Unit
+            else if(act.obj->GetObjectCategory() == GameObject::CAT_UNIT)
+            {
+                if(objActId == GameObjectActionType::MOVE)
+                    mGameMap->AbortMove(obj);
+                else if(objActId == GameObjectActionType::CONQUER_CELL)
+                    mGameMap->AbortCellConquest(obj);
+                else if(objActId == GameObjectActionType::BUILD_WALL)
+                    mGameMap->AbortBuildWalls(obj);
+                else if(objActId == GameObjectActionType::CONQUER_STRUCTURE)
+                {
+                    mGameMap->AbortConquerStructure(act.target);
+                    act.progressBar->DeleteLater();
+                }
+                else if(objActId == GameObjectActionType::ATTACK)
+                {
+                    auto unit = static_cast<Unit *>(obj);
+                    unit->ClearAttackTarget();
+                }
+
+            }
+
+            mObjActions.erase(it);
+
+            // re-enable actions for local player
+            if(obj->GetFaction() == GetGame()->GetLocalPlayer()->GetFaction())
+                mHUD->GetPanelObjectActions()->SetActionsEnabled(true);
+
+            obj->SetCurrentAction(GameObjectActionType::IDLE);
+            obj->SetActiveActionToDefault();
+
+            break;
+        }
+        else
+            ++it;
     }
 }
 
