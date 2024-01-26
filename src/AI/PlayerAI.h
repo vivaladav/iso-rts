@@ -33,6 +33,9 @@ public:
     void HandleObjectDestroyed(GameObject * obj);
 
     void RegisterActionInProgress(const ActionAI * action);
+    bool IsActionHighestPriorityForObject(const ActionAI * action) const;
+    void CancelObjectAction(const GameObject * obj);
+    void CancelAction(const ActionAI * action);
     void SetActionDone(const ActionAI * action);
 
     Player * GetPlayer();
@@ -61,6 +64,7 @@ private:
     void AddActionUnitConnectStructure(Unit * u);
     void AddActionUnitConquestResGen(Unit * u, ResourceType type);
 
+    bool IsObjectAlreadyDoingSimilarAction(GameObject * obj, AIActionType type) const;
     bool IsSimilarActionInProgress(AIActionType type) const;
 
 private:

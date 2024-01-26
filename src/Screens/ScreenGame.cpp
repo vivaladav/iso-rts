@@ -842,6 +842,17 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
              ai->SetActionDone(action);
         };
 
+        // new higher action for busy object
+        if(action->ObjSrc->IsBusy() && ai->IsActionHighestPriorityForObject(action))
+        {
+            std::cout << "ScreenGame::ExecuteAIAction - AI " << mCurrPlayerAI
+                      << " - higher priority action for object " << action->ObjSrc << std::endl;
+
+            // cancel current action
+            ai->CancelObjectAction(action->ObjSrc);
+            CancelObjectAction(action->ObjSrc);
+        }
+
         switch(action->type)
         {
             case AIA_UNIT_ATTACK_ENEMY_UNIT:
