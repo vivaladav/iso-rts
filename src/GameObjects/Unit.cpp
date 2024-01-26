@@ -108,10 +108,21 @@ void Unit::Update(float delta)
         // time to shoot!
         if(mTimerAttack < 0.f)
         {
-            // target still alive -> shoot
+            // target still alive -> try to shoot
             if(GetGameMap()->HasObject(mTarget))
-                Shoot();
-            // target destroyed -> clear pointer
+            {
+                if(IsTargetInRange(mTarget))
+                    Shoot();
+                else
+                {
+                    mTarget = nullptr;
+
+                    // mark attack action as failed
+                    GetScreen()->SetObjectActionFailed(this);
+                    SetCurrentAction(GameObjectActionType::IDLE);
+                }
+            }
+            // target destroyed -> stop
             else
             {
                 mTarget = nullptr;
@@ -207,7 +218,7 @@ void Unit::Shoot()
     const float y0 = isoObj->GetY();
     const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
-    const float speed = 300.f;
+    const float speed = 400.f;
 
     const float rad2deg = 180.f / sgl::core::Math::PIf;
     const float dy0 = tY - y0;
