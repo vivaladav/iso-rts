@@ -46,8 +46,6 @@ public:
 
     void Update(float delta);
 
-    void Finish();
-
 private:
     void CreateIndicators();
 
@@ -59,6 +57,7 @@ private:
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;

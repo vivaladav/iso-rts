@@ -113,6 +113,8 @@ void WallBuildPath::InitNextBuild()
 
     mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
+        mProgressBar = nullptr;
+
         const GameObjectTypeId blockType = mIndicators[mNextCell - 1]->GetBlockType();
         mGameMap->BuildWall(nextCell, player, blockType);
 
@@ -252,7 +254,7 @@ void WallBuildPath::UpdateMove(float delta)
         // handle next step or termination
         if(ABORTING == mState)
             InstantAbort();
-        if(0 == mNextCell)
+        else if(0 == mNextCell)
             Finish();
         else
             InitNextBuild();
@@ -301,8 +303,11 @@ void WallBuildPath::InstantAbort()
 
         mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-        mProgressBar->DeleteLater();
-        mProgressBar = nullptr;
+        if(mProgressBar)
+        {
+            mProgressBar->DeleteLater();
+            mProgressBar = nullptr;
+        }
     }
 
     // clear indicators
@@ -315,16 +320,8 @@ void WallBuildPath::InstantAbort()
 
 void WallBuildPath::Update(float delta)
 {
-    if(MOVING == mState)
+    if(MOVING == mState || ABORTING == mState)
         UpdateMove(delta);
-}
-
-void WallBuildPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 void WallBuildPath::SetIndicatorsType(const std::vector<Cell2D> & cells,
@@ -378,6 +375,14 @@ void WallBuildPath::Fail()
     mScreen->SetObjectActionFailed(mUnit);
 
     mState = FAILED;
+}
+
+void WallBuildPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 } // namespace game

@@ -70,8 +70,11 @@ void ConquerPath::InstantAbort()
 
     mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-    mProgressBar->DeleteLater();
-    mProgressBar = nullptr;
+    if(mProgressBar)
+    {
+        mProgressBar->DeleteLater();
+        mProgressBar = nullptr;
+    }
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -83,16 +86,8 @@ void ConquerPath::InstantAbort()
 
 void ConquerPath::Update(float delta)
 {
-    if(MOVING == mState)
+    if(MOVING == mState || ABORTING == mState)
         UpdateMove(delta);
-}
-
-void ConquerPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 void ConquerPath::CreateIndicators()
@@ -165,6 +160,8 @@ void ConquerPath::InitNextConquest()
 
     mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
+        mProgressBar = nullptr;
+
         mGameMap->ConquerCell(nextCell, player);
 
         mUnit->ConsumeEnergy(CONQUER_CELL);
@@ -332,6 +329,14 @@ void ConquerPath::Fail()
 
     // clear action data once the action is completed
     mScreen->SetObjectActionFailed(mUnit);
+}
+
+void ConquerPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 } // namespace game

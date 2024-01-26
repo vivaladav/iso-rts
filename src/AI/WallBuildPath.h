@@ -54,8 +54,6 @@ public:
 
     void Update(float delta);
 
-    void Finish();
-
     void SetIndicatorsType(const std::vector<Cell2D> & cells,
                            const std::vector<WallIndicator *> & indicators);
 
@@ -70,6 +68,7 @@ private:
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;

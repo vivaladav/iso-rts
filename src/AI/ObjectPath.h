@@ -43,14 +43,13 @@ public:
 
     void Update(float delta);
 
-    void Finish();
-
 private:
     void InitNextMove();
 
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;

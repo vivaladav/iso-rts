@@ -183,14 +183,6 @@ void ObjectPath::Update(float delta)
     }
 }
 
-void ObjectPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mObj);
-}
-
 void ObjectPath::UpdatePathCost()
 {
     // TODO proper cost computation
@@ -203,6 +195,14 @@ void ObjectPath::Fail()
 
     // clear action data once the action is completed
     mScreen->SetObjectActionFailed(mObj);
+}
+
+void ObjectPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mObj);
 }
 
 } // namespace game
