@@ -282,7 +282,12 @@ void WallBuildPath::Start()
 
 void WallBuildPath::Abort()
 {
-    InstantAbort();
+    if(BUILDING == mState)
+        InstantAbort();
+    else if(MOVING == mState)
+        mState = ABORTING;
+    else
+        mState = ABORTED;
 }
 
 void WallBuildPath::InstantAbort()
