@@ -119,7 +119,6 @@ void Unit::Update(float delta)
 
                     // mark attack action as failed
                     GetScreen()->SetObjectActionFailed(this);
-                    SetCurrentAction(GameObjectActionType::IDLE);
                 }
             }
             // target destroyed -> stop
@@ -129,7 +128,6 @@ void Unit::Update(float delta)
 
                 // mark attack action as completed
                 GetScreen()->SetObjectActionCompleted(this);
-                SetCurrentAction(GameObjectActionType::IDLE);
             }
 
             mTimerAttack = mTimeAttack;
