@@ -821,7 +821,16 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     GameObject * obj = CreateObject(OBJECTS2, st, 0, player->GetFaction(), cell.row, cell.col, true);
 
     // propagate effects of conquest
-    UpdateInfluencedCells(cell.row, cell.col);
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const int ind = ind0 + c;
+            UpdateInfluencedCells(r, c);
+        }
+    }
 
     UpdateLinkedCells(player);
 

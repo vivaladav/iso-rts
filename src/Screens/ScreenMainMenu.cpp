@@ -277,7 +277,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.1.3 - \"xxx\"", font, content);
+    auto title = new sgui::Label("0.2.0 - \"xxx\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -294,6 +294,7 @@ void ScreenMainMenu::CreateChangelog()
                          "- New map object: abandoned temple.\n"
                          "- Trees now can grow into surrounding cells.\n"
                          "- Missions can be completed and that reflects on the planet map.\n"
+                         "- Enemy units will shoot yours.\n"
                         );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
