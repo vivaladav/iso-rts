@@ -295,6 +295,7 @@ void ScreenMainMenu::CreateChangelog()
                          "- Trees now can grow into surrounding cells.\n"
                          "- Missions can be completed and that reflects on the planet map.\n"
                          "- Enemy units will shoot yours.\n"
+                         "- Map dragging in mission screen and related options in settings.\n"
                         );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
