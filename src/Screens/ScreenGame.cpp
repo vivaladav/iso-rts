@@ -79,11 +79,15 @@ ScreenGame::ScreenGame(Game * game)
 
     auto cam = sgl::graphic::Camera::GetDefaultCamera();
     cam->SetSize(rendW, rendH);
-    mCamController = new CameraMapController(cam, game);
 
-    mIdOnSettingsChanged = game->AddOnSettingsChangedFunction([this]
+    mCamController = new CameraMapController(cam, game);
+    mCamController->SetDraggingSpeed(game->GetMapDraggingSpeed());
+    mCamController->SetScrollingSpeed(game->GetMapScrollingSpeed());
+
+    mIdOnSettingsChanged = game->AddOnSettingsChangedFunction([this, game]
     {
-        mCamController->SetSpeed(GetGame()->GetMapScrollingSpeed());
+        mCamController->SetDraggingSpeed(game->GetMapDraggingSpeed());
+        mCamController->SetScrollingSpeed(game->GetMapScrollingSpeed());
     });
 
     InitParticlesSystem();
@@ -747,6 +751,15 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 
 void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 {
+    // CAMERA
+    const bool wasDragging = mCamController->IsDragging();
+
+    mCamController->HandleMouseButtonUp(event);
+
+    // do nothing if dragging
+    if(wasDragging)
+        return;
+
     // no interaction while game is paused
     if(mPaused)
         return ;

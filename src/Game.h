@@ -83,6 +83,11 @@ public:
     PlayerFaction GetLocalPlayerFaction() const;
 
     // -- settings --
+    int GetMapDraggingSpeed() const;
+    void SetMapDraggingSpeed(int val);
+    bool IsMapDragging() const;
+    void SetMapDragging(bool val);
+
     int GetMapScrollingSpeed() const;
     void SetMapScrollingSpeed(int val);
     bool IsMapScrollingOnEdges() const;
@@ -121,7 +126,9 @@ private:
     Planets mCurrPlanet;
     unsigned int mCurrTerritory = 0;
 
-    int mMapScrollingSpeed = 5;
+    int mMapDraggingSpeed = 5;
+    int mMapScrollingSpeed = 6;
+    int mMapDragging = true;
     bool mMapScrollingOnEdges = true;
 
     unsigned char mClearR = 0;
@@ -180,8 +187,11 @@ inline PlayerFaction Game::GetLocalPlayerFaction() const
     return mLocalFaction;
 }
 
-inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
+inline int Game::GetMapDraggingSpeed() const { return mMapDraggingSpeed; }
+inline bool Game::IsMapDragging() const { return mMapDragging; }
+inline void Game::SetMapDragging(bool val) { mMapDragging = val; }
 
+inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
 inline bool Game::IsMapScrollingOnEdges() const { return mMapScrollingOnEdges; }
 inline void Game::SetMapScrollingOnEdges(bool val) { mMapScrollingOnEdges = val; }
 

@@ -130,6 +130,21 @@ const std::string & Game::GetCurrentMapFile() const
 
 void Game::RequestNextActiveState(StateId sid) { mStateMan->RequestNextActiveState(sid); }
 
+void Game::SetMapDraggingSpeed(int val)
+{
+    const int minSpeed = 1;
+    const int maxSpeed = 10;
+
+    if(val < minSpeed)
+        val = minSpeed;
+    else if(val > maxSpeed)
+        val = maxSpeed;
+
+    mMapDraggingSpeed = val;
+
+    NotifyOnSettingsChanged();
+}
+
 void Game::SetMapScrollingSpeed(int val)
 {
     const int minSpeed = 1;

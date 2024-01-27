@@ -7,6 +7,7 @@ namespace sgl
     namespace core
     {
         class KeyboardEvent;
+        class MouseButtonEvent;
         class MouseMotionEvent;
     }
 
@@ -28,13 +29,17 @@ public:
     void SetMapArea(const sgl::core::Pointd2D & t, const sgl::core::Pointd2D & r,
                     const sgl::core::Pointd2D & b, const sgl::core::Pointd2D & l);
 
-    void SetSpeed(int val);
+    void SetDraggingSpeed(int val);
+    void SetScrollingSpeed(int val);
 
     void CenterCameraToPoint(int x, int y);
     void ResetPosition();
 
+    bool IsDragging() const;
+
     void HandleKeyDown(sgl::core::KeyboardEvent & event);
     void HandleKeyUp(sgl::core::KeyboardEvent & event);
+    void HandleMouseButtonUp(sgl::core::MouseButtonEvent & event);
     void HandleMouseMotion(sgl::core::MouseMotionEvent & event);
     void HandleMouseLeftWindow();
 
@@ -59,15 +64,20 @@ private:
     sgl::core::Pointd2D mMapB;
     sgl::core::Pointd2D mMapL;
 
-    float mSpeed;
+    float mSpeedScrolling;
+    float mSpeedDragging;
 
     int mDirX;
     int mDirY;
+
+    int mDragX = 0;
+    int mDragY = 0;
 
     bool mKeyScrollX = false;
     bool mKeyScrollY = false;
     bool mMouseScrollX = false;
     bool mMouseScrollY = false;
+    bool mDragging = false;
 };
 
 inline const sgl::graphic::Camera * CameraMapController::GetCamera() const
@@ -75,16 +85,29 @@ inline const sgl::graphic::Camera * CameraMapController::GetCamera() const
     return mCamera;
 }
 
-inline void CameraMapController::SetSpeed(int val)
+inline void CameraMapController::SetDraggingSpeed(int val)
+{
+    const float mult = 15.f;
+    mSpeedDragging = mult * val;
+
+    const float minSpeed = 25.f;
+
+    if(mSpeedDragging < minSpeed)
+        mSpeedDragging = minSpeed;
+}
+
+inline void CameraMapController::SetScrollingSpeed(int val)
 {
     const float mult = 100.f;
-    mSpeed = mult * val;
+    mSpeedScrolling = mult * val;
 
     const float minSpeed = 175.f;
 
-    if(mSpeed < minSpeed)
-        mSpeed = minSpeed;
+    if(mSpeedScrolling < minSpeed)
+        mSpeedScrolling = minSpeed;
 }
+
+inline bool CameraMapController::IsDragging() const { return mDragging; }
 
 inline bool CameraMapController::IsPointInsideTL(const sgl::core::Pointd2D & p) const
 {
