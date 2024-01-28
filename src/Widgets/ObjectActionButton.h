@@ -29,6 +29,7 @@ public:
         OPEN_GATE,
         CLOSE_GATE,
         CANCEL,
+        HEAL,
 
         NUM_ACTION_ICONS
     };

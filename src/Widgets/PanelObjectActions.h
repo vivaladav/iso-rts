@@ -24,6 +24,7 @@ public:
         BTN_BUILD_UNIT,
         BTN_MOVE,
         BTN_ATTACK,
+        BTN_HEAL,
         BTN_CONQUER_CELL,
         BTN_BUILD_WALL,
         BTN_BUILD_STRUCT,

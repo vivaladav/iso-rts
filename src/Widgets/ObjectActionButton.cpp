@@ -47,7 +47,8 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
         IND_BUTTON_ICON_UPGRADE,
         IND_BUTTON_ICON_OPEN_GATE,
         IND_BUTTON_ICON_CLOSE_GATE,
-        IND_BUTTON_ICON_CANCEL
+        IND_BUTTON_ICON_CANCEL,
+        IND_BUTTON_ICON_HEAL,
     };
 
     tex = tm->GetSprite(SpriteFileObjActionButton, texId[icon]);

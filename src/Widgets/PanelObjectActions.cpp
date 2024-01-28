@@ -23,6 +23,8 @@ PanelObjectActions::PanelObjectActions(sgl::sgui::Widget * parent)
                                                 "Move your unit", this);
     mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "A", KeyboardEvent::KEY_A,
                                                   "Attack a target", this);
+    mButtons[BTN_HEAL] = new ObjectActionButton(ObjectActionButton::HEAL, "H", KeyboardEvent::KEY_H,
+                                                  "Heal/repair a target", this);
     mButtons[BTN_CONQUER_CELL] = new ObjectActionButton(ObjectActionButton::CONQUER_CELL, "C", KeyboardEvent::KEY_C,
                                                         "Conquer one or more cells", this);
     mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", KeyboardEvent::KEY_W,
@@ -73,6 +75,7 @@ void PanelObjectActions::SetObject(GameObject * obj)
     {
         mButtons[BTN_MOVE]->SetVisible(true);
         mButtons[BTN_ATTACK]->SetVisible(true);
+        mButtons[BTN_HEAL]->SetVisible(true);
         mButtons[BTN_CONQUER_CELL]->SetVisible(true);
         mButtons[BTN_BUILD_WALL]->SetVisible(true);
         mButtons[BTN_BUILD_STRUCT]->SetVisible(true);

@@ -516,6 +516,12 @@ void ScreenGame::CreateUI()
         ShowAttackIndicators(unit, range);
     });
 
+    // heal
+    panelObjActions->SetButtonFunction(PanelObjectActions::BTN_HEAL, [this, player]
+    {
+        // TODO
+    });
+
     // conquer
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_CONQUER_CELL, [this, player]
     {
