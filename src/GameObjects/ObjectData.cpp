@@ -18,6 +18,7 @@ const char * ObjectBasicData::STR_CLASS[NUM_OBJ_CLASSES] =
     "GATE",
 
     "GENERIC",
+    "MEDIC",
     "SCOUT",
     "SOLDIER",
     "WORKER",

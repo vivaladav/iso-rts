@@ -211,7 +211,7 @@ void ButtonQuickUnitSelection::HandlePositionChanged()
         return ;
 
     // unit image
-    const int marginIconL = 25;
+    const int marginIconL = 20;
     const int imgX = x0 + marginIconL;
     const int imgY = y0 + (GetHeight() - mImgUnit->GetHeight()) * 0.5f;
     mImgUnit->SetPosition(imgX, imgY);
@@ -221,7 +221,7 @@ void ButtonQuickUnitSelection::HandlePositionChanged()
     const int displayMarginB = 8;
 
     // icon energy
-    const int iconEnCenterX = 94;
+    const int iconEnCenterX = 99;
     const int iconEnX = x0 + iconEnCenterX - mIconEnergy->GetWidth() * 0.5f;
     const int iconEnY = y0 + iconsCenterY - mIconEnergy->GetHeight() * 0.5f;
     mIconEnergy->SetPosition(iconEnX, iconEnY);
@@ -232,7 +232,7 @@ void ButtonQuickUnitSelection::HandlePositionChanged()
     mDisplayEnergy->SetPosition(digitsEnX, digitsEnY);
 
     // icon health
-    const int iconHeCenterX = 152;
+    const int iconHeCenterX = 157;
     const int iconHeX = x0 + iconHeCenterX - mIconHealth->GetWidth() * 0.5f;
     const int iconHeY = y0 + iconsCenterY - mIconHealth->GetHeight() * 0.5f;
     mIconHealth->SetPosition(iconHeX, iconHeY);

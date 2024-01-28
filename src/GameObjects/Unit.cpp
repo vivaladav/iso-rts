@@ -271,7 +271,8 @@ unsigned int Unit::TypeToIndex(GameObjectTypeId type)
         {GameObject::TYPE_UNIT_WORKER1, 0},
         {GameObject::TYPE_UNIT_SOLDIER1, 1},
         {GameObject::TYPE_UNIT_SOLDIER2, 2},
-        {GameObject::TYPE_UNIT_SCOUT1, 3}
+        {GameObject::TYPE_UNIT_SCOUT1, 3},
+        {GameObject::TYPE_UNIT_MEDIC1, 4},
     };
 
     return indexes.at(type);

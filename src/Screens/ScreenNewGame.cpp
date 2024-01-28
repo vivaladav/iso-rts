@@ -52,6 +52,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // TODO temporary for testing. In the future start only with 2 types
     p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
     p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_MEDIC1);
 
     // assign initial resources
     p->SetResource(Player::Stat::BLOBS, startBlobs);
@@ -106,6 +107,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         // TODO temporary for testing. In the future start only with 2 types
         p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
         p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_MEDIC1);
 
         // assign initial resources
         p->SetResource(Player::Stat::BLOBS, startBlobs);

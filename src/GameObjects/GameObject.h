@@ -66,6 +66,7 @@ public:
     static const GameObjectTypeId TYPE_ROCKS;
     static const GameObjectTypeId TYPE_TEMPLE;
     static const GameObjectTypeId TYPE_TREES;
+    static const GameObjectTypeId TYPE_UNIT_MEDIC1;
     static const GameObjectTypeId TYPE_UNIT_SCOUT1;
     static const GameObjectTypeId TYPE_UNIT_SOLDIER1;
     static const GameObjectTypeId TYPE_UNIT_SOLDIER2;
@@ -224,6 +225,7 @@ private:
     static const std::string TYPE_STR_ROCKS;
     static const std::string TYPE_STR_TEMPLE;
     static const std::string TYPE_STR_TREES;
+    static const std::string TYPE_STR_UNIT_MEDIC1;
     static const std::string TYPE_STR_UNIT_SCOUT1;
     static const std::string TYPE_STR_UNIT_SOLDIER1;
     static const std::string TYPE_STR_UNIT_SOLDIER2;
