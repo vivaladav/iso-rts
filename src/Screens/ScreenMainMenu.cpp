@@ -293,6 +293,7 @@ void ScreenMainMenu::CreateChangelog()
                          "- New map object: loot box.\n"
                          "- New map object: abandoned temple.\n"
                          "- New unit: medic.\n"
+                         "- New unit action: healing.\n"
                          "- Trees now can grow into surrounding cells.\n"
                          "- Missions can be completed and that reflects on the planet map.\n"
                          "- Enemy units will shoot yours.\n"
