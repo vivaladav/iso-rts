@@ -554,6 +554,10 @@ void ScreenInit::SetupTextures()
             { 485, 147, 96, 48 },
             { 0, 196, 96, 48 },
             { 97, 196, 96, 48 },
+            // HEALING RANGE INDICATOR
+            { 582, 0, 96, 48 },
+            { 582, 49, 96, 48 },
+            { 582, 98, 96, 48 },
             // INFLUENCE AREA F1
             { 194, 200, 96, 48 },
             { 291, 200, 96, 48 },
@@ -965,9 +969,14 @@ void ScreenInit::SetupTextures()
     {
         const std::vector<sgl::core::Rectd> rectsUnitsPart
         {
+            // laser
             { 0, 0, 10, 2 },
-            { 0, 2, 10, 2 },
-            { 0, 4, 10, 2 }
+            { 0, 3, 10, 2 },
+            { 0, 6, 10, 2 },
+            // healing
+            { 11, 0, 12, 12 },
+            { 24, 0, 12, 12 },
+            { 37, 0, 12, 12 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileUnitsParticles, rectsUnitsPart);

@@ -97,6 +97,11 @@ enum SpriteIdIndicators : unsigned int
     IND_ATTACK_F2,
     IND_ATTACK_F3,
 
+    // HEALING RANGE INDICATOR
+    IND_RANGE_HEAL_F1,
+    IND_RANGE_HEAL_F2,
+    IND_RANGE_HEAL_F3,
+
     // INFLUENCE AREA F1
     IND_INF_AREA_L_F1,
     IND_INF_AREA_T_F1,
@@ -522,14 +527,15 @@ extern const char SpriteFileUnitsParticles[];
 
 enum SpriteIdUnitsParticles : unsigned int
 {
-    // faction 1
-    SPR_UPART_LASER_F1,
+    // laser
+    IND_UPAR_LASER_F1,
+    IND_UPAR_LASER_F2,
+    IND_UPAR_LASER_F3,
 
-    // faction 2
-    SPR_UPART_LASER_F2,
-
-    // faction 3
-    SPR_UPART_LASER_F3,
+    // healing
+    IND_UPAR_HEAL_F1,
+    IND_UPAR_HEAL_F2,
+    IND_UPAR_HEAL_F3,
 
     NUM_UNIT_PART_SPRITES_PER_FACTION = 1
 };

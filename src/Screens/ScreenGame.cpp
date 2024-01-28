@@ -21,10 +21,12 @@
 #include "GameObjects/WallGate.h"
 #include "Indicators/AttackRangeIndicator.h"
 #include "Indicators/ConquestIndicator.h"
+#include "Indicators/HealingRangeIndicator.h"
 #include "Indicators/MoveIndicator.h"
 #include "Indicators/StructureIndicator.h"
 #include "Indicators/WallIndicator.h"
 #include "Particles/UpdaterDamage.h"
+#include "Particles/UpdaterHealing.h"
 #include "Particles/UpdaterLootboxPrize.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "States/StatesIds.h"
@@ -192,6 +194,9 @@ ScreenGame::~ScreenGame()
     delete mPartMan;
 
     for(auto ind : mAttIndicators)
+        delete ind;
+
+    for(auto ind : mHealIndicators)
         delete ind;
 
     for(auto ind : mConquestIndicators)
@@ -430,6 +435,10 @@ void ScreenGame::InitParticlesSystem()
     updater = new UpdaterDamage;
     mPartMan->RegisterUpdater(PU_DAMAGE, updater);
 
+    // HEALING
+    updater = new UpdaterHealing;
+    mPartMan->RegisterUpdater(PU_HEALING, updater);
+
     // LOOTBOX PRIZE
     updater = new UpdaterLootboxPrize;
     mPartMan->RegisterUpdater(PU_LOOTBOX_PRIZE, updater);
@@ -512,14 +521,21 @@ void ScreenGame::CreateUI()
         ClearCellOverlays();
 
         // show attack range overlay
-        const int range = unit->GetAttackRange();
+        const int range = unit->GetRangeAttack();
         ShowAttackIndicators(unit, range);
     });
 
     // heal
     panelObjActions->SetButtonFunction(PanelObjectActions::BTN_HEAL, [this, player]
     {
-        // TODO
+        auto unit = static_cast<Unit *>(player->GetSelectedObject());
+        unit->SetActiveAction(GameObjectActionType::HEAL);
+
+        ClearCellOverlays();
+
+        // show healing range overlay
+        const int range = unit->GetRangeHealing();
+        ShowHealingIndicators(unit, range);
     });
 
     // conquer
@@ -1019,9 +1035,13 @@ void ScreenGame::CancelObjectAction(GameObject * obj)
                 else if(objActId == GameObjectActionType::ATTACK)
                 {
                     auto unit = static_cast<Unit *>(obj);
-                    unit->ClearAttackTarget();
+                    unit->ClearTargetAttack();
                 }
-
+                else if(objActId == GameObjectActionType::HEAL)
+                {
+                    auto unit = static_cast<Unit *>(obj);
+                    unit->ClearTargetHealing();
+                }
             }
 
             mObjActions.erase(it);
@@ -1410,7 +1430,7 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
 bool ScreenGame::SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
                                  const std::function<void(bool)> & onDone)
 {
-    const bool res = unit->SetAttackTarget(target);
+    const bool res = unit->SetTargetAttack(target);
 
     if(!res)
         return false;
@@ -1423,6 +1443,26 @@ bool ScreenGame::SetupUnitAttack(Unit * unit, GameObject * target, Player * play
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
 
     mObjActionsToDo.emplace_back(unit, GameObjectActionType::ATTACK, onDone);
+
+    return true;
+}
+
+bool ScreenGame::SetupUnitHeal(Unit * unit, GameObject * target, Player * player,
+                               const std::function<void(bool)> & onDone)
+{
+    const bool res = unit->SetTargetHealing(target);
+
+    if(!res)
+        return false;
+
+    unit->SetActiveAction(GameObjectActionType::IDLE);
+    unit->SetCurrentAction(GameObjectActionType::HEAL);
+
+    // disable actions panel (if action is done by local player)
+    if(player->IsLocal())
+        mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
+
+    mObjActionsToDo.emplace_back(unit, GameObjectActionType::HEAL, onDone);
 
     return true;
 }
@@ -2232,6 +2272,8 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
         }
         else if(action == GameObjectActionType::ATTACK)
             SetupUnitAttack(selUnit, clickObj, player);
+        else if(action == GameObjectActionType::HEAL)
+            SetupUnitHeal(selUnit, clickObj, player);
         else if(action == GameObjectActionType::CONQUER_CELL)
         {
             const int clickInd = clickCell.row * mGameMap->GetNumCols() + clickCell.col;
@@ -2374,6 +2416,57 @@ void ScreenGame::ShowAttackIndicators(const GameObject * obj, int range)
         {
             if(r != r0 || c != c0)
                 layer->AddObject(mAttIndicators[ind++], r, c);
+        }
+    }
+}
+
+void ScreenGame::ShowHealingIndicators(const GameObject * obj, int range)
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS3);
+
+    const int rows = mIsoMap->GetNumRows();
+    const int cols = mIsoMap->GetNumCols();
+    const int r0 = obj->GetRow0();
+    const int c0 = obj->GetCol0();
+    const int rowTL = obj->GetRow1() - range > 0 ? obj->GetRow1() - range : 0;
+    const int colTL = obj->GetCol1() - range > 0 ? obj->GetCol1() - range : 0;
+    const int rowBR = r0 + range < rows ? r0 + range : rows - 1;
+    const int colBR = c0 + range < cols ? c0 + range : cols - 1;
+
+    const int neededInd = (rowBR - rowTL + 1) * (colBR - colTL + 1);
+    const int existingInd = mHealIndicators.size();
+    const int missingInd = neededInd - existingInd;
+
+    // create missing indicators
+    if(missingInd > 0)
+    {
+        for(int i = 0; i < missingInd; ++i)
+            mHealIndicators.push_back(new HealingRangeIndicator);
+    }
+
+    // init needed indicators
+    const PlayerFaction faction = obj->GetFaction();
+
+    for(int i = 0; i < neededInd; ++i)
+    {
+        mHealIndicators[i]->SetVisible(true);
+        mHealIndicators[i]->SetFaction(faction);
+    }
+
+    // hide other indicators
+    const int existingInd2 = mHealIndicators.size();
+
+    for(int i = neededInd; i < existingInd2; ++i)
+        mHealIndicators[i]->SetVisible(false);
+
+    int ind = 0;
+
+    for(int r = rowTL; r <= rowBR; ++r)
+    {
+        for(int c = colTL; c <= colBR; ++c)
+        {
+            if(r != r0 || c != c0)
+                layer->AddObject(mHealIndicators[ind++], r, c);
         }
     }
 }

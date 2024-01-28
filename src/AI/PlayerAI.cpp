@@ -510,7 +510,7 @@ void PlayerAI::AddActionUnitAttackEnemyUnit(Unit * u)
             continue;
 
         // skip targets out of range
-        if(!u->IsTargetInRange(unit))
+        if(!u->IsTargetAttackInRange(unit))
             continue;
 
         // basic logic, attack closest one

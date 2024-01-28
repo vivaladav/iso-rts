@@ -29,6 +29,7 @@ class ConquestIndicator;
 class GameHUD;
 class GameMap;
 class GameObject;
+class HealingRangeIndicator;
 class IsoLayer;
 class IsoMap;
 class MiniMap;
@@ -45,6 +46,7 @@ enum PlayerFaction : unsigned int;
 enum ParticlesUpdaterId : unsigned int
 {
     PU_DAMAGE,
+    PU_HEALING,
     PU_LOOTBOX_PRIZE,
     PU_SINGLE_LASER
 };
@@ -125,6 +127,8 @@ private:
                                 const std::function<void(bool)> & onDone = [](bool){});
     bool SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
                          const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupUnitHeal(Unit * unit, GameObject * target, Player * player,
+                       const std::function<void(bool)> & onDone = [](bool){});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
                        const std::function<void(bool)> & onDone = [](bool){});
     bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});
@@ -145,6 +149,7 @@ private:
     void StartUnitBuildWall(Unit * unit);
 
     void ShowAttackIndicators(const GameObject * obj, int range);
+    void ShowHealingIndicators(const GameObject * obj, int range);
     void ClearCellOverlays();
     void ClearTempStructIndicator();
 
@@ -159,6 +164,7 @@ private:
     std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
     std::vector<AttackRangeIndicator *> mAttIndicators;
+    std::vector<HealingRangeIndicator *> mHealIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
 
     std::vector<unsigned int> mConquestPath;

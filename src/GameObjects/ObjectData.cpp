@@ -40,7 +40,8 @@ const char * ObjectFactionData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "SHIELD",
     "SPEED",
     "CONSTRUCTION",
-    "CONQUEST"
+    "CONQUEST",
+    "HEALING",
 };
 
 const ObjectBasicData ObjectBasicData::NullObj(GameObject::TYPE_NULL, OC_NULL,

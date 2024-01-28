@@ -24,6 +24,7 @@ enum GameObjectActionType : unsigned int
     ATTACK,
     BUILD_STRUCTURE,
     BUILD_WALL,
+    HEAL,
 
     // WALL GATE
     TOGGLE_GATE,
