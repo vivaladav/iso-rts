@@ -375,7 +375,7 @@ void Unit::Heal()
     const float y0 = isoObj->GetY();
     const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
-    const float speed = 75.f;
+    const float speed = 100.f;
 
     const DataParticleHealing pd =
     {
