@@ -1412,15 +1412,17 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     // store active action
     mObjActionsToDo.emplace_back(unit, GameObjectActionType::BUILD_STRUCTURE, cellTarget, pb, onDone);
 
-    // disable actions panel (if action is done by local player)
+    // disable actions panel and clear overlays (if action is done by local player)
     if(player->IsLocal())
+    {
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
+
+        ClearCellOverlays();
+    }
 
     unit->SetActiveAction(GameObjectActionType::IDLE);
     unit->SetCurrentAction(GameObjectActionType::BUILD_STRUCTURE);
     unit->ClearStructureToBuild();
-
-    ClearCellOverlays();
 
     return true;
 }
@@ -1484,11 +1486,13 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     if(!res)
         return false;
 
-    ClearCellOverlays();
-
     // disable actions panel (if action is done by local player)
     if(unit->GetFaction() == GetGame()->GetLocalPlayerFaction())
+    {
         mHUD->GetPanelObjectActions()->SetActionsEnabled(false);
+
+        ClearCellOverlays();
+    }
 
     // store active action
     mObjActionsToDo.emplace_back(unit, GameObjectActionType::MOVE, onDone);
@@ -2285,8 +2289,9 @@ void ScreenGame::StartUnitBuildWall(Unit * unit)
     unit->SetActiveAction(GameObjectActionType::IDLE);
     unit->SetCurrentAction(GameObjectActionType::BUILD_WALL);
 
-    // clear temporary overlay
-    ClearCellOverlays();
+    // clear temporary overlay (if action is done by local player)
+    if(unit->GetFaction() == GetGame()->GetLocalPlayerFaction())
+        ClearCellOverlays();
 
     // setup build
     auto wbp = new WallBuildPath(unit, mIsoMap, mGameMap, this);
