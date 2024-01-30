@@ -135,11 +135,6 @@ private:
                        const std::function<void(bool)> & onDone = [](bool){});
     bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});
 
-    void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
-    void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
-
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildWallOnMouseUp(Unit * unit, const Cell2D & clickCell);
@@ -149,7 +144,11 @@ private:
 
     void StartUnitBuildWall(Unit * unit);
 
+    void ShowActiveIndicators(Unit * unit, const Cell2D & cell);
     void ShowAttackIndicators(const GameObject * obj, int range);
+    void ShowBuildStructureIndicator(Unit * unit, const Cell2D & currCell);
+    void ShowBuildWallIndicator(Unit * unit, const Cell2D & dest);
+    void ShowConquestIndicator(Unit * unit, const Cell2D & dest);
     void ShowHealingIndicators(const GameObject * obj, int range);
     void ShowMoveIndicator(GameObject * obj, const Cell2D & dest);
     void ClearCellOverlays();
