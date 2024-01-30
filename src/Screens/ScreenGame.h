@@ -5,6 +5,8 @@
 #include "GameObjects/GameObjectAction.h"
 #include "GameObjects/GameObjectTypes.h"
 
+#include <sgl/core/Point.h>
+
 #include <chrono>
 #include <functional>
 #include <unordered_map>
@@ -134,7 +136,6 @@ private:
     bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});
 
     void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
-    void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
     void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
@@ -150,10 +151,13 @@ private:
 
     void ShowAttackIndicators(const GameObject * obj, int range);
     void ShowHealingIndicators(const GameObject * obj, int range);
+    void ShowMoveIndicator(GameObject * obj, const Cell2D & dest);
     void ClearCellOverlays();
     void ClearTempStructIndicator();
 
     void CenterCameraOverPlayerBase();
+
+    void UpdateCurrentCell();
 
 private:
     friend class GameHUD;
@@ -191,7 +195,8 @@ private:
 
     MoveIndicator * mMoveInd = nullptr;
 
-    struct Cell2D mPrevCell;
+    struct Cell2D mCurrCell;
+    sgl::core::Pointd2D mMousePos;
 
     float mTimerEnergy;
     float mTimerAI;

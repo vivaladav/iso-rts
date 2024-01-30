@@ -70,7 +70,7 @@ ScreenGame::ScreenGame(Game * game)
     : Screen(game)
     , mPartMan(new sgl::graphic::ParticlesManager)
     , mPathfinder(new sgl::ai::Pathfinder)
-    , mPrevCell(-1, -1)
+    , mCurrCell(-1, -1)
     , mTimerEnergy(TIME_ENERGY_USE)
     , mTimerAI(TIME_AI_MOVE)
 {
@@ -327,13 +327,14 @@ void ScreenGame::ClearSelection(Player * player)
 
 void ScreenGame::SelectObject(GameObject * obj, Player * player)
 {
-    obj->SetSelected(true);
+    player->SetSelectedObject(obj);
 
     // update quick selection buttons when selected unit
     sgl::sgui::ButtonsGroup * buttonsUnitSel = mHUD->GetButtonsGroupUnitSel();
 
     if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
     {
+        // check corresponding quick unit selection button
         const int numButtons = buttonsUnitSel->GetNumButtons();
 
         for(int i = 0; i < numButtons; ++i)
@@ -347,6 +348,9 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
                 break;
             }
         }
+
+        // show current indicator
+        HandleUnitOnMouseMove(static_cast<Unit *>(obj), mCurrCell);
     }
     // not a unit
     else
@@ -371,8 +375,6 @@ void ScreenGame::SelectObject(GameObject * obj, Player * player)
     panelObjActions->SetActionsEnabled(obj->GetCurrentAction() == IDLE);
 
     sgl::sgui::Stage::Instance()->SetFocus();
-
-    player->SetSelectedObject(obj);
 }
 
 void ScreenGame::CenterCameraOverCell(int row, int col)
@@ -388,6 +390,9 @@ void ScreenGame::CenterCameraOverObject(GameObject * obj)
 {
     const GameMapCell * cell = obj->GetCell();
     CenterCameraOverCell(cell->row, cell->col);
+
+    // update current cell like if mouse was moved
+    UpdateCurrentCell();
 }
 
 MiniMap * ScreenGame::GetMiniMap() const
@@ -556,6 +561,8 @@ void ScreenGame::CreateUI()
         unit->SetActiveAction(GameObjectActionType::MOVE);
 
         ClearCellOverlays();
+
+        ShowMoveIndicator(unit, mCurrCell);
     });
 
     // WALL GATE
@@ -636,8 +643,8 @@ void ScreenGame::CreateUI()
             selObj->SetCurrentAction(GameObjectActionType::IDLE);
             selObj->SetActiveActionToDefault();
 
-            // update indicators
-            HandleUnitOnMouseMove(static_cast<Unit *>(selObj), mPrevCell);
+            // show current indicator
+            HandleUnitOnMouseMove(static_cast<Unit *>(selObj), mCurrCell);
 
             return ;
         }
@@ -713,6 +720,8 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
 
     // CAMERA
     mCamController->HandleKeyUp(event);
+
+    UpdateCurrentCell();
 
     // GAME
     const int key = event.GetKey();
@@ -794,28 +803,13 @@ void ScreenGame::OnMouseButtonUp(sgl::core::MouseButtonEvent & event)
 
 void ScreenGame::OnMouseMotion(sgl::core::MouseMotionEvent & event)
 {
+    mMousePos.x = event.GetX();
+    mMousePos.y = event.GetY();
+
     // CAMERA
     mCamController->HandleMouseMotion(event);
 
-    const sgl::graphic::Camera * cam = mCamController->GetCamera();
-    const int worldX = cam->GetScreenToWorldX(event.GetX());
-    const int worldY = cam->GetScreenToWorldY(event.GetY());
-
-    const Cell2D currCell = mIsoMap->CellFromScreenPoint(worldX, worldY);
-
-    // still in the same cell -> nothing to do
-    if(mPrevCell == currCell)
-        return ;
-
-    Player * player = GetGame()->GetLocalPlayer();
-    GameObject * selObj = player->GetSelectedObject();
-
-    // unit selected -> handle mouse motion
-    if(selObj && selObj->GetObjectCategory() == GameObject::CAT_UNIT)
-        HandleUnitOnMouseMove(static_cast<Unit *>(selObj), currCell);
-
-    // update previous cell before exit
-    mPrevCell = currCell;
+    UpdateCurrentCell();
 }
 
 void ScreenGame::OnWindowExposed(sgl::graphic::WindowEvent &)
@@ -1052,6 +1046,10 @@ void ScreenGame::CancelObjectAction(GameObject * obj)
 
             obj->SetCurrentAction(GameObjectActionType::IDLE);
             obj->SetActiveActionToDefault();
+
+            // show current indicator for units
+            if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
+                HandleUnitOnMouseMove(static_cast<Unit *>(act.obj), mCurrCell);
 
             break;
         }
@@ -1582,81 +1580,13 @@ void ScreenGame::HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell)
     const GameObjectActionType action = unit->GetActiveAction();
 
     if(action == GameObjectActionType::MOVE)
-        HandleUnitMoveOnMouseMove(unit, cell);
+        ShowMoveIndicator(unit, cell);
     else if(action == GameObjectActionType::CONQUER_CELL)
         HandleUnitConquestOnMouseMove(unit, cell);
     else if(action == GameObjectActionType::BUILD_WALL)
         HandleUnitBuildWallOnMouseMove(unit, cell);
     else if(action == GameObjectActionType::BUILD_STRUCTURE)
         HandleUnitBuildStructureOnMouseMove(unit, cell);
-}
-
-void ScreenGame::HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell)
-{
-    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
-
-    const bool currInside = mIsoMap->IsCellInside(currCell);
-
-    // mouse outside the map
-    if(!currInside)
-    {
-        // hide the indicator, if any
-        if(mMoveInd != nullptr)
-            layer->SetObjectVisible(mMoveInd, false);
-
-        return ;
-    }
-
-    // move indicator already created -> move it and continue
-    if(mMoveInd != nullptr)
-        layer->MoveObject(mMoveInd->GetRow(), mMoveInd->GetCol(), currCell.row, currCell.col);
-    // create new move indicator
-    else
-    {
-        mMoveInd = new MoveIndicator;
-        layer->AddObject(mMoveInd, currCell.row, currCell.col);
-    }
-
-    const int currInd = currCell.row * mGameMap->GetNumCols() + currCell.col;
-
-    Player * player = GetGame()->GetLocalPlayer();
-
-    const bool currVisible = player->IsCellVisible(currInd);
-    const bool currVisited = mGameMap->IsCellObjectVisited(currInd);
-    const bool currWalkable = mGameMap->IsCellWalkable(currInd);
-
-    const bool showIndicator = (!currVisible && !currVisited) || currWalkable;
-
-    layer->SetObjectVisible(mMoveInd, showIndicator);
-
-    // stop here if not showing indicator
-    if(!showIndicator)
-        return ;
-
-    if(currVisible)
-    {
-        // set indicator type
-        mMoveInd->SetIndicatorType(MoveIndicator::NORMAL);
-
-        // show path cost when destination is visible
-        const auto path = mPathfinder->MakePath(unit->GetRow0(), unit->GetCol0(),
-                                                currCell.row, currCell.col,
-                                                sgl::ai::Pathfinder::ALL_OPTIONS);
-
-        ObjectPath op(unit, mIsoMap, mGameMap, this);
-        op.SetPathCells(path);
-
-        mMoveInd->SetCost(op.GetPathCost());
-    }
-    // not visible destination
-    else
-    {
-        // set indicator type
-        mMoveInd->SetIndicatorType(MoveIndicator::NO_VIS_CELL);
-
-        // hide cost when destination is not visible
-        mMoveInd->SetCostUnknown();
-    }
 }
 
 void ScreenGame::HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell)
@@ -2471,6 +2401,72 @@ void ScreenGame::ShowHealingIndicators(const GameObject * obj, int range)
     }
 }
 
+void ScreenGame::ShowMoveIndicator(GameObject * obj, const Cell2D & dest)
+{
+    IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
+
+    // mouse outside the map
+    if(!mIsoMap->IsCellInside(dest))
+    {
+        // hide the indicator, if any
+        if(mMoveInd != nullptr)
+            layer->SetObjectVisible(mMoveInd, false);
+
+        return ;
+    }
+
+    // move indicator already created -> move it and continue
+    if(mMoveInd != nullptr)
+        layer->MoveObject(mMoveInd->GetRow(), mMoveInd->GetCol(), dest.row, dest.col);
+    // create new move indicator
+    else
+    {
+        mMoveInd = new MoveIndicator;
+        layer->AddObject(mMoveInd, dest.row, dest.col);
+    }
+
+    const int destInd = dest.row * mGameMap->GetNumCols() + dest.col;
+
+    Player * player = GetGame()->GetLocalPlayer();
+
+    const bool destVisible = player->IsCellVisible(destInd);
+    const bool destVisited = mGameMap->IsCellObjectVisited(destInd);
+    const bool destWalkable = mGameMap->IsCellWalkable(destInd);
+
+    const bool showIndicator = (!destVisible && !destVisited) || destWalkable;
+
+    layer->SetObjectVisible(mMoveInd, showIndicator);
+
+    // stop here if not showing indicator
+    if(!showIndicator)
+        return ;
+
+    if(destVisible)
+    {
+        // set indicator type
+        mMoveInd->SetIndicatorType(MoveIndicator::NORMAL);
+
+        // show path cost when destination is visible
+        const auto path = mPathfinder->MakePath(obj->GetRow0(), obj->GetCol0(),
+                                                dest.row, dest.col,
+                                                sgl::ai::Pathfinder::ALL_OPTIONS);
+
+        ObjectPath op(obj, mIsoMap, mGameMap, this);
+        op.SetPathCells(path);
+
+        mMoveInd->SetCost(op.GetPathCost());
+    }
+    // not visible destination
+    else
+    {
+        // set indicator type
+        mMoveInd->SetIndicatorType(MoveIndicator::NO_VIS_CELL);
+
+        // hide cost when destination is not visible
+        mMoveInd->SetCostUnknown();
+    }
+}
+
 void ScreenGame::ClearCellOverlays()
 {
     IsoLayer * layer = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS2);
@@ -2508,6 +2504,28 @@ void ScreenGame::CenterCameraOverPlayerBase()
     const int cY = pos.y + mIsoMap->GetTileHeight() * 0.5f;
 
     mCamController->CenterCameraToPoint(cX, cY);
+}
+
+void ScreenGame::UpdateCurrentCell()
+{
+    // NOTE this could be moved to cam->SetFunctionOnMove if things get more complicated
+    // for now I am calling it manually to minimize calls
+    const sgl::graphic::Camera * cam = mCamController->GetCamera();
+    const int worldX = cam->GetScreenToWorldX(mMousePos.x);
+    const int worldY = cam->GetScreenToWorldY(mMousePos.y);
+
+    const Cell2D cell = mIsoMap->CellFromScreenPoint(worldX, worldY);
+
+    if(cell == mCurrCell)
+        return ;
+
+    mCurrCell = cell;
+
+    // react to change of cell like if mouse was moved
+    GameObject * sel = GetGame()->GetLocalPlayer()->GetSelectedObject();
+
+    if(sel != nullptr && sel->GetObjectCategory() == GameObject::CAT_UNIT)
+        HandleUnitOnMouseMove(static_cast<Unit *>(sel), cell);
 }
 
 } // namespace game

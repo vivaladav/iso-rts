@@ -395,9 +395,8 @@ void Player::SetSelectedObject(GameObject * obj)
 
     mSelObj = obj;
 
-    // reset active action to move when unit is selected
-    if(mSelObj->GetObjectCategory() == GameObject::CAT_UNIT)
-        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionType::MOVE);
+    // reset active action
+    mSelObj->SetActiveActionToDefault();
 
     mSelObj->SetSelected(true);
 }
