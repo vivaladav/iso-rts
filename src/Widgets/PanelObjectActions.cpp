@@ -21,13 +21,13 @@ PanelObjectActions::PanelObjectActions(sgl::sgui::Widget * parent)
                                                       "Create a new unit", this);
     mButtons[BTN_MOVE] = new ObjectActionButton(ObjectActionButton::MOVE, "M", KeyboardEvent::KEY_M,
                                                 "Move your unit", this);
-    mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "A", KeyboardEvent::KEY_A,
+    mButtons[BTN_ATTACK] = new ObjectActionButton(ObjectActionButton::ATTACK, "K", KeyboardEvent::KEY_K,
                                                   "Attack a target", this);
     mButtons[BTN_HEAL] = new ObjectActionButton(ObjectActionButton::HEAL, "H", KeyboardEvent::KEY_H,
                                                   "Heal/repair a target", this);
     mButtons[BTN_CONQUER_CELL] = new ObjectActionButton(ObjectActionButton::CONQUER_CELL, "C", KeyboardEvent::KEY_C,
                                                         "Conquer one or more cells", this);
-    mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "W", KeyboardEvent::KEY_W,
+    mButtons[BTN_BUILD_WALL] = new ObjectActionButton(ObjectActionButton::BUILD_WALL, "L", KeyboardEvent::KEY_L,
                                                       "Build a wall", this);
     mButtons[BTN_BUILD_STRUCT] = new ObjectActionButton(ObjectActionButton::BUILD_STRUCT, "B", KeyboardEvent::KEY_B,
                                                         "Build a structure", this);
