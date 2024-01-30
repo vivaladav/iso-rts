@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Cell2D.h"
-#include "GameObjects/GameObjectTypes.h"
 #include "Screen.h"
 #include "GameObjects/GameObjectAction.h"
+#include "GameObjects/GameObjectTypes.h"
 
+#include <sgl/core/Point.h>
+
+#include <chrono>
 #include <functional>
-#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -25,12 +27,11 @@ namespace game
 
 class AttackRangeIndicator;
 class CameraMapController;
-class CellProgressBar;
 class ConquestIndicator;
-class DialogNewElement;
 class GameHUD;
 class GameMap;
 class GameObject;
+class HealingRangeIndicator;
 class IsoLayer;
 class IsoMap;
 class MiniMap;
@@ -41,11 +42,13 @@ class StructureIndicator;
 class Unit;
 class WallIndicator;
 
+enum MissionType : unsigned int;
 enum PlayerFaction : unsigned int;
 
 enum ParticlesUpdaterId : unsigned int
 {
     PU_DAMAGE,
+    PU_HEALING,
     PU_LOOTBOX_PRIZE,
     PU_SINGLE_LASER
 };
@@ -55,6 +58,8 @@ class ScreenGame : public Screen
 public:
     ScreenGame(Game * game);
     ~ScreenGame();
+
+    unsigned int GetPlayTimeInSec() const;
 
     void Update(float delta) override;
     void Render() override;
@@ -68,16 +73,9 @@ public:
     void OnWindowMouseEntered(sgl::graphic::WindowEvent & event) override;
     void OnWindowMouseLeft(sgl::graphic::WindowEvent & event) override;
 
-    void GameOver();
-    void GameWon();
-
-    void CancelProgressBar(CellProgressBar * pb);
-    void CancelProgressBar(const Cell2D & cell);
-    void CreateProgressBar(const Cell2D & cell, float time, Player * player,
-                           const std::function<void()> & onCompleted);
-
     void ClearObjectAction(GameObject * obj);
     void SetObjectActionCompleted(GameObject * obj);
+    void SetObjectActionFailed(GameObject * obj);
 
     sgl::graphic::ParticlesUpdater * GetParticleUpdater(ParticlesUpdaterId updaterId);
 
@@ -87,8 +85,13 @@ public:
     void CenterCameraOverCell(int row, int col);
     void CenterCameraOverObject(GameObject * obj);
 
+    GameHUD * GetHUD() const;
+
     MiniMap * GetMiniMap() const;
     void SetMiniMapEnabled(bool val);
+
+    bool GetPaused() const;
+    void SetPause(bool paused);
 
 private:
     void OnApplicationQuit(sgl::core::ApplicationEvent & event) override;
@@ -100,33 +103,37 @@ private:
     void CreateLayers();
 
     void CreateUI();
-    void ClearNewElemDialog();
 
     void LoadMapFile();
-
-    CellProgressBar * CreateProgressBar(const Cell2D & cell, float time, PlayerFaction playerFaction);
-    void UpdateProgressBars(float delta);
 
     void UpdateAI(float delta);
     void ExecuteAIAction(PlayerAI * ai);
 
+    void CancelObjectAction(GameObject * obj);
+    void SetObjectActionDone(GameObject * obj, bool successful);
+
+    void UpdateGameEnd();
+    void HandleGameOver();
+    void HandleGameWon();
+    void AssignMapToFaction(PlayerFaction faction);
+    void AssignWinningResources(Player * player);
+    bool CheckGameOverForLocalPlayer();
+
     int CellToIndex(const Cell2D & cell) const;
 
-    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player, const std::function<void()> & OnDone = []{});
+    bool SetupNewUnit(GameObjectTypeId type, GameObject * gen, Player * player,
+                      const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureConquest(Unit * unit, const Cell2D & start, const Cell2D & end, Player * player,
-                                const std::function<void()> & OnDone = []{});
+                                const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
-                                const std::function<void()> & OnDone = []{});
-    bool SetupUnitUpgrade(GameObject * obj, Player * player, const std::function<void()> & OnDone = []{});
+                                const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
+                         const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupUnitHeal(Unit * unit, GameObject * target, Player * player,
+                       const std::function<void(bool)> & onDone = [](bool){});
     bool SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D & end,
-                       const std::function<void()> & OnDone = []{});
-    bool SetupConnectCells(Unit * unit, const std::function<void()> & OnDone = []{});
-
-    void HandleUnitOnMouseMove(Unit * unit, const Cell2D & cell);
-    void HandleUnitMoveOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitConquestOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildWallOnMouseMove(Unit * unit, const Cell2D & currCell);
-    void HandleUnitBuildStructureOnMouseMove(Unit * unit, const Cell2D & currCell);
+                       const std::function<void(bool)> & onDone = [](bool){});
+    bool SetupConnectCells(Unit * unit, const std::function<void(bool)> & onDone = [](bool){});
 
     void HandleUnitMoveOnMouseUp(Unit * unit, const Cell2D & clickCell);
     void HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & clickCell);
@@ -137,27 +144,37 @@ private:
 
     void StartUnitBuildWall(Unit * unit);
 
+    void ShowActiveIndicators(Unit * unit, const Cell2D & cell);
     void ShowAttackIndicators(const GameObject * obj, int range);
+    void ShowBuildStructureIndicator(Unit * unit, const Cell2D & currCell);
+    void ShowBuildWallIndicator(Unit * unit, const Cell2D & dest);
+    void ShowConquestIndicator(Unit * unit, const Cell2D & dest);
+    void ShowHealingIndicators(const GameObject * obj, int range);
+    void ShowMoveIndicator(GameObject * obj, const Cell2D & dest);
     void ClearCellOverlays();
+    void ClearTempStructIndicator();
 
     void CenterCameraOverPlayerBase();
 
-private:
-    std::vector<Player *> mAiPlayers;
+    void UpdateCurrentCell();
 
-    std::unordered_map<int, CellProgressBar *> mProgressBars;
-    std::vector<int> mProgressBarsToDelete;
+private:
+    friend class GameHUD;
+
+    std::vector<Player *> mAiPlayers;
 
     std::vector<ConquestIndicator *> mConquestIndicators;
     std::unordered_map<GameObjectTypeId, StructureIndicator *> mStructIndicators;
     std::vector<WallIndicator *> mWallIndicators;
     std::vector<AttackRangeIndicator *> mAttIndicators;
+    std::vector<HealingRangeIndicator *> mHealIndicators;
     StructureIndicator * mTempStructIndicator = nullptr;
 
     std::vector<unsigned int> mConquestPath;
     std::vector<unsigned int> mWallPath;
 
-    std::vector<GameObjectAction> mActiveObjActions;
+    std::vector<GameObjectAction> mObjActions;
+    std::vector<GameObjectAction> mObjActionsToDo;
 
     CameraMapController * mCamController = nullptr;
 
@@ -165,10 +182,10 @@ private:
 
     sgl::graphic::ParticlesManager * mPartMan = nullptr;
 
-    // -- UI --
-    GameHUD * mHUD = nullptr;
+    std::chrono::time_point<std::chrono::steady_clock> mTimeStart;
 
-    DialogNewElement * mDialogNewElement = nullptr;
+    // UI
+    GameHUD * mHUD = nullptr;
 
     GameMap * mGameMap = nullptr;
     IsoMap * mIsoMap = nullptr;
@@ -177,7 +194,8 @@ private:
 
     MoveIndicator * mMoveInd = nullptr;
 
-    struct Cell2D mPrevCell;
+    struct Cell2D mCurrCell;
+    sgl::core::Pointd2D mMousePos;
 
     float mTimerEnergy;
     float mTimerAI;
@@ -186,7 +204,23 @@ private:
 
     unsigned int mCurrPlayerAI = 0;
 
+    MissionType mMissionType;
+    unsigned int mMissionTime = 0;
+
     bool mPaused = false;
 };
+
+inline void ScreenGame::SetObjectActionCompleted(GameObject * obj)
+{
+    SetObjectActionDone(obj, true);
+}
+inline void ScreenGame::SetObjectActionFailed(GameObject * obj)
+{
+    SetObjectActionDone(obj, false);
+}
+
+inline GameHUD * ScreenGame::GetHUD() const { return mHUD; }
+
+inline bool ScreenGame::GetPaused() const { return mPaused; }
 
 } // namespace game

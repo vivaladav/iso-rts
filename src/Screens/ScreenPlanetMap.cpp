@@ -68,6 +68,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     tex = tm->GetTexture("space_bg.jpg");
     mBg = new graphic::Image(tex);
 
+    // -- TOP PANELS --
     // PANEL PLAYER RESOURCES TOP BAR
     mPanelPlayerRes = new PanelResources(player, nullptr);
     mPanelPlayerRes->SetX((rendW - mPanelPlayerRes->GetWidth()) * 0.5f);
@@ -89,15 +90,77 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     mLabelDate = new sgui::Label(fnt, panelDate);
     mLabelDate->SetColor(colorHeader);
 
+    // -- PLANET --
+    mPlanet = new PlanetMap;
+
+    const int planetX = (mBg->GetWidth() - mPlanet->GetWidth()) * 0.5f;
+    const int planetY = (mBg->GetHeight() - mPlanet->GetHeight()) * 0.5f;
+    mPlanet->SetPosition(planetX, planetY);
+
+    UpdatePlanetButtons();
+
+    mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
+                                 {
+                                     if(!enabled)
+                                         return;
+
+                                     // enable panels
+                                     mPanelActions->SetEnabled(true);
+                                     mPanelInfo->SetEnabled(true);
+
+                                     // make sure panel actions is visible
+                                     mPanelActions->SetVisible(true);
+                                     mPanelExplore->SetVisible(false);
+                                     mPanelConquer->SetVisible(false);
+                                     mPanelConquerAI->SetVisible(false);
+
+                                     auto game = GetGame();
+                                     const int planetId = game->GetCurrentPlanet();
+                                     auto mapReg = game->GetMapsRegistry();
+
+                                     const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
+                                     const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, ind);
+                                     const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
+                                     mPanelActions->UpdateButtons(status, playerOccupier);
+
+                                     if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
+                                         ShowInfo(ind);
+                                     else if(status == TER_ST_OCCUPIED_UNEXPLORED)
+                                     {
+                                         const int size = 0;
+                                         const int value = 0;
+                                         const MissionType mission = MISSION_UNKNOWN;
+
+                                         mPanelInfo->SetEnabled(true);
+                                         mPanelInfo->SetData(size, status, occupier, value, mission);
+                                     }
+                                     else
+                                     {
+                                         const int size = 0;
+                                         const int value = 0;
+                                         const MissionType mission = MISSION_UNKNOWN;
+
+                                         mPanelResources->SetEnabled(false);
+
+                                         mPanelInfo->SetData(size, status, occupier, value, mission);
+                                     }
+
+                                     mPanelExplore->ShowAction();
+                                     mPanelConquerAI->ShowAction();
+                                 });
+
+    // -- MAIN PANELS --
+    const int mainPanelsY0 = planetY;
+    const int mainPanelsMarginH = 70;
+
     // PANEL RESOURCES
-    const int panelResY = 100;
     mPanelResources = new PanelPlanetResources;
-    mPanelResources->SetY(panelResY);
+    mPanelResources->SetY(mainPanelsY0);
     mPanelResources->SetEnabled(false);
 
     // PANEL ACTIONS
     mPanelActions = new PanelPlanetActions;
-    const int panActionsY = (mBg->GetHeight() - mPanelActions->GetHeight()) * 0.5f;
+    const int panActionsY = mPanelResources->GetY() + mPanelResources->GetHeight() + mainPanelsMarginH;
     mPanelActions->SetY(panActionsY);
     mPanelActions->SetEnabled(false);
 
@@ -167,9 +230,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
                 // PANEL INFO
                 const int size = 0;
                 const int value = 0;
+                const MissionType mission = MISSION_UNKNOWN;
 
                 mPanelInfo->SetEnabled(true);
-                mPanelInfo->SetData(size, TER_ST_OCCUPIED_UNEXPLORED, occupier, value);
+                mPanelInfo->SetData(size, TER_ST_OCCUPIED_UNEXPLORED, occupier, value, mission);
             }
 
             mPanelExplore->ShowResult(res);
@@ -251,8 +315,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             const TerritoryStatus status = TER_ST_OCCUPIED;
             mapReg->SetMapStatus(planetId, territory, status);
             mapReg->SetMapOccupier(planetId, territory, pf);
+            mapReg->SetMapMissionCompleted(planetId, territory);
 
-            ExpandTerritoryReach(territory);
+            UpdatePlanetButtons();
 
             // update resources
             const int multMoney = 500;
@@ -306,10 +371,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             {
                 const int size = 0;
                 const int value = 0;
+                const MissionType mission = MISSION_UNKNOWN;
 
                 mPanelInfo->SetEnabled(true);
 
-                mPanelInfo->SetData(size, status, faction, value);
+                mPanelInfo->SetData(size, status, faction, value, mission);
             }
         }
 
@@ -324,28 +390,20 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
 
     // PANEL INFO
     mPanelInfo = new PanelPlanetInfo;
-    const int panelInfoY = mBg->GetHeight() - mPanelInfo->GetHeight();
-    mPanelInfo->SetY(panelInfoY);
+    const int panelInfoX = mBg->GetWidth() - mPanelInfo->GetWidth();
+    const int panelInfoY = mainPanelsY0;
+    mPanelInfo->SetPosition(panelInfoX, panelInfoY);
     mPanelInfo->SetEnabled(false);
 
     // PANEL LEAVE
     tex = tm->GetSprite(SpriteFilePlanetMap2, IND_PM_PANEL_LEAVE);
     auto panelLeave = new sgui::Image(tex);
-    panelLeave->SetPosition(mBg->GetWidth() - panelLeave->GetWidth(),
+    panelLeave->SetPosition((mBg->GetWidth() - panelLeave->GetWidth()) / 2,
                             mBg->GetHeight() - panelLeave->GetHeight());
 
-    const int labelHeaderLeaveX = 35;
-    const int labelHeaderLeaveY = 15;
-    fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle, graphic::Font::NORMAL);
-    auto labelHeaderLeave = new sgui::Label("LEAVE THE PLANET", fnt, panelLeave);
-    labelHeaderLeave->SetColor(colorHeader);
-    labelHeaderLeave->SetPosition(labelHeaderLeaveX, labelHeaderLeaveY);
-
-    auto buttonLeave = new ButtonPlanetMap(panelLeave);
-    buttonLeave->SetLabel("LEAVE");
-    const int buttonLeaveY = labelHeaderLeaveY + labelHeaderLeave-> GetHeight() + 25;
-    buttonLeave->SetPosition((panelLeave->GetWidth() - buttonLeave->GetWidth()) * 0.5f,
-                              buttonLeaveY);
+    auto buttonLeave = new ButtonLeavePlanet(panelLeave);
+    buttonLeave->SetPosition((panelLeave->GetWidth() - buttonLeave->GetWidth()) / 2,
+                              (panelLeave->GetHeight() - buttonLeave->GetHeight()) / 2);
 
     buttonLeave->AddOnClickFunction([this]
     {
@@ -353,74 +411,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         GetGame()->RequestNextActiveState(StateId::MAIN_MENU);
     });
 
-    // PLANET
-    mPlanet = new PlanetMap;
-
-    const int planetX = (mBg->GetWidth() - mPlanet->GetWidth()) * 0.5f;
-    const int planetY = (mBg->GetHeight() - mPlanet->GetHeight()) * 0.5f;
-    mPlanet->SetPosition(planetX, planetY);
-
     const int planetId = game->GetCurrentPlanet();
-    auto mapReg = game->GetMapsRegistry();
-
-    const int numMaps = mapReg->GetNumMaps(planetId);
-
-    for(int i = 0; i < numMaps; ++i)
-    {
-        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
-        const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
-
-        mPlanet->SetButtonState(i, occupier, ts);
-    }
-
-    mPlanet->SetFunctionOnToggle([this](unsigned int ind, bool enabled)
-    {
-        if(!enabled)
-            return;
-
-        // enable panels
-        mPanelActions->SetEnabled(true);
-        mPanelInfo->SetEnabled(true);
-
-        // make sure panel actions is visible
-        mPanelActions->SetVisible(true);
-        mPanelExplore->SetVisible(false);
-        mPanelConquer->SetVisible(false);
-        mPanelConquerAI->SetVisible(false);
-
-        auto game = GetGame();
-        const int planetId = game->GetCurrentPlanet();
-        auto mapReg = game->GetMapsRegistry();
-
-        const TerritoryStatus status = mapReg->GetMapStatus(planetId, ind);
-        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, ind);
-        const bool playerOccupier = game->GetLocalPlayerFaction() == occupier;
-        mPanelActions->UpdateButtons(status, playerOccupier);
-
-        if(status == TER_ST_FREE || status == TER_ST_OCCUPIED)
-            ShowInfo(ind);
-        else if(status == TER_ST_OCCUPIED_UNEXPLORED)
-        {
-            const int size = 0;
-            const int value = 0;
-
-            mPanelInfo->SetEnabled(true);
-            mPanelInfo->SetData(size, status, occupier, value);
-        }
-        else
-        {
-            const int size = 0;
-            const int value = 0;
-
-            mPanelResources->SetEnabled(false);
-
-            mPanelInfo->SetData(size, status, occupier, value);
-        }
-
-        mPanelExplore->ShowAction();
-        mPanelConquerAI->ShowAction();
-    });
-
     SetPlanetName(PLANETS_NAME[planetId]);
 
     // TEST - REMOVE LATER
@@ -488,9 +479,10 @@ void ScreenPlanetMap::ShowInfo(int territory)
     const int value = mapReg->GetMapValue(planetId, territory);
     const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, territory);
     const TerritoryStatus status = mapReg->GetMapStatus(planetId, territory);
+    const MissionType mission = mapReg->GetMapMission(planetId, territory);
 
     mPanelInfo->SetEnabled(true);
-    mPanelInfo->SetData(size, status, occupier, value);
+    mPanelInfo->SetData(size, status, occupier, value, mission);
 }
 
 bool ScreenPlanetMap::TryToConquerTerritory(int index)
@@ -522,87 +514,21 @@ bool ScreenPlanetMap::TryToConquerTerritory(int index)
     return die.GetNextValue();;
 }
 
-void ScreenPlanetMap::ExpandTerritoryReach(int index)
+void ScreenPlanetMap::UpdatePlanetButtons()
 {
-    switch (index)
-    {
-        case 0:
-            TryToMakeTerrytoryUnexplored(2);
-        break;
+    Game * game = GetGame();
 
-        case 1:
-            TryToMakeTerrytoryUnexplored(3);
-        break;
-
-        case 2:
-            TryToMakeTerrytoryUnexplored(0);
-            TryToMakeTerrytoryUnexplored(3);
-            TryToMakeTerrytoryUnexplored(5);
-        break;
-
-        case 3:
-            TryToMakeTerrytoryUnexplored(1);
-            TryToMakeTerrytoryUnexplored(2);
-            TryToMakeTerrytoryUnexplored(6);
-        break;
-
-        case 4:
-            TryToMakeTerrytoryUnexplored(5);
-        break;
-
-        case 5:
-            TryToMakeTerrytoryUnexplored(2);
-            TryToMakeTerrytoryUnexplored(4);
-            TryToMakeTerrytoryUnexplored(8);
-        break;
-
-        case 6:
-            TryToMakeTerrytoryUnexplored(3);
-            TryToMakeTerrytoryUnexplored(7);
-            TryToMakeTerrytoryUnexplored(9);
-        break;
-
-        case 7:
-            TryToMakeTerrytoryUnexplored(6);
-        break;
-
-        case 8:
-            TryToMakeTerrytoryUnexplored(5);
-            TryToMakeTerrytoryUnexplored(9);
-            TryToMakeTerrytoryUnexplored(10);
-        break;
-
-        case 9:
-            TryToMakeTerrytoryUnexplored(6);
-            TryToMakeTerrytoryUnexplored(8);
-            TryToMakeTerrytoryUnexplored(11);
-        break;
-
-        case 10:
-            TryToMakeTerrytoryUnexplored(8);
-        break;
-
-        case 11:
-            TryToMakeTerrytoryUnexplored(9);
-        break;
-
-        default:
-        break;
-    }
-}
-
-void ScreenPlanetMap::TryToMakeTerrytoryUnexplored(int index)
-{
-    auto game = GetGame();
     const int planetId = game->GetCurrentPlanet();
     auto mapReg = game->GetMapsRegistry();
 
-    if(mapReg->GetMapStatus(planetId, index) == TER_ST_UNREACHABLE)
-    {
-        mapReg->SetMapStatus(planetId, index, TER_ST_UNEXPLORED);
+    const int numMaps = mapReg->GetNumMaps(planetId);
 
-        const PlayerFaction faction = mapReg->GetMapOccupier(planetId, index);
-        mPlanet->SetButtonState(index, faction, TER_ST_UNEXPLORED);
+    for(int i = 0; i < numMaps; ++i)
+    {
+        const PlayerFaction occupier = mapReg->GetMapOccupier(planetId, i);
+        const TerritoryStatus ts = mapReg->GetMapStatus(planetId, i);
+
+        mPlanet->SetButtonState(i, occupier, ts);
     }
 }
 

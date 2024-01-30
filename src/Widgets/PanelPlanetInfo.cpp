@@ -4,8 +4,6 @@
 #include "Widgets/GameUIData.h"
 #include "Widgets/WidgetsConstants.h"
 
-#include <sgl/core/Point.h>
-#include <sgl/graphic/Camera.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -20,10 +18,13 @@
 namespace game
 {
 
+const char * fileFont = "Lato-Regular.ttf";
+
 PanelPlanetInfo::PanelPlanetInfo()
     : sgl::sgui::Widget(nullptr)
     , mOccupier(NO_FACTION)
     , mStatus(TER_ST_UNKNOWN)
+    , mMission(MISSION_UNKNOWN)
 {
     using namespace sgl;
 
@@ -38,7 +39,7 @@ PanelPlanetInfo::PanelPlanetInfo()
     SetSize(tex->GetWidth(), tex->GetHeight());
 
     // TITLE
-    const char * fileFont = "Lato-Regular.ttf";
+
     const unsigned int colorTitle = 0xe9f7fbcc;
 
     graphic::Font * fnt = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapTitle,
@@ -87,6 +88,15 @@ PanelPlanetInfo::PanelPlanetInfo()
     mLabelOccupier->SetColor(WidgetsConstants::colorPlanetMapData);
     RegisterRenderable(mLabelOccupier);
 
+    // LINE MISSION
+    mHeaderMission = new graphic::Text("MISSION", fntData);
+    mHeaderMission->SetColor(WidgetsConstants::colorPlanetMapHeader);
+    RegisterRenderable(mHeaderMission);
+
+    mLabelMission = new graphic::Text("?", fntData);
+    mLabelMission->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelMission);
+
     // position elements
     UpdatePositions();
 }
@@ -109,17 +119,20 @@ void PanelPlanetInfo::ClearData()
     UpdatePositions();
 }
 
-void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction faction, unsigned int value)
+void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction faction,
+                              unsigned int value, MissionType mission)
 {
     const bool sizeChanged = size != mSize;
     const bool statusChanged = status != mStatus;
     const bool factionChanged = faction != mOccupier;
     const bool valueChanged = value != mValue;
+    const bool missionChanged = mission != mMission;
 
     mValue = value;
     mSize = size;
     mStatus = status;
     mOccupier = faction;
+    mMission = mission;
 
     if(sizeChanged)
         UpdateTerritorySize();
@@ -133,6 +146,8 @@ void PanelPlanetInfo::SetData(int size, TerritoryStatus status, PlayerFaction fa
     if(valueChanged)
         UpdateTerritoryValue();
 
+    if(missionChanged)
+        UpdateMissionType();
 
     UpdatePositions();
 }
@@ -156,19 +171,17 @@ void PanelPlanetInfo::UpdatePositions()
 {
     const int x0 = GetScreenX();
     const int y0 = GetScreenY();
+    const int w = mBg->GetWidth();
 
     const int marginL = 20;
     const int marginR = 30;
     const int marginT = 15;
 
-    const int x1 = x0 + GetWidth() - marginR;
-
-    int x;
-    int y;
-    int dataX;
+    int x = x0;
+    int y = y0;
 
     // BACKGROUND
-    mBg->SetPosition(x0, y0);
+    mBg->SetPosition(x, y);
 
     // TITLE
     x = x0 + marginL;
@@ -176,38 +189,54 @@ void PanelPlanetInfo::UpdatePositions()
 
     mTitle->SetPosition(x, y);
 
-    const int marginTitleB = 30;
-    const int marginHeaderB = 20;
+    const int marginTitleB = 15;
+    const int marginHeaderB = 5;
+    const int marginDataB = 25;
 
     // LINE SIZE
+    x = x0 + (w - mHeaderSize->GetWidth()) / 2;
     y += mTitle->GetHeight() + marginTitleB;
     mHeaderSize->SetPosition(x, y);
 
-    dataX = x1 - mLabelSize->GetWidth();
-    mLabelSize->SetPosition(dataX, y);
+    x = x0 + (w - mLabelSize->GetWidth()) / 2;
+    y += mHeaderSize->GetHeight() + marginHeaderB;
+    mLabelSize->SetPosition(x, y);
 
     // LINE STATUS
-    y += mHeaderSize->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderStatus->GetWidth()) / 2;
+    y += mLabelSize->GetHeight() + marginDataB;
     mHeaderStatus->SetPosition(x, y);
 
-    dataX = x1 - mLabelStatus->GetWidth();
-    mLabelStatus->SetPosition(dataX, y);
+    x = x0 + (w - mLabelStatus->GetWidth()) / 2;
+    y += mHeaderStatus->GetHeight() + marginHeaderB;
+    mLabelStatus->SetPosition(x, y);
 
     // LINE VALUE
-    y += mHeaderStatus->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderValue->GetWidth()) / 2;
+    y += mHeaderStatus->GetHeight() + marginDataB;
     mHeaderValue->SetPosition(x, y);
 
-    dataX = x1 - mBarValue->GetWidth();
-    const int marginValueT = -2;
-    const int barY = y + marginValueT;
-    mBarValue->SetPosition(dataX, barY);
+    x = x0 + (w - mBarValue->GetWidth()) / 2;
+    y += mHeaderValue->GetHeight() + marginHeaderB;
+    mBarValue->SetPosition(x, y);
 
     // LINE OCCUPIER
-    y += mHeaderValue->GetHeight() + marginHeaderB;
+    x = x0 + (w - mHeaderOccupier->GetWidth()) / 2;
+    y += mBarValue->GetHeight() + marginDataB;
     mHeaderOccupier->SetPosition(x, y);
 
-    dataX = x1 - mLabelOccupier->GetWidth();
-    mLabelOccupier->SetPosition(dataX, y);
+    x = x0 + (w - mLabelOccupier->GetWidth()) / 2;
+    y += mHeaderOccupier->GetHeight() + marginHeaderB;
+    mLabelOccupier->SetPosition(x, y);
+
+    // LINE MISSION
+    x = x0 + (w - mHeaderMission->GetWidth()) / 2;
+    y += mLabelOccupier->GetHeight() + marginDataB;
+    mHeaderMission->SetPosition(x, y);
+
+    x = x0 + (w - mLabelMission->GetWidth()) / 2;
+    y += mHeaderMission->GetHeight() + marginHeaderB;
+    mLabelMission->SetPosition(x, y);
 }
 
 void PanelPlanetInfo::UpdateTerritorySize()
@@ -221,7 +250,6 @@ void PanelPlanetInfo::UpdateTerritorySize()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -250,7 +278,6 @@ void PanelPlanetInfo::UpdateTerritoryStatus()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -286,7 +313,6 @@ void PanelPlanetInfo::UpdateTerritoryOccupier()
     // create new text
     auto fm = graphic::FontManager::Instance();
 
-    const char * fileFont = "Lato-Regular.ttf";
     graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
                                           graphic::Font::NORMAL);
 
@@ -315,6 +341,32 @@ void PanelPlanetInfo::UpdateTerritoryValue()
     auto tm = graphic::TextureManager::Instance();
     graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, IND_PM_STARS_DIS + mValue);
     mBarValue->SetTexture(tex);
+}
+
+void PanelPlanetInfo::UpdateMissionType()
+{
+    using namespace sgl;
+
+    // delete current text
+    UnregisterRenderable(mLabelMission);
+    delete mLabelMission;
+
+    // create new text
+    auto fm = graphic::FontManager::Instance();
+
+    graphic::Font * fntData = fm->GetFont(fileFont, WidgetsConstants::FontSizePlanetMapText,
+                                         graphic::Font::NORMAL);
+
+    if(mMission < NUM_MISSION_TYPES)
+        mLabelMission = new graphic::Text(MISSIONS_TITLE[mMission], fntData);
+    else if(MISSION_COMPLETED == mMission)
+        mLabelMission = new graphic::Text("-", fntData);
+    // UNKNOWN
+    else
+        mLabelMission = new graphic::Text("?", fntData);
+
+    mLabelMission->SetColor(WidgetsConstants::colorPlanetMapData);
+    RegisterRenderable(mLabelMission);
 }
 
 } // namespace game

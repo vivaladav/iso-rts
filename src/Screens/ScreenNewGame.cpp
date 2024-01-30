@@ -20,7 +20,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     , mGame(game)
     , mDiff(Difficulty::EASY)
 {
-    const int MAX_UNITS0 = 5;
+    const int MAX_UNITS0 = 4;
     const int startEnergy = 800;
     const int startMaterial = 250;
     const int startMoney = 1000;
@@ -30,7 +30,6 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // create human player
     const PlayerFaction pf = game->GetLocalPlayerFaction();
     Player * p = game->AddPlayer("PLAYER 1", 0);
-    p->SetLocal(true);
     p->SetFaction(pf);
     p->SetMaxUnits(MAX_UNITS0);
 
@@ -53,6 +52,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
     // TODO temporary for testing. In the future start only with 2 types
     p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
     p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
+    p->AddAvailableUnit(GameObject::TYPE_UNIT_MEDIC1);
 
     // assign initial resources
     p->SetResource(Player::Stat::BLOBS, startBlobs);
@@ -107,6 +107,7 @@ ScreenNewGame::ScreenNewGame(Game * game)
         // TODO temporary for testing. In the future start only with 2 types
         p->AddAvailableUnit(GameObject::TYPE_UNIT_SCOUT1);
         p->AddAvailableUnit(GameObject::TYPE_UNIT_SOLDIER2);
+        p->AddAvailableUnit(GameObject::TYPE_UNIT_MEDIC1);
 
         // assign initial resources
         p->SetResource(Player::Stat::BLOBS, startBlobs);

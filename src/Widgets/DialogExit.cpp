@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Screens/Screen.h"
 #include "States/StatesIds.h"
+#include "Widgets/DialogSettings.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
 
@@ -218,6 +219,8 @@ private:
 
 // ===== DIALOG =====
 DialogExit::DialogExit(Game * game, Screen * screen)
+    : mOnShowingSettings([]{})
+    , mOnHidingSettings([]{})
 {
     using namespace sgl;
 
@@ -262,7 +265,11 @@ DialogExit::DialogExit(Game * game, Screen * screen)
     {
         mButtonClose->Click();
 
-        screen->ShowDialogSettings();
+        DialogSettings * dialog = screen->ShowDialogSettings();
+
+        mOnShowingSettings();
+
+        dialog->AddOnCloseClickedFunction(mOnHidingSettings);
     });
 
     btnY += btn->GetHeight() + marginBtnV;
@@ -302,6 +309,16 @@ DialogExit::DialogExit(Game * game, Screen * screen)
         sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtueror_The_Virtual_Conqueror/"
                              "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=exitdialog");
     });
+}
+
+void DialogExit::SetFunctionOnShowingDialogSettings(const std::function<void()> & f)
+{
+    mOnShowingSettings = f;
+}
+
+void DialogExit::SetFunctionOnHidingDialogSettings(const std::function<void()> & f)
+{
+    mOnHidingSettings = f;
 }
 
 void DialogExit::SetFunctionOnClose(const std::function<void()> & f)

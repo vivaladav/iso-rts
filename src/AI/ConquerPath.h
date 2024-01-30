@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <vector>
 
 namespace game
@@ -8,6 +7,7 @@ namespace game
 
 class ConquestIndicator;
 class GameMap;
+class GameMapProgressBar;
 class IsoMap;
 class ScreenGame;
 class Unit;
@@ -40,17 +40,11 @@ public:
 
     void SetPathCells(const std::vector<unsigned int> & cells);
 
-    void SetOnCompleted(const std::function<void()> & f);
-    void SetOnFailed(const std::function<void()> & f);
-    void SetOnAborted(const std::function<void()> & f);
-
     void Start();
     void Abort();
     void InstantAbort();
 
     void Update(float delta);
-
-    void Finish();
 
 private:
     void CreateIndicators();
@@ -63,15 +57,14 @@ private:
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;
 
     std::vector<ConquestIndicator *> mIndicators;
 
-    std::function<void()> mOnCompleted;
-    std::function<void()> mOnFailed;
-    std::function<void()> mOnAborted;
+    GameMapProgressBar * mProgressBar = nullptr;
 
     Unit * mUnit = nullptr;
 
@@ -109,9 +102,5 @@ inline void ConquerPath::SetPathCells(const std::vector<unsigned int> & cells)
 
     UpdatePathCost();
 }
-
-inline void ConquerPath::SetOnCompleted(const std::function<void()> & f) {  mOnCompleted = f; }
-inline void ConquerPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
-inline void ConquerPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 } // namespace game

@@ -167,7 +167,7 @@ void DefensiveTower::Shoot()
 
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + faction;
+    const unsigned int texInd = SpriteIdUnitsParticles::IND_UPAR_LASER_F1 + faction;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
     IsoObject * isoObj = GetIsoObject();
@@ -223,7 +223,8 @@ void DefensiveTower::Shoot()
         tX,
         tY,
         speed,
-        mWeaponDamage
+        mWeaponDamage,
+        GetFaction()
     };
 
     pu->AddParticle(pd);

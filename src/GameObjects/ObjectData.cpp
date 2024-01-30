@@ -10,6 +10,7 @@ const char * ObjectBasicData::STR_CLASS[NUM_OBJ_CLASSES] =
     "BASE",
     "GENERATOR",
     "RADAR",
+    "RELICS",
     "STORAGE",
     "TARGET",
     "TOWER",
@@ -17,6 +18,7 @@ const char * ObjectBasicData::STR_CLASS[NUM_OBJ_CLASSES] =
     "GATE",
 
     "GENERIC",
+    "MEDIC",
     "SCOUT",
     "SOLDIER",
     "WORKER",
@@ -38,7 +40,8 @@ const char * ObjectFactionData::STR_STAT[NUM_TOT_OBJ_STATS] =
     "SHIELD",
     "SPEED",
     "CONSTRUCTION",
-    "CONQUEST"
+    "CONQUEST",
+    "HEALING",
 };
 
 const ObjectBasicData ObjectBasicData::NullObj(GameObject::TYPE_NULL, OC_NULL,

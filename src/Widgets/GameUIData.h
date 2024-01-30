@@ -3,6 +3,21 @@
 namespace game
 {
 
+// DIALOG END MISSION
+extern const char SpriteFileDialogEndMission[];
+
+enum SpriteIdDialogEndMission : unsigned int
+{
+    // BACKGROUND
+    IND_DIA_EM_BG,
+
+    // BUTTON
+    IND_DIA_EM_BTN_NORMAL,
+    IND_DIA_EM_BTN_DISABLED,
+    IND_DIA_EM_BTN_OVER,
+    IND_DIA_EM_BTN_PUSHED,
+};
+
 // DIALOG EXIT
 extern const char SpriteFileDialogExit[];
 
@@ -32,6 +47,34 @@ enum SpriteIdDialogExit : unsigned int
     IND_DIA_ICON_STEAM_DISABLED,
     IND_DIA_ICON_STEAM_OVER,
     IND_DIA_ICON_STEAM_PUSHED,
+};
+
+// DIALOG EXPLORE TEMPLE
+extern const char SpriteFileDialogExploreTemple[];
+
+enum SpriteIdDialogExploreTemple : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_EXTM_BACKGROUND,
+    ID_DLG_EXTM_LINE_H,
+    ID_DLG_EXTM_LINE_V,
+
+    // BUTTON
+    ID_DLG_EXTM_BTN_NORMAL,
+    ID_DLG_EXTM_BTN_DISABLED,
+    ID_DLG_EXTM_BTN_OVER,
+    ID_DLG_EXTM_BTN_PUSHED,
+
+    // ICONS
+    ID_DLG_EXTM_ICON_MONEY,
+    ID_DLG_EXTM_ICON_MATERIAL,
+    ID_DLG_EXTM_ICON_BLOBS,
+    ID_DLG_EXTM_ICON_DIAMONDS,
+
+    // SLIDER
+    ID_DLG_EXTM_SLIDER_BG,
+    ID_DLG_EXTM_SLIDER_BAR,
+    ID_DLG_EXTM_SLIDER_BTN,
 };
 
 // NEW ELEMENT DIALOG
@@ -172,6 +215,7 @@ enum SpriteIdObjActionButton : unsigned int
     IND_BUTTON_ICON_OPEN_GATE,
     IND_BUTTON_ICON_CLOSE_GATE,
     IND_BUTTON_ICON_CANCEL,
+    IND_BUTTON_ICON_HEAL,
 
     NUM_IND_OBJ_ACT_BUTTON
 };
@@ -338,7 +382,13 @@ enum SpriteIdPlanetMap : unsigned int
     IND_PM_ICON_ENERGY,
     IND_PM_ICON_MATERIAL,
     IND_PM_ICON_DIAMONDS,
-    IND_PM_ICON_BLOBS
+    IND_PM_ICON_BLOBS,
+
+    // BUTTON LEAVE
+    IND_PM_BTN3_NORMAL,
+    IND_PM_BTN3_DISABLED,
+    IND_PM_BTN3_OVER,
+    IND_PM_BTN3_PRESSED,
 };
 
 // PLANET MAP 2
@@ -352,7 +402,6 @@ enum SpriteIdPlanetMap2 : unsigned int
     IND_PM_PANEL_RESOURCES,
     IND_PM_PANEL_ACTIONS,
     IND_PM_PANEL_INFO,
-    IND_PM_PANEL_UNITS,
     IND_PM_PANEL_LEAVE
 };
 
@@ -461,14 +510,17 @@ enum SpriteIdUnitQuickSel : unsigned int
     IND_UQS_UNIT2_F1,
     IND_UQS_UNIT3_F1,
     IND_UQS_UNIT4_F1,
+    IND_UQS_UNIT5_F1,
     IND_UQS_UNIT1_F2,
     IND_UQS_UNIT2_F2,
     IND_UQS_UNIT3_F2,
     IND_UQS_UNIT4_F2,
+    IND_UQS_UNIT5_F2,
     IND_UQS_UNIT1_F3,
     IND_UQS_UNIT2_F3,
     IND_UQS_UNIT3_F3,
     IND_UQS_UNIT4_F3,
+    IND_UQS_UNIT5_F3,
 
     NUM_UQS_UNIT_SPRITE_PER_FACTION = IND_UQS_UNIT1_F2 - IND_UQS_UNIT1_F1
 };

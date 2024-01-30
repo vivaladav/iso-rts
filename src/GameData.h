@@ -97,6 +97,11 @@ enum SpriteIdIndicators : unsigned int
     IND_ATTACK_F2,
     IND_ATTACK_F3,
 
+    // HEALING RANGE INDICATOR
+    IND_RANGE_HEAL_F1,
+    IND_RANGE_HEAL_F2,
+    IND_RANGE_HEAL_F3,
+
     // INFLUENCE AREA F1
     IND_INF_AREA_L_F1,
     IND_INF_AREA_T_F1,
@@ -358,6 +363,15 @@ enum SpriteIdStructures : unsigned int
     ID_MATERIAL_EXTRACTOR_F3_SEL,
     ID_MATERIAL_EXTRACTOR,
     ID_MATERIAL_EXTRACTOR_SEL,
+    // TEMPLE
+    ID_STRUCT_TEMPLE_F1,
+    ID_STRUCT_TEMPLE_F1_SEL,
+    ID_STRUCT_TEMPLE_F2,
+    ID_STRUCT_TEMPLE_F2_SEL,
+    ID_STRUCT_TEMPLE_F3,
+    ID_STRUCT_TEMPLE_F3_SEL,
+    ID_STRUCT_TEMPLE,
+    ID_STRUCT_TEMPLE_SEL,
 
     // special values
     NUM_BASE_SPRITES_PER_FAC = 2,
@@ -369,7 +383,8 @@ enum SpriteIdStructures : unsigned int
     NUM_SOLAR_PANEL_SPRITES_PER_FAC = 2,
     NUM_ENE_GEN_SPRITES_PER_FAC = 2,
     NUM_ENE_STO_SPRITES_PER_FAC = 2,
-    NUM_MAT_GEN_SPRITES_PER_FAC = 2
+    NUM_MAT_GEN_SPRITES_PER_FAC = 2,
+    NUM_TEMPLE_SPRITES_PER_FAC = 2,
 };
 
 // TREES
@@ -493,6 +508,14 @@ enum SpriteIdUnits : unsigned int
     SPR_UNIT_04_F3,
     SPR_UNIT_04_F3_SEL,
 
+    // unit 5
+    SPR_UNIT_05_F1,
+    SPR_UNIT_05_F1_SEL,
+    SPR_UNIT_05_F2,
+    SPR_UNIT_05_F2_SEL,
+    SPR_UNIT_05_F3,
+    SPR_UNIT_05_F3_SEL,
+
     // 2 sprites per unit: unselected and selected
     NUM_UNIT_SPRITES_PER_FACTION = 2,
     // 6 sprites per type 2 * 3 factions
@@ -504,14 +527,15 @@ extern const char SpriteFileUnitsParticles[];
 
 enum SpriteIdUnitsParticles : unsigned int
 {
-    // faction 1
-    SPR_UPART_LASER_F1,
+    // laser
+    IND_UPAR_LASER_F1,
+    IND_UPAR_LASER_F2,
+    IND_UPAR_LASER_F3,
 
-    // faction 2
-    SPR_UPART_LASER_F2,
-
-    // faction 3
-    SPR_UPART_LASER_F3,
+    // healing
+    IND_UPAR_HEAL_F1,
+    IND_UPAR_HEAL_F2,
+    IND_UPAR_HEAL_F3,
 
     NUM_UNIT_PART_SPRITES_PER_FACTION = 1
 };

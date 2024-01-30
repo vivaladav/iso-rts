@@ -12,7 +12,6 @@
 #include <cmath>
 #include <iomanip>
 #include <sstream>
-#include <string>
 
 namespace game
 {
@@ -80,7 +79,7 @@ void ConquestIndicator::CreateLabelCost()
     const unsigned int color = 0xE5E5E5FF;
 
     std::ostringstream s;
-    s << std::fixed << std::setprecision(1) << mCost;   
+    s << std::fixed << std::setprecision(1) << mCost;
 
     FontManager * fm = FontManager::Instance();
     Font * font = fm->GetFont("Lato-Bold.ttf", 14, Font::NORMAL);

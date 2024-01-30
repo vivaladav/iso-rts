@@ -52,6 +52,7 @@ void PlayerAI::PrepareData()
     // clear data
     mResGenerators.clear();
     mStructures.clear();
+    mUnits.clear();
 
     // collect data
     const std::vector<GameObject *> & objects = mGm->GetObjects();
@@ -60,13 +61,17 @@ void PlayerAI::PrepareData()
     {
         const GameObjectCategoryId objCat = obj->GetObjectCategory();
 
-        //store objects based on type
-        if(objCat == GameObject::CAT_RES_GENERATOR)
-            mResGenerators.push_back(obj);
-
         // store structures
         if(obj->IsStructure())
+        {
             mStructures.push_back(obj);
+
+            // store resource generators
+            if(objCat == GameObject::CAT_RES_GENERATOR)
+                mResGenerators.push_back(obj);
+        }
+        else if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
+            mUnits.push_back(obj);
     }
 }
 
@@ -114,6 +119,73 @@ void PlayerAI::HandleObjectDestroyed(GameObject * obj)
     HandleObjectDestroyedInDoing(obj);
 }
 
+bool PlayerAI::IsActionHighestPriorityForObject(const ActionAI * action) const
+{
+    auto it = mActionsDoing.begin();
+
+    while(it != mActionsDoing.end())
+    {
+        const ActionAI * a = *it;
+
+        if(a->ObjSrc == action->ObjSrc)
+            return action->priority > a->priority;
+        else
+            ++it;
+    }
+
+    return true;
+}
+
+void PlayerAI::CancelObjectAction(const GameObject * obj)
+{
+    auto it = mActionsDoing.begin();
+
+    while(it != mActionsDoing.end())
+    {
+        const ActionAI * action = *it;
+
+        if(obj == action->ObjSrc)
+        {
+            mActionsDoing.erase(it);
+
+            std::cout << "PlayerAI::CancelObjectActions - ACTION CANCELLED - id: " << action->actId
+                      << " - type: " << action->type << " - obj: " << obj << std::endl;
+
+            delete action;
+
+            return ;
+        }
+        else
+            ++it;
+    }
+
+    std::cout << "PlayerAI::CancelObjectActions - can't find any action" << std::endl;
+}
+
+void PlayerAI::CancelAction(const ActionAI * action)
+{
+    auto it = mActionsDoing.begin();
+
+    while(it != mActionsDoing.end())
+    {
+        if(action->actId == (*it)->actId)
+        {
+            mActionsDoing.erase(it);
+
+            std::cout << "PlayerAI::CancelAction - ACTION CANCELLED - id: " << action->actId
+                      << " - type: " << action->type << std::endl;
+
+            delete action;
+
+            return ;
+        }
+        else
+            ++it;
+    }
+
+    std::cout << "PlayerAI::CancelAction - can't find action" << std::endl;
+}
+
 void PlayerAI::SetActionDone(const ActionAI * action)
 {
     auto it = mActionsDoing.begin();
@@ -134,6 +206,8 @@ void PlayerAI::SetActionDone(const ActionAI * action)
         else
             ++it;
     }
+
+    std::cout << "PlayerAI::SetActionDone - ACTION DONE - can't find action" << std::endl;
 }
 
 void PlayerAI::ClearActionsDone()
@@ -395,12 +469,72 @@ void PlayerAI::AddActionsBase(Structure * s)
 
 void PlayerAI::AddActionsUnit(Unit * u)
 {
+    // ATTACK ENEMY
+    AddActionUnitAttackEnemyUnit(u);
+
     // CONNECT STRUCTURES
     AddActionUnitConnectStructure(u);
 
     // CONQUEST RESOURCE GENERATORS
     AddActionUnitConquestResGen(u, RES_ENERGY);
     AddActionUnitConquestResGen(u, RES_MATERIAL1);
+}
+
+void PlayerAI::AddActionUnitAttackEnemyUnit(Unit * u)
+{
+    // nothing to do if there's no units on the map
+    if(mUnits.empty())
+        return ;
+
+    if(IsObjectAlreadyDoingSimilarAction(u, AIA_UNIT_ATTACK_ENEMY_UNIT))
+        return ;
+
+    const PlayerFaction faction = mPlayer->GetFaction();
+    const unsigned int numUnits = mUnits.size();
+
+    // check if there's any unit to shoot at
+    const int maxDist = mGm->GetNumRows() + mGm->GetNumCols();
+
+    unsigned int bestUnitInd = numUnits;
+    int minDist = maxDist;
+    int priority = 100;
+
+    for(unsigned int i = 0; i < numUnits; ++i)
+    {
+        auto unit = static_cast<Unit *>(mUnits[i]);
+
+        const PlayerFaction unitFaction = unit->GetFaction();
+
+        // skip own faction units
+        if(unitFaction == faction)
+            continue;
+
+        // skip targets out of range
+        if(!u->IsTargetAttackInRange(unit))
+            continue;
+
+        // basic logic, attack closest one
+        const int dist = mGm->ApproxDistance(u, unit);
+
+        if(dist < minDist)
+        {
+            minDist = dist;
+            bestUnitInd = i;
+        }
+    }
+
+    // didn't find any
+    if(bestUnitInd == numUnits)
+        return ;
+
+    auto action = new ActionAI;
+    action->type = AIA_UNIT_ATTACK_ENEMY_UNIT;
+    action->ObjSrc = u;
+    action->ObjDst = mUnits[bestUnitInd];
+    action->priority = priority;
+
+    // push action to the queue
+    AddNewAction(action);
 }
 
 void PlayerAI::AddActionUnitConnectStructure(Unit * u)
@@ -604,6 +738,17 @@ void PlayerAI::AddActionUnitConquestResGen(Unit * u, ResourceType type)
 
     // push action to the queue
     AddNewAction(action);
+}
+
+bool PlayerAI::IsObjectAlreadyDoingSimilarAction(GameObject * obj, AIActionType type) const
+{
+    for(const ActionAI * a : mActionsDoing)
+    {
+        if(a->ObjSrc == obj && a->type == type)
+            return true;
+    }
+
+    return false;
 }
 
 bool PlayerAI::IsSimilarActionInProgress(AIActionType type) const

@@ -6,6 +6,8 @@
 
 #include <sgl/graphic/TextureManager.h>
 
+#include <cmath>
+
 namespace game
 {
 
@@ -27,6 +29,17 @@ ResourceGenerator::ResourceGenerator(GameObjectTypeId type, int rows, int cols)
     SetImage();
 
     UpdateOutput();
+}
+
+void ResourceGenerator::ScaleOutput(float mult)
+{
+    const float minOutput = 1.f;
+    const float output = mOutput * mult;
+
+    if(output < minOutput)
+        mOutput = minOutput;
+    else
+        mOutput = std::roundf(output);
 }
 
 void ResourceGenerator::UpdateGraphics()

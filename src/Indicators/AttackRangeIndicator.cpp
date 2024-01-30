@@ -3,7 +3,6 @@
 #include "GameData.h"
 #include "Player.h"
 
-#include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/TextureManager.h>
 
 namespace game

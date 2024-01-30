@@ -16,10 +16,7 @@ namespace game
 {
 
 ObjectPath::ObjectPath(GameObject * obj, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{})
-    , mOnFailed([]{})
-    , mOnAborted([]{})
-    , mObj(obj)
+    : mObj(obj)
     , mIsoMap(im)
     , mGameMap(gm)
     , mScreen(sg)
@@ -82,16 +79,11 @@ void ObjectPath::InstantAbort()
 {
     mState = ABORTED;
 
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mObj);
-
     if(mNextCell < mCells.size())
     {
         const unsigned int nextInd = mCells[mNextCell];
         mGameMap->SetCellWalkTarget(nextInd, false);
     }
-
-    mOnAborted();
 }
 
 void ObjectPath::Update(float delta)
@@ -191,16 +183,6 @@ void ObjectPath::Update(float delta)
     }
 }
 
-void ObjectPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mObj);
-
-    mOnCompleted();
-}
-
 void ObjectPath::UpdatePathCost()
 {
     // TODO proper cost computation
@@ -212,9 +194,15 @@ void ObjectPath::Fail()
     mState = FAILED;
 
     // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mObj);
+    mScreen->SetObjectActionFailed(mObj);
+}
 
-    mOnFailed();
+void ObjectPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mObj);
 }
 
 } // namespace game

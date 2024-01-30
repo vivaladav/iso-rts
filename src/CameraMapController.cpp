@@ -2,17 +2,15 @@
 
 #include "Game.h"
 #include <sgl/core/event/KeyboardEvent.h>
+#include <sgl/core/event/MouseButtonEvent.h>
 #include <sgl/core/event/MouseMotionEvent.h>
 #include <sgl/graphic/Camera.h>
-
-#include <limits>
-
-#include <iostream>
 
 namespace game
 {
 
-constexpr float DEF_SPEED = 400.f;
+constexpr float DEF_SCROLLING_SPEED = 500.f;
+constexpr float DEF_DRAGGING_SPEED = 90.f;
 constexpr int SCROLL_L = -1;
 constexpr int SCROLL_R = 1;
 constexpr int SCROLL_U = -1;
@@ -22,7 +20,8 @@ constexpr int NO_SCROLL = 0;
 CameraMapController::CameraMapController(sgl::graphic::Camera * cam, Game * game)
     : mCamera(cam)
     , mGame(game)
-    , mSpeed(DEF_SPEED)
+    , mSpeedScrolling(DEF_SCROLLING_SPEED)
+    , mSpeedDragging(DEF_DRAGGING_SPEED)
     , mDirX(NO_SCROLL)
     , mDirY(NO_SCROLL)
 {
@@ -160,8 +159,32 @@ void CameraMapController::HandleKeyUp(sgl::core::KeyboardEvent & event)
     }
 }
 
+void CameraMapController::HandleMouseButtonUp(sgl::core::MouseButtonEvent & event)
+{
+    mDragging &= event.GetButton() != sgl::core::MouseEvent::BUTTON_LEFT;
+}
+
 void CameraMapController::HandleMouseMotion(sgl::core::MouseMotionEvent & event)
 {
+    // -- DRAGGING --
+    if(mGame->IsMapDragging() && event.IsButtonPushed(sgl::core::MouseEvent::BUTTON_LEFT))
+    {
+        const int minDrag = 5;
+
+        if(std::abs(event.GetDeltaX()) > minDrag)
+            mDragX = event.GetDeltaX();
+        else
+            mDragX = 0;
+
+        if(std::abs(event.GetDeltaY()) > minDrag)
+            mDragY = event.GetDeltaY();
+        else
+            mDragY = 0;
+
+        mDragging |= mDragX != 0 || mDragY != 0;
+    }
+
+    // -- MAP SCROLLING ON EDGES --
     if(!mGame->IsMapScrollingOnEdges())
         return ;
 
@@ -236,8 +259,50 @@ void CameraMapController::Update(float delta)
     sgl::core::Pointd2D cc(mCamera->GetX() + (mCamera->GetWidth() / 2),
                            mCamera->GetY() + (mCamera->GetHeight() / 2));
 
+    if(mDragging)
+    {
+        // HORIZONTAL
+        const float dragX = -mDragX * mSpeedDragging * delta;
+
+        if(mDragX > 0)
+        {
+            cc.x += static_cast<int>(dragX + halfP);
+
+            if((cc.y < mMapL.y && IsPointInsideTL(cc)) || (cc.y >= mMapL.y && IsPointInsideBL(cc)))
+                mCamera->MoveX(dragX);
+        }
+        else if(mDragX < 0)
+        {
+            cc.x += static_cast<int>(dragX - halfP);
+
+            if((cc.y < mMapL.y && IsPointInsideTR(cc)) || (cc.y >= mMapL.y && IsPointInsideBR(cc)))
+                mCamera->MoveX(dragX);
+        }
+
+        // VERTICAL
+        const float dragY = -mDragY * mSpeedDragging * delta;
+
+        if(mDragY > 0)
+        {
+            cc.y += static_cast<int>(dragY + halfP);
+
+            if((cc.x < mMapT.x && IsPointInsideTL(cc)) || (cc.x >= mMapT.x && IsPointInsideTR(cc)))
+                mCamera->MoveY(dragY);
+        }
+        else if(mDragY < 0)
+        {
+            cc.y += static_cast<int>(dragY - halfP);
+
+            if((cc.x < mMapT.x && IsPointInsideBL(cc)) || (cc.x >= mMapT.x && IsPointInsideBR(cc)))
+                mCamera->MoveY(dragY);
+        }
+
+        // no scrolling while dragging
+        return ;
+    }
+
     // HORIZONTAL
-    const float movX = mDirX * mSpeed * delta;
+    const float movX = mDirX * mSpeedScrolling * delta;
 
     if(mDirX < 0)
     {
@@ -255,7 +320,7 @@ void CameraMapController::Update(float delta)
     }
 
     // VERTICAL
-    const float movY = mDirY * mSpeed * delta;
+    const float movY = mDirY * mSpeedScrolling * delta;
 
     if(mDirY < 0)
     {

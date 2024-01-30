@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(virtueror LANGUAGES CXX VERSION 0.1.2)
+project(virtueror LANGUAGES CXX VERSION 0.2.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -100,6 +100,8 @@ add_executable(
     src/GameObjects/SceneObject.cpp
     src/GameObjects/Structure.h
     src/GameObjects/Structure.cpp
+    src/GameObjects/Temple.h
+    src/GameObjects/Temple.cpp
     src/GameObjects/Trees.h
     src/GameObjects/Trees.cpp
     src/GameObjects/Unit.h
@@ -112,6 +114,8 @@ add_executable(
     src/Indicators/AttackRangeIndicator.cpp
     src/Indicators/ConquestIndicator.h
     src/Indicators/ConquestIndicator.cpp
+    src/Indicators/HealingRangeIndicator.h
+    src/Indicators/HealingRangeIndicator.cpp
     src/Indicators/MoveIndicator.h
     src/Indicators/MoveIndicator.cpp
     src/Indicators/StructureIndicator.h
@@ -119,16 +123,21 @@ add_executable(
     src/Indicators/WallIndicator.h
     src/Indicators/WallIndicator.cpp
     src/Particles/DataParticleDamage.h
+    src/Particles/DataParticleHealing.h
     src/Particles/DataParticleLootboxPrize.h
     src/Particles/DataParticleSingleLaser.h
     src/Particles/ParticleDamage.h
     src/Particles/ParticleDamage.cpp
+    src/Particles/ParticleHealing.h
+    src/Particles/ParticleHealing.cpp
     src/Particles/ParticleLootboxPrize.h
     src/Particles/ParticleLootboxPrize.cpp
     src/Particles/ParticleSingleLaser.h
     src/Particles/ParticleSingleLaser.cpp
     src/Particles/UpdaterDamage.h
     src/Particles/UpdaterDamage.cpp
+    src/Particles/UpdaterHealing.h
+    src/Particles/UpdaterHealing.cpp
     src/Particles/UpdaterLootboxPrize.h
     src/Particles/UpdaterLootboxPrize.cpp
     src/Particles/UpdaterSingleLaser.h
@@ -196,12 +205,16 @@ add_executable(
     src/Widgets/ButtonPanelTab.cpp
     src/Widgets/ButtonsPanel.h
     src/Widgets/ButtonsPanel.cpp
-    src/Widgets/CellProgressBar.h
-    src/Widgets/CellProgressBar.cpp
+    src/Widgets/CountdownLabel.h
+    src/Widgets/CountdownLabel.cpp
     src/Widgets/DialogChangelog.h
     src/Widgets/DialogChangelog.cpp
+    src/Widgets/DialogEndMission.h
+    src/Widgets/DialogEndMission.cpp
     src/Widgets/DialogExit.h
     src/Widgets/DialogExit.cpp
+    src/Widgets/DialogExploreTemple.h
+    src/Widgets/DialogExploreTemple.cpp
     src/Widgets/DialogNewElement.h
     src/Widgets/DialogNewElement.cpp
     src/Widgets/DialogSettings.h
@@ -212,6 +225,10 @@ add_executable(
     src/Widgets/GameButton.cpp
     src/Widgets/GameHUD.h
     src/Widgets/GameHUD.cpp
+    src/Widgets/GameMapProgressBar.h
+    src/Widgets/GameMapProgressBar.cpp
+    src/Widgets/GameProgressBar.h
+    src/Widgets/GameProgressBar.cpp
     src/Widgets/GameSimpleTooltip.h
     src/Widgets/GameSimpleTooltip.cpp
     src/Widgets/GameSliderH.h
@@ -222,10 +239,6 @@ add_executable(
     src/Widgets/MiniMap.cpp
     src/Widgets/ObjectActionButton.h
     src/Widgets/ObjectActionButton.cpp
-    src/Widgets/PanelGameOver.h
-    src/Widgets/PanelGameOver.cpp
-    src/Widgets/PanelGameWon.h
-    src/Widgets/PanelGameWon.cpp
     src/Widgets/PanelPlanetActionConquer.h
     src/Widgets/PanelPlanetActionConquer.cpp
     src/Widgets/PanelPlanetActionConquerAI.h

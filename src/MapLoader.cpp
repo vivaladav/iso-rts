@@ -8,7 +8,7 @@
 namespace game
 {
 
-const std::string MapLoader::MAP_VERSION("0.1.0");
+const std::string MapLoader::MAP_VERSION("0.1.1");
 
 void MapLoader::Clear()
 {
@@ -50,6 +50,19 @@ void MapLoader::ReadBaseData(std::fstream & fs)
     ss >> mVer;
     ss.clear();
 
+    // reading mission data
+    std::getline(fs, line);
+    ss.str(line);
+
+    unsigned int mission;
+    ss >> mission;
+    mMissionType = static_cast<MissionType>(mission);
+
+    if(MISSION_RESIST_TIME == mMissionType)
+        ss >> mMissionTime;
+
+    ss.clear();
+
     // reading map size
     std::getline(fs, line);
     ss.str(line);
@@ -75,7 +88,6 @@ void MapLoader::ReadBaseData(std::fstream & fs)
 
 void MapLoader::ReadObjectsData(std::fstream & fs)
 {
-
     std::string line;
     std::istringstream ss;
 

@@ -27,6 +27,7 @@
 #include "GameObjects/ResourceGenerator.h"
 #include "GameObjects/ResourceStorage.h"
 #include "GameObjects/SceneObject.h"
+#include "GameObjects/Temple.h"
 #include "GameObjects/Trees.h"
 #include "GameObjects/Unit.h"
 #include "GameObjects/Wall.h"
@@ -53,6 +54,16 @@ GameMap::GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap)
     , mIsoMap(isoMap)
 {
     SetSize(isoMap->GetNumRows(), isoMap->GetNumCols());
+
+    mEnemiesKilled[FACTION_1] = 0;
+    mEnemiesKilled[FACTION_2] = 0;
+    mEnemiesKilled[FACTION_3] = 0;
+    mEnemiesKilled[NO_FACTION] = 0;
+
+    mCasualties[FACTION_1] = 0;
+    mCasualties[FACTION_2] = 0;
+    mCasualties[FACTION_3] = 0;
+    mCasualties[NO_FACTION] = 0;
 }
 
 GameMap::~GameMap()
@@ -70,6 +81,12 @@ GameMap::~GameMap()
 
     for(ConquerPath * cp : mConquerPaths)
         delete cp;
+}
+
+bool GameMap::IsObjectVisibleToLocalPlayer(const GameObject * obj) const
+{
+    Player * p = mGame->GetLocalPlayer();
+    return p->IsObjectVisible(obj);
 }
 
 bool GameMap::IsCellVisibleToLocalPlayer(unsigned int ind) const
@@ -456,6 +473,8 @@ GameObject * GameMap::CreateObject(unsigned int layerId, GameObjectTypeId type,
         o2a.obj = new WallGate(variant);
     else if(GameObject::TYPE_LOOTBOX == type)
         o2a.obj = new LootBox;
+    else if(GameObject::TYPE_TEMPLE == type)
+        o2a.obj = new Temple;
     else if(GameObject::TYPE_BASE == type || GameObject::TYPE_BASE_SPOT == type)
     {
         if(GameObject::TYPE_BASE_SPOT == type)
@@ -802,7 +821,16 @@ void GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTyp
     GameObject * obj = CreateObject(OBJECTS2, st, 0, player->GetFaction(), cell.row, cell.col, true);
 
     // propagate effects of conquest
-    UpdateInfluencedCells(cell.row, cell.col);
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        const int ind0 = r * mCols;
+
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            const int ind = ind0 + c;
+            UpdateInfluencedCells(r, c);
+        }
+    }
 
     UpdateLinkedCells(player);
 
@@ -962,8 +990,8 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
     if(!gcell1.objTop->CanBeConquered())
         return false;
 
-    // player already owns the res gen
-    if(gcell1.owner == player)
+    // player already owns the structure
+    if(gcell1.objTop->GetFaction() == player->GetFaction())
         return false;
 
     // TEMP - no conquest while another is in progress
@@ -973,14 +1001,10 @@ bool GameMap::CanConquerStructure(Unit * unit, const Cell2D & end, Player * play
     return true;
 }
 
-void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::StartConquerStructure(const Cell2D & end, Player * player)
 {
     // take player's energy
     player->SumResource(Player::Stat::ENERGY, -COST_CONQUEST_RES_GEN);
-
-    // mark start as changing
-    const int ind0 = start.row * mCols + start.col;
-    mCells[ind0].changing = true;
 
     // mark object cells as changing
     const int ind1 = end.row * mCols + end.col;
@@ -998,12 +1022,8 @@ void GameMap::StartConquerStructure(const Cell2D & start, const Cell2D & end, Pl
     }
 }
 
-void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target)
+void GameMap::AbortConquerStructure(GameObject * target)
 {
-    // mark start as not changing
-    const int ind0 = unitCell.row * mCols + unitCell.col;
-    mCells[ind0].changing = false;
-
     // mark object cells as not changing
     for(int r = target->GetRow1(); r <= target->GetRow0(); ++r)
     {
@@ -1015,12 +1035,9 @@ void GameMap::AbortConquerStructure(const Cell2D & unitCell, GameObject * target
             mCells[ind].changing = false;
         }
     }
-
-    // stop progress bar
-    mScreenGame->CancelProgressBar(unitCell);
 }
 
-void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player)
+void GameMap::ConquerStructure(const Cell2D & end, Player * player)
 {
     const int ind = end.row * mCols + end.col;
     GameMapCell & gcell1 = mCells[ind];
@@ -1049,15 +1066,26 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     // update player
     player->SumCells(1);
 
-    // track ResourceGenerator, if any
-    ResourceGenerator * resGen = gcell1.GetResourceGenerator();
+    // update tracking of structures and resource generators
+    if(obj->IsStructure())
+    {
+        auto st = static_cast<Structure *>(obj);
 
-    if(resGen != nullptr)
-        player->AddResourceGenerator(resGen);
+        player->AddStructure(st);
 
-    // reset start changing flag
-    const int ind0 = start.row * mCols + start.col;
-    mCells[ind0].changing = false;
+        if(prevOwner)
+            prevOwner->RemoveStructure(st);
+
+        if(obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
+        {
+            auto rg = static_cast<ResourceGenerator *>(obj);
+
+            player->AddResourceGenerator(rg);
+
+            if(prevOwner)
+                prevOwner->RemoveResourceGenerator(rg);
+        }
+    }
 
     // update map
     UpdateLinkedCells(player);
@@ -1069,6 +1097,198 @@ void GameMap::ConquerStructure(const Cell2D & start, const Cell2D & end, Player 
     AddPlayerObjVisibility(obj, player);
 
     ApplyLocalVisibility();
+}
+
+
+void GameMap::HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple)
+{
+    const StatValue & money = p->GetStat(Player::Stat::MONEY);
+    const StatValue & energy = p->GetStat(Player::Stat::ENERGY);
+    const StatValue & material = p->GetStat(Player::Stat::MATERIAL);
+    const StatValue & blobs = p->GetStat(Player::Stat::BLOBS);
+    const StatValue & diamonds = p->GetStat(Player::Stat::DIAMONDS);
+    const PlayerFaction faction = p->GetFaction();
+
+    // -- REWARDS --
+    if(outcome >= Temple::FIRST_EXP_REW && outcome <= Temple::LAST_EXP_REW)
+    {
+        const Cell2D cell0(temple->GetRow0(), temple->GetCol0());
+        ConquerStructure(cell0, p);
+
+        switch(outcome)
+        {
+            // INCREASE EXISTING RESOURCES
+            case Temple::EXP_REW_MULT10_MONEY:
+            {
+                const int mult = 10;
+                p->SetResource(Player::Stat::MONEY, money.GetIntValue() * mult);
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RES_ENE_MAT:
+            {
+                p->SetResource(Player::Stat::ENERGY, energy.GetIntMax());
+                p->SetResource(Player::Stat::MATERIAL, material.GetIntMax());
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RES_BLO_DIA:
+            {
+                p->SetResource(Player::Stat::BLOBS, blobs.GetIntMax());
+                p->SetResource(Player::Stat::DIAMONDS, diamonds.GetIntMax());
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_RESOURCES:
+            {
+                p->SetResource(Player::Stat::ENERGY, energy.GetIntMax());
+                p->SetResource(Player::Stat::MATERIAL, material.GetIntMax());
+                p->SetResource(Player::Stat::BLOBS, blobs.GetIntMax());
+                p->SetResource(Player::Stat::DIAMONDS, diamonds.GetIntMax());
+            }
+            break;
+
+            // INCREASE PRODUCTION
+            case Temple::EXP_REW_INC_ENERGY_PRODUCTION:
+            {
+                const float mult = 2.f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            case Temple::EXP_REW_INC_MATERIAL_PRODUCTION:
+            {
+                const float mult = 2.f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            // MAXIMIZE COLLECTIBLES
+            case Temple::EXP_REW_MAX_BLOBS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_BLOBS)
+                        static_cast<Blobs *>(o)->MaximizeUnits();
+                }
+            }
+            break;
+
+            case Temple::EXP_REW_MAX_DIAMONDS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_DIAMONDS)
+                        static_cast<Diamonds *>(o)->MaximizeUnits();
+                }
+            }
+            break;
+
+            // unexpected
+            default:
+            break;
+        }
+    }
+    // -- PUNISHMENTS --
+    else
+    {
+        switch(outcome)
+        {
+            // DECREASE EXISTING RESOURCES
+            case Temple::EXP_PUN_ZERO_MONEY:
+            {
+                p->SetResource(Player::Stat::MONEY, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RES_ENE_MAT:
+            {
+                p->SetResource(Player::Stat::ENERGY, 0);
+                p->SetResource(Player::Stat::MATERIAL, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RES_BLO_DIA:
+            {
+                p->SetResource(Player::Stat::BLOBS, 0);
+                p->SetResource(Player::Stat::DIAMONDS, 0);
+            }
+            break;
+
+            case Temple::EXP_PUN_ZERO_RESOURCES:
+            {
+                p->SetResource(Player::Stat::ENERGY, 0);
+                p->SetResource(Player::Stat::MATERIAL, 0);
+                p->SetResource(Player::Stat::BLOBS, 0);
+                p->SetResource(Player::Stat::DIAMONDS, 0);
+            }
+            break;
+
+                // DECREASE PRODUCTION
+            case Temple::EXP_PUN_DEC_ENERGY_PRODUCTION:
+            {
+                const float mult = 0.5f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_ENERGY)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+            case Temple::EXP_PUN_DEC_MATERIAL_PRODUCTION:
+            {
+                const float mult = 0.5f;
+
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetFaction() == faction &&
+                       o->GetObjectType() == GameObject::TYPE_RES_GEN_MATERIAL)
+                        static_cast<ResourceGenerator *>(o)->ScaleOutput(mult);
+                }
+            }
+            break;
+
+                // MINIMIZE COLLECTIBLES
+            case Temple::EXP_PUN_MIN_BLOBS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_BLOBS)
+                        static_cast<Blobs *>(o)->MinimizeUnits();
+                }
+            }
+            break;
+
+            case Temple::EXP_PUN_MIN_DIAMONDS:
+            {
+                for(GameObject * o : mObjects)
+                {
+                    if(o->GetObjectType() == GameObject::TYPE_DIAMONDS)
+                        static_cast<Diamonds *>(o)->MinimizeUnits();
+                }
+            }
+            break;
+
+            // unexpected
+            default:
+            break;
+        }
+    }
 }
 
 bool GameMap::CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player)
@@ -1312,9 +1532,6 @@ void GameMap::StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2
 
     // mark cell as changing
     gcell.changing = true;
-
-    // mark generator as busy
-    gen->SetBusy(true);
 }
 
 void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player)
@@ -1348,10 +1565,6 @@ void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & d
     mObjects.push_back(unit);
     mObjectsSet.insert(unit);
 
-    // update generator, if any
-    if(gen)
-        gen->SetBusy(false);
-
     // update player
     player->AddUnit(unit);
     player->SumTotalUnitsLevel(unit->GetUnitLevel() + 1);
@@ -1360,61 +1573,6 @@ void GameMap::CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & d
     AddPlayerObjVisibility(unit, player);
 
     ApplyLocalVisibility();
-}
-
-bool GameMap::CanUpgradeUnit(GameObject * obj, Player * player)
-{
-    // this should never happen
-    if(nullptr == obj)
-        return false;
-
-    // object is not an unit
-    if(obj->GetObjectCategory() != GameObject::CAT_UNIT)
-        return false;
-
-    auto unit = static_cast<Unit *>(obj);
-
-    // check if reached max level for units
-    const int unitLevel = unit->GetUnitLevel();
-
-    if(MAX_UNITS_LEVEL == unitLevel)
-        return false;
-
-    // check if player has enough energy - LAST CHECK
-    const int cost = COST_UNIT_UPGRADE[unitLevel];
-    return player->HasEnough(Player::Stat::ENERGY, cost);
-}
-
-void GameMap::StartUpgradeUnit(GameObject * obj, Player * player)
-{
-    const int ind = obj->GetRow0() * mCols + obj->GetCol0();
-    GameMapCell & gcell = mCells[ind];
-
-    // make player pay
-    const Unit * unit = static_cast<Unit *>(obj);
-    const int unitLevel = unit->GetUnitLevel();
-    const int cost = -COST_UNIT_UPGRADE[unitLevel];
-    player->SumResource(Player::Stat::ENERGY, cost);
-
-    // mark cell as changing
-    gcell.changing = true;
-}
-
-void GameMap::UpgradeUnit(const Cell2D & cell)
-{
-    const unsigned int r = static_cast<unsigned int>(cell.row);
-    const unsigned int c = static_cast<unsigned int>(cell.col);
-    const int ind = r * mCols + c;
-    GameMapCell & gcell = mCells[ind];
-
-    Unit * unit = gcell.GetUnit();
-    unit->IncreaseUnitLevel();
-
-    // update player
-    gcell.owner->SumTotalUnitsLevel(1);
-
-    // reset cell's changing flag
-    gcell.changing = false;
 }
 
 bool GameMap::CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const
@@ -1706,33 +1864,6 @@ int GameMap::ApproxDistance(GameObject * obj1, GameObject * obj2) const
            std::abs(obj1->GetCol0() - obj2->GetCol0());
 }
 
-void GameMap::CheckGameEnd()
-{
-    const int numPlayers = mGame->GetNumPlayers();
-    int defeated = 0;
-
-    // check for game over and defeated opponents
-    for(int i = 0; i < numPlayers; ++i)
-    {
-        const Player * p = mGame->GetPlayerByIndex(i);
-
-        if(p->GetNumCells() == 0)
-        {
-            if(p->IsLocal())
-            {
-                mScreenGame->GameOver();
-                return;
-            }
-            else
-                ++defeated;
-        }
-    }
-
-    // check for victory - assuming players is always > 1
-    if(defeated == (numPlayers - 1))
-        mScreenGame->GameWon();
-}
-
 void GameMap::Update(float delta)
 {
     // -- game objects --
@@ -1802,14 +1933,6 @@ void GameMap::ClearCell(GameMapCell & gcell)
     }
 
     gcell.currType = EMPTY;
-}
-
-void GameMap::StopCellChange(GameMapCell & gcell)
-{
-    gcell.changing = false;
-
-    const Cell2D cell(gcell.row, gcell.col);
-    mScreenGame->CancelProgressBar(cell);
 }
 
 int GameMap::DefineCellType(unsigned int ind, const GameMapCell & cell)
@@ -2038,11 +2161,7 @@ void GameMap::UpdateLinkedCells(Player * player)
 void GameMap::UpdateInfluencedCells(int row, int col)
 {
     const unsigned int ind0 = row * mCols + col;
-    GameMapCell & gcell = mCells[ind0];
-
-    // not linked cells have no influence
-    if(!gcell.linked)
-        return ;
+    const GameMapCell & gcell = mCells[ind0];
 
     const PlayerFaction faction = gcell.owner->GetFaction();
 
@@ -2092,7 +2211,8 @@ void GameMap::UpdateInfluencedCells(int row, int col)
 
 void GameMap::UpdateVisibility(Player * player, bool init)
 {
-    if(player != mGame->GetLocalPlayer())
+    // no visibility for AI
+    if(player->IsAI())
         return ;
 
     // update cells
@@ -2211,7 +2331,7 @@ void GameMap::AddObjectToMap(const ObjectToAdd & o2a)
         // register objects to Player
         if(o2a.obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
             o2a.owner->AddResourceGenerator(static_cast<ResourceGenerator *>(o2a.obj));
-        else if(o2a.obj->IsStructure())
+        if(o2a.obj->IsStructure())
             o2a.owner->AddStructure(static_cast<Structure *>(o2a.obj));
 
         // update control points
@@ -2235,22 +2355,36 @@ void GameMap::AddObjectToMap(const ObjectToAdd & o2a)
 
 void GameMap::DestroyObject(GameObject * obj)
 {
-    Player * localPlayer = mGame->GetLocalPlayer();
     Player * owner = mGame->GetPlayerByFaction(obj->GetFaction());
-
-    // update visibility map
-    // NOTE only local player for now
-    if(owner == localPlayer)
-        DelPlayerObjVisibility(obj, localPlayer);
 
     if(owner != nullptr)
     {
+        Player * localPlayer = mGame->GetLocalPlayer();
+
+        // owner is local Player
+        if(owner == localPlayer)
+        {
+            // clear selection if object is selected
+            if(owner->GetSelectedObject() == obj)
+                mScreenGame->ClearSelection(owner);
+
+            // update visibility map
+            // NOTE only local player for now
+            DelPlayerObjVisibility(obj, localPlayer);
+        }
+
         // remove unit from player
         if(obj->GetObjectCategory() == GameObject::CAT_UNIT)
             owner->RemoveUnit(static_cast<Unit *>(obj));
         // remove structure
         else if(obj->IsStructure())
+        {
             owner->RemoveStructure(static_cast<Structure *>(obj));
+
+            // remove resource generator
+            if(obj->GetObjectCategory() == GameObject::CAT_RES_GENERATOR)
+                owner->RemoveResourceGenerator(static_cast<ResourceGenerator *>(obj));
+        }
     }
 
     // generic cells update

@@ -2,17 +2,17 @@
 
 #include "Cell2D.h"
 
-#include <functional>
 #include <vector>
 
 namespace game
 {
 
-class WallIndicator;
 class GameMap;
+class GameMapProgressBar;
 class IsoMap;
 class ScreenGame;
 class Unit;
+class WallIndicator;
 
 class WallBuildPath
 {
@@ -52,13 +52,7 @@ public:
     void Abort();
     void InstantAbort();
 
-    void SetOnCompleted(const std::function<void()> & f);
-    void SetOnFailed(const std::function<void()> & f);
-    void SetOnAborted(const std::function<void()> & f);
-
     void Update(float delta);
-
-    void Finish();
 
     void SetIndicatorsType(const std::vector<Cell2D> & cells,
                            const std::vector<WallIndicator *> & indicators);
@@ -74,15 +68,14 @@ private:
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;
 
     std::vector<WallIndicator *> mIndicators;
 
-    std::function<void()> mOnCompleted;
-    std::function<void()> mOnFailed;
-    std::function<void()> mOnAborted;
+    GameMapProgressBar * mProgressBar = nullptr;
 
     Unit * mUnit = nullptr;
 
@@ -113,10 +106,7 @@ private:
 };
 
 inline WallBuildPath::WallBuildPath(Unit *unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{})
-    , mOnFailed([]{})
-    , mOnAborted([]{})
-    , mUnit(unit)
+    : mUnit(unit)
     , mIsoMap(im)
     , mGameMap(gm)
     , mScreen(sg)
@@ -139,9 +129,5 @@ inline void WallBuildPath::SetPathCells(const std::vector<unsigned int> & cells)
 
 inline unsigned int WallBuildPath::GetWallLevel() const { return mLevel; }
 inline void WallBuildPath::SetWallLevel(unsigned int level) { mLevel = level; }
-
-inline void WallBuildPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
-inline void WallBuildPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
-inline void WallBuildPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 } // namespace game

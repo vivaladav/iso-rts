@@ -10,7 +10,6 @@
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Texture.h>
 
-#include <iostream>
 #include <cmath>
 
 namespace game
@@ -223,7 +222,7 @@ void ControlMap::UpdateVisualAreas()
     }
 }
 
-int ControlMap::GetPercentageControlledByFaction(PlayerFaction f)
+int ControlMap::GetPercentageControlledByFaction(PlayerFaction f) const
 {
     const int size = mRows * mCols;
 

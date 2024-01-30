@@ -10,6 +10,13 @@ const char * FACTIONS_NAME[NUM_FACTIONS] =
     "Alphen"
 };
 
+const char * MISSIONS_TITLE[NUM_MISSION_TYPES] =
+{
+    "DESTROY ENEMY BASE",
+    "DESTROY ALL ENEMIES",
+    "WAIT AND HOLD"
+};
+
 const char * PLANETS_NAME[NUM_PLANETS] =
 {
     "Osiris V"

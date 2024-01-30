@@ -7,6 +7,7 @@
 namespace game
 {
 
+enum MissionType : unsigned int;
 enum PlayerFaction : unsigned int;
 enum TerritoryStatus : unsigned int;
 
@@ -17,7 +18,7 @@ public:
 
     bool AddMap(unsigned int planetId, const std::string & file, int energy,
                 int material, int diamonds, int blobs, int size, int value,
-                PlayerFaction occupier, TerritoryStatus status);
+                PlayerFaction occupier, TerritoryStatus status, MissionType mission);
     bool AddUnavailableMap(unsigned int planetId);
 
     int GetNumMaps(unsigned int planetId) const;
@@ -31,18 +32,24 @@ public:
     int GetMapValue(unsigned int planetId, unsigned int index) const;
     PlayerFaction GetMapOccupier(unsigned int planetId, unsigned int index) const;
     TerritoryStatus GetMapStatus(unsigned int planetId, unsigned int index) const;
+    MissionType GetMapMission(unsigned int planetId, unsigned int index) const;
 
     void SetMapStatus(unsigned int planetId, unsigned int index, TerritoryStatus status);
     void SetMapOccupier(unsigned int planetId, unsigned int index, PlayerFaction occupier);
+    void SetMapMissionCompleted(unsigned int planetId, unsigned int index);
 
     void ClearData();
 
 private:
+    void ExpandTerritoryReach(unsigned int planetId, int index);
+    void ConvertTerritoryUnreachableToUnexplored(unsigned int planetId, int index);
+
+private:
     struct MapData
     {
-        MapData(const std::string & file, int energy,
-                int material, int diamonds, int blobs, int size, int value,
-                PlayerFaction occupier, TerritoryStatus status);
+        MapData(const std::string & file, int energy, int material, int diamonds,
+                int blobs, int size, int value, PlayerFaction occupier,
+                TerritoryStatus status, MissionType mission);
 
         std::string mFile;
         int mEnergy;
@@ -53,6 +60,7 @@ private:
         int mValue;
         PlayerFaction mOccupier;
         TerritoryStatus mStatus;
+        MissionType mMission;
     };
 
     std::unordered_map<unsigned int, std::vector<MapData>> mData;

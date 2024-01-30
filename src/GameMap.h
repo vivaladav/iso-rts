@@ -6,6 +6,7 @@
 #include <sgl/ai/IPathMap.h>
 
 #include <functional>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -21,6 +22,7 @@ class IsoMap;
 class ObjectPath;
 class Player;
 class ScreenGame;
+class Temple;
 class Unit;
 class WallBuildPath;
 
@@ -38,11 +40,14 @@ public:
     GameMap(Game * game, ScreenGame * sg, IsoMap * isoMap);
     ~GameMap();
 
+    const ControlMap * GetControlMap() const;
+
     bool HasObject(unsigned int ind) const;
     bool HasObject(unsigned int r, unsigned int c) const;
     bool HasObject(GameObject * obj) const;
+    bool IsObjectVisibleToLocalPlayer(const GameObject *obj) const;
 
-    const std::vector<GameMapCell>  & GetCells() const;
+    const std::vector<GameMapCell> & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
 
     bool IsCellVisibleToLocalPlayer(unsigned int ind) const;
@@ -90,6 +95,12 @@ public:
 
     bool RemoveAndDestroyObject(GameObject * obj);
 
+    // player stats
+    void RegisterEnemyKill(PlayerFaction killer);
+    void RegisterCasualty(PlayerFaction killed);
+    unsigned int GetEnemiesKilled(PlayerFaction killer) const;
+    unsigned int GetCasualties(PlayerFaction faction) const;
+
     bool AreObjectsAdjacent(const GameObject * obj1, const GameObject * obj2) const;
     bool AreCellsAdjacent(const Cell2D & cell1, const Cell2D & cell2) const;
     bool AreObjectsOrthoAdjacent(const GameObject * obj1, const GameObject * obj2) const;
@@ -116,20 +127,17 @@ public:
 
     // structure conquest
     bool CanConquerStructure(Unit * unit, const Cell2D & end, Player * player);
-    void StartConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
-    void AbortConquerStructure(const Cell2D & unitCell, GameObject * target);
-    void ConquerStructure(const Cell2D & start, const Cell2D & end, Player * player);
+    void StartConquerStructure(const Cell2D & end, Player * player);
+    void AbortConquerStructure(GameObject * target);
+    void ConquerStructure(const Cell2D & end, Player * player);
+
+    void HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple);
 
     // unit create
     bool CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * player);
     Cell2D GetNewUnitDestination(GameObject * gen);
     void StartCreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
     void CreateUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest, Player * player);
-
-    // unit upgrade
-    bool CanUpgradeUnit(GameObject * obj, Player * player);
-    void StartUpgradeUnit(GameObject * obj, Player * player);
-    void UpgradeUnit(const Cell2D & cell);
 
     // move units
     bool CanUnitMove(const Cell2D & start, const Cell2D & end, Player * player) const;
@@ -156,15 +164,10 @@ public:
     int ApproxDistance(const Cell2D & c1, const Cell2D & c2) const;
     int ApproxDistance(GameObject * obj1, GameObject * obj2) const;
 
-    void CheckGameEnd();
-
     void Update(float delta);
 
 private:
     void ClearCell(GameMapCell & gcell);
-
-    void StopCellChange(GameMapCell & gcell);
-
 
     int DefineCellType(unsigned int ind, const GameMapCell & cell);
 
@@ -244,9 +247,15 @@ private:
 
     unsigned int mRows = 0;
     unsigned int mCols = 0;
+
+    // Player stats
+    std::unordered_map<PlayerFaction, unsigned int> mEnemiesKilled;
+    std::unordered_map<PlayerFaction, unsigned int> mCasualties;
 };
 
 // ==================== INLINE METHODS ====================
+
+inline const ControlMap * GameMap::GetControlMap() const { return mControlMap; }
 
 inline bool GameMap::HasObject(unsigned int ind) const
 {
@@ -343,6 +352,11 @@ inline void GameMap::SetCellChanging(unsigned int r, unsigned int c, bool changi
     if(r < mRows && c < mCols)
         mCells[r * mCols + c].changing = changing;
 }
+
+inline void GameMap::RegisterEnemyKill(PlayerFaction killer) { ++mEnemiesKilled[killer]; }
+inline void GameMap::RegisterCasualty(PlayerFaction killed) { ++mCasualties[killed]; }
+inline unsigned int GameMap::GetEnemiesKilled(PlayerFaction killer) const { return mEnemiesKilled.at(killer); }
+inline unsigned int GameMap::GetCasualties(PlayerFaction faction) const { return mCasualties.at(faction); }
 
 /**
  * @brief Gets a GameMapCell object from the map. No boundaries check is done.

@@ -10,7 +10,6 @@
 #include "GameObjects/Structure.h"
 #include "GameObjects/Unit.h"
 
-#include <cassert>
 #include <iostream>
 
 namespace game
@@ -44,10 +43,10 @@ Player::Player(const char * name, int pid)
     mStats[Stat::MONEY].SetMax(99999999);
 
     // init vectors of resource generators
-    mResGenerators.insert({ RES_ENERGY, {} });
-    mResGenerators.insert({ RES_MATERIAL1, {} });
-    mResGenerators.insert({ RES_DIAMONDS, {} });
-    mResGenerators.insert({ RES_BLOBS, {} });
+    mResGeneratorsMap.insert({ RES_ENERGY, {} });
+    mResGeneratorsMap.insert({ RES_MATERIAL1, {} });
+    mResGeneratorsMap.insert({ RES_DIAMONDS, {} });
+    mResGeneratorsMap.insert({ RES_BLOBS, {} });
 }
 
 Player::~Player()
@@ -122,6 +121,17 @@ Structure * Player::GetStructure(unsigned int index)
         return nullptr;
 }
 
+bool Player::HasStructure(GameObjectTypeId type) const
+{
+    for(Structure * s : mStructures)
+    {
+        if(s->GetObjectType() == type)
+            return true;
+    }
+
+    return false;
+}
+
 std::vector<Structure *> Player::GetStructuresByType(GameObjectTypeId type) const
 {
     std::vector<Structure *> structures;
@@ -141,6 +151,32 @@ void Player::InitVisibility(int rows, int cols)
 
     mVisMap.resize(size);
     mVisMap.assign(size, 0);
+
+    mVisMapRows = rows;
+    mVisMapCols = cols;
+}
+
+bool Player::IsObjectVisible(const GameObject * obj) const
+{
+    const unsigned int tlR = obj->GetRow1();
+    const unsigned int tlC = obj->GetCol1();
+    const unsigned int brR = obj->GetRow0();
+    const unsigned int brC = obj->GetCol0();
+
+    for(unsigned int r = tlR; r <= brR; ++r)
+    {
+        const unsigned int ind0 = r * mVisMapCols;
+
+        for(unsigned int c = tlC; r <= brC; ++c)
+        {
+            const unsigned int ind = ind0 + c;
+
+            if(mVisMap[ind])
+                return true;
+        }
+    }
+
+    return false;
 }
 
 void Player::AddVisibilityToAll()
@@ -347,7 +383,7 @@ void Player::ClearSelectedObject()
     mSelObj->SetSelected(false);
 
     if(mSelObj->GetObjectCategory() == GameObject::CAT_UNIT)
-        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::IDLE);
+        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionType::IDLE);
 
     mSelObj = nullptr;
 }
@@ -359,9 +395,8 @@ void Player::SetSelectedObject(GameObject * obj)
 
     mSelObj = obj;
 
-    // reset active action to move when unit is selected
-    if(mSelObj->GetObjectCategory() == GameObject::CAT_UNIT)
-        static_cast<Unit *>(mSelObj)->SetActiveAction(GameObjectActionId::MOVE);
+    // reset active action
+    mSelObj->SetActiveActionToDefault();
 
     mSelObj->SetSelected(true);
 }
@@ -370,25 +405,41 @@ void Player::AddResourceGenerator(ResourceGenerator * gen)
 {
     const ResourceType type = gen->GetResourceType();
 
-    mResGenerators[type].push_back(gen);
+    mResGeneratorsMap[type].push_back(gen);
+    mResGenerators.push_back(gen);
 }
 
 void Player::RemoveResourceGenerator(ResourceGenerator * gen)
 {
     const ResourceType type = gen->GetResourceType();
-    std::vector<ResourceGenerator *> & generators = mResGenerators[type];
+    std::vector<ResourceGenerator *> & generators = mResGeneratorsMap[type];
 
-    auto it = generators.begin();
+    // remove generator from map
+    auto itM = generators.begin();
 
-    while(it != generators.end())
+    while(itM != generators.end())
     {
-        if(*it == gen)
+        if(*itM == gen)
         {
-            generators.erase(it);
-            return ;
+            generators.erase(itM);
+            break;
         }
         else
-            ++it;
+            ++itM;
+    }
+
+    // remove generator from list
+    auto itL = mResGenerators.begin();
+
+    while(itL != mResGenerators.end())
+    {
+        if(*itL == gen)
+        {
+            mResGenerators.erase(itL);
+            break;
+        }
+        else
+            ++itL;
     }
 }
 
@@ -396,10 +447,10 @@ int Player::GetResourceProduction(ResourceType type) const
 {
     int res = 0;
 
-    auto it = mResGenerators.find(type);
+    auto it = mResGeneratorsMap.find(type);
 
     // can't find resource type
-    if(mResGenerators.end() == it)
+    if(mResGeneratorsMap.end() == it)
         return 0;
 
     const std::vector<ResourceGenerator *> & generators = it->second;

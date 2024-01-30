@@ -600,7 +600,7 @@ private:
 };
 
 // ===== DIALOG NEW ELEMENT =====
-DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * player,
+DialogNewElement::DialogNewElement(ElemType type, Player * player,
                                    const ObjectsDataRegistry * dataReg)
     : mPlayer(player)
     , mDataReg(dataReg)
@@ -655,8 +655,14 @@ DialogNewElement::DialogNewElement(ElemType type, const char * title, Player * p
     mBtnClose->SetX(GetWidth() - mBtnClose->GetWidth());
 
     // TITLE
+    const char * TITLES[NUM_ELEMENT_TYPES] =
+    {
+        "CREATE NEW UNIT",
+        "CREATE NEW STRUCTURE"
+    };
+
     auto font = fm->GetFont("Lato-Regular.ttf", 28, sgl::graphic::Font::NORMAL);
-    mTitle = new sgui::Label(title, font, this);
+    mTitle = new sgui::Label(TITLES[type], font, this);
     mTitle->SetColor(0xf1f2f4ff);
     mTitle->SetPosition(marginL, marginT);
 

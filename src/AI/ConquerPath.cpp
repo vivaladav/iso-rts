@@ -11,6 +11,8 @@
 #include "GameObjects/Unit.h"
 #include "Indicators/ConquestIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/GameHUD.h"
+#include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
 #include <unordered_set>
@@ -19,10 +21,7 @@ namespace game
 {
 
 ConquerPath::ConquerPath(Unit * unit, IsoMap * im, GameMap * gm, ScreenGame * sg)
-    : mOnCompleted([]{})
-    , mOnFailed([]{})
-    , mOnAborted([]{})
-    , mUnit(unit)
+    : mUnit(unit)
     , mIsoMap(im)
     , mGameMap(gm)
     , mScreen(sg)
@@ -68,11 +67,14 @@ void ConquerPath::InstantAbort()
     const unsigned int nextInd = mCells[mNextCell];
     const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
     const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-    const Cell2D cell(nextRow, nextCol);
-
-    mScreen->CancelProgressBar(cell);
 
     mGameMap->SetCellChanging(nextRow, nextCol, false);
+
+    if(mProgressBar)
+    {
+        mProgressBar->DeleteLater();
+        mProgressBar = nullptr;
+    }
 
     // clear indicators
     IsoLayer * layerOverlay = mIsoMap->GetLayer(MapLayers::CELL_OVERLAYS1);
@@ -80,24 +82,12 @@ void ConquerPath::InstantAbort()
 
     // set new state
     mState = ABORTED;
-
-    mOnAborted();
 }
 
 void ConquerPath::Update(float delta)
 {
-    if(MOVING == mState)
+    if(MOVING == mState || ABORTING == mState)
         UpdateMove(delta);
-}
-
-void ConquerPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
-
-    mOnCompleted();
 }
 
 void ConquerPath::CreateIndicators()
@@ -165,9 +155,13 @@ void ConquerPath::InitNextConquest()
     // TODO get conquer time from unit
     constexpr float TIME_CONQ_CELL = 1.f;
 
-    mScreen->CreateProgressBar(nextCell, TIME_CONQ_CELL, player,
-                               [this, nextCell, player, layerOverlay]
+    GameHUD * HUD = mScreen->GetHUD();
+    mProgressBar = HUD->CreateProgressBarInCell(nextCell, TIME_CONQ_CELL, player->GetFaction());
+
+    mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
+        mProgressBar = nullptr;
+
         mGameMap->ConquerCell(nextCell, player);
 
         mUnit->ConsumeEnergy(CONQUER_CELL);
@@ -334,9 +328,15 @@ void ConquerPath::Fail()
     layerOverlay->ClearObjects();
 
     // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
+    mScreen->SetObjectActionFailed(mUnit);
+}
 
-    mOnFailed();
+void ConquerPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 } // namespace game

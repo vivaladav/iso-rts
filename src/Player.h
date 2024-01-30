@@ -55,12 +55,21 @@ public:
     void AddStructure(Structure * s);
     void RemoveStructure(Structure * s);
     Structure * GetStructure(unsigned int index);
+    bool HasStructure(GameObjectTypeId type) const;
     std::vector<Structure *> GetStructuresByType(GameObjectTypeId type) const;
     const std::vector<Structure *> & GetStructures() const;
+
+    const std::vector<ResourceGenerator *> & GetResourceGenerators() const;
+
+    void ClearMissionObjects();
+
+    unsigned int GetNumObjects() const;
+    bool HasObjects() const;
 
     // visibility map
     void InitVisibility(int rows, int cols);
     bool IsCellVisible(unsigned int ind) const;
+    bool IsObjectVisible(const GameObject *obj) const;
     void AddVisibility(unsigned int ind);
     void RemVisibility(unsigned int ind);
     void AddVisibilityToAll();
@@ -126,13 +135,15 @@ public:
     void SetAI(PlayerAI * ai);
 
     bool IsLocal() const;
-    void SetLocal(bool val);
 
 private:
     std::vector<Unit *> mUnits;
     std::vector<Structure *> mStructures;
+    std::vector<ResourceGenerator *> mResGenerators;
 
     std::vector<int> mVisMap;
+    unsigned int mVisMapRows = 0;
+    unsigned int mVisMapCols = 0;
 
     std::vector<StatValue> mStats;
     StatValue mDummyStat;
@@ -146,7 +157,7 @@ private:
     std::function<void()> mOnNumUnitsChanged;
     std::function<void()> mOnResourcesChanged;
 
-    std::unordered_map<ResourceType, std::vector<ResourceGenerator *>> mResGenerators;
+    std::unordered_map<ResourceType, std::vector<ResourceGenerator *>> mResGeneratorsMap;
 
     PlayerAI * mAI = nullptr;
 
@@ -163,8 +174,6 @@ private:
     int mNumUnits = 0;
     int mTotUnitsLevel = 0;
     unsigned int mMaxUnits = 0;
-
-    bool mLocal = false;
 };
 
 inline PlayerFaction Player::GetFaction() const { return mFaction; }
@@ -177,6 +186,21 @@ inline unsigned int Player::GetNumUnits() const { return mUnits.size(); }
 inline unsigned int Player::GetNumStructures() const { return mStructures.size(); }
 
 inline const std::vector<Structure *> & Player::GetStructures() const { return mStructures; }
+inline const std::vector<ResourceGenerator *> & Player::GetResourceGenerators() const { return mResGenerators; }
+
+inline void Player::ClearMissionObjects()
+{
+    mUnits.clear();
+    mStructures.clear();
+    mResGenerators.clear();
+}
+
+inline unsigned int Player::GetNumObjects() const
+{
+    return GetNumStructures() + GetNumUnits();
+}
+
+inline bool Player::HasObjects() const { return GetNumObjects() > 0; }
 
 inline bool Player::IsCellVisible(unsigned int ind) const
 {
@@ -250,7 +274,6 @@ inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() { return mAI; }
 inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
 
-inline bool Player::IsLocal() const { return mLocal; }
-inline void Player::SetLocal(bool val) { mLocal = val; }
+inline bool Player::IsLocal() const { return nullptr == mAI; }
 
 } // namespace game

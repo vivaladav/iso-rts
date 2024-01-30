@@ -13,7 +13,7 @@ namespace sgl
 namespace game
 {
 
-class CellProgressBar;
+class GameProgressBar;
 
 class ScreenTest : public Screen
 {
@@ -42,9 +42,9 @@ private:
     sgl::core::Timer * mTimer1 = nullptr;
     sgl::core::Timer * mTimer2 = nullptr;
 
-    CellProgressBar * mPb0 = nullptr;
-    CellProgressBar * mPb1 = nullptr;
-    CellProgressBar * mPb2 = nullptr;
+    GameProgressBar * mPb0 = nullptr;
+    GameProgressBar * mPb1 = nullptr;
+    GameProgressBar * mPb2 = nullptr;
     float mTimerPb = 0.f;
 };
 

@@ -13,6 +13,7 @@ enum AIActionType : unsigned int
     AIA_NOP,
 
     AIA_NEW_UNIT,
+    AIA_UNIT_ATTACK_ENEMY_UNIT,
     AIA_UNIT_CONNECT_STRUCTURE,
     AIA_UNIT_CONQUER_GEN,
 

@@ -10,7 +10,7 @@
 namespace game
 {
 
-enum GameObjectActionId : unsigned int
+enum GameObjectActionType : unsigned int
 {
     IDLE,
 
@@ -24,6 +24,7 @@ enum GameObjectActionId : unsigned int
     ATTACK,
     BUILD_STRUCTURE,
     BUILD_WALL,
+    HEAL,
 
     // WALL GATE
     TOGGLE_GATE,
@@ -64,7 +65,9 @@ public:
     static const GameObjectTypeId TYPE_RES_STORAGE_ENERGY;
     static const GameObjectTypeId TYPE_RES_STORAGE_MATERIAL;
     static const GameObjectTypeId TYPE_ROCKS;
+    static const GameObjectTypeId TYPE_TEMPLE;
     static const GameObjectTypeId TYPE_TREES;
+    static const GameObjectTypeId TYPE_UNIT_MEDIC1;
     static const GameObjectTypeId TYPE_UNIT_SCOUT1;
     static const GameObjectTypeId TYPE_UNIT_SOLDIER1;
     static const GameObjectTypeId TYPE_UNIT_SOLDIER2;
@@ -112,7 +115,6 @@ public:
     void SetSelected(bool val);
 
     bool IsBusy() const;
-    void SetBusy(bool val);
 
     bool IsVisited() const;
     void SetVisited();
@@ -165,13 +167,13 @@ public:
 
     float GetSpeed() const;
 
-    void Hit(float damage);
+    void Hit(float damage, PlayerFaction attacker);
 
-    GameObjectActionId GetActiveAction() const;
-    void SetActiveAction(GameObjectActionId action);
+    GameObjectActionType GetActiveAction() const;
+    void SetActiveAction(GameObjectActionType action);
     virtual void SetActiveActionToDefault();
-    GameObjectActionId GetCurrentAction() const;
-    void SetCurrentAction(GameObjectActionId action);
+    GameObjectActionType GetCurrentAction() const;
+    void SetCurrentAction(GameObjectActionType action);
 
     virtual void Update(float delta);
 
@@ -222,7 +224,9 @@ private:
     static const std::string TYPE_STR_RES_STORAGE_ENERGY;
     static const std::string TYPE_STR_RES_STORAGE_MATERIAL;
     static const std::string TYPE_STR_ROCKS;
+    static const std::string TYPE_STR_TEMPLE;
     static const std::string TYPE_STR_TREES;
+    static const std::string TYPE_STR_UNIT_MEDIC1;
     static const std::string TYPE_STR_UNIT_SCOUT1;
     static const std::string TYPE_STR_UNIT_SOLDIER1;
     static const std::string TYPE_STR_UNIT_SOLDIER2;
@@ -248,8 +252,8 @@ private:
     GameObjectTypeId mType = TYPE_NULL;
     GameObjectCategoryId mCategory = CAT_NULL;
 
-    GameObjectActionId mActiveAction = IDLE;
-    GameObjectActionId mCurrAction = IDLE;
+    GameObjectActionType mActiveAction = IDLE;
+    GameObjectActionType mCurrAction = IDLE;
 
     unsigned int mRows = 1;
     unsigned int mCols = 1;
@@ -269,8 +273,6 @@ private:
     bool mCanBeConq = false;
 
     bool mSelected = false;
-
-    bool mBusy = false;
 
     bool mVisible = true;
     bool mVisited = false;
@@ -292,8 +294,7 @@ inline bool GameObject::CanBeCollected() const { return GameObject::CAT_COLLECTA
 
 inline bool GameObject::IsSelected() const { return mSelected; }
 
-inline bool GameObject::IsBusy() const { return mBusy; }
-inline void GameObject::SetBusy(bool val) { mBusy = val; }
+inline bool GameObject::IsBusy() const { return mCurrAction != IDLE; }
 
 inline bool GameObject::IsVisited() const { return mVisited; }
 inline void GameObject::SetVisited() { mVisited = true; }
@@ -354,9 +355,9 @@ inline void GameObject::SetOnValuesChanged(const std::function<void()> & f)
 inline float GameObject::GetSpeed() const { return mSpeed; }
 inline void GameObject::SetSpeed(float speed) { mSpeed = speed; }
 
-inline GameObjectActionId GameObject::GetActiveAction() const { return mActiveAction; }
-inline void GameObject::SetActiveAction(GameObjectActionId action) { mActiveAction = action; }
-inline GameObjectActionId GameObject::GetCurrentAction() const { return mCurrAction; }
-inline void GameObject::SetCurrentAction(GameObjectActionId action) { mCurrAction = action; }
+inline GameObjectActionType GameObject::GetActiveAction() const { return mActiveAction; }
+inline void GameObject::SetActiveAction(GameObjectActionType action) { mActiveAction = action; }
+inline GameObjectActionType GameObject::GetCurrentAction() const { return mCurrAction; }
+inline void GameObject::SetCurrentAction(GameObjectActionType action) { mCurrAction = action; }
 
 } // namespace game

@@ -42,10 +42,11 @@ public:
     {
         ETYPE_UNITS,
         ETYPE_STRUCTURES,
+
+        NUM_ELEMENT_TYPES
     };
 
-    DialogNewElement(ElemType type, const char * title, Player * player,
-                     const ObjectsDataRegistry * dataReg);
+    DialogNewElement(ElemType type, Player * player, const ObjectsDataRegistry * dataReg);
 
     void CheckBuild();
 

@@ -6,7 +6,7 @@
 #include "States/StatesIds.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonUnitsSelector.h"
-#include "Widgets/CellProgressBar.h"
+#include "Widgets/GameProgressBar.h"
 #include "Widgets/Test/TestComboBox.h"
 #include "Widgets/Test/TestSliderH.h"
 
@@ -314,6 +314,9 @@ void ScreenTest::TestSGui()
     }
 
     // -- PROGRESS BAR --
+    const float minProgress = 0.f;
+    const float maxProgress = 100.f;
+
     font = fm->GetFont("Lato-Bold.ttf", 24, Font::NORMAL);
 
     label = new Label("PROGRESS BAR", font, container);
@@ -323,20 +326,20 @@ void ScreenTest::TestSGui()
     const int pbY = label->GetY() + label->GetHeight() + 50;
     const int marginbBars = 25;
 
-    mPb0 = new CellProgressBar(FACTION_1, container);
+    mPb0 = new GameProgressBar(FACTION_1, minProgress, maxProgress, container);
     mPb0->SetPosition(pbX, pbY);
     mPb0->SetValue(0);
-    mPb0->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 0 100%" << std::endl; });
+    mPb0->AddFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 0 100%" << std::endl; });
 
-    mPb1 = new CellProgressBar(FACTION_2, container);
+    mPb1 = new GameProgressBar(FACTION_2, minProgress, maxProgress, container);
     mPb1->SetPosition(pbX, pbY + mPb0->GetHeight() + marginbBars);
     mPb1->SetValue(0);
-    mPb1->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 1 100%" << std::endl; });
+    mPb1->AddFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 1 100%" << std::endl; });
 
-    mPb2 = new CellProgressBar(FACTION_3, container);
+    mPb2 = new GameProgressBar(FACTION_3, minProgress, maxProgress, container);
     mPb2->SetPosition(pbX, mPb1->GetY() + mPb1->GetHeight() + marginbBars);
     mPb2->SetValue(0);
-    mPb2->SetFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 2 100%" << std::endl; });
+    mPb2->AddFunctionOnCompleted([]{ std::cout << "TEST PROGRESS 2 100%" << std::endl; });
 
     button = new ButtonMainMenu("RESET", container);
     button->SetPosition(mPb0->GetX() + mPb0->GetWidth() + marginbBars * 2, mPb0->GetY());

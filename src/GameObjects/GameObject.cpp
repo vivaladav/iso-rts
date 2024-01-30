@@ -2,6 +2,7 @@
 
 #include "GameConstants.h"
 #include "GameData.h"
+#include "GameMap.h"
 #include "GameMapCell.h"
 #include "IsoObject.h"
 #include "Particles/DataParticleDamage.h"
@@ -42,7 +43,9 @@ const std::string GameObject::TYPE_STR_RES_STORAGE_DIAMONDS("RESSTOR_DIAM");
 const std::string GameObject::TYPE_STR_RES_STORAGE_ENERGY("RESSTOR_ENER");
 const std::string GameObject::TYPE_STR_RES_STORAGE_MATERIAL("RESSTOR_MAT");
 const std::string GameObject::TYPE_STR_ROCKS("ROCKS");
+const std::string GameObject::TYPE_STR_TEMPLE("TEMPLE");
 const std::string GameObject::TYPE_STR_TREES("TREES");
+const std::string GameObject::TYPE_STR_UNIT_MEDIC1("UNIT_MEDIC1");
 const std::string GameObject::TYPE_STR_UNIT_SCOUT1("UNIT_SCOUT1");
 const std::string GameObject::TYPE_STR_UNIT_SOLDIER1("UNIT_SOLDIER1");
 const std::string GameObject::TYPE_STR_UNIT_SOLDIER2("UNIT_SOLDIER2");
@@ -71,7 +74,9 @@ const GameObjectTypeId GameObject::TYPE_RES_STORAGE_DIAMONDS = h{}(TYPE_STR_RES_
 const GameObjectTypeId GameObject::TYPE_RES_STORAGE_ENERGY = h{}(TYPE_STR_RES_STORAGE_ENERGY);
 const GameObjectTypeId GameObject::TYPE_RES_STORAGE_MATERIAL = h{}(TYPE_STR_RES_STORAGE_MATERIAL);
 const GameObjectTypeId GameObject::TYPE_ROCKS = h{}(TYPE_STR_ROCKS);
+const GameObjectTypeId GameObject::TYPE_TEMPLE = h{}(TYPE_STR_TEMPLE);
 const GameObjectTypeId GameObject::TYPE_TREES = h{}(TYPE_STR_TREES);
+const GameObjectTypeId GameObject::TYPE_UNIT_MEDIC1 = h{}(TYPE_STR_UNIT_MEDIC1);
 const GameObjectTypeId GameObject::TYPE_UNIT_SCOUT1 = h{}(TYPE_STR_UNIT_SCOUT1);
 const GameObjectTypeId GameObject::TYPE_UNIT_SOLDIER1 = h{}(TYPE_STR_UNIT_SOLDIER1);
 const GameObjectTypeId GameObject::TYPE_UNIT_SOLDIER2 = h{}(TYPE_STR_UNIT_SOLDIER2);
@@ -98,11 +103,13 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::TYPE_STR_MAP
     { GameObject::TYPE_RES_STORAGE_ENERGY, TYPE_STR_RES_STORAGE_ENERGY },
     { GameObject::TYPE_RES_STORAGE_MATERIAL, TYPE_STR_RES_STORAGE_MATERIAL },
     { GameObject::TYPE_ROCKS, TYPE_STR_ROCKS },
+    { GameObject::TYPE_TEMPLE, TYPE_STR_TEMPLE },
     { GameObject::TYPE_TREES, TYPE_STR_TREES },
-    { GameObject::TYPE_UNIT_WORKER1, TYPE_STR_UNIT_WORKER1 },
+    { GameObject::TYPE_UNIT_MEDIC1, TYPE_STR_UNIT_MEDIC1 },
+    { GameObject::TYPE_UNIT_SCOUT1, TYPE_STR_UNIT_SCOUT1 },
     { GameObject::TYPE_UNIT_SOLDIER1, TYPE_STR_UNIT_SOLDIER1 },
     { GameObject::TYPE_UNIT_SOLDIER2, TYPE_STR_UNIT_SOLDIER2 },
-    { GameObject::TYPE_UNIT_SCOUT1, TYPE_STR_UNIT_SCOUT1 },
+    { GameObject::TYPE_UNIT_WORKER1, TYPE_STR_UNIT_WORKER1 },
     { GameObject::TYPE_WALL, TYPE_STR_WALL },
     { GameObject::TYPE_WALL_GATE, TYPE_STR_WALL_GATE }
 };
@@ -138,11 +145,13 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::TITLES =
     { GameObject::TYPE_RES_STORAGE_ENERGY, "ENERGY STORAGE"},
     { GameObject::TYPE_RES_STORAGE_MATERIAL, "MATERIAL STORAGE"},
     { GameObject::TYPE_ROCKS, "ROCKS"},
+    { GameObject::TYPE_TEMPLE, "TEMPLE"},
     { GameObject::TYPE_TREES, "TREES"},
-    { GameObject::TYPE_UNIT_WORKER1, "WORKER"},
+    { GameObject::TYPE_UNIT_MEDIC1, "MEDIC"},
+    { GameObject::TYPE_UNIT_SCOUT1, "SCOUT"},
     { GameObject::TYPE_UNIT_SOLDIER1, "SOLDIER"},
     { GameObject::TYPE_UNIT_SOLDIER2, "SOLDIER"},
-    { GameObject::TYPE_UNIT_SCOUT1, "SCOUT"},
+    { GameObject::TYPE_UNIT_WORKER1, "WORKER"},
     { GameObject::TYPE_WALL, "WALL"},
     { GameObject::TYPE_WALL_GATE, "GATE"}
 };
@@ -170,11 +179,13 @@ const std::unordered_map<GameObjectTypeId, std::string> GameObject::DESCRIPTIONS
     { GameObject::TYPE_RES_STORAGE_ENERGY, "Storage unit that can contain 500 units of energy."},
     { GameObject::TYPE_RES_STORAGE_MATERIAL, "Storage unit that can contain 250 units of material."},
     { GameObject::TYPE_ROCKS, "Some rocks."},
+    { GameObject::TYPE_TEMPLE, "An ancient temple that can be explored."},
     { GameObject::TYPE_TREES, "A single tree which will slowly grow into a forest."},
-    { GameObject::TYPE_UNIT_WORKER1, "A basic worker unit.\nIt is specialized in construction and conquest."},
+    { GameObject::TYPE_UNIT_MEDIC1, "This unit is specialized in healing other units.\nIt's a bit slow, but effective."},
+    { GameObject::TYPE_UNIT_SCOUT1, "A light and fast unit ideal for exploring, but not for fighting."},
     { GameObject::TYPE_UNIT_SOLDIER1, "A basic soldier unit.\nUseful for defense and exploration."},
     { GameObject::TYPE_UNIT_SOLDIER2, "A slow, but versatile unit."},
-    { GameObject::TYPE_UNIT_SCOUT1, "A light and fast unit ideal for exploring, but not for fighting."},
+    { GameObject::TYPE_UNIT_WORKER1, "A basic worker unit.\nIt is specialized in construction and conquest."},
     { GameObject::TYPE_WALL, "A defensive wall."},
     { GameObject::TYPE_WALL_GATE, "A gate that can be controlled to open a passage through a defensive wall."}
 };
@@ -318,7 +329,7 @@ void GameObject::SumEnergy(float val)
     SetEnergy(mEnergy + val);
 }
 
-void GameObject::Hit(float damage)
+void GameObject::Hit(float damage, PlayerFaction attacker)
 {
     using namespace sgl::graphic;
 
@@ -348,6 +359,13 @@ void GameObject::Hit(float damage)
         numPart *= multPart;
 
         numQuad = maxQuad;
+
+        // record stats for players
+        // NOTE register kills only when destroying enemies
+        if(mFaction != NO_FACTION)
+            mGameMap->RegisterEnemyKill(attacker);
+
+        mGameMap->RegisterCasualty(mFaction);
     }
 
     float ang1 = ang0 + angInc;

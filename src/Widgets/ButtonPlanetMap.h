@@ -27,4 +27,14 @@ private:
     void HandleButtonDown() override;
 };
 
+class ButtonLeavePlanet : public GameButton
+{
+public:
+    ButtonLeavePlanet(sgl::sgui::Widget * parent);
+
+private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
+};
+
 } // namespace game

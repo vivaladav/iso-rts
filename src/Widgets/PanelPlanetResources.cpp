@@ -5,7 +5,6 @@
 #include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/Point.h>
-#include <sgl/graphic/Camera.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>

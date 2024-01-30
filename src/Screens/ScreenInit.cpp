@@ -282,6 +282,37 @@ void ScreenInit::SetupTextures()
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExit, rects);
     });
 
+    // DIALOG EXPLORE TEMPLE
+    mJobs.emplace_back([this, tm]
+    {
+        std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 850, 500 },
+            { 0, 501, 770, 2 },
+            { 851, 0, 2, 270 },
+
+            // BUTTON
+            { 854, 0, 260, 44 },
+            { 854, 45, 260, 44 },
+            { 854, 90, 260, 44 },
+            { 854, 135, 260, 44 },
+
+            // ICONS
+            { 854, 180, 24, 24 },
+            { 879, 180, 24, 24 },
+            { 904, 180, 24, 24 },
+            { 929, 180, 24, 24 },
+
+            // SLIDER
+            { 854, 205, 204, 16 },
+            { 854, 222, 200, 12 },
+            { 1059, 205, 24, 24 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogExploreTemple, rects);
+    });
+
     // MAIN MENU
     mJobs.emplace_back([this, tm]
     {
@@ -523,6 +554,10 @@ void ScreenInit::SetupTextures()
             { 485, 147, 96, 48 },
             { 0, 196, 96, 48 },
             { 97, 196, 96, 48 },
+            // HEALING RANGE INDICATOR
+            { 582, 0, 96, 48 },
+            { 582, 49, 96, 48 },
+            { 582, 98, 96, 48 },
             // INFLUENCE AREA F1
             { 194, 200, 96, 48 },
             { 291, 200, 96, 48 },
@@ -786,6 +821,15 @@ void ScreenInit::SetupTextures()
             { 386, 1439, 192, 96 },
             { 579, 1342, 192, 96 },
             { 579, 1439, 192, 96 },
+            // temple
+            { 1164, 336, 288, 167 },
+            { 1164, 504, 288, 167 },
+            { 1164, 672, 288, 167 },
+            { 1164, 840, 288, 167 },
+            { 1164, 1008, 288, 167 },
+            { 1164, 1176, 288, 167 },
+            { 1164, 0, 288, 167 },
+            { 1164, 168, 288, 167 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
@@ -907,7 +951,14 @@ void ScreenInit::SetupTextures()
             { 194, 169, 96, 54 },
             { 291, 169, 96, 54 },
             { 388, 169, 96, 54 },
-            { 485, 169, 96, 54 }
+            { 485, 169, 96, 54 },
+            // unit 5
+            { 0, 224, 96, 52 },
+            { 96, 224, 96, 52 },
+            { 194, 224, 96, 52 },
+            { 291, 224, 96, 52 },
+            { 388, 224, 96, 52 },
+            { 485, 224, 96, 52 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileUnits, rects);
@@ -918,9 +969,14 @@ void ScreenInit::SetupTextures()
     {
         const std::vector<sgl::core::Rectd> rectsUnitsPart
         {
+            // laser
             { 0, 0, 10, 2 },
-            { 0, 2, 10, 2 },
-            { 0, 4, 10, 2 }
+            { 0, 3, 10, 2 },
+            { 0, 6, 10, 2 },
+            // healing
+            { 11, 0, 12, 12 },
+            { 24, 0, 12, 12 },
+            { 37, 0, 12, 12 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileUnitsParticles, rectsUnitsPart);
@@ -997,6 +1053,24 @@ void ScreenInit::SetupTextures()
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileWalls, rects);
+    });
+
+    // END MISSION DIALOG
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 800, 500 },
+
+            // BUTTON
+            { 0, 501, 300, 44 },
+            { 301, 501, 300, 44 },
+            { 0, 546, 300, 44 },
+            { 301, 546, 300, 44 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileDialogEndMission, rects);
     });
 
     // NEW ELEMENT DIALOG
@@ -1085,7 +1159,8 @@ void ScreenInit::SetupTextures()
             { 0, 127, 52, 52 },
             { 53, 127, 52, 52 },
             { 106, 127, 52, 52 },
-            { 159, 127, 52, 52 }
+            { 159, 127, 52, 52 },
+            { 212, 127, 52, 52 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileObjActionButton, rects);
@@ -1149,7 +1224,12 @@ void ScreenInit::SetupTextures()
             { 918, 763, 32, 32 },
             { 951, 763, 32, 32 },
             { 984, 763, 32, 32 },
-            { 1017, 763, 32, 32 }
+            { 1017, 763, 32, 32 },
+            // BUTTON LEAVE
+            { 0, 868, 350, 44 },
+            { 0, 913, 350, 44 },
+            { 351, 868, 350, 44 },
+            { 351, 913, 350, 44 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap, rects);
@@ -1165,9 +1245,8 @@ void ScreenInit::SetupTextures()
             { 401, 0, 400, 50 },
             { 0, 51, 475, 200 },
             { 0, 252, 475, 400 },
-            { 0, 653, 475, 280 },
-            { 476, 51, 475, 775 },
-            { 476, 827, 475, 135 }
+            { 476, 52, 475, 500 },
+            { 476, 552, 475, 85 }
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFilePlanetMap2, rects);
@@ -1214,27 +1293,30 @@ void ScreenInit::SetupTextures()
         const std::vector<sgl::core::Rectd> rects
         {
             // BUTTON BG
-            { 0, 0, 192, 60 },
-            { 193, 0, 192, 60 },
-            { 0, 61, 192, 60 },
-            { 193, 61, 192, 60 },
-            { 0, 122, 192, 60 },
+            { 0, 0, 197, 60 },
+            { 198, 0, 197, 60 },
+            { 0, 61, 197, 60 },
+            { 198, 61, 197, 60 },
+            { 0, 122, 197, 60 },
             // ICONS
-            { 193, 122, 24, 24 },
-            { 218, 122, 26, 26 },
+            { 198, 122, 24, 24 },
+            { 223, 122, 26, 26 },
             // UNITS
-            { 386, 0, 24, 40 },
-            { 411, 0, 40, 40 },
-            { 452, 0, 40, 40 },
-            { 493, 0, 32, 32 },
-            { 386, 41, 24, 40 },
-            { 411, 41, 40, 40 },
-            { 452, 41, 40, 40 },
-            { 493, 41, 32, 32 },
-            { 386, 82, 24, 40 },
-            { 411, 82, 40, 40 },
-            { 452, 82, 40, 40 },
-            { 493, 82, 32, 32 }
+            { 396, 0, 24, 40 },
+            { 421, 0, 40, 40 },
+            { 462, 0, 40, 40 },
+            { 503, 0, 32, 32 },
+            { 536, 0, 49, 40 },
+            { 396, 41, 24, 40 },
+            { 421, 41, 40, 40 },
+            { 462, 41, 40, 40 },
+            { 503, 41, 32, 32 },
+            { 536, 41, 49, 40 },
+            { 396, 82, 24, 40 },
+            { 421, 82, 40, 40 },
+            { 462, 82, 40, 40 },
+            { 503, 82, 32, 32 },
+            { 536, 82, 49, 40 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI], SpriteFileUnitQuickSel, rects);

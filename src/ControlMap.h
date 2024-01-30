@@ -23,7 +23,7 @@ public:
 
     void UpdateVisualAreas();
 
-    int GetPercentageControlledByFaction(PlayerFaction f);
+    int GetPercentageControlledByFaction(PlayerFaction f) const;
 
 private:
     void AddControlPointsToArea(int rTL, int cTL, int rBR, int cBR,

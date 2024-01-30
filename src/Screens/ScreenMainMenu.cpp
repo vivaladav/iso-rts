@@ -277,20 +277,27 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.1.3 - \"xxx\"", font, content);
+    auto title = new sgui::Label("0.2.0 - \"xxx\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
     contY += title->GetHeight() + paddingV;
 
     // CONTENT BLOCK: NEW FEATURES
-    int blockH = 250;
-    auto textNewFeat = new sgui::TextArea(contentW, blockH, font, true, content);
+    const int minBlockH = 0;
+
+    auto textNewFeat = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textNewFeat->SetText("NEW FEATURES\n"
                          "- Added option for disabling edge map scrolling.\n"
                          "- Scrollable areas can be scrolled with mouse wheel.\n"
                          "- New map object: loot box.\n"
+                         "- New map object: abandoned temple.\n"
+                         "- New unit: medic.\n"
+                         "- New unit action: healing.\n"
                          "- Trees now can grow into surrounding cells.\n"
+                         "- Missions can be completed and that reflects on the planet map.\n"
+                         "- Enemy units will shoot yours.\n"
+                         "- Map dragging in mission screen and related options in settings.\n"
                         );
     textNewFeat->SetPosition(contX, contY);
     textNewFeat->SetColor(colorContent);
@@ -298,8 +305,7 @@ void ScreenMainMenu::CreateChangelog()
     contY += textNewFeat->GetHeight() + paddingV;
 
     // CONTENT BLOCK: IMPROVEMENTS
-    blockH = 110;
-    auto textImpr = new sgui::TextArea(contentW, blockH, font, true, content);
+    auto textImpr = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textImpr->SetText("IMPROVEMENTS\n"
                       "- New structure dialog now groups structures by category.\n"
                       "- MiniMap now requires a connected radar station to work."
@@ -310,12 +316,12 @@ void ScreenMainMenu::CreateChangelog()
     contY += textImpr->GetHeight() + paddingV;
 
     // CONTENT BLOCK: CHANGES
-    blockH = 110;
-    auto textChange = new sgui::TextArea(contentW, blockH, font, true, content);
+    auto textChange = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textChange->SetText("CHANGES\n"
                         "- Map scrolling with W,A,S,D instead than arrows.\n"
                         "- Units move along the planned path while conquering cells.\n"
                         "- Units move along the planned path while building walls.\n"
+                        "- Planet screen redesigned.\n"
                      );
     textChange->SetPosition(contX, contY);
     textChange->SetColor(colorContent);
@@ -323,10 +329,11 @@ void ScreenMainMenu::CreateChangelog()
     contY += textChange->GetHeight() + paddingV;
 
     // CONTENT BLOCK: FIXES
-    blockH = 210;
-    auto textFix = new sgui::TextArea(contentW, blockH, font, true, content);
+    auto textFix = new sgui::TextArea(contentW, minBlockH, font, true, content);
     textFix->SetText("FIXES\n"
-                     "- several minor fixes.\n"
+                     "- Action panel re-enabled randomly by any unit.\n"
+                     "- Moving unit conquering structrure after action is cancelled.\n"
+                     "- Several minor fixes.\n"
                     );
     textFix->SetPosition(contX, contY);
     textFix->SetColor(colorContent);

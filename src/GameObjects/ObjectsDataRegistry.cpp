@@ -111,9 +111,17 @@ void ObjectsDataRegistry::InitObjectData()
                   ObjectBasicData(GameObject::TYPE_ROCKS, OCO_SCENE, OCAT_UNDEFINED,
                                   SpriteRocksFile, ROCKS_ROW_1, 1, 1));
 
+    mData.emplace(GameObject::TYPE_TEMPLE,
+                  ObjectBasicData(GameObject::TYPE_TEMPLE, OCS_RELICS, OCAT_GENERIC,
+                                  SpriteFileStructures, ID_STRUCT_TEMPLE, 3, 3));
+
     mData.emplace(GameObject::TYPE_TREES,
                   ObjectBasicData(GameObject::TYPE_TREES, OCO_SCENE, OCAT_UNDEFINED,
                                   SpriteFileTrees, TREE1_1T_1, 1, 1));
+
+    mData.emplace(GameObject::TYPE_UNIT_MEDIC1,
+                  ObjectBasicData(GameObject::TYPE_UNIT_MEDIC1, OCU_MEDIC, OCAT_UNIT,
+                                  nullptr, 0, 1, 1));
 
     mData.emplace(GameObject::TYPE_UNIT_SCOUT1,
                   ObjectBasicData(GameObject::TYPE_UNIT_SCOUT1, OCU_SCOUT, OCAT_UNIT,
@@ -195,23 +203,33 @@ void ObjectsDataRegistry::InitFactionData()
                                     std::vector<int>{ 100, 100, 0, 0 },
                                     SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F1));
 
+    data1.emplace(GameObject::TYPE_TEMPLE,
+                  ObjectFactionData(std::vector<int>{ 8, 4, 0, 0, 0, 0, 1, 1, 1 },
+                                    std::vector<int>{ 0, 0, 0, 0 },
+                                    SpriteFileStructures, ID_STRUCT_TEMPLE_F1));
+
+    data1.emplace(GameObject::TYPE_UNIT_MEDIC1,
+                  ObjectFactionData(std::vector<int>{ 6, 5, 1, 1, 1, 1, 6, 4, 4, 2, 1, 1, 6 },
+                                    std::vector<int>{ 500, 500, 0, 0 },
+                                    SpriteFileUnits, SPR_UNIT_05_F1));
+
     data1.emplace(GameObject::TYPE_UNIT_SCOUT1,
-                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
+                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6, 1 },
                                     std::vector<int>{ 300, 300, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_04_F1));
 
     data1.emplace(GameObject::TYPE_UNIT_SOLDIER1,
-                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
+                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4, 1 },
                                     std::vector<int>{ 200, 200, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_02_F1));
 
     data1.emplace(GameObject::TYPE_UNIT_SOLDIER2,
-                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
+                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4, 2 },
                                     std::vector<int>{ 400, 400, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_03_F1));
 
     data1.emplace(GameObject::TYPE_UNIT_WORKER1,
-                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2, 1 },
                                     std::vector<int>{ 150, 150, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_01_F1));
 
@@ -278,23 +296,33 @@ void ObjectsDataRegistry::InitFactionData()
                                     std::vector<int>{ 100, 100, 0, 0 },
                                     SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F2));
 
+    data2.emplace(GameObject::TYPE_TEMPLE,
+                  ObjectFactionData(std::vector<int>{ 8, 4, 0, 0, 0, 0, 1, 1, 1 },
+                                    std::vector<int>{ 0, 0, 0, 0 },
+                                    SpriteFileStructures, ID_STRUCT_TEMPLE_F2));
+
+    data2.emplace(GameObject::TYPE_UNIT_MEDIC1,
+                  ObjectFactionData(std::vector<int>{ 6, 5, 1, 1, 1, 1, 6, 4, 4, 2, 1, 1, 6 },
+                                    std::vector<int>{ 500, 500, 0, 0 },
+                                    SpriteFileUnits, SPR_UNIT_05_F2));
+
     data2.emplace(GameObject::TYPE_UNIT_SCOUT1,
-                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
+                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6, 1 },
                                     std::vector<int>{ 300, 300, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_04_F2));
 
     data2.emplace(GameObject::TYPE_UNIT_SOLDIER1,
-                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
+                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4, 1 },
                                     std::vector<int>{ 200, 200, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_02_F2));
 
     data2.emplace(GameObject::TYPE_UNIT_SOLDIER2,
-                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
+                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4, 2 },
                                     std::vector<int>{ 400, 400, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_03_F2));
 
     data2.emplace(GameObject::TYPE_UNIT_WORKER1,
-                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2, 1 },
                                     std::vector<int>{ 150, 150, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_01_F2));
 
@@ -361,23 +389,33 @@ void ObjectsDataRegistry::InitFactionData()
                                     std::vector<int>{ 100, 100, 0, 0 },
                                     SpriteFileStructures, ID_STRUCT_STORAGE_MATERIAL_F3));
 
+    data3.emplace(GameObject::TYPE_TEMPLE,
+                  ObjectFactionData(std::vector<int>{ 8, 4, 0, 0, 0, 0, 1, 1, 1 },
+                                    std::vector<int>{ 0, 0, 0, 0 },
+                                    SpriteFileStructures, ID_STRUCT_TEMPLE_F3));
+
+    data3.emplace(GameObject::TYPE_UNIT_MEDIC1,
+                  ObjectFactionData(std::vector<int>{ 6, 5, 1, 1, 1, 1, 6, 4, 4, 2, 1, 1, 6 },
+                                    std::vector<int>{ 500, 500, 0, 0 },
+                                    SpriteFileUnits, SPR_UNIT_05_F3));
+
     data3.emplace(GameObject::TYPE_UNIT_SCOUT1,
-                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6 },
+                  ObjectFactionData(std::vector<int>{ 4, 4, 1, 1, 1, 2, 4, 2, 2, 5, 6, 6, 1 },
                                     std::vector<int>{ 300, 300, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_04_F3));
 
     data3.emplace(GameObject::TYPE_UNIT_SOLDIER1,
-                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4 },
+                  ObjectFactionData(std::vector<int>{ 4, 5, 5, 4, 5, 4, 3, 3, 2, 6, 1, 4, 1 },
                                     std::vector<int>{ 200, 200, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_02_F3));
 
     data3.emplace(GameObject::TYPE_UNIT_SOLDIER2,
-                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4 },
+                  ObjectFactionData(std::vector<int>{ 6, 5, 2, 5, 3, 4, 4, 5, 5, 3, 3, 4, 2 },
                                     std::vector<int>{ 400, 400, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_03_F3));
 
     data3.emplace(GameObject::TYPE_UNIT_WORKER1,
-                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2 },
+                  ObjectFactionData(std::vector<int>{ 6, 6, 3, 2, 3, 3, 4, 4, 4, 6, 1, 2, 1 },
                                     std::vector<int>{ 150, 150, 0, 0 },
                                     SpriteFileUnits, SPR_UNIT_01_F3));
 

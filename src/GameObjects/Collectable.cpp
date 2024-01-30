@@ -2,7 +2,6 @@
 
 #include "GameObjects/CollectableGenerator.h"
 
-
 namespace game
 {
 

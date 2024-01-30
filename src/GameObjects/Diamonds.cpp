@@ -9,15 +9,30 @@
 namespace game
 {
 
+const int MIN_UNITS = 1;
+const int MAX_UNITS = 4;
+
 Diamonds::Diamonds() : Collectable(GameObject::TYPE_DIAMONDS, 1, 1)
 {
-    const int MIN_UNITS = 1;
-    const int MAX_UNITS = 4;
     sgl::utilities::UniformDistribution ran(MIN_UNITS, MAX_UNITS);
     mNum = ran.GetNextValue();
 
     SetObjColors();
     SetImage();
+}
+
+void Diamonds::MaximizeUnits()
+{
+    mNum = MAX_UNITS;
+
+    UpdateGraphics();
+}
+
+void Diamonds::MinimizeUnits()
+{
+    mNum = MIN_UNITS;
+
+    UpdateGraphics();
 }
 
 void Diamonds::UpdateGraphics()

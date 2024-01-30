@@ -5,7 +5,9 @@
 #include "GameMap.h"
 #include "IsoObject.h"
 #include "GameObjects/ObjectData.h"
+#include "Particles/DataParticleHealing.h"
 #include "Particles/DataParticleSingleLaser.h"
+#include "Particles/UpdaterHealing.h"
 #include "Particles/UpdaterSingleLaser.h"
 #include "Screens/ScreenGame.h"
 
@@ -29,6 +31,7 @@ const float ACTION_COSTS[NUM_OBJ_ACTIONS] =
     1.f,    // ATTACK
     20.f,   // BUILD_STRUCTURE
     10.f,   // BUILD_WALL
+    5.f,    // HEAL
     0.f     // TOGGLE_GATE
 };
 
@@ -43,7 +46,12 @@ Unit::Unit(const ObjectBasicData & objData, const ObjectFactionData & facData)
     // set attack range converting attribute
     const int maxAttVal = 11;
     const int attRanges[maxAttVal] = { 0, 2, 3, 4, 5, 6, 8, 9, 10, 11, 13 };
-    mAttackRange = attRanges[mStats[OSTAT_FIRE_RANGE]];
+    mRangeAttack = attRanges[mStats[OSTAT_FIRE_RANGE]];
+
+    // set attack range converting attribute
+    const int maxHealVal = 11;
+    const int HealRanges[maxHealVal] = { 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 };
+    mRangeHealing = HealRanges[mStats[OSTAT_HEALING]];
 
     // TODO translate stats into actual values, ex.: speed = 5 -> SetSpeed(2.f)
 
@@ -67,12 +75,52 @@ void Unit::IncreaseUnitLevel()
     SetImage();
 }
 
-bool Unit::SetAttackTarget(GameObject * obj)
+bool Unit::IsTargetAttackInRange(GameObject * obj) const
 {
-   if(nullptr == obj || !IsTargetInRange(obj) || !obj->IsVisible() || obj == this)
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            if(std::abs(GetRow0() - r) <= mRangeAttack && std::abs(GetCol0() - c) <= mRangeAttack)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool Unit::SetTargetAttack(GameObject * obj)
+{
+    if(nullptr == obj || !IsTargetAttackInRange(obj) || !obj->IsVisible() || obj == this)
        return false;
 
-    mTarget = obj;
+    mTargetAttack = obj;
+    mTimerAttack = 0.f;
+
+    return true;
+}
+
+bool Unit::IsTargetHealingInRange(GameObject * obj) const
+{
+    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
+    {
+        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
+        {
+            if(std::abs(GetRow0() - r) <= mRangeHealing && std::abs(GetCol0() - c) <= mRangeHealing)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+bool Unit::SetTargetHealing(GameObject * obj)
+{
+    if(nullptr == obj || !IsTargetHealingInRange(obj) || !obj->IsVisible() || obj == this)
+        return false;
+
+    mTargetHealing = obj;
+    mTimerHealing = 0.f;
 
     return true;
 }
@@ -87,34 +135,16 @@ void Unit::Update(float delta)
         SumEnergy(0.1f);
 
     // ATTACKING OTHER OBJECTS
-    if(mTarget)
-    {
-        mTimerAttack -= delta;
-
-        // time to shoot!
-        if(mTimerAttack < 0.f)
-        {
-            // target still alive -> shoot
-            if(GetGameMap()->HasObject(mTarget))
-                Shoot();
-            // target destroyed -> clear pointer
-            else
-            {
-                mTarget = nullptr;
-
-                // mark attack action as completed
-                GetScreen()->SetObjectActionCompleted(this);
-                SetCurrentAction(GameObjectActionId::IDLE);
-            }
-
-            mTimerAttack = mTimeAttack;
-        }
-    }
+    if(mTargetAttack)
+        UpdateAttack(delta);
+    // HEALING OTHER OBJECTS
+    else if(mTargetHealing)
+        UpdateHealing(delta);
 }
 
 void Unit::ClearStructureToBuild() { mStructToBuild = GameObject::TYPE_NULL; }
 
-void Unit::ConsumeEnergy(GameObjectActionId action)
+void Unit::ConsumeEnergy(GameObjectActionType action)
 {
     if(action < NUM_OBJ_ACTIONS)
        SumEnergy(-ACTION_COSTS[action]);
@@ -128,7 +158,7 @@ int Unit::GetStat(unsigned int index) const
         return 0;
 }
 
-bool Unit::HasEnergyForAction(GameObjectActionId action)
+bool Unit::HasEnergyForAction(GameObjectActionType action)
 {
     if(action < NUM_OBJ_ACTIONS)
     {
@@ -144,20 +174,6 @@ void Unit::UpdateGraphics()
     SetImage();
 
     SetDefaultColors();
-}
-
-bool Unit::IsTargetInRange(GameObject * obj) const
-{
-    for(int r = obj->GetRow1(); r <= obj->GetRow0(); ++r)
-    {
-        for(int c = obj->GetCol1(); c <= obj->GetCol0(); ++c)
-        {
-            if(std::abs(GetRow0() - r) <= mAttackRange && std::abs(GetCol0() - c) <= mAttackRange)
-                return true;
-        }
-    }
-
-    return false;
 }
 
 void Unit::SetImage()
@@ -180,6 +196,85 @@ void Unit::SetImage()
     GetIsoObject()->SetTexture(tex);
 }
 
+void Unit::UpdateAttack(float delta)
+{
+    mTimerAttack -= delta;
+
+    // not shoot yet...
+    if(mTimerAttack > 0.f)
+        return ;
+
+    // target still alive -> try to shoot
+    if(GetGameMap()->HasObject(mTargetAttack))
+    {
+        if(IsTargetAttackInRange(mTargetAttack))
+            Shoot();
+        else
+        {
+            mTargetAttack = nullptr;
+
+            // mark attack action as failed
+            GetScreen()->SetObjectActionFailed(this);
+        }
+    }
+    // target destroyed -> stop
+    else
+    {
+        mTargetAttack = nullptr;
+
+        // mark attack action as completed
+        GetScreen()->SetObjectActionCompleted(this);
+    }
+
+    mTimerAttack = mTimeAttack;
+}
+
+void Unit::UpdateHealing(float delta)
+{
+    mTimerHealing -= delta;
+
+    // not healing yet...
+    if(mTimerHealing > 0.f)
+        return ;
+
+    // target still alive -> try to heal
+    if(GetGameMap()->HasObject(mTargetHealing))
+    {
+        if(IsTargetHealingInRange(mTargetHealing))
+        {
+            Heal();
+
+            // finished healing
+            if(mTargetHealing->GetHealth() >= mTargetHealing->GetMaxHealth())
+            {
+                mTargetHealing = nullptr;
+
+                // mark healing action as completed
+                GetScreen()->SetObjectActionCompleted(this);
+
+                return ;
+            }
+        }
+        else
+        {
+            mTargetHealing = nullptr;
+
+            // mark healing action as failed
+            GetScreen()->SetObjectActionFailed(this);
+        }
+    }
+    // target destroyed -> stop
+    else
+    {
+        mTargetHealing = nullptr;
+
+        // mark healing action as failed
+        GetScreen()->SetObjectActionFailed(this);
+    }
+
+    mTimerHealing = mTimeHealing;
+}
+
 void Unit::Shoot()
 {
     using namespace sgl::graphic;
@@ -197,17 +292,17 @@ void Unit::Shoot()
 
     auto pu = static_cast<UpdaterSingleLaser *>(GetScreen()->GetParticleUpdater(PU_SINGLE_LASER));
 
-    const unsigned int texInd = SpriteIdUnitsParticles::SPR_UPART_LASER_F1 + faction;
+    const unsigned int texInd = SpriteIdUnitsParticles::IND_UPAR_LASER_F1 + faction;
     Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
 
     IsoObject * isoObj = GetIsoObject();
-    IsoObject * isoTarget = mTarget->GetIsoObject();
+    IsoObject * isoTarget = mTargetAttack->GetIsoObject();
 
     const float x0 = isoObj->GetX() + isoObj->GetWidth() * 0.5f;
     const float y0 = isoObj->GetY();
     const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
-    const float speed = 300.f;
+    const float speed = 400.f;
 
     const float rad2deg = 180.f / sgl::core::Math::PIf;
     const float dy0 = tY - y0;
@@ -241,14 +336,59 @@ void Unit::Shoot()
     {
         tex,
         GetGameMap(),
-        mTarget,
+        mTargetAttack,
         angle,
         x0,
         y0,
         tX,
         tY,
         speed,
-        mWeaponDamage
+        mWeaponDamage,
+        GetFaction()
+    };
+
+    pu->AddParticle(pd);
+}
+
+void Unit::Heal()
+{
+    using namespace sgl::graphic;
+
+    const PlayerFaction faction = GetFaction();
+
+    // avoid to set an image when there's no owner set
+    if(NO_FACTION == faction)
+        return ;
+
+    // consume energy
+    ConsumeEnergy(HEAL);
+
+    auto pu = static_cast<UpdaterHealing *>(GetScreen()->GetParticleUpdater(PU_HEALING));
+
+    const unsigned int texInd = SpriteIdUnitsParticles::IND_UPAR_HEAL_F1 + faction;
+    Texture * tex = TextureManager::Instance()->GetSprite(SpriteFileUnitsParticles, texInd);
+
+    IsoObject * isoObj = GetIsoObject();
+    IsoObject * isoTarget = mTargetHealing->GetIsoObject();
+
+    const float x0 = isoObj->GetX() + isoObj->GetWidth() * 0.5f;
+    const float y0 = isoObj->GetY();
+    const float tX = isoTarget->GetX() + (isoTarget->GetWidth() - tex->GetWidth()) * 0.5f;
+    const float tY = isoTarget->GetY() + (isoTarget->GetHeight() - tex->GetHeight()) * 0.5f;
+    const float speed = 100.f;
+
+    const DataParticleHealing pd =
+    {
+        tex,
+        GetGameMap(),
+        mTargetHealing,
+        x0,
+        y0,
+        tX,
+        tY,
+        speed,
+        mHealingPower,
+        GetFaction()
     };
 
     pu->AddParticle(pd);
@@ -258,10 +398,11 @@ unsigned int Unit::TypeToIndex(GameObjectTypeId type)
 {
     const std::unordered_map<GameObjectTypeId, unsigned int> indexes =
     {
-        {GameObject::TYPE_UNIT_WORKER1, 0},
-        {GameObject::TYPE_UNIT_SOLDIER1, 1},
-        {GameObject::TYPE_UNIT_SOLDIER2, 2},
-        {GameObject::TYPE_UNIT_SCOUT1, 3}
+        { GameObject::TYPE_UNIT_WORKER1, 0 },
+        { GameObject::TYPE_UNIT_SOLDIER1, 1 },
+        { GameObject::TYPE_UNIT_SOLDIER2, 2 },
+        { GameObject::TYPE_UNIT_SCOUT1, 3 },
+        { GameObject::TYPE_UNIT_MEDIC1, 4 },
     };
 
     return indexes.at(type);
@@ -274,7 +415,8 @@ GameObjectTypeId Unit::IndexToType(unsigned int ind)
         GameObject::TYPE_UNIT_WORKER1,
         GameObject::TYPE_UNIT_SOLDIER1,
         GameObject::TYPE_UNIT_SOLDIER2,
-        GameObject::TYPE_UNIT_SCOUT1
+        GameObject::TYPE_UNIT_SCOUT1,
+        GameObject::TYPE_UNIT_MEDIC1,
     };
 
     return types[ind];

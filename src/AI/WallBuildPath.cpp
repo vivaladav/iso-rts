@@ -12,6 +12,8 @@
 #include "GameObjects/Wall.h"
 #include "Indicators/WallIndicator.h"
 #include "Screens/ScreenGame.h"
+#include "Widgets/GameHUD.h"
+#include "Widgets/GameMapProgressBar.h"
 
 #include <cmath>
 
@@ -106,9 +108,13 @@ void WallBuildPath::InitNextBuild()
     // TODO get conquer time from unit
     constexpr float TIME_BUILD = 2.f;
 
-    mScreen->CreateProgressBar(nextCell, TIME_BUILD, player,
-                               [this, nextCell, player, layerOverlay]
+    GameHUD * HUD = mScreen->GetHUD();
+    mProgressBar = HUD->CreateProgressBarInCell(nextCell, TIME_BUILD, player->GetFaction());
+
+    mProgressBar->AddFunctionOnCompleted([this, nextCell, player, layerOverlay]
     {
+        mProgressBar = nullptr;
+
         const GameObjectTypeId blockType = mIndicators[mNextCell - 1]->GetBlockType();
         mGameMap->BuildWall(nextCell, player, blockType);
 
@@ -248,7 +254,7 @@ void WallBuildPath::UpdateMove(float delta)
         // handle next step or termination
         if(ABORTING == mState)
             InstantAbort();
-        if(0 == mNextCell)
+        else if(0 == mNextCell)
             Finish();
         else
             InitNextBuild();
@@ -278,7 +284,12 @@ void WallBuildPath::Start()
 
 void WallBuildPath::Abort()
 {
-    InstantAbort();
+    if(BUILDING == mState)
+        InstantAbort();
+    else if(MOVING == mState)
+        mState = ABORTING;
+    else
+        mState = ABORTED;
 }
 
 void WallBuildPath::InstantAbort()
@@ -289,11 +300,14 @@ void WallBuildPath::InstantAbort()
         const unsigned int nextInd = mCells[mNextCell];
         const unsigned int nextRow = nextInd / mIsoMap->GetNumCols();
         const unsigned int nextCol = nextInd % mIsoMap->GetNumCols();
-        const Cell2D cell(nextRow, nextCol);
 
         mGameMap->SetCellChanging(nextRow, nextCol, false);
 
-        mScreen->CancelProgressBar(cell);
+        if(mProgressBar)
+        {
+            mProgressBar->DeleteLater();
+            mProgressBar = nullptr;
+        }
     }
 
     // clear indicators
@@ -302,24 +316,12 @@ void WallBuildPath::InstantAbort()
 
     // set new state
     mState = ABORTED;
-
-    mOnAborted();
 }
 
 void WallBuildPath::Update(float delta)
 {
-    if(MOVING == mState)
+    if(MOVING == mState || ABORTING == mState)
         UpdateMove(delta);
-}
-
-void WallBuildPath::Finish()
-{
-    mState = COMPLETED;
-
-    // clear action data once the action is completed
-    mScreen->SetObjectActionCompleted(mUnit);
-
-    mOnCompleted();
 }
 
 void WallBuildPath::SetIndicatorsType(const std::vector<Cell2D> & cells,
@@ -370,11 +372,17 @@ void WallBuildPath::Fail()
     layerOverlay->ClearObjects();
 
     // clear action data
-    mScreen->SetObjectActionCompleted(mUnit);
+    mScreen->SetObjectActionFailed(mUnit);
 
     mState = FAILED;
+}
 
-    mOnCompleted();
+void WallBuildPath::Finish()
+{
+    mState = COMPLETED;
+
+    // clear action data once the action is completed
+    mScreen->SetObjectActionCompleted(mUnit);
 }
 
 } // namespace game

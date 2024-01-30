@@ -13,6 +13,8 @@ public:
     Blobs();
 
     int GetNum() const;
+    void MaximizeUnits();
+    void MinimizeUnits();
 
 protected:
     void UpdateGraphics() override;

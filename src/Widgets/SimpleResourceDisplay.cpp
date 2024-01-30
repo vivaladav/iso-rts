@@ -1,7 +1,6 @@
 #include "SimpleResourceDisplay.h"
 
 #include "Widgets/DigitsDisplay.h"
-#include "Widgets/ProgressBarResources.h"
 
 #include <sgl/graphic/Texture.h>
 #include <sgl/sgui/Image.h>

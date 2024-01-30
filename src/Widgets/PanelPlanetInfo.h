@@ -16,6 +16,7 @@ namespace sgl
 namespace game
 {
 
+enum MissionType : unsigned int;
 enum PlayerFaction : unsigned int;
 enum TerritoryStatus : unsigned int;
 
@@ -25,7 +26,8 @@ public:
     PanelPlanetInfo();
 
     void ClearData();
-    void SetData(int size, TerritoryStatus status, PlayerFaction faction, unsigned int value);
+    void SetData(int size, TerritoryStatus status, PlayerFaction faction,
+                 unsigned int value, MissionType mission);
 
 private:
     void HandlePositionChanged() override;
@@ -39,6 +41,7 @@ private:
     void UpdateTerritoryStatus();
     void UpdateTerritoryOccupier();
     void UpdateTerritoryValue();
+    void UpdateMissionType();
 
 private:
     sgl::graphic::Text * mTitle = nullptr;
@@ -46,10 +49,12 @@ private:
     sgl::graphic::Text * mHeaderStatus = nullptr;
     sgl::graphic::Text * mHeaderValue = nullptr;
     sgl::graphic::Text * mHeaderOccupier = nullptr;
+    sgl::graphic::Text * mHeaderMission = nullptr;
 
     sgl::graphic::Text * mLabelSize = nullptr;
     sgl::graphic::Text * mLabelStatus = nullptr;
     sgl::graphic::Text * mLabelOccupier = nullptr;
+    sgl::graphic::Text * mLabelMission = nullptr;
     sgl::graphic::Image * mBarValue = nullptr;
 
     sgl::graphic::Image * mBg = nullptr;
@@ -58,6 +63,7 @@ private:
     int mValue = 0;
     PlayerFaction mOccupier;
     TerritoryStatus mStatus;
+    MissionType mMission;
 };
 
 } // namespace game

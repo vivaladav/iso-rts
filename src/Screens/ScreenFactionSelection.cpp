@@ -21,10 +21,6 @@
 #include <sgl/sgui/Stage.h>
 #include <sgl/sgui/TextArea.h>
 
-#include <cmath>
-#include <iostream>
-#include <string>
-
 namespace game
 {
 

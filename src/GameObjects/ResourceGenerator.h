@@ -13,6 +13,7 @@ public:
     ResourceGenerator(GameObjectTypeId type, int rows, int cols);
 
     int GetOutput() const;
+    void ScaleOutput(float mult);
 
     ResourceType GetResourceType() const;
 

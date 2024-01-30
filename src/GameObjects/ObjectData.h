@@ -13,6 +13,7 @@ enum ObjClass : unsigned int
     OCS_BASE,
     OCS_GENERATOR,
     OCS_RADAR,
+    OCS_RELICS,
     OCS_STORAGE,
     OCS_TARGET,
     OCS_TOWER,
@@ -21,6 +22,7 @@ enum ObjClass : unsigned int
 
     // UNITS
     OCU_GENERIC,
+    OCU_MEDIC,
     OCU_SCOUT,
     OCU_SOLDIER,
     OCU_WORKER,
@@ -53,6 +55,7 @@ enum ObjStatId : unsigned int
     OSTAT_SPEED = NUM_GEN_OBJ_STATS,
     OSTAT_CONSTRUCTION,
     OSTAT_CONQUEST,
+    OSTAT_HEALING,
 
     NUM_TOT_OBJ_STATS,
     NUM_UNIT_STATS = NUM_TOT_OBJ_STATS - NUM_GEN_OBJ_STATS

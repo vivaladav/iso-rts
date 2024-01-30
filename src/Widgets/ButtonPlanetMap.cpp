@@ -11,7 +11,10 @@
 namespace game
 {
 
-// PRIMARY BUTTON
+const int tooltipDelay = 500;
+const int tooltipShowing = 2500;
+
+// -- PRIMARY BUTTON --
 ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
     GameButton(SpriteFilePlanetMap,
         { IND_PM_BTN_NORMAL, IND_PM_BTN_DISABLED, IND_PM_BTN_OVER,
@@ -29,11 +32,10 @@ ButtonPlanetMap::ButtonPlanetMap(sgl::sgui::Widget * parent) :
 
 void ButtonPlanetMap::SetTooltipText(const char * tooltip)
 {
-    // TOOLTIP
     auto tt = new GameSimpleTooltip(tooltip);
     SetTooltip(tt);
-    SetTooltipDelay(500);
-    SetTooltipShowingTime(2500);
+    SetTooltipDelay(tooltipDelay);
+    SetTooltipShowingTime(tooltipShowing);
 }
 
 void ButtonPlanetMap::HandleMouseOver()
@@ -52,7 +54,7 @@ void ButtonPlanetMap::HandleButtonDown()
     player->PlaySound("UI/button_click-01.ogg");
 }
 
-// SECONDARY BUTTON
+// -- SECONDARY BUTTON --
 SecondaryButtonPlanetMap::SecondaryButtonPlanetMap(sgl::sgui::Widget * parent) :
     GameButton(SpriteFilePlanetMap,
         { IND_PM_BTN2_NORMAL, IND_PM_BTN2_DISABLED, IND_PM_BTN2_OVER,
@@ -84,4 +86,37 @@ void SecondaryButtonPlanetMap::HandleButtonDown()
     player->PlaySound("UI/button_click_cancel-01.ogg");
 }
 
+// -- BUTTON LEAVE PLANET --
+ButtonLeavePlanet::ButtonLeavePlanet(sgl::sgui::Widget * parent)
+    : GameButton(SpriteFilePlanetMap,
+                 { IND_PM_BTN3_NORMAL, IND_PM_BTN3_DISABLED, IND_PM_BTN3_OVER,
+                   IND_PM_BTN3_PRESSED, IND_PM_BTN3_NORMAL },
+                 { 0xf2ddd9ff, 0x633d36ff, 0xf9eeecff, 0xecccc6ff, 0xf2ddd9ff },
+                 parent)
+{
+    const char * fileFont = "Lato-Regular.ttf";
+    const int size = 20;
+
+    auto fm = sgl::graphic::FontManager::Instance();
+    sgl::graphic::Font * fnt = fm->GetFont(fileFont, size, sgl::graphic::Font::NORMAL);
+    SetLabelFont(fnt);
+
+    SetLabel("LEAVE THE PLANET");
+}
+
+void ButtonLeavePlanet::HandleMouseOver()
+{
+    sgl::sgui::AbstractButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void ButtonLeavePlanet::HandleButtonDown()
+{
+    sgl::sgui::AbstractButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
+}
 } // namespace game

@@ -3,7 +3,6 @@
 #include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
 
-#include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/Image.h>
@@ -48,7 +47,8 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
         IND_BUTTON_ICON_UPGRADE,
         IND_BUTTON_ICON_OPEN_GATE,
         IND_BUTTON_ICON_CLOSE_GATE,
-        IND_BUTTON_ICON_CANCEL
+        IND_BUTTON_ICON_CANCEL,
+        IND_BUTTON_ICON_HEAL,
     };
 
     tex = tm->GetSprite(SpriteFileObjActionButton, texId[icon]);

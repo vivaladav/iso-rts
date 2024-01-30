@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <vector>
 
 namespace game
@@ -37,10 +36,6 @@ public:
 
     void SetPathCells(const std::vector<unsigned int> & cells);
 
-    void SetOnCompleted(const std::function<void()> & f);
-    void SetOnFailed(const std::function<void()> & f);
-    void SetOnAborted(const std::function<void()> & f);
-
     void Start();
 
     void Abort();
@@ -48,21 +43,16 @@ public:
 
     void Update(float delta);
 
-    void Finish();
-
 private:
     void InitNextMove();
 
     void UpdatePathCost();
 
     void Fail();
+    void Finish();
 
 private:
     std::vector<unsigned int> mCells;
-
-    std::function<void()> mOnCompleted;
-    std::function<void()> mOnFailed;
-    std::function<void()> mOnAborted;
 
     GameObject * mObj = nullptr;
 
@@ -98,10 +88,6 @@ inline void ObjectPath::SetPathCells(const std::vector<unsigned int> & cells)
     mCells = cells;
     UpdatePathCost();
 }
-
-inline void ObjectPath::SetOnCompleted(const std::function<void()> & f) { mOnCompleted = f; }
-inline void ObjectPath::SetOnFailed(const std::function<void()> & f) { mOnFailed = f; }
-inline void ObjectPath::SetOnAborted(const std::function<void()> & f) { mOnAborted = f; }
 
 inline void ObjectPath::Abort()
 {

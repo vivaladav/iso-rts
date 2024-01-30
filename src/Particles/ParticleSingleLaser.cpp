@@ -17,6 +17,7 @@ void ParticleSingleLaser::SetData(const DataParticleSingleLaser & data)
     // this has to be called after SetRotation
     SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
 
+    mShooter = data.shooter;
     mGameMap = data.map;
     mTarget = data.target;
     mDamage = data.damage;
@@ -122,7 +123,7 @@ void ParticleSingleLaser::OnDone()
         return ;
 
     // TODO check hit box
-    mTarget->Hit(mDamage);
+    mTarget->Hit(mDamage, mShooter);
 }
 
 } // namespace game

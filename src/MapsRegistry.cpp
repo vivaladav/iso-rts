@@ -7,9 +7,9 @@ namespace game
 
 constexpr int MAX_MAPS_PER_PLANET = 12;
 
-MapsRegistry::MapData::MapData(const std::string & file, int energy, int material,
-                               int diamonds, int blobs, int size, int value,
-                               PlayerFaction occupier, TerritoryStatus status)
+MapsRegistry::MapData::MapData(const std::string & file, int energy, int material, int diamonds,
+                               int blobs, int size, int value, PlayerFaction occupier,
+                               TerritoryStatus status, MissionType mission)
     : mFile(file)
     , mEnergy(energy)
     , mMaterial(material)
@@ -19,6 +19,7 @@ MapsRegistry::MapData::MapData(const std::string & file, int energy, int materia
     , mValue(value)
     , mOccupier(occupier)
     , mStatus(status)
+    , mMission(mission)
 {
 }
 
@@ -36,14 +37,14 @@ bool MapsRegistry::CreatePlanet(unsigned int planetId)
 
 bool MapsRegistry::AddMap(unsigned int planetId, const std::string & file, int energy,
                           int material, int diamonds, int blobs, int size, int value,
-                          PlayerFaction occupier, TerritoryStatus status)
+                          PlayerFaction occupier, TerritoryStatus status, MissionType mission)
 {
     // planet not found
     if(mData.find(planetId) == mData.end())
         return false;
 
     mData[planetId].emplace_back(file, energy, material, diamonds,
-                                 blobs, size, value, occupier, status);
+                                 blobs, size, value, occupier, status, mission);
 
     return true;
 }
@@ -55,7 +56,7 @@ bool MapsRegistry::AddUnavailableMap(unsigned int planetId)
         return false;
 
     mData[planetId].emplace_back(std::string(), 0, 0, 0, 0, 0, 0,
-                                 NO_FACTION, TER_ST_UNAVAILABLE);
+                                 NO_FACTION, TER_ST_UNAVAILABLE, MISSION_UNKNOWN);
 
     return true;
 }
@@ -186,6 +187,19 @@ TerritoryStatus MapsRegistry::GetMapStatus(unsigned int planetId, unsigned int i
     return TER_ST_UNKNOWN;
 }
 
+MissionType MapsRegistry::GetMapMission(unsigned int planetId, unsigned int index) const
+{
+    if(mData.find(planetId) != mData.end())
+    {
+        const auto & data = mData.at(planetId);
+
+        if(index < data.size())
+            return data[index].mMission;
+    }
+
+    return MISSION_UNKNOWN;
+}
+
 void MapsRegistry::SetMapStatus(unsigned int planetId, unsigned int index, TerritoryStatus status)
 {
     if(mData.find(planetId) != mData.end())
@@ -208,9 +222,101 @@ void MapsRegistry::SetMapOccupier(unsigned int planetId, unsigned int index, Pla
     }
 }
 
+void MapsRegistry::SetMapMissionCompleted(unsigned int planetId, unsigned int index)
+{
+    if(mData.find(planetId) != mData.end())
+    {
+        auto & data = mData.at(planetId);
+
+        if(index < data.size())
+        {
+            data[index].mMission = MISSION_COMPLETED;
+
+            // expand player's reach once a territory is conquered
+            ExpandTerritoryReach(planetId, index);
+        }
+    }
+}
+
 void MapsRegistry::ClearData()
 {
     mData.clear();
 }
+
+void MapsRegistry::ExpandTerritoryReach(unsigned int planetId, int index)
+{
+    switch (index)
+    {
+        case 0:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+        break;
+
+        case 1:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+        break;
+
+        case 2:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 0);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+        break;
+
+        case 3:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 1);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+        break;
+
+        case 4:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+        break;
+
+        case 5:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 2);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 4);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+        break;
+
+        case 6:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 3);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 7);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+        break;
+
+        case 7:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+        break;
+
+        case 8:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 5);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 10);
+        break;
+
+        case 9:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 6);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+            ConvertTerritoryUnreachableToUnexplored(planetId, 11);
+        break;
+
+        case 10:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 8);
+        break;
+
+        case 11:
+            ConvertTerritoryUnreachableToUnexplored(planetId, 9);
+        break;
+
+        default:
+        break;
+    }
+}
+
+void MapsRegistry::ConvertTerritoryUnreachableToUnexplored(unsigned int planetId, int index)
+{
+    if(GetMapStatus(planetId, index) == TER_ST_UNREACHABLE)
+        SetMapStatus(planetId, index, TER_ST_UNEXPLORED);
+}
+
 
 } // namespace game

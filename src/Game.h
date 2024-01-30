@@ -53,9 +53,11 @@ public:
     void ClearGameData();
 
     const std::string & GetCurrentMapFile() const;
+    unsigned int GetCurrentTerritory() const;
     void SetCurrentTerritory(unsigned int territory);
-    void SetCurrentPlanet(Planets planet);
     Planets GetCurrentPlanet() const;
+    void SetCurrentPlanet(Planets planet);
+
 
     void SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
@@ -81,6 +83,11 @@ public:
     PlayerFaction GetLocalPlayerFaction() const;
 
     // -- settings --
+    int GetMapDraggingSpeed() const;
+    void SetMapDraggingSpeed(int val);
+    bool IsMapDragging() const;
+    void SetMapDragging(bool val);
+
     int GetMapScrollingSpeed() const;
     void SetMapScrollingSpeed(int val);
     bool IsMapScrollingOnEdges() const;
@@ -119,7 +126,9 @@ private:
     Planets mCurrPlanet;
     unsigned int mCurrTerritory = 0;
 
-    int mMapScrollingSpeed = 5;
+    int mMapDraggingSpeed = 5;
+    int mMapScrollingSpeed = 6;
+    int mMapDragging = true;
     bool mMapScrollingOnEdges = true;
 
     unsigned char mClearR = 0;
@@ -128,13 +137,14 @@ private:
     unsigned char mClearA = 255;
 };
 
+inline unsigned int Game::GetCurrentTerritory() const { return mCurrTerritory; }
 inline void Game::SetCurrentTerritory(unsigned int territory)
 {
     mCurrTerritory = territory;
 }
 
-inline void Game::SetCurrentPlanet(Planets planet) { mCurrPlanet = planet; }
 inline Planets Game::GetCurrentPlanet() const { return mCurrPlanet; }
+inline void Game::SetCurrentPlanet(Planets planet) { mCurrPlanet = planet; }
 
 inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
@@ -177,8 +187,11 @@ inline PlayerFaction Game::GetLocalPlayerFaction() const
     return mLocalFaction;
 }
 
-inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
+inline int Game::GetMapDraggingSpeed() const { return mMapDraggingSpeed; }
+inline bool Game::IsMapDragging() const { return mMapDragging; }
+inline void Game::SetMapDragging(bool val) { mMapDragging = val; }
 
+inline int Game::GetMapScrollingSpeed() const { return mMapScrollingSpeed; }
 inline bool Game::IsMapScrollingOnEdges() const { return mMapScrollingOnEdges; }
 inline void Game::SetMapScrollingOnEdges(bool val) { mMapScrollingOnEdges = val; }
 

@@ -517,7 +517,7 @@ void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
 {
     using namespace sgl;
 
-    const int h =200;
+    const int h = 400;
     auto panel = new PanelContentSettings(h, parent);
     mPanels[Panel::GAME] = panel;
 
@@ -560,9 +560,36 @@ void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
         label->SetText(std::to_string(val).c_str());
     });
 
+    // MAP DRAGGING SPEED
+    x = contX0;
+    y += blockSettingH;
+
+    label = new sgui::Label("MAP DRAGGING SPEED", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    slider = new GameSliderH(texSliderBg, texSliderBar, texSliderBtn, panel);
+    slider->SetMinMax(minSpeed, maxSpeed);
+    slider->SetValue(mGame->GetMapDraggingSpeed());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - slider->GetHeight()) * 0.5;
+    slider->SetPosition(x, y);
+
+    label = new sgui::Label(std::to_string(slider->GetValue()).c_str(), font, panel);
+    label->SetColor(colorTxtSlider);
+    label->SetPosition(slider->GetX() + slider->GetWidth() + marginSliderR, slider->GetY());
+
+    slider->SetOnValueChanged([this, label](int val)
+    {
+        mGame->SetMapDraggingSpeed(val);
+
+        label->SetText(std::to_string(val).c_str());
+    });
+
     // MAP SCROLLING
     x = contX0;
-    y = contY0 + blockSettingH;
+    y += blockSettingH;
 
     label = new sgui::Label("EDGE MAP SCROLLING", font, panel);
     label->SetColor(colorTxt);
@@ -580,6 +607,25 @@ void DialogSettings::CreatePanelGame(sgl::sgui::Widget * parent)
         mGame->SetMapScrollingOnEdges(checked);
     });
 
+    // MAP DRAGGING
+    x = contX0;
+    y += blockSettingH;
+
+    label = new sgui::Label("MAP DRAGGING", font, panel);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    cb = new SettingsCheckbox(panel);
+    cb->SetChecked(mGame->IsMapDragging());
+
+    x += blockSettingW;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([this](bool checked)
+    {
+        mGame->SetMapDragging(checked);
+    });
 }
 
 void DialogSettings::CreatePanelAudio(sgl::sgui::Widget *parent)
