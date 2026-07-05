@@ -274,10 +274,10 @@ bool MapIO::SaveText(const std::string & filename, const std::vector<GameMapCell
     const int statDiamonds = DefineStatResourceForCells(cells, CT_DIAMONDS_SOURCE);
     fs << MAP_TAG_STAT_DIAMONDS << " " << statDiamonds << "\n";
 
-    const int statEnergy = DefineStatResourceForObjects(objects, mapSize, ObjectData::TYPE_RES_GEN_ENERGY);
+    const int statEnergy = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_ENERGY);
     fs << MAP_TAG_STAT_ENERGY << " " << statEnergy << "\n";
 
-    const int statMaterial = DefineStatResourceForObjects(objects, mapSize, ObjectData::TYPE_RES_GEN_MATERIAL);
+    const int statMaterial = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_MATERIAL);
     fs << MAP_TAG_STAT_MATERIAL << " " << statMaterial << "\n";
 
     const int statValue = DefineStatValue(statBlobs, statDiamonds, statEnergy, statMaterial);
@@ -322,7 +322,7 @@ bool MapIO::SaveText(const std::string & filename, const std::vector<GameMapCell
 
 int MapIO::DefineStatResourceForCells(const std::vector<GameMapCell> & cells, CellTypes res) const
 {
-    const float maxResPerc = 0.05f;
+    const float maxResPerc = 0.01f;
 
     const int resCells = std::count_if(cells.begin(), cells.end(),
                                        [res](const GameMapCell & cell)
@@ -342,20 +342,17 @@ int MapIO::DefineStatResourceForCells(const std::vector<GameMapCell> & cells, Ce
         return MAX_STAT_VALUE;
 }
 
-int MapIO::DefineStatResourceForObjects(const std::vector<GameObject *> & objects,
+int MapIO::DefineStatResourceForGenerators(const std::vector<GameObject *> & objects,
                                         int mapSize, GameObjectTypeId type) const
 {
-    const float genArea = 16.f;
-    const float maxPerc = 10.f;
-    const float maxGetSlots = mapSize / (genArea * maxPerc);
-
-    const int resGens = std::count_if(objects.begin(), objects.end(),
-                                      [type](const GameObject * obj)
-                                      {
-                                          return obj->GetObjectType() == type;
-                                      });
-
-    const float perc = resGens / maxGetSlots;
+    const int numGenerators = std::count_if(objects.begin(), objects.end(),
+                                            [type](const GameObject * obj)
+                                            {
+                                                return obj->GetObjectType() == type;
+                                            });
+    const float generatorArea = 4.f;
+    const float scaleMult = 1.25f;
+    const float perc = scaleMult * (generatorArea * numGenerators) * 100.f / mapSize;
 
     const float stat = std::roundf(MAX_STAT_VALUE * perc);
 

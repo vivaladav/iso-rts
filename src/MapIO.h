@@ -79,8 +79,8 @@ private:
                   int rows, int cols);
 
     int DefineStatResourceForCells(const std::vector<GameMapCell> & cells, CellTypes res) const;
-    int DefineStatResourceForObjects(const std::vector<GameObject *> & objects,
-                                     int mapSize, GameObjectTypeId type) const;
+    int DefineStatResourceForGenerators(const std::vector<GameObject *> & objects,
+                                        int mapSize, GameObjectTypeId type) const;
     int DefineStatValue(int statBlobs, int statDiamonds, int statEnergy, int statMaterial) const;
 
     bool ReadHeaderBinary(sgl::utilities::BinaryFile & bf);
