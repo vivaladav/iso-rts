@@ -1,7 +1,6 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
-#include "GameConstants.h"
 #include "Planet.h"
 #include "Version.h"
 #include "States/StatesIds.h"
@@ -282,16 +281,6 @@ void ScreenMainMenu::OnKeyUp(sgl::core::KeyboardEvent & event)
     // CTRL-T -> open test screen
     if(key == core::KeyboardEvent::KEY_T && event.IsModCtrlDown())
         GetGame()->RequestNextActiveState(StateId::TEST);
-    // CTRL-M -> Go straight to mission
-    else if(key == core::KeyboardEvent::KEY_M && event.IsModCtrlDown())
-    {
-        Game * game = GetGame();
-
-        game->SetLocalPlayerFaction(static_cast<PlayerFaction>(rand() % NUM_FACTIONS));
-        game->SetCurrentPlanet(PLANET_1);
-        game->SetCurrentTerritory(0);
-        game->RequestNextActiveState(StateId::NEW_GAME);
-    }
 #endif
 }
 
@@ -357,7 +346,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.9 - \"Graduation battle\"", font, content);
+    auto title = new sgui::Label("0.6.9.1 - \"Playtesting\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -368,46 +357,11 @@ void ScreenMainMenu::CreateChangelog()
 
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
-                  "- Third tutorial mission.\n"
-                  "- Structure indicator turns green when it's possible to build and red when not.\n"
-                  "- Add missing sound to UI sliders.\n"
-                  "- Focus areas in tutorial are animated on show.\n"
-                  "- New UI for selected objects.\n"
-                  "- Settings are saved on file and loaded when restarting the game.\n"
-                  "- Enemy faction is truly random when starting a new mission.\n"
-                  "- Game load & save (experimental).\n"
-                  "- New option in settings to control auto-save.\n"
-                  "- New mountains version.\n"
-                  "- New camera tracking objects when moving.\n"
-                  "- New plant type: cactus.\n"
-                  "- 2 new maps (planet 1 completed).\n"
-                  "- Units and structures show resources spent when doing something.\n"
+                  "\n"
                   "\nCHANGES\n"
-                  "- In tutorial 1, text explaining to move to tower stays on screen until you"
-                  " center the view on it.\n"
-                  "- Exploding mini-units now explode when they stop next to an enemy even if they"
-                  " haven't reached their target yet.\n"
-                  "- Simplified values setting in dialog to control research production.\n"
+                  "\n"
                   "\nFIXES\n"
-                  "- Walls now connect to bunkers too.\n"
-                  "- Units no longer can build structures far away without moving.\n"
-                  "- Camera no longer keeps moving when view is centered on some object or cell.\n"
-                  "- Selection no longer allowed when moving camera in tutorial 1.\n"
-                  "- Tutorial always starting if enabled and starting a new game.\n"
-                  "- It's no longer possible to select random objects during the tutorial.\n"
-                  "- Automatic camera works fine when moving near map's border too.\n"
-                  "- It's no longer possible to move units when clicking action buttons during"
-                  " the tutorial.\n"
-                  "- Exploding objects damage all surrounding objects.\n"
-                  "- End mission dialog shows correct number of casualties.\n"
-                  "- Mini-units no longer shoot only once.\n"
-                  "- Casualties and kills stats are updated when using exploding mini-units too.\n"
-                  "- Quitting a tutorial doesn't award the mission goal \"tutorial completed\".\n"
-                  "- Cancelling an object action now works (reset to default action) for all"
-                  " actions.\n"
-                  "- Fixed random crashes when aborting the tutorial while a dialog is open.\n"
-                  "- Fixed crash when leaving game while conquering cells.\n"
-                  "- Resources spent when conquering structure are properly handled now.\n"
+                  "\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
