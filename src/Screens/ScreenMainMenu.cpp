@@ -362,8 +362,8 @@ void ScreenMainMenu::CreateChangelog()
                   "\nCHANGES\n"
                   "\n"
                   "\nFIXES\n"
+                  "- Changelog dialog no longer steals mouse input from main menu buttons.\n"
                   "\n"
-
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
