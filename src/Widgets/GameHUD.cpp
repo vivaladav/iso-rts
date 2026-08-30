@@ -569,7 +569,7 @@ void GameHUD::ShowDialogExit()
 
     mDialogExit->SetFocus();
 
-    mDialogExit->SetFunctionOnShowingDialogSettings([this]
+    mDialogExit->SetFunctionOnShowingDialogSettings([this, tutMan]
     {
         ++mVisibleDialogs;
 
@@ -577,6 +577,8 @@ void GameHUD::ShowDialogExit()
 
         // keep game paused
         mScreen->SetPause(true);
+        // and tutorial too
+        tutMan->SetTutorialPause(true);
     });
 
     mDialogExit->SetFunctionOnHidingDialogSettings([this]

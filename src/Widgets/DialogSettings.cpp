@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "Tutorial/TutorialManager.h"
 #include "Widgets/ButtonDialogClose.h"
 #include "Widgets/ButtonPanelTab.h"
 #include "Widgets/GameSliderH.h"
@@ -450,8 +451,17 @@ DialogSettings::DialogSettings(Game * game)
     CreatePanelControls();
     mPanels[Panel::CONTROLS]->SetPosition(x, y);
 
-    // default panel is GAME
-    mGroupButtons->SetButtonChecked(Panel::GAME, true);
+    // default panel is GAME, unless tutorial is ON
+    auto tutMan = game->GetTutorialManager();
+
+    if(tutMan->HasActiveTutorial())
+    {
+        mGroupButtons->SetButtonEnabled(Panel::GAME, false);
+
+        mGroupButtons->SetButtonChecked(Panel::AUDIO, true);
+    }
+    else
+        mGroupButtons->SetButtonChecked(Panel::GAME, true);
 }
 
 DialogSettings::~DialogSettings()

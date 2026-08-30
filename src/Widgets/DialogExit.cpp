@@ -248,25 +248,22 @@ DialogExit::DialogExit(DialogButtons buttons, Game * game, Screen * screen)
     GameButton * btn = nullptr;
 
 #ifdef DEV_MODE
-    // BUTTON SAVE
-    if(buttons & BTN_SAVE)
-    {
-        btn = new ButtonDialogExit(this);
-        btn->SetLabel(sm->GetCString("SAVE_GAME"));
-        btn->SetEnabled(!game->GetTutorialManager()->HasActiveTutorial());
+    // BUTTON SAVE - only available in DEV MODE
+    btn = new ButtonDialogExit(this);
+    btn->SetLabel(sm->GetCString("SAVE_GAME"));
+    btn->SetEnabled(!game->GetTutorialManager()->HasActiveTutorial());
 
-        btnX = (w - btn->GetWidth()) / 2;
-        btn->SetPosition(btnX, btnY);
+    btnX = (w - btn->GetWidth()) / 2;
+    btn->SetPosition(btnX, btnY);
 
-        btn->AddOnClickFunction([game, screen]
-                                {
-                                    game->SaveGame();
-                                    screen->ShowLabelGameSaved();
-                                });
+    btn->AddOnClickFunction([game, screen]
+                            {
+                                game->SaveGame();
+                                screen->ShowLabelGameSaved();
+                            });
 
-        btnY += btn->GetHeight() + marginBtnV;
-        contentH += btn->GetHeight() + marginBtnV;
-    }
+    btnY += btn->GetHeight() + marginBtnV;
+    contentH += btn->GetHeight() + marginBtnV;
 #endif
 
     // BUTTON SETTINGS

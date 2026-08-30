@@ -346,7 +346,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.9.1 - \"Playtesting\"", font, content);
+    auto title = new sgui::Label("0.6.11 - \"Playtesting\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -357,11 +357,13 @@ void ScreenMainMenu::CreateChangelog()
 
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
+                  "- Open dialog settings while playing the tutorial too.\n"
                   "\n"
                   "\nCHANGES\n"
                   "\n"
                   "\nFIXES\n"
                   "\n"
+
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
