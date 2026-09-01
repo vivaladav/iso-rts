@@ -72,4 +72,11 @@ StepGameUnitConquerCellsIcon::~StepGameUnitConquerCellsIcon()
     delete mFocusArea;
 }
 
+void StepGameUnitConquerCellsIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

@@ -18,11 +18,15 @@ public:
                              const char * textIntro, const sgl::core::Pointd2D & p0);
     ~StepGameBuildStructIntro();
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
     PanelObjectActions * mPanelActions = nullptr;
 
     unsigned int mClickId = 0;
+
+    bool mShowingFocus = false;
 };
 
 } // namespace game

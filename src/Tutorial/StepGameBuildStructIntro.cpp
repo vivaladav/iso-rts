@@ -62,6 +62,8 @@ StepGameBuildStructIntro::StepGameBuildStructIntro(const Game * game, Screen * s
 
                             mFocusArea->SetScreenArea(f2X, f2Y, f2W, f2H, true);
                             mFocusArea->SetVisible(true);
+
+                            mShowingFocus = true;
                         });
 
     mClickId = panel->AddButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, [this]
@@ -75,6 +77,14 @@ StepGameBuildStructIntro::~StepGameBuildStructIntro()
     mPanelActions->RemoveButtonFunction(PanelObjectActions::BTN_BUILD_STRUCT, mClickId);
 
     delete mFocusArea;
+}
+
+void StepGameBuildStructIntro::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

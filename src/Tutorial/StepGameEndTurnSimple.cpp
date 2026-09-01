@@ -62,4 +62,11 @@ StepGameEndTurnSimple::~StepGameEndTurnSimple()
     mButton->RemoveClickFunction(mFuncId);
 }
 
+void StepGameEndTurnSimple::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

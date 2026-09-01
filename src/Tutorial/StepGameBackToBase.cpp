@@ -62,4 +62,11 @@ StepGameBackToBase::~StepGameBackToBase()
     mButton->RemoveClickFunction(mFuncId);
 }
 
+void StepGameBackToBase::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

@@ -44,6 +44,8 @@ StepGameEndTurn::StepGameEndTurn(const PanelTurnControl * panel)
                             mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
                             mFocusArea->SetVisible(true);
 
+                            mShowingFocus = true;
+
                             // CLICK FILTER
                             GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
                         });
@@ -62,6 +64,14 @@ StepGameEndTurn::~StepGameEndTurn()
 
     // clear callback
     mButton->RemoveClickFunction(mFuncId);
+}
+
+void StepGameEndTurn::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game
