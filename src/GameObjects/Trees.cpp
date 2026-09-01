@@ -209,7 +209,11 @@ void Trees::SpawnTree(int r0, int c0)
 
             if(!GameMapCell::IsTypePrimary(cell.basicType))
             {
-                gm->SetCellType(r, c, CT_TREES1_SURR);
+                if(type == ObjectData::TYPE_CACTUS1)
+                    gm->SetCellType(r, c, CT_SAND_SURR);
+                else
+                    gm->SetCellType(r, c, CT_TREES1_SURR);
+
                 gm->UpdateCellType(ind, cell);
             }
         }

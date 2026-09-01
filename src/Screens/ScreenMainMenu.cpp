@@ -364,6 +364,7 @@ void ScreenMainMenu::CreateChangelog()
                   "\nFIXES\n"
                   "- Changelog dialog no longer steals mouse input from main menu buttons.\n"
                   "- Focus areas of hidden buttons are no longer visible when tutorial is paused.\n"
+                  "- Cactus bushes are surrounder by the right ground when spawning new elements.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
