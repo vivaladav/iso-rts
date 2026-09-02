@@ -1261,13 +1261,19 @@ void ResourceLoader::SetupGameTextures()
             { 873, 714, 96, 48 },
             { 970, 714, 96, 48 },
             { 1067, 714, 96, 48 },
+            // GATE LVL 1 NO FACTION
+            { 0, 763, 96, 48 },
+            { 97, 763, 96, 48 },
+            { 194, 763, 96, 48 },
+            { 291, 763, 96, 48 },
             // BUNKER
-            { 0, 763, 96, 55 },
-            { 97, 763, 96, 55 },
-            { 194, 763, 96, 55 },
-            { 291, 763, 96, 55 },
+            { 0, 812, 96, 55 },
+            { 97, 812, 96, 55 },
+            { 194, 812, 96, 55 },
+            { 291, 812, 96, 55 },
             // PRACTICE TARGET
             { 388, 763, 96, 48 },
+            { 388, 812, 96, 48 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);

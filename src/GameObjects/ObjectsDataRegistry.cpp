@@ -142,7 +142,7 @@ void ObjectsDataRegistry::InitObjectData()
         ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_VIEW_RANGE, 2}, {OBJ_ATT_REGENERATION, 5},
                      {OBJ_ATT_RESISTANCE, 8}, {OBJ_ATT_SHIELD, 8}, {OBJ_ATT_HEALTH, 9} },
                    { 200, 350, 0, 0 },
-                   { ID_PRACTICE_TARGET }, SpriteFileStructures,
+                   { ID_PRACTICE_TARGET, ID_PRACTICE_TARGET_NF }, SpriteFileStructures,
                    ObjectData::TYPE_PRACTICE_TARGET, ObjectData::CAT_STRUCTURE,
                    OCS_TARGET, OCAT_GENERIC, WeaponData::TYPE_NULL, 1, 1));
 
@@ -377,7 +377,7 @@ void ObjectsDataRegistry::InitObjectData()
                      {OBJ_ATT_RESISTANCE, 5}, {OBJ_ATT_SHIELD, 5}, {OBJ_ATT_HEALTH, 7} },
                    { 150, 150, 0, 0 },
                    { WALL_GATE_L1_F1_HORIZ_CLOSED, WALL_GATE_L1_F2_HORIZ_CLOSED,
-                     WALL_GATE_L1_F3_HORIZ_CLOSED }, SpriteFileStructures,
+                     WALL_GATE_L1_F3_HORIZ_CLOSED, WALL_GATE_L1_HORIZ_CLOSED }, SpriteFileStructures,
                    ObjectData::TYPE_WALL_GATE, ObjectData::CAT_STRUCTURE,
                    OCS_WALL, OCAT_DEFENSE, WeaponData::TYPE_NULL, 1, 1));
 
