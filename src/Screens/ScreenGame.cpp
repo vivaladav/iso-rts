@@ -129,15 +129,7 @@ ScreenGame::ScreenGame(Game * game)
 
 ScreenGame::~ScreenGame()
 {
-    // clear Players
     Game * game = GetGame();
-
-    for(int i = 0; i < game->GetNumActivePlayers(); ++i)
-    {
-        Player * p = game->GetActivePlayerByIndex(i);
-        p->ClearMissionObjects();
-        p->ClearSelectedObject();
-    }
 
     mLocalPlayer->RemoveOnUpgradeUnlocked(mIdOnUnlockUpgraded);
 
@@ -167,6 +159,14 @@ ScreenGame::~ScreenGame()
     stage->ClearWidgets();
     // make sure to reset stage visibility in case it was off before exit
     stage->SetVisible(true);
+
+    // clear Players
+    // NOTE do it after all deletes so listeners are removed
+    for(int i = 0; i < game->GetNumActivePlayers(); ++i)
+    {
+        Player * p = game->GetActivePlayerByIndex(i);
+        p->OnMissionOver();
+    }
 }
 
 void ScreenGame::InitNewGame()
@@ -665,23 +665,18 @@ void ScreenGame::InitPlayers()
     {
         Player * p = game->GetActivePlayerByIndex(i);
 
-        p->ResetTurnEnergy();
-        p->ResetMissionData();
+        p->OnNewMission();
 
         // AI players
         if(p->IsAI())
         {
             p->GetAI()->SetGameMap(mGameMap);
-            mAiPlayers.push_back(p);
 
-            p->ResetTurnsPlayed();
+            mAiPlayers.push_back(p);
         }
         // local player
         else
         {
-            // first turn is always played by local player
-            p->ResetTurnsPlayed(1);
-
             // react to upgrades unlocked
             mIdOnUnlockUpgraded = p->AddOnUpgradeUnlocked([this](TechUpgradeId upgrade)
                                                           {

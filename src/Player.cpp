@@ -21,16 +21,27 @@
 
 #include <cmath>
 
+namespace
+{
+    using namespace game;
+
+    const int RESOURCES_MAX[Player::NUM_PSTATS] =
+    {
+        200,
+        200,
+        2250,
+        1800,
+        99999999,
+        999999,
+    };
+}
+
 namespace game
 {
 
 Player::Player()
-    : mDummyStat(INVALID_STAT, 0)
-    , mOnNumUnitsChanged([](){})
-    , mOnTurnEnergyChanged([](){})
-    , mOnTurnMaxEnergyChanged([](){})
+    : Player(-1)
 {
-    InitUpgrades();
 }
 
 Player::Player(int pid)
@@ -41,29 +52,13 @@ Player::Player(int pid)
     , mPlayerId(pid)
     , mFaction(NO_FACTION)
 {
-    // STATS
-    mStats.emplace_back(Stat::BLOBS, 0);
-    mStats.emplace_back(Stat::DIAMONDS, 0);
-    mStats.emplace_back(Stat::ENERGY, 0);
-    mStats.emplace_back(Stat::MATERIAL, 0);
-    mStats.emplace_back(Stat::MONEY, 0);
-    mStats.emplace_back(Stat::RESEARCH, 0);
+    InitResources();
 
-    for(StatValue & val : mStats)
-        val.SetMin(0);
-
-    mStats[Stat::BLOBS].SetMax(200);
-    mStats[Stat::DIAMONDS].SetMax(200);
-    mStats[Stat::ENERGY].SetMax(2250);
-    mStats[Stat::MATERIAL].SetMax(1800);
-    mStats[Stat::MONEY].SetMax(99999999);
-    mStats[Stat::RESEARCH].SetMax(999999);
-
-    // UPGRADES
     InitUpgrades();
 
-    // UPDATE VALUES
-    AdjustTurnMaxEnergy();
+    // no need to adjust turn max energy when loading
+    if(pid >= 0)
+        AdjustTurnMaxEnergy();
 }
 
 Player::~Player()
@@ -106,9 +101,9 @@ bool Player::Load(sgl::utilities::BinaryFile & bf)
         const int min = bf.ReadInt();
         const int max = bf.ReadInt();
 
-        mStats.emplace_back(statId, val);
-        mStats.back().SetMin(min);
-        mStats.back().SetMax(max);
+        mLocalResources.emplace_back(statId, val);
+        mLocalResources.back().SetMin(min);
+        mLocalResources.back().SetMax(max);
     }
 
     // available mini-units
@@ -192,7 +187,7 @@ bool Player::Save(sgl::utilities::BinaryFile & bf) const
     }
 
     // stats
-    for(const StatValue & s : mStats)
+    for(const StatValue & s : mLocalResources)
     {
         bf.WriteUint(s.GetId());
         bf.WriteInt(s.GetValue());
@@ -423,7 +418,7 @@ void Player::SetResource(Stat sid, int val)
     if(sid >= NUM_PSTATS)
         return ;
 
-    mStats[sid].SetValue(val);
+    GetCurrentResource(sid).SetValue(val);
 
     NotifyResourcesChanged();
 }
@@ -433,7 +428,7 @@ void Player::SumResource(Stat sid, int val)
     if(sid >= NUM_PSTATS || 0 == val)
         return ;
 
-    mStats[sid].SumValue(val);
+    GetCurrentResource(sid).SumValue(val);
 
     NotifyResourcesChanged();
 }
@@ -443,11 +438,11 @@ void Player::SetResourceMax(Stat sid, int max)
     if(sid >= NUM_PSTATS)
         return ;
 
-    const int oldVal = mStats[sid].GetValue();
+    const int oldVal = mLocalResources[sid].GetValue();
 
-    mStats[sid].SetMax(max);
+    GetCurrentResource(sid).SetMax(max);
 
-    const int newVal = mStats[sid].GetValue();
+    const int newVal = mLocalResources[sid].GetValue();
 
     if(oldVal != newVal)
         NotifyResourcesChanged();
@@ -458,16 +453,16 @@ void Player::SumResourceMax(Stat sid, int sum)
     if(sid >= NUM_PSTATS)
         return ;
 
-    const int oldVal = mStats[sid].GetValue();
-    const int max = mStats[sid].GetMax();
+    const int oldVal = mLocalResources[sid].GetValue();
+    const int max = mLocalResources[sid].GetMax();
     int newMax = max + sum;
 
     if(newMax < 0)
         newMax = 0;
 
-    mStats[sid].SetMax(newMax);
+    GetCurrentResource(sid).SetMax(newMax);
 
-    const int newVal = mStats[sid].GetValue();
+    const int newVal = mLocalResources[sid].GetValue();
 
     if(oldVal != newVal)
         NotifyResourcesChanged();
@@ -496,7 +491,7 @@ unsigned int Player::AddOnResourceChanged(Stat sid, const std::function<void (co
     if(sid >= NUM_PSTATS)
         return 0;
 
-    return mStats[sid].AddOnValueChanged(f);
+    return GetCurrentResource(sid).AddOnValueChanged(f);
 }
 
 unsigned int Player::AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f)
@@ -504,19 +499,19 @@ unsigned int Player::AddOnResourceRangeChanged(Stat sid, const std::function<voi
     if(sid >= NUM_PSTATS)
         return 0;
 
-    return mStats[sid].AddOnRangeChanged(f);
+    return GetCurrentResource(sid).AddOnRangeChanged(f);
 }
 
 void Player::RemoveOnResourceChanged(Stat sid, unsigned int funId)
 {
     if(sid < NUM_PSTATS)
-        mStats[sid].RemoveOnValueChanged(funId);
+        GetCurrentResource(sid).RemoveOnValueChanged(funId);
 }
 
 void Player::RemoveOnResourceRangeChanged(Stat sid, unsigned int funId)
 {
     if(sid < NUM_PSTATS)
-        mStats[sid].RemoveOnRangeChanged(funId);
+        GetCurrentResource(sid).RemoveOnRangeChanged(funId);
 }
 
 void Player::ResetMissionData()
@@ -534,12 +529,12 @@ void Player::HandleCollectable(GameObject * collected, GameObject * collector)
     if(type == ObjectData::TYPE_DIAMONDS)
     {
         auto d = static_cast<Diamonds *>(collected);
-        mStats[Stat::DIAMONDS].SumValue(d->GetNumUnits());
+        mLocalResources[Stat::DIAMONDS].SumValue(d->GetNumUnits());
     }
     else if(type == ObjectData::TYPE_BLOBS)
     {
         auto d = static_cast<Blobs *>(collected);
-        mStats[Stat::BLOBS].SumValue(d->GetNumUnits());
+        mLocalResources[Stat::BLOBS].SumValue(d->GetNumUnits());
     }
     else
     {
@@ -713,7 +708,7 @@ void Player::OnNewTurn()
         const auto er = static_cast<ExtendedResource>(r);
         const int delta = GetResourceDelta(er);
 
-        mStats[statIds[r]].SumValue(delta);
+        mLocalResources[statIds[r]].SumValue(delta);
     }
 
     NotifyResourcesChanged();
@@ -921,6 +916,63 @@ int Player::GetResourceDelta(ExtendedResource type) const
     return delta;
 }
 
+void Player::OnNewMission()
+{
+    ResetTurnEnergy();
+    ResetMissionData();
+
+    // reset turns played, local always starts from 1
+    mTurnsPlayed = IsLocal() ? 1 : 0;
+
+    // set local resources min & max
+    // NOTE this needs to be done before switching to local for capping
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+    {
+        mLocalResources[i].SetMin(0);
+        mLocalResources[i].SetMax(RESOURCES_MAX[i]);
+    }
+
+    SwitchFromGlobalToLocalResources();
+}
+
+void Player::OnMissionOver()
+{
+    ClearMissionObjects();
+    ClearSelectedObject();
+
+    SwitchFromLocalToGlobalResources();
+}
+
+void Player::InitResources()
+{
+    // LOCAL RESOURCES
+    mLocalResources.emplace_back(Stat::BLOBS, 0);
+    mLocalResources.emplace_back(Stat::DIAMONDS, 0);
+    mLocalResources.emplace_back(Stat::ENERGY, 0);
+    mLocalResources.emplace_back(Stat::MATERIAL, 0);
+    mLocalResources.emplace_back(Stat::MONEY, 0);
+    mLocalResources.emplace_back(Stat::RESEARCH, 0);
+
+    // set local resources min & max
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+    {
+        mLocalResources[i].SetMin(0);
+        mLocalResources[i].SetMax(RESOURCES_MAX[i]);
+    }
+
+    // GLOBAL RESOURCES
+    mGlobalResources.emplace_back(Stat::BLOBS, 0);
+    mGlobalResources.emplace_back(Stat::DIAMONDS, 0);
+    mGlobalResources.emplace_back(Stat::ENERGY, 0);
+    mGlobalResources.emplace_back(Stat::MATERIAL, 0);
+    mGlobalResources.emplace_back(Stat::MONEY, 0);
+    mGlobalResources.emplace_back(Stat::RESEARCH, 0);
+
+    // set global resources min
+    for(StatValue & val : mGlobalResources)
+        val.SetMin(0);
+}
+
 void Player::InitUpgrades()
 {
     for(unsigned int i = 0; i < NUM_TECH_UPGRADES; ++i)
@@ -980,6 +1032,35 @@ void Player::UpgradeResourceStorage(ResourceType res, float mult)
         if(s->GetObjectType() == objectTypes[res])
             static_cast<ResourceStorage *>(s)->OnCapacityUpgraded();
     }
+}
+
+void Player::SwitchFromGlobalToLocalResources()
+{
+    // copy global resources to local to cap them
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+        mLocalResources[i].SetValue(mGlobalResources[i].GetValue());
+
+    // subtract local from global
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+        mGlobalResources[i].SumValue(-mLocalResources[i].GetValue());
+
+    // switch to using local resources
+    mUseGlobalRes = false;
+}
+
+void Player::SwitchFromLocalToGlobalResources()
+{
+    // sum local to global
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+        mGlobalResources[i].SumValue(mLocalResources[i].GetValue());
+
+    // switch to using global resources
+    mUseGlobalRes = true;
+}
+
+StatValue & Player::GetCurrentResource(Stat sid)
+{
+    return mUseGlobalRes ? mGlobalResources[sid] : mLocalResources[sid];
 }
 
 } // namespace game
