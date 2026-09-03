@@ -196,8 +196,6 @@ private:
     void InitResources();
     void InitUpgrades();
 
-    void ClearMissionObjects();
-
     int GetCellsEnergyUsed() const;
     void NotifyResourcesChanged();
     void NotifyUpgradeUnlock(TechUpgradeId upgrade);
@@ -413,11 +411,5 @@ inline PlayerAI * Player::GetAI() const { return mAI; }
 inline void Player::SetAI(PlayerAI * ai) { mAI = ai; }
 
 inline bool Player::IsLocal() const { return nullptr == mAI; }
-
-inline void Player::ClearMissionObjects()
-{
-    mUnits.clear();
-    mStructures.clear();
-}
 
 } // namespace game

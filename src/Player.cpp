@@ -937,8 +937,10 @@ void Player::OnNewMission()
 
 void Player::OnMissionOver()
 {
-    ClearMissionObjects();
-    ClearSelectedObject();
+    mUnits.clear();
+    mStructures.clear();
+
+    mSelObj = nullptr;
 
     SwitchFromLocalToGlobalResources();
 }
