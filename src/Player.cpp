@@ -19,6 +19,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include <cassert>
 #include <cmath>
 
 namespace
@@ -93,7 +94,7 @@ bool Player::Load(sgl::utilities::BinaryFile & bf)
         mUpgradesAvailable[upgrade] = true;
     }
 
-    // STATS
+    // global resources
     for(unsigned int i = 0; i < NUM_PSTATS; ++i)
     {
         const unsigned int statId = bf.ReadUint();
@@ -101,10 +102,26 @@ bool Player::Load(sgl::utilities::BinaryFile & bf)
         const int min = bf.ReadInt();
         const int max = bf.ReadInt();
 
-        mLocalResources.emplace_back(statId, val);
-        mLocalResources.back().SetMin(min);
-        mLocalResources.back().SetMax(max);
+        mGlobalResources[statId].SetMin(min);
+        mGlobalResources[statId].SetMax(max);
+        mGlobalResources[statId].SetValue(val);
     }
+
+    // local resources
+    for(unsigned int i = 0; i < NUM_PSTATS; ++i)
+    {
+        const unsigned int statId = bf.ReadUint();
+        const int val = bf.ReadInt();
+        const int min = bf.ReadInt();
+        const int max = bf.ReadInt();
+
+        mLocalResources[statId].SetMin(min);
+        mLocalResources[statId].SetMax(max);
+        mLocalResources[statId].SetValue(val);
+    }
+
+    // global/local resources flag
+    mUseGlobalRes = bf.ReadBool();
 
     // available mini-units
     const unsigned int numAvMiniUnits = bf.ReadUint();
@@ -186,7 +203,16 @@ bool Player::Save(sgl::utilities::BinaryFile & bf) const
             bf.WriteUint(it.first);
     }
 
-    // stats
+    // global resources
+    for(const StatValue & s : mGlobalResources)
+    {
+        bf.WriteUint(s.GetId());
+        bf.WriteInt(s.GetValue());
+        bf.WriteInt(s.GetMin());
+        bf.WriteInt(s.GetMax());
+    }
+
+    // local resources
     for(const StatValue & s : mLocalResources)
     {
         bf.WriteUint(s.GetId());
@@ -194,6 +220,9 @@ bool Player::Save(sgl::utilities::BinaryFile & bf) const
         bf.WriteInt(s.GetMin());
         bf.WriteInt(s.GetMax());
     }
+
+    // global/local resources flag
+    bf.WriteBool(mUseGlobalRes);
 
     // available mini-units
     const unsigned int numAvMiniUnits = mAvailableMiniUnits.size();
@@ -491,7 +520,14 @@ unsigned int Player::AddOnResourceChanged(Stat sid, const std::function<void (co
     if(sid >= NUM_PSTATS)
         return 0;
 
-    return GetCurrentResource(sid).AddOnValueChanged(f);
+    // NOTE callback is set to both types of resources, so it doesn't matter what happens in
+    //      ScreenGame and there's no need to handle multiple cases (init vs loading)
+    const unsigned int ret1 = mGlobalResources[sid].AddOnValueChanged(f);
+    const unsigned int ret2 = mLocalResources[sid].AddOnValueChanged(f);
+
+    assert(ret2 == (ret1 + 1));
+
+    return ret1;
 }
 
 unsigned int Player::AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f)
@@ -499,19 +535,32 @@ unsigned int Player::AddOnResourceRangeChanged(Stat sid, const std::function<voi
     if(sid >= NUM_PSTATS)
         return 0;
 
-    return GetCurrentResource(sid).AddOnRangeChanged(f);
+    // NOTE callback is set to both types of resources, so it doesn't matter what happens in
+    //      ScreenGame and there's no need to handle multiple cases (init vs loading)
+    const unsigned int ret1 = mGlobalResources[sid].AddOnRangeChanged(f);
+    const unsigned int ret2 = mLocalResources[sid].AddOnRangeChanged(f);
+
+    assert(ret2 == (ret1 + 1));
+
+    return ret1;
 }
 
 void Player::RemoveOnResourceChanged(Stat sid, unsigned int funId)
 {
     if(sid < NUM_PSTATS)
-        GetCurrentResource(sid).RemoveOnValueChanged(funId);
+    {
+        mGlobalResources[sid].RemoveOnValueChanged(funId);
+        mLocalResources[sid].RemoveOnValueChanged(funId + 1);
+    }
 }
 
 void Player::RemoveOnResourceRangeChanged(Stat sid, unsigned int funId)
 {
     if(sid < NUM_PSTATS)
-        GetCurrentResource(sid).RemoveOnRangeChanged(funId);
+    {
+        mGlobalResources[sid].RemoveOnRangeChanged(funId);
+        mLocalResources[sid].RemoveOnRangeChanged(funId + 1);
+    }
 }
 
 void Player::ResetMissionData()

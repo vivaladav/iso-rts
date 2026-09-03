@@ -171,6 +171,17 @@ ScreenGame::~ScreenGame()
 
 void ScreenGame::InitNewGame()
 {
+    // notify Players of a new mission starting
+    auto game = GetGame();
+
+    const unsigned int numPlayers = game->GetNumActivePlayers();
+
+    for(int i = 0; i < numPlayers; ++i)
+    {
+        Player * p = game->GetActivePlayerByIndex(i);
+        p->OnNewMission();
+    }
+
     // LOAD MAP
     LoadMapFile();
 
@@ -664,8 +675,6 @@ void ScreenGame::InitPlayers()
     for(int i = 0; i < numPlayers; ++i)
     {
         Player * p = game->GetActivePlayerByIndex(i);
-
-        p->OnNewMission();
 
         // AI players
         if(p->IsAI())

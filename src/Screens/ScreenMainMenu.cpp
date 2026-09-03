@@ -360,6 +360,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- It's possible to open dialog settings while playing the tutorial too.\n"
                   "- When building gates the object preview is oriented properly according"
                   " to the surrounding objects.\n"
+                  "- Game resources and mission resources are now separated.\n"
                   "\n"
                   "\nCHANGES\n"
                   "\n"
@@ -367,6 +368,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Changelog dialog no longer steals mouse input from main menu buttons.\n"
                   "- Focus areas of hidden buttons are no longer visible when tutorial is paused.\n"
                   "- Cactus bushes are surrounder by the right ground when spawning new elements.\n"
+                  "- Resource limits are reset when starting a new mission.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
