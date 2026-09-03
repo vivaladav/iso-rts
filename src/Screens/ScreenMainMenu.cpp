@@ -358,6 +358,8 @@ void ScreenMainMenu::CreateChangelog()
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
                   "- It's possible to open dialog settings while playing the tutorial too.\n"
+                  "- When building gates the object preview is oriented properly according"
+                  " to the surrounding objects.\n"
                   "\n"
                   "\nCHANGES\n"
                   "\n"

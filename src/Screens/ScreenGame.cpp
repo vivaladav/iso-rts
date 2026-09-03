@@ -59,6 +59,7 @@
 #include <sgl/graphic/Camera.h>
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Renderer.h>
+#include <sgl/graphic/TextureManager.h>
 #include <sgl/media/AudioManager.h>
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Stage.h>
@@ -3491,6 +3492,22 @@ void ScreenGame::ShowBuildStructureIndicator(Unit * unit, const Cell2D & currCel
         const bool doable = energyObj >= costUnit && energyTurn >= costUnit;
 
         mOverlayStruct->ShowIndicator(st, currCell.row, currCell.col, costUnit, doable);
+
+        // handle special case: gate
+        if(st == ObjectData::TYPE_WALL_GATE)
+        {
+            auto tm = sgl::graphic::TextureManager::Instance();
+
+            const GameObject * objN = (currCell.row > 0) ?
+                                      mGameMap->GetObject(currCell.row - 1, currCell.col) : nullptr;
+            const GameObject * objS = ((currCell.row + 1) < mGameMap->GetNumRows()) ?
+                                      mGameMap->GetObject(currCell.row + 1, currCell.col) : nullptr;
+
+            const bool vert = mGameMap->IsDefensiveObject(objN) || mGameMap->IsDefensiveObject(objS);
+            const unsigned int texID = vert ? WALL_GATE_L1_VERT_CLOSED : WALL_GATE_L1_HORIZ_CLOSED;
+
+            mOverlayStruct->ResetIndicatorTexture(tm->GetSprite(SpriteFileStructures, texID));
+        }
     }
 }
 

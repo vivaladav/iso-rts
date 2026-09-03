@@ -71,6 +71,12 @@ void OverlayStructure::ShowIndicator(GameObjectTypeId type, int row, int col,
         mPanelUnitCost->SetVisible(false);
 }
 
+void OverlayStructure::ResetIndicatorTexture(sgl::graphic::Texture * tex)
+{
+    if(mIndicator != nullptr)
+        mIndicator->SetTexture(tex);
+}
+
 StructureIndicator * OverlayStructure::GetNewIndicator(GameObjectTypeId type, bool doable)
 {
     StructureIndicator * ind = nullptr;

@@ -1319,6 +1319,15 @@ GameObject * GameMap::BuildStructure(const Cell2D & cell, Player * player, GameO
     return obj;
 }
 
+bool GameMap::IsDefensiveObject(const GameObject * obj)
+{
+    return obj != nullptr &&
+           (obj->GetObjectType() == ObjectData::TYPE_WALL ||
+            obj->GetObjectType() == ObjectData::TYPE_DEFENSIVE_TOWER ||
+            obj->GetObjectType() == ObjectData::TYPE_BUNKER ||
+            obj->GetObjectType() == ObjectData::TYPE_WALL_GATE);
+}
+
 bool GameMap::HasResourcesToBuildWall(Unit * unit, unsigned int level)
 {
     // check if unit has enough energy
@@ -4145,30 +4154,18 @@ void GameMap::UpdateWall(const Cell2D & cell)
         return ;
 
     const GameObject * objN = (cell.row - 1 >= 0) ? GetCell(cell.row - 1, cell.col).objTop : nullptr;
-    const bool wallN = objN && (objN->GetObjectType() == ObjectData::TYPE_WALL ||
-                                objN->GetObjectType() == ObjectData::TYPE_DEFENSIVE_TOWER ||
-                                objN->GetObjectType() == ObjectData::TYPE_BUNKER ||
-                                objN->GetObjectType() == ObjectData::TYPE_WALL_GATE);
+    const bool wallN = IsDefensiveObject(objN);
 
     const GameObject * objS = (cell.row + 1 < static_cast<int>(mRows)) ?
                               GetCell(cell.row + 1, cell.col).objTop : nullptr;
-    const bool wallS = objS && (objS->GetObjectType() == ObjectData::TYPE_WALL ||
-                                objS->GetObjectType() == ObjectData::TYPE_DEFENSIVE_TOWER ||
-                                objS->GetObjectType() == ObjectData::TYPE_BUNKER ||
-                                objS->GetObjectType() == ObjectData::TYPE_WALL_GATE);
+    const bool wallS = IsDefensiveObject(objS);
 
     const GameObject * objW = (cell.col - 1 >= 0) ? GetCell(cell.row, cell.col - 1).objTop : nullptr;
-    const bool wallW = objW && (objW->GetObjectType() == ObjectData::TYPE_WALL ||
-                                objW->GetObjectType() == ObjectData::TYPE_DEFENSIVE_TOWER ||
-                                objW->GetObjectType() == ObjectData::TYPE_BUNKER ||
-                                objW->GetObjectType() == ObjectData::TYPE_WALL_GATE);
+    const bool wallW = IsDefensiveObject(objW);
 
     const GameObject * objE = (cell.col + 1 < static_cast<int>(mCols)) ?
                               GetCell(cell.row, cell.col + 1).objTop : nullptr;
-    const bool wallE = objE && (objE->GetObjectType() == ObjectData::TYPE_WALL ||
-                                objE->GetObjectType() == ObjectData::TYPE_DEFENSIVE_TOWER ||
-                                objE->GetObjectType() == ObjectData::TYPE_BUNKER ||
-                                objE->GetObjectType() == ObjectData::TYPE_WALL_GATE);
+    const bool wallE = IsDefensiveObject(objE);
 
     enum Flags
     {

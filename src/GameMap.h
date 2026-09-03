@@ -141,6 +141,7 @@ public:
     bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, GameObjectTypeId st);
     void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
     GameObject * BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
+    bool IsDefensiveObject(const GameObject * obj);
 
     // wall building
     bool HasResourcesToBuildWall(Unit * unit, unsigned int level);
