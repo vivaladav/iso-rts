@@ -566,7 +566,7 @@ void DialogTechTree::UpdateUpgrades(UpgradeSections section)
 
 void DialogTechTree::UpdateUnlockableStates()
 {
-    const int resPoints = mPlayer->GetStat(Player::RESEARCH).GetValue();
+    const int resPoints = mPlayer->GetResource(Player::RESEARCH).GetValue();
 
     for(auto it : mVisibleButtonsUpgrade)
     {
@@ -698,7 +698,7 @@ ButtonTechUpgrade * DialogTechTree::GetNewButtonUpgrade(TechUpgradeId upgrade, i
     }
 
     const int cost = mGame->GetTechUpgradecost(upgrade);
-    const int resPoints = mPlayer->GetStat(Player::RESEARCH).GetValue();
+    const int resPoints = mPlayer->GetResource(Player::RESEARCH).GetValue();
     const bool unlockable = cost <= resPoints && enabled && !unlocked;
 
     btn->SetLevel(level);

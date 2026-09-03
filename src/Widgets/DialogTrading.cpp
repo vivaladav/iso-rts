@@ -680,7 +680,7 @@ void DialogTrading::AddStockBlock(int x0, int y0, int bW, TradedResources res,
 {
     using namespace  sgl;
 
-    const StatValue & s = mPlayer->GetStat(stats[res]);
+    const StatValue & s = mPlayer->GetResource(stats[res]);
 
     std::ostringstream ss;
 
@@ -898,7 +898,7 @@ void DialogTrading::UpdateLabelTotalGain()
 
 void DialogTrading::IncBuyQuantity(TradedResources res, sgl::sgui::Label * label)
 {
-    const StatValue & s = mPlayer->GetStat(stats[res]);
+    const StatValue & s = mPlayer->GetResource(stats[res]);
     const int capacity = s.GetMax();
     const int owned = s.GetValue();
 
@@ -910,7 +910,7 @@ void DialogTrading::IncBuyQuantity(TradedResources res, sgl::sgui::Label * label
     const int price = mGame->GetResourcePriceBuy(extRes[res]);
     const int currSpend = GetCurrentSpend();
     const int spend = currSpend + (incBuy * price);
-    const int money = mPlayer->GetStat(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
 
     int inc = incBuy;
 
@@ -960,7 +960,7 @@ void DialogTrading::DecBuyQuantity(TradedResources res, sgl::sgui::Label * label
 
 void DialogTrading::IncSellQuantity(TradedResources res, sgl::sgui::Label * label)
 {
-    const int owned = mPlayer->GetStat(stats[res]).GetValue();
+    const int owned = mPlayer->GetResource(stats[res]).GetValue();
 
     if(0 == owned)
         return ;
@@ -1016,7 +1016,7 @@ void DialogTrading::UpdateStockLabel(unsigned int statId)
     };
 
     const TradedResources res = resources[statId];
-    const StatValue & s = mPlayer->GetStat(static_cast<Player::Stat>(statId));
+    const StatValue & s = mPlayer->GetResource(static_cast<Player::Stat>(statId));
 
     auto label = mLabelStock[res];
 
@@ -1047,11 +1047,11 @@ void DialogTrading::UpdateStockLabel(unsigned int statId)
 void DialogTrading::UpdateButtons()
 {
     const int currSpend = GetCurrentSpend();
-    const int money = mPlayer->GetStat(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
 
     for(unsigned int i = 0; i < NUM_TRADED_RES; ++i)
     {
-        const StatValue & s = mPlayer->GetStat(stats[i]);
+        const StatValue & s = mPlayer->GetResource(stats[i]);
         const int capacity = s.GetMax();
         const int owned = s.GetValue();
         const int newOwned = owned + mBuy[i];
@@ -1082,7 +1082,7 @@ void DialogTrading::Buy()
 {
     // spend money
     const int spend = GetCurrentSpend();
-    const int money = mPlayer->GetStat(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
 
     if(money < spend || spend == 0)
         return ;
@@ -1109,7 +1109,7 @@ void DialogTrading::Sell()
     // check quantities are correct
     for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
     {
-        if(mSell[i] > mPlayer->GetStat(stats[i]).GetValue())
+        if(mSell[i] > mPlayer->GetResource(stats[i]).GetValue())
             return ;
     }
 

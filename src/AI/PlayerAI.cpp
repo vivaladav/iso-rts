@@ -1259,7 +1259,7 @@ void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resTyp
         Player::MATERIAL,
     };
 
-    const StatValue & res = mPlayer->GetStat(ps[resType]);
+    const StatValue & res = mPlayer->GetResource(ps[resType]);
 
     const int resCur = res.GetValue();
     const int resMax = res.GetMax();
@@ -1313,7 +1313,7 @@ void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ResourceType resType,
         Player::BLOBS
     };
 
-    const StatValue & res = mPlayer->GetStat(ps[resType]);
+    const StatValue & res = mPlayer->GetResource(ps[resType]);
 
     const int resCur = res.GetValue();
     const int resMax = res.GetMax();
@@ -1462,7 +1462,7 @@ void PlayerAI::AddActionUnitCollectBlobs(Unit * u)
 
     // decrease priority based on owned blobs
     const float decBlobs = -30.f;
-    const StatValue & blobs = mPlayer->GetStat(Player::BLOBS);
+    const StatValue & blobs = mPlayer->GetResource(Player::BLOBS);
     priority += std::roundf(decBlobs * blobs.GetValue() / blobs.GetMax());
 
     // decrease priority based on unit's energy
@@ -1532,7 +1532,7 @@ void PlayerAI::AddActionUnitCollectDiamonds(Unit * u)
 
     // decrease priority based on owned diamonds
     const float decDiamonds = -30.f;
-    const StatValue & diamonds = mPlayer->GetStat(Player::DIAMONDS);
+    const StatValue & diamonds = mPlayer->GetResource(Player::DIAMONDS);
     priority += std::roundf(decDiamonds * diamonds.GetValue() / diamonds.GetMax());
 
     // decrease priority based on unit's energy
@@ -1820,7 +1820,7 @@ void PlayerAI::AddActionUnitConquerCity(Unit * u)
     priority += GetUnitPriorityBonusHealth(u, bonusHealth);
 
     // bonus energy availability level
-    const StatValue & stat = mPlayer->GetStat(Player::Stat::ENERGY);
+    const StatValue & stat = mPlayer->GetResource(Player::Stat::ENERGY);
 
     const float bonusRes = -40.f;
     priority += std::roundf(bonusRes * stat.GetValue() / stat.GetMax());
@@ -1899,7 +1899,7 @@ void PlayerAI::AddActionUnitConquerResGen(Unit * u, ResourceType type)
     };
 
     const enum Player::Stat ptype = types[type];
-    const StatValue & stat = mPlayer->GetStat(ptype);
+    const StatValue & stat = mPlayer->GetResource(ptype);
 
     int priority = MAX_PRIORITY;
 
@@ -2174,10 +2174,10 @@ void PlayerAI::AddActionCreateUnit(Structure * gen, const std::vector<GameObject
 
     const unsigned int numTypes = types.size();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(Player::ENERGY).GetValue();
+    const int material = mPlayer->GetResource(Player::MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(Player::BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(Player::DIAMONDS).GetValue();
 
     unsigned int bestInd = numTypes;
     int bestPriority = mMinPriority;
@@ -2388,10 +2388,10 @@ bool PlayerAI::HasPlayerResourcesToBuild(GameObjectTypeId t) const
     const ObjectData & data = mDataReg->GetObjectData(t);
     const auto & costs = data.GetCosts();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(Player::ENERGY).GetValue();
+    const int material = mPlayer->GetResource(Player::MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(Player::BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(Player::DIAMONDS).GetValue();
 
     // not enough resources to build
     return energy >= costs[RES_ENERGY] && material >= costs[RES_MATERIAL1] &&
@@ -2405,10 +2405,10 @@ int PlayerAI::GetPriorityBonusStructureBuildCost(GameObjectTypeId t, float bonus
     const ObjectData & data = mDataReg->GetObjectData(t);
     const auto & costs = data.GetCosts();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(Player::ENERGY).GetValue();
+    const int material = mPlayer->GetResource(Player::MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(Player::BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(Player::DIAMONDS).GetValue();
 
     float b = 0.f;
 

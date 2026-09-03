@@ -1200,12 +1200,12 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
                   << "CURRENT CELL: " << mCurrCell.row << "," << mCurrCell.col
                   << " (" << pcc.x << "," << pcc.y << ")" << "\n"
                   << "RESOURCES"
-                     " - MONEY: " << mLocalPlayer->GetStat(Player::MONEY).GetValue()
-                  << " - ENERGY: " << mLocalPlayer->GetStat(Player::ENERGY).GetValue()
-                  << " - MATERIAL: " << mLocalPlayer->GetStat(Player::MATERIAL).GetValue()
-                  << " - DIAMONDS: " << mLocalPlayer->GetStat(Player::DIAMONDS).GetValue()
-                  << " - BLOBS: " << mLocalPlayer->GetStat(Player::BLOBS).GetValue()
-                  << " - RESEARCH: " << mLocalPlayer->GetStat(Player::RESEARCH).GetValue() << "\n"
+                     " - MONEY: " << mLocalPlayer->GetResource(Player::MONEY).GetValue()
+                  << " - ENERGY: " << mLocalPlayer->GetResource(Player::ENERGY).GetValue()
+                  << " - MATERIAL: " << mLocalPlayer->GetResource(Player::MATERIAL).GetValue()
+                  << " - DIAMONDS: " << mLocalPlayer->GetResource(Player::DIAMONDS).GetValue()
+                  << " - BLOBS: " << mLocalPlayer->GetResource(Player::BLOBS).GetValue()
+                  << " - RESEARCH: " << mLocalPlayer->GetResource(Player::RESEARCH).GetValue() << "\n"
                   << std::endl;
 
         mTrackerMG->PrintState();
@@ -1355,15 +1355,15 @@ void ScreenGame::UpdateAI(float delta)
         return ;
 
     std::cout << "\n----- ScreenGame::UpdateAI " << turnAI << " -----\n"
-              << "MONEY: " << player->GetStat(Player::MONEY).GetValue()
-              << " - ENERGY: " << player->GetStat(Player::ENERGY).GetValue() << " / "
-              << player->GetStat(Player::ENERGY).GetMax()
-              << " - MATERIAL: " << player->GetStat(Player::MATERIAL).GetValue() << "/"
-              << player->GetStat(Player::MATERIAL).GetMax()
-              << " - BLOBS: " << player->GetStat(Player::BLOBS).GetValue() << "/"
-              << player->GetStat(Player::BLOBS).GetMax()
-              << " - DIAMONDS: " << player->GetStat(Player::DIAMONDS).GetValue() << "/"
-              << player->GetStat(Player::DIAMONDS).GetMax()
+              << "MONEY: " << player->GetResource(Player::MONEY).GetValue()
+              << " - ENERGY: " << player->GetResource(Player::ENERGY).GetValue() << " / "
+              << player->GetResource(Player::ENERGY).GetMax()
+              << " - MATERIAL: " << player->GetResource(Player::MATERIAL).GetValue() << "/"
+              << player->GetResource(Player::MATERIAL).GetMax()
+              << " - BLOBS: " << player->GetResource(Player::BLOBS).GetValue() << "/"
+              << player->GetResource(Player::BLOBS).GetMax()
+              << " - DIAMONDS: " << player->GetResource(Player::DIAMONDS).GetValue() << "/"
+              << player->GetResource(Player::DIAMONDS).GetMax()
               << std::endl;
 
     // no more turn energy -> end turn

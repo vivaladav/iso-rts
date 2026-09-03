@@ -99,7 +99,7 @@ public:
     void SetBase(Base * b);
 
     // stats
-    const StatValue & GetStat(Stat sid);
+    const StatValue & GetResource(Stat sid);
     bool HasEnough(Stat sid, int val);
     void SetResource(Stat sid, int val);
     void SumResource(Stat sid, int val);
@@ -312,7 +312,7 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 inline Base * Player::GetBase() const { return mBase; }
 inline void Player::SetBase(Base * b) { mBase = b; }
 
-inline const StatValue & Player::GetStat(Stat sid)
+inline const StatValue & Player::GetResource(Stat sid)
 {
     if(sid < NUM_PSTATS)
         return mStats[sid];

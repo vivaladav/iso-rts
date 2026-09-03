@@ -227,7 +227,7 @@ void GameHUD::UpdateUpgradesNotification()
     auto game = mScreen->GetGame();
     auto player = game->GetLocalPlayer();
 
-    const int resPoints = player->GetStat(Player::RESEARCH).GetValue();
+    const int resPoints = player->GetResource(Player::RESEARCH).GetValue();
     int count = 0;
 
     for(unsigned int i = 0; i < NUM_TECH_UPGRADES; ++i)

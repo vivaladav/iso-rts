@@ -1566,11 +1566,11 @@ void GameMap::ConquerStructure(const Cell2D & end, Player * player)
 
 void GameMap::HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple)
 {
-    const StatValue & money = p->GetStat(Player::Stat::MONEY);
-    const StatValue & energy = p->GetStat(Player::Stat::ENERGY);
-    const StatValue & material = p->GetStat(Player::Stat::MATERIAL);
-    const StatValue & blobs = p->GetStat(Player::Stat::BLOBS);
-    const StatValue & diamonds = p->GetStat(Player::Stat::DIAMONDS);
+    const StatValue & money = p->GetResource(Player::Stat::MONEY);
+    const StatValue & energy = p->GetResource(Player::Stat::ENERGY);
+    const StatValue & material = p->GetResource(Player::Stat::MATERIAL);
+    const StatValue & blobs = p->GetResource(Player::Stat::BLOBS);
+    const StatValue & diamonds = p->GetResource(Player::Stat::DIAMONDS);
     const PlayerFaction faction = p->GetFaction();
 
     // -- REWARDS --
