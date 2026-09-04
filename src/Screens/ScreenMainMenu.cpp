@@ -11,7 +11,10 @@
 #include "Widgets/DialogChangelog.h"
 #include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
+
+#ifdef DEMO_MODE
 #include "Widgets/WidgetCover.h"
+#endif
 
 #include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
