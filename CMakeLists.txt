@@ -276,8 +276,6 @@ add_executable(
     src/Tutorial/StepGameBuildUnitStart.cpp
     src/Tutorial/StepGameBuildUnitEnd.h
     src/Tutorial/StepGameBuildUnitEnd.cpp
-
-
     src/Tutorial/StepGameBuildStructIntro.h
     src/Tutorial/StepGameBuildStructIntro.cpp
     src/Tutorial/StepGameBuildTowerEnd.h
@@ -658,6 +656,8 @@ add_executable(
     src/Widgets/SimpleResourceDisplay.cpp
     src/Widgets/WarningMessage.h
     src/Widgets/WarningMessage.cpp
+    src/Widgets/WidgetCover.h
+    src/Widgets/WidgetCover.cpp
     src/Widgets/WidgetsConstants.h
     src/Widgets/WidgetsConstants.cpp
     src/Widgets/Test/TestComboBox.h
