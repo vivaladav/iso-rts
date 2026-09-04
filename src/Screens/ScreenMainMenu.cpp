@@ -8,8 +8,10 @@
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/ButtonMainMenuSocial.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
-#include "Widgets/GameUIData.h"
 #include "Widgets/DialogChangelog.h"
+#include "Widgets/GameSimpleTooltip.h"
+#include "Widgets/GameUIData.h"
+#include "Widgets/WidgetCover.h"
 
 #include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
@@ -113,6 +115,25 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
                                });
 
     button->SetEnabled(game->IsSaveFileValid());
+
+    buttonY += button->GetHeight() + VMARGIN;
+
+    // -- BUTTON MAP EDITOR --
+    button = new ButtonMainMenu(sm->GetCString("MAP_EDITOR"), panelButtons);
+    button->SetY(buttonY);
+
+#ifdef DEMO_MODE
+    button->SetEnabled(false);
+
+    // cover button to show tooltip when mouse is over
+    auto cover = new WidgetCover(button, panelButtons);
+    cover->SetPosition(button->GetX(), button->GetY());
+
+    auto tt = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
+    cover->SetTooltip(tt);
+    cover->SetTooltipShowingTime(5000);
+    cover->SetTooltipDelay(100);
+#endif
 
     buttonY += button->GetHeight() + VMARGIN;
 
