@@ -12,6 +12,8 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/ScrollArea.h>
 #include <sgl/sgui/Scrollbar.h>
@@ -55,6 +57,22 @@ private:
         const int y0 = GetScreenY();
 
         mBg->SetPosition(x0, y0);
+    }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
     }
 
 private:
@@ -226,6 +244,22 @@ ButtonChangelog::ButtonChangelog()
     // TEXT
     auto sm = sgl::utilities::StringManager::Instance();
     SetLabel(sm->GetCString("UPDATES"));
+}
+
+void ButtonChangelog::HandleMouseOver()
+{
+    GameButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void ButtonChangelog::HandleButtonDown()
+{
+    GameButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
 }
 
 // ===== DIALOG CHANGELOG =====
