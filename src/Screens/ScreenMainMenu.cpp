@@ -109,17 +109,19 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button->SetTooltipDelay(100);
 
     // -- BUTTON LOAD GAME --
-    button = new ButtonMainMenu(sm->GetCString("LOAD_GAME"), panelButtons);
-    button->SetY(buttonY);
+    // only visible if there's a save file available
+    if(game->IsSaveFileValid())
+    {
+        button = new ButtonMainMenu(sm->GetCString("LOAD_GAME"), panelButtons);
+        button->SetY(buttonY);
 
-    button->AddOnClickFunction([game]
-                               {
-                                    game->LoadGame();
-                               });
+        button->AddOnClickFunction([game]
+                                   {
+                                        game->LoadGame();
+                                   });
 
-    button->SetEnabled(game->IsSaveFileValid());
-
-    buttonY += button->GetHeight() + VMARGIN;
+        buttonY += button->GetHeight() + VMARGIN;
+    }
 
     // -- BUTTON MAP EDITOR --
     button = new ButtonMainMenu(sm->GetCString("MAP_EDITOR"), panelButtons);
