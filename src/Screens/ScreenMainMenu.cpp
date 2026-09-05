@@ -6,10 +6,11 @@
 #include "States/StatesIds.h"
 #include "States/StateLeavePregame.h"
 #include "Widgets/ButtonMainMenu.h"
-#include "Widgets/ButtonMainMenuWishlist.h"
 #include "Widgets/DialogChangelog.h"
+#include "Widgets/GameButton.h"
 #include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/WidgetsConstants.h"
 
 #ifdef DEMO_MODE
 #include "Widgets/WidgetCover.h"
@@ -34,7 +35,77 @@
 
 namespace
 {
+using namespace game;
+
 const int buttonsCX = 460;
+
+
+// ---- BUTTON STEAM ----
+class ButtonMainMenuSteam : public GameButton
+{
+public:
+    ButtonMainMenuSteam(sgl::sgui::Widget * parent)
+        : GameButton(parent)
+    {
+        using namespace sgl;
+
+        SetData(SpriteFileMainMenuUI,
+                {
+                    ID_MM_BTN_STEAM_NORMAL,
+                    ID_MM_BTN_STEAM_NORMAL,
+                    ID_MM_BTN_STEAM_OVER,
+                    ID_MM_BTN_STEAM_PUSHED,
+                    ID_MM_BTN_STEAM_NORMAL,
+                },
+                {
+                    0xc7ced1ff,
+                    0xc7ced1ff,
+                    0xe3e6e8ff,
+                    0xabb5baff,
+                    0xc7ced1ff
+                });
+
+        // ICON
+        const int marginIcon = 10;
+        auto tm = graphic::TextureManager::Instance();
+        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_STEAM);
+        SetIcon(tex);
+        SetIconMargin(marginIcon);
+
+        // TEXT
+        auto sm = utilities::StringManager::Instance();
+        auto fm = graphic::FontManager::Instance();
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+
+        SetLabelFont(font);
+        SetLabel(sm->GetCString("WL_NOW"));
+
+        AddOnClickFunction([]
+        {
+            utilities::System sys;
+            sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtualord_The_Virtual_Conqueror/"
+                                 "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=mainmenu");
+        });
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        GameButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        GameButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+};
+
 }
 
 namespace game
@@ -173,6 +244,17 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // CHANGELOG
     CreateChangelog();
+
+    // EXTERNAL ACTIONS PANEL
+    const int marginPanelTop = 31;
+    tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_SECOND_PANEL_BG);
+    auto panelExt = new sgui::Image(tex);
+    panelExt->SetX(screenW - panelExt->GetWidth());
+
+    auto btnSteam = new ButtonMainMenuSteam(panelExt);
+
+    buttonY = marginPanelTop;
+    btnSteam->SetPosition((panelExt->GetWidth() - btnSteam->GetWidth()) / 2, buttonY);
 
     // VERSION LABEL
     auto fntVer = fm->GetFont("Lato-Bold.ttf", 18, graphic::Font::NORMAL);

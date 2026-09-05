@@ -526,8 +526,8 @@ add_executable(
     src/Widgets/ButtonMainMenu.cpp
 
 
-    src/Widgets/ButtonMainMenuWishlist.h
-    src/Widgets/ButtonMainMenuWishlist.cpp
+
+
     src/Widgets/ButtonMinimap.h
     src/Widgets/ButtonMinimap.cpp
     src/Widgets/ButtonObjectActionOption.h
