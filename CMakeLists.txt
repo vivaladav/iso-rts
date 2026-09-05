@@ -524,8 +524,8 @@ add_executable(
     src/Widgets/ButtonDialogOk.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
-    src/Widgets/ButtonMainMenuSocial.h
-    src/Widgets/ButtonMainMenuSocial.cpp
+
+
     src/Widgets/ButtonMainMenuWishlist.h
     src/Widgets/ButtonMainMenuWishlist.cpp
     src/Widgets/ButtonMinimap.h

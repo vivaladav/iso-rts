@@ -6,7 +6,6 @@
 #include "States/StatesIds.h"
 #include "States/StateLeavePregame.h"
 #include "Widgets/ButtonMainMenu.h"
-#include "Widgets/ButtonMainMenuSocial.h"
 #include "Widgets/ButtonMainMenuWishlist.h"
 #include "Widgets/DialogChangelog.h"
 #include "Widgets/GameSimpleTooltip.h"
@@ -35,7 +34,7 @@
 
 namespace
 {
-const int buttonsCX = 450;
+const int buttonsCX = 460;
 }
 
 namespace game
@@ -54,7 +53,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto panelButtons = new sgui::Widget;
 
     int buttonY = 0;
-    const int VMARGIN = 30;
+    const int VMARGIN = 35;
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
@@ -64,10 +63,6 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto tex = tm->GetTexture("main_menu_bg.png");
 
     mBg = new graphic::Image(tex);
-
-    // -- BUILD BADGE --
-    auto bb = new sgui::Image("UI/main_menu_build_badge.png");
-    bb->SetX(screenW - bb->GetWidth());
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu(sm->GetCString("NEW_GAME"), panelButtons);
@@ -84,7 +79,8 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- WARNING TOOLTIP --
-    auto tooltipWarning = new sgui::Image("UI/main_menu_warning_bg.png");
+    tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_WARN_PANEL_BG);
+    auto tooltipWarning = new sgui::Image(tex);
 
     auto fontHeader = fm->GetFont("Lato-Regular.ttf", 26, graphic::Font::NORMAL);
     auto fontText = fm->GetFont("Lato-Regular.ttf", 16, graphic::Font::NORMAL);
@@ -153,6 +149,17 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     buttonY += button->GetHeight() + VMARGIN;
 
+    // -- CREDITS --
+    button = new ButtonMainMenu(sm->GetCString("CREDITS"), panelButtons);
+    button->SetY(buttonY);
+
+    button->AddOnClickFunction([game]
+    {
+        // TODO
+    });
+
+    buttonY += button->GetHeight() + VMARGIN;
+
     // -- BUTTON EXIT --
     button = new ButtonMainMenu(sm->GetCString("EXIT"), panelButtons);
     button->SetY(buttonY);
@@ -161,90 +168,20 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // position buttons panel
     const int containerX = buttonsCX - panelButtons->GetWidth() * 0.5f;
-    const int containerY = 280;
+    const int containerY = 350;
     panelButtons->SetPosition(containerX, containerY);
-
-    // -- BUTTON WISHLIST --
-    auto btnWishlist = new ButtonMainMenuWishlist(nullptr);
-
-    const int marginBottom = 150;
-    int buttonX = buttonsCX - btnWishlist->GetWidth() * 0.5f;
-    buttonY = screenH - marginBottom - btnWishlist->GetHeight();
-
-    btnWishlist->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtualord_The_Virtual_Conqueror/"
-                             "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=mainmenu");
-    });
-
-    btnWishlist->SetPosition(buttonX, buttonY);
-
-    // -- SOCIAL BUTTONS --
-    auto panelSocial = new sgui::Widget;
-
-    const int socialMarginH = 15;
-    int socialX = 0;
-
-    // DISCORD
-    auto btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_DISCORD, panelSocial);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
-    });
-
-    // YOUTUBE
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_YOUTUBE, panelSocial);
-    btnSocial->SetX(socialX);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
-    });
-
-    // BLUESKY
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_BLUESKY, panelSocial);
-    btnSocial->SetX(socialX);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://bsky.app/profile/voxelay.bsky.social");
-    });
-
-    // LINKEDIN
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_LINKEDIN, panelSocial);
-    btnSocial->SetX(socialX);
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");
-    });
-
-    // position panel social buttons
-    const int psMarginTop = 25;
-    const int psX = buttonsCX - panelSocial->GetWidth() * 0.5f;
-    const int psY = btnWishlist->GetY() + btnWishlist->GetHeight() + psMarginTop;
-    panelSocial->SetPosition(psX, psY);
 
     // CHANGELOG
     CreateChangelog();
 
     // VERSION LABEL
-    graphic::Font * fnt = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+    auto fntVer = fm->GetFont("Lato-Bold.ttf", 18, graphic::Font::NORMAL);
 
     const unsigned int colorVersion = 0xb2b2b2ff;
     const int marginLabelH = 15;
     const int marginLabelV = 10;
 
-    auto labelVer = new sgui::Label(VERSION, fnt);
+    auto labelVer = new sgui::Label(VERSION, fntVer);
     labelVer->SetColor(colorVersion);
 
 #if defined(DEBUG)
@@ -255,11 +192,13 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const std::string strBuildType("?");
 #endif
 
+    auto fntBuild = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+
     const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
                                  std::string(VERSION_NUM) + strBuildType + std::string("-") +
                                  std::string(VERSION_SHORT_HASH);
 
-    auto labelBuild = new sgui::Label(strBuild.c_str(), fnt);
+    auto labelBuild = new sgui::Label(strBuild.c_str(), fntBuild);
     labelBuild->SetColor(colorVersion);
 
     const int labelBuildX = screenW - labelBuild->GetWidth() - marginLabelH;

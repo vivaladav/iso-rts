@@ -35,7 +35,7 @@ ButtonMainMenuWishlist::ButtonMainMenuWishlist(sgl::sgui::Widget * parent)
     RegisterRenderable(mBody);
 
     // ICON
-    graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, IND_MM_ICON_STEAM);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_STEAM);
     mIcon = new graphic::Image(tex);
     RegisterRenderable(mIcon);
 
@@ -80,15 +80,15 @@ void ButtonMainMenuWishlist::OnStateChanged(sgl::sgui::AbstractButton::VisualSta
 {
     const unsigned int texIds[NUM_VISUAL_STATES] =
     {
-        IND_MM_BTNW_NORMAL,
-        IND_MM_BTNW_NORMAL,     // button can't be disabled
-        IND_MM_BTNW_OVER,
-        IND_MM_BTNW_PUSHED,
-        IND_MM_BTNW_NORMAL,     // button can't be checked
+        ID_MM_BTN_STEAM_NORMAL,
+        ID_MM_BTN_STEAM_NORMAL,     // button can't be disabled
+        ID_MM_BTN_STEAM_OVER,
+        ID_MM_BTN_STEAM_PUSHED,
+        ID_MM_BTN_STEAM_NORMAL,     // button can't be checked
     };
 
     auto tm = sgl::graphic::TextureManager::Instance();
-    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuButtons, texIds[state]);
+    sgl::graphic::Texture * tex = tm->GetSprite(SpriteFileMainMenuUI, texIds[state]);
     mBody->SetTexture(tex);
 
     SetSize(mBody->GetWidth(), mBody->GetHeight());

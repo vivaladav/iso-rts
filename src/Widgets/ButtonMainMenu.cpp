@@ -16,13 +16,13 @@ ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
 {
     using namespace sgl::graphic;
 
-    SetData(SpriteFileMainMenuButtons,
+    SetData(SpriteFileMainMenuUI,
             {
-                IND_MM_BTN1_NORMAL,
-                IND_MM_BTN1_DISABLED,
-                IND_MM_BTN1_OVER,
-                IND_MM_BTN1_PUSHED,
-                IND_MM_BTN1_CHECKED,
+                ID_MM_BTN1_NORMAL,
+                ID_MM_BTN1_DISABLED,
+                ID_MM_BTN1_OVER,
+                ID_MM_BTN1_PUSHED,
+                ID_MM_BTN1_NORMAL,
             },
             {
                 0xd6ebf5ff,

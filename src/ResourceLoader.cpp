@@ -104,10 +104,8 @@ void ResourceLoader::DestroyPreGameTextures()
     tm->DestroyTexture("main_menu_bg.png");
     // UI PREGAME
     tm->DestroySprite(SpriteFileDialogChangelog);
-    tm->DestroyTexture("UI/main_menu_build_badge.png");
-    tm->DestroyTexture("UI/main_menu_warning_bg.png");
     // MAIN MENU BUTTONS
-    tm->DestroySprite(SpriteFileMainMenuButtons);
+    tm->DestroySprite(SpriteFileMainMenuUI);
 
     // TEST
 #ifdef DEV_MODE
@@ -623,29 +621,39 @@ void ResourceLoader::SetupPregameTextures()
     {
         const std::vector<sgl::core::Rectd> rects
         {
+            // BACKROUNDS
+            { 0, 98, 500, 250 },
+            { 401, 0, 554, 136 },
+
             // PRIMARY BUTTON
-            { 0, 0, 360, 70 },
-            { 0, 71, 360, 70 },
-            { 0, 142, 360, 70 },
-            { 0, 213, 360, 70 },
-            { 0, 284, 360, 70 },
-            // WISHLIST BUTTON
-            { 0, 355, 285, 50 },
-            { 0, 406, 285, 50 },
-            { 0, 457, 285, 50 },
-            // SOCIAL BUTTON
-            { 286, 355, 90, 50 },
-            { 286, 406, 90, 50 },
-            { 286, 457, 90, 50 },
+            { 0, 0, 400, 60 },
+            { 0, 61, 400, 60 },
+            { 0, 122, 400, 60 },
+            { 0, 183, 400, 60 },
+
+            // STEAM BUTTON
+            { 500, 133, 400, 50 },
+            { 500, 184, 400, 50 },
+            { 500, 235, 400, 50 },
+
+            // DISCORD BUTTON
+            { 500, 286, 400, 50 },
+            { 500, 337, 400, 50 },
+            { 500, 388, 400, 50 },
+
+            // FEEDBACK BUTTON
+            { 500, 439, 400, 50 },
+            { 500, 490, 400, 50 },
+            { 500, 541, 400, 50 },
+
             // ICONS
-            { 0, 508, 32, 24 },
-            { 33, 508, 32, 24 },
-            { 66, 508, 27, 24 },
-            { 94, 508, 34, 24 },
-            { 129, 508, 24, 24 }
+            { 0, 495, 32, 24 },
+            { 33, 495, 32, 24 },
+            { 66, 495, 32, 24 },
+            { 99, 495, 16, 16 },
         };
 
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileMainMenuButtons, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileMainMenuUI, rects);
     });
 
     // ===== REGISTER TEXTURES - TEST =====
