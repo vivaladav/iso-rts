@@ -216,6 +216,13 @@ ButtonChangelog::ButtonChangelog()
     auto fnt = fm->GetFont(WidgetsConstants::FontFileButton, size, graphic::Font::NORMAL);
     SetLabelFont(fnt);
 
+    // ICON
+    const int marginIcon = 10;
+    auto tm = graphic::TextureManager::Instance();
+    auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_UP);
+    SetIcon(tex);
+    SetIconMargin(marginIcon);
+
     // TEXT
     auto sm = sgl::utilities::StringManager::Instance();
     SetLabel(sm->GetCString("UPDATES"));
