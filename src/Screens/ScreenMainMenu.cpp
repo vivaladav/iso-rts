@@ -39,6 +39,136 @@ using namespace game;
 
 const int buttonsCX = 460;
 
+// ---- BUTTON DISCORD ----
+class ButtonMainMenuDiscord : public GameButton
+{
+public:
+    ButtonMainMenuDiscord(sgl::sgui::Widget * parent)
+        : GameButton(parent)
+    {
+        using namespace sgl;
+
+        SetData(SpriteFileMainMenuUI,
+                {
+                    ID_MM_BTN_DISCORD_NORMAL,
+                    ID_MM_BTN_DISCORD_NORMAL,
+                    ID_MM_BTN_DISCORD_OVER,
+                    ID_MM_BTN_DISCORD_PUSHED,
+                    ID_MM_BTN_DISCORD_NORMAL,
+                },
+                {
+                    0xdadcf1ff,
+                    0xdadcf1ff,
+                    0xedeef8ff,
+                    0xb5b9e3ff,
+                    0xdadcf1ff
+                });
+
+        // ICON
+        const int marginIcon = 10;
+        auto tm = graphic::TextureManager::Instance();
+        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_DISCORD);
+        SetIcon(tex);
+        SetIconMargin(marginIcon);
+
+        // TEXT
+        auto sm = utilities::StringManager::Instance();
+        auto fm = graphic::FontManager::Instance();
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+
+        SetLabelFont(font);
+        SetLabel(sm->GetCString("JOIN_DISCORD"));
+
+        AddOnClickFunction([]
+        {
+            utilities::System sys;
+            sys.OpenUrlInBrowser("https://discord.gg/VkamNzEzDg");
+        });
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        GameButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        GameButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+};
+
+// ---- BUTTON FEEDBACK ----
+class ButtonMainMenuFeedback : public GameButton
+{
+public:
+    ButtonMainMenuFeedback(sgl::sgui::Widget * parent)
+        : GameButton(parent)
+    {
+        using namespace sgl;
+
+        SetData(SpriteFileMainMenuUI,
+                {
+                    ID_MM_BTN_FEEDBACK_NORMAL,
+                    ID_MM_BTN_FEEDBACK_NORMAL,
+                    ID_MM_BTN_FEEDBACK_OVER,
+                    ID_MM_BTN_FEEDBACK_PUSHED,
+                    ID_MM_BTN_FEEDBACK_NORMAL,
+                },
+                {
+                    0xdaf1e5ff,
+                    0xdaf1e5ff,
+                    0xedf8f2ff,
+                    0xb5e3cbff,
+                    0xdaf1e5ff
+                });
+
+        // ICON
+        const int marginIcon = 10;
+        auto tm = graphic::TextureManager::Instance();
+        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_FEEDBACK);
+        SetIcon(tex);
+        SetIconMargin(marginIcon);
+
+        // TEXT
+        auto sm = utilities::StringManager::Instance();
+        auto fm = graphic::FontManager::Instance();
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+
+        SetLabelFont(font);
+        SetLabel(sm->GetCString("GIVE_FEEDBACK"));
+
+        AddOnClickFunction([]
+        {
+            utilities::System sys;
+            sys.OpenUrlInBrowser("https://docs.google.com/forms/d/e/1FAIpQLSdhgF0ZyWRZrKb7etpulBOII"
+                                 "gt_marh7PNt3fNAYQECv8_6Aw/viewform?usp=header");
+        });
+    }
+
+private:
+    void HandleMouseOver() override
+    {
+        GameButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        GameButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+};
 
 // ---- BUTTON STEAM ----
 class ButtonMainMenuSteam : public GameButton
@@ -83,8 +213,9 @@ public:
         AddOnClickFunction([]
         {
             utilities::System sys;
-            sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtualord_The_Virtual_Conqueror/"
-                                 "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=mainmenu");
+            sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/"
+                                 "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
+                                 "utm_medium=button&utm_campaign=game&utm_content=mainmenu");
         });
     }
 
@@ -247,6 +378,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // EXTERNAL ACTIONS PANEL
     const int marginPanelTop = 31;
+    const int spacingButtons = 20;
     tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_SECOND_PANEL_BG);
     auto panelExt = new sgui::Image(tex);
     panelExt->SetX(screenW - panelExt->GetWidth());
@@ -255,6 +387,16 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     buttonY = marginPanelTop;
     btnSteam->SetPosition((panelExt->GetWidth() - btnSteam->GetWidth()) / 2, buttonY);
+
+    buttonY += btnSteam->GetHeight() + spacingButtons;
+
+    auto btnDiscord = new ButtonMainMenuDiscord(panelExt);
+    btnDiscord->SetPosition((panelExt->GetWidth() - btnDiscord->GetWidth()) / 2, buttonY);
+
+    buttonY += btnDiscord->GetHeight() + spacingButtons;
+
+    auto btnFeedback = new ButtonMainMenuFeedback(panelExt);
+    btnFeedback->SetPosition((panelExt->GetWidth() - btnFeedback->GetWidth()) / 2, buttonY);
 
     // VERSION LABEL
     auto fntVer = fm->GetFont("Lato-Bold.ttf", 18, graphic::Font::NORMAL);
@@ -408,6 +550,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- When building gates the object preview is oriented properly according"
                   " to the surrounding objects.\n"
                   "- Game resources and mission resources are now separated.\n"
+                  "- New main menu.\n"
                   "\n"
                   "\nCHANGES\n"
                   "\n"

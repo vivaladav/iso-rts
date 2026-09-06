@@ -26,7 +26,7 @@ ButtonMainMenu::ButtonMainMenu(const char * text, sgl::sgui::Widget * parent)
             },
             {
                 0xd6ebf5ff,
-                0x395260ff,
+                0x526f7bff,
                 0x99e5ffff,
                 0x8cd8f3ff,
                 0xf0f099Ff
