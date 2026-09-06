@@ -37,7 +37,9 @@ namespace
 {
 using namespace game;
 
-const int buttonsCX = 460;
+constexpr int buttonsCX = 460;
+
+constexpr int sizeExtBtn = 18;
 
 // ---- BUTTON DISCORD ----
 class ButtonMainMenuDiscord : public GameButton
@@ -74,7 +76,7 @@ public:
         // TEXT
         auto sm = utilities::StringManager::Instance();
         auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
 
         SetLabelFont(font);
         SetLabel(sm->GetCString("JOIN_DISCORD"));
@@ -139,7 +141,7 @@ public:
         // TEXT
         auto sm = utilities::StringManager::Instance();
         auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
 
         SetLabelFont(font);
         SetLabel(sm->GetCString("GIVE_FEEDBACK"));
@@ -205,7 +207,7 @@ public:
         // TEXT
         auto sm = utilities::StringManager::Instance();
         auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 20, graphic::Font::NORMAL);
+        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
 
         SetLabelFont(font);
         SetLabel(sm->GetCString("WL_NOW"));
