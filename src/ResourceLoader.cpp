@@ -610,10 +610,6 @@ void ResourceLoader::SetupPregameTextures()
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogChangelog, rects);
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], "UI/main_menu_build_badge.png");
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], "UI/main_menu_warning_bg.png");
     });
 
     // MAIN MENU BUTTONS
@@ -632,19 +628,19 @@ void ResourceLoader::SetupPregameTextures()
             { 0, 183, 400, 60 },
 
             // STEAM BUTTON
-            { 500, 137, 400, 50 },
-            { 500, 188, 400, 50 },
-            { 500, 239, 400, 50 },
+            { 500, 137, 440, 50 },
+            { 500, 188, 440, 50 },
+            { 500, 239, 440, 50 },
 
             // DISCORD BUTTON
-            { 500, 290, 400, 50 },
-            { 500, 341, 400, 50 },
-            { 500, 392, 400, 50 },
+            { 500, 290, 440, 50 },
+            { 500, 341, 440, 50 },
+            { 500, 392, 440, 50 },
 
             // FEEDBACK BUTTON
-            { 500, 443, 400, 50 },
-            { 500, 494, 400, 50 },
-            { 500, 545, 400, 50 },
+            { 500, 443, 440, 50 },
+            { 500, 494, 440, 50 },
+            { 500, 545, 440, 50 },
 
             // ICONS
             { 0, 495, 32, 24 },
