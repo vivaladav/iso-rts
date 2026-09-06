@@ -266,6 +266,17 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     mBg = new graphic::Image(tex);
 
+#ifdef DEMO_MODE
+    auto fontDemo = fm->GetFont("Lato-Bold.ttf", 38, graphic::Font::NORMAL);
+
+    auto labelDemo = new sgui::Label("DEMO", fontDemo);
+    labelDemo->SetColor(0xf7796eff);
+
+    const int demoX = buttonsCX - labelDemo->GetWidth() / 2;
+    const int demoY = 215;
+    labelDemo->SetPosition(demoX, demoY);
+#endif
+
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu(sm->GetCString("NEW_GAME"), panelButtons);
 
