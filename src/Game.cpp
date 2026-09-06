@@ -606,7 +606,7 @@ bool Game::SaveSettings()
     }
 
     // version
-    bf.WriteString(SAVE_VERSION);
+    bf.WriteString(SETTINGS_VERSION);
 
     // settings
     bf.WriteUint(mLanguage);

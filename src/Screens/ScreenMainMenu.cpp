@@ -572,6 +572,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Focus areas of hidden buttons are no longer visible when tutorial is paused.\n"
                   "- Cactus bushes are surrounder by the right ground when spawning new elements.\n"
                   "- Resource limits are reset when starting a new mission.\n"
+                  "- Settings loading again after initial version changed.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
