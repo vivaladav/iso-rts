@@ -410,7 +410,7 @@ bool MissionGoalsTracker::CheckIfGoalCompleted(MissionGoal & g)
 
             return false;
         }
-        else if (state == TS_ABORTED)
+        else if(state == TS_ABORTED)
         {
             g.SetProgress(0);
             return false;

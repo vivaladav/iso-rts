@@ -530,6 +530,8 @@ ScreenPlanetMap::~ScreenPlanetMap()
 {
     delete mBg;
 
+    GetGame()->GetTutorialManager()->ClearLastStartedTutorialId();
+
     sgl::sgui::Stage::Instance()->ClearWidgets();
 }
 

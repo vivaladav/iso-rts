@@ -135,6 +135,7 @@ ScreenGame::~ScreenGame()
 
     game->RemoveOnSettingsChangedFunction(mIdOnSettingsChanged);
     game->ClearAllAIActivePlayers();
+    game->GetTutorialManager()->ClearLastStartedTutorialId();
 
     delete mPathfinder;
     delete mPartMan;

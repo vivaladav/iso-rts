@@ -35,6 +35,7 @@ public:
 
     const Tutorial * GetActiveTutorial() const;
     TutorialId GetLastStartedTutorialId() const;
+    void ClearLastStartedTutorialId();
     bool HasActiveTutorial() const;
 
     void Update(float delta);

@@ -573,6 +573,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Cactus bushes are surrounder by the right ground when spawning new elements.\n"
                   "- Resource limits are reset when starting a new mission.\n"
                   "- Settings loading again after initial version changed.\n"
+                  "- Mission goal completed tutorial is awarded only once.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
