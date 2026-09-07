@@ -197,25 +197,6 @@ bool MissionGoalsTracker::Save(sgl::utilities::BinaryFile & bf) const
     return true;
 }
 
-void MissionGoalsTracker::SetGoals(const std::vector<MissionGoal> & goals)
-{
-    mMissionGoals = goals;
-
-    // remove tutorial missions if tutorial is disabled
-    if(!mGame->IsTutorialEnabled())
-    {
-        auto it = mMissionGoals.begin();
-
-        while(it != mMissionGoals.end())
-        {
-            if(it->GetCategory() == MC_TUTORIAL)
-                it = mMissionGoals.erase(it);
-            else
-                ++it;
-        }
-    }
-}
-
 unsigned int MissionGoalsTracker::AddOnGoalCollectedFunction(const std::function<void()> & f)
 {
     static unsigned int num = 0;

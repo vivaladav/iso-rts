@@ -35,6 +35,7 @@ public:
 
     const Tutorial * GetActiveTutorial() const;
     TutorialId GetLastStartedTutorialId() const;
+    bool IsLastTutorialIdNotNull() const;
     void ClearLastStartedTutorialId();
     bool HasActiveTutorial() const;
 

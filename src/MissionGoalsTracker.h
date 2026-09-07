@@ -111,6 +111,10 @@ inline const std::vector<MissionGoal> & MissionGoalsTracker::GetGoals() const
 {
     return mMissionGoals;
 }
+inline void MissionGoalsTracker::SetGoals(const std::vector<MissionGoal> & goals)
+{
+    mMissionGoals = goals;
+}
 
 inline unsigned int MissionGoalsTracker::GetNumCompletedGoals() const { return mCompletedGoals; }
 inline unsigned int MissionGoalsTracker::GetNumGoalsToCollect() const { return mGoalsToCollect; }

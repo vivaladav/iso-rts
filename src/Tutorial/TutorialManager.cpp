@@ -167,6 +167,11 @@ void TutorialManager::SetTutorialPause(bool paused)
         mActiveTutorial->SetPause(paused);
 }
 
+bool TutorialManager::IsLastTutorialIdNotNull() const
+{
+    return mLastStartedTutorialId < NUM_TUTORIALS;
+}
+
 void TutorialManager::ClearLastStartedTutorialId()
 {
     mLastStartedTutorialId = TUTORIAL_UNKNOWN;

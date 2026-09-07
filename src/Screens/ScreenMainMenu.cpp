@@ -566,6 +566,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- New main menu.\n"
                   "\n"
                   "\nCHANGES\n"
+                  "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
                   "\n"
                   "\nFIXES\n"
                   "- Changelog dialog no longer steals mouse input from main menu buttons.\n"

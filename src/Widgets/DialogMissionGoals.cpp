@@ -1,8 +1,10 @@
 #include "Widgets/DialogMissionGoals.h"
 
+#include "Game.h"
 #include "GameConstants.h"
 #include "MissionGoal.h"
 #include "MissionGoalsTracker.h"
+#include "Tutorial/TutorialManager.h"
 #include "Widgets/ButtonDialogClose.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -135,12 +137,12 @@ namespace game
 {
 
 // ===== DIALOG =====
-DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt)
+DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt, Game * game)
     : mTrackerMG(mgt)
 {
     using namespace sgl;
 
-    const std::vector<MissionGoal> & goals = mTrackerMG->GetGoals();
+    const std::vector<MissionGoal> & fullGoals = mTrackerMG->GetGoals();
 
     auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
@@ -162,6 +164,20 @@ DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt)
     const int paddingHeaderGoalH = 5;
     const int endButtonAreaH = 45;
 
+    // clear goals if not needed
+    std::vector<MissionGoal> goals;
+
+    for(auto it = fullGoals.begin(); it != fullGoals.end(); ++it)
+    {
+        // skip tutorial goals if not playing it
+        if(it->GetCategory() == MC_TUTORIAL &&
+          (!game->IsTutorialEnabled() || !game->GetTutorialManager()->IsLastTutorialIdNotNull()))
+            continue;
+
+        goals.emplace_back(*it);
+    }
+
+    // setup goals data
     const unsigned int numGoals = goals.size();
     unsigned int numPrimaryGoals = 0;
     unsigned int numPrimaryGoalsCompleted = 0;
