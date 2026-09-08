@@ -326,7 +326,7 @@ bool Game::LoadGame()
 
     if(!mReaderSave->IsOpen())
     {
-        std::cout << "[ERR] Game::GetSaveFileForReading - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::LoadGame - can't open file " << mCurrSaveFile << std::endl;
 
         delete mReaderSave;
         mReaderSave = nullptr;
@@ -338,7 +338,7 @@ bool Game::LoadGame()
 
     if(version != SAVE_VERSION)
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << mCurrSaveFile << " is "
+        std::cout << "[ERR] Game::LoadGame - version in file " << mCurrSaveFile << " is "
                   << version << " (expected " << SAVE_VERSION << ")" << std::endl;
         return false;
     }
