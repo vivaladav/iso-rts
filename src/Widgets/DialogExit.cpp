@@ -243,17 +243,33 @@ DialogExit::DialogExit(DialogButtons buttons, Game * game, Screen * screen)
     const std::string urlSteam("https://store.steampowered.com/app/1607580/"
                                "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
                                "utm_medium=button&utm_campaign=game&utm_content=exitdialog");
-    auto btn2 = new ButtonExtSteam(urlSteam, this);
+    auto btnSteam = new ButtonExtSteam(urlSteam, this);
 
-    const int marginBottom = 20;
-    btnX = (w - btn2->GetWidth()) / 2;
+    btnX = (w - btnSteam->GetWidth()) / 2;
+    btnSteam->SetPosition(btnX, btnY);
 
-    btn2->SetPosition(btnX, btnY);
+    btnY += btnSteam->GetHeight() + marginBtnV;
+    contentH += btnSteam->GetHeight() + marginBtnV;
+
+    // BUTTON DISCORD
+    auto btnDiscord = new ButtonExtDiscord(this);
+
+    btnX = (w - btnDiscord->GetWidth()) / 2;
+    btnDiscord->SetPosition(btnX, btnY);
+
+    btnY += btnDiscord->GetHeight() + marginBtnV;
+    contentH += btnDiscord->GetHeight() + marginBtnV;
+
+    // BUTTON Feedback
+    auto btnFeedback = new ButtonExtFeedback(this);
+
+    btnX = (w - btnFeedback->GetWidth()) / 2;
+    btnFeedback->SetPosition(btnX, btnY);
 
     // UPDATE SIZE
     mBgMid->SetHeight(contentH);
 
-    const int h = mBgTop->GetHeight() + mBgMid->GetHeight() + mBgBot->GetHeight();
+    const int h = mBgTop->GetHeight() + contentH + mBgBot->GetHeight();
     SetSize(w, h);
 }
 
