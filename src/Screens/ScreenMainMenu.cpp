@@ -50,13 +50,13 @@ public:
     {
         using namespace sgl;
 
-        SetData(SpriteFileMainMenuUI,
+        SetData(SpriteFileUIShared,
                 {
-                    ID_MM_BTN_DISCORD_NORMAL,
-                    ID_MM_BTN_DISCORD_NORMAL,
-                    ID_MM_BTN_DISCORD_OVER,
-                    ID_MM_BTN_DISCORD_PUSHED,
-                    ID_MM_BTN_DISCORD_NORMAL,
+                    ID_BTN_DISCORD_NORMAL,
+                    ID_BTN_DISCORD_NORMAL,
+                    ID_BTN_DISCORD_OVER,
+                    ID_BTN_DISCORD_PUSHED,
+                    ID_BTN_DISCORD_NORMAL,
                 },
                 {
                     0xdadcf1ff,
@@ -69,7 +69,7 @@ public:
         // ICON
         const int marginIcon = 10;
         auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_DISCORD);
+        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_DISCORD);
         SetIcon(tex);
         SetIconMargin(marginIcon);
 
@@ -115,13 +115,13 @@ public:
     {
         using namespace sgl;
 
-        SetData(SpriteFileMainMenuUI,
+        SetData(SpriteFileUIShared,
                 {
-                    ID_MM_BTN_FEEDBACK_NORMAL,
-                    ID_MM_BTN_FEEDBACK_NORMAL,
-                    ID_MM_BTN_FEEDBACK_OVER,
-                    ID_MM_BTN_FEEDBACK_PUSHED,
-                    ID_MM_BTN_FEEDBACK_NORMAL,
+                    ID_BTN_FEEDBACK_NORMAL,
+                    ID_BTN_FEEDBACK_NORMAL,
+                    ID_BTN_FEEDBACK_OVER,
+                    ID_BTN_FEEDBACK_PUSHED,
+                    ID_BTN_FEEDBACK_NORMAL,
                 },
                 {
                     0xdaf1e5ff,
@@ -134,7 +134,7 @@ public:
         // ICON
         const int marginIcon = 10;
         auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_FEEDBACK);
+        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_FEEDBACK);
         SetIcon(tex);
         SetIconMargin(marginIcon);
 
@@ -181,13 +181,13 @@ public:
     {
         using namespace sgl;
 
-        SetData(SpriteFileMainMenuUI,
+        SetData(SpriteFileUIShared,
                 {
-                    ID_MM_BTN_STEAM_NORMAL,
-                    ID_MM_BTN_STEAM_NORMAL,
-                    ID_MM_BTN_STEAM_OVER,
-                    ID_MM_BTN_STEAM_PUSHED,
-                    ID_MM_BTN_STEAM_NORMAL,
+                    ID_BTN_STEAM_NORMAL,
+                    ID_BTN_STEAM_NORMAL,
+                    ID_BTN_STEAM_OVER,
+                    ID_BTN_STEAM_PUSHED,
+                    ID_BTN_STEAM_NORMAL,
                 },
                 {
                     0xc7ced1ff,
@@ -200,7 +200,7 @@ public:
         // ICON
         const int marginIcon = 10;
         auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_STEAM);
+        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_STEAM);
         SetIcon(tex);
         SetIconMargin(marginIcon);
 

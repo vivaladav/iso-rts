@@ -131,11 +131,11 @@ private:
 
         const unsigned int texBgIds[NUM_VISUAL_STATES] =
             {
-                ID_DLG_EXIT_BTN_WL_NORMAL,
-                ID_DLG_EXIT_BTN_WL_NORMAL,
-                ID_DLG_EXIT_BTN_WL_OVER,
-                ID_DLG_EXIT_BTN_WL_PUSHED,
-                ID_DLG_EXIT_BTN_WL_PUSHED
+                ID_BTN_STEAM_NORMAL,
+                ID_BTN_STEAM_NORMAL,
+                ID_BTN_STEAM_OVER,
+                ID_BTN_STEAM_PUSHED,
+                ID_BTN_STEAM_NORMAL,
             };
 
         const unsigned int colorsTxt[NUM_VISUAL_STATES] =
@@ -149,13 +149,13 @@ private:
 
         // body
         auto tm = graphic::TextureManager::Instance();
-        graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, texBgIds[state]);
+        graphic::Texture * tex = tm->GetSprite(SpriteFileUIShared, texBgIds[state]);
         mBody->SetTexture(tex);
 
         SetSize(mBody->GetWidth(), mBody->GetHeight());
 
         // icon
-        tex = tm->GetSprite(SpriteFileDialogExit, ID_DLG_EXIT_ICON_STEAM);
+        tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_STEAM);
         mIcon->SetTexture(tex);
 
         mIcon->SetColor(colorsTxt[state]);
