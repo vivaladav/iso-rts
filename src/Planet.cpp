@@ -104,7 +104,10 @@ bool Planet::AddMap(const std::string & file,
 {
     // load data from header
     MapIO mio;
-    mio.LoadHeader(file);
+    const bool res = mio.LoadHeader(file, true);
+
+    if(!res)
+        return false;
 
     const MissionCategory mission = mio.GetMissionCategory();
     const unsigned int rows = mio.GetMapRows();

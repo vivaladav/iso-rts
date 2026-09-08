@@ -1100,7 +1100,11 @@ void ScreenGame::LoadMapFile()
     const std::string & mapFile = GetGame()->GetCurrentMapFile();
 
     MapIO mio;
-    mio.Load(mapFile);
+    const bool res = mio.Load(mapFile, true);
+
+    // load failed
+    if(!res)
+        return;
 
     const unsigned int rows = mio.GetMapRows();
     const unsigned int cols = mio.GetMapCols();
