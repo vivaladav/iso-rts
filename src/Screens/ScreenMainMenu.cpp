@@ -7,10 +7,10 @@
 #include "States/StateLeavePregame.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/DialogChangelog.h"
+#include "Widgets/ExternalButtons.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
-#include "Widgets/WidgetsConstants.h"
 
 #ifdef DEMO_MODE
 #include "Widgets/WidgetCover.h"
@@ -35,210 +35,7 @@
 
 namespace
 {
-using namespace game;
-
 constexpr int buttonsCX = 460;
-
-constexpr int sizeExtBtn = 18;
-
-// ---- BUTTON DISCORD ----
-class ButtonMainMenuDiscord : public GameButton
-{
-public:
-    ButtonMainMenuDiscord(sgl::sgui::Widget * parent)
-        : GameButton(parent)
-    {
-        using namespace sgl;
-
-        SetData(SpriteFileUIShared,
-                {
-                    ID_BTN_DISCORD_NORMAL,
-                    ID_BTN_DISCORD_NORMAL,
-                    ID_BTN_DISCORD_OVER,
-                    ID_BTN_DISCORD_PUSHED,
-                    ID_BTN_DISCORD_NORMAL,
-                },
-                {
-                    0xdadcf1ff,
-                    0xdadcf1ff,
-                    0xedeef8ff,
-                    0xb5b9e3ff,
-                    0xdadcf1ff
-                });
-
-        // ICON
-        const int marginIcon = 10;
-        auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_DISCORD);
-        SetIcon(tex);
-        SetIconMargin(marginIcon);
-
-        // TEXT
-        auto sm = utilities::StringManager::Instance();
-        auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
-
-        SetLabelFont(font);
-        SetLabel(sm->GetCString("JOIN_DISCORD"));
-
-        AddOnClickFunction([]
-        {
-            utilities::System sys;
-            sys.OpenUrlInBrowser("https://discord.gg/VkamNzEzDg");
-        });
-    }
-
-private:
-    void HandleMouseOver() override
-    {
-        GameButton::HandleMouseOver();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_over-02.ogg");
-    }
-
-    void HandleButtonDown() override
-    {
-        GameButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_click-01.ogg");
-    }
-};
-
-// ---- BUTTON FEEDBACK ----
-class ButtonMainMenuFeedback : public GameButton
-{
-public:
-    ButtonMainMenuFeedback(sgl::sgui::Widget * parent)
-        : GameButton(parent)
-    {
-        using namespace sgl;
-
-        SetData(SpriteFileUIShared,
-                {
-                    ID_BTN_FEEDBACK_NORMAL,
-                    ID_BTN_FEEDBACK_NORMAL,
-                    ID_BTN_FEEDBACK_OVER,
-                    ID_BTN_FEEDBACK_PUSHED,
-                    ID_BTN_FEEDBACK_NORMAL,
-                },
-                {
-                    0xdaf1e5ff,
-                    0xdaf1e5ff,
-                    0xedf8f2ff,
-                    0xb5e3cbff,
-                    0xdaf1e5ff
-                });
-
-        // ICON
-        const int marginIcon = 10;
-        auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_FEEDBACK);
-        SetIcon(tex);
-        SetIconMargin(marginIcon);
-
-        // TEXT
-        auto sm = utilities::StringManager::Instance();
-        auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
-
-        SetLabelFont(font);
-        SetLabel(sm->GetCString("GIVE_FEEDBACK"));
-
-        AddOnClickFunction([]
-        {
-            utilities::System sys;
-            sys.OpenUrlInBrowser("https://docs.google.com/forms/d/e/1FAIpQLSdhgF0ZyWRZrKb7etpulBOII"
-                                 "gt_marh7PNt3fNAYQECv8_6Aw/viewform?usp=header");
-        });
-    }
-
-private:
-    void HandleMouseOver() override
-    {
-        GameButton::HandleMouseOver();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_over-02.ogg");
-    }
-
-    void HandleButtonDown() override
-    {
-        GameButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_click-01.ogg");
-    }
-};
-
-// ---- BUTTON STEAM ----
-class ButtonMainMenuSteam : public GameButton
-{
-public:
-    ButtonMainMenuSteam(sgl::sgui::Widget * parent)
-        : GameButton(parent)
-    {
-        using namespace sgl;
-
-        SetData(SpriteFileUIShared,
-                {
-                    ID_BTN_STEAM_NORMAL,
-                    ID_BTN_STEAM_NORMAL,
-                    ID_BTN_STEAM_OVER,
-                    ID_BTN_STEAM_PUSHED,
-                    ID_BTN_STEAM_NORMAL,
-                },
-                {
-                    0xc7ced1ff,
-                    0xc7ced1ff,
-                    0xe3e6e8ff,
-                    0xabb5baff,
-                    0xc7ced1ff
-                });
-
-        // ICON
-        const int marginIcon = 10;
-        auto tm = graphic::TextureManager::Instance();
-        auto tex = tm->GetSprite(SpriteFileUIShared, ID_ICON_STEAM);
-        SetIcon(tex);
-        SetIconMargin(marginIcon);
-
-        // TEXT
-        auto sm = utilities::StringManager::Instance();
-        auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, sizeExtBtn, graphic::Font::NORMAL);
-
-        SetLabelFont(font);
-        SetLabel(sm->GetCString("WL_NOW"));
-
-        AddOnClickFunction([]
-        {
-            utilities::System sys;
-            sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/"
-                                 "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
-                                 "utm_medium=button&utm_campaign=game&utm_content=mainmenu");
-        });
-    }
-
-private:
-    void HandleMouseOver() override
-    {
-        GameButton::HandleMouseOver();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_over-02.ogg");
-    }
-
-    void HandleButtonDown() override
-    {
-        GameButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_click-01.ogg");
-    }
-};
-
 }
 
 namespace game
@@ -396,19 +193,22 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto panelExt = new sgui::Image(tex);
     panelExt->SetX(screenW - panelExt->GetWidth());
 
-    auto btnSteam = new ButtonMainMenuSteam(panelExt);
+    const std::string urlSteam("https://store.steampowered.com/app/1607580/"
+                               "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
+                               "utm_medium=button&utm_campaign=game&utm_content=mainmenu");
+    auto btnSteam = new ButtonExtSteam(urlSteam, panelExt);
 
     buttonY = marginPanelTop;
     btnSteam->SetPosition((panelExt->GetWidth() - btnSteam->GetWidth()) / 2, buttonY);
 
     buttonY += btnSteam->GetHeight() + spacingButtons;
 
-    auto btnDiscord = new ButtonMainMenuDiscord(panelExt);
+    auto btnDiscord = new ButtonExtDiscord(panelExt);
     btnDiscord->SetPosition((panelExt->GetWidth() - btnDiscord->GetWidth()) / 2, buttonY);
 
     buttonY += btnDiscord->GetHeight() + spacingButtons;
 
-    auto btnFeedback = new ButtonMainMenuFeedback(panelExt);
+    auto btnFeedback = new ButtonExtFeedback(panelExt);
     btnFeedback->SetPosition((panelExt->GetWidth() - btnFeedback->GetWidth()) / 2, buttonY);
 
     // VERSION LABEL

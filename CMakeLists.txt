@@ -524,10 +524,6 @@ add_executable(
     src/Widgets/ButtonDialogOk.cpp
     src/Widgets/ButtonMainMenu.h
     src/Widgets/ButtonMainMenu.cpp
-
-
-
-
     src/Widgets/ButtonMinimap.h
     src/Widgets/ButtonMinimap.cpp
     src/Widgets/ButtonObjectActionOption.h
@@ -582,6 +578,8 @@ add_executable(
     src/Widgets/DigitsDisplay.cpp
     src/Widgets/DisappearingLabel.h
     src/Widgets/DisappearingLabel.cpp
+    src/Widgets/ExternalButtons.h
+    src/Widgets/ExternalButtons.cpp
     src/Widgets/GameButton.h
     src/Widgets/GameButton.cpp
     src/Widgets/GameHUD.h
