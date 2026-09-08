@@ -57,22 +57,36 @@ public:
 
     void Clear();
 
-    bool Load(const std::string & filename);
-    bool LoadHeader(const std::string & filename);
+    bool Load(const std::string & filename, bool binary);
+    bool LoadHeader(const std::string & filename, bool binary);
 
     bool Save(const std::string & filename, const std::vector<GameMapCell> & cells,
               const std::vector<GameObject *> & objects, const std::vector<MissionGoal> & goals,
-              int rows, int cols);
+              int rows, int cols, bool binary);
 
 private:
+    bool LoadBinary(const std::string & filename);
+    bool LoadText(const std::string & filename);
+    bool LoadHeaderBinary(const std::string & filename);
+    bool LoadHeaderText(const std::string & filename);
+
+    bool SaveBinary(const std::string & filename, const std::vector<GameMapCell> & cells,
+                    const std::vector<GameObject *> & objects,
+                    const std::vector<MissionGoal> & goals, int rows, int cols);
+
+    bool SaveText(const std::string & filename, const std::vector<GameMapCell> & cells,
+                  const std::vector<GameObject *> & objects, const std::vector<MissionGoal> & goals,
+                  int rows, int cols);
+
     int DefineStatResourceForCells(const std::vector<GameMapCell> & cells, CellTypes res) const;
     int DefineStatResourceForObjects(const std::vector<GameObject *> & objects,
                                      int mapSize, GameObjectTypeId type) const;
     int DefineStatValue(int statBlobs, int statDiamonds, int statEnergy, int statMaterial) const;
 
-    void ReadHeader(std::fstream & fs);
-    void ReadMap(std::fstream & fs);
-    void ReadObjectsData(std::fstream & fs);
+    bool ReadHeaderBinary(sgl::utilities::BinaryFile & bf);
+    bool ReadHeaderText(std::fstream & fs);
+    void ReadDataBinary(sgl::utilities::BinaryFile & bf);
+    void ReadDataText(std::fstream & fs);
 
 private:
     // -- FILE TAGS --
