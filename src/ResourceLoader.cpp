@@ -107,6 +107,13 @@ void ResourceLoader::DestroyPreGameTextures()
     // MAIN MENU BUTTONS
     tm->DestroySprite(SpriteFileMainMenuUI);
 
+    // DELETE PACKAGES
+    delete mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME];
+    mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_PREGAME];
+    mTexPackages[PACKAGE_IMGS_UI_PREGAME] = nullptr;
+
     // TEST
 #ifdef DEV_MODE
     tm->DestroySprite(SpriteFileTestSprite);
@@ -118,6 +125,9 @@ void ResourceLoader::DestroyPreGameTextures()
     tm->DestroyTexture("test/test-bar-nobg.png");
     tm->DestroyTexture("test/text_area.png");
     tm->DestroyTexture(SpriteFileTestSprite);
+
+    delete mTexPackages[PACKAGE_IMGS_TEST];
+    mTexPackages[PACKAGE_IMGS_TEST] = nullptr;
 #endif
 }
 
@@ -216,6 +226,16 @@ void ResourceLoader::DestroyGameTextures()
     // ===== UI TUTORIAL =====
     tm->DestroySprite(SpriteFileTutorial);
     tm->DestroySprite(SpriteFileTutorialExp);
+
+    // DELETE PACKAGES
+    delete mTexPackages[PACKAGE_IMGS_GAME];
+    mTexPackages[PACKAGE_IMGS_GAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_GAME];
+    mTexPackages[PACKAGE_IMGS_UI_GAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_TUTORIAL];
+    mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] = nullptr;
 }
 
 void ResourceLoader::Update(float delta)
@@ -585,7 +605,7 @@ void ResourceLoader::SetupPregameTextures()
     {
         mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] =
             new sgl::core::DataPackage("data/img/backgrounds-pregame.bin");
-    });
+        });
 
 #ifdef DEV_MODE
     // TEST
@@ -741,7 +761,7 @@ void ResourceLoader::SetupGameTextures()
         mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] = new sgl::core::DataPackage("data/img/UI/UI-tutorial.bin");
     });
 
-        auto tm = sgl::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // CELLS
     mJobs.emplace_back([this, tm]
