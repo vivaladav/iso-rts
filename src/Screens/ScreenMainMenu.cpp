@@ -364,10 +364,9 @@ void ScreenMainMenu::CreateChangelog()
                   " to the surrounding objects.\n"
                   "- Game resources and mission resources are now separated.\n"
                   "- New main menu.\n"
-                  "\n"
                   "\nCHANGES\n"
                   "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
-                  "\n"
+                  "- Simplified and reduced explanations in tutorial 1.\n"
                   "\nFIXES\n"
                   "- Changelog dialog no longer steals mouse input from main menu buttons.\n"
                   "- Focus areas of hidden buttons are no longer visible when tutorial is paused.\n"
@@ -376,7 +375,6 @@ void ScreenMainMenu::CreateChangelog()
                   "- Settings loading again after initial version changed.\n"
                   "- Mission goal completed tutorial is awarded only once.\n"
                   "- Faction energy is properly reset after laoding.\n"
-                  "\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

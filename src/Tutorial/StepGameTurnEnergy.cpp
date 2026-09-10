@@ -28,7 +28,6 @@ StepGameTurnEnergy::StepGameTurnEnergy(const GameHUD * HUD)
 
     info->SetPosition(1200, 450);
 
-    info->AddInfoEntry(sm->GetCString("TUT_GAME_TURN_ENERGY_1"), 9.f, true, true);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_TURN_ENERGY_2"), 10.f, true, false);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_TURN_ENERGY_3"), 8.f, true, false, [this, HUD]
                        {

@@ -75,12 +75,6 @@ StepGameMissionGoalsDialog::StepGameMissionGoalsDialog(GameHUD * HUD)
                             mFocusArea->SetVisible(true);
                         });
 
-    info->AddInfoEntry(sm->GetCString("TUT_GAME_MISSION_GOALS_DIALOG_4"), 8.f, true, true, [this]
-                        {
-                            mFocusArea->SetCornersColorElement();
-                            mFocusArea->SetVisible(false);
-                        });
-
     info->AddActionEntry(sm->GetCString("TUT_GAME_MISSION_GOALS_DIALOG_5"), 0.f, false, false, [this]
                         {
                             auto dialog = mHUD->GetDialogMissionGoals();

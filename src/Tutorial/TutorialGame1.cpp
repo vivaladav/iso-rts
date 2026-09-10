@@ -56,6 +56,7 @@
 #include "Tutorial/StepGameSetSelectionActiveAction.h"
 #include "Tutorial/StepGameSetSelectionAllowed.h"
 #include "Tutorial/StepGameSetSelectionDefaultAction.h"
+#include "Tutorial/StepGameSingleInfo.h"
 #include "Tutorial/StepGameStructConnected.h"
 #include "Tutorial/StepGameStructDisconnected.h"
 #include "Tutorial/StepGameTestCameraFocus.h"
@@ -180,7 +181,11 @@ TutorialGame1::TutorialGame1(Screen * screen)
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([] { return new StepGameStructConnected; });
+    AddStep([]
+        {
+            const core::Pointd2D p0(1150, 450);
+            return new StepGameSingleInfo(p0, "TUT_GAME_STRUCT_CONNECTED_1");
+        });
     AddStep([] { return new StepDelay(0.5f); });
     // CONQUER MATERIAL GENERATOR INTRO
     AddStep([game]
@@ -321,6 +326,8 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(1000, 300);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([] { return new StepGameStructConnected; });
     AddStep([] { return new StepDelay(0.5f); });
     // END TURN
     AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
@@ -656,7 +663,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
             {
-                const core::Pointd2D p0(800, 500);
+                const core::Pointd2D p0(250, 600);
                 return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1c", p0);
             });
     AddStep([] { return new StepDelay(0.5f); });
