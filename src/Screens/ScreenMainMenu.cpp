@@ -162,15 +162,16 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- CREDITS --
-    button = new ButtonMainMenu(sm->GetCString("CREDITS"), panelButtons);
-    button->SetY(buttonY);
+    // TODO - re-enable when credits page is done
+    // button = new ButtonMainMenu(sm->GetCString("CREDITS"), panelButtons);
+    // button->SetY(buttonY);
 
-    button->AddOnClickFunction([game]
-    {
-        // TODO
-    });
+    // button->AddOnClickFunction([game]
+    // {
+    //     // TODO
+    // });
 
-    buttonY += button->GetHeight() + VMARGIN;
+    // buttonY += button->GetHeight() + VMARGIN;
 
     // -- BUTTON EXIT --
     button = new ButtonMainMenu(sm->GetCString("EXIT"), panelButtons);
