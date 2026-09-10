@@ -83,6 +83,12 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
     SetState(NORMAL);
 }
 
+ObjectActionButton::~ObjectActionButton()
+{
+    delete mNotificationBg;
+    delete mNotificationLabel;
+}
+
 void ObjectActionButton::SetTooltipText(const char * text)
 {
     if(mTooltip == nullptr)
