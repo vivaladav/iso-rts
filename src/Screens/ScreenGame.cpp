@@ -202,6 +202,17 @@ void ScreenGame::InitLoadedGame()
     auto cam = sgl::graphic::Camera::GetDefaultCamera();
     cam->SetPosition(mCameraInitPos.x, mCameraInitPos.y);
 
+    // update Players
+    auto game = GetGame();
+
+    const unsigned int numPlayers = game->GetNumActivePlayers();
+
+    for(int i = 0; i < numPlayers; ++i)
+    {
+        Player * p = game->GetActivePlayerByIndex(i);
+        p->AdjustTurnMaxEnergy();
+    }
+
     // update selection
     if(mLastSelected != nullptr)
     {

@@ -375,6 +375,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Resource limits are reset when starting a new mission.\n"
                   "- Settings loading again after initial version changed.\n"
                   "- Mission goal completed tutorial is awarded only once.\n"
+                  "- Faction energy is properly reset after laoding.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
