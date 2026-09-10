@@ -50,7 +50,7 @@ MissionGoalsTracker::MissionGoalsTracker(Game * g, Player * p)
         mResourceTrackerIds[i] = mPlayer->AddOnResourceChanged(resId,
             [this, resId](const StatValue *, int oldVal, int newVal)
             {
-                if(newVal > oldVal)
+                if(mStart && newVal > oldVal)
                     mResourcesGained[resId] += newVal - oldVal;
             });
     }
@@ -249,6 +249,9 @@ void MissionGoalsTracker::CollectMissionGoalReward(unsigned int index)
 
 void MissionGoalsTracker::Update()
 {
+    if(!mStart)
+        return;
+
     // check goals
     unsigned int primaryGoals = 0;
     unsigned int completedPrimaryGoals = 0;

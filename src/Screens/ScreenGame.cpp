@@ -609,6 +609,9 @@ void ScreenGame::InitGame()
                                                    base->OnGoalsCollected();
                                            });
 
+    // start tracking data
+    mTrackerMG->Start();
+
     // CONFIGURE CAMERA LIMITS
     auto cam = sgl::graphic::Camera::GetDefaultCamera();
 
