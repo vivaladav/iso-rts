@@ -2167,6 +2167,30 @@ void ResourceLoader::SetupGameTextures()
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewElementExp, rectsExp);
     });
 
+    // NEW GAME DIALOG
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 80, 925 },
+            { 81, 0, 365, 925 },
+            // PANELS
+            { 447, 0, 580, 740 },
+            // BUTTON
+            { 1028, 0, 540, 200 },
+            { 1028, 201, 540, 200 },
+            { 1028, 402, 540, 200 },
+            { 1028, 60, 540, 200 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGame, rects);
+
+        // NEW GAME DIALOG - EXPANDABLE GRAPHICS
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGameExp);
+    });
+
+
     // NEW MINI UNITS SQUAD DIALOG
     mJobs.emplace_back([this, tm]
     {

@@ -101,7 +101,7 @@ void ScreenInitGame::UpdateStatus()
     // all done
     if(currJob == numJobs)
     {
-        GetGame()->RequestNextActiveState(StateId::FACTION_SEL);
+        GetGame()->RequestNextActiveState(StateId::NEW_GAME_SETUP);
 
         #ifdef DEV_MODE
         std::cout << "ScreenInitGame - LOADING TIME: " << mTimeLoad << " seconds" << std::endl;

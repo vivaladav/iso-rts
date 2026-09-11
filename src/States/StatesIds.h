@@ -9,6 +9,7 @@ enum StateId : unsigned int
     INIT_GAME,
     GAME,
     MAIN_MENU,
+    NEW_GAME_SETUP,
     FACTION_SEL,
     LEAVE_GAME,
     LEAVE_PREGAME,

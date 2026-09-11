@@ -17,6 +17,7 @@
 #include "States/StateLoadGame.h"
 #include "States/StateMainMenu.h"
 #include "States/StateNewGame.h"
+#include "States/StateNewGameSetup.h"
 #include "States/StatePlanetMap.h"
 #include "States/StateSettings.h"
 #include "States/StateTest.h"
@@ -135,6 +136,7 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new utilities::StateManager;
 
+    mStateMan->AddState(new StateNewGameSetup(this));
     mStateMan->AddState(new StateFactionSelection(this));
     mStateMan->AddState(new StateGame(this));
     mStateMan->AddState(new StateInit(this));

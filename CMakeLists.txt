@@ -221,6 +221,8 @@ add_executable(
     src/Screens/ScreenMainMenu.cpp
     src/Screens/ScreenNewGame.h
     src/Screens/ScreenNewGame.cpp
+    src/Screens/ScreenNewGameSetup.h
+    src/Screens/ScreenNewGameSetup.cpp
     src/Screens/ScreenSettings.h
     src/Screens/ScreenSettings.cpp
     src/Screens/ScreenPlanetMap.h
@@ -249,6 +251,8 @@ add_executable(
     src/States/StateMainMenu.cpp
     src/States/StateNewGame.h
     src/States/StateNewGame.cpp
+    src/States/StateNewGameSetup.h
+    src/States/StateNewGameSetup.cpp
     src/States/StatePlanetMap.h
     src/States/StatePlanetMap.cpp
     src/States/StateSettings.h
@@ -558,6 +562,8 @@ add_executable(
     src/Widgets/DialogMissionGoals.cpp
     src/Widgets/DialogNewElement.h
     src/Widgets/DialogNewElement.cpp
+    src/Widgets/DialogNewGame.h
+    src/Widgets/DialogNewGame.cpp
     src/Widgets/DialogNewMiniUnitsSquad.h
     src/Widgets/DialogNewMiniUnitsSquad.cpp
     src/Widgets/DialogObject.h

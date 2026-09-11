@@ -148,6 +148,25 @@ enum SpriteIdDialogNewElementExp : unsigned int
     ID_DLG_NEWE_S_BG_C,
 };
 
+// NEW GAME DIALOG
+extern const char SpriteFileDialogNewGame[];
+
+enum SpriteIdDialogNewGame : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_NEWG_BG_L,
+    ID_DLG_NEWG_BG_R,
+    // PANELS
+    ID_DLG_NEWG_PANEL,
+    // BUTTON
+    ID_DLG_NEWG_LEFT_NORMAL,
+    ID_DLG_NEWG_LEFT_DISABLED,
+    ID_DLG_NEWG_LEFT_OVER,
+    ID_DLG_NEWG_LEFT_PUSHED,
+};
+
+extern const char SpriteFileDialogNewGameExp[];
+
 // NEW MINI UNITS SQUAD DIALOG
 extern const char SpriteFileDialogNewMiniUnits[];
 
