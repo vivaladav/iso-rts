@@ -209,6 +209,9 @@ void ResourceLoader::DestroyGameTextures()
     // NEW ELEMENT DIALOG
     tm->DestroySprite(SpriteFileDialogNewElement);
     tm->DestroySprite(SpriteFileDialogNewElementExp);
+    // NEW GAME DIALOG
+    tm->DestroySprite(SpriteFileDialogNewGame);
+    tm->DestroyTexture(SpriteFileDialogNewGameExp);
     // NEW MINI UNITS SQUAD DIALOG
     tm->DestroySprite(SpriteFileDialogNewMiniUnits);
     tm->DestroySprite(SpriteFileDialogNewMiniUnitsExp);
@@ -2181,7 +2184,7 @@ void ResourceLoader::SetupGameTextures()
             { 1028, 0, 540, 200 },
             { 1028, 201, 540, 200 },
             { 1028, 402, 540, 200 },
-            { 1028, 60, 540, 200 },
+            { 1028, 603, 540, 200 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGame, rects);
