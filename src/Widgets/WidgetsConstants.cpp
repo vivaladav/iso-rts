@@ -56,7 +56,7 @@ const int WidgetsConstants::FontSizePlanetMapTitle = 28;
 const int WidgetsConstants::FontSizePlanetMapHeader = 24;
 const int WidgetsConstants::FontSizePlanetMapText = 22;
 
-// MARGINS
+// MARGINS6d7073ff
 const int WidgetsConstants::MarginDialogContentL = 42;
 const int WidgetsConstants::MarginDialogContentR = 42;
 const int WidgetsConstants::MarginDialogContentT = 30;

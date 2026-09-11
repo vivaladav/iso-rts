@@ -162,7 +162,7 @@ enum SpriteIdDialogNewGame : unsigned int
     ID_DLG_NEWG_LEFT_NORMAL,
     ID_DLG_NEWG_LEFT_DISABLED,
     ID_DLG_NEWG_LEFT_OVER,
-    ID_DLG_NEWG_LEFT_PUSHED,
+    ID_DLG_NEWG_LEFT_CHECKED,
 };
 
 extern const char SpriteFileDialogNewGameExp[];

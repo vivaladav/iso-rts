@@ -29,6 +29,107 @@
 #include <sgl/sgui/TextArea.h>
 #include <sgl/utilities/StringManager.h>
 
+namespace
+{
+
+using namespace game;
+
+// ----- CONSTANTS -----
+constexpr int paddingPanelL = 20;
+constexpr int paddingPanelT = 10;
+
+constexpr int sizeFontPanelTitle = 26;
+
+constexpr int panelContY0 = 95;
+
+
+// ----- PRIMARY BUTTON -----
+class ButtonChoice : public sgl::sgui::ImageButton
+{
+public:
+    ButtonChoice(const char * title, const char * content, sgl::sgui::Widget * parent)
+        : sgl::sgui::ImageButton({ ID_DLG_NEWG_LEFT_NORMAL, ID_DLG_NEWG_LEFT_DISABLED,
+                                   ID_DLG_NEWG_LEFT_OVER, ID_DLG_NEWG_LEFT_NORMAL,
+                                   ID_DLG_NEWG_LEFT_CHECKED },
+                                 SpriteFileDialogNewGame, parent)
+    {
+        using namespace sgl;
+
+        auto fm = graphic::FontManager::Instance();
+
+        // TITLE
+        const int titleX0 = 20;
+        const int titleY0 = 20;
+        const int sizeTitle = 24;
+        auto fontTitle = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeTitle,
+                                     graphic::Font::NORMAL);
+
+        mTitle = new sgui::Label(title, fontTitle, this);
+        mTitle->SetPosition(titleX0, titleY0);
+
+        // DATA
+        if(content != nullptr)
+        {
+            const int sizeData = 18;
+            auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData,
+                                         graphic::Font::NORMAL);
+
+            const int areaW = 500;
+            const int areaH = 120;
+            const int areaY = 60;
+            mText = new sgui::TextArea(areaW, areaH, content, fontData, false, this);
+            mText->SetPosition(titleX0, areaY);
+        }
+
+        UpdateColors(GetState());
+
+        SetCheckable(true);
+    }
+
+private:
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        sgl::sgui::ImageButton::OnStateChanged(state);
+
+        UpdateColors(state);
+    }
+
+    void UpdateColors(sgl::sgui::AbstractButton::VisualState state)
+    {
+        if(state == sgl::sgui::AbstractButton::DISABLED)
+        {
+            mTitle->SetColor(0x6d7073ff);
+            mText->SetColor(0x6d7073ff);
+        }
+        else
+        {
+            mTitle->SetColor(0xe6eef2ff);
+            mText->SetColor(WidgetsConstants::colorPanelText);
+        }
+    }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-01.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+
+private:
+    sgl::sgui::Label * mTitle = nullptr;
+    sgl::sgui::TextArea * mText = nullptr;
+};
+}
+
 namespace game
 {
 
@@ -88,13 +189,16 @@ DialogNewGame::DialogNewGame::DialogNewGame(Game * game)
     title->SetPosition(titleX, titleY);
     title->SetColor(WidgetsConstants::colorDialogTitle);
 
+    // PANELS
+    CreatePanelMode();
+
     // BUTTON CONTINUE
     const int marginB = 20;
 
     mButtonContinue = new ButtonDialogOk(sm->GetCString("CONTINUE"), this);
     mButtonContinue->SetEnabled(false);
     mButtonContinue->SetPosition(w - mButtonContinue->GetWidth() - WidgetsConstants::MarginDialogContentR,
-                            h - mButtonContinue->GetHeight() - marginB);
+                                 h - mButtonContinue->GetHeight() - marginB);
 
     mButtonContinue->AddOnClickFunction([this]
     {
@@ -105,6 +209,73 @@ DialogNewGame::DialogNewGame::DialogNewGame(Game * game)
 DialogNewGame::~DialogNewGame()
 {
     delete mButtonsFact;
+}
+
+void DialogNewGame::CreatePanelMode()
+{
+    using namespace sgl;
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+    auto sm = utilities::StringManager::Instance();
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL);
+    mPanelMode = new sgui::Image(tex, this);
+
+    mPanelMode->SetPosition(WidgetsConstants::MarginDialogContentL,
+                            WidgetsConstants::DialogTitleBarH + WidgetsConstants::MarginDialogContentT);
+
+    // PANEL TITLE
+    auto fontTitle = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeFontPanelTitle,
+                                 graphic::Font::NORMAL);
+
+    auto title = new sgui::Label(sm->GetCString("GAME_MODE"), fontTitle, mPanelMode);
+    title->SetPosition(paddingPanelL, paddingPanelT);
+    title->SetColor(WidgetsConstants::colorDialogTitle);
+
+    // BUTTONS
+    const int spacingButtons = 10;
+    int btnY = panelContY0;
+
+#ifdef DEMO_MODE
+    const char * descSingleMission = sm->GetCString("NOT_IN_DEMO");
+    const char * descEndless = sm->GetCString("NOT_IN_DEMO");
+#else
+    const char * descSingleMission = sm->GetCString("SMISSION_DESC");
+    const char * descEndless = sm->GetCString("ENDLESS_DESC");
+#endif
+
+    // CHOICE CAMPAIGN
+    auto btn = new ButtonChoice(sm->GetCString("FCAMPAIGN"), sm->GetCString("FCAMPAIGN_DESC"),
+                                mPanelMode);
+    btn->SetPosition(paddingPanelL, btnY);
+
+    btnY +=btn->GetHeight() + spacingButtons;
+
+    // CHOICE SINGLE MISSION
+    btn = new ButtonChoice(sm->GetCString("SMISSION"), descSingleMission, mPanelMode);
+    // TODO enable when implemented
+    btn->SetEnabled(false);
+    btn->SetPosition(paddingPanelL, btnY);
+
+    btnY +=btn->GetHeight() + spacingButtons;
+
+    // CHOICE ENDLESS
+    btn = new ButtonChoice(sm->GetCString("ENDLESS"), descEndless, mPanelMode);
+    // TODO enable when implemented
+    btn->SetEnabled(false);
+    btn->SetPosition(paddingPanelL, btnY);
+}
+
+void DialogNewGame::CreatePanelDifficulty()
+{
+
+}
+
+void DialogNewGame::CreatePanelSettings()
+{
+
 }
 
 void DialogNewGame::HandlePositionChanged()
