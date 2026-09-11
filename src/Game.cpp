@@ -646,6 +646,33 @@ bool Game::SaveSettings()
     return true;
 }
 
+#ifdef DEV_MODE
+bool Game::SaveGameTurn()
+{
+    using namespace std;
+
+    ostringstream ss;
+
+    ss << "mission_" << setw(2) << setfill('0') <<  GetCurrentPlanet()->GetPlanetId()
+       << "_" << setw(2) << setfill('0') << GetCurrentTerritory()
+       << "-" << setw(3) << setfill('0') << GetLocalPlayer()->GetTurnsPlayed() << ".sav";
+
+    return SaveGame(ss.str());
+}
+
+bool Game::SaveGamePlanet()
+{
+using namespace std;
+
+    ostringstream ss;
+
+    ss << "planet_" << setw(2) << setfill('0') <<  GetCurrentPlanet()->GetPlanetId()
+       << "_" << setw(2) << setfill('0') << GetCurrentTerritory() << ".sav";
+
+    return SaveGame(ss.str());
+}
+#endif
+
 void Game::LowerCostSaveGame()
 {
     const unsigned int minMoney = 1000;

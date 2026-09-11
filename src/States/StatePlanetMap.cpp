@@ -36,6 +36,11 @@ void StatePlanetMap::OnActive()
         {
             mGame->SaveGame();
             mScreen->ShowLabelGameSaved();
+
+#ifdef DEV_MODE
+            // save again with different filename every planet
+            mGame->SaveGamePlanet();
+#endif
         }
     }
 

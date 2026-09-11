@@ -88,6 +88,11 @@ public:
     bool LoadSettings();
     bool SaveSettings();
 
+#ifdef DEV_MODE
+    bool SaveGameTurn();
+    bool SaveGamePlanet();
+#endif
+
     const std::unordered_map<ExtendedResource, int> & GetCostSaveGame() const;
     void LowerCostSaveGame();
 

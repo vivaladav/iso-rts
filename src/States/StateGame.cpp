@@ -41,6 +41,11 @@ void StateGame::OnActive()
         {
             mGame->SaveGame();
             screen->ShowLabelGameSaved();
+
+#ifdef DEV_MODE
+            // save again with different filename every turn
+            mGame->SaveGameTurn();
+#endif
         }
     }
     else
