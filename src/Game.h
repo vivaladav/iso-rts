@@ -84,7 +84,7 @@ public:
     bool IsSaveFileValid() const;
 
     bool LoadGame();
-    bool SaveGame();
+    bool SaveGame(const std::string & saveFile = std::string());
     bool LoadSettings();
     bool SaveSettings();
 
@@ -208,6 +208,7 @@ private:
     std::unordered_map<ExtendedResource, int> mCostSave;
 
     std::string mDirSave;
+    std::string mDirSettings;
     std::string mCurrSaveFile;
     std::string mSettingsFile;
 

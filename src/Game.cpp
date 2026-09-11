@@ -203,13 +203,14 @@ Game::Game(int argc, char * argv[])
     // TEMP CODE
     // TODO handle save directory properly
     mDirSave = "save/";
+    mDirSettings = "save/";
 
     InitDirectories();
 
     // TODO handle save files properly
-    mCurrSaveFile = mDirSave + std::string("001.sav");
+    mCurrSaveFile = std::string("001.sav");
 
-    mSettingsFile = mDirSave + std::string("settings.sav");
+    mSettingsFile = std::string("settings.sav");
 
     // load settings when starting
     LoadSettings();
@@ -283,11 +284,12 @@ bool Game::IsSaveFileValid() const
     using namespace sgl;
 
     // OPEN save file
-    utilities::BinaryFile bf(mCurrSaveFile, utilities::BinaryFile::OPEN_INPUT);
+    const std::string path = mDirSave + mCurrSaveFile;
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::IsSaveFileValid - can't open file " << path << std::endl;
         return false;
     }
 
@@ -297,7 +299,7 @@ bool Game::IsSaveFileValid() const
 
     if(version != SAVE_VERSION)
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << mCurrSaveFile << " is "
+        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << path << " is "
                   << version << " (expected " << SAVE_VERSION << ")" << std::endl;
         return false;
     }
@@ -312,9 +314,11 @@ bool Game::LoadGame()
 {
     using namespace sgl;
 
+    const std::string path = mDirSave + mCurrSaveFile;
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::LoadGame - START LOADING: " << mCurrSaveFile << std::endl;
+    std::cout << "Game::LoadGame - START LOADING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
@@ -322,11 +326,11 @@ bool Game::LoadGame()
         CloseSaveFileForReading();
 
     // OPEN save file for reading
-    mReaderSave = new utilities::BinaryFile(mCurrSaveFile, utilities::BinaryFile::OPEN_INPUT);
+    mReaderSave = new utilities::BinaryFile(path, utilities::BinaryFile::OPEN_INPUT);
 
     if(!mReaderSave->IsOpen())
     {
-        std::cout << "[ERR] Game::LoadGame - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::LoadGame - can't open file " << path << std::endl;
 
         delete mReaderSave;
         mReaderSave = nullptr;
@@ -338,7 +342,7 @@ bool Game::LoadGame()
 
     if(version != SAVE_VERSION)
     {
-        std::cout << "[ERR] Game::LoadGame - version in file " << mCurrSaveFile << " is "
+        std::cout << "[ERR] Game::LoadGame - version in file " << path << " is "
                   << version << " (expected " << SAVE_VERSION << ")" << std::endl;
         return false;
     }
@@ -433,22 +437,24 @@ bool Game::LoadGame()
     return true;
 }
 
-bool Game::SaveGame()
+bool Game::SaveGame(const std::string & saveFile)
 {
     using namespace sgl;
 
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::SaveGame - START SAVING: " << mCurrSaveFile << std::endl;
+    std::cout << "Game::SaveGame - START SAVING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN save file
-    utilities::BinaryFile bf(mCurrSaveFile, utilities::BinaryFile::OPEN_OUTPUT, true);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_OUTPUT, true);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::SaveGame - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::SaveGame - can't open file " << path << std::endl;
         return false;
     }
 
@@ -531,18 +537,20 @@ bool Game::LoadSettings()
 {
     using namespace sgl;
 
+    const std::string path = mDirSettings + mSettingsFile;
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::LoadSettings - START LOADING: " << mSettingsFile << std::endl;
+    std::cout << "Game::LoadSettings - START LOADING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN settings file
-    utilities::BinaryFile bf(mSettingsFile, utilities::BinaryFile::OPEN_INPUT, false);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT, false);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::LoadSettings - can't open file " << mSettingsFile << std::endl;
+        std::cout << "[ERR] Game::LoadSettings - can't open file " << path << std::endl;
         return false;
     }
 
@@ -590,18 +598,20 @@ bool Game::SaveSettings()
 {
     using namespace sgl;
 
+    const std::string path = mDirSettings + mSettingsFile;
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::SaveSettings - START SAVING: " << mSettingsFile << std::endl;
+    std::cout << "Game::SaveSettings - START SAVING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN settings file
-    utilities::BinaryFile bf(mSettingsFile, utilities::BinaryFile::OPEN_OUTPUT, true);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_OUTPUT, true);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::SaveSettings - can't open file " << mSettingsFile << std::endl;
+        std::cout << "[ERR] Game::SaveSettings - can't open file " << path << std::endl;
         return false;
     }
 
