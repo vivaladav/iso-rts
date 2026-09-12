@@ -46,7 +46,9 @@ private:
     sgl::sgui::AbstractButton * mButtonClose = nullptr;
     sgl::sgui::AbstractButton * mButtonContinue = nullptr;
 
-    sgl::sgui::AbstractButtonsGroup * mButtonsFact = nullptr;
+    sgl::sgui::AbstractButtonsGroup * mButtonsMode = nullptr;
+    sgl::sgui::AbstractButtonsGroup * mButtonsDiff = nullptr;
+    sgl::sgui::AbstractButtonsGroup * mButtonsSett = nullptr;
 
     Game * mGame = nullptr;
 };

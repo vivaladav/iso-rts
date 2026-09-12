@@ -208,12 +208,17 @@ DialogNewGame::DialogNewGame::DialogNewGame(Game * game)
 
 DialogNewGame::~DialogNewGame()
 {
-    delete mButtonsFact;
+    delete mButtonsMode;
+    delete mButtonsDiff;
+    delete mButtonsSett;
 }
 
 void DialogNewGame::CreatePanelMode()
 {
     using namespace sgl;
+
+    if(mPanelMode != nullptr)
+        return ;
 
     auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
@@ -238,6 +243,14 @@ void DialogNewGame::CreatePanelMode()
     const int spacingButtons = 10;
     int btnY = panelContY0;
 
+    mButtonsMode = new sgui::AbstractButtonsGroup;
+
+    mButtonsMode->AddFunctionOnToggle([this](unsigned int ind, bool checked)
+    {
+        if(checked)
+            CreatePanelDifficulty();
+    });
+
 #ifdef DEMO_MODE
     const char * descSingleMission = sm->GetCString("NOT_IN_DEMO");
     const char * descEndless = sm->GetCString("NOT_IN_DEMO");
@@ -251,6 +264,8 @@ void DialogNewGame::CreatePanelMode()
                                 mPanelMode);
     btn->SetPosition(paddingPanelL, btnY);
 
+    mButtonsMode->AddButton(btn);
+
     btnY +=btn->GetHeight() + spacingButtons;
 
     // CHOICE SINGLE MISSION
@@ -259,18 +274,44 @@ void DialogNewGame::CreatePanelMode()
     btn->SetEnabled(false);
     btn->SetPosition(paddingPanelL, btnY);
 
+    mButtonsMode->AddButton(btn);
+
     btnY +=btn->GetHeight() + spacingButtons;
 
     // CHOICE ENDLESS
-    btn = new ButtonChoice(sm->GetCString("ENDLESS"), descEndless, mPanelMode);
+    btn = new ButtonChoice(sm->GetCString("ENDLESSM"), descEndless, mPanelMode);
     // TODO enable when implemented
     btn->SetEnabled(false);
     btn->SetPosition(paddingPanelL, btnY);
+
+    mButtonsMode->AddButton(btn);
 }
 
 void DialogNewGame::CreatePanelDifficulty()
 {
+    using namespace sgl;
 
+    if(mPanelDiff != nullptr)
+        return ;
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+    auto sm = utilities::StringManager::Instance();
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL);
+    mPanelDiff = new sgui::Image(tex, this);
+
+    mPanelDiff->SetPosition((GetWidth() - mPanelDiff->GetWidth()) / 2,
+                            WidgetsConstants::DialogTitleBarH + WidgetsConstants::MarginDialogContentT);
+
+    // PANEL TITLE
+    auto fontTitle = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeFontPanelTitle,
+                                 graphic::Font::NORMAL);
+
+    auto title = new sgui::Label(sm->GetCString("DIFFICULTY"), fontTitle, mPanelDiff);
+    title->SetPosition(paddingPanelL, paddingPanelT);
+    title->SetColor(WidgetsConstants::colorDialogTitle);
 }
 
 void DialogNewGame::CreatePanelSettings()
