@@ -35,6 +35,8 @@ ScreenSettings::ScreenSettings(Game * game)
     {
         game->RequestNextActiveState(StateId::MAIN_MENU);
     });
+
+    mDialog->SetFocus();
 }
 
 ScreenSettings::~ScreenSettings()

@@ -377,6 +377,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Settings loading again after initial version changed.\n"
                   "- Mission goal completed tutorial is awarded only once.\n"
                   "- Faction energy is properly reset after laoding.\n"
+                  "- Dialog settings has focus when opened from the main menu too.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
