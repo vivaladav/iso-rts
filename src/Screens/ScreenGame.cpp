@@ -2083,11 +2083,17 @@ void ScreenGame::HandleGameOver()
 
     // assign territory to winner
     AssignMapToFaction(mAiPlayers[winner]->GetFaction());
+
+    // move to planet screen
+    GetGame()->RequestNextActiveState(StateId::PLANET_MAP);
 }
 
 void ScreenGame::HandleGameWon()
 {
     AssignMapToFaction(mLocalPlayer->GetFaction());
+
+    // move to planet screen
+    GetGame()->RequestNextActiveState(StateId::PLANET_MAP);
 }
 
 void ScreenGame::AssignMapToFaction(PlayerFaction faction)
@@ -2102,8 +2108,6 @@ void ScreenGame::AssignMapToFaction(PlayerFaction faction)
 
     if(faction == mLocalPlayer->GetFaction())
         planet->SetMapMissionCompleted(territory);
-
-    game->RequestNextActiveState(StateId::PLANET_MAP);
 }
 
 bool ScreenGame::CheckGameOverForLocalPlayer()
