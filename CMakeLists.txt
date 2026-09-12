@@ -656,6 +656,8 @@ add_executable(
     src/Widgets/ResourceTooltip.cpp
     src/Widgets/ScreenOverlay.h
     src/Widgets/ScreenOverlay.cpp
+    src/Widgets/SettingsCheckbox.h
+    src/Widgets/SettingsCheckbox.cpp
     src/Widgets/SimpleResourceDisplay.h
     src/Widgets/SimpleResourceDisplay.cpp
     src/Widgets/WarningMessage.h

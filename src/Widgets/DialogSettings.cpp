@@ -7,6 +7,7 @@
 #include "Widgets/ButtonPanelTab.h"
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/SettingsCheckbox.h"
 #include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -260,80 +261,7 @@ private:
     int mMode = 0;
 };
 
-// ====== CHECKBOX BUTTON =====
-
-class SettingsCheckbox : public sgl::sgui::AbstractButton
-{
-public:
-    SettingsCheckbox(sgl::sgui::Widget * parent)
-        : sgl::sgui::AbstractButton(parent)
-    {
-        using namespace sgl;
-
-        SetCheckable(true);
-
-        // BAR
-        mBg = new graphic::Image;
-        RegisterRenderable(mBg);
-
-        // UPDATE CONTENT
-        UpdateGraphics(NORMAL);
-        UpdatePositions();
-    }
-
-private:
-    void HandleButtonDown() override
-    {
-        sgl::sgui::AbstractButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/checkbox-01.ogg");
-    }
-
-    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
-    {
-        UpdateGraphics(state);
-    }
-
-    void HandlePositionChanged() override
-    {
-        UpdatePositions();
-    }
-
-    void UpdateGraphics(sgl::sgui::AbstractButton::VisualState state)
-    {
-        using namespace sgl;
-
-        auto tm = graphic::TextureManager::Instance();
-
-        const unsigned int texIDs[] =
-        {
-            ID_DLG_SETT_CHB_NORMAL,
-            ID_DLG_SETT_CHB_DISABLED,
-            ID_DLG_SETT_CHB_OVER,
-            ID_DLG_SETT_CHB_PUSHED,
-            ID_DLG_SETT_CHB_CHECKED,
-        };
-
-        auto tex = tm->GetSprite(SpriteFileDialogSettings, texIDs[state]);
-
-
-        mBg->SetTexture(tex);
-
-        SetSize(mBg->GetWidth(), mBg->GetHeight());
-    }
-
-    void UpdatePositions()
-    {
-        const int x0 = GetScreenX();
-        const int y0 = GetScreenY();
-        mBg->SetPosition(x0, y0);
-    }
-
-private:
-    sgl::graphic::Image * mBg = nullptr;
-};
-
+// ====== SLIDER SETTINGS =====
 class SliderSettings : public GameSliderH
 {
 public:

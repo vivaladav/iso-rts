@@ -442,6 +442,7 @@ void ResourceLoader::SetupPermanentTextures()
             { 293, 312, 45, 39 },
             { 339, 312, 45, 39 },
             { 385, 312, 45, 39 },
+            { 431, 312, 45, 39 },
 
             // SLIDER
             { 201, 352, 304, 18 },
