@@ -35,7 +35,6 @@ private:
     Game * mGame = nullptr;
 
     int mCpuPlayers = 1;
-    Difficulty mDiff;
 };
 
 } // namespace game
