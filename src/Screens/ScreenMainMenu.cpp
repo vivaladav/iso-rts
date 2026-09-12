@@ -365,6 +365,7 @@ void ScreenMainMenu::CreateChangelog()
                   " to the surrounding objects.\n"
                   "- Game resources and mission resources are now separated.\n"
                   "- New main menu.\n"
+                  "- New screen to setup a new game.\n"
                   "\nCHANGES\n"
                   "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
                   "- Simplified and reduced explanations in tutorial 1.\n"

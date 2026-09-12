@@ -1,11 +1,11 @@
 #include "Widgets/DialogNewGame.h"
 
 #include "Game.h"
-#include "GameConstants.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonDialogBack.h"
 #include "Widgets/ButtonDialogOk.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/SettingsCheckbox.h"
 #include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -36,6 +36,7 @@ using namespace game;
 
 // ----- CONSTANTS -----
 constexpr int paddingPanelL = 20;
+constexpr int paddingPanelR = 20;
 constexpr int paddingPanelT = 10;
 
 constexpr int sizeFontPanelTitle = 26;
@@ -70,7 +71,7 @@ public:
         // DATA
         if(content != nullptr)
         {
-            const int sizeData = 18;
+            const int sizeData = 20;
             auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData,
                                          graphic::Font::NORMAL);
 
@@ -312,11 +313,154 @@ void DialogNewGame::CreatePanelDifficulty()
     auto title = new sgui::Label(sm->GetCString("DIFFICULTY"), fontTitle, mPanelDiff);
     title->SetPosition(paddingPanelL, paddingPanelT);
     title->SetColor(WidgetsConstants::colorDialogTitle);
+
+    // BUTTONS
+    const int spacingButtons = 10;
+    int btnY = panelContY0;
+
+    mButtonsDiff = new sgui::AbstractButtonsGroup;
+
+    mButtonsDiff->AddFunctionOnToggle([this](unsigned int ind, bool checked)
+    {
+        if(checked)
+        {
+            mGame->SetDifficulty(static_cast<Difficulty>(EASY + ind));
+
+            CreatePanelSettings();
+
+            mButtonContinue->SetEnabled(true);
+        }
+    });
+
+#ifdef DEMO_MODE
+    const char * descEasy = sm->GetCString("NOT_IN_DEMO");
+    const char * descHard = sm->GetCString("NOT_IN_DEMO");
+#else
+    const char * descEasy = sm->GetCString("SMISSION_DESC");
+    const char * descHard = sm->GetCString("ENDLESS_DESC");
+#endif
+
+    // EASY
+    auto btn = new ButtonChoice(sm->GetCString("EASY"), descEasy, mPanelDiff);
+    // TODO enable when implemented
+    btn->SetEnabled(false);
+    btn->SetPosition(paddingPanelL, btnY);
+
+    mButtonsDiff->AddButton(btn);
+
+    btnY +=btn->GetHeight() + spacingButtons;
+
+    // BALANCED
+    btn = new ButtonChoice(sm->GetCString("BALANCED"), sm->GetCString("BALANCED_DESC"), mPanelDiff);
+    btn->SetPosition(paddingPanelL, btnY);
+
+    mButtonsDiff->AddButton(btn);
+
+    btnY +=btn->GetHeight() + spacingButtons;
+
+    // HARD
+    btn = new ButtonChoice(sm->GetCString("HARD"), descHard, mPanelDiff);
+    // TODO enable when implemented
+    btn->SetEnabled(false);
+    btn->SetPosition(paddingPanelL, btnY);
+
+    mButtonsDiff->AddButton(btn);
 }
 
 void DialogNewGame::CreatePanelSettings()
 {
+    using namespace sgl;
 
+    if(mPanelSett != nullptr)
+        return ;
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+    auto sm = utilities::StringManager::Instance();
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL);
+    mPanelSett = new sgui::Image(tex, this);
+
+    mPanelSett->SetPosition(GetWidth() - mPanelSett->GetWidth() - WidgetsConstants::MarginDialogContentR,
+                            WidgetsConstants::DialogTitleBarH + WidgetsConstants::MarginDialogContentT);
+
+    // PANEL TITLE
+    auto fontTitle = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeFontPanelTitle,
+                                 graphic::Font::NORMAL);
+
+    auto title = new sgui::Label(sm->GetCString("SETTINGS"), fontTitle, mPanelSett);
+    title->SetPosition(paddingPanelL, paddingPanelT);
+    title->SetColor(WidgetsConstants::colorDialogTitle);
+
+    // -- CONTENT --
+    const int spacingOption = 60;
+    int contX = paddingPanelL;
+    int contY = panelContY0;
+
+    const int sizeData = 20;
+    auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData, graphic::Font::NORMAL);
+
+    // AUTO END TURN
+    auto label = new sgui::Label(sm->GetCString("AUTO_END_TURN"), fontData, mPanelSett);
+    label->SetColor(WidgetsConstants::colorPanelText);
+    label->SetPosition(contX, contY);
+
+    auto cb = new SettingsCheckbox(mPanelSett);
+    cb->SetChecked(mGame->IsAutoEndTurnEnabled());
+
+    contX = mPanelSett->GetWidth() - cb->GetWidth() - paddingPanelR;
+    contY += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(contX, contY);
+
+    cb->AddOnToggleFunction([this](bool checked)
+    {
+        mGame->SetAutoEndTurn(checked);
+    });
+
+    contX = paddingPanelL;
+    contY += cb->GetHeight() + spacingOption;
+
+    // AUTO UNIT CAMERA
+    label = new sgui::Label(sm->GetCString("AUTO_UNIT_CAM"), fontData, mPanelSett);
+    label->SetColor(WidgetsConstants::colorPanelText);
+    label->SetPosition(contX, contY);
+
+    cb = new SettingsCheckbox(mPanelSett);
+    cb->SetChecked(mGame->IsAutoUnitCameraEnabled());
+
+    contX = mPanelSett->GetWidth() - cb->GetWidth() - paddingPanelR;
+    contY += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(contX, contY);
+
+    cb->AddOnToggleFunction([this](bool checked)
+    {
+        mGame->SetAutoUnitCamera(checked);
+    });
+
+    contX = paddingPanelL;
+    contY += cb->GetHeight() + spacingOption;
+
+    // TUTORIAL
+    label = new sgui::Label(sm->GetCString("TUTORIAL"), fontData, mPanelSett);
+    label->SetColor(WidgetsConstants::colorPanelText);
+    label->SetPosition(contX, contY);
+
+    cb = new SettingsCheckbox(mPanelSett);
+    cb->SetChecked(mGame->IsTutorialEnabled());
+    cb->SetEnabled(mGame->IsSaveFileValid());
+
+    contX = mPanelSett->GetWidth() - cb->GetWidth() - paddingPanelR;
+    contY += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(contX, contY);
+
+    cb->AddOnToggleFunction([this](bool checked)
+    {
+        mGame->SetTutorialEnabled(checked);
+    });
+
+    contX = paddingPanelL;
+    contY += cb->GetHeight() + spacingOption;
 }
 
 void DialogNewGame::HandlePositionChanged()
