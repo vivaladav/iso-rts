@@ -508,27 +508,6 @@ void DialogSettings::CreatePanelGame()
                             {
                                 mGame->SetAutoUnitCamera(checked);
                             });
-
-    // TUTORIAL
-    x = contX0;
-    y += blockSettingH;
-
-    label = new sgui::Label(mSM->GetCString("TUTORIAL"), font, panel);
-    mHeadersGame.emplace_back(label);
-    label->SetColor(colorTxt);
-    label->SetPosition(x, y);
-
-    cb = new SettingsCheckbox(panel);
-    cb->SetChecked(mGame->IsTutorialEnabled());
-
-    x = panelContentW - cb->GetWidth() - marginPanelH;
-    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(x, y);
-
-    cb->AddOnToggleFunction([this](bool checked)
-    {
-        mGame->SetTutorialEnabled(checked);
-    });
 }
 
 void DialogSettings::CreatePanelAudio()
@@ -1114,7 +1093,6 @@ void DialogSettings::OnStringsChanged()
         "LANGUAGE",
         "AUTO_END_TURN",
         "AUTO_UNIT_CAM",
-        "TUTORIAL",
     };
 
     unsigned int numLabels = mHeadersGame.size();

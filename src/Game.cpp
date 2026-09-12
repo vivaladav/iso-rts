@@ -77,8 +77,8 @@ namespace game
 bool Game::GOD_MODE = false;
 #endif
 
-const std::string Game::SAVE_VERSION("0.1.1");
-const std::string Game::SETTINGS_VERSION("0.1.0");
+const std::string Game::SAVE_VERSION("0.1.2");
+const std::string Game::SETTINGS_VERSION("0.1.1");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -90,10 +90,6 @@ Game::Game(int argc, char * argv[])
     , mLanguage(LANG_NULL)
     , mButtonSelect(sgl::core::MouseEvent::BUTTON_LEFT)
     , mButtonAction(sgl::core::MouseEvent::BUTTON_RIGHT)
-#ifdef DEV_MODE
-    // tutorial disabled in DEV MODE
-    //, mTutorialEnabled(false)
-#endif
 {
     using namespace sgl;
 
@@ -359,6 +355,8 @@ bool Game::LoadGame()
     // Tutorial
     mTutMan->Load(*mReaderSave);
 
+    mTutorialEnabled = mReaderSave->ReadBool();
+
     // Planets
     const unsigned int numPlanets = mReaderSave->ReadUint();
 
@@ -472,6 +470,8 @@ bool Game::SaveGame(const std::string & saveFile)
 
     // Tutorial
     mTutMan->Save(bf);
+    // save if tutorial is enabled in game file as it's a game specific setting
+    bf.WriteBool(mTutorialEnabled);
 
     // Planets
     const unsigned int numPlanets = mPlanets.size();
@@ -583,7 +583,6 @@ bool Game::LoadSettings()
     mMapScrollingConstSpeed = bf.ReadBool();
     mAutoEndTurn = bf.ReadBool();
     mAutoUnitCamera = bf.ReadBool();
-    mTutorialEnabled = bf.ReadBool();
     mAutoSave = bf.ReadBool();
 
 #ifdef DEV_MODE
@@ -635,7 +634,6 @@ bool Game::SaveSettings()
     bf.WriteBool(mMapScrollingConstSpeed);
     bf.WriteBool(mAutoEndTurn);
     bf.WriteBool(mAutoUnitCamera);
-    bf.WriteBool(mTutorialEnabled);
     bf.WriteBool(mAutoSave);
 
 #ifdef DEV_MODE
