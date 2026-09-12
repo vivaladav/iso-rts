@@ -203,6 +203,8 @@ DialogNewGame::DialogNewGame::DialogNewGame(Game * game)
 
     mButtonContinue->AddOnClickFunction([this]
     {
+        mGame->SaveSettings();
+
         mGame->RequestNextActiveState(StateId::FACTION_SEL);
     });
 }
