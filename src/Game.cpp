@@ -34,6 +34,7 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/BinaryFile.h>
+#include <sgl/utilities/Filesystem.h>
 #include <sgl/utilities/StateManager.h>
 #include <sgl/utilities/StringManager.h>
 #include <sgl/utilities/UniformDistribution.h>
@@ -77,7 +78,7 @@ namespace game
 bool Game::GOD_MODE = false;
 #endif
 
-const std::string Game::SAVE_VERSION("0.1.2");
+const std::string Game::SAVE_VERSION("0.2.0");
 const std::string Game::SETTINGS_VERSION("0.1.1");
 
 Game::Game(int argc, char * argv[])
@@ -202,13 +203,20 @@ Game::Game(int argc, char * argv[])
     // TODO handle save directory properly
     mDirSave = "save/";
     mDirSettings = "save/";
-
     InitDirectories();
 
-    // TODO handle save files properly
-    mCurrSaveFile = std::string("001.sav");
-
     mSettingsFile = std::string("settings.sav");
+
+    // init save files
+    mSaveFiles.emplace_back("00_001.sav");
+    mSaveFiles.emplace_back("00_002.sav");
+    mSaveFiles.emplace_back("00_003.sav");
+    mSaveFiles.emplace_back("01_001.sav");
+    mSaveFiles.emplace_back("01_002.sav");
+    mSaveFiles.emplace_back("01_003.sav");
+    mSaveFiles.emplace_back("02_001.sav");
+    mSaveFiles.emplace_back("02_002.sav");
+    mSaveFiles.emplace_back("02_003.sav");
 
     // load settings when starting
     LoadSettings();
@@ -277,12 +285,38 @@ void Game::CloseSaveFileForReading()
     mReaderSave = nullptr;
 }
 
-bool Game::IsSaveFileValid() const
+const std::string & Game::GetSavefile(GameMode mode, unsigned int ind) const
+{
+    static const std::string empty;
+
+    const unsigned int savesPerMode = 3;
+
+    if(mode < NUM_GAME_MODES && ind < savesPerMode)
+        return mSaveFiles[(savesPerMode * mode) + ind];
+    else
+        return empty;
+}
+
+bool Game::HasSavedFiles() const
+{
+    sgl::utilities::Filesystem fs;
+
+    for(const std::string & f : mSaveFiles)
+    {
+        if(fs.DoesPathExist(mDirSave + f))
+            return true;
+    }
+
+    return false;
+}
+
+bool Game::IsSaveFileValid(const std::string & saveFile) const
 {
     using namespace sgl;
 
     // OPEN save file
-    const std::string path = mDirSave + mCurrSaveFile;
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
     utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT);
 
     if(!bf.IsOpen())
@@ -308,11 +342,60 @@ bool Game::IsSaveFileValid() const
     return true;
 }
 
-bool Game::LoadGame()
+bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, std::time_t & timestamp,
+                          const std::string & saveFile)
 {
     using namespace sgl;
 
-    const std::string path = mDirSave + mCurrSaveFile;
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
+#ifdef DEV_MODE
+    // TODO remove later, now left just for reference on testing times
+    std::cout << "Game::LoadGameHeader - START LOADING: " << path << std::endl;
+    auto t0 = std::chrono::high_resolution_clock::now();
+#endif
+
+    // OPEN save file for reading
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT);
+
+    if(!bf.IsOpen())
+    {
+        std::cout << "[ERR] Game::LoadGameHeader - can't open file " << path << std::endl;
+
+        return false;
+    }
+
+    // VERSION
+    std::string version;
+    bf.ReadString(version);
+
+    if(version != SAVE_VERSION)
+    {
+        std::cout << "[ERR] Game::LoadGameHeader - version in file " << path << " is "
+                  << version << " (expected " << SAVE_VERSION << ")" << std::endl;
+        return false;
+    }
+
+    // READ HEADER
+    mode = static_cast<GameMode>(bf.ReadUint());
+    faction = static_cast<PlayerFaction>(bf.ReadUint());
+    timestamp = bf.ReadTimeT();
+
+#ifdef DEV_MODE
+    // TODO remove later, now left just for reference on testing times
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
+    std::cout << "Game::LoadGameHeader - GAME HEADER LOADED in: " << duration.count() << " ms" << std::endl;
+#endif
+
+    return true;
+}
+
+bool Game::LoadGame(const std::string & saveFile)
+{
+    using namespace sgl;
+
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
 
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
@@ -332,9 +415,10 @@ bool Game::LoadGame()
 
         delete mReaderSave;
         mReaderSave = nullptr;
+        return false;
     }
 
-    // version
+    // VERSION
     std::string version;
     mReaderSave->ReadString(version);
 
@@ -345,9 +429,13 @@ bool Game::LoadGame()
         return false;
     }
 
+    // HEADER with data used for quick load
+    mGameMode = static_cast<GameMode>(mReaderSave->ReadUint());
+    mLocalFaction = static_cast<PlayerFaction>(mReaderSave->ReadUint());
+    const std::time_t timestamp = mReaderSave->ReadTimeT();
+
     // game data
     mDifficulty = static_cast<Difficulty>(mReaderSave->ReadUint());
-    mLocalFaction = static_cast<PlayerFaction>(mReaderSave->ReadUint());
     mCurrPlanet = static_cast<PlanetId>(mReaderSave->ReadUint());
     mCurrTerritory = mReaderSave->ReadUint();
     mRandSeed = mReaderSave->ReadUint();
@@ -461,9 +549,14 @@ bool Game::SaveGame(const std::string & saveFile)
     // version
     bf.WriteString(SAVE_VERSION);
 
+    // HEADER with data used for quick load
+    bf.WriteUint(mGameMode);
+    bf.WriteUint(mLocalFaction);
+    const auto now = std::chrono::system_clock::now();
+    bf.WriteTimeT(std::chrono::system_clock::to_time_t(now));
+
     // game data
     bf.WriteUint(mDifficulty);
-    bf.WriteUint(mLocalFaction);
     bf.WriteUint(mCurrPlanet);
     bf.WriteUint(mCurrTerritory);
     bf.WriteUint(mRandSeed);

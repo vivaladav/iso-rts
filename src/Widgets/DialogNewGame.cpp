@@ -1,6 +1,7 @@
 #include "Widgets/DialogNewGame.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "States/StatesIds.h"
 #include "Widgets/ButtonDialogBack.h"
 #include "Widgets/ButtonDialogOk.h"
@@ -43,15 +44,14 @@ constexpr int sizeFontPanelTitle = 26;
 
 constexpr int panelContY0 = 95;
 
-
 // ----- PRIMARY BUTTON -----
 class ButtonChoice : public sgl::sgui::ImageButton
 {
 public:
     ButtonChoice(const char * title, const char * content, sgl::sgui::Widget * parent)
-        : sgl::sgui::ImageButton({ ID_DLG_NEWG_LEFT_NORMAL, ID_DLG_NEWG_LEFT_DISABLED,
-                                   ID_DLG_NEWG_LEFT_OVER, ID_DLG_NEWG_LEFT_NORMAL,
-                                   ID_DLG_NEWG_LEFT_CHECKED },
+        : sgl::sgui::ImageButton({ ID_DLG_NEWG_BTN_NORMAL, ID_DLG_NEWG_BTN_DISABLED,
+                                   ID_DLG_NEWG_BTN_OVER, ID_DLG_NEWG_BTN_NORMAL,
+                                   ID_DLG_NEWG_BTN_CHECKED },
                                  SpriteFileDialogNewGame, parent)
     {
         using namespace sgl;
@@ -129,6 +129,158 @@ private:
     sgl::sgui::Label * mTitle = nullptr;
     sgl::sgui::TextArea * mText = nullptr;
 };
+
+// ----- SAVE SLOT BUTTON -----
+class SaveSlot : public sgl::sgui::ImageButton
+{
+public:
+    SaveSlot(sgl::sgui::Widget * parent)
+        : SaveSlot(GM_NULL, NO_FACTION, 0, parent)
+    {
+    }
+
+    SaveSlot(GameMode mode, PlayerFaction f, std::time_t timestamp, sgl::sgui::Widget * parent)
+        : sgl::sgui::ImageButton({ ID_DLG_NEWG_SLOT_NORMAL, ID_DLG_NEWG_SLOT_DISABLED,
+                                   ID_DLG_NEWG_SLOT_OVER, ID_DLG_NEWG_SLOT_NORMAL,
+                                   ID_DLG_NEWG_SLOT_CHECKED },
+                                 SpriteFileDialogNewGame, parent)
+        , mFaction(f)
+    {
+        using namespace sgl;
+
+        auto fm = graphic::FontManager::Instance();
+        auto sm = utilities::StringManager::Instance();
+
+        const int sizeMode = 20;
+        auto fontMode = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeMode,
+                                    graphic::Font::NORMAL);
+
+        // used slot
+        if(mode != GM_NULL)
+        {
+            // GAME MODE
+            const char * strModes[] =
+            {
+                "FCAMPAIGN",
+                "SMISSION",
+                "ENDLESSM",
+            };
+
+            const int paddingH = 20;
+            const int spacing = 4;
+            const int modeX0 = paddingH;
+            const int modeY0 = 10;
+
+            mLabelMode = new sgui::Label(sm->GetCString(strModes[mode]), fontMode, this);
+            mLabelMode->SetPosition(modeX0, modeY0);
+
+            const int sizeData = 18;
+            auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData,
+                                         graphic::Font::NORMAL);
+
+            mLabelFaction = new sgui::Label(FACTIONS_NAME[f], fontData, this);
+            mLabelFaction->SetPosition(modeX0, modeY0 + mLabelMode->GetHeight() + spacing);
+
+            const unsigned int maxSize = 32;
+            char strTimestamp[maxSize];
+            std::strftime(strTimestamp, maxSize, "%Y-%m-%d %H:%M", std::localtime(&timestamp));
+
+            mLabelTimestamp = new sgui::Label(strTimestamp, fontData, this);
+            mLabelTimestamp->SetPosition(GetWidth() - mLabelTimestamp->GetWidth() -  paddingH,
+                                         mLabelFaction->GetY());
+        }
+        // empty slot
+        else
+        {
+            mLabelMode = new sgui::Label(sm->GetCString("EMPTY_SLOT"), fontMode, this);
+            mLabelMode->SetPosition((GetWidth() - mLabelMode->GetWidth()) / 2,
+                               (GetHeight() - mLabelMode->GetHeight()) / 2);
+        }
+
+        UpdateColors(GetState());
+
+        SetCheckable(true);
+    }
+
+#ifdef DEMO_MODE
+    void MarkNotAvailable()
+    {
+        using namespace sgl;
+
+        delete mLabelMode;
+
+        auto fm = graphic::FontManager::Instance();
+        auto sm = utilities::StringManager::Instance();
+
+        const int sizeMode = 20;
+        auto fontMode = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeMode,
+                                    graphic::Font::NORMAL);
+
+        mLabelMode = new sgui::Label(sm->GetCString("NOT_IN_DEMO"), fontMode, this);
+        mLabelMode->SetPosition((GetWidth() - mLabelMode->GetWidth()) / 2,
+                            (GetHeight() - mLabelMode->GetHeight()) / 2);
+
+        SetEnabled(false);
+    }
+#endif
+
+private:
+    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
+    {
+        sgl::sgui::ImageButton::OnStateChanged(state);
+
+        UpdateColors(state);
+    }
+
+    void UpdateColors(sgl::sgui::AbstractButton::VisualState state)
+    {
+        if(state == sgl::sgui::AbstractButton::DISABLED)
+        {
+            const unsigned int colorDisabled = 0x6d7073ff;
+            mLabelMode->SetColor(colorDisabled);
+
+            if(mLabelFaction != nullptr)
+                mLabelFaction->SetColor(colorDisabled);
+
+            if(mLabelTimestamp != nullptr)
+                mLabelTimestamp->SetColor(colorDisabled);
+        }
+        else
+        {
+            mLabelMode->SetColor(0xe6eef2ff);
+
+            if(mLabelFaction != nullptr)
+                mLabelFaction->SetColor(PLAYER_COLOR[mFaction]);
+
+            if(mLabelTimestamp != nullptr)
+                mLabelTimestamp->SetColor(WidgetsConstants::colorPanelText);
+        }
+    }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-01.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-01.ogg");
+    }
+
+private:
+    sgl::sgui::Label * mLabelMode = nullptr;
+    sgl::sgui::Label * mLabelFaction = nullptr;
+    sgl::sgui::Label * mLabelTimestamp = nullptr;
+
+    PlayerFaction mFaction;
+};
+
 }
 
 namespace game
@@ -213,7 +365,7 @@ DialogNewGame::~DialogNewGame()
 {
     delete mButtonsMode;
     delete mButtonsDiff;
-    delete mButtonsSett;
+    delete mButtonsSave;
 }
 
 void DialogNewGame::CreatePanelMode()
@@ -251,7 +403,11 @@ void DialogNewGame::CreatePanelMode()
     mButtonsMode->AddFunctionOnToggle([this](unsigned int ind, bool checked)
     {
         if(checked)
+        {
+            mGame->SetGameMode(static_cast<GameMode>(GM_CAMPAIGN + ind));
+
             CreatePanelDifficulty();
+        }
     });
 
 #ifdef DEMO_MODE
@@ -329,8 +485,7 @@ void DialogNewGame::CreatePanelDifficulty()
             mGame->SetDifficulty(static_cast<Difficulty>(EASY + ind));
 
             CreatePanelSettings();
-
-            mButtonContinue->SetEnabled(true);
+            CreatePanelSaves();
         }
     });
 
@@ -381,7 +536,7 @@ void DialogNewGame::CreatePanelSettings()
     auto sm = utilities::StringManager::Instance();
 
     // BACKGROUND
-    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL);
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL2);
     mPanelSett = new sgui::Image(tex, this);
 
     mPanelSett->SetPosition(GetWidth() - mPanelSett->GetWidth() - WidgetsConstants::MarginDialogContentR,
@@ -460,9 +615,109 @@ void DialogNewGame::CreatePanelSettings()
     {
         mGame->SetTutorialEnabled(checked);
     });
+}
 
-    contX = paddingPanelL;
-    contY += cb->GetHeight() + spacingOption;
+void DialogNewGame::CreatePanelSaves()
+{
+    using namespace sgl;
+
+    if(mPanelSave != nullptr)
+        return ;
+
+    auto fm = graphic::FontManager::Instance();
+    auto tm = graphic::TextureManager::Instance();
+    auto sm = utilities::StringManager::Instance();
+
+    // BACKGROUND
+    graphic::Texture * tex = tm->GetSprite(SpriteFileDialogNewGame, ID_DLG_NEWG_PANEL2);
+    mPanelSave = new sgui::Image(tex, this);
+
+    const int marginT = 20;
+    mPanelSave->SetPosition(mPanelSett->GetX(),
+                            mPanelSett->GetY() + mPanelSett->GetHeight() + marginT);
+
+    // PANEL TITLE
+    auto fontTitle = fm->GetFont(WidgetsConstants::FontFilePanelHeader, sizeFontPanelTitle,
+                                 graphic::Font::NORMAL);
+
+    auto title = new sgui::Label(sm->GetCString("SAVE_FILES"), fontTitle, mPanelSave);
+    title->SetPosition(paddingPanelL, paddingPanelT);
+    title->SetColor(WidgetsConstants::colorDialogTitle);
+
+    // BUTTONS
+    const int spacingButtons = 10;
+    int btnY = panelContY0;
+
+
+    mButtonsSave = new sgui::AbstractButtonsGroup;
+
+    mButtonsSave->AddFunctionOnToggle([this](unsigned int ind, bool checked)
+    {
+        if(checked)
+        {
+            mGame->SetSaveFile(mGame->GetSavefile(mGame->GetGameMode(), ind));
+
+            mButtonContinue->SetEnabled(true);
+        }
+    });
+
+    GameMode mode;
+    PlayerFaction faction;
+    std::time_t timestamp;
+    bool used;
+    SaveSlot * btn;
+    int slot = 0;
+
+    // SLOT 1
+    used = mGame->LoadGameHeader(mode, faction, timestamp,
+                                 mGame->GetSavefile(mGame->GetGameMode(), slot++));
+
+    if(used)
+        btn = new SaveSlot(mode, faction, timestamp, mPanelSave);
+    else
+        btn = new SaveSlot(mPanelSave);
+
+    btn->SetPosition(paddingPanelL, btnY);
+
+    mButtonsSave->AddButton(btn);
+
+    btnY += btn->GetHeight() + spacingButtons;
+
+    // SLOT 2
+    used = mGame->LoadGameHeader(mode, faction, timestamp,
+                                 mGame->GetSavefile(mGame->GetGameMode(), slot++));
+
+    if(used)
+        btn = new SaveSlot(mode, faction, timestamp, mPanelSave);
+    else
+        btn = new SaveSlot(mPanelSave);
+
+    btn->SetPosition(paddingPanelL, btnY);
+
+#ifdef DEMO_MODE
+    btn->MarkNotAvailable();
+#endif
+
+    mButtonsSave->AddButton(btn);
+
+    btnY += btn->GetHeight() + spacingButtons;
+
+    // SLOT 3
+    used = mGame->LoadGameHeader(mode, faction, timestamp,
+                                 mGame->GetSavefile(mGame->GetGameMode(), slot++));
+
+    if(used)
+        btn = new SaveSlot(mode, faction, timestamp, mPanelSave);
+    else
+        btn = new SaveSlot(mPanelSave);
+
+    btn->SetPosition(paddingPanelL, btnY);
+
+#ifdef DEMO_MODE
+    btn->MarkNotAvailable();
+#endif
+
+    mButtonsSave->AddButton(btn);
 }
 
 void DialogNewGame::HandlePositionChanged()

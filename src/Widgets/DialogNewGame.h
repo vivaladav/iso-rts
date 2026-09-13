@@ -29,6 +29,7 @@ private:
     void CreatePanelMode();
     void CreatePanelDifficulty();
     void CreatePanelSettings();
+    void CreatePanelSaves();
 
     void HandlePositionChanged() override;
 
@@ -42,13 +43,14 @@ private:
     sgl::sgui::Image * mPanelMode = nullptr;
     sgl::sgui::Image * mPanelDiff = nullptr;
     sgl::sgui::Image * mPanelSett = nullptr;
+    sgl::sgui::Image * mPanelSave = nullptr;
 
     sgl::sgui::AbstractButton * mButtonClose = nullptr;
     sgl::sgui::AbstractButton * mButtonContinue = nullptr;
 
     sgl::sgui::AbstractButtonsGroup * mButtonsMode = nullptr;
     sgl::sgui::AbstractButtonsGroup * mButtonsDiff = nullptr;
-    sgl::sgui::AbstractButtonsGroup * mButtonsSett = nullptr;
+    sgl::sgui::AbstractButtonsGroup * mButtonsSave = nullptr;
 
     Game * mGame = nullptr;
 };

@@ -2181,11 +2181,17 @@ void ResourceLoader::SetupGameTextures()
             { 81, 0, 365, 925 },
             // PANELS
             { 447, 0, 580, 740 },
+            { 447, 741, 580, 360 },
             // BUTTON
             { 1028, 0, 540, 200 },
             { 1028, 201, 540, 200 },
             { 1028, 402, 540, 200 },
             { 1028, 603, 540, 200 },
+            // SAVE SLOT
+            { 1028, 804, 540, 70 },
+            { 1028, 875, 540, 70 },
+            { 1028, 946, 540, 70 },
+            { 1028, 1017, 540, 70 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGame, rects);

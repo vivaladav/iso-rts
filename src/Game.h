@@ -2,6 +2,7 @@
 
 #include <sgl/core/Application.h>
 
+#include <chrono>
 #include <functional>
 #include <map>
 #include <string>
@@ -79,12 +80,18 @@ public:
     void ClearGameData();
 
     // -- LOAD & SAVE --
-    const std::string & GetCurrentSaveFilePath() const;
+    const std::string & GetSavefile(GameMode mode, unsigned int ind) const;
+
+    void SetSaveFile(const std::string & f);
+
     sgl::utilities::BinaryFile * GetSaveFileForReading() const;
     void CloseSaveFileForReading();
-    bool IsSaveFileValid() const;
+    bool HasSavedFiles() const;
+    bool IsSaveFileValid(const std::string & saveFile = std::string()) const;
 
-    bool LoadGame();
+    bool LoadGameHeader(GameMode & mode, PlayerFaction & faction, std::time_t & timestamp,
+                        const std::string & saveFile = std::string());
+    bool LoadGame(const std::string & saveFile = std::string());
     bool SaveGame(const std::string & saveFile = std::string());
     bool LoadSettings();
     bool SaveSettings();
@@ -216,6 +223,8 @@ private:
 
     std::unordered_map<ExtendedResource, int> mCostSave;
 
+    std::vector<std::string> mSaveFiles;
+
     std::string mDirSave;
     std::string mDirSettings;
     std::string mCurrSaveFile;
@@ -272,7 +281,8 @@ private:
 
 inline ResourceLoader * Game::GetResourceLoader() const { return mResLoader; }
 
-inline const std::string & Game::GetCurrentSaveFilePath() const { return mCurrSaveFile; }
+inline void Game::SetSaveFile(const std::string & f) { mCurrSaveFile = f; }
+
 inline sgl::utilities::BinaryFile * Game::GetSaveFileForReading() const
 {
     return mReaderSave;

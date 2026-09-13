@@ -1,6 +1,7 @@
 #include "Screens/ScreenMainMenu.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "Planet.h"
 #include "Version.h"
 #include "States/StatesIds.h"
@@ -118,15 +119,18 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // -- BUTTON LOAD GAME --
     // only visible if there's a save file available
-    if(game->IsSaveFileValid())
+    if(game->HasSavedFiles())
     {
         button = new ButtonMainMenu(sm->GetCString("LOAD_GAME"), panelButtons);
         button->SetY(buttonY);
 
         button->AddOnClickFunction([game]
-                                   {
-                                        game->LoadGame();
-                                   });
+        {
+            // TODO
+            //  replace hardcoded values with proper implementation.
+            //  This will be changed to a dialog or screen to select a slot
+            game->LoadGame(game->GetSavefile(GM_CAMPAIGN, 0));
+        });
 
         buttonY += button->GetHeight() + VMARGIN;
     }
@@ -366,6 +370,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Game resources and mission resources are now separated.\n"
                   "- New main menu.\n"
                   "- New screen to setup a new game.\n"
+                  "- Added support for multiple save files.\n"
                   "\nCHANGES\n"
                   "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
                   "- Simplified and reduced explanations in tutorial 1.\n"
