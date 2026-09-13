@@ -41,6 +41,7 @@ class TutorialManager;
 
 enum ExtendedResource : unsigned int;
 enum GameCursorId : unsigned int;
+enum GameMode : unsigned int;
 enum LanguageId : unsigned int;
 enum PlanetId : unsigned int;
 enum PlayerFaction : unsigned int;
@@ -119,6 +120,9 @@ public:
 
     Difficulty GetDifficulty() const;
     void SetDifficulty(Difficulty level);
+
+    GameMode GetGameMode() const;
+    void SetGameMode(GameMode m);
 
     const ObjectsDataRegistry * GetObjectsRegistry() const;
 
@@ -243,6 +247,8 @@ private:
 
     unsigned int mRandSeed = 0;
 
+    GameMode mGameMode;
+
     // SETTINGS
     LanguageId mLanguage;
     int mMapDraggingSpeed = 5;
@@ -295,6 +301,9 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 
 inline Difficulty Game::GetDifficulty() const { return mDifficulty; }
 inline void Game::SetDifficulty(Difficulty level) { mDifficulty = level; }
+
+inline GameMode Game::GetGameMode() const { return mGameMode; }
+inline void Game::SetGameMode(GameMode m) { mGameMode = m; }
 
 inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
 

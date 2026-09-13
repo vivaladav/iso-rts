@@ -45,6 +45,17 @@ enum GameCursorId : unsigned int
     CURSOR_NULL
 };
 
+enum GameMode : unsigned int
+{
+    GM_CAMPAIGN,
+    GM_MISSION,
+    GM_ENDLESS,
+
+    NUM_GAME_MODES,
+
+    GM_NULL
+};
+
 enum LanguageId : unsigned int
 {
     LANG_ENGLISH,
