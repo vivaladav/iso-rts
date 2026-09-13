@@ -89,8 +89,9 @@ public:
     bool HasSavedFiles() const;
     bool IsSaveFileValid(const std::string & saveFile = std::string()) const;
 
-    bool LoadGameHeader(GameMode & mode, PlayerFaction & faction, std::time_t & timestamp,
-                        const std::string & saveFile = std::string());
+    bool LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
+                          unsigned int & map, std::time_t & timestamp,
+                          const std::string & saveFile = std::string());
     bool LoadGame(const std::string & saveFile = std::string());
     bool SaveGame(const std::string & saveFile = std::string());
     bool LoadSettings();

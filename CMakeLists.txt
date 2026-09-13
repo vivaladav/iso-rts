@@ -530,6 +530,8 @@ add_executable(
     src/Widgets/ButtonMainMenu.cpp
     src/Widgets/ButtonMinimap.h
     src/Widgets/ButtonMinimap.cpp
+    src/Widgets/ButtonSaveSlot.h
+    src/Widgets/ButtonSaveSlot.cpp
     src/Widgets/ButtonObjectActionOption.h
     src/Widgets/ButtonObjectActionOption.cpp
     src/Widgets/ButtonPanelSelectedObject.h

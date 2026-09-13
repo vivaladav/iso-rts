@@ -342,8 +342,8 @@ bool Game::IsSaveFileValid(const std::string & saveFile) const
     return true;
 }
 
-bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, std::time_t & timestamp,
-                          const std::string & saveFile)
+bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
+                          unsigned int & map, std::time_t & timestamp, const std::string & saveFile)
 {
     using namespace sgl;
 
@@ -379,6 +379,8 @@ bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, std::time_t 
     // READ HEADER
     mode = static_cast<GameMode>(bf.ReadUint());
     faction = static_cast<PlayerFaction>(bf.ReadUint());
+    planet = static_cast<PlanetId>(bf.ReadUint());
+    map = bf.ReadUint();
     timestamp = bf.ReadTimeT();
 
 #ifdef DEV_MODE
@@ -432,12 +434,12 @@ bool Game::LoadGame(const std::string & saveFile)
     // HEADER with data used for quick load
     mGameMode = static_cast<GameMode>(mReaderSave->ReadUint());
     mLocalFaction = static_cast<PlayerFaction>(mReaderSave->ReadUint());
+    mCurrPlanet = static_cast<PlanetId>(mReaderSave->ReadUint());
+    mCurrTerritory = mReaderSave->ReadUint();
     const std::time_t timestamp = mReaderSave->ReadTimeT();
 
     // game data
     mDifficulty = static_cast<Difficulty>(mReaderSave->ReadUint());
-    mCurrPlanet = static_cast<PlanetId>(mReaderSave->ReadUint());
-    mCurrTerritory = mReaderSave->ReadUint();
     mRandSeed = mReaderSave->ReadUint();
 
     // Tutorial
@@ -552,13 +554,13 @@ bool Game::SaveGame(const std::string & saveFile)
     // HEADER with data used for quick load
     bf.WriteUint(mGameMode);
     bf.WriteUint(mLocalFaction);
+    bf.WriteUint(mCurrPlanet);
+    bf.WriteUint(mCurrTerritory);
     const auto now = std::chrono::system_clock::now();
     bf.WriteTimeT(std::chrono::system_clock::to_time_t(now));
 
     // game data
     bf.WriteUint(mDifficulty);
-    bf.WriteUint(mCurrPlanet);
-    bf.WriteUint(mCurrTerritory);
     bf.WriteUint(mRandSeed);
 
     // Tutorial
