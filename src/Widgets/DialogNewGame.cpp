@@ -178,7 +178,7 @@ DialogNewGame::DialogNewGame::DialogNewGame(Game * game)
 
     mButtonClose->AddOnClickFunction([this]
     {
-        mGame->RequestNextActiveState(StateId::LEAVE_GAME);
+        mGame->RequestNextActiveState(StateId::INIT);
     });
 
     // TITLE

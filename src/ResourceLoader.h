@@ -22,10 +22,12 @@ public:
     // data loading
     void LoadFirstInitData();
     void LoadPreGameData();
+    void LoadGameSetupData();
     void LoadGameData();
 
     // data destruction
     void DestroyPreGameTextures();
+    void DestroyGameSetupTextures();
     void DestroyGameTextures();
 
     void Update(float delta);
@@ -40,6 +42,7 @@ private:
 
     void SetupPermanentTextures();
     void SetupPregameTextures();
+    void SetupGameSetupTextures();
     void SetupGameTextures();
 
     void SetupMouseCursors();
@@ -53,6 +56,7 @@ private:
         PACKAGE_IMGS_UI_PREGAME,
         PACKAGE_IMGS_UI_PERM,
         PACKAGE_IMGS_GAME,
+        PACKAGE_IMGS_UI_GAME_SETUP,
         PACKAGE_IMGS_UI_GAME,
         PACKAGE_IMGS_UI_TUTORIAL,
 

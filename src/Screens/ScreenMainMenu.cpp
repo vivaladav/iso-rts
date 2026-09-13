@@ -2,10 +2,8 @@
 
 #include "Game.h"
 #include "GameConstants.h"
-#include "Planet.h"
 #include "Version.h"
 #include "States/StatesIds.h"
-#include "States/StateLeavePregame.h"
 #include "Widgets/ButtonMainMenu.h"
 #include "Widgets/DialogChangelog.h"
 #include "Widgets/ExternalButtons.h"
@@ -82,11 +80,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     button->AddOnClickFunction([game]
     {
-        // TODO REMOVE WHEN PLANET SELECTION IS DONE
-        game->SetCurrentPlanet(PLANET_1);
-
-        StateDataLeavePregame data(StateId::INIT_GAME);
-        game->RequestNextActiveState(StateId::LEAVE_PREGAME, &data);
+        game->RequestNextActiveState(StateId::INIT_GAME_SETUP);
     });
 
     buttonY += button->GetHeight() + VMARGIN;

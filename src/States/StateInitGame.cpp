@@ -1,6 +1,7 @@
 #include "States/StateInitGame.h"
 
 #include "Game.h"
+#include "ResourceLoader.h"
 #include "Screens/ScreenInitGame.h"
 #include "States/StatesIds.h"
 
@@ -14,6 +15,10 @@ StateInitGame::StateInitGame(Game * game)
 
 void StateInitGame::OnActive()
 {
+    // destroy setup textures
+    auto loader = mGame->GetResourceLoader();
+    loader->DestroyGameSetupTextures();
+
     mScreen = new ScreenInitGame(mGame);
 }
 

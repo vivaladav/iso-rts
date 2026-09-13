@@ -419,11 +419,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     auto buttonLeave = new ButtonLeavePlanet(panelLeave);
     buttonLeave->SetPosition((panelLeave->GetWidth() - buttonLeave->GetWidth()) / 2,
                               (panelLeave->GetHeight() - buttonLeave->GetHeight()) / 2);
+    // TODO enable when there's a galaxy screen
+    buttonLeave->SetEnabled(false);
 
     buttonLeave->AddOnClickFunction([this]
     {
-        // TODO change to galaxy screen
-        GetGame()->RequestNextActiveState(StateId::LEAVE_GAME);
     });
 
     SetPlanetName(Planet::PLANETS_NAME[planet->GetPlanetId()]);

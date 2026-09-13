@@ -5,10 +5,10 @@
 namespace game
 {
 
-class StateNewGame : public BaseGameState
+class StateInitGameSetup : public BaseGameState
 {
 public:
-    StateNewGame(Game * game);
+    StateInitGameSetup(Game * game);
 
 private:
     void OnActive() override;

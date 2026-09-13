@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "Planet.h"
 #include "ResourceLoader.h"
 #include "States/StatesIds.h"
 
@@ -53,6 +54,22 @@ ScreenInitGame::ScreenInitGame(Game * game)
 
     // hide system mouse
     sgl::graphic::ModuleGraphic::HideSystemCursor();
+
+    // -- INIT GAME DATA --
+    // init game data
+    game->InitNewGameData();
+
+    // set seed for random values
+    const auto t = std::chrono::system_clock::now().time_since_epoch().count();
+    game->SetRandSeed(t);
+
+    // start game from first mission
+    game->SetCurrentPlanet(PLANET_1);
+    game->SetCurrentTerritory(0);
+
+    // add AI opponent
+    game->AddToActivePlayersRandomAI();
+
 }
 
 ScreenInitGame::~ScreenInitGame()
@@ -101,7 +118,7 @@ void ScreenInitGame::UpdateStatus()
     // all done
     if(currJob == numJobs)
     {
-        GetGame()->RequestNextActiveState(StateId::NEW_GAME_SETUP);
+        GetGame()->RequestNextActiveState(StateId::GAME);
 
         #ifdef DEV_MODE
         std::cout << "ScreenInitGame - LOADING TIME: " << mTimeLoad << " seconds" << std::endl;

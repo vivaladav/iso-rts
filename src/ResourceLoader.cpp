@@ -91,6 +91,11 @@ void ResourceLoader::LoadPreGameData()
     SetupPregameTextures();
 }
 
+void ResourceLoader::LoadGameSetupData()
+{
+    SetupGameSetupTextures();
+}
+
 void ResourceLoader::LoadGameData()
 {
     SetupGameTextures();
@@ -129,6 +134,23 @@ void ResourceLoader::DestroyPreGameTextures()
     delete mTexPackages[PACKAGE_IMGS_TEST];
     mTexPackages[PACKAGE_IMGS_TEST] = nullptr;
 #endif
+}
+
+void ResourceLoader::DestroyGameSetupTextures()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
+    // ---- UI ----
+    // DIALOG FACTION SELECTION
+    tm->DestroySprite(SpriteFileDialogFactionSelection);
+    tm->DestroyTexture(SpriteFileDialogFactionSelectionExp);
+    // DIALOG NEW GAME
+    tm->DestroySprite(SpriteFileDialogNewGame);
+    tm->DestroyTexture(SpriteFileDialogNewGameExp);
+
+    // ---- DELETE PACKAGES ----
+    delete mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP];
+    mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] = nullptr;
 }
 
 void ResourceLoader::DestroyGameTextures()
@@ -187,9 +209,6 @@ void ResourceLoader::DestroyGameTextures()
     // DIALOG UPGRADE
     tm->DestroySprite(SpriteFileDialogUpgrade);
     tm->DestroyTexture(SpriteFileDialogUpgradeExp);
-    // FACTION SELECTION
-    tm->DestroySprite(SpriteFileDialogFactionSelection);
-    tm->DestroyTexture(SpriteFileDialogFactionSelectionExp);
     // GAME UI
     tm->DestroySprite(SpriteFileGameUIExp);
     // MAP UI
@@ -209,9 +228,6 @@ void ResourceLoader::DestroyGameTextures()
     // NEW ELEMENT DIALOG
     tm->DestroySprite(SpriteFileDialogNewElement);
     tm->DestroySprite(SpriteFileDialogNewElementExp);
-    // NEW GAME DIALOG
-    tm->DestroySprite(SpriteFileDialogNewGame);
-    tm->DestroyTexture(SpriteFileDialogNewGameExp);
     // NEW MINI UNITS SQUAD DIALOG
     tm->DestroySprite(SpriteFileDialogNewMiniUnits);
     tm->DestroySprite(SpriteFileDialogNewMiniUnitsExp);
@@ -743,6 +759,78 @@ void ResourceLoader::SetupPregameTextures()
         tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_TEST], SpriteFileTestSprite);
     });
 #endif
+}
+
+void ResourceLoader::SetupGameSetupTextures()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
+    // LOAD UI GAME SETUP PACKAGE
+    mJobs.emplace_back([this]
+    {
+        mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] =
+            new sgl::core::DataPackage("data/img/UI/UI-game_setup.bin");
+    });
+
+    // FACTION SELECTION
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 90, 885 },
+            { 91, 0, 365, 885 },
+            { 0, 886, 450, 200 },
+            { 0, 1087, 500, 50 },
+
+            // BUTTON FACTION
+            { 457, 0, 230, 200 },
+            { 457, 201, 230, 200 },
+            { 457, 402, 230, 200 },
+
+            // LOGOS
+            { 530, 603, 152, 170 },
+            { 530, 774, 152, 170 },
+            { 530, 945, 152, 170 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                           SpriteFileDialogFactionSelection, rects);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                            SpriteFileDialogFactionSelectionExp);
+    });
+
+    // NEW GAME DIALOG
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 80, 925 },
+            { 81, 0, 365, 925 },
+            // PANELS
+            { 447, 0, 580, 740 },
+            { 447, 741, 580, 360 },
+            // BUTTON
+            { 1028, 0, 540, 200 },
+            { 1028, 201, 540, 200 },
+            { 1028, 402, 540, 200 },
+            { 1028, 603, 540, 200 },
+            // SAVE SLOT
+            { 1028, 804, 540, 70 },
+            { 1028, 875, 540, 70 },
+            { 1028, 946, 540, 70 },
+            { 1028, 1017, 540, 70 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                           SpriteFileDialogNewGame, rects);
+
+        // NEW GAME DIALOG - EXPANDABLE GRAPHICS
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                            SpriteFileDialogNewGameExp);
+    });
 }
 
 void ResourceLoader::SetupGameTextures()
@@ -1877,33 +1965,6 @@ void ResourceLoader::SetupGameTextures()
         tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogUpgradeExp);
     });
 
-    // FACTION SELECTION
-    mJobs.emplace_back([this, tm]
-    {
-        const std::vector<sgl::core::Rectd> rects
-        {
-            // BACKGROUND
-            { 0, 0, 90, 885 },
-            { 91, 0, 365, 885 },
-            { 0, 886, 450, 200 },
-            { 0, 1087, 500, 50 },
-
-            // BUTTON FACTION
-            { 457, 0, 230, 200 },
-            { 457, 201, 230, 200 },
-            { 457, 402, 230, 200 },
-
-            // LOGOS
-            { 530, 603, 152, 170 },
-            { 530, 774, 152, 170 },
-            { 530, 945, 152, 170 },
-        };
-
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogFactionSelection, rects);
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogFactionSelectionExp);
-    });
-
     // GAME UI
     mJobs.emplace_back([this, tm]
     {
@@ -2170,36 +2231,6 @@ void ResourceLoader::SetupGameTextures()
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewElementExp, rectsExp);
     });
-
-    // NEW GAME DIALOG
-    mJobs.emplace_back([this, tm]
-    {
-        const std::vector<sgl::core::Rectd> rects
-        {
-            // BACKGROUND
-            { 0, 0, 80, 925 },
-            { 81, 0, 365, 925 },
-            // PANELS
-            { 447, 0, 580, 740 },
-            { 447, 741, 580, 360 },
-            // BUTTON
-            { 1028, 0, 540, 200 },
-            { 1028, 201, 540, 200 },
-            { 1028, 402, 540, 200 },
-            { 1028, 603, 540, 200 },
-            // SAVE SLOT
-            { 1028, 804, 540, 70 },
-            { 1028, 875, 540, 70 },
-            { 1028, 946, 540, 70 },
-            { 1028, 1017, 540, 70 },
-        };
-
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGame, rects);
-
-        // NEW GAME DIALOG - EXPANDABLE GRAPHICS
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogNewGameExp);
-    });
-
 
     // NEW MINI UNITS SQUAD DIALOG
     mJobs.emplace_back([this, tm]
