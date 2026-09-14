@@ -12,7 +12,6 @@ enum StateId : unsigned int
     MAIN_MENU,
     NEW_GAME_SETUP,
     FACTION_SEL,
-    LEAVE_GAME,
     LOAD_GAME,
     PLANET_MAP,
     SETTINGS,
