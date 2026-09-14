@@ -18,6 +18,8 @@
 #include <sgl/media/AudioManager.h>
 #include <sgl/utilities/StringManager.h>
 
+#include <cassert>
+
 #ifdef DEV_MODE
 #include <chrono>
 #include <iostream>
@@ -65,8 +67,11 @@ void ResourceLoader::LoadFirstInitData()
     auto fm = graphic::FontManager::Instance();
 
     // BACKGROUND
+    assert(mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM] == nullptr);
+
     mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM] =
         new sgl::core::DataPackage("data/img/backgrounds-perm.bin");
+
     tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM], "space_bg.jpg");
 
     // FONT
@@ -423,6 +428,8 @@ void ResourceLoader::SetupPermanentTextures()
     // UI PERMANENT PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_PERM] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_PERM] = new sgl::core::DataPackage("data/img/UI/UI-perm.bin");
     });
 
@@ -623,6 +630,8 @@ void ResourceLoader::SetupPregameTextures()
     // BACKGROUNDS PREGAME
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] =
             new sgl::core::DataPackage("data/img/backgrounds-pregame.bin");
         });
@@ -631,6 +640,8 @@ void ResourceLoader::SetupPregameTextures()
     // TEST
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_TEST] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_TEST] = new sgl::core::DataPackage("data/img/test.bin");
     });
 #endif
@@ -638,6 +649,8 @@ void ResourceLoader::SetupPregameTextures()
     // UI PREGAME
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_PREGAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_PREGAME] =
             new sgl::core::DataPackage("data/img/UI/UI-pregame.bin");
     });
@@ -768,6 +781,8 @@ void ResourceLoader::SetupGameSetupTextures()
     // LOAD UI GAME SETUP PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] =
             new sgl::core::DataPackage("data/img/UI/UI-game_setup.bin");
     });
@@ -838,18 +853,24 @@ void ResourceLoader::SetupGameTextures()
     // LOAD GAME PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_GAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_GAME] = new sgl::core::DataPackage("data/img/game.bin");
     });
 
     // LOAD UI GAME PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_GAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_GAME] = new sgl::core::DataPackage("data/img/UI/UI-game.bin");
     });
 
     // LOAD UI TUTORIAL PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] = new sgl::core::DataPackage("data/img/UI/UI-tutorial.bin");
     });
 
