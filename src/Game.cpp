@@ -520,6 +520,9 @@ bool Game::LoadGame(const std::string & saveFile)
     std::cout << "Game::LoadGame - GAME LOADED in: " << duration.count() << " ms" << std::endl;
 #endif
 
+    if(!saveFile.empty())
+        mCurrSaveFile = saveFile;
+
     return true;
 }
 
