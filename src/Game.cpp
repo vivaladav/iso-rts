@@ -30,6 +30,7 @@
 #include <sgl/graphic/Window.h>
 #include <sgl/media/AudioManager.h>
 #include <sgl/media/AudioPlayer.h>
+#include <sgl/services/Steam.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/BinaryFile.h>
 #include <sgl/utilities/Filesystem.h>
@@ -107,6 +108,12 @@ Game::Game(int argc, char * argv[])
 
     std::cout << std::endl;
 #endif
+
+    // -- STEAM INTEGRATION --
+    auto steam = sgl::services::Steam::Create();
+
+    const bool steamOK = steam->Init();
+    std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << "\n" << std::endl;
 
     // -- INIT TEXT DATA --
     auto sm = utilities::StringManager::Create();
@@ -221,6 +228,8 @@ Game::Game(int argc, char * argv[])
 Game::~Game()
 {
     using namespace sgl;
+
+    sgl::services::Steam::Destroy();
 
     for(auto it: mCursors)
         delete it.second;

@@ -695,9 +695,20 @@ target_link_libraries(
     PRIVATE core
     PRIVATE graphic
     PRIVATE media
+    PRIVATE services
     PRIVATE sgui
     PRIVATE utilities
 )
+
+# setup data for when using the Steam SDK
+if(STEAM_SDK)
+    file(COPY ${STEAM_SDK}/redistributable_bin/linux64/
+         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+    if(DEV_MODE)
+        file(WRITE "${CMAKE_BINARY_DIR}/steam_appid.txt" "1607580")
+    endif()
+endif()
 
 set_target_properties(game PROPERTIES OUTPUT_NAME "virtualord")
 
