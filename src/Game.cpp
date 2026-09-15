@@ -109,17 +109,46 @@ Game::Game(int argc, char * argv[])
     std::cout << std::endl;
 #endif
 
+    // set default language
+    LanguageId startLanguage = LANG_ENGLISH;
+
     // -- STEAM INTEGRATION --
     auto steam = sgl::services::Steam::Create();
 
     const bool steamOK = steam->Init();
     std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << "\n" << std::endl;
 
+    if(steamOK)
+    {
+        // update default language based on Steam settings
+        const char * lang = steam->GetLanguage();
+
+        if(lang != nullptr)
+        {
+            std::cout << "Steam language: " << lang << std::endl;
+
+            const std::string strLang(lang);
+
+            const std::string strFrench("french");
+            const std::string strGerman("german");
+            const std::string strItalian("italian");
+            const std::string strSpanishEs("spanish");
+            const std::string strSpanishLa("latam");
+
+            if(strLang == strSpanishEs || strLang == strSpanishLa)
+                startLanguage = LANG_SPANISH;
+            else if(strLang == strGerman)
+                startLanguage = LANG_GERMAN;
+            else if(strLang == strItalian)
+                startLanguage = LANG_ITALIAN;
+            else if(strLang == strFrench)
+                startLanguage = LANG_FRENCH;
+        }
+    }
+
     // -- INIT TEXT DATA --
     auto sm = utilities::StringManager::Create();
     sm->RegisterPackage("data/text/game.bin");
-
-    SetLanguage(LANG_ENGLISH);
 
     const std::string title = std::string("Virtualord - v. ") + std::string(VERSION);
     mWin = graphic::Window::Create(title.c_str(), 0, 0, this);
@@ -222,7 +251,13 @@ Game::Game(int argc, char * argv[])
     mSaveFiles.emplace_back("02_003.sav");
 
     // load settings when starting
-    LoadSettings();
+    const bool settingsOK = LoadSettings();
+
+    // default init when settings are not loaded (first start)
+    if(!settingsOK)
+    {
+        SetLanguage(startLanguage);
+    }
 }
 
 Game::~Game()

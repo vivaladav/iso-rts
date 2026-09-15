@@ -366,6 +366,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- New screen to setup a new game.\n"
                   "- Added support for multiple save files.\n"
                   "- Game is auto saved when exiting to the main menu (if no tutorial is active).\n"
+                  "- Basic Steam SDK integration: default language set based on Steam settings.\n"
                   "\nCHANGES\n"
                   "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
                   "- Simplified and reduced explanations in tutorial 1.\n"
