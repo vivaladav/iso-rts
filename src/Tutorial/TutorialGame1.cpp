@@ -82,12 +82,13 @@ namespace
 {
 using namespace game;
 
-const Cell2D cellDT1(17, 16);
-const Cell2D cellDT2(37, 24);
-const Cell2D cellEnemy(17, 18);
-const Cell2D cellMatGen1(22, 10);
-const Cell2D cellMatGen2(42, 20);
-const Cell2D cellEneGen2(31, 26);
+const Cell2D cellDT1(27, 16);
+const Cell2D cellDT2(47, 24);
+const Cell2D cellDT3(48, 33);
+const Cell2D cellEnemy(27, 18);
+const Cell2D cellMatGen1(32, 10);
+const Cell2D cellMatGen2(52, 20);
+const Cell2D cellEneGen2(41, 26);
 
 constexpr unsigned int indUnit1 = 0;
 // TODO change this back to 1 when testing full tutorial
@@ -146,7 +147,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     // CONQUER ENERGY GENERATOR
     AddStep([this, local, isoMap, game]
             {
-                const Cell2D cellGen(31, 11);
+                const Cell2D cellGen(41, 11);
                 const GameObject * gen = GetObjectInCell(cellGen);
 
                 return new StepGameConquerStruct(game, local, gen, isoMap);
@@ -176,7 +177,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit1);
-            const Cell2D cellEnd(38, 10);
+            const Cell2D cellEnd(48, 10);
             const core::Pointd2D p0(1150, 500);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
@@ -235,13 +236,13 @@ TutorialGame1::TutorialGame1(Screen * screen)
         {
             const core::Pointd2D p0(1200, 400);
             const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-            const Cell2D target(23, 10);
+            const Cell2D target(33, 10);
             return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
         });
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit1);
-            const Cell2D cellEnd(29, 10);
+            const Cell2D cellEnd(39, 10);
             const core::Pointd2D p0(1150, 500);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
@@ -256,7 +257,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, local, isoMap]
             {
                 const auto unit = local->GetUnit(indUnit1);
-                const Cell2D target(17, 15);
+                const Cell2D target(27, 15);
                 const core::Pointd2D p0(1000, 100);
                 return new StepGameMoveUnitToCorner(unit, isoMap, target, p0);
             });
@@ -315,14 +316,14 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, isoMap, game]
         {
             const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-            const Cell2D target(17, 15);
+            const Cell2D target(27, 15);
             const core::Pointd2D p0(1000, 250);
             return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
         });
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit1);
-            const Cell2D cellEnd(21, 11);
+            const Cell2D cellEnd(31, 11);
             const core::Pointd2D p0(1000, 300);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
@@ -342,13 +343,13 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, isoMap, game]
             {
                 const Cell2D & cellStart = GetOverlayWall()->GetCellStart();
-                const Cell2D target(17, 15);
+                const Cell2D target(27, 15);
                 return new StepGameWallBuildStart(game, isoMap, cellStart, target);
             });
     AddStep([isoMap, local, game]
             {
                 const auto unit = local->GetUnit(indUnit1);
-                const Cell2D cellEnd(14, 15);
+                const Cell2D cellEnd(24, 15);
                 const core::Pointd2D p0(900, 150);
                 return new StepGameWallBuildEnd(game, isoMap, unit, cellEnd, p0);
             });
@@ -416,14 +417,14 @@ TutorialGame1::TutorialGame1(Screen * screen)
         {
             const core::Pointd2D p0(200, 550);
             const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-            const Cell2D target(41, 18);
+            const Cell2D target(51, 18);
             return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
         });
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit2);
             const core::Pointd2D p0(700, 250);
-            const Cell2D cellEnd(41, 11);
+            const Cell2D cellEnd(51, 11);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
     AddStep([local] { return new StepGameSetSelectionDefaultAction(local, GameObjectActionType::MOVE); });
@@ -437,7 +438,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, local, isoMap]
             {
                 const auto unit = local->GetUnit(indUnit2);
-                const Cell2D target(37, 23);
+                const Cell2D target(47, 23);
                 const core::Pointd2D p0(1050, 300);
                 return new StepGameMoveUnitToCorner(unit, isoMap, target, p0);
             });
@@ -473,7 +474,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // // CONNECT DEFENSIVE TOWERs
+    // CONNECT DEFENSIVE TOWERs
     AddStep([]
         {
             const core::Pointd2D p0(1100, 450);
@@ -484,13 +485,13 @@ TutorialGame1::TutorialGame1(Screen * screen)
         {
             const core::Pointd2D p0(1100, 450);
             const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-            const Cell2D target(37, 23);
+            const Cell2D target(47, 23);
             return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
         });
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit2);
-            const Cell2D cellEnd(40, 20);
+            const Cell2D cellEnd(50, 20);
             const core::Pointd2D p0(1100, 450);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
@@ -567,13 +568,13 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([this, isoMap, game]
             {
                 const Cell2D & cellStart = GetOverlayWall()->GetCellStart();
-                const Cell2D target(37, 25);
+                const Cell2D target(47, 25);
                 return new StepGameWallBuildStart(game, isoMap, cellStart, target);
             });
     AddStep([this, local, isoMap, game]
             {
                 const auto unit = local->GetUnit(indUnit2);
-                const Cell2D cellEnd(37, 28);
+                const Cell2D cellEnd(47, 28);
                 const core::Pointd2D p0(900, 250);
                 return new StepGameWallBuildEnd(game, isoMap, unit, cellEnd, p0);
             });
@@ -649,17 +650,73 @@ TutorialGame1::TutorialGame1(Screen * screen)
             {
                 const core::Pointd2D p0(1100, 350);
                 const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-                const Cell2D target(32, 26);
+                const Cell2D target(42, 26);
                 return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
             });
     AddStep([this, local, isoMap, game]
             {
                 const auto unit = local->GetUnit(indUnit2);
                 const core::Pointd2D p0(1000, 550);
-                const Cell2D cellEnd(36, 26);
+                const Cell2D cellEnd(46, 26);
                 return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
             });
     AddStep([] { return new StepDelay(0.5f); });
+    // END TURN
+    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
+    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD DEFENSIVE TOWER 3 WITH WORKER 2
+    AddStep([game, gs, panelActions]
+        {
+            const core::Pointd2D p0(900, 250);
+
+            return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_DTOWER_1", p0);
+        });
+    AddStep([hud]
+        {
+            return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
+                                              "TUT_GAME_BUILD_DTOWER_4",
+                                              TutorialConstants::catDefenses,
+                                              TutorialConstants::structDefTower);
+           });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap]
+        {
+            const auto unit = local->GetUnit(indUnit2);
+            const core::Pointd2D p0(900, 250);
+            return new StepGameBuildTowerEnd(isoMap, unit, cellDT3, p0);
+        });
+    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // END TURN
+    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
+    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONNECT DEFENSIVE TOWER WITH WORKER 2
+    AddStep([]
+        {
+            const core::Pointd2D p0(1100, 450);
+            return new StepGameConnectStructIntro(p0);
+        });
+    AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
+    AddStep([this, isoMap, game]
+        {
+            const core::Pointd2D p0(1100, 450);
+            const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
+            const Cell2D target(48, 32);
+            return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
+        });
+    AddStep([this, local, isoMap, game]
+        {
+            const auto unit = local->GetUnit(indUnit2);
+            const Cell2D cellEnd(48, 28);
+            const core::Pointd2D p0(1100, 450);
+            return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
+        });
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
             {
