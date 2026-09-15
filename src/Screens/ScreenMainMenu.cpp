@@ -377,6 +377,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Mission goal completed tutorial is awarded only once.\n"
                   "- Faction energy is properly reset after laoding.\n"
                   "- Dialog settings has focus when opened from the main menu too.\n"
+                  "- Fixed crash when leaving to main menu while object is selected.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

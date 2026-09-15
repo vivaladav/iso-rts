@@ -85,8 +85,18 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
 
 ObjectActionButton::~ObjectActionButton()
 {
-    delete mNotificationBg;
-    delete mNotificationLabel;
+    // NOTE it's needed to unregister and to delete here to cover the case when hidden
+    if(mNotificationBg != nullptr)
+    {
+        UnregisterRenderable(mNotificationBg);
+        delete mNotificationBg;
+    }
+
+    if(mNotificationLabel != nullptr)
+    {
+        UnregisterRenderable(mNotificationLabel);
+        delete mNotificationLabel;
+    }
 }
 
 void ObjectActionButton::SetTooltipText(const char * text)
