@@ -124,6 +124,15 @@ Game::Game(int argc, char * argv[])
         std::cout << "Steam user: " << steam->GetUserName()
                   << " (" << steam->GetUserId() << ")" << std::endl;
 
+        // test Steam Stats
+        const char * statName = "version";
+        int statVersion = 0;
+
+        if(steam->GetStat(statName, &statVersion))
+            std::cout << "Steam stat " << statName << ": " << statVersion << std::endl;
+        else
+            std::cout << "Steam stat " << statName << " GET FAILED" << std::endl;
+
         // update default language based on Steam settings
         const char * lang = steam->GetAppLanguage();
 
