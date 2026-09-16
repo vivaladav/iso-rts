@@ -116,12 +116,16 @@ Game::Game(int argc, char * argv[])
     auto steam = sgl::services::Steam::Create();
 
     const bool steamOK = steam->Init();
-    std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << "\n" << std::endl;
+    std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << std::endl;
 
     if(steamOK)
     {
+        // user info
+        std::cout << "Steam user: " << steam->GetUserName()
+                  << " (" << steam->GetUserId() << ")" << std::endl;
+
         // update default language based on Steam settings
-        const char * lang = steam->GetLanguage();
+        const char * lang = steam->GetAppLanguage();
 
         if(lang != nullptr)
         {
