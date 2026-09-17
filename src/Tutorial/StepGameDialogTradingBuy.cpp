@@ -13,8 +13,8 @@
 
 namespace
 {
-constexpr unsigned int valEnergy = 130;
-constexpr unsigned int valMaterial = 100;
+constexpr unsigned int valEnergy = 70;
+constexpr unsigned int valMaterial = 50;
 constexpr unsigned int valResearch = 120;
 }
 
