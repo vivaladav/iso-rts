@@ -381,6 +381,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Faction energy is properly reset after laoding.\n"
                   "- Dialog settings has focus when opened from the main menu too.\n"
                   "- Fixed crash when leaving to main menu while object is selected.\n"
+                  "- Fixed camera stuck after mini units move.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
