@@ -1692,7 +1692,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // MOVE SOLDIER 1
     AddStep([game]
             {
-                const int movX = -700;
+                const int movX = -500;
                 const int movY = 0;
                 return new StepGameMoveCamera(movX, movY);
             });
