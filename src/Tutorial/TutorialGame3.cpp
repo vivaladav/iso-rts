@@ -2577,6 +2577,13 @@ TutorialGame3::TutorialGame3(Screen * screen)
             return new StepGameQuickUnitButton(hud, indWorker1, nullptr, p0);
         });
     AddStep([] { return new StepDelay(0.5f); });
+    // TELL ABOUT MOVE
+    AddStep([]
+        {
+            const core::Pointd2D p0(500, 250);
+            return new StepGameSingleInfo(p0, "TUT_GAME_CONT_EXPL");
+        });
+    AddStep([] { return new StepDelay(0.5f); });
     // MOVE CAMERA
     AddStep([game]
         {
@@ -2586,11 +2593,6 @@ TutorialGame3::TutorialGame3(Screen * screen)
             });
     AddStep([] { return new StepDelay(0.5f); });
     // MOVE TO MATERIAL GENERATOR
-    AddStep([]
-        {
-            const core::Pointd2D p0(600, 250);
-            return new StepGameSingleInfo(p0, "TUT_GAME_CONT_EXPL");
-        });
     AddStep([local, isoMap, game]
         {
             const auto unit = local->GetUnit(indWorker1);
@@ -2775,11 +2777,6 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // FINAL SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-}
-
-TutorialGame3::~TutorialGame3()
-{
-
 }
 
 } // namespace game
