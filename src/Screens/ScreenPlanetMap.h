@@ -2,6 +2,10 @@
 
 #include "Screen.h"
 
+#ifdef DEMO_MODE
+#include <sgl/utilities/StringsChangeListener.h>
+#endif
+
 namespace sgl
 {
     namespace graphic { class Image; }
@@ -21,7 +25,13 @@ class PanelPlanetInfo;
 class PanelPlanetResources;
 class PlanetMap;
 
+#ifdef DEMO_MODE
+class GameSimpleTooltip;
+
+class ScreenPlanetMap : public Screen, public sgl::utilities::StringsChangeListener
+#else
 class ScreenPlanetMap : public Screen
+#endif
 {
 public:
     ScreenPlanetMap(Game * game);
@@ -48,6 +58,10 @@ private:
 
     void ShowDialogExit();
 
+#ifdef DEMO_MODE
+    void OnStringsChanged() override;
+#endif
+
 private:
     friend class TutorialPlanetMap;
 
@@ -67,6 +81,10 @@ private:
     PlanetMap * mPlanetMap = nullptr;
 
     DialogExit * mDialogExit = nullptr;
+
+#ifdef DEMO_MODE
+    GameSimpleTooltip * mTooltipDemo = nullptr;
+#endif
 
     bool mPaused = false;
 };

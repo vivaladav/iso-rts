@@ -431,14 +431,14 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     {
     });
 
-    #ifdef DEMO_MODE
+#ifdef DEMO_MODE
     // cover button to show tooltip when mouse is over
     auto cover = new WidgetCover(panelLeave);
     cover->SetPosition(panelLeave->GetX(), panelLeave->GetY());
 
     auto sm = utilities::StringManager::Instance();
-    auto tt = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
-    cover->SetTooltip(tt);
+    mTooltipDemo = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
+    cover->SetTooltip(mTooltipDemo);
     cover->SetTooltipShowingTime(5000);
     cover->SetTooltipDelay(100);
 #endif
@@ -712,6 +712,14 @@ void ScreenPlanetMap::ShowDialogExit()
     const int posX = (renderer->GetWidth() - mDialogExit->GetWidth()) / 2;
     const int posY = (renderer->GetHeight() - mDialogExit->GetHeight()) / 2;
     mDialogExit->SetPosition(posX, posY);
+}
+
+void ScreenPlanetMap::OnStringsChanged()
+{
+#ifdef DEMO_MODE
+    auto sm = sgl::utilities::StringManager::Instance();
+    mTooltipDemo->SetText(sm->GetCString("NOT_IN_DEMO"));
+#endif
 }
 
 } // namespace game
