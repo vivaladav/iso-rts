@@ -21,6 +21,11 @@
 #include "Widgets/WidgetsConstants.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
 
+#ifdef DEMO_MODE
+#include "Widgets/GameSimpleTooltip.h"
+#include "Widgets/WidgetCover.h"
+#endif
+
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -425,6 +430,18 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     buttonLeave->AddOnClickFunction([this]
     {
     });
+
+    #ifdef DEMO_MODE
+    // cover button to show tooltip when mouse is over
+    auto cover = new WidgetCover(panelLeave);
+    cover->SetPosition(panelLeave->GetX(), panelLeave->GetY());
+
+    auto sm = utilities::StringManager::Instance();
+    auto tt = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
+    cover->SetTooltip(tt);
+    cover->SetTooltipShowingTime(5000);
+    cover->SetTooltipDelay(100);
+#endif
 
     SetPlanetName(Planet::PLANETS_NAME[planet->GetPlanetId()]);
 
