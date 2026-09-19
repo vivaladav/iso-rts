@@ -382,6 +382,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Dialog settings has focus when opened from the main menu too.\n"
                   "- Fixed crash when leaving to main menu while object is selected.\n"
                   "- Fixed camera stuck after mini units move.\n"
+                  "- Fixed crash when changing language in screen planet.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

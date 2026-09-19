@@ -337,8 +337,26 @@ void PanelResources::OnStringsChanged()
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
-    for(unsigned int i = 0; i < Player::Stat::NUM_PSTATS; ++i)
-        mGameTooltips[i]->UpdateStrings();
+    if(mGameMap != nullptr)
+    {
+        for(unsigned int i = 0; i < Player::Stat::NUM_PSTATS; ++i)
+            mGameTooltips[i]->UpdateStrings();
+    }
+    else
+    {
+        const char * text[] =
+        {
+            "BLOBS",
+            "DIAMONDS",
+            "ENERGY",
+            "MATERIAL",
+            "MONEY",
+            "RESEARCH_PTS",
+        };
+
+        for(unsigned int i = 0; i < Player::Stat::NUM_PSTATS; ++i)
+            mSimpleTooltips[i]->SetText(sm->GetCString(text[i]));
+    }
 }
 
 void PanelResources::HandlePositionChanged()
