@@ -714,12 +714,12 @@ void ScreenPlanetMap::ShowDialogExit()
     mDialogExit->SetPosition(posX, posY);
 }
 
+#ifdef DEMO_MODE
 void ScreenPlanetMap::OnStringsChanged()
 {
-#ifdef DEMO_MODE
     auto sm = sgl::utilities::StringManager::Instance();
     mTooltipDemo->SetText(sm->GetCString("NOT_IN_DEMO"));
-#endif
 }
+#endif
 
 } // namespace game
