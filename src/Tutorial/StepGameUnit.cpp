@@ -27,22 +27,19 @@ StepGameUnit::StepGameUnit(const Game * game, const IsoMap * im, const Unit * un
 
     info->SetPosition(p0.x, p0.y);
 
-    info->AddActionEntry(sm->GetCString("TUT_GAME_UNIT_1"), 0.f, false, false, [this, game]
+    info->AddActionEntry(sm->GetCString("TUT_GAME_UNIT_1"), 0.f, false, false, [this, game, im]
                         {
+                            const Cell2D cell(mUnit->GetRow0(), mUnit->GetCol0());
+
                             // FOCUS
-                            mFocusArea->SetCell(mUnit->GetRow0(), mUnit->GetCol0());
+                            mFocusArea->SetCell(cell.row, cell.col);
                             mFocusArea->SetCornersColorAction();
                             mFocusArea->SetBlinking(true);
                             mFocusArea->SetVisible(true);
 
                             // CLICK FILTER
-                            const int objX = mUnit->GetX();
-                            const int objY = mUnit->GetY();
-                            const int objW = mUnit->GetWidth();
-                            const int objH = mUnit->GetHeight();
-
                             auto cf = GetClickFilter();
-                            cf->SetWorldClickableArea(objX, objY, objW, objH);
+                            cf->SetClickableCell(im, cell);
                             cf->SetButtonToAllow(game->GetButtonSelect());
                         });
 }

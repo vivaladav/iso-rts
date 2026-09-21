@@ -20,6 +20,8 @@ StepGameEndTurn::StepGameEndTurn(const PanelTurnControl * panel)
 
     // FOCUS
     mFocusArea->SetVisible(false);
+    mFocusArea->SetBlinking(true);
+    mFocusArea->SetCornersColorAction();
 
     // INFO
     auto info = GetPanelInfo();
@@ -30,24 +32,25 @@ StepGameEndTurn::StepGameEndTurn(const PanelTurnControl * panel)
 
     info->AddActionEntry(sm->GetCString("TUT_GAME_END_TURN_2"), 0.f, false, false, [this, panel]
                         {
+                            // CLICK FILTER
+                            const int fX = mButton->GetScreenX();
+                            const int fY = mButton->GetScreenY();
+                            const int fW = mButton->GetWidth();
+                            const int fH = mButton->GetHeight();
+
+                            GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
+
                             // FOCUS
-                            auto btn = panel->GetButtonEndTurn();
-
                             const int padding = 10;
-                            const int fX = btn->GetScreenX() - padding;
-                            const int fY = btn->GetScreenY() - padding;
-                            const int fW = btn->GetWidth() + (padding * 2);
-                            const int fH = btn->GetHeight() + (padding * 2);
+                            const int f2X = fX - padding;
+                            const int f2Y = fY - padding;
+                            const int f2W = fW + (padding * 2);
+                            const int f2H = fH + (padding * 2);
 
-                            mFocusArea->SetCornersColorAction();
-                            mFocusArea->SetBlinking(true);
-                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
+                            mFocusArea->SetScreenArea(f2X, f2Y, f2W, f2H, true);
                             mFocusArea->SetVisible(true);
 
                             mShowingFocus = true;
-
-                            // CLICK FILTER
-                            GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
                         });
 
     mButton = panel->GetButtonEndTurn();
