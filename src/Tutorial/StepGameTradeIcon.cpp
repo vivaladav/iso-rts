@@ -79,4 +79,11 @@ StepGameTradeIcon::~StepGameTradeIcon()
     delete mFocusArea;
 }
 
+void StepGameTradeIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

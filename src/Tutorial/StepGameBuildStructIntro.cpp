@@ -40,7 +40,6 @@ StepGameBuildStructIntro::StepGameBuildStructIntro(const Game * game, Screen * s
     info->AddActionEntry(sm->GetCString("TUT_GAME_BUILD_DTOWER_2"), 0.f, false, false,
                         [this, panel, game]
                         {
-
                             auto btn = panel->GetButton(PanelObjectActions::BTN_BUILD_STRUCT);
 
                             // CLICK FILTER

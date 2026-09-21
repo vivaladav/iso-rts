@@ -23,11 +23,15 @@ public:
 
     void Update(float delta) override;
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
     sgl::sgui::AbstractButton * mTerritory = nullptr;
 
     bool mCheckTerritorySelected = false;
+
+    bool mShowingFocus = false;
 };
 
 } // namespace game

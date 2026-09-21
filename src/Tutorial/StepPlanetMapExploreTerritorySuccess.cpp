@@ -72,6 +72,8 @@ StepPlanetMapExploreTerritorySuccess::StepPlanetMapExploreTerritorySuccess(const
                             mFocusInfo->SetVisible(false);
                             mFocusResources->SetVisible(false);
                             mFocusArea->SetVisible(true);
+
+                            mShowingFocus = true;
                         });
 
     // EXPLORE BUTTON
@@ -98,6 +100,14 @@ void StepPlanetMapExploreTerritorySuccess::OnStart()
     // FOCUS
     mFocusInfo->SetVisible(true);
     mFocusResources->SetVisible(true);
+}
+
+void StepPlanetMapExploreTerritorySuccess::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

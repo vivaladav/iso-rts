@@ -80,4 +80,11 @@ StepGameSetupResearchIcon::~StepGameSetupResearchIcon()
     delete mFocusArea;
 }
 
+void StepGameSetupResearchIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

@@ -50,6 +50,8 @@ StepPlanetMapSelectTerritory::StepPlanetMapSelectTerritory(PlanetMap * planet, u
         GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
 
         mCheckTerritorySelected = true;
+
+        mShowingFocus = true;
     });
 }
 
@@ -73,6 +75,14 @@ void StepPlanetMapSelectTerritory::Update(float)
         if(mTerritory->IsChecked())
             SetDone();
     }
+}
+
+void StepPlanetMapSelectTerritory::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game
