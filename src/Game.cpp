@@ -125,6 +125,8 @@ Game::Game(int argc, char * argv[])
         std::cout << "Steam user: " << steam->GetUserName()
                   << " (" << steam->GetUserId() << ")" << std::endl;
 
+        std::cout << "Steam app: " << steam->GetAppId() << std::endl;
+
         // update default language based on Steam settings
         const char * lang = steam->GetAppLanguage();
 
