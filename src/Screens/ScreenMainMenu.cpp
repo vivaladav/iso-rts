@@ -347,7 +347,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.11 - \"Playtesting\"", font, content);
+    auto title = new sgui::Label("0.6.13 - \"Playtesting\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
