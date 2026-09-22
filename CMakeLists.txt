@@ -38,6 +38,8 @@ add_executable(
     src/GameMap.cpp
     src/GameMapCell.cpp
     src/GameMapCell.h
+    src/GameStats.h
+    src/GameStats.cpp
     src/GameTestData.h
     src/GameTestData.cpp
     src/IsoLayer.h

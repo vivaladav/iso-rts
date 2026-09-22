@@ -1,6 +1,8 @@
 #include "States/StateGame.h"
 
 #include "Game.h"
+#include "GameStats.h"
+#include "Planet.h"
 #include "Screens/ScreenGame.h"
 #include "States/StatesIds.h"
 
@@ -31,9 +33,17 @@ void StateGame::OnActive()
 
     auto bf = mGame->GetSaveFileForReading();
 
+    auto stats = mGame->GetGameStats();
+
     // start a new game
     if(bf == nullptr)
     {
+        // update stats
+        const PlanetId planet = mGame->GetCurrentPlanet()->GetPlanetId();
+        const unsigned int map = mGame->GetCurrentTerritory();
+        stats->IncMissionPlayed(planet, map);
+
+        // init game
         screen->InitNewGame();
 
         // auto save, if enabled
@@ -50,6 +60,9 @@ void StateGame::OnActive()
     }
     else
     {
+        // update stats
+        stats->IncLoadsPlayed();
+
         // load saved game
         screen->Load(*bf);
         screen->InitLoadedGame();

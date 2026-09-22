@@ -34,6 +34,7 @@ namespace sgl
 namespace game
 {
 
+class GameStats;
 class ObjectsDataRegistry;
 class Planet;
 class Player;
@@ -133,6 +134,8 @@ public:
     void SetGameMode(GameMode m);
 
     const ObjectsDataRegistry * GetObjectsRegistry() const;
+
+    GameStats * GetGameStats() const;
 
     // -- players --
     int GetNumActivePlayers() const;
@@ -242,6 +245,8 @@ private:
 
     ResourceLoader * mResLoader = nullptr;
 
+    GameStats * mGameStats = nullptr;
+
     TutorialManager * mTutMan = nullptr;
 
     ObjectsDataRegistry * mObjsRegistry = nullptr;
@@ -317,6 +322,8 @@ inline GameMode Game::GetGameMode() const { return mGameMode; }
 inline void Game::SetGameMode(GameMode m) { mGameMode = m; }
 
 inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
+
+inline GameStats * Game::GetGameStats() const { return mGameStats; }
 
 inline int Game::GetNumActivePlayers() const { return mActivePlayers.size(); }
 

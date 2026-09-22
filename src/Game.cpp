@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "GameConstants.h"
+#include "GameStats.h"
 #include "Planet.h"
 #include "Player.h"
 #include "ResourceLoader.h"
@@ -124,15 +125,6 @@ Game::Game(int argc, char * argv[])
         std::cout << "Steam user: " << steam->GetUserName()
                   << " (" << steam->GetUserId() << ")" << std::endl;
 
-        // test Steam Stats
-        const char * statName = "VERSION";
-        int statVersion = 0;
-
-        if(steam->GetStat(statName, &statVersion))
-            std::cout << "Steam stat " << statName << ": " << statVersion << std::endl;
-        else
-            std::cout << "Steam stat " << statName << " GET FAILED" << std::endl;
-
         // update default language based on Steam settings
         const char * lang = steam->GetAppLanguage();
 
@@ -158,6 +150,9 @@ Game::Game(int argc, char * argv[])
                 startLanguage = LANG_FRENCH;
         }
     }
+
+    // INIT GAME STATS
+    mGameStats = new GameStats;
 
     // -- INIT TEXT DATA --
     auto sm = utilities::StringManager::Create();
@@ -276,6 +271,8 @@ Game::Game(int argc, char * argv[])
 Game::~Game()
 {
     using namespace sgl;
+
+    delete mGameStats;
 
     sgl::services::Steam::Destroy();
 

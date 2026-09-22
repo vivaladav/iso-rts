@@ -2769,10 +2769,10 @@ TutorialGame3::TutorialGame3(Screen * screen)
         });
     // FINAL MESSAGE
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([]
+    AddStep([game]
         {
             const core::Pointd2D p0(635, 200);
-            return new StepGameEnding(p0);
+            return new StepGameEnding(game, p0);
         });
     // FINAL SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
