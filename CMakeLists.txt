@@ -705,6 +705,7 @@ target_link_libraries(
 
 # setup data for when using the Steam SDK
 if(STEAM_SDK)
+    # set Steam APP ID
     if(PLAYTEST)
         set(STEAM_APP_ID "5238300")
     elseif(DEMO_MODE)
@@ -713,12 +714,19 @@ if(STEAM_SDK)
         set(STEAM_APP_ID "1607580")
     endif()
 
-    file(COPY ${STEAM_SDK}/redistributable_bin/linux64/
-         DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
+    # write APP ID to binary dir when in DEV MODE
     if(DEV_MODE)
         file(WRITE "${CMAKE_BINARY_DIR}/steam_appid.txt" ${STEAM_APP_ID})
     endif()
+
+    # copy dynamic library to binary dir
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        file(COPY ${STEAM_SDK}/redistributable_bin/linux64/
+             DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+     elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+         file(COPY ${STEAM_SDK}/redistributable_bin/win64/steam_api64.dll
+              DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+     endif()
 endif()
 
 set_target_properties(game PROPERTIES OUTPUT_NAME "virtualord")
