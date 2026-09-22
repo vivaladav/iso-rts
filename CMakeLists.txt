@@ -702,11 +702,19 @@ target_link_libraries(
 
 # setup data for when using the Steam SDK
 if(STEAM_SDK)
+    if(PLAYTEST)
+        set(STEAM_APP_ID "5238300")
+    elseif(DEMO_MODE)
+        set(STEAM_APP_ID "5243770")
+    else()
+        set(STEAM_APP_ID "1607580")
+    endif()
+
     file(COPY ${STEAM_SDK}/redistributable_bin/linux64/
          DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
     if(DEV_MODE)
-        file(WRITE "${CMAKE_BINARY_DIR}/steam_appid.txt" "1607580")
+        file(WRITE "${CMAKE_BINARY_DIR}/steam_appid.txt" ${STEAM_APP_ID})
     endif()
 endif()
 
