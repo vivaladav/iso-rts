@@ -242,20 +242,33 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     labelBuild->SetPosition(labelBuildX, labelBuildY);
 
     const int labelVerX = screenW - labelVer->GetWidth() - marginLabelH;
-    const int labelVerY = labelBuildY - labelVer->GetHeight();
-    labelVer->SetPosition(labelVerX, labelVerY);
+    int labelY = labelBuildY - labelVer->GetHeight();
+    labelVer->SetPosition(labelVerX, labelY);
 
 #ifdef DEV_MODE
     // SHOW DEV MODE LABEL
-    graphic::Font * fntBold = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
+    auto fntBold = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
 
     const unsigned int colorDev = 0xf66455ff;
     auto labelDEV = new sgui::Label(sm->GetCString("DEV_MODE"), fntBold);
     labelDEV->SetColor(colorDev);
 
     const int labelDevX = screenW - labelDEV->GetWidth() - marginLabelH;
-    const int labelDevY = labelVerY - labelDEV->GetHeight();
-    labelDEV->SetPosition(labelDevX, labelDevY);
+    labelY -= labelDEV->GetHeight();
+    labelDEV->SetPosition(labelDevX, labelY);
+#endif
+
+#ifdef PLAYTEST
+    // SHOW PLAYTEST LABEL
+    auto fntPlaytest = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
+
+    const unsigned int colorPlaytest = 0x55c0f6ff;
+    auto labelPlaytest = new sgui::Label("PLAYTEST", fntPlaytest);
+    labelPlaytest->SetColor(colorPlaytest);
+
+    const int labelPlaytestX = screenW - labelPlaytest->GetWidth() - marginLabelH;
+    labelY -= labelPlaytest->GetHeight();
+    labelPlaytest->SetPosition(labelPlaytestX, labelY);
 #endif
 
     // makes sure game data is cleared before starting something new

@@ -125,7 +125,7 @@ Game::Game(int argc, char * argv[])
                   << " (" << steam->GetUserId() << ")" << std::endl;
 
         // test Steam Stats
-        const char * statName = "version";
+        const char * statName = "VERSION";
         int statVersion = 0;
 
         if(steam->GetStat(statName, &statVersion))

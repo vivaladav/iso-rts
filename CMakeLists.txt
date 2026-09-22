@@ -13,6 +13,7 @@ add_compile_definitions($<$<PLATFORM_ID:Linux>:LINUX=1>
                         $<$<CONFIG:RelWithDebInfo>:RELEASE=1>
                         $<$<BOOL:${DEV_MODE}>:DEV_MODE=1>
                         $<$<BOOL:${DEMO_MODE}>:DEMO_MODE=1>
+                        $<$<BOOL:${PLAYTEST}>:PLAYTEST=1>
                         )
 
 # include internal libraries
