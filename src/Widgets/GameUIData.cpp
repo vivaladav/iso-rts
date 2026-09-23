@@ -5,6 +5,8 @@ namespace game
 
 const char SpriteFileCursor[] = "UI/cursor.png";
 const char SpriteFileDialogChangelog[] = "UI/dialog_changelog.png";
+const char SpriteFileDialogCredits[] = "UI/dialog_credits.png";
+const char SpriteFileDialogCreditsExp[] = "UI/dialog_credits-exp.png";
 const char SpriteFileDialogEndMission[] = "UI/dialog_end_mission.png";
 const char SpriteFileDialogEndMissionExp[] = "UI/dialog_end_mission-exp.png";
 const char SpriteFileDialogExit[] = "UI/dialog_exit.png";
@@ -36,6 +38,7 @@ const char SpriteFileDialogTradingExp[] = "UI/dialog_trading-exp.png";
 const char SpriteFileDialogUpgrade[] = "UI/dialog_upgrade.png";
 const char SpriteFileDialogUpgradeExp[] = "UI/dialog_upgrade-exp.png";
 const char SpriteFileGameUIExp[] = "UI/game_UI-exp.png";
+const char SpriteFileLogoVoxelay[] = "UI/logo-voxelay.png";
 const char SpriteFileMainMenuUI[] = "UI/main_menu_UI.png";
 const char SpriteFileMapUI[] = "UI/map_ui.png";
 const char SpriteFileObjActionButton[] = "UI/object_action_button.png";

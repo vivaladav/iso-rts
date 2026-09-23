@@ -114,6 +114,10 @@ void ResourceLoader::DestroyPreGameTextures()
     tm->DestroyTexture("main_menu_bg.png");
     // UI PREGAME
     tm->DestroySprite(SpriteFileDialogChangelog);
+    // CREDITS
+    tm->DestroySprite(SpriteFileDialogCredits);
+    tm->DestroyTexture(SpriteFileDialogCreditsExp);
+    tm->DestroyTexture(SpriteFileLogoVoxelay);
     // MAIN MENU BUTTONS
     tm->DestroySprite(SpriteFileMainMenuUI);
 
@@ -662,6 +666,27 @@ void ResourceLoader::SetupPregameTextures()
     });
 
     // ===== REGISTER TEXTURES - UI PREGAME =====
+    // CREDITS
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 90, 802 },
+            { 91, 0, 110, 802 },
+
+            // SCROLLBAR
+            { 202, 0, 20, 680 },
+            { 202, 681, 24, 30 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogCredits, rects);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogCreditsExp);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileLogoVoxelay);
+    });
+
     // MAIN MENU
     mJobs.emplace_back([this, tm]
     {

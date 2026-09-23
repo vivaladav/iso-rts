@@ -23,6 +23,22 @@ enum SpriteIdDialogChangelog : unsigned int
     ID_DLG_CHLG_BTN_UP_BG_PUSHED,
 };
 
+// DIALOG CREDITS
+extern const char SpriteFileDialogCredits[];
+
+enum SpriteIdDialogCredits : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_CRE_BG_L,
+    ID_DLG_CRE_BG_R,
+
+    // SCROLLBAR
+    ID_DLG_CRE_SCROLL_BG,
+    ID_DLG_CRE_SCROLL_BTN,
+};
+
+extern const char SpriteFileDialogCreditsExp[];
+
 // DIALOG END MISSION
 extern const char SpriteFileDialogEndMission[];
 
@@ -486,6 +502,9 @@ enum SpriteIdPanelSelectedObject : unsigned int
     ID_PAN_SELOBJ_ICON_ACT_INFO,
     ID_PAN_SELOBJ_ICON_ACT_UPGRADE,
 };
+
+// LOGO VOXELAY
+extern const char SpriteFileLogoVoxelay[];
 
 // MAIN MENU BUTTONS
 extern const char SpriteFileMainMenuUI[];

@@ -9,6 +9,7 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "States/StatesIds.h"
+#include "States/StateCredits.h"
 #include "States/StateFactionSelection.h"
 #include "States/StateGame.h"
 #include "States/StateInit.h"
@@ -187,6 +188,7 @@ Game::Game(int argc, char * argv[])
     mStateMan->AddState(new StateLoadGame(this));
     mStateMan->AddState(new StatePlanetMap(this));
     mStateMan->AddState(new StateSettings(this));
+    mStateMan->AddState(new StateCredits(this));
     mStateMan->AddState(new StateTest(this));
 
     mStateMan->SetInitialActiveState(StateId::INIT);

@@ -15,6 +15,7 @@ enum StateId : unsigned int
     LOAD_GAME,
     PLANET_MAP,
     SETTINGS,
+    CREDITS,
     TEST,
 
     NUM_SCREENS // keep last

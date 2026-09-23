@@ -210,6 +210,8 @@ add_executable(
     src/Screens/DummyScreen.cpp
     src/Screens/Screen.h
     src/Screens/Screen.cpp
+    src/Screens/ScreenCredits.h
+    src/Screens/ScreenCredits.cpp
     src/Screens/ScreenFactionSelection.h
     src/Screens/ScreenFactionSelection.cpp
     src/Screens/ScreenGame.h
@@ -238,6 +240,8 @@ add_executable(
     src/Screens/SharedScreenListener.cpp
     src/States/BaseGameState.h
     src/States/BaseGameState.cpp
+    src/States/StateCredits.h
+    src/States/StateCredits.cpp
     src/States/StateFactionSelection.h
     src/States/StateFactionSelection.cpp
     src/States/StateGame.h
@@ -553,6 +557,8 @@ add_executable(
     src/Widgets/CountdownLabel.cpp
     src/Widgets/DialogChangelog.h
     src/Widgets/DialogChangelog.cpp
+    src/Widgets/DialogCredits.h
+    src/Widgets/DialogCredits.cpp
     src/Widgets/DialogEndMission.h
     src/Widgets/DialogEndMission.cpp
     src/Widgets/DialogExit.h
