@@ -359,7 +359,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.13 - \"Playtesting\"", font, content);
+    auto title = new sgui::Label("0.6.15 - \"\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -370,32 +370,14 @@ void ScreenMainMenu::CreateChangelog()
 
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
-                  "- It's possible to open dialog settings while playing the tutorial too.\n"
-                  "- When building gates the object preview is oriented properly according"
-                  " to the surrounding objects.\n"
-                  "- Game resources and mission resources are now separated.\n"
-                  "- New main menu.\n"
-                  "- New screen to setup a new game.\n"
-                  "- Added support for multiple save files.\n"
-                  "- Game is auto saved when exiting to the main menu (if no tutorial is active).\n"
-                  "- Basic Steam SDK integration: default language set based on Steam settings.\n"
+                  "- New screen: CREDITS.\n"
+                  "\n"
                   "\nCHANGES\n"
-                  "- Mission goals related to tutorial are not visible if no tutorial is active.\n"
-                  "- Simplified and reduced explanations in tutorial 1.\n"
-                  "- Saving during a mission is cheaper.\n"
+                  "\n"
+                  "\n"
                   "\nFIXES\n"
-                  "- Changelog dialog no longer steals mouse input from main menu buttons.\n"
-                  "- Focus areas of hidden buttons are no longer visible when tutorial is paused.\n"
-                  "- Cactus bushes are surrounded by the right ground when spawning new elements.\n"
-                  "- Resource limits are reset when starting a new mission.\n"
-                  "- Settings loading again after initial version changed.\n"
-                  "- Mission goal completed tutorial is awarded only once.\n"
-                  "- Faction energy is properly reset after laoding.\n"
-                  "- Dialog settings has focus when opened from the main menu too.\n"
-                  "- Fixed crash when leaving to main menu while object is selected.\n"
-                  "- Fixed camera stuck after mini units move.\n"
-                  "- Fixed crash when changing language in screen planet.\n"
-                  "- Fixed random selections during tutorial.\n"
+                  "\n"
+                  "\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
