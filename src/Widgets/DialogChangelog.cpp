@@ -158,11 +158,10 @@ public:
                                           cont->SetY(CONT_Y0 - val);
                                           cont->SetVisibleArea(0, val, CONT_W, CONT_H);
                                       });
-    }
 
-    void HandlePositionChanged() override
-    {
-        UpdatePositions();
+        const int sbX = GetWidth() - mScrollbar->GetWidth();
+        const int sbY = 0;
+        mScrollbar->SetPosition(sbX, sbY);
     }
 
     void HandleMouseWheel(sgl::core::MouseWheelEvent & event) override
@@ -190,14 +189,6 @@ private:
             mScrollbar->SetEnabled(true);
             mScrollbar->SetMinMax(0, cont->GetHeight() - CONT_H);
         }
-    }
-
-    void UpdatePositions()
-    {
-        // SCROLLBAR
-        const int sbX = GetWidth() - mScrollbar->GetWidth();
-        const int sbY = 0;
-        mScrollbar->SetPosition(sbX, sbY);
     }
 
 private:
