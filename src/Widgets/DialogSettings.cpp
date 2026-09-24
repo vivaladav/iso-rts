@@ -545,7 +545,7 @@ void DialogSettings::CreatePanelAudio()
 
         // restart music if re-enabled
         if(checked)
-            ap->PlayMusic("menus/menu_01.ogg");
+            ap->PlayMusicLoop("menus/menu_01.ogg");
     });
 
     // MUSIC VOLUME

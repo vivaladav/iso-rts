@@ -449,7 +449,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     SetDate("001 - 2200");
 
     // START MUSIC
-    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("game/music_01.ogg");
+    media::AudioManager::Instance()->GetPlayer()->PlayMusicLoop("game/music_01.ogg");
 
     // TUTORIAL
     if(game->IsTutorialEnabled())

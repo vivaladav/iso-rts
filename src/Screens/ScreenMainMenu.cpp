@@ -274,7 +274,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     game->ClearGameData();
 
     // START MUSIC
-    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("menus/menu_01.ogg");
+    media::AudioManager::Instance()->GetPlayer()->PlayMusicLoop("menus/menu_01.ogg");
 }
 
 ScreenMainMenu::~ScreenMainMenu()
@@ -377,6 +377,7 @@ void ScreenMainMenu::CreateChangelog()
                   "\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
+                  "- Music no longer stops after first play in other screens.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);
