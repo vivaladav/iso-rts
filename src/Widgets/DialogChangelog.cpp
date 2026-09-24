@@ -166,6 +166,9 @@ public:
 
     void HandleMouseWheel(sgl::core::MouseWheelEvent & event) override
     {
+        if(!mScrollbar->IsEnabled())
+            return ;
+
         const int val = mScrollbar->GetValue();
         const int inc = 20;
 
