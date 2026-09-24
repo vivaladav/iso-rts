@@ -1352,9 +1352,6 @@ void ScreenGame::OnWindowMouseEntered(sgl::graphic::WindowEvent & event)
 void ScreenGame::OnWindowMouseLeft(sgl::graphic::WindowEvent & event)
 {
     mCamController->HandleMouseLeftWindow();
-
-    if(!mHUD->IsShowingDialog())
-        mHUD->ShowDialogExit();
 }
 
 void ScreenGame::OnAutomaticMovesFinished()

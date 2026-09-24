@@ -373,7 +373,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- New screen: CREDITS.\n"
                   "\n"
                   "\nCHANGES\n"
-                  "\n"
+                  "- Game is no longer paused when mouse leaves the screen.\n"
                   "\n"
                   "\nFIXES\n"
                   "\n"
