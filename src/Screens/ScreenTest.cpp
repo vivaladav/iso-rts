@@ -665,7 +665,7 @@ void ScreenTest::TestAudio()
     ap->StopMusic();
     ap->AddMusicToQueue("test/test.ogg");
     ap->AddMusicToQueue("test/menu_01.ogg");
-    ap->PlayMusicQueue();
+    ap->PlayMusicQueue(true);
 }
 
 void ScreenTest::TestUtilities()

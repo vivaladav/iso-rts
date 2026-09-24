@@ -376,7 +376,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Game is no longer paused when mouse leaves the screen.\n"
                   "\n"
                   "\nFIXES\n"
-                  "\n"
+                  "- Music no longer stops after first play during missions.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);

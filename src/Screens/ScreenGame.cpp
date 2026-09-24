@@ -717,7 +717,7 @@ void ScreenGame::InitMusic()
 
     ap->AddMusicToQueue("mission/music_01.ogg");
     ap->AddMusicToQueue("mission/music_02.ogg");
-    ap->PlayMusicQueue();
+    ap->PlayMusicQueue(true);
 }
 
 void ScreenGame::InitParticlesSystem()
