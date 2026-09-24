@@ -164,6 +164,8 @@ public:
     bool IsMapDragging() const;
     void SetMapDragging(bool val);
 
+    bool IsAutoHideMouseEnable() const;
+    void SetAutoHideMouseEnabled(bool val);
     int GetMapScrollingSpeed() const;
     void SetMapScrollingSpeed(int val);
     bool IsMapScrollingOnEdges() const;

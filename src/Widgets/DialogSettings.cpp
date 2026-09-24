@@ -29,7 +29,6 @@
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/ImageButton.h>
 #include <sgl/sgui/Label.h>
-#include <sgl/sgui/Stage.h>
 #include <sgl/utilities/StringManager.h>
 
 #include <cassert>
@@ -776,17 +775,16 @@ void DialogSettings::CreatePanelVideo()
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    auto stage = sgui::Stage::Instance();
     auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(stage->IsAutoHidingCursor());
+    cb->SetChecked(mGame->IsAutoHideMouseEnable());
 
     x = panelContentW - cb->GetWidth() - marginPanelH;
     y += (label->GetHeight() - cb->GetHeight()) * 0.5;
     cb->SetPosition(x, y);
 
-    cb->AddOnToggleFunction([this, stage](bool checked)
+    cb->AddOnToggleFunction([this](bool checked)
                             {
-                                stage->AutoHideInactiveCursor(checked, mGame->GetTimeAutoHideMouse());
+                                mGame->SetAutoHideMouseEnabled(checked);
                             });
 
     // VSYNC

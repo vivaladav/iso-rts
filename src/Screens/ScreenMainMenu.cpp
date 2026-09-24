@@ -378,6 +378,7 @@ void ScreenMainMenu::CreateChangelog()
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
+                  "- Option to hide static cursor is saved correctly.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);

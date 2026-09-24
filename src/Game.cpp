@@ -80,7 +80,7 @@ bool Game::GOD_MODE = false;
 #endif
 
 const std::string Game::SAVE_VERSION("0.2.0");
-const std::string Game::SETTINGS_VERSION("0.1.1");
+const std::string Game::SETTINGS_VERSION("0.1.2");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -215,7 +215,7 @@ Game::Game(int argc, char * argv[])
     mTimeAutoHideMouse = 1.f;
 #endif
 
-    mStage->AutoHideInactiveCursor(true, mTimeAutoHideMouse);
+    SetAutoHideMouseEnabled(true);
 
     // INIT TECH UPGRADES COST
     mCostUpgrades.emplace(TECH_UP_NULL, 0);
@@ -729,6 +729,7 @@ bool Game::LoadSettings()
     mButtonAction = bf.ReadInt();
 
     mTimeAutoHideMouse = bf.ReadFloat();
+    SetAutoHideMouseEnabled(bf.ReadBool());
 
     mMapDragging = bf.ReadBool();
     mMapScrollingOnEdges = bf.ReadBool();
@@ -780,6 +781,7 @@ bool Game::SaveSettings()
     bf.WriteInt(mButtonAction);
 
     bf.WriteFloat(mTimeAutoHideMouse);
+    bf.WriteBool(IsAutoHideMouseEnable());
 
     bf.WriteBool(mMapDragging);
     bf.WriteBool(mMapScrollingOnEdges);
@@ -1246,6 +1248,16 @@ void Game::SetLanguage(LanguageId lang)
     static_assert((sizeof(languages) / sizeof(char *)) == NUM_LANGUAGES);
 
     sm->LoadStringsFromPackage(languages[lang]);
+}
+
+bool Game::IsAutoHideMouseEnable() const
+{
+    return sgl::sgui::Stage::Instance()->IsAutoHidingCursor();
+}
+
+void Game::SetAutoHideMouseEnabled(bool val)
+{
+    sgl::sgui::Stage::Instance()->AutoHideInactiveCursor(val, mTimeAutoHideMouse);
 }
 
 } // namespace game
