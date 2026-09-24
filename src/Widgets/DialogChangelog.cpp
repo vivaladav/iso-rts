@@ -182,7 +182,7 @@ private:
         cont->SetPosition(CONT_X0, CONT_Y0);
         cont->SetVisibleArea(0, 0, CONT_W, CONT_H);
 
-        if(cont->GetHeight() < CONT_H)
+        if(cont->GetHeight() <= CONT_H)
             mScrollbar->SetEnabled(false);
         else
         {

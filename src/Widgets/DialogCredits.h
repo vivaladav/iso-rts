@@ -7,14 +7,7 @@
 namespace sgl
 {
     namespace graphic { class Image; }
-    namespace sgui
-    {
-        class AbstractButton;
-        class ButtonsGroup;
-        class ComboBox;
-        class ImageButton;
-        class Label;
-    }
+    namespace sgui { class ImageButton; }
 }
 
 namespace game
@@ -26,7 +19,6 @@ class DialogCredits : public sgl::sgui::Widget
 {
 public:
     DialogCredits(Game * game);
-    ~DialogCredits();
 
     void AddOnCloseClickedFunction(const std::function<void()> & f);
 
@@ -39,8 +31,6 @@ private:
 
 private:
     Game * mGame = nullptr;
-
-    sgl::sgui::Label * mTitle = nullptr;
 
     sgl::graphic::Image * mBgL = nullptr;
     sgl::graphic::Image * mBgC = nullptr;
