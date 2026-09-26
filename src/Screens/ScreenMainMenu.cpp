@@ -371,6 +371,7 @@ void ScreenMainMenu::CreateChangelog()
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
                   "- New screen: CREDITS.\n"
+                  "- Added construction of wall with gate at the end of tutorial 1.\n"
                   "\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"

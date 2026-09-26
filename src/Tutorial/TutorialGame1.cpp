@@ -66,7 +66,6 @@
 #include "Tutorial/StepGameUnitConquerCellsIcon.h"
 #include "Tutorial/StepGameUpgradeIntro.h"
 #include "Tutorial/StepGameUpgradeUnit.h"
-#include "Tutorial/StepGameUpgradeUnitFree.h"
 #include "Tutorial/StepGameWaitEnemyKilled.h"
 #include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWallBuildEnd.h"
@@ -585,7 +584,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
             core::Pointd2D p0(1000, 550);
             return new StepGameUpgradeIntro(game, gs, panelActions, "TUT_GAME_UPGRADE_1b", p0);
         });
-    AddStep([hud] { return new StepGameUpgradeUnitFree(hud); });
+    AddStep([hud] { return new StepGameUpgradeUnit(hud, false); });
     AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([] { return new StepDelay(0.5f); });
     // END TURN
@@ -717,19 +716,69 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(1100, 450);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
+    // BUILD GATE WITH UNIT 2
+    AddStep([]
+        {
+            const core::Pointd2D p0(1200, 400);
+            return new StepGameWallBuildIntro(p0);
+        });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([game, gs, panelActions]
+        {
+            const core::Pointd2D p0(1100, 400);
+            return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_GATE_1", p0);
+        });
+    AddStep([hud]
+        {
+            return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
+                                              "TUT_GAME_BUILD_GATE_2",
+                                              TutorialConstants::catDefenses,
+                                              TutorialConstants::structGate);
+        });
+    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    AddStep([this, local, isoMap, game]
+        {
+            const auto unit = local->GetUnit(indUnit2);
+            const core::Pointd2D p0(1100, 450);
+            const Cell2D target(51, 34);
+            return new StepGameBuildTowerEnd(isoMap, unit, target, p0);
+        });
+    AddStep([] { return new StepDelay(0.5f); });
+    // END TURN
+    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
+    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WALL WITH UNIT 2
+    AddStep([game, gs, panelActions] { return new StepGameWallBuildIcon(game, gs, panelActions); });
+    AddStep([this, isoMap, game]
+        {
+            const Cell2D & cellStart = GetOverlayWall()->GetCellStart();
+            const Cell2D target(50, 34);
+            return new StepGameWallBuildStart(game, isoMap, cellStart, target);
+        });
+    AddStep([isoMap, local, game]
+        {
+            const auto unit = local->GetUnit(indUnit2);
+            const Cell2D cellEnd(48, 34);
+            const core::Pointd2D p0(900, 150);
+            return new StepGameWallBuildEnd(game, isoMap, unit, cellEnd, p0);
+        });
+    AddStep([] { return new StepDelay(0.5f); });
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
-            {
-                const core::Pointd2D p0(250, 600);
-                return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1c", p0);
-            });
+        {
+            const core::Pointd2D p0(250, 600);
+            return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1c", p0);
+        });
     AddStep([] { return new StepDelay(0.5f); });
     // COLLECT PRIMARY MISSION GOAL
     AddStep([localBase, game, isoMap]
-            {
-                const core::Pointd2D p0(500, 200);
-                return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-            });
+        {
+            const core::Pointd2D p0(500, 200);
+            return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
+        });
     AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
     AddStep([hud] { return new StepGamePrimaryMissionGoal(hud); });
 }
