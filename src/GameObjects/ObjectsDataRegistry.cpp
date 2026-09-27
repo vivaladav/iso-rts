@@ -129,13 +129,18 @@ void ObjectsDataRegistry::InitObjectData()
                    OCMU_SOLDIER, OCAT_MINI_UNIT, WeaponData::TYPE_LASER1, 1, 1));
 
     mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS1,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 7} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
                    { ID_MOUNTAIN1_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS1,
                    ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS2,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 7} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
                    { ID_MOUNTAIN2_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS2,
+                   ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
+
+    mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS3,
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
+                   { ID_MOUNTAIN3_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS3,
                    ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_PRACTICE_TARGET,

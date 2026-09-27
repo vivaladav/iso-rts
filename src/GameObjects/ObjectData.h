@@ -100,6 +100,7 @@ public:
     static const GameObjectTypeId TYPE_MINI_UNIT2;
     static const GameObjectTypeId TYPE_MOUNTAINS1;
     static const GameObjectTypeId TYPE_MOUNTAINS2;
+    static const GameObjectTypeId TYPE_MOUNTAINS3;
     static const GameObjectTypeId TYPE_PRACTICE_TARGET;
     static const GameObjectTypeId TYPE_RADAR_STATION;
     static const GameObjectTypeId TYPE_RADAR_TOWER;

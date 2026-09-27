@@ -19,7 +19,8 @@ SceneObject::SceneObject(const ObjectData & data, const ObjectInitData & initDat
     // set object health
     const GameObjectTypeId type = data.GetType();
 
-    if(ObjectData::TYPE_MOUNTAINS1 == type || ObjectData::TYPE_MOUNTAINS2 == type)
+    if(ObjectData::TYPE_MOUNTAINS1 == type || ObjectData::TYPE_MOUNTAINS2 == type ||
+       ObjectData::TYPE_MOUNTAINS3 == type)
     {
         // health
         const float maxHealthValue = 5000.f;
@@ -60,6 +61,8 @@ void SceneObject::SetImage()
         spriteId = ID_MOUNTAIN1_L + mVariant;
     else if(type == ObjectData::TYPE_MOUNTAINS2)
         spriteId = ID_MOUNTAIN2_L + mVariant;
+    else if(type == ObjectData::TYPE_MOUNTAINS3)
+        spriteId = ID_MOUNTAIN3_L + mVariant;
     // this should never happen
     else
         return ;
@@ -91,6 +94,15 @@ void SceneObject::SetObjColors()
         mObjColors.push_back(0x485841ff);
         mObjColors.push_back(0x303b2bff);
         mObjColors.push_back(0x303b2bff);
+    }
+    if(type == ObjectData::TYPE_MOUNTAINS3)
+    {
+        mObjColors.push_back(0xad9485ff);
+        mObjColors.push_back(0xa38776ff);
+        mObjColors.push_back(0x997966ff);
+        mObjColors.push_back(0x7a6152ff);
+        mObjColors.push_back(0x6b5548ff);
+        mObjColors.push_back(0x584a41ff);
     }
     else if(type == ObjectData::TYPE_ROCKS)
     {
