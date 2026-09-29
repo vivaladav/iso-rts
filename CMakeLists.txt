@@ -293,6 +293,8 @@ add_executable(
     src/Tutorial/StepGameCityIntro.cpp
     src/Tutorial/StepGameClearSelection.h
     src/Tutorial/StepGameClearSelection.cpp
+    src/Tutorial/StepGameClickActionButton.h
+    src/Tutorial/StepGameClickActionButton.cpp
     src/Tutorial/StepGameCollectObjects.h
     src/Tutorial/StepGameCollectObjects.cpp
     src/Tutorial/StepGameConnectStructIntro.h

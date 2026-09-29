@@ -12,7 +12,8 @@ namespace game
 {
 
 StepGameSelectObject::StepGameSelectObject(const Game * game, const IsoMap * im, const GameObject * obj,
-                                           const char * text, const sgl::core::Pointd2D & p0)
+                                           const char * text, const sgl::core::Pointd2D & p0,
+                                           float animDelay)
     : TutorialInfoStep(550, 150)
     , mFocusArea(new IsoFocusArea(im))
     , mObj(obj)
@@ -27,23 +28,19 @@ StepGameSelectObject::StepGameSelectObject(const Game * game, const IsoMap * im,
 
     info->SetPosition(p0.x, p0.y);
 
-    info->AddActionEntry(sm->GetCString(text), 0.f, false, false, [this, game]
+    info->AddActionEntry(sm->GetCString(text), 0.f, false, false, [this, game, im, animDelay]
                         {
                             // FOCUS AREA
                             mFocusArea->SetCellArea(mObj->GetRow0(), mObj->GetCol0(),
-                                                    mObj->GetRow1(), mObj->GetCol1());
+                                                    mObj->GetRow1(), mObj->GetCol1(), true, animDelay);
                             mFocusArea->SetCornersColorAction();
                             mFocusArea->SetBlinking(true);
                             mFocusArea->SetVisible(true);
 
                             // CLICK FILTER
-                            const int objX = mObj->GetX();
-                            const int objY = mObj->GetY();
-                            const int objW = mObj->GetWidth();
-                            const int objH = mObj->GetHeight();
-
                             auto cf = GetClickFilter();
-                            cf->SetWorldClickableArea(objX, objY, objW, objH);
+                            cf->AddClickableCells(im, mObj->GetRow1(), mObj->GetCol1(),
+                                                  mObj->GetRow0(), mObj->GetCol0());
                             cf->SetButtonToAllow(game->GetButtonSelect());
                         });
 }

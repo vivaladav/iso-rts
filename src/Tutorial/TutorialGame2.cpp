@@ -20,6 +20,7 @@
 #include "Tutorial/StepGameBuildUnitEnd.h"
 #include "Tutorial/StepGameBuildUnitStart.h"
 #include "Tutorial/StepGameClearSelection.h"
+#include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameCollectObjects.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
@@ -102,6 +103,8 @@ constexpr int collectablesMax = 4;
 
 constexpr float healthEnemyDef = 65.f;
 constexpr float energyEnemyDef = 60.f;
+
+constexpr float delayAnimLong = 2.f;
 
 const Cell2D cellEneGen1(6, 15);
 const Cell2D cellEneGen2(23, 17);
@@ -195,20 +198,36 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // INTRO
     AddStep([] { return new StepGameIntro2; });
     AddStep([] { return new StepDelay(0.5f); });
-    // BUILD FIRST UNIT
+    // BUILD WORKER 1
     AddStep([localBase, game, isoMap]
-        {
-            const core::Pointd2D p0(500, 200);
-            return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-        });
+    {
+        const core::Pointd2D p0(1300, 100);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BUILD_WORKER", p0,
+                                        delayAnimLong);
+    });
     AddStep([game, gs, panelActions]
-        {
-            return new StepGameBuildUnitStart(game, gs, panelActions,
-                                              PanelObjectActions::BTN_BUILD_UNIT_BASE);
-        });
-    AddStep([hud] { return new StepGameBuildUnitEnd(hud); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_WORKER",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BASE,
+                                                  delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_WORKER", delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
+
+    /*
+    // BUILD FIRST UNIT
+    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([local, game, isoMap]
         {
             const auto unit = local->GetUnit(indWorker1);
@@ -2377,6 +2396,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
             });
     AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
     AddStep([hud] { return new StepGamePrimaryMissionGoal(hud); });
+    */
 }
 
 TutorialGame2::~TutorialGame2()

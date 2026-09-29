@@ -11,7 +11,8 @@ class FocusArea;
 class StepGameBuildUnitEnd : public TutorialInfoStep
 {
 public:
-    StepGameBuildUnitEnd(GameHUD * HUD);
+    StepGameBuildUnitEnd(GameHUD * HUD, const char * text = "TUT_GAME_BASE_BUILD_UNIT_3",
+                         float animDelay = 0.5f);
     ~StepGameBuildUnitEnd();
 
     void OnStart() override;
