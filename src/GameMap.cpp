@@ -1240,9 +1240,17 @@ bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * playe
         {
             const int idx = idx0 + c;
             const GameMapCell & gcell = mCells[idx];
+            const auto objCell = gcell.objTop;
+
+            // allow to build gate, tower and bunker on walls
+            const bool canOverride = (st == ObjectData::TYPE_WALL_GATE ||
+                                      st == ObjectData::TYPE_DEFENSIVE_TOWER ||
+                                      st == ObjectData::TYPE_BUNKER) &&
+                                     (objCell != nullptr &&
+                                      objCell->GetObjectType() == ObjectData::TYPE_WALL);
 
             // already occupied
-            if(!gcell.walkable)
+            if(!gcell.walkable && !canOverride)
             {
                 unit->ShowWarning(mSM->GetCString("WARN_CELL_NOT_VALID"), 3.f);
                 return false;

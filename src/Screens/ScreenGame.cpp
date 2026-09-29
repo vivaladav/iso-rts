@@ -2490,6 +2490,14 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     if(!mGameMap->CanBuildStructure(unit, cellTarget, player, st))
         return false;
 
+    // remove object on cell first, if building was allowed
+    // this is needed in special cases like gates/towers built on wall cells
+    GameObject * objCellTarget = mGameMap->GetObject(cellTarget.row, cellTarget.col);
+
+    if(objCellTarget != nullptr)
+        mGameMap->RemoveAndDestroyObject(objCellTarget);
+
+    // take resources
     mGameMap->StartBuildStructure(cellTarget, player, st);
 
     // create and init progress bar
@@ -3992,7 +4000,16 @@ int ScreenGame::CheckBuildStructureValid(Unit * unit, const Cell2D & dest, bool 
         {
             const int idx = idx0 + c;
 
-            if(!mLocalPlayer->IsCellVisible(idx) || !mGameMap->IsCellWalkable(idx))
+            const auto objCell = mGameMap->GetObject(idx);
+
+            // allow to build gate, tower and bunker on walls
+            const bool canOverride = (st == ObjectData::TYPE_WALL_GATE ||
+                                      st == ObjectData::TYPE_DEFENSIVE_TOWER ||
+                                      st == ObjectData::TYPE_BUNKER) &&
+                                     (objCell != nullptr &&
+                                      objCell->GetObjectType() == ObjectData::TYPE_WALL);
+
+            if((!mLocalPlayer->IsCellVisible(idx) || !mGameMap->IsCellWalkable(idx)) && !canOverride)
             {
                 if(building)
                     unit->ShowWarning(mSM->GetCString("WARN_CANT_BUILD_HERE"), 2.f);

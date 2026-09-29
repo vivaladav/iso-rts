@@ -372,6 +372,7 @@ void ScreenMainMenu::CreateChangelog()
     text->SetText("NEW FEATURES\n"
                   "- New screen: CREDITS.\n"
                   "- Added construction of wall with gate at the end of tutorial 1.\n"
+                  "- Units can build towers and gates on cells with wall.\n"
                   "\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
