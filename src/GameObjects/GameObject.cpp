@@ -875,7 +875,7 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     utilities::UniformDistribution genPosHP(minXDeltaHP, maxXDeltaHP);
 
     const float posXHP = objXC + genPosHP.GetNextValue();
-    const float posYHP = objYC - (mIsoObj->GetHeight() * 0.25f);
+    const float posYHP = GetStatusIconBaseY();
 
     const float speedHP = 75.f;
     const float decaySpeedHP = 40.f;
