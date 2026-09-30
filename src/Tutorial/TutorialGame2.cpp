@@ -311,7 +311,18 @@ TutorialGame2::TutorialGame2(Screen * screen)
 
         return step;
     });
-
+    // CONNECT BARRACKS IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const GameObject * barracks = all.back();
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, barracks, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
     /*
     AddStep([game, gs, panelActions]
             {
