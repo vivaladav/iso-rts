@@ -22,6 +22,7 @@
 #include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameCollectObjects.h"
+#include "Tutorial/StepGameConnectStructFree.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
 #include "Tutorial/StepGameConquerCellsSimple.h"
@@ -29,6 +30,7 @@
 #include "Tutorial/StepGameConquerEnergyGenIntro.h"
 #include "Tutorial/StepGameConquerMaterialGenIntro.h"
 #include "Tutorial/StepGameConquerStructChoice.h"
+#include "Tutorial/StepGameConquerStructFree.h"
 #include "Tutorial/StepGameConquerStructSimple.h"
 #include "Tutorial/StepGameDialogTrading.h"
 #include "Tutorial/StepGameDisableCamera.h"
@@ -166,6 +168,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     auto panelTurn = hud->GetPanelTurnControl();
 
     // ===== SETUP =====
+    // keep camera enabled in this tutorial
+    AddStep([this] { return new StepGameEnableCamera(GetCameraMapController()); });
     // set all generators of diamonds and blobs to create them within 1 turn
     AddStep([gameMap]
         {
@@ -224,10 +228,30 @@ TutorialGame2::TutorialGame2(Screen * screen)
         return step;
     });
     AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
+    // CONQUER MATERIAL GENERATOR 1
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto unit = local->GetUnit(indWorker1);
+        const GameObject * gen = GetObjectInCell(cellMatGen1);
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConquerStructFree(game, unit, gen, isoMap,
+                                             "TUT_GAME_CONQUER_MAT_GEN", p0);
+    });
+    // CONNECT MATERIAL GENERATOR 1
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto unit = local->GetUnit(indWorker1);
+        const GameObject * gen = GetObjectInCell(cellMatGen1);
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, unit, gen, isoMap,
+                                             "TUT_GAME_CONNECT_STRUCT", p0);
+    });
 
     /*
     // BUILD FIRST UNIT
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+
     AddStep([local, game, isoMap]
         {
             const auto unit = local->GetUnit(indWorker1);

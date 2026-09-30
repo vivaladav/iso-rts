@@ -297,6 +297,8 @@ add_executable(
     src/Tutorial/StepGameClickActionButton.cpp
     src/Tutorial/StepGameCollectObjects.h
     src/Tutorial/StepGameCollectObjects.cpp
+    src/Tutorial/StepGameConnectStructFree.h
+    src/Tutorial/StepGameConnectStructFree.cpp
     src/Tutorial/StepGameConnectStructIntro.h
     src/Tutorial/StepGameConnectStructIntro.cpp
     src/Tutorial/StepGameConquerCells.h
@@ -317,6 +319,8 @@ add_executable(
     src/Tutorial/StepGameConquerStruct.cpp
     src/Tutorial/StepGameConquerStructChoice.h
     src/Tutorial/StepGameConquerStructChoice.cpp
+    src/Tutorial/StepGameConquerStructFree.h
+    src/Tutorial/StepGameConquerStructFree.cpp
     src/Tutorial/StepGameConquerStructSimple.h
     src/Tutorial/StepGameConquerStructSimple.cpp
     src/Tutorial/StepGameDialogTrading.h
