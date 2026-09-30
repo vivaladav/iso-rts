@@ -289,6 +289,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
             {
                 return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
                                                   "TUT_GAME_BUILD_DTOWER_4",
+                                                  "TUT_GAME_BASE_BUILD_UNIT_3",
                                                   TutorialConstants::catDefenses,
                                                   TutorialConstants::structDefTower);
             });
@@ -455,6 +456,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
             {
                 return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
                                                   "TUT_GAME_BUILD_DTOWER_4",
+                                                  "TUT_GAME_BASE_BUILD_UNIT_3",
                                                   TutorialConstants::catDefenses,
                                                   TutorialConstants::structDefTower);
             });
@@ -677,6 +679,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
         {
             return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
                                               "TUT_GAME_BUILD_DTOWER_4",
+                                              "TUT_GAME_BASE_BUILD_UNIT_3",
                                               TutorialConstants::catDefenses,
                                               TutorialConstants::structDefTower);
            });
@@ -732,6 +735,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
         {
             return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_DTOWER_3",
                                               "TUT_GAME_BUILD_GATE_2",
+                                              "TUT_GAME_BASE_BUILD_UNIT_3",
                                               TutorialConstants::catDefenses,
                                               TutorialConstants::structGate);
         });

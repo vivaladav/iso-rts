@@ -20,7 +20,8 @@ namespace game
 {
 
 StepGameBuildStructure::StepGameBuildStructure(GameHUD * HUD, const char * textCat,
-                                               const char * textStruct, int indCat, int indStruct)
+                                               const char * textStruct, const char * textBuild,
+                                               int indCat, int indStruct)
     : TutorialInfoStep(550, 130)
     , mFocusArea(new FocusArea)
     , mHUD(HUD)
@@ -67,7 +68,7 @@ StepGameBuildStructure::StepGameBuildStructure(GameHUD * HUD, const char * textC
                                 const int fW2 = fW + (padding * 2);
                                 const int fH2 = fH + (padding * 2);
 
-                                mFocusArea->SetScreenArea(fX2, fY2, fW2, fH2, true);
+                                mFocusArea->SetScreenArea(fX2, fY2, fW2, fH2, true, mDelayAnim);
                                 mFocusArea->SetVisible(true);
                             });
     }
@@ -100,12 +101,12 @@ StepGameBuildStructure::StepGameBuildStructure(GameHUD * HUD, const char * textC
                                 const int fW2 = fW + (padding * 2);
                                 const int fH2 = fH + (padding * 2);
 
-                                mFocusArea->SetScreenArea(fX2, fY2, fW2, fH2, true);
+                                mFocusArea->SetScreenArea(fX2, fY2, fW2, fH2, true, mDelayAnim);
                                 mFocusArea->SetVisible(true);
                            });
     }
 
-    info->AddActionEntry(sm->GetCString("TUT_GAME_BASE_BUILD_UNIT_3"), 0.f, false, true,
+    info->AddActionEntry(sm->GetCString(textBuild), 0.f, false, true,
                          [this, HUD]
                         {
                             auto dialog = HUD->GetDialogNewElement();
@@ -122,7 +123,7 @@ StepGameBuildStructure::StepGameBuildStructure(GameHUD * HUD, const char * textC
                             const int fW = btn->GetWidth() + (padding * 2);
                             const int fH = btn->GetHeight() + (padding * 2);
 
-                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
+                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true, mDelayAnim);
                             mFocusArea->SetVisible(true);
 
                             // CLICK FILTER
