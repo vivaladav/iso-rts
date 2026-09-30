@@ -152,6 +152,9 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // INTRO
     AddStep([] { return new StepGameIntro3; });
     AddStep([] { return new StepDelay(0.5f); });
+
+
+    /*
     // BUILD FIRST UNIT
     AddStep([localBase, game, isoMap]
         {
@@ -2777,6 +2780,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // FINAL SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    */
 }
 
 } // namespace game
