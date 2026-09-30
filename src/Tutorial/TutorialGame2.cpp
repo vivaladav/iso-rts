@@ -241,6 +241,22 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([this, local, isoMap, game]
     {
         const GameObject * gen = GetObjectInCell(cellMatGen1);
+        const core::Pointd2D p0(1300, 400);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // CONQUER ENERGY GENERATOR 1
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen1);
+        const core::Pointd2D p0(100, 450);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_ENE_GEN", p0);
+    });
+    // CONNECT MATERIAL GENERATOR 1
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen1);
         const core::Pointd2D p0(1200, 400);
         return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
     });
