@@ -14,6 +14,7 @@
 #include "Tutorial/StepGameAddEnemy.h"
 #include "Tutorial/StepGameIntro2.h"
 #include "Tutorial/StepGameBackToBase.h"
+#include "Tutorial/StepGameBuildStructArea.h"
 #include "Tutorial/StepGameBuildStructIntro.h"
 #include "Tutorial/StepGameBuildStructure.h"
 #include "Tutorial/StepGameBuildTowerEnd.h"
@@ -294,6 +295,18 @@ TutorialGame2::TutorialGame2(Screen * screen)
                                                TutorialConstants::catGeneric,
                                                TutorialConstants::structBarracks);
         step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const Cell2D areaTL(7, 8);
+        const Cell2D areaBR(11, 14);
+
+        auto step = new StepGameBuildStructArea(game, isoMap, areaTL, areaBR,
+                                                "TUT_GAME_BUILD_BARRACKS_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
