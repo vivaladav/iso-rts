@@ -15,7 +15,7 @@ namespace game
 StepGameClickActionButton::StepGameClickActionButton(const Game * game, Screen * screen,
                                                      PanelObjectActions * panel, const char * text,
                                                      unsigned int buttonId, float animDelay)
-    : TutorialInfoStep(screen, 550, 150)
+    : TutorialInfoStep(screen, 550, 130)
     , mFocusArea(new FocusArea)
     , mPanelActions(panel)
     , mBtnId(buttonId)
