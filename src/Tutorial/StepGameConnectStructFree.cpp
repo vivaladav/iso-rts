@@ -2,7 +2,7 @@
 
 #include "Game.h"
 #include "IsoMap.h"
-#include "GameObjects/Unit.h"
+#include "GameObjects/GameObject.h"
 #include "Widgets/Tutorial/IsoFocusArea.h"
 #include "Widgets/Tutorial/PanelClickFilter.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
@@ -12,14 +12,12 @@
 namespace game
 {
 
-StepGameConnectStructFree::StepGameConnectStructFree(const Game * game, const Unit * unit,
-                                                     const GameObject * obj,
+StepGameConnectStructFree::StepGameConnectStructFree(const Game * game, const GameObject * obj,
                                                      const IsoMap * isoMap, const char * text,
                                                      const sgl::core::Pointd2D & p0)
     : TutorialInfoStep(550, 150)
     , mFocusArea(new IsoFocusArea(isoMap))
     , mStruct(obj)
-    , mUnit(unit)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 

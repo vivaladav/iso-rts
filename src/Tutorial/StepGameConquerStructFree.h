@@ -11,14 +11,12 @@ class Game;
 class GameObject;
 class IsoFocusArea;
 class IsoMap;
-class Unit;
 
 class StepGameConquerStructFree : public TutorialInfoStep
 {
 public:
-    StepGameConquerStructFree(const Game * game, const Unit * unit, const GameObject * obj,
-                              const IsoMap * isoMap, const char * text,
-                              const sgl::core::Pointd2D & p0);
+    StepGameConquerStructFree(const Game * game, const GameObject * obj, const IsoMap * isoMap,
+                              const char * text, const sgl::core::Pointd2D & p0);
     ~StepGameConquerStructFree();
 
     void Update(float delta) override;
@@ -27,7 +25,6 @@ private:
     IsoFocusArea * mFocusArea = nullptr;
 
     const GameObject * mStruct = nullptr;
-    const Unit * mUnit = nullptr;
 };
 
 } // namespace game
