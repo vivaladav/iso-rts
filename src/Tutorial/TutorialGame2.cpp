@@ -58,6 +58,7 @@
 #include "Tutorial/StepGameSetObjectEnergy.h"
 #include "Tutorial/StepGameSetObjectFatalHit.h"
 #include "Tutorial/StepGameSetObjectHealth.h"
+#include "Tutorial/StepGameSetObjectIndestructible.h"
 #include "Tutorial/StepGameSetObjectPerfectShot.h"
 #include "Tutorial/StepGameSetSelectionDefaultAction.h"
 #include "Tutorial/StepGameSetSelectionActiveAction.h"
@@ -148,6 +149,9 @@ const Cell2D areaDiamondsBR(24, 9);
 const Cell2D areaDiamonds2TL(7,41);
 const Cell2D areaDiamonds2BR(9, 42);
 
+const Cell2D areaTreesTL(13, 13);
+const Cell2D areaTreesBR(16, 16);
+
 }
 
 namespace game
@@ -199,6 +203,13 @@ TutorialGame2::TutorialGame2(Screen * screen)
                                                             ObjectData::TYPE_BLOBS,
                                                             turnsCollGenMin, turnsCollGenMax);
         });
+    // MAKE TREES INDESTRUCTIBLE
+    AddStep([gameMap]
+    {
+        std::vector<GameObject *> trees;
+        gameMap->GetObjectsInAreaByType(trees, areaTreesTL, areaTreesBR, ObjectData::TYPE_TREES3);
+        return new StepGameSetObjectIndestructible(std::move(trees), true);
+    });
     // pause before start
     AddStep([] { return new StepDelay(0.5f); });
 
@@ -370,25 +381,14 @@ TutorialGame2::TutorialGame2(Screen * screen)
         return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER", target, p0);
     });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
-    // MOVE SOLDIER NEAR TREES
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indSoldier1);
-            const Cell2D target(15, 11);
-            const core::Pointd2D p0(1100, 650);
-            return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // ATTACK TREES WITH SOLDIER
-    AddStep([local] { return new StepGameSetSelectionActiveAction(local, GameObjectActionType::IDLE); });
-    AddStep([this]
-            {
-                const float health = 15.f;
-                GameObject * enemy = GetObjectInCell(cellTarget1);
-                return new StepGameSetObjectHealth(enemy, health);
-            });
+    // MAKE TREES DESTRUCTIBLE AGAIN
+    AddStep([gameMap]
+    {
+        std::vector<GameObject *> trees;
+        gameMap->GetObjectsInAreaByType(trees, areaTreesTL, areaTreesBR, ObjectData::TYPE_TREES3);
+        return new StepGameSetObjectIndestructible(std::move(trees), false);
+    });
+    // EXPLAIN ATTACK
     AddStep([]
         {
             const core::Pointd2D p0(1100, 600);
@@ -407,18 +407,19 @@ TutorialGame2::TutorialGame2(Screen * screen)
             return new StepGameUnitAttackBurst(panelShot, "TUT_GAME_ATTACK_3", p0);
         });
     AddStep([isoMap]
-            {
-                const core::Pointd2D p0(200, 600);
-                const Cell2D targetTL(13, 13);
-                const Cell2D targetBR(16, 16);
-
-                return new StepGamePanelHit(isoMap, targetBR, targetTL, p0);
-            });
-    AddStep([local]
-            {
-                auto unit = local->GetUnit(indSoldier1);
-                return new StepGameSetObjectPerfectShot(unit, true);
-            });
+    {
+        const core::Pointd2D p0(200, 600);
+        return new StepGamePanelHit(isoMap, areaTreesBR, areaTreesTL, p0);
+    });
+    // LOWER TREE'S HEALTH
+    AddStep([this]
+    {
+        const float health = 20.f;
+        GameObject * enemy = GetObjectInCell(cellTarget1);
+        return new StepGameSetObjectHealth(enemy, health);
+    });
+    // ATTACK TREE
+            /*
     AddStep([this, local, isoMap, game]
             {
                 const auto unit = local->GetUnit(indSoldier1);
@@ -430,17 +431,12 @@ TutorialGame2::TutorialGame2(Screen * screen)
                 GameObject * enemy = GetObjectInCell(cellTarget1);
                 return new StepGameWaitEnemyKilled(enemy, GetGameMap());
             });
-    AddStep([local]
-            {
-                auto unit = local->GetUnit(indSoldier1);
-                return new StepGameSetObjectPerfectShot(unit, false);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
+            */
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+
+    /*
     // MOVE SOLDIER TO DIAMONDS AND COLLECT THEM
     AddStep([this, local, isoMap]
             {

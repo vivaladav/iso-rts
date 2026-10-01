@@ -16,7 +16,6 @@ StepGameSetObjectPerfectShot::StepGameSetObjectPerfectShot(const std::vector<Gam
     : mObjs(objs)
     , mEnabled(enabled)
 {
-
 }
 
 void StepGameSetObjectPerfectShot::OnStart()

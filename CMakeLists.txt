@@ -405,6 +405,8 @@ add_executable(
     src/Tutorial/StepGameSetObjectFatalHit.cpp
     src/Tutorial/StepGameSetObjectHealth.h
     src/Tutorial/StepGameSetObjectHealth.cpp
+    src/Tutorial/StepGameSetObjectIndestructible.h
+    src/Tutorial/StepGameSetObjectIndestructible.cpp
     src/Tutorial/StepGameSetObjectMaxHealth.h
     src/Tutorial/StepGameSetObjectMaxHealth.cpp
     src/Tutorial/StepGameSetObjectPerfectShot.h
