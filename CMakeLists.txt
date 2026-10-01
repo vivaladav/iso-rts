@@ -371,6 +371,8 @@ add_executable(
     src/Tutorial/StepGameMoveCameraOverObject.cpp
     src/Tutorial/StepGameMoveUnit.h
     src/Tutorial/StepGameMoveUnit.cpp
+    src/Tutorial/StepGameMoveUnitFree.h
+    src/Tutorial/StepGameMoveUnitFree.cpp
     src/Tutorial/StepGameMoveUnitSimple.h
     src/Tutorial/StepGameMoveUnitSimple.cpp
     src/Tutorial/StepGameMoveUnitToArea.h

@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "GameMap.h"
 #include "Player.h"
+#include "GameObjects/Barracks.h"
 #include "GameObjects/Base.h"
 #include "GameObjects/Unit.h"
 #include "Indicators/OverlayCellConquest.h"
@@ -42,6 +43,7 @@
 #include "Tutorial/StepGameMissionGoalsIcon.h"
 #include "Tutorial/StepGameMoveCameraOverCell.h"
 #include "Tutorial/StepGameMoveCameraOverObject.h"
+#include "Tutorial/StepGameMoveUnitFree.h"
 #include "Tutorial/StepGameMoveUnitSimple.h"
 #include "Tutorial/StepGameMoveUnitToArea.h"
 #include "Tutorial/StepGamePanelHit.h"
@@ -351,7 +353,23 @@ TutorialGame2::TutorialGame2(Screen * screen)
 
         return step;
     });
-    AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
+    AddStep([local]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const auto barracks = static_cast<Barracks *>(all.back());
+        return new StepDelay(barracks->GetTimeBuildUnit());
+    });
+    // MOVE SOLDIER NEAR TREES
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([game, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 500);
+        const Cell2D target(15, 11);
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
+        const auto unit = all.back();
+        return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER", target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
 
     /*
     // MOVE SOLDIER NEAR TREES
