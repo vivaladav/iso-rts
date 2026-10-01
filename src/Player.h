@@ -60,6 +60,7 @@ public:
     void AddUnit(Unit * unit);
     void RemoveUnit(Unit * unit);
     Unit * GetUnit(unsigned int index) const;
+    std::vector<Unit *> GetUnitsByType(GameObjectTypeId type) const;
 
     unsigned int GetNumStructures() const;
     unsigned int GetNumStructuresByType(GameObjectTypeId type) const;

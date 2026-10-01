@@ -321,6 +321,19 @@ Unit * Player::GetUnit(unsigned int index) const
         return nullptr;
 }
 
+std::vector<Unit *> Player::GetUnitsByType(GameObjectTypeId type) const
+{
+    std::vector<Unit *> units;
+
+    for(auto u : mUnits)
+    {
+        if(u->GetObjectType() == type)
+            units.emplace_back(u);
+    }
+
+    return units;
+}
+
 unsigned int Player::GetNumStructuresByType(GameObjectTypeId type) const
 {
     unsigned int num = 0;
