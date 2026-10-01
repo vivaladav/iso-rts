@@ -149,6 +149,7 @@ bool GameObject::Load(sgl::utilities::BinaryFile & bf)
     mCanBeConq = bf.ReadBool();
     mVisible = bf.ReadBool();
     mVisited = bf.ReadBool();
+    mIndestructible = bf.ReadBool();
 
     return true;
 }
@@ -188,6 +189,7 @@ bool GameObject::Save(sgl::utilities::BinaryFile & bf) const
     bf.WriteBool(mCanBeConq);
     bf.WriteBool(mVisible);
     bf.WriteBool(mVisited);
+    bf.WriteBool(mIndestructible);
 
     return true;
 }
@@ -725,6 +727,13 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     // already destroyed -> do nothing
     if(IsDestroyed())
         return ;
+
+    // do not take any damage when indestructible
+    if(mIndestructible)
+    {
+        damage = 0.f;
+        fatal = false;
+    }
 
     const bool selfDestruct = damage < 0.f;
 

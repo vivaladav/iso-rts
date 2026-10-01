@@ -194,6 +194,7 @@ public:
     void Hit(float damage, GameObject * attacker, bool fatal, bool showHitPoints = true);
     void MissHit();
     void SelfDestroy();
+    void SetIndestructible(bool val);
 
     GameObjectActionType GetActiveAction() const;
     void SetActiveAction(GameObjectActionType action);
@@ -342,6 +343,7 @@ private:
     bool mVisible = true;
     bool mVisited = false;
     bool mLinked = false;
+    bool mIndestructible = false;
 };
 
 inline bool GameObject::IsInGroup() const { return mGroup != nullptr; }
@@ -429,6 +431,8 @@ inline const std::unordered_map<ObjAttId, int> & GameObject::GetAttributes() con
 }
 
 inline const Weapon * GameObject::GetWeapon() const { return mWeapon; }
+
+inline void GameObject::SetIndestructible(bool val) { mIndestructible = val; }
 
 inline GameObjectActionType GameObject::GetActiveAction() const { return mActiveAction; }
 inline void GameObject::SetActiveAction(GameObjectActionType action) { mActiveAction = action; }
