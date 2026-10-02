@@ -314,7 +314,7 @@ bool GameMap::IsObjectVisibleToLocalPlayer(const GameObject * obj) const
 }
 
 void GameMap::GetObjectsInAreaByType(std::vector<GameObject *> & objs, const Cell2D & tl,
-                                     const Cell2D & br, GameObjectTypeId type)
+                                     const Cell2D & br, GameObjectTypeId type) const
 {
     for(int r = tl.row; r <= br.row; ++r)
     {
@@ -325,7 +325,7 @@ void GameMap::GetObjectsInAreaByType(std::vector<GameObject *> & objs, const Cel
             const int ind = ind0 + c;
             GameObject * obj = mCells[ind].objTop;
 
-            if(obj != nullptr && obj->GetObjectType() == ObjectData::TYPE_TREES3)
+            if(obj != nullptr && obj->GetObjectType() == type)
                 objs.emplace_back(obj);
         }
     }

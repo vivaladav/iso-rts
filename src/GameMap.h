@@ -74,7 +74,7 @@ public:
     const std::vector<GameMapCell> & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
     void GetObjectsInAreaByType(std::vector<GameObject *> & objs, const Cell2D & tl,
-                                const Cell2D & br, GameObjectTypeId type);
+                                const Cell2D & br, GameObjectTypeId type) const;
     const std::vector<CollectableGenerator *> & GetCollectableGenerators() const;
 
     bool IsCellVisibleToLocalPlayer(unsigned int ind) const;
