@@ -72,6 +72,7 @@
 #include "Tutorial/StepGameUnitAttackBurst.h"
 #include "Tutorial/StepGameUnitAttackIcon.h"
 #include "Tutorial/StepGameUnitAttackContinue.h"
+#include "Tutorial/StepGameUnitAttackFree.h"
 #include "Tutorial/StepGameUnitAttackSimple.h"
 #include "Tutorial/StepGameUnitConquerCellsIcon.h"
 #include "Tutorial/StepGameUpgradeIntro.h"
@@ -79,6 +80,7 @@
 #include "Tutorial/StepGameUpgradeUnitFree.h"
 #include "Tutorial/StepGameWaitEnemiesKilled.h"
 #include "Tutorial/StepGameWaitEnemyKilled.h"
+#include "Tutorial/StepGameWaitObjectDestroyed.h"
 #include "Tutorial/StepGameWaitSelectedHasEnergy.h"
 #include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWallBuildEnd.h"
@@ -151,6 +153,8 @@ const Cell2D areaDiamonds2BR(9, 42);
 
 const Cell2D areaTreesTL(13, 13);
 const Cell2D areaTreesBR(16, 16);
+
+const Cell2D targetSoldier1(15, 11);
 
 }
 
@@ -375,10 +379,10 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([game, isoMap, local]
     {
         const core::Pointd2D p0(1300, 500);
-        const Cell2D target(15, 11);
         const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
         const auto unit = all.back();
-        return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER", target, p0);
+        return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER",
+                                        targetSoldier1, p0);
     });
     AddStep([] { return new StepDelay(0.5f); });
     // MAKE TREES DESTRUCTIBLE AGAIN
@@ -391,7 +395,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // EXPLAIN ATTACK
     AddStep([]
         {
-            const core::Pointd2D p0(1100, 600);
+            const core::Pointd2D p0(300, 500);
             return new StepGameSingleInfo(p0, "TUT_GAME_ATTACK_1");
         });
     AddStep([game, gs, panelActions]
@@ -419,19 +423,28 @@ TutorialGame2::TutorialGame2(Screen * screen)
         return new StepGameSetObjectHealth(enemy, health);
     });
     // ATTACK TREE
-            /*
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const core::Pointd2D p0(250, 500);
-                return new StepGameUnitAttackSimple(game, unit, isoMap, cellTarget1, p0);
-            });
-    AddStep([this]
-            {
-                GameObject * enemy = GetObjectInCell(cellTarget1);
-                return new StepGameWaitEnemyKilled(enemy, GetGameMap());
-            });
-            */
+    AddStep([this, isoMap, game, gameMap]
+    {
+        const auto unit = static_cast<Unit *>(gameMap->GetObject(targetSoldier1.row,
+                                                                 targetSoldier1.col));
+        const GameObject * enemy = GetObjectInCell(cellTarget1);
+        const core::Pointd2D p0(250, 500);
+
+        auto step = new StepGameUnitAttackFree(game, unit, enemy, isoMap,
+                                               gameMap, "TUT_GAME_ATTACK_6");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    AddStep([this, isoMap, game, gameMap]
+    {
+        const GameObject * enemy = GetObjectInCell(cellTarget1);
+        const core::Pointd2D p0(250, 500);
+
+        auto step = new StepGameWaitObjectDestroyed(game, enemy, isoMap, gameMap,
+                                                    "TUT_GAME_DESTROY_TREE");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });

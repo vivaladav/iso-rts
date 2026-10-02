@@ -455,6 +455,8 @@ add_executable(
     src/Tutorial/StepGameUnitAttackBurst.cpp
     src/Tutorial/StepGameUnitAttackContinue.h
     src/Tutorial/StepGameUnitAttackContinue.cpp
+    src/Tutorial/StepGameUnitAttackFree.h
+    src/Tutorial/StepGameUnitAttackFree.cpp
     src/Tutorial/StepGameUnitAttackSimple.h
     src/Tutorial/StepGameUnitAttackSimple.cpp
     src/Tutorial/StepGameUnitAttackIcon.h
@@ -473,6 +475,8 @@ add_executable(
     src/Tutorial/StepGameWaitEnemyKilled.cpp
     src/Tutorial/StepGameWaitLootboxOpen.h
     src/Tutorial/StepGameWaitLootboxOpen.cpp
+    src/Tutorial/StepGameWaitObjectDestroyed.h
+    src/Tutorial/StepGameWaitObjectDestroyed.cpp
     src/Tutorial/StepGameWaitObjectIdle.h
     src/Tutorial/StepGameWaitObjectIdle.cpp
     src/Tutorial/StepGameWaitSelectedHasEnergy.h
