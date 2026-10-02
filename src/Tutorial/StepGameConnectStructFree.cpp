@@ -42,6 +42,9 @@ StepGameConnectStructFree::StepGameConnectStructFree(const Game * game, const Ga
                             // CLICK FILTER
                             GetClickFilter()->SetEnabled(false);
                         });
+
+    if(mStruct == nullptr || mStruct->IsLinked())
+        SetDone();
 }
 
 StepGameConnectStructFree::~StepGameConnectStructFree()

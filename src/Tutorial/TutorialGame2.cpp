@@ -180,9 +180,10 @@ TutorialGame2::TutorialGame2(Screen * screen)
     auto panelActions = hud->GetPanelObjectActions();
     auto panelTurn = hud->GetPanelTurnControl();
 
-    // ===== SETUP =====
     // keep camera enabled in this tutorial
-    AddStep([this] { return new StepGameEnableCamera(GetCameraMapController()); });
+    GetCameraMapController()->SetEnabled(true);
+
+    // ===== SETUP =====
     // set all generators of diamonds and blobs to create them within 2 turns
     AddStep([gameMap]
         {
@@ -459,62 +460,41 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // COLLECT DIAMONDS
     AddStep([isoMap, gameMap, local, game]
     {
-        const core::Pointd2D p0(650, 600);
+        const core::Pointd2D p0(1300, 400);
         return new StepGameCollectObjects(ObjectData::TYPE_DIAMONDS, gameMap, isoMap,
                                           areaDiamondsTL, areaDiamondsBR,
                                           "TUT_GAME_COLLECT_DIAMONDS", p0);
     });
-
-    /*
     // MOVE CAMERA OVER BLOBS
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([isoMap]
-        {
-            const float speed = 800.f;
-            const Cell2D cell(14, 14);
-            return new StepGameMoveCameraOverCell(cell, isoMap, speed);
-        });
-    // SELECT WORKER AND COLLECT BLOBS
-    AddStep([local, game, isoMap]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const core::Pointd2D p0(1300, 450);
-                return new StepGameUnit(game, isoMap, unit, p0);
-            });
-    AddStep([this, local, isoMap]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const Cell2D target(25, 12);
-                const core::Pointd2D p0(800, 550);
-                return new StepGameMoveUnitToArea(unit, isoMap, areaBlobsTL, areaBlobsBR,
-                                                  target, "TUT_GAME_MOVE_UNIT_5", p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    {
+        const float speed = 800.f;
+        const Cell2D cell(20, 11);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speed);
+    });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // PRESENT BLOBS
+    AddStep([this, local, isoMap]
+    {
+        const core::Pointd2D p0(1200, 600);
+        return new StepGameInfoArea(isoMap, areaBlobsTL, areaBlobsBR,
+                                    "TUT_GAME_MOVE_UNIT_5a", "TUT_GAME_MOVE_UNIT_5b", p0);
+    });
+    // COLLECT BLOBS
     AddStep([isoMap, gameMap, local, game]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const Cell2D areaTL(areaBlobsTL.row, areaBlobsTL.col + 1);
-                const core::Pointd2D p0(500, 150);
-
-                return new StepGameCollectObjects(unit, ObjectData::TYPE_BLOBS, game, gameMap, isoMap,
-                                                  areaTL, areaBlobsBR, "TUT_GAME_COLLECT_BLOBS", p0);
-            });
-    AddStep([local] { return new StepGameSetSelectionActiveAction(local, GameObjectActionType::IDLE); });
+    {
+        const core::Pointd2D p0(1300, 600);
+        return new StepGameCollectObjects(ObjectData::TYPE_BLOBS, gameMap, isoMap,
+                                          areaBlobsTL, areaBlobsBR,
+                                          "TUT_GAME_COLLECT_BLOBS", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // UPGRADE UNIT
-    AddStep([game, gs, panelActions]
-            {
-                core::Pointd2D p0(900, 150);
-                return new StepGameUpgradeIntro(game, gs, panelActions, "TUT_GAME_UPGRADE_1b", p0);
-            });
-    AddStep([hud] { return new StepGameUpgradeUnit(hud, false); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    /*
     // CONQUER SECOND MATERIAL GENERATOR WITH SOLDIER
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([game]
