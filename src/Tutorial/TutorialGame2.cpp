@@ -2324,6 +2324,13 @@ TutorialGame2::~TutorialGame2()
 
     if(tower1 != nullptr)
         tower1->SetPerfectShot(false);
+
+    // make sure trees are no longer indestructible
+    std::vector<GameObject *> trees;
+    GetGameMap()->GetObjectsInAreaByType(trees, areaTreesTL, areaTreesBR, ObjectData::TYPE_TREES3);
+
+    for(GameObject * obj : trees)
+        obj->SetIndestructible(false);
 }
 
 } // namespace game
