@@ -39,6 +39,7 @@
 #include "Tutorial/StepGameEnableCamera.h"
 #include "Tutorial/StepGameEndTurnSimple.h"
 #include "Tutorial/StepGameEnemyIntro.h"
+#include "Tutorial/StepGameInfoArea.h"
 #include "Tutorial/StepGameMakeEnemyAttack.h"
 #include "Tutorial/StepGameMissionGoalsIcon.h"
 #include "Tutorial/StepGameMoveCameraOverCell.h"
@@ -103,8 +104,8 @@ constexpr unsigned int indSoldier1 = 1;
 constexpr unsigned int indWorker2 = 2;
 constexpr unsigned int indSoldier2 = 3;
 
-constexpr int turnsCollGenMin = 1;
-constexpr int turnsCollGenMax = 1;
+constexpr int turnsCollGenMin = 2;
+constexpr int turnsCollGenMax = 2;
 constexpr int turnsCollGenMin2 = 5;
 constexpr int turnsCollGenMax2 = 15;
 constexpr int collectablesMin = 2;
@@ -182,7 +183,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // ===== SETUP =====
     // keep camera enabled in this tutorial
     AddStep([this] { return new StepGameEnableCamera(GetCameraMapController()); });
-    // set all generators of diamonds and blobs to create them within 1 turn
+    // set all generators of diamonds and blobs to create them within 2 turns
     AddStep([gameMap]
         {
             return new StepGameSetCollectableGeneratorTurns(areaDiamondsTL, areaDiamondsBR, gameMap,
@@ -448,27 +449,23 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // PRESENT DIAMONDS
+    AddStep([this, local, isoMap]
+    {
+        const core::Pointd2D p0(700, 600);
+        return new StepGameInfoArea(isoMap, areaDiamondsTL, areaDiamondsBR,
+                                    "TUT_GAME_MOVE_UNIT_4a", "TUT_GAME_MOVE_UNIT_4b", p0);
+    });
+    // COLLECT DIAMONDS
+    AddStep([isoMap, gameMap, local, game]
+    {
+        const core::Pointd2D p0(650, 600);
+        return new StepGameCollectObjects(ObjectData::TYPE_DIAMONDS, gameMap, isoMap,
+                                          areaDiamondsTL, areaDiamondsBR,
+                                          "TUT_GAME_COLLECT_DIAMONDS", p0);
+    });
 
     /*
-    // MOVE SOLDIER TO DIAMONDS AND COLLECT THEM
-    AddStep([this, local, isoMap]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const Cell2D target(23, 9);
-                const core::Pointd2D p0(450, 200);
-                return new StepGameMoveUnitToArea(unit, isoMap, areaDiamondsTL, areaDiamondsBR,
-                                                  target, "TUT_GAME_MOVE_UNIT_4", p0);
-            });
-    AddStep([isoMap, gameMap, local, game]
-        {
-            const auto unit = local->GetUnit(indSoldier1);
-            const Cell2D areaTL(areaDiamondsTL.row + 1, areaDiamondsTL.col);
-            const core::Pointd2D p0(400, 100);
-
-            return new StepGameCollectObjects(unit, ObjectData::TYPE_DIAMONDS, game, gameMap, isoMap,
-                                              areaTL, areaDiamondsBR, "TUT_GAME_COLLECT_DIAMONDS", p0);
-        });
-    AddStep([local] { return new StepGameSetSelectionActiveAction(local, GameObjectActionType::IDLE); });
     // MOVE CAMERA OVER BLOBS
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([isoMap]

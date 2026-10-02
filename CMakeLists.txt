@@ -347,6 +347,8 @@ add_executable(
     src/Tutorial/StepGameEnemyKilled.cpp
     src/Tutorial/StepGameEnergyRegeneration.h
     src/Tutorial/StepGameEnergyRegeneration.cpp
+    src/Tutorial/StepGameInfoArea.h
+    src/Tutorial/StepGameInfoArea.cpp
     src/Tutorial/StepGameIntro.h
     src/Tutorial/StepGameIntro.cpp
     src/Tutorial/StepGameIntro2.h
