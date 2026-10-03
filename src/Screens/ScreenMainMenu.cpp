@@ -373,16 +373,14 @@ void ScreenMainMenu::CreateChangelog()
                   "- New screen: CREDITS.\n"
                   "- Added construction of wall with gate at the end of tutorial 1.\n"
                   "- Units can build towers and gates on cells with wall.\n"
-                  "\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
-                  "\n"
+                  "- Energy and material generators produce more resources.\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
                   "- Option to hide static cursor is saved correctly.\n"
                   "- Fixed Research Center not producing research points when on low resources.\n"
-                  "\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
