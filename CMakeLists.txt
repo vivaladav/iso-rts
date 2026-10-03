@@ -485,6 +485,8 @@ add_executable(
     src/Tutorial/StepGameWaitSelectedHasEnergy.cpp
     src/Tutorial/StepGameWaitTurn.h
     src/Tutorial/StepGameWaitTurn.cpp
+    src/Tutorial/StepGameWaitUnitCanBuild.h
+    src/Tutorial/StepGameWaitUnitCanBuild.cpp
     src/Tutorial/StepGameWallBuildEnd.h
     src/Tutorial/StepGameWallBuildEnd.cpp
     src/Tutorial/StepGameWallBuildIcon.h

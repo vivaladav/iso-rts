@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "GameObjects/Barracks.h"
 #include "GameObjects/Base.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/Unit.h"
 #include "Indicators/OverlayCellConquest.h"
 #include "Indicators/OverlayWall.h"
@@ -82,8 +83,8 @@
 #include "Tutorial/StepGameWaitEnemiesKilled.h"
 #include "Tutorial/StepGameWaitEnemyKilled.h"
 #include "Tutorial/StepGameWaitObjectDestroyed.h"
-#include "Tutorial/StepGameWaitSelectedHasEnergy.h"
 #include "Tutorial/StepGameWaitTurn.h"
+#include "Tutorial/StepGameWaitUnitCanBuild.h"
 #include "Tutorial/StepGameWallBuildEnd.h"
 #include "Tutorial/StepGameWallBuildIcon.h"
 #include "Tutorial/StepGameWallBuildIntro.h"
@@ -287,13 +288,14 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD BARRACKS
-    AddStep([local]
+    AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 100);
-        const float minEnergy = 30.f;
 
-        auto step = new StepGameWaitSelectedHasEnergy(local, ObjectData::TYPE_UNIT_WORKER1,
-                                                      minEnergy,  "TUT_GAME_BUILD_BARRACKS_1");
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BARRACKS);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BARRACKS_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -310,7 +312,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([hud]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameBuildStructure(hud, nullptr, nullptr, "TUT_GAME_BUILD_BARRACKS_1",
+        auto step = new StepGameBuildStructure(hud, nullptr, nullptr, "TUT_GAME_BASE_BUILD_UNIT_3",
                                                TutorialConstants::catGeneric,
                                                TutorialConstants::structBarracks);
         step->SetDelayAnimation(2.f);
@@ -545,34 +547,65 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
     // BUILD RESEARCH CENTER
-    AddStep([local, game, isoMap]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const core::Pointd2D p0(1300, 450);
-                return new StepGameUnit(game, isoMap, unit, p0);
-            });
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_RESEARCH_CENTER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_RES_CEN_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1100, 450);
-                return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_RES_CEN_1", p0);
-            });
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_RES_CEN_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([hud]
-            {
-                return new StepGameBuildStructure(hud, "TUT_GAME_BUILD_RES_CEN_2", nullptr,
-                                                  TutorialConstants::catTech,
-                                                  TutorialConstants::structResearchCenter);
-            });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const core::Pointd2D p0(1100, 500);
-                return new StepGameBuildTowerEnd(isoMap, unit, cellResCenter, p0);
-            });
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, "TUT_GAME_BUILD_RES_CEN_2", nullptr,
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catTech,
+                                               TutorialConstants::structResearchCenter);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const Cell2D areaTL(7, 8);
+        const Cell2D areaBR(12, 16);
+
+        auto step = new StepGameBuildStructArea(game, isoMap, areaTL, areaBR,
+                                                "TUT_GAME_BUILD_RES_CEN_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT RESEARCH CENTER IF NEEDED
     AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        const core::Pointd2D p0(1300, 400);
+        return new StepGameConnectStructFree(game, rc, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    /*
     // SETUP RESEARCH
     AddStep([this, game, isoMap]
             {
