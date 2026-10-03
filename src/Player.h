@@ -98,8 +98,8 @@ public:
     void SetBase(Base * b);
 
     // resources
-    const StatValue & GetResource(Stat sid);
-    bool HasEnough(Stat sid, int val);
+    const StatValue & GetResource(Stat sid) const;
+    bool HasEnough(Stat sid, int val) const;
     void SetResource(Stat sid, int val);
     void SumResource(Stat sid, int val);
     void SetResourceMax(Stat sid, int val);
@@ -207,6 +207,7 @@ private:
     void SwitchFromGlobalToLocalResources();
     void SwitchFromLocalToGlobalResources();
     StatValue & GetCurrentResource(Stat sid);
+    const StatValue & GetCurrentResource(Stat sid) const;
 
 private:
     std::unordered_map<TechUpgradeId, bool> mUpgrades;
@@ -317,7 +318,7 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 inline Base * Player::GetBase() const { return mBase; }
 inline void Player::SetBase(Base * b) { mBase = b; }
 
-inline const StatValue & Player::GetResource(Stat sid)
+inline const StatValue & Player::GetResource(Stat sid) const
 {
     if(sid < NUM_PSTATS)
         return GetCurrentResource(sid);
@@ -325,7 +326,7 @@ inline const StatValue & Player::GetResource(Stat sid)
         return mDummyStat;
 }
 
-inline bool Player::HasEnough(Stat sid, int val)
+inline bool Player::HasEnough(Stat sid, int val) const
 {
     if(sid < NUM_PSTATS)
         return val <= GetCurrentResource(sid).GetValue();

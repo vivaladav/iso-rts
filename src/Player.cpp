@@ -1127,4 +1127,9 @@ StatValue & Player::GetCurrentResource(Stat sid)
     return mUseGlobalRes ? mGlobalResources[sid] : mLocalResources[sid];
 }
 
+const StatValue & Player::GetCurrentResource(Stat sid) const
+{
+    return mUseGlobalRes ? mGlobalResources[sid] : mLocalResources[sid];
+}
+
 } // namespace game
