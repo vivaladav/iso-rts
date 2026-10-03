@@ -605,40 +605,38 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    /*
+    // SELECT RESEARCH CENTER
+    AddStep([local, game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+
+        return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0,
+                                        delayAnimLong);
+    });
     // SETUP RESEARCH
-    AddStep([this, game, isoMap]
-            {
-                const core::Pointd2D p0(1100, 550);
-                const GameObject * obj = GetObjectInCell(cellResCenter);
-                return new StepGameSelectObject(game, isoMap, obj, "TUT_GAME_RES_CEN_1", p0);
-            });
     AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1000, 650);
-                return new StepGameSetupResearchIcon(game, gs, panelActions, p0);
-            });
+    {
+        const core::Pointd2D p0(1000, 650);
+        return new StepGameSetupResearchIcon(game, gs, panelActions, p0);
+    });
     AddStep([hud]
-            {
-                return new StepGameSetupResearch(hud, { 100, 50, 50 });
-            });
-    // CLEAR SELECTION AND END TURN
-    AddStep([gs]
-            {
-                return new StepGameClearSelection(gs);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    {
+        return new StepGameSetupResearch(hud, { 100, 50, 50 });
+    });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
     // EXPLAIN RESOURCES BAR
-    AddStep([hud]
-            {
-                return new StepGameResourcesBar(hud);
-            });
+    AddStep([hud] { return new StepGameResourcesBar(hud); });
+    // MOVE UNIT TO 13,21
+
+    // CONQUER MATERIAL GENERATOR 3
+
+    // CONNECT MATERIAL GENERATOR 3
+
+    /*
     // SELECT SOLDIER AND MOVE TO RIGHT CORNER
     AddStep([local, game, isoMap]
             {
