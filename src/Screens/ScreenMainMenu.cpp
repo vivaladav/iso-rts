@@ -381,6 +381,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
                   "- Option to hide static cursor is saved correctly.\n"
+                  "- Fixed Research Center not producing research points when on low resources.\n"
                   "\n"
                   );
     text->SetPosition(contX, contY);

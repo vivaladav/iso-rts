@@ -249,8 +249,8 @@ void ResearchCenter::UpdateProduction()
 
     // -- clamp usage to what's available --
     // ENERGY
-    const int availEnergy = p->GetResource(Player::ENERGY).GetValue() -
-                            p->GetResourceConsumption(ER_ENERGY);
+    const int availEnergy = p->GetResource(Player::ENERGY).GetValue() +
+                            p->GetResourceDelta(ER_ENERGY);
 
     if(availEnergy < 0)
         mResUsage[ER_ENERGY] = 0;
@@ -260,8 +260,8 @@ void ResearchCenter::UpdateProduction()
         mResUsage[ER_ENERGY] = mWantedResUsage[ER_ENERGY];
 
     // MATERIAL
-    const int availMaterial = p->GetResource(Player::MATERIAL).GetValue() -
-                              p->GetResourceConsumption(ER_MATERIAL);
+    const int availMaterial = p->GetResource(Player::MATERIAL).GetValue() +
+                              p->GetResourceDelta(ER_MATERIAL);
 
     if(availMaterial < 0)
         mResUsage[ER_MATERIAL] = 0;
@@ -271,8 +271,8 @@ void ResearchCenter::UpdateProduction()
         mResUsage[ER_MATERIAL] = mWantedResUsage[ER_MATERIAL];
 
     // MONEY
-    const int availMoney = p->GetResource(Player::MONEY).GetValue() -
-                            p->GetResourceConsumption(ER_MONEY);
+    const int availMoney = p->GetResource(Player::MONEY).GetValue() +
+                            p->GetResourceDelta(ER_MONEY);
 
     if(availMoney < 0)
         mResUsage[ER_MONEY] = 0;
