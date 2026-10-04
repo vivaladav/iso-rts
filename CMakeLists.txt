@@ -291,6 +291,8 @@ add_executable(
     src/Tutorial/StepGameBuildStructIntro.cpp
     src/Tutorial/StepGameBuildTowerEnd.h
     src/Tutorial/StepGameBuildTowerEnd.cpp
+    src/Tutorial/StepGameBuildWallLine.h
+    src/Tutorial/StepGameBuildWallLine.cpp
     src/Tutorial/StepGameCityIntro.h
     src/Tutorial/StepGameCityIntro.cpp
     src/Tutorial/StepGameClearSelection.h
@@ -303,6 +305,8 @@ add_executable(
     src/Tutorial/StepGameConnectStructFree.cpp
     src/Tutorial/StepGameConnectStructIntro.h
     src/Tutorial/StepGameConnectStructIntro.cpp
+    src/Tutorial/StepGameConnectWall.h
+    src/Tutorial/StepGameConnectWall.cpp
     src/Tutorial/StepGameConquerCells.h
     src/Tutorial/StepGameConquerCells.cpp
     src/Tutorial/StepGameConquerCellsContinue.h

@@ -22,10 +22,12 @@
 #include "Tutorial/StepGameBuildTowerEnd.h"
 #include "Tutorial/StepGameBuildUnitEnd.h"
 #include "Tutorial/StepGameBuildUnitStart.h"
+#include "Tutorial/StepGameBuildWallLine.h"
 #include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameCollectObjects.h"
 #include "Tutorial/StepGameConnectStructFree.h"
+#include "Tutorial/StepGameConnectWall.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
 #include "Tutorial/StepGameConquerCellsSimple.h"
@@ -687,6 +689,92 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([isoMap]
+    {
+        const float speed = 700.f;
+        const Cell2D target(15, 29);
+        return new StepGameMoveCameraOverCell(target, isoMap, speed);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WALL RIGHT
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 450);
+        return new StepGameWallBuildIntro(p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 450);
+        const Cell2D tl(12, 29);
+        const Cell2D br(22, 29);
+
+        auto step = new StepGameBuildWallLine(gameMap, isoMap, tl, br, "TUT_GAME_BUILD_WALL_5");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONNECT WALL RIGHT
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 350);
+        const Cell2D tl(12, 29);
+        const Cell2D br(22, 29);
+
+        auto step = new StepGameConnectWall(gameMap, isoMap, tl, br, "TUT_GAME_CONNECT_WALL");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+
+
+    // CONNECT WALL RIGHT
+
+    // BUILD WALL 27, 12 -> 27, 21 (LEFT)
+
+    // BUILD WALL 27, 23 -> 24, 29 (CENTRAL)
+
+    /*
+    // MOVE VIEW BACK TO BASE
+    AddStep([panelTurn, game]
+    {
+        const core::Pointd2D p0(50, 700);
+        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1", p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WORKER 2
+    AddStep([localBase, game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BUILD_WORKER", p0,
+                                        delayAnimLong);
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_WORKER",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BASE,
+                                                  delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_WORKER", delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    */
+
 
     /*
     // BUILD WALL ON RIGHT SIDE WITH WORKER
@@ -713,8 +801,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // RESET ACTIVE ACTION FOR WORKER
-    AddStep([local] { return new StepGameSetSelectionActiveAction(local, GameObjectActionType::IDLE); });
     // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this]
