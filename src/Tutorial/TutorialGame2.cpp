@@ -869,12 +869,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WALL CENTRAL
-    AddStep([]
-    {
-        const core::Pointd2D p0(1300, 450);
-        return new StepGameWallBuildIntro(p0);
-    });
-    AddStep([] { return new StepDelay(0.5f); });
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 450);
@@ -951,12 +945,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WALL LEFT
-    AddStep([]
-    {
-        const core::Pointd2D p0(100, 450);
-        return new StepGameWallBuildIntro(p0);
-    });
-    AddStep([] { return new StepDelay(0.5f); });
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 450);
