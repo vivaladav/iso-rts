@@ -120,6 +120,8 @@ constexpr float energyEnemyDef = 60.f;
 
 constexpr float delayAnimLong = 2.f;
 
+constexpr float speedCamera = 700.f;
+
 const Cell2D cellEneGen1(6, 15);
 const Cell2D cellEneGen2(23, 17);
 const Cell2D cellEneGen3(5, 26);
@@ -163,6 +165,8 @@ const Cell2D targetSoldier1(15, 11);
 
 const Cell2D wallRightTL(12, 29);
 const Cell2D wallRightBR(22, 29);
+const Cell2D wallCenterTL(24, 23);
+const Cell2D wallCenterBR(24, 28);
 
 }
 
@@ -477,9 +481,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([isoMap]
     {
-        const float speed = 700.f;
         const Cell2D cell(20, 11);
-        return new StepGameMoveCameraOverCell(cell, isoMap, speed);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
@@ -505,9 +508,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // MOVE CAMERA OVER MATERIAL GENERATOR
     AddStep([this]
     {
-        const float speed = 700.f;
         const GameObject * gen = GetObjectInCell(cellMatGen2);
-        return new StepGameMoveCameraOverObject(gen, speed);
+        return new StepGameMoveCameraOverObject(gen, speedCamera);
     });
     // CONQUER MATERIAL GENERATOR 2
     AddStep([] { return new StepDelay(0.5f); });
@@ -531,9 +533,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // MOVE CAMERA OVER ENERGY GENERATOR
     AddStep([this]
     {
-        const float speed = 700.f;
         const GameObject * gen = GetObjectInCell(cellEneGen2);
-        return new StepGameMoveCameraOverObject(gen, speed);
+        return new StepGameMoveCameraOverObject(gen, speedCamera);
     });
     // CONQUER ENERGY GENERATOR 2
     AddStep([this, local, isoMap, game]
@@ -696,9 +697,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // MOVE CAMERA
     AddStep([isoMap]
     {
-        const float speed = 700.f;
         const Cell2D target(15, 29);
-        return new StepGameMoveCameraOverCell(target, isoMap, speed);
+        return new StepGameMoveCameraOverCell(target, isoMap, speedCamera);
     });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WALL RIGHT
@@ -761,9 +761,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // MOVE CAMERA
     AddStep([isoMap]
     {
-        const float speed = 700.f;
         const Cell2D target((wallRightTL.row + wallRightBR.row) / 2, wallRightTL.col);
-        return new StepGameMoveCameraOverCell(target, isoMap, speed);
+        return new StepGameMoveCameraOverCell(target, isoMap, speedCamera);
     });
     // BUILD GATE IN RIGHT WALL
     AddStep([local, game]
@@ -861,10 +860,90 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([isoMap]
+    {
+        return new StepGameMoveCameraOverCell(wallCenterBR, isoMap, speedCamera);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WALL CENTRAL
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 450);
+        return new StepGameWallBuildIntro(p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 450);
+        auto step = new StepGameBuildWallLine(gameMap, isoMap, wallCenterTL, wallCenterBR,
+                                              "TUT_GAME_BUILD_WALL_5");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONNECT WALL CENTER
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 350);
+        auto step = new StepGameConnectWall(gameMap, isoMap, wallCenterTL, wallCenterBR,
+                                            "TUT_GAME_CONNECT_WALL");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // BUILD TOWERS IN CENTRAL WALL
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_DEFENSIVE_TOWER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_DTOWERS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_DTOWERS",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
+                                               "TUT_GAME_BUILD_GATE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structDefTower);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 2;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallCenterTL, wallCenterBR,
+                                                    ObjectData::TYPE_DEFENSIVE_TOWER, numToBuild,
+                                                    "TUT_GAME_BUILD_DTOWERS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
 
     // BUILD WALL 27, 12 -> 27, 21 (LEFT)
-
-    // BUILD WALL 27, 23 -> 24, 29 (CENTRAL)
 
     /*
     // MOVE VIEW BACK TO BASE
