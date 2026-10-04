@@ -17,6 +17,7 @@
 #include "Tutorial/StepGameIntro2.h"
 #include "Tutorial/StepGameBackToBase.h"
 #include "Tutorial/StepGameBuildStructArea.h"
+#include "Tutorial/StepGameBuildStructAreaFree.h"
 #include "Tutorial/StepGameBuildStructIntro.h"
 #include "Tutorial/StepGameBuildStructure.h"
 #include "Tutorial/StepGameBuildTowerEnd.h"
@@ -757,6 +758,58 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_BASE_IMPROVE_1, true); });
     AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([isoMap]
+    {
+        const float speed = 700.f;
+        const Cell2D target((wallRightTL.row + wallRightBR.row) / 2, wallRightTL.col);
+        return new StepGameMoveCameraOverCell(target, isoMap, speed);
+    });
+    // BUILD GATE IN RIGHT WALL
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_WALL_GATE);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_GATE_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
+                                               "TUT_GAME_BUILD_GATE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structGate);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRightTL, wallRightBR,
+                                                    ObjectData::TYPE_WALL_GATE,
+                                                    "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
 
     // BUILD WALL 27, 12 -> 27, 21 (LEFT)
 

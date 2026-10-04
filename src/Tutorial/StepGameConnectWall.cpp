@@ -63,7 +63,6 @@ void StepGameConnectWall::Update(float)
             }
         }
     }
-
 }
 
 } // namespace game

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Cell2D.h"
-#include "Player.h"
 #include "Tutorial/TutorialInfoStep.h"
 
 namespace game
@@ -18,6 +17,8 @@ public:
     StepGameBuildStructArea(const Game * game, const IsoMap * isoMap, const Cell2D & areaTL,
                             const Cell2D & areaBR, const char * text);
     ~StepGameBuildStructArea();
+
+    void OnStart() override;
 
     void Update(float delta) override;
 

@@ -35,21 +35,19 @@ StepGameBuildStructArea::StepGameBuildStructArea(const Game * game, const IsoMap
 
     // INFO
     if(text != nullptr)
-    {
-        auto info = GetPanelInfo();
-
-        info->AddActionEntry(sm->GetCString(text), 0.f, false, false,
-                         [this]
-                        {
-                            // FOCUS
-                            mFocusArea->SetVisible(true);
-                        });
-    }
+        GetPanelInfo()->AddActionEntry(sm->GetCString(text), 0.f, false, false);
 }
 
 StepGameBuildStructArea::~StepGameBuildStructArea()
 {
     delete mFocusArea;
+}
+
+void StepGameBuildStructArea::OnStart()
+{
+    TutorialInfoStep::OnStart();
+
+    mFocusArea->SetVisible(true);
 }
 
 void StepGameBuildStructArea::Update(float)
