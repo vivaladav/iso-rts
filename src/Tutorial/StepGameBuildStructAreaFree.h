@@ -15,7 +15,8 @@ class StepGameBuildStructAreaFree : public TutorialInfoStep
 {
 public:
     StepGameBuildStructAreaFree(const GameMap * gm, const IsoMap * isoMap, const Cell2D & areaTL,
-                                const Cell2D & areaBR, GameObjectTypeId type, const char * text);
+                                const Cell2D & areaBR, GameObjectTypeId type, unsigned int num,
+                                const char * text);
     ~StepGameBuildStructAreaFree();
 
     void OnStart() override;
@@ -33,9 +34,9 @@ private:
     const Cell2D mAreaTL;
     const Cell2D mAreaBR;
 
-    GameObjectTypeId mType;
+    const GameObjectTypeId mType;
 
-    unsigned int mNum0 = 0;
+    const unsigned int mNum = 0;
 };
 
 } // namespace game

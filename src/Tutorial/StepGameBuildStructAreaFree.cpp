@@ -14,13 +14,14 @@ namespace game
 
 StepGameBuildStructAreaFree::StepGameBuildStructAreaFree(const GameMap * gm, const IsoMap * isoMap,
                                                          const Cell2D & areaTL, const Cell2D & areaBR,
-                                                         GameObjectTypeId type, const char * text)
+                                                         GameObjectTypeId type, unsigned int num, const char * text)
     : TutorialInfoStep(550, 130)
     , mFocusArea(new IsoFocusArea(isoMap))
     , mGameMap(gm)
     , mAreaTL(areaTL)
     , mAreaBR(areaBR)
     , mType(type)
+    , mNum(num)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
@@ -50,12 +51,13 @@ void StepGameBuildStructAreaFree::OnStart()
 
     mFocusArea->SetVisible(true);
 
-    mNum0 = GetNumStructs();
+    if(GetNumStructs() == mNum)
+        SetDone();
 }
 
 void StepGameBuildStructAreaFree::Update(float)
 {
-    if(GetNumStructs() > mNum0)
+    if(GetNumStructs() == mNum)
         SetDone();
 }
 

@@ -803,13 +803,64 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
         auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRightTL, wallRightBR,
-                                                    ObjectData::TYPE_WALL_GATE,
+                                                    ObjectData::TYPE_WALL_GATE, numToBuild,
                                                     "TUT_GAME_BUILD_GATE_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
     });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD TOWERS IN RIGHT WALL
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_DEFENSIVE_TOWER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_DTOWERS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_DTOWERS",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
+                                               "TUT_GAME_BUILD_GATE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structDefTower);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 2;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRightTL, wallRightBR,
+                                                    ObjectData::TYPE_DEFENSIVE_TOWER, numToBuild,
+                                                    "TUT_GAME_BUILD_DTOWERS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
 
     // BUILD WALL 27, 12 -> 27, 21 (LEFT)
 
