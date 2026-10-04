@@ -160,6 +160,9 @@ const Cell2D areaTreesBR(16, 16);
 
 const Cell2D targetSoldier1(15, 11);
 
+const Cell2D wallRightTL(12, 29);
+const Cell2D wallRightBR(22, 29);
+
 }
 
 namespace game
@@ -707,10 +710,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 450);
-        const Cell2D tl(12, 29);
-        const Cell2D br(22, 29);
-
-        auto step = new StepGameBuildWallLine(gameMap, isoMap, tl, br, "TUT_GAME_BUILD_WALL_5");
+        auto step = new StepGameBuildWallLine(gameMap, isoMap, wallRightTL, wallRightBR,
+                                              "TUT_GAME_BUILD_WALL_5");
         step->SetInfoPosition(p0.x, p0.y);
         return step;
     });
@@ -721,16 +722,41 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 350);
-        const Cell2D tl(12, 29);
-        const Cell2D br(22, 29);
-
-        auto step = new StepGameConnectWall(gameMap, isoMap, tl, br, "TUT_GAME_CONNECT_WALL");
+        auto step = new StepGameConnectWall(gameMap, isoMap, wallRightTL, wallRightBR,
+                                            "TUT_GAME_CONNECT_WALL");
         step->SetInfoPosition(p0.x, p0.y);
         return step;
     });
-
-
-    // CONNECT WALL RIGHT
+    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local]
+            {
+                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+                const GameObject * rc = all.back();
+                const float speed = 1000.f;
+                return new StepGameMoveCameraOverObject(rc, speed);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([]
+            {
+                const core::Pointd2D p0(685, 200);
+                return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
+            });
+    AddStep([this, game, isoMap, local]
+            {
+                const core::Pointd2D p0(710, 250);
+                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+                const GameObject * rc = all.back();
+                return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
+            });
+    AddStep([game, gs, panelActions]
+            {
+                const core::Pointd2D p0(1000, 650);
+                return new StepGameTechTreeIcon(game, gs, panelActions, p0);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_BASE_IMPROVE_1, true); });
+    AddStep([] { return new StepDelay(0.5f); });
 
     // BUILD WALL 27, 12 -> 27, 21 (LEFT)
 
@@ -801,35 +827,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([this]
-            {
-                const GameObject * obj = GetObjectInCell(cellResCenter);
-                const float speed = 1000.f;
-                return new StepGameMoveCameraOverObject(obj, speed);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([]
-            {
-                const core::Pointd2D p0(685, 200);
-                return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
-            });
-    AddStep([this, game, isoMap]
-            {
-                const core::Pointd2D p0(710, 250);
-                const GameObject * obj = GetObjectInCell(cellResCenter);
-                return new StepGameSelectObject(game, isoMap, obj, "TUT_GAME_RES_CEN_1", p0);
-            });
-    AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1000, 650);
-                return new StepGameTechTreeIcon(game, gs, panelActions, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_BASE_IMPROVE_1, true); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([] { return new StepDelay(0.5f); });
+
     // SELECT WORKER
     AddStep([hud]
             {
