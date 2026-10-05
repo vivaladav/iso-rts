@@ -51,13 +51,13 @@ void StepGameBuildStructAreaFree::OnStart()
 
     mFocusArea->SetVisible(true);
 
-    if(GetNumStructs() == mNum)
+    if(GetNumStructs() >= mNum)
         SetDone();
 }
 
 void StepGameBuildStructAreaFree::Update(float)
 {
-    if(GetNumStructs() == mNum)
+    if(GetNumStructs() >= mNum)
         SetDone();
 }
 
@@ -74,7 +74,9 @@ unsigned int StepGameBuildStructAreaFree::GetNumStructs() const
             const int ind = ind0 + c;
             const auto obj = mGameMap->GetObject(ind);
 
-            if(obj != nullptr && obj->GetObjectType() == mType)
+            // make sure to count bigger objects only once
+            if(obj != nullptr && obj->GetObjectType() == mType &&
+               obj->GetRow0() == r && obj->GetCol0() == c)
                 ++num;
         }
     }
