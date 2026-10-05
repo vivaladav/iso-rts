@@ -16,57 +16,31 @@
 #include "Tutorial/StepGameAddEnemy.h"
 #include "Tutorial/StepGameIntro2.h"
 #include "Tutorial/StepGameBackToBase.h"
-#include "Tutorial/StepGameBuildStructArea.h"
 #include "Tutorial/StepGameBuildStructAreaFree.h"
-#include "Tutorial/StepGameBuildStructIntro.h"
 #include "Tutorial/StepGameBuildStructure.h"
-#include "Tutorial/StepGameBuildTowerEnd.h"
 #include "Tutorial/StepGameBuildUnitEnd.h"
-#include "Tutorial/StepGameBuildUnitStart.h"
 #include "Tutorial/StepGameBuildWallLine.h"
-#include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameCollectObjects.h"
 #include "Tutorial/StepGameConnectStructFree.h"
 #include "Tutorial/StepGameConnectWall.h"
-#include "Tutorial/StepGameConnectStructIntro.h"
-#include "Tutorial/StepGameConquerCellsEnd.h"
-#include "Tutorial/StepGameConquerCellsSimple.h"
-#include "Tutorial/StepGameConquerGeneratorIntro.h"
-#include "Tutorial/StepGameConquerEnergyGenIntro.h"
-#include "Tutorial/StepGameConquerMaterialGenIntro.h"
-#include "Tutorial/StepGameConquerStructChoice.h"
 #include "Tutorial/StepGameConquerStructFree.h"
-#include "Tutorial/StepGameConquerStructSimple.h"
 #include "Tutorial/StepGameDialogTrading.h"
-#include "Tutorial/StepGameDisableCamera.h"
-#include "Tutorial/StepGameEnableCamera.h"
-#include "Tutorial/StepGameEndTurnSimple.h"
-#include "Tutorial/StepGameEnemyIntro.h"
 #include "Tutorial/StepGameInfoArea.h"
-#include "Tutorial/StepGameMakeEnemyAttack.h"
 #include "Tutorial/StepGameMissionGoalsIcon.h"
 #include "Tutorial/StepGameMoveCameraOverCell.h"
 #include "Tutorial/StepGameMoveCameraOverObject.h"
 #include "Tutorial/StepGameMoveUnitFree.h"
-#include "Tutorial/StepGameMoveUnitSimple.h"
-#include "Tutorial/StepGameMoveUnitToArea.h"
 #include "Tutorial/StepGamePanelHit.h"
 #include "Tutorial/StepGamePrimaryMissionGoal.h"
-#include "Tutorial/StepGameQuickUnitButton.h"
 #include "Tutorial/StepGameResourcesBar.h"
 #include "Tutorial/StepGameSecondaryMissionGoal.h"
 #include "Tutorial/StepGameSelectObject.h"
 #include "Tutorial/StepGameSetCollectableGeneratorTurns.h"
-#include "Tutorial/StepGameSetCollectableUnits.h"
-#include "Tutorial/StepGameSetObjectAttackMode.h"
 #include "Tutorial/StepGameSetObjectEnergy.h"
 #include "Tutorial/StepGameSetObjectFatalHit.h"
 #include "Tutorial/StepGameSetObjectHealth.h"
 #include "Tutorial/StepGameSetObjectIndestructible.h"
-#include "Tutorial/StepGameSetObjectPerfectShot.h"
-#include "Tutorial/StepGameSetSelectionDefaultAction.h"
-#include "Tutorial/StepGameSetSelectionActiveAction.h"
 #include "Tutorial/StepGameSetupResearch.h"
 #include "Tutorial/StepGameSetupResearchIcon.h"
 #include "Tutorial/StepGameSingleInfo.h"
@@ -76,22 +50,11 @@
 #include "Tutorial/StepGameUnit.h"
 #include "Tutorial/StepGameUnitAttackBurst.h"
 #include "Tutorial/StepGameUnitAttackIcon.h"
-#include "Tutorial/StepGameUnitAttackContinue.h"
 #include "Tutorial/StepGameUnitAttackFree.h"
-#include "Tutorial/StepGameUnitAttackSimple.h"
-#include "Tutorial/StepGameUnitConquerCellsIcon.h"
-#include "Tutorial/StepGameUpgradeIntro.h"
-#include "Tutorial/StepGameUpgradeUnit.h"
-#include "Tutorial/StepGameUpgradeUnitFree.h"
 #include "Tutorial/StepGameWaitEnemiesKilled.h"
-#include "Tutorial/StepGameWaitEnemyKilled.h"
 #include "Tutorial/StepGameWaitObjectDestroyed.h"
-#include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWaitUnitCanBuild.h"
-#include "Tutorial/StepGameWallBuildEnd.h"
-#include "Tutorial/StepGameWallBuildIcon.h"
 #include "Tutorial/StepGameWallBuildIntro.h"
-#include "Tutorial/StepGameWallBuildStart.h"
 #include "Tutorial/StepSaveGame.h"
 #include "Tutorial/TutorialConstants.h"
 #include "Widgets/GameHUD.h"
@@ -115,8 +78,8 @@ constexpr int turnsCollGenMax2 = 15;
 constexpr int collectablesMin = 2;
 constexpr int collectablesMax = 4;
 
-constexpr float healthEnemyDef = 65.f;
-constexpr float energyEnemyDef = 60.f;
+constexpr float healthEnemyDef = 60.f;
+constexpr float energyEnemyDef = 50.f;
 
 constexpr float delayAnimLong = 2.f;
 
@@ -131,11 +94,11 @@ const Cell2D cellMatGen2(24, 3);
 const Cell2D cellMatGen3(15, 26);
 const Cell2D cellMatGen4(40, 12);
 const Cell2D cellTarget1(15, 13);
-const Cell2D cellEnemy1(4, 34);
-const Cell2D cellEnemy2(30, 19);
-const Cell2D cellEnemy3(29, 24);
-const Cell2D cellEnemy4(21, 32);
-const Cell2D cellEnemy5(25, 30);
+const Cell2D cellEnemy1(29, 22);
+const Cell2D cellEnemy2(28, 24);
+const Cell2D cellEnemy3(28, 28);
+const Cell2D cellEnemy4(27, 30);
+const Cell2D cellEnemy5(22, 32);
 
 const Cell2D areaBlobsTL(22, 12);
 const Cell2D areaBlobsBR(25, 13);
@@ -322,14 +285,16 @@ TutorialGame2::TutorialGame2(Screen * screen)
 
         return step;
     });
-    AddStep([game, isoMap]
+    AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 100);
         const Cell2D areaTL(7, 8);
         const Cell2D areaBR(11, 14);
+        const int numToBuild = 1;
 
-        auto step = new StepGameBuildStructArea(game, isoMap, areaTL, areaBR,
-                                                "TUT_GAME_BUILD_BARRACKS_1");
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
+                                                    ObjectData::TYPE_BARRACKS, numToBuild,
+                                                    "TUT_GAME_BUILD_BARRACKS_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -580,14 +545,16 @@ TutorialGame2::TutorialGame2(Screen * screen)
 
         return step;
     });
-    AddStep([game, isoMap]
+    AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 100);
         const Cell2D areaTL(7, 8);
         const Cell2D areaBR(12, 16);
+        const int numToBuild = 1;
 
-        auto step = new StepGameBuildStructArea(game, isoMap, areaTL, areaBR,
-                                                "TUT_GAME_BUILD_RES_CEN_1");
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
+                                                    ObjectData::TYPE_RESEARCH_CENTER, numToBuild,
+                                                    "TUT_GAME_BUILD_RES_CEN_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -641,7 +608,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([game, isoMap, local]
     {
-        const core::Pointd2D p0(1300, 500);
+        const core::Pointd2D p0(1300, 200);
         const Cell2D target(13,21);
         const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
         const auto unit = all.back();
@@ -677,24 +644,23 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
-            {
-                const core::Pointd2D p0(800, 500);
-                return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1b", p0);
-            });
+    {
+        const core::Pointd2D p0(800, 500);
+        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1b", p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // COLLECT SECONDARY MISSION GOAL
     AddStep([localBase, game, isoMap]
-            {
-                const core::Pointd2D p0(500, 200);
-                return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-            });
+    {
+        const core::Pointd2D p0(500, 200);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
+    });
     AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
     AddStep([hud]
-        {
-            const int goal = 0;
-            return new StepGameSecondaryMissionGoal(hud, goal);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    {
+        const int goal = 0;
+        return new StepGameSecondaryMissionGoal(hud, goal);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // MOVE CAMERA
     AddStep([this]
@@ -1175,9 +1141,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
         const core::Pointd2D p0(1300, 400);
         return new StepGameConnectStructFree(game, rc, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
     });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
     // SELECT TRADING POST
     AddStep([game, isoMap, local]
     {
@@ -1197,29 +1160,40 @@ TutorialGame2::TutorialGame2(Screen * screen)
     {
         return new StepGameDialogTrading(hud);
     });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
-    // MOVE VIEW BACK TO BASE
-    AddStep([panelTurn, game]
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // ANNOUNCE ENEMIES ARE COMING
+    AddStep([]
     {
-        const core::Pointd2D p0(50, 700);
-        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1", p0);
+        const core::Pointd2D p0(1200, 150);
+        return new StepGameSingleInfo(p0, "TUT_GAME_BUILD_SOLDIER_1");
+    });
+    // MOVE CAMERA
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const GameObject * obj = all.back();
+        return new StepGameMoveCameraOverObject(obj, speedCamera);
     });
     AddStep([] { return new StepDelay(0.5f); });
-    // BUILD WORKER 2
-    AddStep([localBase, game, isoMap]
+    // BUILD SOLDIER
+    AddStep([local, game, isoMap]
     {
         const core::Pointd2D p0(1300, 100);
-        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BUILD_WORKER", p0,
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const GameObject * barracks = all.back();
+
+        return new StepGameSelectObject(game, isoMap, barracks, "TUT_GAME_BUILD_LSOLDIER", p0,
                                         delayAnimLong);
     });
     AddStep([game, gs, panelActions]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_WORKER",
-                                                  PanelObjectActions::BTN_BUILD_UNIT_BASE,
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_LSOLDIER",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BARRACKS,
                                                   delayAnimLong);
         step->SetInfoPosition(p0.x, p0.y);
 
@@ -1228,325 +1202,134 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([hud]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_WORKER", delayAnimLong);
+        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_LSOLDIER", delayAnimLong);
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
     });
-    AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
-    */
-
-
-    /*
-    // MOVE WORKER AWAY FROM WALL
-    AddStep([game]
-        {
-            const int movX = -300;
-            const int movY = 0;
-            return new StepGameMoveCamera(movX, movY);
-        });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const Cell2D target(20, 28);
-            const core::Pointd2D p0(300, 400);
-            return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // ADD ENEMY NEAR GATE 1
-    AddStep([]
-        {
-            const core::Pointd2D p0(1100, 400);
-            return new StepGameEnemyIntro(p0);
-        });
-    AddStep([this, playerAI]
-        {
-            return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
-                                        cellEnemy1, true);
-        });
-    // CENTER VIEW ON SOLDIER
-    AddStep([hud]
-        {
-            const sgl::core::Pointd2D p0(200, 700);
-            return new StepGameQuickUnitButton(hud, indSoldier1, nullptr, p0);
-        });
-    // DISABLE PERFECT SHOT AND FATAL HIT
     AddStep([local]
-        {
-            auto unit = local->GetUnit(indSoldier1);
-            return new StepGameSetObjectPerfectShot(unit, false);
-        });
-    AddStep([local]
-        {
-            auto unit = local->GetUnit(indSoldier1);
-            return new StepGameSetObjectFatalHit(unit, false);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // ATTACK ENEMY WITH SOLDIER
-    AddStep([]
-            {
-                const core::Pointd2D p0(700, 200);
-                return new StepGameSingleInfo(p0, "TUT_GAME_ATTACK_1b");
-            });
-    AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(700, 250);
-                return new StepGameUnitAttackIcon(game, gs, panelActions, p0);
-            });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const core::Pointd2D p0(700, 250);
-                return new StepGameUnitAttackContinue(game, unit, isoMap, cellEnemy1, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // ENABLE TOWER'S PERFECT SHOT
-    AddStep([this]
-            {
-                auto tower = GetObjectInCell(cellTower1);
-                return new StepGameSetObjectPerfectShot(tower, true);
-            });
-    // LOWER ENEMY HEALTH, SET ATTACK TO BURST AND DISABLE FATAL HIT
-    AddStep([this]
-            {
-                const float health = 20.f;
-                GameObject * enemy = GetObjectInCell(cellEnemy1);
-                return new StepGameSetObjectHealth(enemy, health);
-            });
-    AddStep([this]
-            {
-                auto enemy = GetObjectInCell(cellEnemy1);
-                return new StepGameSetObjectAttackMode(enemy, ATT_BURST_SHOT);
-            });
-    AddStep([this]
-            {
-                auto enemy = GetObjectInCell(cellEnemy1);
-                return new StepGameSetObjectFatalHit(enemy, false);
-            });
-    // END TURN - NOTE do not wait for end turn now as there are AI actions first
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    // MAKE ENEMY SHOOT
-    AddStep([this, playerAI, local]
-            {
-                auto attacker = static_cast<Unit *>(GetObjectInCell(cellEnemy1));
-                auto target = local->GetUnit(indSoldier1);
-                return new StepGameMakeEnemyAttack(attacker, target, playerAI);
-            });
-    // WAIT ENEMY KILLED
-    AddStep([this]
-        {
-                GameObject * enemy = GetObjectInCell(cellEnemy1);
-                return new StepGameWaitEnemyKilled(enemy, GetGameMap());
-        });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
-    // MOVE SOLDIER TO EXPLORE DIAMONDS AND BLOBS
-    AddStep([]
-            {
-                const core::Pointd2D p0(1000, 250);
-                return new StepGameSingleInfo(p0, "TUT_GAME_QUICK_SEL_1");
-            });
-    AddStep([local, game, isoMap]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const core::Pointd2D p0(1300, 350);
-                return new StepGameUnit(game, isoMap, unit, p0);
-            });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const Cell2D target(5, 42);
-                const core::Pointd2D p0(1150, 500);
-                return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-
-    // SELECT SOLDIER 1 AND COLLECT BLOBS
-    AddStep([hud]
-            {
-                const sgl::core::Pointd2D p0(100, 600);
-                return new StepGameQuickUnitButton(hud, indSoldier1, nullptr, p0);
-            });
-    AddStep([isoMap, gameMap, local, game]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const Cell2D areaTL(2, 46);
-                const Cell2D areaBR(4, 48);
-                const core::Pointd2D p0(500, 150);
-
-                return new StepGameCollectObjects(unit, ObjectData::TYPE_BLOBS, game, gameMap, isoMap,
-                                                  areaTL, areaBR, "TUT_GAME_COLLECT_BLOBS", p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
-    // COLLECT DIAMONDS WITH SOLDIER 1
-    AddStep([isoMap, gameMap, local, game]
-            {
-                const auto unit = local->GetUnit(indSoldier1);
-                const Cell2D areaTL(7, 41);
-                const Cell2D areaBR(9, 42);
-                const core::Pointd2D p0(500, 150);
-
-                return new StepGameCollectObjects(unit, ObjectData::TYPE_DIAMONDS, game, gameMap, isoMap,
-                                                  areaTL, areaBR, "TUT_GAME_COLLECT_DIAMONDS", p0);
-            });
-
-
-
-
-
-    // BUILD SOLDIER 2
-    AddStep([]
-            {
-                const core::Pointd2D p0(600, 150);
-                return new StepGameSingleInfo(p0, "TUT_GAME_BUILD_SOLDIER_1");
-            });
-    AddStep([this, game, isoMap]
-            {
-                const core::Pointd2D p0(500, 200);
-                const GameObject * barracks = GetObjectInCell(cellBarracks);
-                return new StepGameSelectObject(game, isoMap, barracks, "TUT_GAME_BARRACKS_1", p0);
-            });
-    AddStep([game, gs, panelActions]
-            {
-                return new StepGameBuildUnitStart(game, gs, panelActions,
-                                                  PanelObjectActions::BTN_BUILD_UNIT_BARRACKS);
-            });
-    AddStep([hud] { return new StepGameBuildUnitEnd(hud); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this]
-            {
-                const auto barracks = static_cast<Structure *>(GetObjectInCell(cellBarracks));
-                return new StepDelay(barracks->GetTimeBuildUnit());
-            });
-    AddStep([] { return new StepDelay(0.5f); });
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const auto barracks = static_cast<Barracks *>(all.back());
+        return new StepDelay(barracks->GetTimeBuildUnit());
+    });
     // ADD ENEMIES
     AddStep([this, playerAI]
-            {
-                return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
-                                            cellEnemy2, false);
-            });
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
+                                    cellEnemy1, false);
+    });
     AddStep([this, playerAI]
-            {
-                return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
-                                            cellEnemy3, false);
-            });
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
+                                    cellEnemy2, false);
+    });
     AddStep([this, playerAI]
-            {
-                return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
-                                            cellEnemy4, false);
-            });
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
+                                    cellEnemy3, false);
+    });
     AddStep([this, playerAI]
-            {
-                return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
-                                            cellEnemy5, false);
-            });
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
+                                    cellEnemy4, false);
+    });
+    AddStep([this, playerAI]
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
+                                    cellEnemy5, false);
+    });
     // SET HEALTH OF ENEMIES
     AddStep([this]
-            {
-                std::vector<GameObject *> enemies;
-                enemies.emplace_back(GetObjectInCell(cellEnemy2));
-                enemies.emplace_back(GetObjectInCell(cellEnemy3));
-                enemies.emplace_back(GetObjectInCell(cellEnemy4));
-                enemies.emplace_back(GetObjectInCell(cellEnemy5));
+    {
+        std::vector<GameObject *> enemies;
+        enemies.emplace_back(GetObjectInCell(cellEnemy1));
+        enemies.emplace_back(GetObjectInCell(cellEnemy2));
+        enemies.emplace_back(GetObjectInCell(cellEnemy3));
+        enemies.emplace_back(GetObjectInCell(cellEnemy4));
+        enemies.emplace_back(GetObjectInCell(cellEnemy5));
 
-                return new StepGameSetObjectHealth(std::move(enemies), healthEnemyDef);
-            });
+        return new StepGameSetObjectHealth(std::move(enemies), healthEnemyDef);
+    });
     // SET ENERGY OF ENEMIES
     AddStep([this]
-            {
-                std::vector<GameObject *> enemies;
-                enemies.emplace_back(GetObjectInCell(cellEnemy2));
-                enemies.emplace_back(GetObjectInCell(cellEnemy3));
-                enemies.emplace_back(GetObjectInCell(cellEnemy4));
-                enemies.emplace_back(GetObjectInCell(cellEnemy5));
+    {
+        std::vector<GameObject *> enemies;
+        enemies.emplace_back(GetObjectInCell(cellEnemy2));
+        enemies.emplace_back(GetObjectInCell(cellEnemy3));
+        enemies.emplace_back(GetObjectInCell(cellEnemy4));
+        enemies.emplace_back(GetObjectInCell(cellEnemy5));
 
-                return new StepGameSetObjectEnergy(std::move(enemies), energyEnemyDef);
-            });
+        return new StepGameSetObjectEnergy(std::move(enemies), energyEnemyDef);
+    });
     // DISABLE FATAL HIT FOR ENEMIES
     AddStep([this]
-            {
-                std::vector<GameObject *> enemies;
-                enemies.emplace_back(GetObjectInCell(cellEnemy2));
-                enemies.emplace_back(GetObjectInCell(cellEnemy3));
-                enemies.emplace_back(GetObjectInCell(cellEnemy4));
-                enemies.emplace_back(GetObjectInCell(cellEnemy5));
+    {
+        std::vector<GameObject *> enemies;
+        enemies.emplace_back(GetObjectInCell(cellEnemy2));
+        enemies.emplace_back(GetObjectInCell(cellEnemy3));
+        enemies.emplace_back(GetObjectInCell(cellEnemy4));
+        enemies.emplace_back(GetObjectInCell(cellEnemy5));
 
-                return new StepGameSetObjectFatalHit(std::move(enemies), false);
-            });
+        return new StepGameSetObjectFatalHit(std::move(enemies), false);
+    });
     // RE-ENABLE AI
     AddStep([playerAI] { return new StepAISetActive(playerAI->GetAI(), true); });
-    // SELECT SOLDIER 2
+    // SELECT SOLDIER
     AddStep([local, game, isoMap]
-            {
-                const auto unit = local->GetUnit(indSoldier2);
-                const core::Pointd2D p0(1300, 450);
-                return new StepGameUnit(game, isoMap, unit, p0);
-            });
+    {
+        const core::Pointd2D p0(1300, 450);
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
+        const auto unit = all.back();
+        return new StepGameUnit(game, isoMap, unit, p0);
+    });
     // MOVE CAMERA
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([game]
-            {
-                const int movX = 0;
-                const int movY = 300;
-                return new StepGameMoveCamera(movX, movY);
-            });
+    AddStep([game] { return new StepGameMoveCamera(0, 350); });
+    // MOVE SOLDIER DOWN
     AddStep([] { return new StepDelay(0.5f); });
-    // MOVE SOLDIER 2 NEAR WALL
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indSoldier2);
-                const Cell2D target(22, 23);
-                const core::Pointd2D p0(200, 600);
-                return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
-            });
+    AddStep([game, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const Cell2D target(19,22);
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
+        const auto unit = all.back();
+        return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER",
+                                        target, p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // ANNOUNCE FIGHT
     AddStep([]
-            {
-                const core::Pointd2D p0(600, 200);
-                return new StepGameSingleInfo(p0, "TUT_GAME_KILL_ENEMIES");
-            });
-    // RE-ENABLE CAMERA
-    AddStep([this] { return new StepGameEnableCamera(GetCameraMapController()); });
+    {
+        const core::Pointd2D p0(600, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_KILL_ENEMIES");
+    });
     // WAIT FOR PLAYER TO KILL ALL ENEMIES
     AddStep([this]
-            {
-                std::vector<const GameObject *> enemies;
-                enemies.emplace_back(GetObjectInCell(cellEnemy2));
-                enemies.emplace_back(GetObjectInCell(cellEnemy3));
-                enemies.emplace_back(GetObjectInCell(cellEnemy4));
-                enemies.emplace_back(GetObjectInCell(cellEnemy5));
+    {
+        std::vector<const GameObject *> enemies;
+        enemies.emplace_back(GetObjectInCell(cellEnemy2));
+        enemies.emplace_back(GetObjectInCell(cellEnemy3));
+        enemies.emplace_back(GetObjectInCell(cellEnemy4));
+        enemies.emplace_back(GetObjectInCell(cellEnemy5));
 
-                return new StepGameWaitEnemiesKilled(std::move(enemies), GetGameMap());
-            });
-    // DISABLE CAMERA AGAIN
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+        return new StepGameWaitEnemiesKilled(std::move(enemies), GetGameMap());
+    });
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
-            {
-                const core::Pointd2D p0(800, 300);
-                return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1c", p0);
-            });
+    {
+        const core::Pointd2D p0(800, 300);
+        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1c", p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // COLLECT PRIMARY MISSION GOAL
     AddStep([localBase, game, isoMap]
-            {
-                const core::Pointd2D p0(500, 200);
-                return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-            });
+    {
+        const core::Pointd2D p0(500, 200);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
+    });
     AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
     AddStep([hud] { return new StepGamePrimaryMissionGoal(hud); });
-    */
 }
 
 TutorialGame2::~TutorialGame2()
