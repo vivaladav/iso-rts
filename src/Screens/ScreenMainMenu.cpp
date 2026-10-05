@@ -376,6 +376,7 @@ void ScreenMainMenu::CreateChangelog()
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
                   "- Energy and material generators produce more resources.\n"
+                  "- Updated graphics of: trading post, spawning tower, hospital.\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
