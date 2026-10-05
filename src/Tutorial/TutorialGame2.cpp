@@ -675,6 +675,33 @@ TutorialGame2::TutorialGame2(Screen * screen)
         const core::Pointd2D p0(100, 450);
         return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_ENE_GEN", p0);
     });
+    // MOVE VIEW BACK TO BASE
+    AddStep([panelTurn]
+            {
+                const core::Pointd2D p0(800, 500);
+                return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1b", p0);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
+    // COLLECT SECONDARY MISSION GOAL
+    AddStep([localBase, game, isoMap]
+            {
+                const core::Pointd2D p0(500, 200);
+                return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
+            });
+    AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
+    AddStep([hud]
+        {
+            const int goal = 0;
+            return new StepGameSecondaryMissionGoal(hud, goal);
+        });
+    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([this]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen3);
+        return new StepGameMoveCameraOverObject(gen, speedCamera);
+    });
     // CONNECT ENERGY GENERATOR 3
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, local, isoMap, game]
@@ -1373,27 +1400,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
                                                   areaTL, areaBR, "TUT_GAME_COLLECT_DIAMONDS", p0);
             });
 
-    // MOVE VIEW BACK TO BASE
-    AddStep([panelTurn]
-            {
-                const core::Pointd2D p0(800, 500);
-                return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1b", p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // COLLECT SECONDARY MISSION GOAL
-    AddStep([localBase, game, isoMap]
-            {
-                const core::Pointd2D p0(500, 200);
-                return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-            });
-    AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
-    AddStep([hud]
-        {
-            const int goal = 0;
-            return new StepGameSecondaryMissionGoal(hud, goal);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([] { return new StepDelay(0.5f); });
+
 
 
 
