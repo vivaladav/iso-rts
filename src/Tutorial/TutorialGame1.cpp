@@ -155,7 +155,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([local] { return new StepGameSetSelectionActiveAction(local, GameObjectActionType::IDLE); });
     AddStep([] { return new StepDelay(0.5f); });
     // EXPLAIN ENERGY AND END TURN
-    AddStep([hud] { return new StepGameTurnEnergy(hud); });
+    AddStep([] { return new StepGameTurnEnergy(); });
     AddStep([] { return new StepDelay(0.5f); });
     // END TURN
     AddStep([panelTurn] { return new StepGameEndTurn(panelTurn); });

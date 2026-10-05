@@ -8,7 +8,7 @@ namespace game
 {
 
 StepGameEnergyRegeneration::StepGameEnergyRegeneration()
-    : TutorialInfoStep(700, 225)
+    : TutorialInfoStep(700, 175)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
@@ -17,7 +17,6 @@ StepGameEnergyRegeneration::StepGameEnergyRegeneration()
 
     info->SetPosition(1100, 600);
 
-    info->AddInfoEntry(sm->GetCString("TUT_GAME_ENERGY_REGENERATION_1"), 6.f, true, false);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_ENERGY_REGENERATION_2"), 14.f, true, false);
 
     info->SetFunctionOnFinished([this]
