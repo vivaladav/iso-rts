@@ -883,7 +883,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // CONNECT WALL CENTER
     AddStep([gameMap, isoMap]
     {
-        const core::Pointd2D p0(1300, 350);
+        const core::Pointd2D p0(1300, 150);
         auto step = new StepGameConnectWall(gameMap, isoMap, wallCenterTL, wallCenterBR,
                                             "TUT_GAME_CONNECT_WALL");
         step->SetInfoPosition(p0.x, p0.y);
@@ -947,7 +947,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // BUILD WALL LEFT
     AddStep([gameMap, isoMap]
     {
-        const core::Pointd2D p0(1300, 450);
+        const core::Pointd2D p0(100, 500);
         auto step = new StepGameBuildWallLine(gameMap, isoMap, wallLeftTL, wallLeftBR,
                                               "TUT_GAME_BUILD_WALL_5");
         step->SetInfoPosition(p0.x, p0.y);
@@ -955,6 +955,42 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local]
+            {
+                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+                const GameObject * rc = all.back();
+                const float speed = 1000.f;
+                return new StepGameMoveCameraOverObject(rc, speed);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([]
+            {
+                const core::Pointd2D p0(685, 200);
+                return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
+            });
+    AddStep([this, game, isoMap, local]
+            {
+                const core::Pointd2D p0(710, 250);
+                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+                const GameObject * rc = all.back();
+                return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
+            });
+    AddStep([game, gs, panelActions]
+            {
+                const core::Pointd2D p0(1000, 650);
+                return new StepGameTechTreeIcon(game, gs, panelActions, p0);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_TRADING_POST, true); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([isoMap]
+    {
+        return new StepGameMoveCameraOverCell(wallLeftBR, isoMap, speedCamera);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // CONNECT WALL LEFT
     AddStep([gameMap, isoMap]
@@ -1281,35 +1317,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
             const int goal = 0;
             return new StepGameSecondaryMissionGoal(hud, goal);
         });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([] { return new StepDelay(0.5f); });
-
-    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
-    AddStep([this]
-            {
-                const GameObject * obj = GetObjectInCell(cellResCenter);
-                const float speed = 600.f;
-                return new StepGameMoveCameraOverObject(obj, speed);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([]
-            {
-                const core::Pointd2D p0(685, 200);
-                return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
-            });
-    AddStep([this, game, isoMap]
-            {
-                const core::Pointd2D p0(710, 250);
-                const GameObject * obj = GetObjectInCell(cellResCenter);
-                return new StepGameSelectObject(game, isoMap, obj, "TUT_GAME_RES_CEN_1", p0);
-            });
-    AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1000, 650);
-                return new StepGameTechTreeIcon(game, gs, panelActions, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_TRADING_POST, false); });
     AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([] { return new StepDelay(0.5f); });
 
