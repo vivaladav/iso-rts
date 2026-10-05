@@ -632,7 +632,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     AddStep([hud]
     {
-        return new StepGameSetupResearch(hud, { 100, 50, 50 });
+        return new StepGameSetupResearch(hud, { 100, 90, 80 });
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
@@ -721,15 +721,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // CONNECT WALL RIGHT
-    AddStep([gameMap, isoMap]
-    {
-        const core::Pointd2D p0(1300, 350);
-        auto step = new StepGameConnectWall(gameMap, isoMap, wallRightTL, wallRightBR,
-                                            "TUT_GAME_CONNECT_WALL");
-        step->SetInfoPosition(p0.x, p0.y);
-        return step;
-    });
     // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, local]
@@ -765,6 +756,15 @@ TutorialGame2::TutorialGame2(Screen * screen)
     {
         const Cell2D target((wallRightTL.row + wallRightBR.row) / 2, wallRightTL.col);
         return new StepGameMoveCameraOverCell(target, isoMap, speedCamera);
+    });
+    // CONNECT WALL RIGHT
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 350);
+        auto step = new StepGameConnectWall(gameMap, isoMap, wallRightTL, wallRightBR,
+                                            "TUT_GAME_CONNECT_WALL");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
     });
     // BUILD GATE IN RIGHT WALL
     AddStep([local, game]
