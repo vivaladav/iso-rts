@@ -40,7 +40,7 @@ StepGameTradeIcon::StepGameTradeIcon(const Game * game, Screen * screen, PanelOb
 
     info->SetPosition(p0.x, p0.y);
 
-    info->AddActionEntry(sm->GetCString("TUT_GAME_UPGRADES_ICON"),
+    info->AddActionEntry(sm->GetCString("TUT_GAME_TRAD_POST_ICON"),
                          0.f, false, false, [this, panel, game]
                         {
                             auto btn = panel->GetButton(btnId);
