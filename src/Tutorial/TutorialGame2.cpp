@@ -130,24 +130,12 @@ const Cell2D cellMatGen1(15, 7);
 const Cell2D cellMatGen2(24, 3);
 const Cell2D cellMatGen3(15, 26);
 const Cell2D cellMatGen4(40, 12);
-const Cell2D cellBarracks(8, 9);
 const Cell2D cellTarget1(15, 13);
-const Cell2D cellResCenter(11, 6);
-const Cell2D cellTradingPost(17, 11);
 const Cell2D cellEnemy1(4, 34);
 const Cell2D cellEnemy2(30, 19);
 const Cell2D cellEnemy3(29, 24);
 const Cell2D cellEnemy4(21, 32);
 const Cell2D cellEnemy5(25, 30);
-const Cell2D cellTower1(6, 33);
-const Cell2D cellTower2(17, 31);
-const Cell2D cellTower3(28, 17);
-const Cell2D cellTower4(21, 29);
-const Cell2D cellTower5(27, 21);
-const Cell2D cellTower6(11, 32);
-const Cell2D cellTower7(24, 23);
-const Cell2D cellTower8(23, 27);
-const Cell2D cellTower9(28, 9);
 
 const Cell2D areaBlobsTL(22, 12);
 const Cell2D areaBlobsBR(25, 13);
@@ -160,6 +148,8 @@ const Cell2D areaDiamonds2BR(9, 42);
 
 const Cell2D areaTreesTL(13, 13);
 const Cell2D areaTreesBR(16, 16);
+const Cell2D areaTradingPostTL(16, 17);
+const Cell2D areaTradingPostBR(20, 21);
 
 const Cell2D targetSoldier1(15, 11);
 
@@ -959,30 +949,30 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, local]
-            {
-                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
-                const GameObject * rc = all.back();
-                const float speed = 1000.f;
-                return new StepGameMoveCameraOverObject(rc, speed);
-            });
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        const float speed = 1000.f;
+        return new StepGameMoveCameraOverObject(rc, speed);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([]
-            {
-                const core::Pointd2D p0(685, 200);
-                return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
-            });
+    {
+        const core::Pointd2D p0(685, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
+    });
     AddStep([this, game, isoMap, local]
-            {
-                const core::Pointd2D p0(710, 250);
-                const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
-                const GameObject * rc = all.back();
-                return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
-            });
+    {
+        const core::Pointd2D p0(710, 250);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
+    });
     AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1000, 650);
-                return new StepGameTechTreeIcon(game, gs, panelActions, p0);
-            });
+    {
+        const core::Pointd2D p0(1000, 650);
+        return new StepGameTechTreeIcon(game, gs, panelActions, p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_TRADING_POST, true); });
     AddStep([] { return new StepDelay(0.5f); });
@@ -1096,6 +1086,91 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([isoMap]
+    {
+        const Cell2D target(areaTradingPostBR.row, areaTradingPostTL.col);
+        return new StepGameMoveCameraOverCell(target, isoMap, speedCamera);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD TRADING POST
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_TRADING_POST);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_TRAD_POST_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_TRAD_POST_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, nullptr, "TUT_GAME_BUILD_TRAD_POST_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catGeneric,
+                                               TutorialConstants::structTradingPost);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTradingPostTL,
+                                                    areaTradingPostBR, ObjectData::TYPE_TRADING_POST,
+                                                    numToBuild, "TUT_GAME_BUILD_TRAD_POST_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT TRADING POST IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_TRADING_POST);
+        const GameObject * rc = all.back();
+        const core::Pointd2D p0(1300, 400);
+        return new StepGameConnectStructFree(game, rc, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // SELECT TRADING POST
+    AddStep([game, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_TRADING_POST);
+        const GameObject * tp = all.back();
+        return new StepGameSelectObject(game, isoMap, tp, "TUT_GAME_BUILD_TRAD_POST_2", p0);
+    });
+    // OPEN AND USE DIALOG TRADING
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(100, 650);
+        return new StepGameTradeIcon(game, gs, panelActions, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([hud]
+    {
+        return new StepGameDialogTrading(hud);
+    });
+    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([] { return new StepDelay(0.5f); });
 
     /*
@@ -1320,46 +1395,8 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
     AddStep([] { return new StepDelay(0.5f); });
 
-    // BUILD TRADING POST
-    AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(1100, 450);
-                return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_TRAD_POST_1", p0);
-            });
-    AddStep([hud]
-            {
-                return new StepGameBuildStructure(hud, nullptr, "TUT_GAME_BUILD_TRAD_POST_2",
-                                                  TutorialConstants::catGeneric,
-                                                  TutorialConstants::structTradingPost);
-            });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indWorker2);
-                const core::Pointd2D p0(1100, 250);
-                return new StepGameBuildTowerEnd(isoMap, unit, cellTradingPost, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // SELECT TRADING POST
-    AddStep([this, game, isoMap]
-            {
-                const core::Pointd2D p0(710, 250);
-                const GameObject * obj = GetObjectInCell(cellTradingPost);
-                return new StepGameSelectObject(game, isoMap, obj, "TUT_GAME_BUILD_TRAD_POST_2", p0);
-            });
-    // OPEN AND USE DIALOG TRADING
-    AddStep([game, gs, panelActions]
-            {
-                const core::Pointd2D p0(100, 650);
-                return new StepGameTradeIcon(game, gs, panelActions, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud]
-            {
-                return new StepGameDialogTrading(hud);
-            });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([] { return new StepDelay(0.5f); });
+
+
     // BUILD SOLDIER 2
     AddStep([]
             {
@@ -1507,24 +1544,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
 
 TutorialGame2::~TutorialGame2()
 {
-    auto game = GetScreen()->GetGame();
-
-    // reset flags for unit soldier 1
-    const Player * local = game->GetActivePlayerByIndex(0);
-    auto unit1 = local->GetUnit(indSoldier1);
-
-    if(unit1 != nullptr)
-    {
-        unit1->SetPerfectShot(false);
-        unit1->SetFatalHit(true);
-    }
-
-    // reset flags for tower 1
-    auto tower1 = GetObjectInCell(cellTower1);
-
-    if(tower1 != nullptr)
-        tower1->SetPerfectShot(false);
-
     // make sure trees are no longer indestructible
     std::vector<GameObject *> trees;
     GetGameMap()->GetObjectsInAreaByType(trees, areaTreesTL, areaTreesBR, ObjectData::TYPE_TREES3);
