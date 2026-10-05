@@ -364,24 +364,24 @@ void MissionGoal::SetMissionRewards()
         }
         else if(mType == TYPE_CONQUER_GEN_ENERGY || mType == TYPE_CONQUER_GEN_MATERIAL)
         {
-            const int multMoney = 500;
-            mRewards[ER_MONEY] = mQuantity * multMoney;
-
-            const int multEnergy = 10;
-            mRewards[ER_ENERGY] = mQuantity * multEnergy;
-
-            const int multMaterial = 10;
-            mRewards[ER_MATERIAL] = mQuantity * multMaterial;
-        }
-        else if(mType == TYPE_CONQUER_STRUCTURES)
-        {
-            const int multMoney = 100;
+            const int multMoney = 250;
             mRewards[ER_MONEY] = mQuantity * multMoney;
 
             const int multBlobs = 5;
             mRewards[ER_BLOBS] = mQuantity * multBlobs;
 
             const int multDiamonds = 5;
+            mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
+        }
+        else if(mType == TYPE_CONQUER_STRUCTURES)
+        {
+            const int multMoney = 150;
+            mRewards[ER_MONEY] = mQuantity * multMoney;
+
+            const int multBlobs = 3;
+            mRewards[ER_BLOBS] = mQuantity * multBlobs;
+
+            const int multDiamonds = 3;
             mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
         }
         else if(mType == TYPE_GAIN_MONEY)
@@ -400,10 +400,10 @@ void MissionGoal::SetMissionRewards()
         }
         else if(mType == TYPE_GEN_RESEARCH)
         {
-            const int divBlobs = 10;
+            const int divBlobs = 100;
             mRewards[ER_BLOBS] = mQuantity / divBlobs;
 
-            const int divDiamonds = 10;
+            const int divDiamonds = 100;
             mRewards[ER_DIAMONDS] = mQuantity / divDiamonds;
         }
         else if(mType == TYPE_MINE_MATERIAL)
