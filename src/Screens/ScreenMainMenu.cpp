@@ -378,6 +378,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Energy and material generators produce more resources.\n"
                   "- Updated graphics of: trading post, spawning tower, hospital.\n"
                   "- Removed faction energy.\n"
+                  "- Removed auto turn end.\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"

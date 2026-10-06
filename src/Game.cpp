@@ -79,8 +79,8 @@ namespace game
 bool Game::GOD_MODE = false;
 #endif
 
-const std::string Game::SAVE_VERSION("0.2.0");
-const std::string Game::SETTINGS_VERSION("0.1.2");
+const std::string Game::SAVE_VERSION("0.2.1");
+const std::string Game::SETTINGS_VERSION("0.1.3");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -734,7 +734,6 @@ bool Game::LoadSettings()
     mMapDragging = bf.ReadBool();
     mMapScrollingOnEdges = bf.ReadBool();
     mMapScrollingConstSpeed = bf.ReadBool();
-    mAutoEndTurn = bf.ReadBool();
     mAutoUnitCamera = bf.ReadBool();
     mAutoSave = bf.ReadBool();
 
@@ -786,7 +785,6 @@ bool Game::SaveSettings()
     bf.WriteBool(mMapDragging);
     bf.WriteBool(mMapScrollingOnEdges);
     bf.WriteBool(mMapScrollingConstSpeed);
-    bf.WriteBool(mAutoEndTurn);
     bf.WriteBool(mAutoUnitCamera);
     bf.WriteBool(mAutoSave);
 

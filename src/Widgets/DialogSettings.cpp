@@ -466,27 +466,6 @@ void DialogSettings::CreatePanelGame()
         mGame->SetLanguage(static_cast<LanguageId>(ind));
     });
 
-    // AUTO END TURN
-    x = contX0;
-    y += blockSettingH;
-
-    label = new sgui::Label(mSM->GetCString("AUTO_END_TURN"), font, panel);
-    mHeadersGame.emplace_back(label);
-    label->SetColor(colorTxt);
-    label->SetPosition(x, y);
-
-    auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(mGame->IsAutoEndTurnEnabled());
-
-    x = panelContentW - cb->GetWidth() - marginPanelH;
-    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(x, y);
-
-    cb->AddOnToggleFunction([this](bool checked)
-    {
-        mGame->SetAutoEndTurn(checked);
-    });
-
     // AUTO UNIT CAMERA
     x = contX0;
     y += blockSettingH;
@@ -496,7 +475,7 @@ void DialogSettings::CreatePanelGame()
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    cb = new SettingsCheckbox(panel);
+    auto cb = new SettingsCheckbox(panel);
     cb->SetChecked(mGame->IsAutoUnitCameraEnabled());
 
     x = panelContentW - cb->GetWidth() - marginPanelH;
@@ -1089,7 +1068,6 @@ void DialogSettings::OnStringsChanged()
     const char * strIdsGame[] =
     {
         "LANGUAGE",
-        "AUTO_END_TURN",
         "AUTO_UNIT_CAM",
     };
 

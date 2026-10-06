@@ -408,32 +408,12 @@ void DialogNewGame::CreatePanelSettings()
     const int sizeData = 20;
     auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData, graphic::Font::NORMAL);
 
-    // AUTO END TURN
-    auto label = new sgui::Label(sm->GetCString("AUTO_END_TURN"), fontData, mPanelSett);
+    // AUTO UNIT CAMERA
+    auto label = new sgui::Label(sm->GetCString("AUTO_UNIT_CAM"), fontData, mPanelSett);
     label->SetColor(WidgetsConstants::colorPanelText);
     label->SetPosition(contX, contY);
 
     auto cb = new SettingsCheckbox(mPanelSett);
-    cb->SetChecked(mGame->IsAutoEndTurnEnabled());
-
-    contX = mPanelSett->GetWidth() - cb->GetWidth() - paddingPanelR;
-    contY += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(contX, contY);
-
-    cb->AddOnToggleFunction([this](bool checked)
-    {
-        mGame->SetAutoEndTurn(checked);
-    });
-
-    contX = paddingPanelL;
-    contY += cb->GetHeight() + spacingOption;
-
-    // AUTO UNIT CAMERA
-    label = new sgui::Label(sm->GetCString("AUTO_UNIT_CAM"), fontData, mPanelSett);
-    label->SetColor(WidgetsConstants::colorPanelText);
-    label->SetPosition(contX, contY);
-
-    cb = new SettingsCheckbox(mPanelSett);
     cb->SetChecked(mGame->IsAutoUnitCameraEnabled());
 
     contX = mPanelSett->GetWidth() - cb->GetWidth() - paddingPanelR;

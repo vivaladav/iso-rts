@@ -271,8 +271,6 @@ private:
 
     TurnStage mTurnStage;
 
-    float mTimerAutoEndTurn = 0.f;
-
     float mTimePlayed = 0.f;
 
     bool mPaused = false;

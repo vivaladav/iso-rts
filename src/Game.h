@@ -276,7 +276,6 @@ private:
     bool mMapDragging = true;
     bool mMapScrollingOnEdges = true;
     bool mMapScrollingConstSpeed = false;
-    bool mAutoEndTurn = true;
     bool mAutoUnitCamera = true;
     bool mTutorialEnabled = true;
     bool mAutoSave = true;
@@ -382,15 +381,6 @@ inline void Game::SetMapScrollingOnEdges(bool val)
 }
 inline bool Game::IsMapScrollingConstant() const { return mMapScrollingConstSpeed; }
 inline void Game::SetMapScrollingConstant(bool val) { mMapScrollingConstSpeed = val; }
-inline bool Game::IsAutoEndTurnEnabled() const { return mAutoEndTurn; }
-inline void Game::SetAutoEndTurn(bool val)
-{
-    if(val != mAutoEndTurn)
-    {
-        mAutoEndTurn = val;
-        NotifyOnSettingsChanged();
-    }
-}
 
 inline bool Game::IsAutoUnitCameraEnabled() const { return mAutoUnitCamera; }
 inline void Game::SetAutoUnitCamera(bool val) { mAutoUnitCamera = val; }
