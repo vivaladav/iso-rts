@@ -384,6 +384,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Music no longer stops after first play in other screens.\n"
                   "- Option to hide static cursor is saved correctly.\n"
                   "- Fixed Research Center not producing research points when on low resources.\n"
+                  "- Fixed check of valid saved files in main menu.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

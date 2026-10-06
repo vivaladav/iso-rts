@@ -35,7 +35,6 @@
 #include <sgl/services/Steam.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/BinaryFile.h>
-#include <sgl/utilities/Filesystem.h>
 #include <sgl/utilities/StateManager.h>
 #include <sgl/utilities/StringManager.h>
 #include <sgl/utilities/UniformDistribution.h>
@@ -353,11 +352,9 @@ const std::string & Game::GetSavefile(GameMode mode, unsigned int ind) const
 
 bool Game::HasSavedFiles() const
 {
-    sgl::utilities::Filesystem fs;
-
     for(const std::string & f : mSaveFiles)
     {
-        if(fs.DoesPathExist(mDirSave + f))
+        if(IsSaveFileValid(f))
             return true;
     }
 
