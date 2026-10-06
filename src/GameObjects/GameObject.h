@@ -164,7 +164,7 @@ public:
     void ActionStepCompleted(GameObjectActionType action);
 
     int GetExperience() const;
-    int GetExperienceToLevel(int level) const;
+    int GetExperienceToLevel(unsigned int level) const;
     int GetExperienceToNextLevel() const;
     int GetExperienceLevel() const;
     void SumExperience(int val);

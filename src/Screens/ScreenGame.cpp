@@ -205,14 +205,6 @@ void ScreenGame::InitLoadedGame()
     // update Players
     auto game = GetGame();
 
-    const unsigned int numPlayers = game->GetNumActivePlayers();
-
-    for(int i = 0; i < numPlayers; ++i)
-    {
-        Player * p = game->GetActivePlayerByIndex(i);
-        p->AdjustTurnMaxEnergy();
-    }
-
     // update selection
     if(mLastSelected != nullptr)
     {
@@ -329,23 +321,6 @@ void ScreenGame::Update(float delta)
 
     // -- PARTICLES --
     mPartMan->Update(delta);
-
-    // -- AUTO END TURN --
-    const float minEn = 1.f;
-    const Game * game = GetGame();
-
-    if(IsCurrentTurnLocal() && game->IsAutoEndTurnEnabled() &&
-       mLocalPlayer->GetTurnEnergy() < minEn)
-    {
-        mTimerAutoEndTurn -= delta;
-
-        if(mTimerAutoEndTurn <= 0.f)
-        {
-            EndTurn();
-
-            mTimerAutoEndTurn = TIME_AUTO_END_TURN;
-        }
-    }
 
     // -- GAME MAP AND OBJECTS --
     // merge object actions to do with object actions list
@@ -1386,18 +1361,6 @@ void ScreenGame::UpdateAI(float delta)
               << player->GetResource(Player::DIAMONDS).GetMax()
               << std::endl;
 
-    // no more turn energy -> end turn
-    const float minEnergy = 1.f;
-
-    if(player->GetTurnEnergy() < minEnergy)
-    {
-        std::cout << "ScreenGame::UpdateAI - AI " << turnAI << "\n"
-                  << "==================== END TURN ====================" << std::endl;
-
-        EndTurn();
-        return ;
-    }
-
     // make AI decide what to do
     ai->DecideNextAction();
     std::cout << std::endl;
@@ -1429,7 +1392,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
             std::cout << " | OBJ ID: " << action->ObjSrc->GetObjectId()
                       << " - OBJ ENERGY: " << action->ObjSrc->GetEnergy();
 
-        std::cout << " | TURN ENERGY: " << player->GetTurnEnergy() << std::endl;
+        std::cout << std::endl;
     };
 
     // execute planned action until one is successful or there's no more actions to do (NOP)
@@ -2670,13 +2633,6 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
             unit->ShowWarning(mSM->GetCString("WARN_NO_ENE"), 2.f);
             return false;
         }
-
-        if(cost > player->GetTurnEnergy())
-        {
-            delete op;
-            unit->ShowWarning(mSM->GetCString("WARN_NO_T_ENE"), 3.f);
-            return false;
-        }
     }
 
     if(mGameMap->MoveUnit(op))
@@ -2867,13 +2823,6 @@ void ScreenGame::HandleUnitCellConquestOnMouseUp(Unit * unit, const Cell2D & cli
                 return ;
             }
 
-            // not enough energy turn
-            if(cost > mLocalPlayer->GetTurnEnergy())
-            {
-                unit->ShowWarning(mSM->GetCString("WARN_NO_T_ENE"), 2.f);
-                return ;
-            }
-
             // all good -> store cost
             mOverlayCellConquest->SetCostEnergyUnitMove(cost);
         }
@@ -3057,16 +3006,10 @@ void ScreenGame::HandleUnitBuildStructureOnMouseUp(Unit * unit, const Cell2D & c
 
     // check if energy cost is affordable
     const int energyObj = unit->GetEnergy();
-    const int energyTurn = mLocalPlayer->GetTurnEnergy();
 
     if(costUnit > energyObj)
     {
         unit->ShowWarning(mSM->GetCString("WARN_NO_ENE"), 2.f);
-        return;
-    }
-    else if(costUnit > energyTurn)
-    {
-        unit->ShowWarning(mSM->GetCString("WARN_NO_T_ENE"), 2.f);
         return;
     }
 
@@ -3175,13 +3118,6 @@ void ScreenGame::HandleUnitBuildWallOnMouseUp(Unit * unit, const Cell2D & clickC
             if(cost > unit->GetEnergy())
             {
                 unit->ShowWarning(mSM->GetCString("WARN_NO_ENE"), 2.f);
-                return ;
-            }
-
-            // not enough energy turn
-            if(cost > mLocalPlayer->GetTurnEnergy())
-            {
-                unit->ShowWarning(mSM->GetCString("WARN_NO_T_ENE"), 2.f);
                 return ;
             }
 
@@ -3520,8 +3456,7 @@ void ScreenGame::ShowBuildStructureIndicator(Unit * unit, const Cell2D & currCel
     {
         const GameObjectTypeId st = unit->GetStructureToBuild();
         const int energyObj = unit->GetEnergy();
-        const int energyTurn = mLocalPlayer->GetTurnEnergy();
-        const bool doable = energyObj >= costUnit && energyTurn >= costUnit;
+        const bool doable = energyObj >= costUnit;
 
         mOverlayStruct->ShowIndicator(st, currCell.row, currCell.col, costUnit, doable);
 
@@ -3596,8 +3531,7 @@ void ScreenGame::ShowCellConquestIndicator(Unit * unit, const Cell2D & dest)
         op.SetPath(pathStart);
 
         const int costEnergy = op.GetPathCost();
-        const bool movDoable = costEnergy <= unit->GetEnergy() &&
-                               costEnergy <= mLocalPlayer->GetTurnEnergy();
+        const bool movDoable = costEnergy <= unit->GetEnergy();
 
         mOverlayCellConquest->SetCostEnergyUnitMove(costEnergy);
         mOverlayCellConquest->SetCostMoveDoable(movDoable);
@@ -3666,8 +3600,7 @@ void ScreenGame::ShowCellConquestIndicator(Unit * unit, const Cell2D & dest)
 
     const int costUnitEnergy = cp.GetCostUnitEnergy();
     const int costUnitEnergyTot =  costUnitEnergy + mOverlayCellConquest->GetCostEnergyUnitMove();
-    const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot &&
-                            mLocalPlayer->GetTurnEnergy() >= costUnitEnergyTot;
+    const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot;
 
     const int costResEnergy = cp.GetCostResourceEnergy();
     const bool doableResEnergy = mLocalPlayer->HasEnough(Player::ENERGY, costResEnergy);
@@ -3747,8 +3680,7 @@ void ScreenGame::ShowBuildWallIndicator(Unit * unit, const Cell2D & dest)
             op.SetPath(pathStart);
 
             const int costEnergy = op.GetPathCost();
-            const bool movDoable = costEnergy <= unit->GetEnergy() &&
-                                   costEnergy <= mLocalPlayer->GetTurnEnergy();
+            const bool movDoable = costEnergy <= unit->GetEnergy();
 
             mOverlayWall->SetCostEnergyUnitMove(costEnergy);
             mOverlayWall->SetCostMoveDoable(movDoable);
@@ -3832,8 +3764,7 @@ void ScreenGame::ShowBuildWallIndicator(Unit * unit, const Cell2D & dest)
     const int costEnergyBonus = unit->GetEnergyForActionStep(MOVE) * addBonusCost;
     const int costUnitEnergy = wp.GetCostUnitEnergy() + costEnergyBonus;
     const int costUnitEnergyTot = costUnitEnergy + costUnitMove;
-    const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot &&
-                            mLocalPlayer->GetTurnEnergy() >= costUnitEnergyTot;
+    const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot;
 
     const int costResEnergy = wp.GetCostResourceEnergy();
     const bool doableResEnergy = mLocalPlayer->HasEnough(Player::ENERGY, costResEnergy);
@@ -3902,8 +3833,7 @@ void ScreenGame::ShowMoveIndicator(GameObject * obj, const Cell2D & dest)
 
     const int cost = op.GetPathCost();
     const int energyObj = obj->GetEnergy();
-    const int energyTurn = mLocalPlayer->GetTurnEnergy();
-    const bool doable = energyObj >= cost && energyTurn >= cost;
+    const bool doable = energyObj >= cost;
 
     mOverlayPath->SetPath(path, cost, doable);
 }
@@ -4173,7 +4103,6 @@ void ScreenGame::EndTurn()
     // update active player data
     const PlayerFaction activeFaction = mActiveplayer->GetFaction();
 
-    mActiveplayer->ResetTurnEnergy();
     mActiveplayer->OnNewTurn();
 
     mGameMap->OnNewTurn(activeFaction);

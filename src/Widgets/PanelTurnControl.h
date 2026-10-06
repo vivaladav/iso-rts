@@ -25,7 +25,6 @@ class PanelTurnControl : public sgl::sgui::Widget
 {
 public:
     PanelTurnControl(Player * player, sgl::sgui::Widget * parent);
-    ~PanelTurnControl();
 
     void AddFunctionGoToBase(const std::function<void()> & f);
     void AddFunctionEndTurn(const std::function<void()> & f);

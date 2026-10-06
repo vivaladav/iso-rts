@@ -172,14 +172,6 @@ public:
 
     // -- TURN --
     void OnNewTurn();
-    float GetTurnEnergy() const;
-    float GetTurnMaxEnergy() const;
-    void AdjustTurnMaxEnergy();
-    void ResetTurnEnergy();
-    void SumTurnEnergy(float val);
-    void SetOnTurnEnergyChanged(const std::function<void()> & f);
-    void SetOnTurnMaxEnergyChanged(const std::function<void()> & f);
-
     unsigned int GetTurnsPlayed() const;
 
     // GAME STAGES
@@ -236,8 +228,6 @@ private:
     std::unordered_map<unsigned int, std::function<void()>> mOnResourcesChanged;
     std::unordered_map<unsigned int, std::function<void(TechUpgradeId)>> mOnUpgradeUnlocked;
     std::function<void()> mOnNumUnitsChanged;
-    std::function<void()> mOnTurnEnergyChanged;
-    std::function<void()> mOnTurnMaxEnergyChanged;
 
     PlayerAI * mAI = nullptr;
 
@@ -248,9 +238,6 @@ private:
     int mPlayerId;
 
     PlayerFaction mFaction;
-
-    float mTurnEnergy = 0.f;
-    float mTurnMaxEnergy = 0.f;
 
     unsigned int mTurnsPlayed = 0;
 
@@ -393,18 +380,6 @@ inline float Player::GetStorageEnergyMult() const { return mStorageEnergyMult; }
 inline float Player::GetStorageMaterialMult() const { return mStorageMaterialMult; }
 inline float Player::GetStorageDiamondsMult() const { return mStorageDiamondsMult; }
 inline float Player::GetStorageBlobsMult() const { return mStorageBlobsMult; }
-
-inline float Player::GetTurnEnergy() const { return mTurnEnergy; }
-inline float Player::GetTurnMaxEnergy() const { return mTurnMaxEnergy; }
-
-inline void Player::SetOnTurnEnergyChanged(const std::function<void()> & f)
-{
-    mOnTurnEnergyChanged = f;
-}
-inline void Player::SetOnTurnMaxEnergyChanged(const std::function<void()> & f)
-{
-    mOnTurnMaxEnergyChanged = f;
-}
 
 inline unsigned int Player::GetTurnsPlayed() const { return mTurnsPlayed; }
 

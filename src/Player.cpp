@@ -48,18 +48,12 @@ Player::Player()
 Player::Player(int pid)
     : mDummyStat(INVALID_STAT, 0)
     , mOnNumUnitsChanged([](){})
-    , mOnTurnEnergyChanged([](){})
-    , mOnTurnMaxEnergyChanged([](){})
     , mPlayerId(pid)
     , mFaction(NO_FACTION)
 {
     InitResources();
 
     InitUpgrades();
-
-    // no need to adjust turn max energy when loading
-    if(pid >= 0)
-        AdjustTurnMaxEnergy();
 }
 
 Player::~Player()
@@ -143,10 +137,6 @@ bool Player::Load(sgl::utilities::BinaryFile & bf)
 
     for(unsigned int i = 0; i < numAvUnits; ++i)
         mAvailableUnits.emplace_back(bf.ReadSizeT());
-
-    // turn data
-    mTurnEnergy = bf.ReadFloat();
-    mTurnMaxEnergy = bf.ReadFloat();
 
     // stats
     mTurnsPlayed = bf.ReadUint();
@@ -245,10 +235,6 @@ bool Player::Save(sgl::utilities::BinaryFile & bf) const
     for(const GameObjectTypeId type : mAvailableUnits)
         bf.WriteSizeT(type);
 
-    // turn data
-    bf.WriteFloat(mTurnEnergy);
-    bf.WriteFloat(mTurnMaxEnergy);
-
     // stats
     bf.WriteUint(mTurnsPlayed);
     bf.WriteUint(mNumCells);
@@ -287,8 +273,6 @@ void Player::AddUnit(Unit * unit)
 
     mUnits.push_back(unit);
 
-    AdjustTurnMaxEnergy();
-
     mOnNumUnitsChanged();
 }
 
@@ -301,8 +285,6 @@ void Player::RemoveUnit(Unit * unit)
         if(*it == unit)
         {
             mUnits.erase(it);
-
-            AdjustTurnMaxEnergy();
 
             mOnNumUnitsChanged();
 
@@ -776,86 +758,6 @@ void Player::OnNewTurn()
     NotifyResourcesChanged();
 }
 
-void Player::AdjustTurnMaxEnergy()
-{
-    constexpr float maxEnergy0 = 100.f;
-    constexpr float delta = 1.f;
-    const float oldMax = mTurnMaxEnergy;
-
-    // UPDATE MAX
-    float newMax = 0.f;
-
-    for(Unit * u : mUnits)
-        newMax += u->GetMaxEnergy();
-
-    if(newMax < maxEnergy0)
-        newMax = maxEnergy0;
-
-    mTurnMaxEnergy = newMax;
-
-    // nothing changed
-    if(std::fabs(mTurnMaxEnergy - oldMax) < delta)
-        return ;
-
-    mOnTurnMaxEnergyChanged();
-
-    // UPDATE ENERGY
-    bool energyChanged = false;
-
-    // increase tot energy if new max is higher
-    if(oldMax < mTurnMaxEnergy)
-    {
-        mTurnEnergy += (mTurnMaxEnergy - oldMax);
-        energyChanged = true;
-    }
-
-    // clamp current value
-    if(mTurnEnergy > mTurnMaxEnergy)
-    {
-        mTurnEnergy = mTurnMaxEnergy;
-        energyChanged = true;
-    }
-
-    if(energyChanged)
-        mOnTurnEnergyChanged();
-}
-
-void Player::ResetTurnEnergy()
-{
-    mTurnEnergy = mTurnMaxEnergy;
-
-#ifdef DEV_MODE
-    if(Game::GOD_MODE && IsLocal())
-        mTurnEnergy = mTurnMaxEnergy * 5.f;
-#endif
-
-    mOnTurnEnergyChanged();
-}
-
-void Player::SumTurnEnergy(float val)
-{
-    const float oldVal = mTurnEnergy;
-    const float minDelta = 0.01f;
-    const float minEnergy = 0.f;
-
-    mTurnEnergy += val;
-
-    if(mTurnEnergy > mTurnMaxEnergy)
-        mTurnEnergy = mTurnMaxEnergy;
-    else if(mTurnEnergy < minEnergy)
-        mTurnEnergy = minEnergy;
-
-#ifdef DEV_MODE
-    if(Game::GOD_MODE && IsLocal())
-        mTurnEnergy = oldVal + val;
-#endif
-
-    const float diff = std::fabs(mTurnEnergy - oldVal);
-
-    if(diff > minDelta)
-        mOnTurnEnergyChanged();
-}
-
 void Player::AddAvailableStructure(GameObjectTypeId type)
 {
     mAvailableStructures.emplace_back(type);
@@ -980,7 +882,6 @@ int Player::GetResourceDelta(ExtendedResource type) const
 
 void Player::OnNewMission()
 {
-    ResetTurnEnergy();
     ResetMissionData();
 
     // reset turns played, local always starts from 1

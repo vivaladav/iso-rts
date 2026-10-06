@@ -620,9 +620,6 @@ void PlayerAI::AddActionEndTurn()
 
     const float c = 100.f;
 
-    // consider turn energy
-    const float energyLeftTurn = mPlayer->GetTurnEnergy() * c / mPlayer->GetTurnMaxEnergy();
-
     // consider total units energy
     float totEnergy = 0.f;
     float totMaxEnergy = 0.f;
@@ -664,9 +661,7 @@ void PlayerAI::AddActionEndTurn()
     const float energyLeftObjs = energyLeftUnits * facUnits + energyLeftStructs * factStructs;
 
     // decrease priority base on global energy left (turn + objects)
-    const float facTurn = 0.5f;
-    const float facObjs = 1.f - facTurn;
-    const int decPriority = std::roundf(facTurn * energyLeftTurn + facObjs * energyLeftObjs);
+    const int decPriority = std::roundf(energyLeftObjs);
     action->priority -= decPriority;
 
     // push action if above priority threshold
@@ -696,7 +691,7 @@ void PlayerAI::AddActionsStructure(Structure * s)
     // do not consider unit if energy is too low
     const float minEnergy = 5.f;
 
-    if(s->GetEnergy() < minEnergy || mPlayer->GetTurnEnergy() < minEnergy)
+    if(s->GetEnergy() < minEnergy)
         return ;
 
     // type specific actions
@@ -784,7 +779,7 @@ void PlayerAI::AddActionsUnit(Unit * u)
     // do not consider unit if energy is too low
     const float minEnergy = 5.f;
 
-    if(u->GetEnergy() < minEnergy || mPlayer->GetTurnEnergy() < minEnergy)
+    if(u->GetEnergy() < minEnergy)
         return ;
 
     // ATTACK
@@ -2327,18 +2322,9 @@ int PlayerAI::GetStructurePriorityBonusEnergy(const Structure * s, float bonus) 
 {
     const float energyUnit = s->GetEnergy();
     const float energyUnitMax = s->GetMaxEnergy();
-    const float energyTurn = mPlayer->GetTurnEnergy();
-    const float energyTurnMax = mPlayer->GetTurnMaxEnergy();
 
-    // bonuses
     const float bonusStruct = bonus * (energyUnitMax - energyUnit) / energyUnitMax;
-    const float bonusTurn = bonus * (energyTurnMax - energyTurn) / energyTurnMax;
-
-    // weights
-    const float wStruct = 0.4f;
-    const float wTurn = 1.f - wStruct;
-
-    return std::roundf(bonusStruct * wStruct + bonusTurn * wTurn);
+    return std::roundf(bonusStruct);
 }
 
 int PlayerAI::GetUnitPriorityBonusDistance(const Unit * u, int dist, float bonus) const
@@ -2363,18 +2349,9 @@ int PlayerAI::GetUnitPriorityBonusEnergy(const Unit * u, float bonus) const
 {
     const float energyUnit = u->GetEnergy();
     const float energyUnitMax = u->GetMaxEnergy();
-    const float energyTurn = mPlayer->GetTurnEnergy();
-    const float energyTurnMax = mPlayer->GetTurnMaxEnergy();
 
-    // bonuses
     const float bonusUnit = bonus * (energyUnitMax - energyUnit) / energyUnitMax;
-    const float bonusTurn = bonus * (energyTurnMax - energyTurn) / energyTurnMax;
-
-    // weights
-    const float wUnit = 0.6f;
-    const float wTurn = 1.f - wUnit;
-
-    return std::roundf(bonusUnit * wUnit + bonusTurn * wTurn);
+    return std::roundf(bonusUnit);
 }
 
 int PlayerAI::GetUnitPriorityBonusHealth(const Unit * u, float bonus) const
@@ -2531,8 +2508,7 @@ void PlayerAI::PrintdActionDebug(const char * title, const ActionAI * a)
     if(a->cellDst.row != -1)
         std::cout << " | CELL DST: " << a->cellDst.row << "," << a->cellDst.col;
 
-    std::cout << " | TURN - ENRG: " << mPlayer->GetTurnEnergy() << "/" << mPlayer->GetTurnMaxEnergy()
-              << std::endl;
+    std::cout << std::endl;
 }
 
 } // namespace game

@@ -187,12 +187,6 @@ PanelTurnControl::PanelTurnControl(Player * player, sgl::sgui::Widget * parent)
     mButtonEndTurn->SetPosition(x, y);
 }
 
-PanelTurnControl::~PanelTurnControl()
-{
-    mPlayer->SetOnTurnEnergyChanged([]{});
-    mPlayer->SetOnTurnMaxEnergyChanged([]{});
-}
-
 void PanelTurnControl::AddFunctionGoToBase(const std::function<void()> & f)
 {
     mButtonBase->AddOnClickFunction(f);

@@ -469,11 +469,7 @@ bool GameObject::HasEnergyForActionStep(GameObjectActionType action) const
         const float cost = (ATTACK == action) ? mWeapon->GetCostEnergy() :
                            GetActionEnergyCost(action);
 
-        // turn energy is only valid for units
-        if(mOwner != nullptr && mCategory == ObjectData::CAT_UNIT)
-            return GetEnergy() >= cost && mOwner->GetTurnEnergy() >= cost;
-        else
-            return GetEnergy() >= cost;
+        return GetEnergy() >= cost;
     }
     else
         return false;
@@ -489,15 +485,11 @@ void GameObject::ActionStepCompleted(GameObjectActionType action)
 
     SumEnergy(costEnergy);
 
-    // turn energy is only valid for units
-    if(mOwner != nullptr && mCategory == ObjectData::CAT_UNIT)
-        mOwner->SumTurnEnergy(costEnergy);
-
     // EXPERIENCE
     SumExperience(GetActionExperienceGain(action));
 }
 
-int GameObject::GetExperienceToLevel(int level) const
+int GameObject::GetExperienceToLevel(unsigned int level) const
 {
     // TODO use different values according to difficulty level
     // increments
@@ -539,10 +531,6 @@ void GameObject::UpgradeLevel(const std::vector<int> & attChanges)
     // update visibility if needed
     if(IsFactionLocal() && attChanges[OBJ_ATT_VIEW_RANGE] > 0)
         mGameMap->UpdateLocalObjectVisibility(this);
-
-    // update turn energy if unit
-    if(mCategory == ObjectData::CAT_UNIT && mOwner != nullptr)
-        mOwner->AdjustTurnMaxEnergy();
 
     // notify object and observers
     OnAttributeChanged();
