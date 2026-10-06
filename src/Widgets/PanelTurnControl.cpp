@@ -1,10 +1,8 @@
 #include "PanelTurnControl.h"
 
 #include "Player.h"
-#include "Widgets/DigitsDisplay.h"
 #include "Widgets/GameSimpleTooltip.h"
 #include "Widgets/GameUIData.h"
-#include "Widgets/ProgressBarTurnEnergy.h"
 #include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -147,10 +145,6 @@ PanelTurnControl::PanelTurnControl(Player * player, sgl::sgui::Widget * parent)
 {
     using namespace sgl;
 
-    const float minEnergy = 0.f;
-    const float maxEnergy = player->GetTurnMaxEnergy();
-    const float energy = player->GetTurnEnergy();
-
     auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
     graphic::Texture * tex = nullptr;
@@ -163,41 +157,6 @@ PanelTurnControl::PanelTurnControl(Player * player, sgl::sgui::Widget * parent)
     const int w = mBg->GetWidth();
     const int h = mBg->GetHeight();
     SetSize(w, h);
-
-    // ICON ENERGY
-    tex = tm->GetSprite(SpriteFilePanelTurnControl, ID_TURNC_ICON);
-    mIconEnergy = new sgui::Image(tex, this);
-
-    // PROGRESS BAR ENERGY
-    mEnergyBar = new ProgressBarTurnEnergy(minEnergy, maxEnergy, this);
-    mEnergyBar->SetValue(energy);
-
-    // DIGITS DISPLAY
-    const unsigned int colorDigits = 0x70a9c2ff;
-    const unsigned int colorZeros = 0x35677dff;
-    const int fontDigitsSize = 20;
-    const int digits = 4;
-    mDigits = new DigitsDisplay(digits, fontDigitsSize, std::string(), this);
-    mDigits->SetColorDigits(colorDigits);
-    mDigits->SetColorZeros(colorZeros);
-    mDigits->SetValue(energy);
-
-    // tooltip turn energy
-    const float timeTooltip = 3000.f;
-    auto sm = utilities::StringManager::Instance();
-    mTooltipEnergy = new GameSimpleTooltip(sm->GetCString("TT_FACT_ENERGY"));
-
-    mIconEnergy->SetTooltip(mTooltipEnergy);
-    mIconEnergy->SetTooltipDelay(WidgetsConstants::timeTooltipButtonDelay);
-    mIconEnergy->SetTooltipShowingTime(timeTooltip);
-
-    mEnergyBar->SetTooltip(mTooltipEnergy);
-    mEnergyBar->SetTooltipDelay(WidgetsConstants::timeTooltipButtonDelay);
-    mEnergyBar->SetTooltipShowingTime(timeTooltip);
-
-    mDigits->SetTooltip(mTooltipEnergy);
-    mDigits->SetTooltipDelay(WidgetsConstants::timeTooltipButtonDelay);
-    mDigits->SetTooltipShowingTime(timeTooltip);
 
     // BUTTON GO BACK TO BASE
     mButtonBase = new ButtonGoToBase(this);
@@ -214,48 +173,16 @@ PanelTurnControl::PanelTurnControl(Player * player, sgl::sgui::Widget * parent)
     mText->SetColor(colorText);
     mText->SetVisible(false);
 
-    // CALLBACK ENERGY
-    player->SetOnTurnEnergyChanged([this]
-    {
-        const int energy = std::roundf(mPlayer->GetTurnEnergy());
-        mEnergyBar->SetValue(energy);
-
-        mDigits->SetValue(energy);
-    });
-
-    player->SetOnTurnMaxEnergyChanged([this]
-    {
-        const float minEnergy = 0.f;
-        const float maxEnergy = mPlayer->GetTurnMaxEnergy();
-        mEnergyBar->SetMinMax(minEnergy, maxEnergy);
-    });
-
     // POSITION ELEMENTS
-    const int marginButton = 25;
+    const int marginButton = 50;
     const int marginIcon = 5;
     const int marginBar = 5;
-    const int totW = mButtonBase->GetWidth() + marginButton + mIconEnergy->GetWidth() +
-                     marginIcon + mEnergyBar->GetWidth() + marginBar + mDigits->GetWidth() +
-                     marginButton + mButtonEndTurn->GetWidth();
-    const int x0 = (w - totW) / 2;
 
-    int x = x0;
+    int x = marginButton;
     int y = (h - mButtonBase->GetHeight()) / 2;
     mButtonBase->SetPosition(x, y);
 
-    x += mButtonBase->GetWidth() + marginButton;
-    y = (h - mIconEnergy->GetHeight()) / 2;
-    mIconEnergy->SetPosition(x, y);
-
-    x += mIconEnergy->GetWidth() + marginIcon;
-    y = (h - mEnergyBar->GetHeight()) / 2;
-    mEnergyBar->SetPosition(x, y);
-
-    x += mEnergyBar->GetWidth() + marginBar;
-    y = (h - mDigits->GetHeight()) / 2;
-    mDigits->SetPosition(x, y);
-
-    x += mDigits->GetWidth() + marginButton;
+    x = GetWidth() - marginButton - mButtonEndTurn->GetWidth();
     y = (h - mButtonEndTurn->GetHeight()) / 2;
     mButtonEndTurn->SetPosition(x, y);
 }
@@ -283,9 +210,7 @@ void PanelTurnControl::SetButtonEndTurnEnabled(bool enabled)
 
 void PanelTurnControl::ShowPanel()
 {
-    mIconEnergy->SetVisible(true);
-    mEnergyBar->SetVisible(true);
-    mDigits->SetVisible(true);
+
     mButtonBase->SetVisible(true);
     mButtonEndTurn->SetVisible(true);
 
@@ -294,9 +219,6 @@ void PanelTurnControl::ShowPanel()
 
 void PanelTurnControl::ShowText(const char * text)
 {
-    mIconEnergy->SetVisible(false);
-    mEnergyBar->SetVisible(false);
-    mDigits->SetVisible(false);
     mButtonBase->SetVisible(false);
     mButtonEndTurn->SetVisible(false);
 
