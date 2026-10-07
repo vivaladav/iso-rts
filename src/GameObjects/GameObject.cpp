@@ -748,18 +748,17 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     SumHealth(-damage);
 
-    const int numPart0 = 200 * mRows;
+    // use more particles for bigger objects
+    const int numPart0 = 250 * mRows;
     int numPart = numPart0;
 
-    // hit, but alive -> pick random quadrant
-    if(mHealth > 0.f)
+    // hit and destroyed
+    if(IsDestroyed())
     {
+        // use more particles
         const int partDestroyedMult = 2;
         numPart *= partDestroyedMult;
-    }
-    // hit and destroyed -> use all quadrants
-    else
-    {
+
         // record stats for players
         // NOTE register kills only when destroying enemies
         if(mOwner != nullptr)
@@ -822,7 +821,6 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     for(int p = 0; p < numPart; ++p)
     {
         const double rot = genRot.GetNextValue();
-
         const float ang = genVel.GetNextValue() * deg2rad;
         const float velX = cosf(ang);
         const float velY = sinf(ang);
