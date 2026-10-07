@@ -34,6 +34,8 @@ void ParticleOutput::SetData(const DataParticleOutput & data)
     mDecaySpeed = data.decaySpeed;
     mTimerLife = data.timeLife;
 
+    SetDelay(data.delay);
+
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
 

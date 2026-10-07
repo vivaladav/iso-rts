@@ -30,6 +30,7 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/utilities/BinaryFile.h>
 #include <sgl/utilities/UniformDistribution.h>
+#include <sgl/utilities/UniformRealDistribution.h>
 
 #include <cstdlib>
 
@@ -747,7 +748,7 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     SumHealth(-damage);
 
-    const int numPart0 = 30 * mRows * mCols;
+    const int numPart0 = 70 * mRows * mCols;
     int numPart = numPart0;
 
     const int maxQuad = 4;
@@ -813,24 +814,28 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     // random generator for speed
     const int minSpeed = 100;
-    const int maxSpeed = 300;
+    const int maxSpeed = 250;
     utilities::UniformDistribution genSpeed(minSpeed, maxSpeed);
 
     // random generator for decay speed
-    const int minDecSpeed = 200;
-    const int maxDecSpeed = 400;
+    const int minDecSpeed = 250;
+    const int maxDecSpeed = 425;
     utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
     // random generator for scale
     const int minScale = 1;
-    const int maxScale = 2;
+    const int maxScale = 4;
     utilities::UniformDistribution genScale(minScale, maxScale);
 
     // random generator for color
     const int color0 = 0;
     const int colorN = mObjColors.size() - 1;
-
     utilities::UniformDistribution genColor(color0, colorN);
+
+    // random generator for delay
+    const float minDelay = 0.f;
+    const float maxDelay = 0.15f;
+    utilities::UniformRealDistribution genDelay(minDelay, maxDelay);
 
     for(int q = 0; q < numQuad; ++q)
     {
@@ -841,16 +846,13 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
             const float ang = genVel.GetNextValue() * deg2rad;
             const float velX = cosf(ang);
             const float velY = sinf(ang);
-
             const float speed = genSpeed.GetNextValue();
-
             const float decSpeed = genDecSpeed.GetNextValue();
-
             const unsigned int color = mObjColors[genColor.GetNextValue()];
-
             const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
+            const float delay = genDelay.GetNextValue();
 
-            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed, scale, color);
+            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, delay, decSpeed, scale, color);
 
             pu->AddParticle(data);
         }
@@ -877,10 +879,11 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     const float speedHP = 75.f;
     const float decaySpeedHP = 40.f;
     const float maxDistHP = 60.f;
+    const float delay = 0.f;
 
     auto puHP = static_cast<UpdaterHitPoints *>(partMan->GetUpdater(PU_HIT_POINTS));
 
-    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, decaySpeedHP, maxDistHP, fatal);
+    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, delay, decaySpeedHP, maxDistHP, fatal);
     puHP->AddParticle(dataHP);
 }
 
@@ -895,8 +898,9 @@ void GameObject::MissHit()
     const float speedHP = 75.f;
     const float decaySpeedHP = 50.f;
     const float maxDistHP = 50.f;
+    const float delay = 0.f;
 
-    DataParticleHitPoints dataHP(posX, posY, speedHP, decaySpeedHP, maxDistHP);
+    DataParticleHitPoints dataHP(posX, posY, speedHP, delay, decaySpeedHP, maxDistHP);
     puHP->AddParticle(dataHP);
 }
 

@@ -7,9 +7,9 @@ namespace game
 
 struct DataParticleDamage : public sgl::graphic::TexturedParticleData
 {
-    DataParticleDamage(sgl::graphic::Texture * t, double ang, float x, float y,
-                       float vx, float vy, float sp, float ds, float sc, unsigned int col)
-        : sgl::graphic::TexturedParticleData(x, y, sp, t)
+    DataParticleDamage(sgl::graphic::Texture * t, double ang, float x, float y, float vx, float vy,
+                       float sp, float de, float ds, float sc, unsigned int col)
+        : sgl::graphic::TexturedParticleData(x, y, sp, de, t)
         , angle(ang)
         , velX(vx)
         , velY(vy)

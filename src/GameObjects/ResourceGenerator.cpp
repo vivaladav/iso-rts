@@ -115,8 +115,9 @@ void ResourceGenerator::OnNewTurn(PlayerFaction faction)
 
     const float x0 = GetX() + GetWidth() * 0.5f;
     const float y0 = GetY() - GetHeight() * 0.1f;
+    const float delay = 0.f;
 
-    DataParticleOutput pd(mOutput, outputType, x0, y0);
+    DataParticleOutput pd(mOutput, outputType, x0, y0, delay);
 
     pu->AddParticle(pd);
 }

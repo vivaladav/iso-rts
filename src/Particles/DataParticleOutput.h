@@ -21,15 +21,15 @@ enum OutputType : unsigned int
 
 struct DataParticleOutput : public sgl::graphic::ParticleData
 {
-    DataParticleOutput(int q, OutputType t, float x, float y)
-        : sgl::graphic::ParticleData(x, y, 50.f)
+    DataParticleOutput(int q, OutputType t, float x, float y, float de)
+        : sgl::graphic::ParticleData(x, y, 50.f, de)
         , quantity(q)
         , type(t)
     {
     }
 
-    DataParticleOutput(int q, OutputType t, float x, float y, float sp, float ds, float tl)
-        : sgl::graphic::ParticleData(x, y, sp)
+    DataParticleOutput(int q, OutputType t, float x, float y, float sp, float de, float ds, float tl)
+        : sgl::graphic::ParticleData(x, y, sp, de)
         , quantity(q)
         , type(t)
         , decaySpeed(ds)

@@ -21,6 +21,8 @@ void ParticleDamage::SetData(const DataParticleDamage & data)
     mVelY = data.velY;
     mDecaySpeed = data.decaySpeed;
 
+    SetDelay(data.delay);
+
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
 }

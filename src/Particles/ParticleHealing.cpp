@@ -14,6 +14,7 @@ void ParticleHealing::SetData(const DataParticleHealing & data)
     mRenderable.SetTexture(data.tex);
     SetSpeed(data.speed);
     SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
+    SetDelay(data.delay);
 
     mHealer = data.healer;
     mGameMap = data.map;

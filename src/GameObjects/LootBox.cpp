@@ -132,7 +132,8 @@ void LootBox::Open(Player * p)
     const float speed = 40.f;
     const float decaySpeed = 80.f;
     const float timeLife = 1.f;
-    DataParticleOutput pd(mPrizeQuantity, ot[mPrizeType], x0, y0, speed, decaySpeed, timeLife);
+    const float delay = 0.f;
+    DataParticleOutput pd(mPrizeQuantity, ot[mPrizeType], x0, y0, speed, delay, decaySpeed, timeLife);
 
     pu->AddParticle(pd);
 

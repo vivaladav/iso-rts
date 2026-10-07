@@ -39,8 +39,9 @@ void Blobs::Collected(Player * collector)
 
     const float x0 = GetX() + GetWidth() * 0.5f;
     const float y0 = GetY() - GetHeight() * 0.25f;
+    const float delay = 0.f;
 
-    DataParticleOutput pd(GetNumUnits(), OT_BLOBS, x0, y0);
+    DataParticleOutput pd(GetNumUnits(), OT_BLOBS, x0, y0, delay);
 
     pu->AddParticle(pd);
 

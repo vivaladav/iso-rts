@@ -16,6 +16,7 @@ void ParticleSingleLaser::SetData(const DataParticleSingleLaser & data)
     SetSpeed(data.speed);
     // this has to be called after SetRotation
     SetStartAndTarget(data.x0, data.y0, data.targetX, data.targetY);
+    SetDelay(data.delay);
 
     mShooter = data.shooter;
     mGameMap = data.map;

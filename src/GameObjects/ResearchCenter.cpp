@@ -146,8 +146,9 @@ void ResearchCenter::OnNewTurn(PlayerFaction faction)
     const int marginV = 20;
     const float x = GetX() + GetWidth() / 2;
     const float y = GetY() - marginV;
+    const float delay = 0.f;
 
-    const DataParticleOutput pd(mResearchPerTurn, OT_RESEARCH, x, y);
+    const DataParticleOutput pd(mResearchPerTurn, OT_RESEARCH, x, y, delay);
     pu->AddParticle(pd);
 }
 

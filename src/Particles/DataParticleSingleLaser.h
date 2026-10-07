@@ -12,9 +12,10 @@ enum PlayerFaction : unsigned int;
 
 struct DataParticleSingleLaser : public sgl::graphic::TexturedParticleData
 {
-    DataParticleSingleLaser(sgl::graphic::Texture * t, const GameMap * gm, GameObject * obj, double ang,
-                            float x, float y, float tx, float ty, float sp, float dmg, GameObject * sh, bool f)
-        : sgl::graphic::TexturedParticleData(x, y, sp ,t)
+    DataParticleSingleLaser(sgl::graphic::Texture * t, const GameMap * gm, GameObject * obj,
+                            double ang, float x, float y, float tx, float ty, float sp, float de,
+                            float dmg, GameObject * sh, bool f)
+        : sgl::graphic::TexturedParticleData(x, y, sp, de, t)
         , map(gm)
         , target(obj)
         , angle(ang)

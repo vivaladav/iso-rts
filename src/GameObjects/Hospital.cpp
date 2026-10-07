@@ -226,6 +226,7 @@ void Hospital::Heal()
     const float tX = mTargetHealing->GetX() + (mTargetHealing->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = mTargetHealing->GetY() + (mTargetHealing->GetHeight() - tex->GetHeight()) * 0.5f;
     const float speed = 100.f;
+    const float delay = 0.f;
 
     const DataParticleHealing pd =
         {
@@ -237,6 +238,7 @@ void Hospital::Heal()
             tX,
             tY,
             speed,
+            delay,
             mHealingPower,
             GetFaction()
         };

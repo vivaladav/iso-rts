@@ -7,8 +7,8 @@ namespace game
 
 struct DataParticleHitPoints : public sgl::graphic::ParticleData
 {
-    DataParticleHitPoints(int v, float x, float y, float sp, float ds, float md, bool f)
-        : sgl::graphic::ParticleData(x, y, sp)
+    DataParticleHitPoints(int v, float x, float y, float sp, float de, float ds, float md, bool f)
+        : sgl::graphic::ParticleData(x, y, sp, de)
         , value(v)
         , decaySpeed(ds)
         , maxDistance(md)
@@ -16,8 +16,8 @@ struct DataParticleHitPoints : public sgl::graphic::ParticleData
     {
     }
 
-    DataParticleHitPoints(float x, float y, float sp, float ds, float md)
-        : sgl::graphic::ParticleData(x, y, sp)
+    DataParticleHitPoints(float x, float y, float sp, float de, float ds, float md)
+        : sgl::graphic::ParticleData(x, y, sp, de)
         , decaySpeed(ds)
         , maxDistance(md)
         , miss(true)

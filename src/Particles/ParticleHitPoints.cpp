@@ -27,6 +27,8 @@ void ParticleHitPoints::SetData(const DataParticleHitPoints & data)
     mDecaySpeed = data.decaySpeed;
     mMaxDistance = data.maxDistance;
 
+    SetDelay(data.delay);
+
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
 
