@@ -748,34 +748,18 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     SumHealth(-damage);
 
-    const int numPart0 = 70 * mRows * mCols;
+    const int numPart0 = 200 * mRows;
     int numPart = numPart0;
-
-    const int maxQuad = 4;
-    int numQuad = 1;
-
-    const float angInc = 90.f;
-    float ang0 = 0.f;
 
     // hit, but alive -> pick random quadrant
     if(mHealth > 0.f)
     {
-        const int quad0 = 0;
-        utilities::UniformDistribution genQuad(quad0, maxQuad - 1);
-
-        ang0 += angInc * genQuad.GetNextValue();
-
         const int partDestroyedMult = 2;
         numPart *= partDestroyedMult;
     }
     // hit and destroyed -> use all quadrants
     else
     {
-        const int multPart = maxQuad;
-        numPart *= multPart;
-
-        numQuad = maxQuad;
-
         // record stats for players
         // NOTE register kills only when destroying enemies
         if(mOwner != nullptr)
@@ -788,10 +772,6 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
                 mGameMap->RegisterCasualty(GetFaction());
         }
     }
-
-    float ang1 = ang0 + angInc;
-
-    const int numPartQuad = numPart / numQuad;
 
     auto partMan = GetParticlesManager();
     auto pu = static_cast<UpdaterDamage *>(partMan->GetUpdater(PU_DAMAGE));
@@ -808,7 +788,9 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     utilities::UniformDistribution genRot(minRot, maxRot);
 
     // random generator for velocity direction
-    utilities::UniformDistribution genVel(static_cast<int>(ang0), static_cast<int>(ang1));
+    const int ang0 = 0;
+    const int ang1 = 360;
+    utilities::UniformDistribution genVel(ang0, ang1);
 
     const float deg2rad = sgl::core::Math::PIf / 180.f;
 
@@ -834,33 +816,26 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     // random generator for delay
     const float minDelay = 0.f;
-    const float maxDelay = 0.15f;
+    const float maxDelay = 0.17f;
     utilities::UniformRealDistribution genDelay(minDelay, maxDelay);
 
-    for(int q = 0; q < numQuad; ++q)
+    for(int p = 0; p < numPart; ++p)
     {
-        for(int p = 0; p < numPartQuad; ++p)
-        {
-            const double rot = genRot.GetNextValue();
+        const double rot = genRot.GetNextValue();
 
-            const float ang = genVel.GetNextValue() * deg2rad;
-            const float velX = cosf(ang);
-            const float velY = sinf(ang);
-            const float speed = genSpeed.GetNextValue();
-            const float decSpeed = genDecSpeed.GetNextValue();
-            const unsigned int color = mObjColors[genColor.GetNextValue()];
-            const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
-            const float delay = genDelay.GetNextValue();
+        const float ang = genVel.GetNextValue() * deg2rad;
+        const float velX = cosf(ang);
+        const float velY = sinf(ang);
+        const float speed = genSpeed.GetNextValue();
+        const float decSpeed = genDecSpeed.GetNextValue();
+        const unsigned int color = mObjColors[genColor.GetNextValue()];
+        const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
+        const float delay = genDelay.GetNextValue();
 
-            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, delay, decSpeed, scale, color);
+        DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, delay, decSpeed,
+                                scale, color);
 
-            pu->AddParticle(data);
-        }
-
-        ang0 += angInc;
-        ang1 += angInc;
-
-        genVel.SetParameters(static_cast<int>(ang0), static_cast<int>(ang1));
+        pu->AddParticle(data);
     }
 
     // -- HIT POINTS --
@@ -879,11 +854,11 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     const float speedHP = 75.f;
     const float decaySpeedHP = 40.f;
     const float maxDistHP = 60.f;
-    const float delay = 0.f;
+    const float delayHP = 0.f;
 
     auto puHP = static_cast<UpdaterHitPoints *>(partMan->GetUpdater(PU_HIT_POINTS));
 
-    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, delay, decaySpeedHP, maxDistHP, fatal);
+    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, delayHP, decaySpeedHP, maxDistHP, fatal);
     puHP->AddParticle(dataHP);
 }
 
