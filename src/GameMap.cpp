@@ -147,6 +147,14 @@ bool GameMap::Load(sgl::utilities::BinaryFile & bf)
         // create object and add it to the map
         GameObject * obj = CreateObjectFromFile(type, variant, faction, r0, c0, false);
 
+        if(nullptr == obj)
+        {
+            std::cout << "[ERR] GameMap::Load - LOADED OBJECT IS NULL ("
+                      << r0 << ", " << c0 << ") , type: " << type
+                      << " , variant: " << variant << " , faction: " << faction << std::endl;
+            continue;
+        }
+
         // load object data
         obj->Load(bf);
 
@@ -172,6 +180,14 @@ bool GameMap::Load(sgl::utilities::BinaryFile & bf)
         const int c = bf.ReadInt();
 
         auto gen = CreateCollectableGenerator(r, c, type);
+
+        if(nullptr == gen)
+        {
+            std::cout << "[ERR] GameMap::Load - LOADED COLLECTABLE GENERATOR IS NULL ("
+                      << r << ", " << c << ") , type: " << type << std::endl;
+            continue;
+        }
+
         gen->Load(bf);
     }
 
