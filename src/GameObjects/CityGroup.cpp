@@ -9,6 +9,8 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/utilities/BinaryFile.h>
 
+#include <limits>
+
 namespace game
 {
 
@@ -49,6 +51,35 @@ void CityGroup::UpdateCityConquered(Player * conqueror)
             GetGameMap()->ConquerStructure(c, conqueror);
         }
     }
+}
+
+bool CityGroup::GetCityBoundaries(Cell2D & tl, Cell2D & br) const
+{
+    if(IsEmpty())
+        return false;
+
+    const std::vector<GameObject *> & objs = GetObjects();
+
+    tl.row = std::numeric_limits<int>::max();
+    tl.col = std::numeric_limits<int>::max();
+    br.row = 0;
+    br.col = 0;
+
+    for(const auto o : objs)
+    {
+        if(o->GetRow1() < tl.row)
+            tl.row = o->GetRow1();
+        if(o->GetCol1() < tl.col)
+            tl.col = o->GetCol1();
+
+        if(o->GetRow0() > br.row)
+            br.row = o->GetRow0();
+        if(o->GetCol0() > br.col)
+            br.col = o->GetCol0();
+    }
+
+    return true;
+
 }
 
 bool CityGroup::Load(sgl::utilities::BinaryFile & bf)
