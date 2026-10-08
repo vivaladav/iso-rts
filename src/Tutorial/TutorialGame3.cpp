@@ -10,6 +10,7 @@
 #include "GameObjects/LootBox.h"
 #include "GameObjects/MiniUnitsGroup.h"
 #include "GameObjects/ObjectData.h"
+#include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/Unit.h"
 #include "Indicators/OverlayCellConquest.h"
 #include "Indicators/OverlayWall.h"
@@ -18,6 +19,7 @@
 #include "Tutorial/StepDelay.h"
 #include "Tutorial/StepGameAddEnemy.h"
 #include "Tutorial/StepGameBackToBase.h"
+#include "Tutorial/StepGameBuildStructAreaFree.h"
 #include "Tutorial/StepGameBuildStructIntro.h"
 #include "Tutorial/StepGameBuildStructure.h"
 #include "Tutorial/StepGameBuildTowerEnd.h"
@@ -71,6 +73,7 @@
 #include "Tutorial/StepGameWaitLootboxOpen.h"
 #include "Tutorial/StepGameWaitObjectIdle.h"
 #include "Tutorial/StepGameWaitTurn.h"
+#include "Tutorial/StepGameWaitUnitCanBuild.h"
 #include "Tutorial/StepGameWallBuildIcon.h"
 #include "Tutorial/StepGameWallBuildIntro.h"
 #include "Tutorial/StepGameWallBuildEnd.h"
@@ -139,6 +142,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
 
     auto gs = GetScreen();
     auto game = gs->GetGame();
+    auto gameMap = GetGameMap();
     auto hud = gs->GetHUD();
     auto isoMap = GetIsoMap();
 
@@ -183,73 +187,63 @@ TutorialGame3::TutorialGame3(Screen * screen)
         return step;
     });
     AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
+    // INTRO BUILD SOLAR PANELS AND MATERIAL EXTRACTOR
+    AddStep([]
+    {
+        const int h = 175;
+        const core::Pointd2D p0(1200, 250);
+        return new StepGameSingleInfo(p0, "TUT_GAME_BUILD_RES_GEN", h);
+    });
+    // BUILD SOLAR PANELS
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_RES_GEN_ENERGY_SOLAR);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_SOL_PANELS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_SOL_PANELS",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN", nullptr,
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catResources,
+                                               TutorialConstants::structSolarPanel);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const Cell2D areaTL(72, 72);
+        const Cell2D areaBR(75, 80);
+        const int numToBuild = 2;
+
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
+                                                    ObjectData::TYPE_RES_GEN_ENERGY_SOLAR, numToBuild,
+                                                    "TUT_GAME_BUILD_SOL_PANELS");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
 
     /*
-    // BUILD FIRST UNIT
-    AddStep([localBase, game, isoMap]
-        {
-            const core::Pointd2D p0(500, 200);
-            return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-        });
-    AddStep([game, gs, panelActions]
-        {
-            return new StepGameBuildUnitStart(game, gs, panelActions,
-                                              PanelObjectActions::BTN_BUILD_UNIT_BASE);
-        });
-    AddStep([hud] { return new StepGameBuildUnitEnd(hud); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
-    // SELECT WORKER 1
-    AddStep([local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const core::Pointd2D p0(1300, 450);
-            return new StepGameUnit(game, isoMap, unit, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // BUILD SOLAR PANEL 1
-    AddStep([game, gs, panelActions]
-        {
-           const core::Pointd2D p0(1100, 300);
-            return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_RES_GEN", p0);
-        });
-    AddStep([hud]
-        {
-            return new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN", nullptr,
-                                              TutorialConstants::catResources,
-                                              TutorialConstants::structSolarPanel);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const core::Pointd2D p0(1000, 200);
-            const Cell2D target(74, 78);
-            return new StepGameBuildTowerEnd(isoMap, unit, target, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // BUILD SOLAR PANEL 2
-    AddStep([game, gs, panelActions]
-        {
-            const core::Pointd2D p0(1100, 250);
-            return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_MORE", p0);
-        });
-    AddStep([hud]
-        {
-            const int indStruct = 0;
-            return new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN", nullptr,
-                                              TutorialConstants::catResources,
-                                              TutorialConstants::structSolarPanel);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const core::Pointd2D p0(1000, 200);
-            const Cell2D target(74, 77);
-            return new StepGameBuildTowerEnd(isoMap, unit, target, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
     // CONNECT SOLAR PANELS TO BASE
     AddStep([]
             {
