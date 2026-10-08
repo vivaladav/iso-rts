@@ -48,7 +48,8 @@ void ObjectsDataRegistry::InitObjectData()
                    OCS_BARRACKS, OCAT_GENERIC, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_CITY_BLOCK,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 7}, {OBJ_ATT_RESISTANCE, 5} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 7}, {OBJ_ATT_RESISTANCE, 5},
+                     {OBJ_ATT_VIEW_RANGE, 4}, }, {},
                    { ID_CITY_TL1_F1, ID_CITY_TL1_F2, ID_CITY_TL1_F3, ID_CITY_TL1_NF },
                    SpriteFileCity, ObjectData::TYPE_CITY_BLOCK, ObjectData::CAT_SCENE_OBJ,
                    OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));

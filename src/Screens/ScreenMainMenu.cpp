@@ -386,6 +386,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Option to hide static cursor is saved correctly.\n"
                   "- Fixed Research Center not producing research points when on low resources.\n"
                   "- Fixed check of valid saved files in main menu.\n"
+                  "- Add missing view attribute to City Block.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
