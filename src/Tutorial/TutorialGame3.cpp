@@ -28,6 +28,7 @@
 #include "Tutorial/StepGameCityIntro.h"
 #include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
+#include "Tutorial/StepGameConnectStructFree.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCellsContinue.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
@@ -242,36 +243,30 @@ TutorialGame3::TutorialGame3(Screen * screen)
 
         return step;
     });
-
-    /*
-    // CONNECT SOLAR PANELS TO BASE
-    AddStep([]
-            {
-                const core::Pointd2D p0(1100, 350);
-                return new StepGameConnectStructIntro(p0);
-            });
-    AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
-    AddStep([this, isoMap, game]
-            {
-                const core::Pointd2D p0(1100, 400);
-                const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-                const Cell2D target(75, 77);
-                return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
-            });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indWorker1);
-                const core::Pointd2D p0(1100, 300);
-                const Cell2D cellEnd(76, 77);
-                return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
-            });
+    // CONNECT SECOND SOLAR PANEL IF NEEDED
     AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RES_GEN_ENERGY_SOLAR);
+        const GameObject * barracks = all.back();
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, barracks, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // CONNECT FIRST SOLAR PANEL IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RES_GEN_ENERGY_SOLAR);
+        const auto it = all.end() - 2;
+        const GameObject * barracks = *it;
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, barracks, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+
+    /*
     // BUILD MATERIAL EXTRACTOR
     AddStep([game, gs,panelActions]
         {
