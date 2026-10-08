@@ -25,6 +25,7 @@
 #include "Tutorial/StepGameBuildUnitStart.h"
 #include "Tutorial/StepGameCityIntro.h"
 #include "Tutorial/StepGameClearSelection.h"
+#include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCellsContinue.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
@@ -87,6 +88,10 @@ constexpr unsigned int indWorker1 = 0;
 constexpr unsigned int indWorker2 = 1;
 constexpr unsigned int indSoldier1 = 2;
 constexpr unsigned int indSpawner1 = 3;
+
+constexpr float delayAnimLong = 2.f;
+
+constexpr float speedCamera = 700.f;
 
 const Cell2D cellTLCity1(51, 51);
 const Cell2D cellBRCity1(54, 54);
@@ -152,7 +157,32 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // INTRO
     AddStep([] { return new StepGameIntro3; });
     AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WORKER 1
+    AddStep([localBase, game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BUILD_WORKER", p0,
+                                        delayAnimLong);
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_WORKER",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BASE,
+                                                  delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
 
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_WORKER", delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
 
     /*
     // BUILD FIRST UNIT
