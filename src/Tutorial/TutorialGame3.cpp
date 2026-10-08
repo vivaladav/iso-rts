@@ -53,6 +53,7 @@
 #include "Tutorial/StepGameMoveUnitSimple.h"
 #include "Tutorial/StepGameMoveUnitToCorner.h"
 #include "Tutorial/StepGameOpenLootbox.h"
+#include "Tutorial/StepGameOpenLootboxFree.h"
 #include "Tutorial/StepGameQuickUnitButton.h"
 #include "Tutorial/StepGameSecondaryMissionGoal.h"
 #include "Tutorial/StepGameSelectObject.h"
@@ -477,51 +478,31 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
+    // SETUP SPECIAL LOOTBOX
+    AddStep([this]
+    {
+        auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellSpecialLootbox1));
+        const unsigned int prizeType = LootBox::LB_NULL;
+        const int prizeQuantity = 0;
+        return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
+    });
     // OPEN SPECIAL LOOTBOX
-    AddStep([this]
-        {
-            auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellSpecialLootbox1));
-            const unsigned int prizeType = LootBox::LB_NULL;
-            const int prizeQuantity = 0;
-            return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
-        });
-    AddStep([this, local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const GameObject * lootbox = GetObjectInCell(cellSpecialLootbox1);
-            const core::Pointd2D p0(1000, 200);
-
-            return new StepGameOpenLootbox(game, unit, lootbox, isoMap, "TUT_GAME_LOOTBOX_1b", p0);
-        });
-    AddStep([this]
-        {
-            const GameObject * lootbox = GetObjectInCell(cellSpecialLootbox1);
-            return new StepGameWaitLootboxOpen(GetGameMap(), lootbox);
-        });
+    AddStep([this, gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1000, 200);
+        auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellSpecialLootbox1));
+        return new StepGameOpenLootboxFree(gameMap, lootbox, isoMap, "TUT_GAME_LOOTBOX_1b", p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([]
-        {
-            const core::Pointd2D p0(1150, 350);
-            return new StepGameSingleInfo(p0, "TUT_GAME_NO_LUCK");
-        });
+    {
+        const core::Pointd2D p0(1150, 350);
+        return new StepGameSingleInfo(p0, "TUT_GAME_NO_LUCK");
+    });
     AddStep([] { return new StepDelay(0.5f); });
-    // UPGRADE WORKER 1
-    AddStep([game, gs, panelActions]
-        {
-            core::Pointd2D p0(900, 150);
-            return new StepGameUpgradeIntro(game, gs, panelActions, "TUT_GAME_UPGRADE_1b", p0);
-        });
-    AddStep([hud] { return new StepGameUpgradeUnit(hud, false); });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    // END TURN
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
+
+
+    /*
     // MOVE CAMERA
     AddStep([game]
             {

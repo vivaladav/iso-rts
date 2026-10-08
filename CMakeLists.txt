@@ -389,6 +389,8 @@ add_executable(
     src/Tutorial/StepGameMoveUnitToCorner.cpp
     src/Tutorial/StepGameOpenLootbox.h
     src/Tutorial/StepGameOpenLootbox.cpp
+    src/Tutorial/StepGameOpenLootboxFree.h
+    src/Tutorial/StepGameOpenLootboxFree.cpp
     src/Tutorial/StepGamePanelHit.h
     src/Tutorial/StepGamePanelHit.cpp
     src/Tutorial/StepGamePrimaryMissionGoal.h
