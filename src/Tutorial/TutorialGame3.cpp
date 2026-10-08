@@ -156,6 +156,9 @@ TutorialGame3::TutorialGame3(Screen * screen)
     auto panelTurn = hud->GetPanelTurnControl();
     auto localBase = local->GetBase();
 
+    // keep camera enabled in this tutorial
+    GetCameraMapController()->SetEnabled(true);
+
     // ===== SETUP =====
     // pause before start
     AddStep([] { return new StepDelay(0.5f); });
