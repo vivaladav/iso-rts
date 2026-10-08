@@ -7,8 +7,8 @@
 namespace game
 {
 
-StepGameSingleInfo::StepGameSingleInfo(const sgl::core::Pointd2D & p0, const char * text)
-    : TutorialInfoStep(550, 150)
+StepGameSingleInfo::StepGameSingleInfo(const sgl::core::Pointd2D & p0, const char * text, int h)
+    : TutorialInfoStep(550, h)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 

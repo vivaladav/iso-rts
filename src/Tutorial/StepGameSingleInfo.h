@@ -10,7 +10,7 @@ namespace game
 class StepGameSingleInfo : public TutorialInfoStep
 {
 public:
-    StepGameSingleInfo(const sgl::core::Pointd2D & p0, const char * text);
+    StepGameSingleInfo(const sgl::core::Pointd2D & p0, const char * text, int h = 150);
 };
 
 } // namespace game
