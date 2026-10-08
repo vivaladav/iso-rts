@@ -452,67 +452,33 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    /*
-    // CONQUER ENERGY GENERATOR WITH WORKER 1
-    AddStep([this, local]
-        {
-            const GameObject * gen = GetObjectInCell(cellEneGen1);
-            const core::Pointd2D p0(800, 150);
-            return new StepGameConquerEnergyGenIntro(gen, p0);
-        });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const GameObject * gen = GetObjectInCell(cellEneGen1);
-            const core::Pointd2D p0(850, 200);
-            return new StepGameConquerStructSimple(game, unit, gen, isoMap, p0);
-        });
-    AddStep([local] { return new StepGameSetSelectionActiveAction(local, IDLE); });
-    // END TURN
+    // MOVE CAMERA NEAR ENERGY GENERATOR 1
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(64, 65);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // CONQUER ENERGY GENERATOR 1
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen1);
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_ENE_GEN", p0);
+    });
+    // CONNECT ENERGY GENERATOR 1
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen1);
+        const core::Pointd2D p0(1300, 300);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // SELECT WORKER 2
-    AddStep([local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker2);
-            const core::Pointd2D p0(1300, 450);
-            return new StepGameUnit(game, isoMap, unit, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // CONNECT ENERGY GENERATOR WITH WORKER 2
-    AddStep([]
-        {
-            const core::Pointd2D p0(1150, 150);
-            return new StepGameConnectStructIntro(p0);
-        });
-    AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
-    AddStep([this, isoMap, game]
-        {
-            const core::Pointd2D p0(1000, 200);
-            const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-            const Cell2D target(65, 63);
-            return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
-        });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker2);
-            const core::Pointd2D p0(1200, 150);
-            const Cell2D cellEnd(62, 64);
-            return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
-        });
-    // SELECT WORKER 1
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const core::Pointd2D p0(1200, 350);
-            return new StepGameUnit(game, isoMap, unit, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
+
+    /*
     // OPEN SPECIAL LOOTBOX
     AddStep([this]
         {
