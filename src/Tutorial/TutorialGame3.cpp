@@ -46,7 +46,9 @@
 #include "Tutorial/StepGameIntro3.h"
 #include "Tutorial/StepGameMissionGoalsIcon.h"
 #include "Tutorial/StepGameMoveCamera.h"
+#include "Tutorial/StepGameMoveCameraOverCell.h"
 #include "Tutorial/StepGameMoveCameraOverObject.h"
+#include "Tutorial/StepGameMoveUnitFree.h"
 #include "Tutorial/StepGameMoveUnitSimple.h"
 #include "Tutorial/StepGameMoveUnitToCorner.h"
 #include "Tutorial/StepGameOpenLootbox.h"
@@ -326,45 +328,54 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // INTRO MOVE WORKER TO LEFT SIDE
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_MOVE_UNIT_3");
+    });
+    // MOVE CAMERA OVER TARGET
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(74, 68);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // MOVE WORKER TO LEFT SIDE
+    AddStep([game, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const Cell2D target(74,66);
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_WORKER1);
+        const auto unit = all.back();
+        return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_UNIT",
+                                        target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // SETUP LOOTBOX
+    AddStep([this]
+    {
+        auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellLootbox1));
+        const unsigned int prizeType = LootBox::LB_MATERIAL;
+        const int prizeQuantity = 350;
+        return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
+    });
+    // OPEN LOOTBOX
+    AddStep([this, local, game, isoMap]
+    {
+        const auto unit = local->GetUnit(indWorker1);
+        const GameObject * lootbox = GetObjectInCell(cellLootbox1);
+        const core::Pointd2D p0(500, 100);
+
+        return new StepGameOpenLootbox(game, unit, lootbox, isoMap, "TUT_GAME_LOOTBOX_1", p0);
+    });
+    AddStep([this]
+    {
+        const GameObject * lootbox = GetObjectInCell(cellLootbox1);
+        return new StepGameWaitLootboxOpen(GetGameMap(), lootbox);
+    });
     /*
      *
-
-    // MOVE WORKER 1 TO LOOTBOX
-    AddStep([this, local, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const Cell2D target(74, 66);
-            const core::Pointd2D p0(1000, 150);
-            return new StepGameMoveUnitToCorner(unit, isoMap, target, p0);
-        });
-    // OPEN LOOTBOX
-    AddStep([this]
-        {
-            auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellLootbox1));
-            const unsigned int prizeType = LootBox::LB_MATERIAL;
-            const int prizeQuantity = 350;
-            return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
-        });
-    AddStep([this, local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const GameObject * lootbox = GetObjectInCell(cellLootbox1);
-            const core::Pointd2D p0(500, 100);
-
-            return new StepGameOpenLootbox(game, unit, lootbox, isoMap, "TUT_GAME_LOOTBOX_1", p0);
-        });
-    AddStep([this]
-        {
-            const GameObject * lootbox = GetObjectInCell(cellLootbox1);
-            return new StepGameWaitLootboxOpen(GetGameMap(), lootbox);
-        });
-    // END TURN
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
     // MOVE TO MATERIAL GENERATOR
     AddStep([]
         {
