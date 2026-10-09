@@ -139,10 +139,14 @@ const Cell2D wallLeft1TL(50, 37);
 const Cell2D wallLeft1BR(54, 37);
 const Cell2D wallLeft2TL(57, 37);
 const Cell2D wallLeft2BR(62, 37);
+const Cell2D wallLeft3TL(71, 46);
+const Cell2D wallLeft3BR(77, 46);
 const Cell2D wallRight1TL(37, 50);
 const Cell2D wallRight1BR(37, 54);
 const Cell2D wallRight2TL(37, 57);
 const Cell2D wallRight2BR(37, 63);
+const Cell2D wallRight3TL(44, 72);
+const Cell2D wallRight3BR(44, 77);
 
 }
 
@@ -1139,7 +1143,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
         step->SetInfoPosition(p0.x, p0.y);
         return step;
     });
-    // CONNECT WALL LEFT 2
+    // CONNECT WALL RIGHT 2
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 200);
@@ -1279,13 +1283,136 @@ TutorialGame3::TutorialGame3(Screen * screen)
         const core::Pointd2D p0(1300, 150);
         return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_MAT_GEN", p0);
     });
-    // CONNECT MATERIAL GENERATOR 2
+    // CONNECT MATERIAL GENERATOR 3
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, local, isoMap, game]
     {
         const GameObject * gen = GetObjectInCell(cellMatGen3);
         const core::Pointd2D p0(1300, 150);
         return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA OVER TARGET
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(49, 69);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // BUILD WALL RIGHT 3
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1200, 200);
+        auto step = new StepGameBuildWallLine(gameMap, isoMap, wallRight3TL, wallRight3BR,
+                                              "TUT_GAME_BUILD_WALL_5");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // CONNECT WALL RIGHT 3
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 200);
+        auto step = new StepGameConnectWall(gameMap, isoMap, wallRight3TL, wallRight3BR,
+                                            "TUT_GAME_CONNECT_WALL");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD GATE IN RIGHT WALL 3
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_WALL_GATE);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_GATE_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
+                                               "TUT_GAME_BUILD_GATE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structGate);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRight3TL, wallRight3BR,
+                                                    ObjectData::TYPE_WALL_GATE, numToBuild,
+                                                    "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD BUNKER IN RIGHT WALL 3
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BUNKER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BUNKER_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_BUNKER_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3", nullptr,
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structBunker);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRight3TL, wallRight3BR,
+                                                    ObjectData::TYPE_BUNKER, numToBuild,
+                                                    "TUT_GAME_BUILD_BUNKER_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
@@ -1303,6 +1430,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
         const Cell2D cell(65, 60);
         return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
     });
+    AddStep([] { return new StepDelay(0.5f); });
     // MOVE WORKER ENERGY GENERATOR 3
     AddStep([gameMap, isoMap, local]
     {
@@ -1312,20 +1440,143 @@ TutorialGame3::TutorialGame3(Screen * screen)
                                           target, p0);
     });
     AddStep([] { return new StepDelay(0.5f); });
-    // CONQUER MATERIAL GENERATOR 3
+    // CONQUER ENERGY GENERATOR 3
     AddStep([this, local, isoMap, game]
     {
         const GameObject * gen = GetObjectInCell(cellEneGen3);
         const core::Pointd2D p0(1300, 150);
         return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_MAT_GEN", p0);
     });
-    // CONNECT MATERIAL GENERATOR 2
+    // CONNECT ENERGY GENERATOR 3
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, local, isoMap, game]
     {
         const GameObject * gen = GetObjectInCell(cellEneGen3);
         const core::Pointd2D p0(1300, 150);
         return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA OVER TARGET
+    AddStep([isoMap]
+    {
+        const Cell2D cell(71, 51);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD WALL LEFT 3
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1200, 200);
+        auto step = new StepGameBuildWallLine(gameMap, isoMap, wallLeft3TL, wallLeft3BR,
+                                              "TUT_GAME_BUILD_WALL_5");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // CONNECT WALL LEFT 3
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 200);
+        auto step = new StepGameConnectWall(gameMap, isoMap, wallLeft3TL, wallLeft3BR,
+                                            "TUT_GAME_CONNECT_WALL");
+        step->SetInfoPosition(p0.x, p0.y);
+        return step;
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD GATE IN LEFT WALL 3
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_WALL_GATE);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_GATE_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
+                                               "TUT_GAME_BUILD_GATE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structGate);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallLeft3TL, wallLeft3BR,
+                                                    ObjectData::TYPE_WALL_GATE, numToBuild,
+                                                    "TUT_GAME_BUILD_GATE_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD BUNKER IN LEFT WALL 3
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BUNKER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BUNKER_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_BUNKER_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3", nullptr,
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catDefenses,
+                                               TutorialConstants::structBunker);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const unsigned int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallLeft3TL, wallLeft3BR,
+                                                    ObjectData::TYPE_BUNKER, numToBuild,
+                                                    "TUT_GAME_BUILD_BUNKER_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
