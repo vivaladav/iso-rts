@@ -554,7 +554,64 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
+    // INTRO MOVE WORKER TO LEFT SIDE
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_CONT_EXPL");
+    });
+    // MOVE CAMERA OVER TARGET
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(52, 52);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // MOVE WORKER TO TOP
+    AddStep([gameMap, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const Cell2D target(47, 47);
+        return new StepGameMoveToCellFree(gameMap, isoMap, "TUT_GAME_MOVE_UNIT_6",
+                                          target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONQUER MATERIAL GENERATOR 2
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellMatGen2);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_MAT_GEN", p0);
+    });
+    // CONNECT MATERIAL GENERATOR 2
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellMatGen2);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONQUER ENERGY GENERATOR 2
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen2);
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_ENE_GEN", p0);
+    });
+    // CONNECT ENERGY GENERATOR 2
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen2);
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
     /*
     // BUILD DEFENSIVE TOWER WITH WORKER 2
     AddStep([game, gs, panelActions]
