@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "AI/PlayerAI.h"
 #include "GameObjects/Base.h"
+#include "GameObjects/Barracks.h"
 #include "GameObjects/CityBlock.h"
 #include "GameObjects/CityGroup.h"
 #include "GameObjects/LootBox.h"
@@ -1068,7 +1069,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // BUILD WALL RIGHT 1
     AddStep([gameMap, isoMap]
     {
-        const core::Pointd2D p0(1300, 500);
+        const core::Pointd2D p0(1300, 150);
         auto step = new StepGameBuildWallLine(gameMap, isoMap, wallRight1TL, wallRight1BR,
                                               "TUT_GAME_BUILD_WALL_5");
         step->SetInfoPosition(p0.x, p0.y);
@@ -1581,6 +1582,126 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // MOVE VIEW BACK TO BASE
+    AddStep([panelTurn]
+    {
+        const core::Pointd2D p0(100, 500);
+        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1b", p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // COLLECT SECONDARY MISSION GOAL
+    AddStep([localBase, game, isoMap]
+    {
+        const core::Pointd2D p0(500, 200);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
+    });
+    AddStep([game, gs, panelActions] { return new StepGameMissionGoalsIcon(game, gs, panelActions, false); });
+    AddStep([hud]
+    {
+        const int goal = 0;
+        return new StepGameSecondaryMissionGoal(hud, goal);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA OVER TARGET
+    AddStep([isoMap]
+    {
+        const Cell2D cell(70, 54);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD BARRACKS
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BARRACKS);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BARRACKS_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_BARRACKS_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, nullptr, nullptr, "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catGeneric,
+                                               TutorialConstants::structBarracks);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const Cell2D areaTL(69, 55);
+        const Cell2D areaBR(71, 61);
+        const int numToBuild = 1;
+
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
+                                                    ObjectData::TYPE_BARRACKS, numToBuild,
+                                                    "TUT_GAME_BUILD_BARRACKS_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT BARRACKS IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const GameObject * barracks = all.back();
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, barracks, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD SOLDIER
+    AddStep([local, game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const GameObject * barracks = all.back();
+
+        return new StepGameSelectObject(game, isoMap, barracks, "TUT_GAME_BUILD_LSOLDIER", p0,
+                                        delayAnimLong);
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_LSOLDIER",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BARRACKS,
+                                                  delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildUnitEnd(hud, "TUT_GAME_BUILD_LSOLDIER", delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([local]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
+        const auto barracks = static_cast<Barracks *>(all.back());
+        return new StepDelay(barracks->GetTimeBuildUnit());
+    });
     /*
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]

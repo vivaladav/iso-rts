@@ -276,10 +276,10 @@ void MissionGoal::SetMissionRewards()
             const int multMaterial = 50;
             mRewards[ER_MATERIAL] = mQuantity * multMaterial;
 
-            const int multBlobs = 10;
+            const int multBlobs = 5;
             mRewards[ER_BLOBS] = mQuantity * multBlobs;
 
-            const int multDiamonds = 10;
+            const int multDiamonds = 5;
             mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
         }
         else if(mType == TYPE_BUILD_STRUCTURES)
