@@ -730,15 +730,15 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // BUILD TOWER IN LEFT WALL 1
+    // BUILD BUNKER IN LEFT WALL 1
     AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 600);
 
         const auto reg = game->GetObjectsRegistry();
-        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_DEFENSIVE_TOWER);
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BUNKER);
 
-        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_DTOWER_1");
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BUNKER_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -746,7 +746,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([game, gs, panelActions]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_DTOWER_1",
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_BUNKER_1",
                                                   PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
         step->SetInfoPosition(p0.x, p0.y);
 
@@ -755,11 +755,10 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([hud]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
-                                               "TUT_GAME_BUILD_GATE_2",
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3", nullptr,
                                                "TUT_GAME_BASE_BUILD_UNIT_3",
                                                TutorialConstants::catDefenses,
-                                               TutorialConstants::structDefTower);
+                                               TutorialConstants::structBunker);
         step->SetDelayAnimation(2.f);
         step->SetInfoPosition(p0.x, p0.y);
 
@@ -770,8 +769,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
         const core::Pointd2D p0(1300, 100);
         const unsigned int numToBuild = 1;
         auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallLeft1TL, wallLeft1BR,
-                                                    ObjectData::TYPE_DEFENSIVE_TOWER, numToBuild,
-                                                    "TUT_GAME_BUILD_DTOWER_1");
+                                                    ObjectData::TYPE_BUNKER, numToBuild,
+                                                    "TUT_GAME_BUILD_BUNKER_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -1083,15 +1082,15 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    // BUILD TOWER IN RIGHT WALL 1
+    // BUILD BUNKER IN RIGHT WALL 1
     AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 600);
 
         const auto reg = game->GetObjectsRegistry();
-        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_DEFENSIVE_TOWER);
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_BUNKER);
 
-        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_DTOWER_1");
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_BUNKER_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
@@ -1099,7 +1098,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([game, gs, panelActions]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_DTOWER_1",
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_BUNKER_1",
                                                   PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
         step->SetInfoPosition(p0.x, p0.y);
 
@@ -1108,11 +1107,10 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([hud]
     {
         const core::Pointd2D p0(1300, 100);
-        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3",
-                                               "TUT_GAME_BUILD_GATE_2",
+        auto step = new StepGameBuildStructure(hud,"TUT_GAME_BUILD_DTOWER_3", nullptr,
                                                "TUT_GAME_BASE_BUILD_UNIT_3",
                                                TutorialConstants::catDefenses,
-                                               TutorialConstants::structDefTower);
+                                               TutorialConstants::structBunker);
         step->SetDelayAnimation(2.f);
         step->SetInfoPosition(p0.x, p0.y);
 
@@ -1123,8 +1121,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
         const core::Pointd2D p0(1300, 100);
         const unsigned int numToBuild = 1;
         auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, wallRight1TL, wallRight1BR,
-                                                    ObjectData::TYPE_DEFENSIVE_TOWER, numToBuild,
-                                                    "TUT_GAME_BUILD_DTOWER_1");
+                                                    ObjectData::TYPE_BUNKER, numToBuild,
+                                                    "TUT_GAME_BUILD_BUNKER_1");
         step->SetInfoPosition(p0.x, p0.y);
 
         return step;
