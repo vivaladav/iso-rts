@@ -612,6 +612,89 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // BUILD RESEARCH CENTER
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_RESEARCH_CENTER);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_RES_CEN_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_RES_CEN_1",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, "TUT_GAME_BUILD_RES_CEN_2", nullptr,
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catTech,
+                                               TutorialConstants::structResearchCenter);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const Cell2D areaTL(42, 42);
+        const Cell2D areaBR(47, 47);
+        const int numToBuild = 1;
+
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
+                                                    ObjectData::TYPE_RESEARCH_CENTER, numToBuild,
+                                                    "TUT_GAME_BUILD_RES_CEN_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT RESEARCH CENTER IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        const core::Pointd2D p0(1300, 400);
+        return new StepGameConnectStructFree(game, rc, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // SELECT RESEARCH CENTER
+    AddStep([local, game, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+
+        return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0,
+                                        delayAnimLong);
+    });
+    // SETUP RESEARCH
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1000, 650);
+        return new StepGameSetupResearchIcon(game, gs, panelActions, p0);
+    });
+    AddStep([hud]
+    {
+        return new StepGameSetupResearch(hud, { 100, 80, 70 });
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
     /*
     // BUILD DEFENSIVE TOWER WITH WORKER 2
     AddStep([game, gs, panelActions]
