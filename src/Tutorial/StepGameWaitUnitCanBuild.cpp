@@ -24,7 +24,7 @@ StepGameWaitUnitCanBuild::StepGameWaitUnitCanBuild(const Player * p, const Objec
         auto sm = sgl::utilities::StringManager::Instance();
 
         auto info = GetPanelInfo();
-        info->AddActionEntry(sm->GetCString(text), 0.f, false, false);
+        info->AddInfoEntry(sm->GetCString(text), 0.f, false, false);
     }
 }
 
