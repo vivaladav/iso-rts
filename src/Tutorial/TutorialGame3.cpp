@@ -97,11 +97,6 @@ namespace
 {
 using namespace game;
 
-constexpr unsigned int indWorker1 = 0;
-constexpr unsigned int indWorker2 = 1;
-constexpr unsigned int indSoldier1 = 2;
-constexpr unsigned int indSpawner1 = 3;
-
 constexpr float delayAnimLong = 2.f;
 
 constexpr float speedCamera = 700.f;
@@ -378,7 +373,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // OPEN LOOTBOX
     AddStep([this, local, game, isoMap]
     {
-        const auto unit = local->GetUnit(indWorker1);
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_WORKER1);
+        const auto unit = all.back();
         const GameObject * lootbox = GetObjectInCell(cellLootbox1);
         const core::Pointd2D p0(500, 100);
 
@@ -423,7 +419,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
             return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1", p0);
         });
     AddStep([] { return new StepDelay(0.5f); });
-    // BUILD SECOND WORKER UNIT
+    // BUILD WORKER UNIT 2
     AddStep([localBase, game, isoMap]
         {
             const core::Pointd2D p0(500, 200);
@@ -935,77 +931,76 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn, game]
-        {
-            const core::Pointd2D p0(50, 600);
-            return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1", p0);
-        });
+    {
+        const core::Pointd2D p0(50, 600);
+        return new StepGameBackToBase(panelTurn, "TUT_GAME_BACK_TO_BASE_1", p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD SPAWNER
-    AddStep([]
-        {
-            const core::Pointd2D p0(300, 300);
-            return new StepGameSingleInfo(p0, "TUT_GAME_BUILD_SPAWNER_1");
-        });
     AddStep([localBase, game, isoMap]
-        {
-            const core::Pointd2D p0(350, 300);
-            return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0);
-        });
+    {
+        const core::Pointd2D p0(1300, 100);
+        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0,
+                                        delayAnimLong);
+    });
     AddStep([game, gs, panelActions]
-        {
-            return new StepGameBuildUnitStart(game, gs, panelActions,
-                                              PanelObjectActions::BTN_BUILD_UNIT_BASE);
-        });
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_SPAWNER_1",
+                                                  PanelObjectActions::BTN_BUILD_UNIT_BASE,
+                                                  delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([hud]
-        {
-            return new StepGameBuildStructure(hud, nullptr, "TUT_GAME_BUILD_SPAWNER_2",
-                                              TutorialConstants::catUnitGeneric,
-                                              TutorialConstants::unitMiniSpawner);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
+    {
+        return new StepGameBuildStructure(hud, nullptr, "TUT_GAME_BUILD_SPAWNER_2",
+                                          "TUT_GAME_BASE_BUILD_UNIT_3",
+                                          TutorialConstants::catUnitGeneric,
+                                          TutorialConstants::unitMiniSpawner);
+    });
     AddStep([localBase] { return new StepDelay(localBase->GetTimeBuildUnit()); });
-    // CLEAR SELECTION
-    AddStep([gs] { return new StepGameClearSelection(gs); });
-    AddStep([] { return new StepDelay(0.5f); });
     // SELECT SPAWNER
+    AddStep([] { return new StepDelay(0.5f); });
     AddStep([local, game, isoMap]
-        {
-            const auto unit = local->GetUnit(indSpawner1);
-            const core::Pointd2D p0(1300, 450);
-            return new StepGameUnit(game, isoMap, unit, p0);
-        });
+    {
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SPAWNER1);
+        const auto unit = all.back();
+        const core::Pointd2D p0(1300, 450);
+        return new StepGameUnit(game, isoMap, unit, p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // ADD ENEMY NEAR BASE
     AddStep([]
-            {
-                const core::Pointd2D p0(600, 150);
-                return new StepGameEnemyIntro(p0);
-            });
+    {
+        const core::Pointd2D p0(600, 150);
+        return new StepGameEnemyIntro(p0);
+    });
     AddStep([this, playerAI]
-            {
-                return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
-                                            cellEnemy1, true);
-            });
+    {
+        return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SOLDIER1,
+                                    cellEnemy1, true);
+    });
     // MOVE CAMERA
     AddStep([game]
-            {
-                const int movX = -250;
-                const int movY = -250;
-                return new StepGameMoveCamera(movX, movY);
-            });
+    {
+        const int movX = -250;
+        const int movY = -250;
+        return new StepGameMoveCamera(movX, movY);
+    });
     // MOVE SPAWNER NEAR ENEMY
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indSpawner1);
-            const Cell2D target(70, 63);
-            const core::Pointd2D p0(1100, 300);
-            return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
-        });
+    {
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SPAWNER1);
+        const auto unit = all.back();
+        const Cell2D target(70, 63);
+        const core::Pointd2D p0(1100, 300);
+        return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // SPAWN MINI UNITS
     AddStep([game, gs, panelActions]
@@ -1016,46 +1011,52 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([hud] { return new StepGameSetupMiniUnits(hud, { 2, 3 }, ObjectData::TYPE_MINI_UNIT1); });
     AddStep([local]
-        {
-            const auto unit = local->GetUnit(indSpawner1);
-            return new StepGameWaitObjectIdle(unit);
-        });
+    {
+        const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SPAWNER1);
+        const auto unit = all.back();
+        return new StepGameWaitObjectIdle(unit);
+    });
     // SELECT MINI UNITS
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, game, isoMap]
-        {
-            const auto mu = GetObjectInCell(cellMiniUnits1);
-            const core::Pointd2D p0(500, 250);
-            return new StepGameSelectObject(game, isoMap, mu, "TUT_GAME_MU_1", p0);
-        });
+    {
+        const auto mu = GetObjectInCell(cellMiniUnits1);
+        const core::Pointd2D p0(500, 250);
+        return new StepGameSelectObject(game, isoMap, mu, "TUT_GAME_MU_1", p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     // SET TARGET FOR MINI UNITS
     AddStep([game, gs, panelActions]
-        {
-            const core::Pointd2D p0(200, 600);
-            return new StepGameSetTargetIcon(game, gs, panelActions, p0);
-        });
+    {
+        const core::Pointd2D p0(200, 600);
+        return new StepGameSetTargetIcon(game, gs, panelActions, p0);
+    });
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([this, isoMap]
-        {
-            const auto mu = GetObjectInCell(cellMiniUnits1);
-            const auto group = static_cast<MiniUnitsGroup *>(mu->GetGroup());
-            const Cell2D target(65,52);
-            const core::Pointd2D p0(900, 150);
-            return new StepGameSetTarget(isoMap, group, target, p0);
-        });
+    {
+        const auto mu = GetObjectInCell(cellMiniUnits1);
+        const auto group = static_cast<MiniUnitsGroup *>(mu->GetGroup());
+        const Cell2D target(65,52);
+        const core::Pointd2D p0(900, 150);
+        return new StepGameSetTarget(isoMap, group, target, p0);
+    });
     // END TURN
     AddStep([] { return new StepDelay(0.5f); });
     AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
     // WAIT ENEMY KILL
     AddStep([this]
-        {
-            return new StepGameWaitEnemyKilled(GetObjectInCell(cellEnemy1), GetGameMap());
-        });
+    {
+        return new StepGameWaitEnemyKilled(GetObjectInCell(cellEnemy1), GetGameMap());
+    });
     AddStep([this] { return new StepGameEnemyKilled(); });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    /*
+    // CLEAR SELECTION
+    AddStep([gs] { return new StepGameClearSelection(gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+
     // MOVE CAMERA OVER WORKER 1
     AddStep([local]
             {
