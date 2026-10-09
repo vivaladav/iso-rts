@@ -1250,7 +1250,86 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
+    // INTRO MOVE WORKER TO MATERIAL GENERATOR 3
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_CONT_EXPL");
+    });
+    // MOVE CAMERA OVER TARGET
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(41, 69);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // MOVE WORKER MATERIAL GENERATOR 3
+    AddStep([gameMap, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const Cell2D target(45, 73);
+        return new StepGameMoveToCellFree(gameMap, isoMap, "TUT_GAME_MOVE_UNIT_6",
+                                          target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONQUER MATERIAL GENERATOR 3
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellMatGen3);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_MAT_GEN", p0);
+    });
+    // CONNECT MATERIAL GENERATOR 2
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellMatGen3);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // INTRO MOVE WORKER TO ENERGY GENERATOR 3
+    AddStep([]
+    {
+        const core::Pointd2D p0(1300, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_CONT_EXPL");
+    });
+    // MOVE CAMERA OVER TARGET
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([isoMap]
+    {
+        const Cell2D cell(65, 60);
+        return new StepGameMoveCameraOverCell(cell, isoMap, speedCamera);
+    });
+    // MOVE WORKER ENERGY GENERATOR 3
+    AddStep([gameMap, isoMap, local]
+    {
+        const core::Pointd2D p0(1300, 200);
+        const Cell2D target(70, 57);
+        return new StepGameMoveToCellFree(gameMap, isoMap, "TUT_GAME_MOVE_UNIT_6",
+                                          target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    // CONQUER MATERIAL GENERATOR 3
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen3);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConquerStructFree(game, gen, isoMap, "TUT_GAME_CONQUER_MAT_GEN", p0);
+    });
+    // CONNECT MATERIAL GENERATOR 2
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const GameObject * gen = GetObjectInCell(cellEneGen3);
+        const core::Pointd2D p0(1300, 150);
+        return new StepGameConnectStructFree(game, gen, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
     /*
     // MOVE VIEW BACK TO BASE
     AddStep([panelTurn]
