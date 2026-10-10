@@ -20,35 +20,21 @@
 #include "Tutorial/StepGameAddEnemy.h"
 #include "Tutorial/StepGameBackToBase.h"
 #include "Tutorial/StepGameBuildStructAreaFree.h"
-#include "Tutorial/StepGameBuildStructIntro.h"
 #include "Tutorial/StepGameBuildStructure.h"
-#include "Tutorial/StepGameBuildTowerEnd.h"
 #include "Tutorial/StepGameBuildUnitEnd.h"
-#include "Tutorial/StepGameBuildUnitStart.h"
 #include "Tutorial/StepGameBuildWallLine.h"
 #include "Tutorial/StepGameCityIntro.h"
-#include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameConnectStructFree.h"
 #include "Tutorial/StepGameConnectWall.h"
-#include "Tutorial/StepGameConquerCellsContinue.h"
-#include "Tutorial/StepGameConquerCellsEnd.h"
-#include "Tutorial/StepGameConquerCellsSimple.h"
 #include "Tutorial/StepGameConquerCity.h"
-#include "Tutorial/StepGameConquerEnergyGenIntro.h"
 #include "Tutorial/StepGameConquerStructFree.h"
-#include "Tutorial/StepGameConquerMaterialGenIntro.h"
-#include "Tutorial/StepGameConquerStructSimple.h"
-#include "Tutorial/StepGameDialogTrading.h"
-#include "Tutorial/StepGameDialogTradingBuy.h"
-#include "Tutorial/StepGameDisableCamera.h"
 #include "Tutorial/StepGameEndTurnSimple.h"
 #include "Tutorial/StepGameEnemyIntro.h"
 #include "Tutorial/StepGameEnemyKilled.h"
 #include "Tutorial/StepGameEnding.h"
 #include "Tutorial/StepGameIntro3.h"
 #include "Tutorial/StepGameMissionGoalsIcon.h"
-#include "Tutorial/StepGameMoveCamera.h"
 #include "Tutorial/StepGameMoveCameraOverCell.h"
 #include "Tutorial/StepGameMoveCameraOverObject.h"
 #include "Tutorial/StepGameMoveToCellFree.h"
@@ -60,7 +46,6 @@
 #include "Tutorial/StepGameSecondaryMissionGoal.h"
 #include "Tutorial/StepGameSelectObject.h"
 #include "Tutorial/StepGameSetLootboxPrize.h"
-#include "Tutorial/StepGameSetSelectionActiveAction.h"
 #include "Tutorial/StepGameSetTarget.h"
 #include "Tutorial/StepGameSetTargetIcon.h"
 #include "Tutorial/StepGameSetupMiniUnits.h"
@@ -70,20 +55,12 @@
 #include "Tutorial/StepGameSpawnIcon.h"
 #include "Tutorial/StepGameTechTreeDialog.h"
 #include "Tutorial/StepGameTechTreeIcon.h"
-#include "Tutorial/StepGameTradeIcon.h"
-#include "Tutorial/StepGameUnitConquerCellsIcon.h"
 #include "Tutorial/StepGameUnit.h"
-#include "Tutorial/StepGameUpgradeIntro.h"
-#include "Tutorial/StepGameUpgradeUnit.h"
-#include "Tutorial/StepGameUpgradeUnitFree.h"
 #include "Tutorial/StepGameWaitEnemyKilled.h"
 #include "Tutorial/StepGameWaitLootboxOpen.h"
 #include "Tutorial/StepGameWaitObjectIdle.h"
 #include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWaitUnitCanBuild.h"
-#include "Tutorial/StepGameWallBuildIcon.h"
-#include "Tutorial/StepGameWallBuildEnd.h"
-#include "Tutorial/StepGameWallBuildStart.h"
 #include "Tutorial/StepSaveGame.h"
 #include "Tutorial/TutorialConstants.h"
 #include "Widgets/GameHUD.h"
@@ -99,37 +76,16 @@ constexpr float speedCamera = 700.f;
 
 const Cell2D cellTLCity1(51, 51);
 const Cell2D cellBRCity1(54, 54);
-const Cell2D cellCityBlock2(54, 52);
-const Cell2D cellCityBlock3(52, 52);
-const Cell2D cellCityBlock4(52, 54);
 const Cell2D cellLootbox1(74, 63);
-const Cell2D cellRadar(41, 41);
-const Cell2D cellResCenter(45, 47);
 const Cell2D cellSpecialLootbox1(61, 73);
 const Cell2D cellMatGen1(66, 62);
 const Cell2D cellMatGen2(41, 49);
 const Cell2D cellMatGen3(51, 72);
-const Cell2D cellMatGen4(81, 36);
 const Cell2D cellEneGen1(62, 66);
 const Cell2D cellEneGen2(49, 41);
 const Cell2D cellEneGen3(73, 53);
-const Cell2D cellEneGen4(40, 81);
-const Cell2D cellTower1(58, 58);
-const Cell2D cellTower2(48, 48);
-const Cell2D cellTower3(41, 58);
-const Cell2D cellTower4(56, 42);
-const Cell2D cellTower5(42, 65);
-const Cell2D cellTower6(64, 43);
-const Cell2D cellTower7(70, 46);
-const Cell2D cellTower8(45, 71);
-const Cell2D cellTower9(79, 47);
-const Cell2D cellTower10(47, 79);
-const Cell2D cellBunker1(37, 50);
-const Cell2D cellBunker2(50, 37);
-const Cell2D cellBarracks(53, 47);
 const Cell2D cellEnemy1(64,53);
 const Cell2D cellMiniUnits1(71, 62);
-const Cell2D cellTradingPost(70, 57);
 
 const Cell2D wallLeft1TL(50, 37);
 const Cell2D wallLeft1BR(54, 37);
