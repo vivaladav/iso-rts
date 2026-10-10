@@ -14,8 +14,6 @@
 #include "GameObjects/ObjectData.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "GameObjects/Unit.h"
-#include "Indicators/OverlayCellConquest.h"
-#include "Indicators/OverlayWall.h"
 #include "Screens/ScreenGame.h"
 #include "Tutorial/StepAISetActive.h"
 #include "Tutorial/StepDelay.h"
@@ -32,7 +30,6 @@
 #include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameClickActionButton.h"
 #include "Tutorial/StepGameConnectStructFree.h"
-#include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConnectWall.h"
 #include "Tutorial/StepGameConquerCellsContinue.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
@@ -57,7 +54,6 @@
 #include "Tutorial/StepGameMoveToCellFree.h"
 #include "Tutorial/StepGameMoveUnitFree.h"
 #include "Tutorial/StepGameMoveUnitSimple.h"
-#include "Tutorial/StepGameMoveUnitToCorner.h"
 #include "Tutorial/StepGameOpenLootbox.h"
 #include "Tutorial/StepGameOpenLootboxFree.h"
 #include "Tutorial/StepGameQuickUnitButton.h"
@@ -86,7 +82,6 @@
 #include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWaitUnitCanBuild.h"
 #include "Tutorial/StepGameWallBuildIcon.h"
-#include "Tutorial/StepGameWallBuildIntro.h"
 #include "Tutorial/StepGameWallBuildEnd.h"
 #include "Tutorial/StepGameWallBuildStart.h"
 #include "Tutorial/StepSaveGame.h"
@@ -1938,46 +1933,15 @@ TutorialGame3::TutorialGame3(Screen * screen)
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-
-    /*
-    // ANNOUNCE NEW MINI UNITS
-    AddStep([]
-        {
-            const core::Pointd2D p0(685, 250);
-            return new StepGameSingleInfo(p0, "TUT_GAME_BUILD_MU");
-        });
-    // SELECT SPAWNER 1
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud]
-        {
-            const sgl::core::Pointd2D p0(100, 600);
-            return new StepGameQuickUnitButton(hud, indSpawner1, nullptr, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // SPAWN MINI UNITS
-    AddStep([game, gs, panelActions]
-        {
-            const core::Pointd2D p0(200, 600);
-            return new StepGameSpawnIcon(game, gs, panelActions, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud] { return new StepGameSetupMiniUnits(hud, { 5, 3 }, ObjectData::TYPE_MINI_UNIT2); });
-    AddStep([local]
-        {
-            const auto unit = local->GetUnit(indSpawner1);
-            return new StepGameWaitObjectIdle(unit);
-        });
     // FINAL MESSAGE
-    AddStep([] { return new StepDelay(0.5f); });
     AddStep([game]
-        {
-            const core::Pointd2D p0(635, 200);
-            return new StepGameEnding(game, p0);
-        });
+    {
+        const core::Pointd2D p0(635, 200);
+        return new StepGameEnding(game, p0);
+    });
     // FINAL SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
-    */
 }
 
 } // namespace game

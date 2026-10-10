@@ -10,7 +10,7 @@ namespace game
 {
 
 StepGameEnding::StepGameEnding(const Game * game, const sgl::core::Pointd2D & p0)
-    : TutorialInfoStep(650, 150)
+    : TutorialInfoStep(650, 175)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
