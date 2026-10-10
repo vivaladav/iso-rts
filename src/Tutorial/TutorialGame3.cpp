@@ -149,6 +149,9 @@ const Cell2D wallRight2BR(37, 63);
 const Cell2D wallRight3TL(44, 72);
 const Cell2D wallRight3BR(44, 77);
 
+const Cell2D areaStorageTL(38, 38);
+const Cell2D areaStorageBR(47, 47);
+
 }
 
 namespace game
@@ -1816,35 +1819,127 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([] { return new StepDelay(0.5f); });
     // ENABLE AI
     AddStep([playerAI] { return new StepAISetActive(playerAI->GetAI(), true); });
-
-    /*
-    // BUILD ENERGY WAREHOUSE
-    AddStep([game, gs,panelActions]
-        {
-            const core::Pointd2D p0(1100, 250);
-            return new StepGameBuildStructIntro(game, gs, panelActions, "TUT_GAME_BUILD_STORAGE", p0);
-        });
-    AddStep([hud]
-        {
-            return new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN", "TUT_GAME_BUILD_STORAGE_2",
-                                              TutorialConstants::catResources,
-                                              TutorialConstants::structEneWarehouse);
-        });
-    AddStep([this] { return new StepGameDisableCamera(GetCameraMapController()); });
-    AddStep([this, local, isoMap, game]
-        {
-            const auto unit = local->GetUnit(indWorker1);
-            const core::Pointd2D p0(1000, 200);
-            const Cell2D target(74, 50);
-            return new StepGameBuildTowerEnd(isoMap, unit, target, p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
+    // BUILD MATERIAL STORAGE
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_RES_STORAGE_MATERIAL);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_STORAGE_3");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_STORAGE_3",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN",
+                                               "TUT_GAME_BUILD_STORAGE_1",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catResources,
+                                               TutorialConstants::structMatWarehouse);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaStorageTL, areaStorageBR,
+                                                    ObjectData::TYPE_RES_STORAGE_MATERIAL,
+                                                    numToBuild, "TUT_GAME_BUILD_STORAGE_3");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT MATERIAL STORAGE IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RES_STORAGE_MATERIAL);
+        const GameObject * st = all.back();
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, st, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // BUILD ENERGY STORAGE
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 600);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_RES_STORAGE_ENERGY);
+
+        auto step = new StepGameWaitUnitCanBuild(local, data, "TUT_GAME_BUILD_STORAGE_4");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameClickActionButton(game, gs, panelActions, "TUT_GAME_BUILD_STORAGE_4",
+                                                  PanelObjectActions::BTN_BUILD_STRUCT, delayAnimLong);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([hud]
+    {
+        const core::Pointd2D p0(1300, 100);
+        auto step = new StepGameBuildStructure(hud, "TUT_GAME_CAT_RES_GEN",
+                                               "TUT_GAME_BUILD_STORAGE_2",
+                                               "TUT_GAME_BASE_BUILD_UNIT_3",
+                                               TutorialConstants::catResources,
+                                               TutorialConstants::structEneWarehouse);
+        step->SetDelayAnimation(2.f);
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    AddStep([gameMap, isoMap]
+    {
+        const core::Pointd2D p0(1300, 100);
+        const int numToBuild = 1;
+        auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaStorageTL, areaStorageBR,
+                                                    ObjectData::TYPE_RES_STORAGE_ENERGY,
+                                                    numToBuild, "TUT_GAME_BUILD_STORAGE_4");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
+    // CONNECT ENERGY STORAGE IF NEEDED
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([this, local, isoMap, game]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RES_STORAGE_ENERGY);
+        const GameObject * st = all.back();
+        const core::Pointd2D p0(1200, 400);
+        return new StepGameConnectStructFree(game, st, isoMap, "TUT_GAME_CONNECT_STRUCT", p0);
+    });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+
+    /*
     // ANNOUNCE NEW MINI UNITS
     AddStep([]
         {
