@@ -804,9 +804,9 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
     // random generator for scale
-    const int minScale = 1;
-    const int maxScale = 4;
-    utilities::UniformDistribution genScale(minScale, maxScale);
+    const float minScale = 0.5f;
+    const float maxScale = 1.5f;
+    utilities::UniformRealDistribution genScale(minScale, maxScale);
 
     // random generator for color
     const int color0 = 0;
@@ -827,7 +827,7 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
         const float speed = genSpeed.GetNextValue();
         const float decSpeed = genDecSpeed.GetNextValue();
         const unsigned int color = mObjColors[genColor.GetNextValue()];
-        const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
+        const float scale = genScale.GetNextValue();
         const float delay = genDelay.GetNextValue();
 
         DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, delay, decSpeed,
