@@ -144,6 +144,10 @@ void PanelObjectActions::SetObject(GameObject * obj)
         if(unit->CanSpawn())
             mButtons[BTN_SPAWN]->SetVisible(true);
     }
+    else if(objType == ObjectData::TYPE_BUNKER || objType == ObjectData::TYPE_DEFENSIVE_TOWER)
+    {
+        mButtons[BTN_ATTACK]->SetVisible(true);
+    }
     else if(mObj->GetObjectCategory() == ObjectData::CAT_MINI_UNIT)
     {
         mButtons[BTN_SET_TARGET]->SetVisible(true);
@@ -233,6 +237,12 @@ void PanelObjectActions::HideNotification(Button btnId)
 {
     if(btnId < NUM_BUTTONS)
         mButtons[btnId]->HideNotification();
+}
+
+void PanelObjectActions::SetActionEnabled(Button btnId, bool val)
+{
+    if(btnId < NUM_BUTTONS)
+        mButtons[btnId]->SetEnabled(val);
 }
 
 void PanelObjectActions::SetActionsEnabled(bool val)

@@ -220,6 +220,9 @@ void GameHUD::ShowPanelObjectActions(GameObject * obj)
         UpdateUpgradesNotification();
     else if(type == ObjectData::TYPE_BASE)
         UpdateGoalsNotification();
+    // disable ATTACK when tower or bunker is not linked
+    else if(type == ObjectData::TYPE_BUNKER || type == ObjectData::TYPE_DEFENSIVE_TOWER)
+        mPanelObjActions->SetActionEnabled(PanelObjectActions::BTN_ATTACK, obj->IsLinked());
 }
 
 void GameHUD::UpdateUpgradesNotification()
