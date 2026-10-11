@@ -165,7 +165,7 @@ PanelTurnControl::PanelTurnControl(Player * player, sgl::sgui::Widget * parent)
     mButtonEndTurn = new ButtonEndTurn(this);
 
     // TEXT
-    const int fontSize = 28;
+    const int fontSize = 22;
     const unsigned int colorText = 0x76a7bcff;
     graphic::Font * font = fm->GetFont(WidgetsConstants::FontFileText, fontSize, graphic::Font::NORMAL);
 
@@ -197,14 +197,14 @@ void PanelTurnControl::AddFunctionEndTurn(const std::function<void()> & f)
     mButtonEndTurn->AddOnClickFunction(f);
 }
 
-void PanelTurnControl::SetButtonEndTurnEnabled(bool enabled)
+void PanelTurnControl::SetButtonsEnabled(bool enabled)
 {
+    mButtonBase->SetEnabled(enabled);
     mButtonEndTurn->SetEnabled(enabled);
 }
 
-void PanelTurnControl::ShowPanel()
+void PanelTurnControl::HideText()
 {
-
     mButtonBase->SetVisible(true);
     mButtonEndTurn->SetVisible(true);
 
@@ -213,9 +213,6 @@ void PanelTurnControl::ShowPanel()
 
 void PanelTurnControl::ShowText(const char * text)
 {
-    mButtonBase->SetVisible(false);
-    mButtonEndTurn->SetVisible(false);
-
     mText->SetVisible(true);
     mText->SetText(text);
 
@@ -232,10 +229,14 @@ void PanelTurnControl::HandlePositionChanged()
 
 void PanelTurnControl::PositionText()
 {
-    const int w = mBg->GetWidth();
-    const int h = mBg->GetHeight();
-    const int x = (w - mText->GetWidth()) / 2;
-    const int y = (h - mText->GetHeight()) / 2;
+    const int textAreaX0 = 125;
+    const int textAreaY0 = 16;
+    const int textAreaW = 500;
+    const int textAreaH = 32;
+    const int padding = 20;
+
+    const int x = textAreaX0 + padding;
+    const int y = textAreaY0 + (textAreaH - mText->GetHeight()) / 2;
 
     mText->SetPosition(x, y);
 }

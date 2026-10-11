@@ -797,16 +797,15 @@ void GameHUD::ShowPanelSelectedObject(GameObject * obj)
     OpenPanelSelectedObject();
 }
 
-void GameHUD::ShowTurnControlPanel()
+void GameHUD::HideTurnControlText()
 {
-    mPanelTurnCtrl->ShowPanel();
+    mPanelTurnCtrl->HideText();
 }
 
 void GameHUD::ShowTurnControlText(const char * text)
 {
     mPanelTurnCtrl->ShowText(text);
 }
-
 
 void GameHUD::UpdatePanelTurnControl()
 {
@@ -834,7 +833,7 @@ void GameHUD::UpdatePanelTurnControl()
     else if(TURN_STAGE_TOWERS_ATTACK == mScreen->mTurnStage)
         ShowTurnControlText(sm->GetCString("TOWERS_SHOOTING"));
     else
-        ShowTurnControlPanel();
+        HideTurnControlText();
 }
 
 
@@ -1109,7 +1108,7 @@ void GameHUD::SetLocalActionsEnabled(bool enabled)
     mPanelObjActions->SetActionsEnabled(enabled);
 
     // PANEL TURN CONTROL
-    mPanelTurnCtrl->SetButtonEndTurnEnabled(enabled);
+    mPanelTurnCtrl->SetButtonsEnabled(enabled);
 
     // QUICK UNIT SELECTION
     const unsigned int numButtons = mScreen->mLocalPlayer->GetNumUnits();

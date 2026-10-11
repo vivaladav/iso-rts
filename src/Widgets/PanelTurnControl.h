@@ -29,9 +29,9 @@ public:
     void AddFunctionGoToBase(const std::function<void()> & f);
     void AddFunctionEndTurn(const std::function<void()> & f);
 
-    void SetButtonEndTurnEnabled(bool enabled);
+    void SetButtonsEnabled(bool enabled);
 
-    void ShowPanel();
+    void HideText();
     void ShowText(const char * text);
 
     sgl::sgui::AbstractButton * GetButtonBackToBase() const;

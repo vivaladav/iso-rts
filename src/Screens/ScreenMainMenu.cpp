@@ -380,6 +380,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Removed faction energy.\n"
                   "- Removed auto turn end.\n"
                   "- Improved particles explosion for lasers.\n"
+                  "- Changed design for showing text in bottom control panel.\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
