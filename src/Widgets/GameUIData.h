@@ -587,10 +587,6 @@ enum SpriteIdPanelTurnControl : unsigned int
 {
     // BACKGROUND
     ID_TURNC_BG,
-    // PROGRESS BAR
-    ID_TURNC_PB_BG,
-    ID_TURNC_PB_BAR,
-    ID_TURNC_PB_MARKS,
     // BUTTON BASE
     ID_TURNC_BTN_BASE_NORMAL,
     ID_TURNC_BTN_BASE_DISABLED,
@@ -601,8 +597,6 @@ enum SpriteIdPanelTurnControl : unsigned int
     ID_TURNC_BTN_NEXTT_DISABLED,
     ID_TURNC_BTN_NEXTT_OVER,
     ID_TURNC_BTN_NEXTT_PUSHED,
-    // ICONS
-    ID_TURNC_ICON,
 };
 
 // PANEL UNIT ACTIONS
