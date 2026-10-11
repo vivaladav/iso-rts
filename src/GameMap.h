@@ -123,6 +123,10 @@ public:
 
     void InitCities();
 
+    // object action
+    void SetObjectActionCompleted(GameObject * obj);
+    void SetObjectActionFailed(GameObject * obj);
+
     // kills
     void RegisterEnemyKill(GameObject * killer, GameObject * victim);
     void RegisterCasualty(PlayerFaction killed);

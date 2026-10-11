@@ -612,6 +612,20 @@ void GameObject::SetFatalHit(bool enabled)
         mWeapon->SetFatalHit(enabled);
 }
 
+void GameObject::ClearTargetAttack()
+{
+    if(mWeapon != nullptr)
+        mWeapon->ClearTarget();
+}
+
+bool GameObject::SetTargetAttack(GameObject * obj)
+{
+    if(mWeapon != nullptr)
+        return mWeapon->SetTarget(obj);
+    else
+        return false;
+}
+
 void GameObject::FindAndSetEnemyTarget()
 {
     if(mWeapon == nullptr)

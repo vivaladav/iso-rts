@@ -731,8 +731,7 @@ GameObject * GameMap::CreateObject(GameObjectTypeId type, GameObjectVariantId va
     }
 
     // data to pass to new object
-    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(),
-                                  o2a.owner, mScreenGame);
+    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(), o2a.owner);
 
     if(ObjectData::TYPE_MOUNTAINS1 == type || ObjectData::TYPE_MOUNTAINS2 == type ||
        ObjectData::TYPE_MOUNTAINS3 == type || ObjectData::TYPE_ROCKS == type)
@@ -1023,6 +1022,16 @@ void GameMap::InitCities()
             }
         }
     }
+}
+
+void GameMap::SetObjectActionCompleted(GameObject * obj)
+{
+    mScreenGame->SetObjectActionCompleted(obj);
+}
+
+void GameMap::SetObjectActionFailed(GameObject * obj)
+{
+    mScreenGame->SetObjectActionFailed(obj);
 }
 
 void GameMap::RegisterEnemyKill(GameObject * killer, GameObject * victim)
@@ -2040,8 +2049,7 @@ Unit * GameMap::CreateUnit(GameObjectTypeId ut, const Cell2D & dest, Player * pl
     const ObjectData & data = GetObjectData(ut);
 
     // data to pass to new object
-    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(),
-                                  player, mScreenGame);
+    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(), player);
 
     Unit * unit = new Unit(data, initData);
     unit->SetCell(&mCells[ind]);
@@ -2113,8 +2121,7 @@ GameObject * GameMap::CreateMiniUnit(GameObjectTypeId ut, GameObject * gen, cons
     const ObjectData & data = GetObjectData(ut);
 
     // data to pass to new object
-    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(),
-                                  player, mScreenGame);
+    const ObjectInitData initData(mGame, this, mScreenGame->GetParticlesManager(), player);
 
     // create object
     auto mu = new MiniUnit(data, initData, elements);

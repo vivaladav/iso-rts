@@ -187,6 +187,8 @@ public:
     void SetAttackMode(AttackMode am);
     void SetPerfectShot(bool enabled);
     void SetFatalHit(bool enabled);
+    void ClearTargetAttack();
+    bool SetTargetAttack(GameObject * obj);
 
     void FindAndSetEnemyTarget();
     bool HasEnemyInRange();

@@ -168,7 +168,7 @@ private:
                                 const std::function<void(bool)> & onDone = [](bool){});
     bool SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, Player * player,
                                 const std::function<void(bool)> & onDone = [](bool){});
-    bool SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
+    bool SetupObjectAttack(GameObject * obj, GameObject * target, Player * player,
                          const std::function<void(bool)> & onDone = [](bool){});
     bool SetupHospitalHeal(Hospital * hospital, GameObject * target, Player * player,
                            const std::function<void(bool)> & onDone = [](bool){});

@@ -859,17 +859,17 @@ void ScreenGame::CreateUI()
     // attack
     panelObjActions->AddButtonFunction(PanelObjectActions::BTN_ATTACK, [this]
     {
-        auto unit = static_cast<Unit *>(mLocalPlayer->GetSelectedObject());
-        unit->SetActiveAction(GameObjectActionType::ATTACK);
+        auto selObj = mLocalPlayer->GetSelectedObject();
+        selObj->SetActiveAction(GameObjectActionType::ATTACK);
 
         ClearCellOverlays();
         HideActionPanels();
 
         mHUD->ShowPanelShotType();
-        UpdatePanelHit(unit);
+        UpdatePanelHit(selObj);
 
         // show attack range overlay
-        mOverlayAttack->Show(unit);
+        mOverlayAttack->Show(selObj);
     });
 
     // heal
@@ -1740,7 +1740,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                 GameObject * target = action->ObjDst;
 
                 if(unit->IsTargetAttackInRange(target))
-                    finished = SetupUnitAttack(unit, target, player, basicOnDone);
+                    finished = SetupObjectAttack(unit, target, player, basicOnDone);
                 else
                 {
                     const Cell2D start(unit->GetRow0(), unit->GetCol0());
@@ -1753,7 +1753,7 @@ void ScreenGame::ExecuteAIAction(PlayerAI * ai)
                             {
                                 if(successful)
                                 {
-                                    const bool res = SetupUnitAttack(unit, target, player, basicOnDone);
+                                    const bool res = SetupObjectAttack(unit, target, player, basicOnDone);
 
                                     if(!res)
                                         basicOnDone(false);
@@ -1822,6 +1822,7 @@ void ScreenGame::CancelObjectAction(GameObject * obj)
 
         if(act.obj == obj)
         {
+            const GameObjectCategoryId objCat = act.obj->GetObjectCategory();
             const GameObjectTypeId objType = act.obj->GetObjectType();
             const GameObjectActionType actType = act.type;
 
@@ -1837,9 +1838,12 @@ void ScreenGame::CancelObjectAction(GameObject * obj)
                 act.progressBar->DeleteLater();
                 ap->StopSound("game/build-03.ogg");
             }
+            // stop attack -> cancel target
+            else if(actType == GameObjectActionType::ATTACK)
+                obj->ClearTargetAttack();
 
             // object is a Unit
-            if(act.obj->GetObjectCategory() == ObjectData::CAT_UNIT)
+            if(objCat == ObjectData::CAT_UNIT)
             {
                 if(actType == GameObjectActionType::MOVE)
                     mGameMap->AbortMove(obj);
@@ -1856,11 +1860,6 @@ void ScreenGame::CancelObjectAction(GameObject * obj)
                 {
                     act.progressBar->DeleteLater();
                     ap->StopSound("game/conquer-04.ogg");
-                }
-                else if(actType == GameObjectActionType::ATTACK)
-                {
-                    auto unit = static_cast<Unit *>(obj);
-                    unit->ClearTargetAttack();
                 }
                 // building a structure
                 else if(actType == GameObjectActionType::BUILD_STRUCTURE)
@@ -1966,12 +1965,8 @@ void ScreenGame::FinalizeObjectAction(const GameObjectAction & action, bool succ
     if(obj->GetFaction() == mLocalPlayer->GetFaction())
         mHUD->SetLocalActionsEnabled(true);
 
-    // reset object's active action to default (unless local unit attacking)
-    const bool unitAttacking = obj->GetCurrentAction() == ATTACK &&
-                               obj->GetObjectCategory() == ObjectData::CAT_UNIT &&
-                               obj->IsFactionLocal();
-
-    if(unitAttacking)
+    // reset object's active action to default (unless local attacking)
+    if(obj->GetCurrentAction() == ATTACK && obj->IsFactionLocal())
     {
         obj->SetActiveAction(ATTACK);
 
@@ -2527,19 +2522,19 @@ bool ScreenGame::SetupStructureBuilding(Unit * unit, const Cell2D & cellTarget, 
     return true;
 }
 
-bool ScreenGame::SetupUnitAttack(Unit * unit, GameObject * target, Player * player,
-                                 const std::function<void(bool)> & onDone)
+bool ScreenGame::SetupObjectAttack(GameObject * obj, GameObject * target, Player * player,
+                                   const std::function<void(bool)> & onDone)
 {
-    const bool res = unit->SetTargetAttack(target);
+    const bool res = obj->SetTargetAttack(target);
 
     if(!res)
     {
-        unit->ShowWarning(mSM->GetCString("WARN_CANT_TARGET"), 3.f);
+        obj->ShowWarning(mSM->GetCString("WARN_CANT_TARGET"), 3.f);
         return false;
     }
 
-    unit->SetActiveAction(GameObjectActionType::IDLE);
-    unit->SetCurrentAction(GameObjectActionType::ATTACK);
+    obj->SetActiveAction(GameObjectActionType::IDLE);
+    obj->SetCurrentAction(GameObjectActionType::ATTACK);
 
     // disable actions panel and clear overlays (if action is done by local player)
     if(player->IsLocal())
@@ -2551,7 +2546,7 @@ bool ScreenGame::SetupUnitAttack(Unit * unit, GameObject * target, Player * play
         HideActionPanels();
     }
 
-    mObjActionsToDo.emplace_back(unit, GameObjectActionType::ATTACK, onDone);
+    mObjActionsToDo.emplace_back(obj, GameObjectActionType::ATTACK, onDone);
 
     return true;
 }
@@ -3329,12 +3324,14 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
     const GameMapCell & clickGameCell = mGameMap->GetCell(clickCell.row, clickCell.col);
     GameObject * clickObj = clickGameCell.objTop ? clickGameCell.objTop : clickGameCell.objBottom;
 
+    const auto cat = selObj->GetObjectCategory();
+    const auto type = selObj->GetObjectType();
+    const auto action = selObj->GetActiveAction();
+
     // selected object is a unit
-    if(selObj->GetObjectCategory() == ObjectData::CAT_UNIT)
+    if(cat == ObjectData::CAT_UNIT)
     {
         auto selUnit = static_cast<Unit *>(selObj);
-
-        const GameObjectActionType action = selUnit->GetActiveAction();
 
         if(action == GameObjectActionType::MOVE)
         {
@@ -3345,7 +3342,7 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
                 HandleUnitMoveOnMouseUp(selUnit, clickCell);
         }
         else if(action == GameObjectActionType::ATTACK)
-            SetupUnitAttack(selUnit, clickObj, mLocalPlayer);
+            SetupObjectAttack(selUnit, clickObj, mLocalPlayer);
         else if(action == GameObjectActionType::HEAL)
             SetupUnitHeal(selUnit, clickObj, mLocalPlayer);
         else if(action == GameObjectActionType::CONQUER_CELL)
@@ -3355,14 +3352,12 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
         else if (action == GameObjectActionType::BUILD_STRUCTURE)
             HandleUnitBuildStructureOnMouseUp(selUnit, clickCell);
     }
-    else if(selObj->GetObjectCategory() == ObjectData::CAT_MINI_UNIT)
+    else if(cat == ObjectData::CAT_MINI_UNIT)
     {
-        const GameObjectActionType action = selObj->GetActiveAction();
-
         if(action == GameObjectActionType::SET_TARGET)
             HandleMiniUnitSetTargetOnMouseUp(selObj, clickCell);
     }
-    else if(selObj->GetObjectType() == ObjectData::TYPE_HOSPITAL)
+    else if(type == ObjectData::TYPE_HOSPITAL)
     {
         auto selHospital = static_cast<Hospital *>(selObj);
 
@@ -3370,6 +3365,11 @@ void ScreenGame::HandleActionClick(sgl::core::MouseButtonEvent & event)
 
         if(action == GameObjectActionType::HEAL)
             SetupHospitalHeal(selHospital, clickObj, mLocalPlayer);
+    }
+    else if(type == ObjectData::TYPE_BUNKER || type == ObjectData::TYPE_DEFENSIVE_TOWER)
+    {
+        if(action == GameObjectActionType::ATTACK)
+            SetupObjectAttack(selObj, clickObj, mLocalPlayer);
     }
 }
 
@@ -4035,10 +4035,20 @@ void ScreenGame::UpdateCurrentCell()
     if(sel == nullptr)
         return;
 
-    if(sel->GetObjectCategory() == ObjectData::CAT_UNIT)
+    const auto cat = sel->GetObjectCategory();
+    const auto type = sel->GetObjectType();
+
+    if(cat == ObjectData::CAT_UNIT)
         ShowActiveUnitIndicators(static_cast<Unit *>(sel), cell);
-    else if(sel->GetObjectCategory() == ObjectData::CAT_MINI_UNIT)
+    else if(cat == ObjectData::CAT_MINI_UNIT)
         ShowActiveMiniUnitIndicators(static_cast<MiniUnit *>(sel), cell);
+    else if(type == ObjectData::TYPE_BUNKER || type == ObjectData::TYPE_DEFENSIVE_TOWER)
+    {
+        const auto action = sel->GetActiveAction();
+
+        if(action == GameObjectActionType::ATTACK)
+            UpdatePanelHit(sel);
+    }
 }
 
 void ScreenGame::AddObjectToMinimap(const Cell2D & cell, GameObjectTypeId type, PlayerFaction f)
