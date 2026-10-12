@@ -610,6 +610,28 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(400, 200);
             return new StepGameConquerStructSimple(game, unit, gen, isoMap, p0);
         });
+    // CONNECT SECOND ENERGY GENERATOR
+    AddStep([]
+            {
+                const core::Pointd2D p0(1250, 350);
+                return new StepGameConnectStructIntro(p0);
+            });
+    AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
+    AddStep([this, isoMap, game]
+            {
+                const core::Pointd2D p0(1100, 350);
+                const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
+                const Cell2D target(42, 26);
+                return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
+            });
+    AddStep([this, local, isoMap, game]
+            {
+                const auto unit = local->GetUnit(indUnit2);
+                const core::Pointd2D p0(1000, 550);
+                const Cell2D cellEnd(46, 26);
+                return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
+            });
+    AddStep([] { return new StepDelay(0.5f); });
     // END TURN
     AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
     AddStep([gs] { return new StepGameWaitTurn(gs); });
@@ -640,34 +662,6 @@ TutorialGame1::TutorialGame1(Screen * screen)
                 const sgl::core::Pointd2D p0(450, 620);
                 return new StepGameQuickUnitButton(hud, indUnit2, "TUT_GAME_QUICK_SEL_1", p0);
             });
-    // CONNECT SECOND ENERGY GENERATOR
-    AddStep([]
-            {
-                const core::Pointd2D p0(1250, 350);
-                return new StepGameConnectStructIntro(p0);
-            });
-    AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
-    AddStep([this, isoMap, game]
-            {
-                const core::Pointd2D p0(1100, 350);
-                const Cell2D & cellStart = GetOverlayCellConquest()->GetCellStart();
-                const Cell2D target(42, 26);
-                return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
-            });
-    AddStep([this, local, isoMap, game]
-            {
-                const auto unit = local->GetUnit(indUnit2);
-                const core::Pointd2D p0(1000, 550);
-                const Cell2D cellEnd(46, 26);
-                return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
-            });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
-    AddStep([] { return new StepDelay(0.5f); });
     // BUILD DEFENSIVE TOWER 3 WITH WORKER 2
     AddStep([game, gs, panelActions]
         {
@@ -719,6 +713,12 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(1100, 450);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
+    // END TURN
+    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
+    AddStep([gs] { return new StepGameWaitTurn(gs); });
+    // SAVE GAME
+    AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
     // BUILD GATE WITH UNIT 2
     AddStep([]
         {
@@ -747,12 +747,6 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const Cell2D target(51, 34);
             return new StepGameBuildTowerEnd(isoMap, unit, target, p0);
         });
-    AddStep([] { return new StepDelay(0.5f); });
-    // END TURN
-    AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
-    AddStep([gs] { return new StepGameWaitTurn(gs); });
-    // SAVE GAME
-    AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WALL WITH UNIT 2
     AddStep([game, gs, panelActions] { return new StepGameWallBuildIcon(game, gs, panelActions); });
