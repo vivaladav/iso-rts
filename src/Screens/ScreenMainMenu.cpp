@@ -389,6 +389,8 @@ void ScreenMainMenu::CreateChangelog()
                   "- Fixed Research Center not producing research points when on low resources.\n"
                   "- Fixed check of valid saved files in main menu.\n"
                   "- Add missing view attribute to City Block.\n"
+                  "- Owned Structures are unlinked if enemy interrups connection"
+                  " conquering a structure.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

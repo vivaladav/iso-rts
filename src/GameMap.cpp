@@ -1598,12 +1598,15 @@ void GameMap::ConquerStructure(const Cell2D & end, Player * player)
 
         player->AddStructure(st);
 
-        if(prevOwner)
+        if(prevOwner != nullptr)
             prevOwner->RemoveStructure(st);
     }
 
-    // update map
+    // update linked cells for new and prev owner
     UpdateLinkedCells(player);
+
+    if(prevOwner != nullptr)
+        UpdateLinkedCells(prevOwner);
 
     // update visibility
     if(prevOwner && prevOwner != player)
@@ -1613,7 +1616,6 @@ void GameMap::ConquerStructure(const Cell2D & end, Player * player)
 
     ApplyLocalVisibility();
 }
-
 
 void GameMap::HandleTempleExplorationOutcome(unsigned int outcome, Player * p, Temple * temple)
 {
