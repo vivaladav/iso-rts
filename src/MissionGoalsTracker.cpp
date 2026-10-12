@@ -39,11 +39,11 @@ MissionGoalsTracker::MissionGoalsTracker(Game * g, Player * p)
     , mPlayer(p)
 {
     // init support data
-    mResourcesGained.assign(NUM_EXTENDED_RESOURCES, 0);
-    mResourceTrackerIds.assign(NUM_EXTENDED_RESOURCES, 0);
+    mResourcesGained.assign(NUM_EXT_RESOURCES, 0);
+    mResourceTrackerIds.assign(NUM_EXT_RESOURCES, 0);
 
     // setup resource trackers
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const Player::Stat resId = resourceIds[i];
 
@@ -69,7 +69,7 @@ MissionGoalsTracker::MissionGoalsTracker(Game * g, Player * p)
 
 MissionGoalsTracker::~MissionGoalsTracker()
 {
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const Player::Stat resId = resourceIds[i];
         const int funId = mResourceTrackerIds[i];

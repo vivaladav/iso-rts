@@ -116,9 +116,9 @@ void Structure::ProduceResources()
         Player::RESEARCH
     };
 
-    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXTENDED_RESOURCES);
+    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXT_RESOURCES);
 
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const int val = GetResourceProduction(static_cast<ExtendedResource>(i));
 
@@ -144,9 +144,9 @@ void Structure::ConsumeResources()
         Player::RESEARCH
     };
 
-    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXTENDED_RESOURCES);
+    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXT_RESOURCES);
 
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const int val = GetResourceUsage(static_cast<ExtendedResource>(i));
 

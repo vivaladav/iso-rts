@@ -5,7 +5,7 @@
 namespace game
 {
 
-enum ResourceType : unsigned int;
+enum ExtendedResource : unsigned int;
 
 class ResourceGenerator : public Structure
 {
@@ -17,7 +17,7 @@ public:
 
     void ScaleOutput(float mult);
 
-    ResourceType GetResourceType() const;
+    ExtendedResource GetExtendedResource() const;
 
     int GetResourceProduction(ExtendedResource res) const override;
 
@@ -31,12 +31,12 @@ private:
     void UpdateOutput();
 
 private:
-    ResourceType mResource;
+    ExtendedResource mResource;
 
     int mOutput = 0;
 };
 
-inline ResourceType ResourceGenerator::GetResourceType() const { return mResource; }
+inline ExtendedResource ResourceGenerator::GetExtendedResource() const { return mResource; }
 
 } // namespace game
 

@@ -58,6 +58,8 @@ const Player::Stat stats[] =
     Player::RESEARCH,
 };
 
+const unsigned int numRes = sizeof(stats) / sizeof(Player::Stat);
+
 const ExtendedResource extRes[] =
 {
     ER_ENERGY,
@@ -1107,7 +1109,7 @@ void DialogTrading::Buy()
 void DialogTrading::Sell()
 {
     // check quantities are correct
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < numRes; ++i)
     {
         if(mSell[i] > mPlayer->GetResource(stats[i]).GetValue())
             return ;

@@ -21,7 +21,6 @@ class Structure;
 class Unit;
 
 enum ExtendedResource : unsigned int;
-enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
 enum TechUpgradeId : unsigned int;
 
@@ -193,7 +192,7 @@ private:
     void NotifyResourcesChanged();
     void NotifyUpgradeUnlock(TechUpgradeId upgrade);
 
-    void UpgradeResourceStorage(ResourceType res, float mult);
+    void UpgradeResourceStorage(ExtendedResource res, float mult);
 
     // resources
     void SwitchFromGlobalToLocalResources();

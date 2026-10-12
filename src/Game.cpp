@@ -902,9 +902,9 @@ int Game::GetResourcePriceBuy(ExtendedResource t) const
         100,
     };
 
-    static_assert(sizeof(price) / sizeof(int) == NUM_EXTENDED_RESOURCES);
+    static_assert(sizeof(price) / sizeof(int) == NUM_EXT_RESOURCES);
 
-    if(t < NUM_EXTENDED_RESOURCES)
+    if(t < NUM_EXT_RESOURCES)
         return price[t];
     else
         return 0;
@@ -923,9 +923,9 @@ int Game::GetResourcePriceSell(ExtendedResource t) const
         90,
     };
 
-    static_assert(sizeof(price) / sizeof(int) == NUM_EXTENDED_RESOURCES);
+    static_assert(sizeof(price) / sizeof(int) == NUM_EXT_RESOURCES);
 
-    if(t < NUM_EXTENDED_RESOURCES)
+    if(t < NUM_EXT_RESOURCES)
         return price[t];
     else
         return 0;

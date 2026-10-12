@@ -20,13 +20,13 @@ ResourceGenerator::ResourceGenerator(const ObjectData & data, const ObjectInitDa
 {
     if(ObjectData::TYPE_RES_GEN_ENERGY == data.GetType() ||
        ObjectData::TYPE_RES_GEN_ENERGY_SOLAR == data.GetType())
-        mResource = RES_ENERGY;
+        mResource = ER_ENERGY;
     else if(ObjectData::TYPE_RES_GEN_MATERIAL == data.GetType() ||
             ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT == data.GetType())
-        mResource = RES_MATERIAL1;
+        mResource = ER_MATERIAL;
     else
     {
-        mResource = RES_INVALID;
+        mResource = ER_INVALID;
         return ;
     }
 
@@ -76,8 +76,8 @@ void ResourceGenerator::ScaleOutput(float mult)
 
 int ResourceGenerator::GetResourceProduction(ExtendedResource res) const
 {
-    if((res == ER_ENERGY && mResource == RES_ENERGY) ||
-       (res == ER_MATERIAL && mResource == RES_MATERIAL1))
+    if((res == ER_ENERGY && mResource == ER_ENERGY) ||
+       (res == ER_MATERIAL && mResource == ER_MATERIAL))
         return mOutput;
     else
         return 0;

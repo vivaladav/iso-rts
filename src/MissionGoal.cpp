@@ -116,7 +116,7 @@ const std::unordered_map<MissionGoalType, MissionCategory> MissionGoal::CATEGORI
 
 MissionGoal::MissionGoal()
 {
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 }
 
 MissionGoal::MissionGoal(MissionGoalType type, unsigned int quantity,
@@ -128,7 +128,7 @@ MissionGoal::MissionGoal(MissionGoalType type, unsigned int quantity,
     , mPrimary(primary)
     , mHidden(hidden)
 {
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 
     SetCategory();
 
@@ -193,9 +193,9 @@ void MissionGoal::AssignReward(Player * p)
         Player::RESEARCH,
     };
 
-    static_assert(sizeof(resourceIds) / sizeof(Player::Stat) == NUM_EXTENDED_RESOURCES);
+    static_assert(sizeof(resourceIds) / sizeof(Player::Stat) == NUM_EXT_RESOURCES);
 
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const int reward = mRewards[i];
 
@@ -206,12 +206,12 @@ void MissionGoal::AssignReward(Player * p)
     // update reward data
     mRewardCollected = true;
 
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 }
 
 int MissionGoal::GetRewardByType(ExtendedResource r) const
 {
-    if(r < NUM_EXTENDED_RESOURCES)
+    if(r < NUM_EXT_RESOURCES)
         return mRewards[r];
     else
         return 0;

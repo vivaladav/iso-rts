@@ -46,8 +46,6 @@ class WeaponData;
 struct Cell2D;
 struct GameMapCell;
 
-enum ResourceType : unsigned int;
-
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
 {

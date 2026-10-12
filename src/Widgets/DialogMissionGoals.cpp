@@ -450,7 +450,7 @@ sgl::sgui::Widget * DialogMissionGoals::CreateGoalEntry(unsigned int goalInd,
         const int rewardMargin = 5;
         const int rewardMarginIcon = 30;
 
-        const unsigned int iconIds[NUM_EXTENDED_RESOURCES] =
+        const unsigned int iconIds[NUM_EXT_RESOURCES] =
         {
             ID_UIS_ICON_C_RES_ENERGY_24,
             ID_UIS_ICON_C_RES_MATERIAL_24,
@@ -460,7 +460,7 @@ sgl::sgui::Widget * DialogMissionGoals::CreateGoalEntry(unsigned int goalInd,
             ID_UIS_ICON_C_RES_RESEARCH_24,
         };
 
-        for(unsigned int r = 0; r < NUM_EXTENDED_RESOURCES; ++r)
+        for(unsigned int r = 0; r < NUM_EXT_RESOURCES; ++r)
         {
             const int reward = g.GetRewardByType(static_cast<ExtendedResource>(r));
 

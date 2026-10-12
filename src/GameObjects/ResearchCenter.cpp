@@ -30,8 +30,8 @@ ResearchCenter::ResearchCenter(const ObjectData & data, const ObjectInitData & i
     UpdateHighlight();
 
     // init resource usage
-    mResUsage.assign(NUM_EXTENDED_RESOURCES, 0);
-    mWantedResUsage.assign(NUM_EXTENDED_RESOURCES, 0);
+    mResUsage.assign(NUM_EXT_RESOURCES, 0);
+    mWantedResUsage.assign(NUM_EXT_RESOURCES, 0);
 
     // set default usage wanted (will be updated in UpdateProduction)
     const int defUsage = 10;
@@ -166,7 +166,7 @@ int ResearchCenter::GetResourceUsage(ExtendedResource res) const
     if(mResearchPerTurn == 0)
         return 0;
 
-    if(res < NUM_EXTENDED_RESOURCES)
+    if(res < NUM_EXT_RESOURCES)
         return mResUsage[res];
     else
         return 0;
@@ -174,7 +174,7 @@ int ResearchCenter::GetResourceUsage(ExtendedResource res) const
 
 void ResearchCenter::SetWantedResourceUsage(ExtendedResource res, int val)
 {
-    if(res >= NUM_EXTENDED_RESOURCES)
+    if(res >= NUM_EXT_RESOURCES)
         return ;
 
     if(mWantedResUsage[res] == val)
@@ -187,7 +187,7 @@ void ResearchCenter::SetWantedResourceUsage(ExtendedResource res, int val)
 
 int ResearchCenter::GetWantedResourceUsage(ExtendedResource res) const
 {
-    if(res < NUM_EXTENDED_RESOURCES)
+    if(res < NUM_EXT_RESOURCES)
         return mWantedResUsage[res];
     else
         return 0;
@@ -236,7 +236,7 @@ void ResearchCenter::SetImage()
 void ResearchCenter::UpdateProduction()
 {
     // reset usage
-    mResUsage.assign(NUM_EXTENDED_RESOURCES, 0);
+    mResUsage.assign(NUM_EXT_RESOURCES, 0);
 
     // check owner
     auto p = GetOwner();

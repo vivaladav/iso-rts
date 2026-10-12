@@ -659,35 +659,35 @@ void Player::UnlockUpgrade(TechUpgradeId upgrade)
         break;
 
         case TECH_UP_STORAGE_ENERGY_1:
-            UpgradeResourceStorage(RES_ENERGY, 1.25f);
+            UpgradeResourceStorage(ER_ENERGY, 1.25f);
         break;
 
         case TECH_UP_STORAGE_ENERGY_2:
-            UpgradeResourceStorage(RES_ENERGY, 1.5f);
+            UpgradeResourceStorage(ER_ENERGY, 1.5f);
         break;
 
         case TECH_UP_STORAGE_MATERIAL_1:
-            UpgradeResourceStorage(RES_MATERIAL1, 1.25f);
+            UpgradeResourceStorage(ER_MATERIAL, 1.25f);
         break;
 
         case TECH_UP_STORAGE_MATERIAL_2:
-            UpgradeResourceStorage(RES_MATERIAL1, 1.5f);
+            UpgradeResourceStorage(ER_MATERIAL, 1.5f);
         break;
 
         case TECH_UP_STORAGE_DIAMONDS_1:
-            UpgradeResourceStorage(RES_DIAMONDS, 1.25f);
+            UpgradeResourceStorage(ER_DIAMONDS, 1.25f);
         break;
 
         case TECH_UP_STORAGE_DIAMONDS_2:
-            UpgradeResourceStorage(RES_DIAMONDS, 1.5f);
+            UpgradeResourceStorage(ER_DIAMONDS, 1.5f);
         break;
 
         case TECH_UP_STORAGE_BLOBS_1:
-            UpgradeResourceStorage(RES_BLOBS, 1.25f);
+            UpgradeResourceStorage(ER_BLOBS, 1.25f);
             break;
 
         case TECH_UP_STORAGE_BLOBS_2:
-            UpgradeResourceStorage(RES_BLOBS, 1.5f);
+            UpgradeResourceStorage(ER_BLOBS, 1.5f);
         break;
 
         case TECH_UP_PRACTICE_TARGET:
@@ -747,7 +747,7 @@ void Player::OnNewTurn()
         RESEARCH
     };
 
-    for(unsigned int r = 0; r < NUM_EXTENDED_RESOURCES; ++r)
+    for(unsigned int r = 0; r < NUM_EXT_RESOURCES; ++r)
     {
         const auto er = static_cast<ExtendedResource>(r);
         const int delta = GetResourceDelta(er);
@@ -972,7 +972,7 @@ void Player::NotifyUpgradeUnlock(TechUpgradeId upgrade)
         it.second(upgrade);
 }
 
-void Player::UpgradeResourceStorage(ResourceType res, float mult)
+void Player::UpgradeResourceStorage(ExtendedResource res, float mult)
 {
     const GameObjectTypeId objectTypes[] =
     {
@@ -982,13 +982,13 @@ void Player::UpgradeResourceStorage(ResourceType res, float mult)
         ObjectData::TYPE_RES_STORAGE_BLOBS,
     };
 
-    if(res == RES_ENERGY)
+    if(res == ER_ENERGY)
         mStorageEnergyMult *= mult;
-    else if(res == RES_MATERIAL1)
+    else if(res == ER_MATERIAL)
         mStorageMaterialMult *= mult;
-    else if(res == RES_DIAMONDS)
+    else if(res == ER_DIAMONDS)
         mStorageDiamondsMult *= mult;
-    else if(res == RES_BLOBS)
+    else if(res == ER_BLOBS)
         mStorageBlobsMult *= mult;
 
     // notify existing structures

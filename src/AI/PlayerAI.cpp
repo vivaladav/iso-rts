@@ -797,8 +797,8 @@ void PlayerAI::AddActionsUnit(Unit * u)
         AddActionUnitConnectStructure(u);
 
         // CONQUEST RESOURCE GENERATORS
-        AddActionUnitConquerResGen(u, RES_ENERGY);
-        AddActionUnitConquerResGen(u, RES_MATERIAL1);
+        AddActionUnitConquerResGen(u, ER_ENERGY);
+        AddActionUnitConquerResGen(u, ER_MATERIAL);
         AddActionUnitConquerCity(u);
     }
 
@@ -1057,19 +1057,19 @@ void PlayerAI::AddActionUnitBuildStructure(Unit * u)
 
     // RESOURCE GENERATORS
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_GEN_ENERGY_SOLAR))
-        AddActionUnitBuildResourceGenerator(u, RES_ENERGY, priority);
+        AddActionUnitBuildResourceGenerator(u, ER_ENERGY, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT))
-        AddActionUnitBuildResourceGenerator(u, RES_MATERIAL1, priority);
+        AddActionUnitBuildResourceGenerator(u, ER_MATERIAL, priority);
 
     // RESOURCE STORAGE
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_ENERGY))
-        AddActionUnitBuildResourceStorage(u, RES_ENERGY, priority);
+        AddActionUnitBuildResourceStorage(u, ER_ENERGY, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_MATERIAL))
-        AddActionUnitBuildResourceStorage(u, RES_MATERIAL1, priority);
+        AddActionUnitBuildResourceStorage(u, ER_MATERIAL, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_BLOBS))
-        AddActionUnitBuildResourceStorage(u, RES_BLOBS, priority);
+        AddActionUnitBuildResourceStorage(u, ER_BLOBS, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_DIAMONDS))
-        AddActionUnitBuildResourceStorage(u, RES_DIAMONDS, priority);
+        AddActionUnitBuildResourceStorage(u, ER_DIAMONDS, priority);
 
     // UNIT CREATION
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_BARRACKS))
@@ -1227,10 +1227,10 @@ void PlayerAI::AddActionUnitBuildUnitCreator(Unit * u, GameObjectTypeId structTy
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resType, int priority0)
+void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ExtendedResource resType, int priority0)
 {
     // resource not supported
-    if(resType != RES_ENERGY && resType != RES_MATERIAL1)
+    if(resType != ER_ENERGY && resType != ER_MATERIAL)
         return ;
 
     const GameObjectTypeId structTypes[] =
@@ -1281,7 +1281,7 @@ void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resTyp
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ResourceType resType, int priority0)
+void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ExtendedResource resType, int priority0)
 {
     const GameObjectTypeId structTypes[] =
     {
@@ -1875,10 +1875,10 @@ void PlayerAI::AddActionUnitConquerCity(Unit * u)
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitConquerResGen(Unit * u, ResourceType type)
+void PlayerAI::AddActionUnitConquerResGen(Unit * u, ExtendedResource type)
 {
     // resource not supported
-    if(type != RES_ENERGY && type != RES_MATERIAL1)
+    if(type != ER_ENERGY && type != ER_MATERIAL)
         return ;
 
     // not enough energy to consider this action now
@@ -1931,7 +1931,7 @@ void PlayerAI::AddActionUnitConquerResGen(Unit * u, ResourceType type)
     {
         auto resGen = static_cast<ResourceGenerator *>(mResGenerators[i]);
 
-        if(resGen->GetResourceType() != type)
+        if(resGen->GetExtendedResource() != type)
             continue;
 
         ++totGenerators;
@@ -2198,34 +2198,34 @@ void PlayerAI::AddActionCreateUnit(Structure * gen, const std::vector<GameObject
 
         const float bonusRes = -10.f;
 
-        if(costs[RES_ENERGY] > 0)
+        if(costs[ER_ENERGY] > 0)
         {
             if(energy > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_ENERGY] / energy);
+                typePriority += std::roundf(bonusRes * costs[ER_ENERGY] / energy);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_MATERIAL1] > 0)
+        if(costs[ER_MATERIAL] > 0)
         {
             if(material > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_MATERIAL1] / material);
+                typePriority += std::roundf(bonusRes * costs[ER_MATERIAL] / material);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_BLOBS] > 0)
+        if(costs[ER_BLOBS] > 0)
         {
             if(blobs > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_BLOBS] / blobs);
+                typePriority += std::roundf(bonusRes * costs[ER_BLOBS] / blobs);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_DIAMONDS] > 0)
+        if(costs[ER_DIAMONDS] > 0)
         {
             if(diamonds > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_DIAMONDS] / diamonds);
+                typePriority += std::roundf(bonusRes * costs[ER_DIAMONDS] / diamonds);
             else
                 typePriority += bonusRes;
         }
@@ -2371,8 +2371,8 @@ bool PlayerAI::HasPlayerResourcesToBuild(GameObjectTypeId t) const
     const int diamonds = mPlayer->GetResource(Player::DIAMONDS).GetValue();
 
     // not enough resources to build
-    return energy >= costs[RES_ENERGY] && material >= costs[RES_MATERIAL1] &&
-           diamonds >= costs[RES_DIAMONDS] && blobs >= costs[RES_BLOBS];
+    return energy >= costs[ER_ENERGY] && material >= costs[ER_MATERIAL] &&
+           diamonds >= costs[ER_DIAMONDS] && blobs >= costs[ER_BLOBS];
 }
 
 // NOTE this requires that HasPlayerResourcesToBuild is called before to stop execution
@@ -2389,34 +2389,34 @@ int PlayerAI::GetPriorityBonusStructureBuildCost(GameObjectTypeId t, float bonus
 
     float b = 0.f;
 
-    if(costs[RES_ENERGY] > 0)
+    if(costs[ER_ENERGY] > 0)
     {
         if(energy > 0)
-            b += bonus * costs[RES_ENERGY] / energy;
+            b += bonus * costs[ER_ENERGY] / energy;
         else
             b += bonus;
     }
 
-    if(costs[RES_MATERIAL1] > 0)
+    if(costs[ER_MATERIAL] > 0)
     {
         if(material > 0)
-            b += bonus * costs[RES_MATERIAL1] / material;
+            b += bonus * costs[ER_MATERIAL] / material;
         else
             b += bonus;
     }
 
-    if(costs[RES_BLOBS] > 0)
+    if(costs[ER_BLOBS] > 0)
     {
         if(blobs > 0)
-            b += bonus * costs[RES_BLOBS] / blobs;
+            b += bonus * costs[ER_BLOBS] / blobs;
         else
             b += bonus;
     }
 
-    if(costs[RES_DIAMONDS] > 0)
+    if(costs[ER_DIAMONDS] > 0)
     {
         if(diamonds > 0)
-            b += bonus * costs[RES_DIAMONDS] / diamonds;
+            b += bonus * costs[ER_DIAMONDS] / diamonds;
         else
             b += bonus;
     }

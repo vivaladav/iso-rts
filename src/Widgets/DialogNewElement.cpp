@@ -812,10 +812,10 @@ void DialogNewElement::CheckBuild(int ind)
 
     const bool CAN_SPEND[NUM_COSTS] =
     {
-        mPlayer->HasEnough(Player::ENERGY,  costs[RES_ENERGY]),
-        mPlayer->HasEnough(Player::MATERIAL, costs[RES_MATERIAL1]),
-        mPlayer->HasEnough(Player::DIAMONDS, costs[RES_DIAMONDS]),
-        mPlayer->HasEnough(Player::BLOBS, costs[RES_BLOBS])
+        mPlayer->HasEnough(Player::ENERGY,  costs[ER_ENERGY]),
+        mPlayer->HasEnough(Player::MATERIAL, costs[ER_MATERIAL]),
+        mPlayer->HasEnough(Player::DIAMONDS, costs[ER_DIAMONDS]),
+        mPlayer->HasEnough(Player::BLOBS, costs[ER_BLOBS])
     };
 
     const bool allowed =  CAN_SPEND[0] && CAN_SPEND[1] && CAN_SPEND[2] && CAN_SPEND[3];

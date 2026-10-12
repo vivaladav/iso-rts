@@ -147,28 +147,19 @@ enum PlayerFaction : unsigned int
     NO_FACTION = 99
 };
 
-enum ResourceType : unsigned int
-{
-    RES_ENERGY,
-    RES_MATERIAL1,
-    RES_DIAMONDS,
-    RES_BLOBS,
-
-    NUM_RESOURCES,
-
-    RES_INVALID
-};
-
 enum ExtendedResource : unsigned int
 {
     ER_ENERGY,
     ER_MATERIAL,
     ER_DIAMONDS,
     ER_BLOBS,
-    ER_MONEY,
+
+    NUM_PRI_RESOURCES,
+
+    ER_MONEY = NUM_PRI_RESOURCES,
     ER_RESEARCH,
 
-    NUM_EXTENDED_RESOURCES,
+    NUM_EXT_RESOURCES,
 
     ER_INVALID
 };

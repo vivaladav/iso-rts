@@ -1253,10 +1253,10 @@ bool GameMap::CanBuildStructure(Unit * unit, const Cell2D & cell, Player * playe
 
     // check costs
     const auto & costs = data.GetCosts();
-    const bool costOk = player->HasEnough(Player::ENERGY, costs[RES_ENERGY]) &&
-                        player->HasEnough(Player::MATERIAL, costs[RES_MATERIAL1]) &&
-                        player->HasEnough(Player::DIAMONDS, costs[RES_DIAMONDS]) &&
-                        player->HasEnough(Player::BLOBS, costs[RES_BLOBS]);
+    const bool costOk = player->HasEnough(Player::ENERGY, costs[ER_ENERGY]) &&
+                        player->HasEnough(Player::MATERIAL, costs[ER_MATERIAL]) &&
+                        player->HasEnough(Player::DIAMONDS, costs[ER_DIAMONDS]) &&
+                        player->HasEnough(Player::BLOBS, costs[ER_BLOBS]);
 
     if(!costOk)
     {
@@ -1311,14 +1311,14 @@ void GameMap::StartBuildStructure(const Cell2D & cell, Player * player, GameObje
     // make player pay
     const auto & costs = data.GetCosts();
 
-    if(costs[RES_ENERGY] > 0)
-        player->SumResource(Player::ENERGY, -costs[RES_ENERGY]);
-    if(costs[RES_MATERIAL1] > 0)
-        player->SumResource(Player::MATERIAL, -costs[RES_MATERIAL1]);
-    if(costs[RES_DIAMONDS] > 0)
-        player->SumResource(Player::DIAMONDS, -costs[RES_DIAMONDS]);
-    if(costs[RES_BLOBS] > 0)
-        player->SumResource(Player::BLOBS, -costs[RES_BLOBS]);
+    if(costs[ER_ENERGY] > 0)
+        player->SumResource(Player::ENERGY, -costs[ER_ENERGY]);
+    if(costs[ER_MATERIAL] > 0)
+        player->SumResource(Player::MATERIAL, -costs[ER_MATERIAL]);
+    if(costs[ER_DIAMONDS] > 0)
+        player->SumResource(Player::DIAMONDS, -costs[ER_DIAMONDS]);
+    if(costs[ER_BLOBS] > 0)
+        player->SumResource(Player::BLOBS, -costs[ER_BLOBS]);
 }
 
 GameObject * GameMap::BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st)
@@ -1820,10 +1820,10 @@ bool GameMap::CanCreateUnit(GameObjectTypeId ut, GameObject * gen, Player * play
     // check if player has enough resources
     const auto & costs = GetObjectData(ut).GetCosts();
 
-    if(!player->HasEnough(Player::Stat::ENERGY, costs[RES_ENERGY]) ||
-       !player->HasEnough(Player::Stat::MATERIAL, costs[RES_MATERIAL1]) ||
-       !player->HasEnough(Player::Stat::DIAMONDS, costs[RES_DIAMONDS]) ||
-       !player->HasEnough(Player::Stat::BLOBS, costs[RES_BLOBS]))
+    if(!player->HasEnough(Player::Stat::ENERGY, costs[ER_ENERGY]) ||
+       !player->HasEnough(Player::Stat::MATERIAL, costs[ER_MATERIAL]) ||
+       !player->HasEnough(Player::Stat::DIAMONDS, costs[ER_DIAMONDS]) ||
+       !player->HasEnough(Player::Stat::BLOBS, costs[ER_BLOBS]))
     {
         gen->ShowWarning(mSM->GetCString("WARN_LACK_RES"), 2.f);
         return false;
@@ -2034,10 +2034,10 @@ void GameMap::StartCreateUnit(GameObjectTypeId ut, Player * player)
     // make player pay
     const auto & costs = GetObjectData(ut).GetCosts();
 
-    player->SumResource(Player::Stat::ENERGY, -costs[RES_ENERGY]);
-    player->SumResource(Player::Stat::MATERIAL, -costs[RES_MATERIAL1]);
-    player->SumResource(Player::Stat::DIAMONDS, -costs[RES_DIAMONDS]);
-    player->SumResource(Player::Stat::BLOBS, -costs[RES_BLOBS]);
+    player->SumResource(Player::Stat::ENERGY, -costs[ER_ENERGY]);
+    player->SumResource(Player::Stat::MATERIAL, -costs[ER_MATERIAL]);
+    player->SumResource(Player::Stat::DIAMONDS, -costs[ER_DIAMONDS]);
+    player->SumResource(Player::Stat::BLOBS, -costs[ER_BLOBS]);
 }
 
 Unit * GameMap::CreateUnit(GameObjectTypeId ut, const Cell2D & dest, Player * player, bool assignWeapon)
@@ -2085,10 +2085,10 @@ bool GameMap::CanCreateMiniUnit(GameObjectTypeId ut, GameObject * gen, int eleme
     // check if player has enough resources
     const auto & costs = GetObjectData(ut).GetCosts();
 
-    if(!player->HasEnough(Player::Stat::ENERGY, costs[RES_ENERGY] * elements) ||
-       !player->HasEnough(Player::Stat::MATERIAL, costs[RES_MATERIAL1] * elements) ||
-       !player->HasEnough(Player::Stat::DIAMONDS, costs[RES_DIAMONDS] * elements) ||
-       !player->HasEnough(Player::Stat::BLOBS, costs[RES_BLOBS] * elements))
+    if(!player->HasEnough(Player::Stat::ENERGY, costs[ER_ENERGY] * elements) ||
+       !player->HasEnough(Player::Stat::MATERIAL, costs[ER_MATERIAL] * elements) ||
+       !player->HasEnough(Player::Stat::DIAMONDS, costs[ER_DIAMONDS] * elements) ||
+       !player->HasEnough(Player::Stat::BLOBS, costs[ER_BLOBS] * elements))
     {
         gen->ShowWarning(mSM->GetCString("WARN_LACK_RES"), 2.f);
         return false;
@@ -2108,10 +2108,10 @@ void GameMap::StartCreateMiniUnit(GameObjectTypeId ut, Player * player, int elem
     // pay costs
     const auto & costs = GetObjectData(ut).GetCosts();
 
-    player->SumResource(Player::Stat::ENERGY, -costs[RES_ENERGY] * elements);
-    player->SumResource(Player::Stat::MATERIAL, -costs[RES_MATERIAL1] * elements);
-    player->SumResource(Player::Stat::DIAMONDS, -costs[RES_DIAMONDS] * elements);
-    player->SumResource(Player::Stat::BLOBS, -costs[RES_BLOBS] * elements);
+    player->SumResource(Player::Stat::ENERGY, -costs[ER_ENERGY] * elements);
+    player->SumResource(Player::Stat::MATERIAL, -costs[ER_MATERIAL] * elements);
+    player->SumResource(Player::Stat::DIAMONDS, -costs[ER_DIAMONDS] * elements);
+    player->SumResource(Player::Stat::BLOBS, -costs[ER_BLOBS] * elements);
 }
 
 GameObject * GameMap::CreateMiniUnit(GameObjectTypeId ut, GameObject * gen, const Cell2D & dest,

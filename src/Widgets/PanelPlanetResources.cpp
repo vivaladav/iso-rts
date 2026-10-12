@@ -45,9 +45,9 @@ PanelPlanetResources::PanelPlanetResources()
     mTitle->SetPosition(marginHeaderX, marginHeaderY);
 
     // ICONS
-    mIcons.assign(NUM_RESOURCES, nullptr);
+    mIcons.assign(NUM_PRI_RESOURCES, nullptr);
 
-    const unsigned int texIdsIcons[NUM_RESOURCES] =
+    const unsigned int texIdsIcons[NUM_PRI_RESOURCES] =
     {
         IND_PM_ICON_ENERGY,
         IND_PM_ICON_MATERIAL,
@@ -55,7 +55,7 @@ PanelPlanetResources::PanelPlanetResources()
         IND_PM_ICON_BLOBS
     };
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         tex = tm->GetSprite(SpriteFilePlanetMap, texIdsIcons[i]);
         mIcons[i] = new graphic::Image(tex);
@@ -63,12 +63,12 @@ PanelPlanetResources::PanelPlanetResources()
     }
 
     // BARS
-    mBars.assign(NUM_RESOURCES, nullptr);
-    mBarsValue.assign(NUM_RESOURCES, 0);
+    mBars.assign(NUM_PRI_RESOURCES, nullptr);
+    mBarsValue.assign(NUM_PRI_RESOURCES, 0);
 
     const unsigned int texIdBar = IND_PM_PIPS_BAR_0;
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         tex = tm->GetSprite(SpriteFilePlanetMap, texIdBar);
         mBars[i] = new graphic::Image(tex);
@@ -81,7 +81,7 @@ PanelPlanetResources::PanelPlanetResources()
 void PanelPlanetResources::SetResourceValue(unsigned int res, unsigned int value)
 {
     // check data is valid
-    if(res >= NUM_RESOURCES)
+    if(res >= NUM_PRI_RESOURCES)
         return ;
 
     if(mBarsValue[res] == value)
@@ -110,7 +110,7 @@ void PanelPlanetResources::HandlePositionChanged()
 void PanelPlanetResources::HandleStateEnabled()
 {
     // ICONS
-    const unsigned int texIdsIcons[NUM_RESOURCES] =
+    const unsigned int texIdsIcons[NUM_PRI_RESOURCES] =
     {
         IND_PM_ICON_ENERGY,
         IND_PM_ICON_MATERIAL,
@@ -120,14 +120,14 @@ void PanelPlanetResources::HandleStateEnabled()
 
     auto tm = sgl::graphic::TextureManager::Instance();
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, texIdsIcons[i]);
         mIcons[i]->SetTexture(tex);
     }
 
     // BARS
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         const unsigned int texIdBar = IND_PM_PIPS_BAR_0 + mBarsValue[i];
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, texIdBar);
@@ -140,7 +140,7 @@ void PanelPlanetResources::HandleStateDisabled()
     auto tm = sgl::graphic::TextureManager::Instance();
 
     // ICONS
-    const unsigned int texIdsIcons[NUM_RESOURCES] =
+    const unsigned int texIdsIcons[NUM_PRI_RESOURCES] =
     {
         IND_PM_ICON_ENERGY_DIS,
         IND_PM_ICON_MATERIAL_DIS,
@@ -148,7 +148,7 @@ void PanelPlanetResources::HandleStateDisabled()
         IND_PM_ICON_BLOBS_DIS
     };
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, texIdsIcons[i]);
         mIcons[i]->SetTexture(tex);
@@ -157,7 +157,7 @@ void PanelPlanetResources::HandleStateDisabled()
     // BARS
     const unsigned int texIdBar = IND_PM_PIPS_BAR_DIS;
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         sgl::graphic::Texture * tex = tm->GetSprite(SpriteFilePlanetMap, texIdBar);
         mBars[i]->SetTexture(tex);
@@ -178,7 +178,7 @@ void PanelPlanetResources::UpdatePositions()
     const int iconY0 = y0 + 70;
     const int iconY1 = y0 + 140;
 
-    const sgl::core::Pointd2D posIcons[NUM_RESOURCES] =
+    const sgl::core::Pointd2D posIcons[NUM_PRI_RESOURCES] =
     {
         { iconX0, iconY0 },
         { iconX1, iconY0 },
@@ -186,13 +186,13 @@ void PanelPlanetResources::UpdatePositions()
         { iconX1, iconY1 },
     };
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
         mIcons[i]->SetPosition(posIcons[i].x, posIcons[i].y);
 
     // BARS
     const int marginBarX = 10;
 
-    for(unsigned int i = 0; i < NUM_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_PRI_RESOURCES; ++i)
     {
         const int barX = posIcons[i].x + mIcons[i]->GetWidth() + marginBarX;
         const int barY = posIcons[i].y + (mIcons[i]->GetHeight() - mBars[i]->GetHeight()) * 0.5f;

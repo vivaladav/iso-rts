@@ -612,10 +612,10 @@ void ScreenPlanetMap::ShowInfo(int territory)
 
     // PANEL RESOURCES
     mPanelResources->SetEnabled(true);
-    mPanelResources->SetResourceValue(RES_ENERGY, planet->GetMapEnergy(territory));
-    mPanelResources->SetResourceValue(RES_MATERIAL1, planet->GetMapMaterial(territory));
-    mPanelResources->SetResourceValue(RES_BLOBS, planet->GetMapBlobs(territory));
-    mPanelResources->SetResourceValue(RES_DIAMONDS, planet->GetMapDiamonds(territory));
+    mPanelResources->SetResourceValue(ER_ENERGY, planet->GetMapEnergy(territory));
+    mPanelResources->SetResourceValue(ER_MATERIAL, planet->GetMapMaterial(territory));
+    mPanelResources->SetResourceValue(ER_BLOBS, planet->GetMapBlobs(territory));
+    mPanelResources->SetResourceValue(ER_DIAMONDS, planet->GetMapDiamonds(territory));
 
     // PANEL INFO
     const int rows = planet->GetMapRows(territory);

@@ -16,7 +16,7 @@ class Unit;
 
 struct GameMapCell;
 
-enum ResourceType : unsigned int;
+enum ExtendedResource : unsigned int;
 
 class PlayerAI
 {
@@ -96,8 +96,8 @@ private:
     void AddActionUnitBuildStructure(Unit * u);
     void AddActionUnitBuildTower(Unit * u);
     void AddActionUnitBuildUnitCreator(Unit * u, GameObjectTypeId structType, int priority0);
-    void AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resType, int priority0);
-    void AddActionUnitBuildResourceStorage(Unit * u, ResourceType resType, int priority0);
+    void AddActionUnitBuildResourceGenerator(Unit * u, ExtendedResource resType, int priority0);
+    void AddActionUnitBuildResourceStorage(Unit * u, ExtendedResource resType, int priority0);
     void AddActionUnitBuildResearchCenter(Unit * u, int priority0);
     void AddActionUnitBuildPracticeTarget(Unit * u, int priority0);
     void AddActionUnitBuildRadarStructure(Unit * u, GameObjectTypeId structType, int priority0);
@@ -106,7 +106,7 @@ private:
     void AddActionUnitOpenLootbox(Unit * u);
     void AddActionUnitConnectStructure(Unit * u);
     void AddActionUnitConquerCity(Unit * u);
-    void AddActionUnitConquerResGen(Unit * u, ResourceType type);
+    void AddActionUnitConquerResGen(Unit * u, ExtendedResource type);
     void AddActionUnitPatrol(Unit * u);
     void AddActionUnitUpgrade(Unit * u);
 
