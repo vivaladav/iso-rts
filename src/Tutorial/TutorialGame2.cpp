@@ -78,8 +78,7 @@ constexpr int turnsCollGenMax2 = 15;
 constexpr int collectablesMin = 2;
 constexpr int collectablesMax = 4;
 
-constexpr float healthEnemyDef = 60.f;
-constexpr float energyEnemyDef = 50.f;
+constexpr float energyEnemyDef = 60.f;
 
 constexpr float delayAnimLong = 2.f;
 
@@ -1237,18 +1236,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
     {
         return new StepGameAddEnemy(GetGameMap(), playerAI, ObjectData::TYPE_UNIT_SCOUT1,
                                     cellEnemy5, false);
-    });
-    // SET HEALTH OF ENEMIES
-    AddStep([this]
-    {
-        std::vector<GameObject *> enemies;
-        enemies.emplace_back(GetObjectInCell(cellEnemy1));
-        enemies.emplace_back(GetObjectInCell(cellEnemy2));
-        enemies.emplace_back(GetObjectInCell(cellEnemy3));
-        enemies.emplace_back(GetObjectInCell(cellEnemy4));
-        enemies.emplace_back(GetObjectInCell(cellEnemy5));
-
-        return new StepGameSetObjectHealth(std::move(enemies), healthEnemyDef);
     });
     // SET ENERGY OF ENEMIES
     AddStep([this]
