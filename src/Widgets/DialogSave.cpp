@@ -99,7 +99,7 @@ DialogSave::DialogSave(Game * game, Screen * screen)
 
     x += icon->GetWidth() + marginIconR;
 
-    const bool hasMoney = player->HasEnough(Player::MONEY, cost.at(ER_MONEY));
+    const bool hasMoney = player->HasEnough(ER_MONEY, cost.at(ER_MONEY));
 
     text = new sgui::Label(std::to_string(cost.at(ER_MONEY)).c_str(), font, this);
     text->SetColor(hasMoney ? WidgetsConstants::colorDialogGood : WidgetsConstants::colorDialogBad);
@@ -116,7 +116,7 @@ DialogSave::DialogSave(Game * game, Screen * screen)
 
     x += icon->GetWidth() + marginIconR;
 
-    const bool hasEnergy = player->HasEnough(Player::ENERGY, cost.at(ER_ENERGY));
+    const bool hasEnergy = player->HasEnough(ER_ENERGY, cost.at(ER_ENERGY));
 
     text = new sgui::Label(std::to_string(cost.at(ER_ENERGY)).c_str(), font, this);
     text->SetColor(hasEnergy ? WidgetsConstants::colorDialogGood : WidgetsConstants::colorDialogBad);
@@ -133,7 +133,7 @@ DialogSave::DialogSave(Game * game, Screen * screen)
 
     x += icon->GetWidth() + marginIconR;
 
-    const bool hasMaterial = player->HasEnough(Player::MATERIAL, cost.at(ER_MATERIAL));
+    const bool hasMaterial = player->HasEnough(ER_MATERIAL, cost.at(ER_MATERIAL));
 
     text = new sgui::Label(std::to_string(cost.at(ER_MATERIAL)).c_str(), font, this);
     text->SetColor(hasMaterial ? WidgetsConstants::colorDialogGood : WidgetsConstants::colorDialogBad);
@@ -157,9 +157,9 @@ DialogSave::DialogSave(Game * game, Screen * screen)
         const std::unordered_map<ExtendedResource, int> & cost = game->GetCostSaveGame();
         auto player = game->GetLocalPlayer();
 
-        player->SumResource(Player::MONEY, -cost.at(ER_MONEY));
-        player->SumResource(Player::ENERGY, -cost.at(ER_ENERGY));
-        player->SumResource(Player::MATERIAL, -cost.at(ER_MATERIAL));
+        player->SumResource(ER_MONEY, -cost.at(ER_MONEY));
+        player->SumResource(ER_ENERGY, -cost.at(ER_ENERGY));
+        player->SumResource(ER_MATERIAL, -cost.at(ER_MATERIAL));
 
         // save game
         game->SaveGame();

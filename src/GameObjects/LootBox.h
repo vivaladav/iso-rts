@@ -5,23 +5,10 @@
 namespace game
 {
 
+enum ExtendedResource : unsigned int;
+
 class LootBox : public GameObject
 {
-public:
-    enum Prize : unsigned int
-    {
-        LB_BLOBS,
-        LB_DIAMONDS,
-        LB_ENERGY,
-        LB_MATERIAL,
-        LB_MONEY,
-        LB_RESEARCH,
-
-        NUM_LB_PRIZES,
-
-        LB_NULL
-    };
-
 public:
     LootBox(const ObjectData & data, const ObjectInitData & initData);
 
@@ -44,7 +31,7 @@ private:
     friend class StepGameSetLootboxPrize;
 
     int mPrizeQuantity = 0;
-    Prize mPrizeType = LB_NULL;
+    ExtendedResource mPrizeType;
 };
 
 

@@ -24,6 +24,7 @@ namespace game
 
 LootBox::LootBox(const ObjectData & data, const ObjectInitData & initData)
     : GameObject(data, initData)
+    , mPrizeType(ER_NULL)
 {
     SetImage();
 
@@ -51,7 +52,7 @@ bool LootBox::Load(sgl::utilities::BinaryFile & bf)
 
     // values
     mPrizeQuantity = bf.ReadInt();
-    mPrizeType = static_cast<Prize>(bf.ReadUint());
+    mPrizeType = static_cast<ExtendedResource>(bf.ReadUint());
 
     return true;
 }
@@ -72,7 +73,7 @@ bool LootBox::Save(sgl::utilities::BinaryFile & bf) const
 
 bool LootBox::IsExploding() const
 {
-    return GetObjectType() == ObjectData::TYPE_LOOTBOX2 && mPrizeType == LB_NULL;
+    return GetObjectType() == ObjectData::TYPE_LOOTBOX2 && mPrizeType == ER_NULL;
 }
 
 void LootBox::Open(Player * p)
@@ -91,19 +92,7 @@ void LootBox::Open(Player * p)
     }
     // give something to player
     else
-    {
-        Player::Stat stats[] =
-        {
-            Player::BLOBS,
-            Player::DIAMONDS,
-            Player::ENERGY,
-            Player::MATERIAL,
-            Player::MONEY,
-            Player::RESEARCH,
-        };
-
-        p->SumResource(stats[mPrizeType], mPrizeQuantity);
-    }
+        p->SumResource(mPrizeType, mPrizeQuantity);
 
     // do not show anyting for AI players
     if(p ->IsAI())
@@ -127,7 +116,7 @@ void LootBox::Open(Player * p)
     };
 
     static_assert(static_cast<unsigned int>(NUM_OUTPUT_TYPES) ==
-                  static_cast<unsigned int>(NUM_LB_PRIZES));
+                  static_cast<unsigned int>(NUM_EXT_RESOURCES));
 
     const float speed = 40.f;
     const float decaySpeed = 80.f;
@@ -153,27 +142,27 @@ void LootBox::SetPrize()
 {
     // define TYPE of prize
     const std::vector<float> probs = { 15.f, 15.f, 20.f, 20.f, 20.f, 10.f };
-    assert(probs.size() == NUM_LB_PRIZES);
+    assert(probs.size() == NUM_EXT_RESOURCES);
 
     sgl::utilities::LoadedDie die(probs);
-    mPrizeType = static_cast<LootBox::Prize>(die.GetNextValue());
+    mPrizeType = static_cast<ExtendedResource>(die.GetNextValue());
 
     // define QUANTITY of prize
     const int mult = GetObjectType() == ObjectData::TYPE_LOOTBOX2 ? 5 : 1;
     int min;
     int max;
 
-    if(LB_MONEY == mPrizeType)
+    if(ER_MONEY == mPrizeType)
     {
         min = mult * 100;
         max = mult * 500;
     }
-    else if(LB_BLOBS == mPrizeType || LB_DIAMONDS == mPrizeType)
+    else if(ER_BLOBS == mPrizeType || ER_DIAMONDS == mPrizeType)
     {
         min = mult * 5;
         max = mult * 25;
     }
-    else if(LB_RESEARCH == mPrizeType)
+    else if(ER_RESEARCH == mPrizeType)
     {
         min = mult * 100;
         max = mult * 300;

@@ -5,7 +5,7 @@
 namespace game
 {
 
-StepGameSetLootboxPrize::StepGameSetLootboxPrize(LootBox * lb, unsigned int prize, int quantity)
+StepGameSetLootboxPrize::StepGameSetLootboxPrize(LootBox * lb, ExtendedResource prize, int quantity)
     : mLootbox(lb)
     , mPrize(prize)
     , mQuantity(quantity)
@@ -16,7 +16,7 @@ void StepGameSetLootboxPrize::OnStart()
 {
     TutorialStep::OnStart();
 
-    mLootbox->mPrizeType = static_cast<LootBox::Prize>(mPrize);
+    mLootbox->mPrizeType = mPrize;
     mLootbox->mPrizeQuantity = mQuantity;
 
     SetDone();

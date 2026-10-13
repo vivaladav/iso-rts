@@ -52,7 +52,7 @@ ResearchCenter::ResearchCenter(const ObjectData & data, const ObjectInitData & i
                                                      UpdateProduction();
                                                  });
 
-        mResearchTrackerId = p->AddOnResourceChanged(Player::RESEARCH,
+        mResearchTrackerId = p->AddOnResourceChanged(ER_RESEARCH,
                                                      [this](const StatValue *, int, int)
                                                     {
                                                         UpdateHighlight();
@@ -71,7 +71,7 @@ ResearchCenter::~ResearchCenter()
     if(p != nullptr)
     {
         p->RemoveOnResourcesChanged(mResTrackerId);
-        p->RemoveOnResourceChanged(Player::RESEARCH, mResearchTrackerId);
+        p->RemoveOnResourceChanged(ER_RESEARCH, mResearchTrackerId);
     }
 }
 
@@ -250,7 +250,7 @@ void ResearchCenter::UpdateProduction()
 
     // -- clamp usage to what's available --
     // ENERGY
-    const int availEnergy = p->GetResource(Player::ENERGY).GetValue() +
+    const int availEnergy = p->GetResource(ER_ENERGY).GetValue() +
                             p->GetResourceDelta(ER_ENERGY);
 
     if(availEnergy < 0)
@@ -261,7 +261,7 @@ void ResearchCenter::UpdateProduction()
         mResUsage[ER_ENERGY] = mWantedResUsage[ER_ENERGY];
 
     // MATERIAL
-    const int availMaterial = p->GetResource(Player::MATERIAL).GetValue() +
+    const int availMaterial = p->GetResource(ER_MATERIAL).GetValue() +
                               p->GetResourceDelta(ER_MATERIAL);
 
     if(availMaterial < 0)
@@ -272,7 +272,7 @@ void ResearchCenter::UpdateProduction()
         mResUsage[ER_MATERIAL] = mWantedResUsage[ER_MATERIAL];
 
     // MONEY
-    const int availMoney = p->GetResource(Player::MONEY).GetValue() +
+    const int availMoney = p->GetResource(ER_MONEY).GetValue() +
                             p->GetResourceDelta(ER_MONEY);
 
     if(availMoney < 0)
@@ -291,7 +291,7 @@ void ResearchCenter::UpdateProduction()
     }
 
     // BLOBS
-    const int availBlobs = p->GetResource(Player::BLOBS).GetValue() -
+    const int availBlobs = p->GetResource(ER_BLOBS).GetValue() -
                               p->GetResourceConsumption(ER_BLOBS);
 
     if(availBlobs < 0)
@@ -302,7 +302,7 @@ void ResearchCenter::UpdateProduction()
         mResUsage[ER_BLOBS] = mWantedResUsage[ER_BLOBS];
 
     // DIAMONDS
-    const int availDiamonds = p->GetResource(Player::DIAMONDS).GetValue() -
+    const int availDiamonds = p->GetResource(ER_DIAMONDS).GetValue() -
                               p->GetResourceConsumption(ER_DIAMONDS);
 
     if(availDiamonds < 0)
@@ -385,7 +385,7 @@ void ResearchCenter::UpdateHighlight()
         return ;
     }
 
-    const int resPoints = GetOwner()->GetResource(Player::RESEARCH).GetValue();
+    const int resPoints = GetOwner()->GetResource(ER_RESEARCH).GetValue();
 
     auto game = GetGame();
     auto player = GetOwner();

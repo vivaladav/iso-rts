@@ -183,24 +183,12 @@ void MissionGoal::AssignReward(Player * p)
         return ;
 
     // assign rewards to player
-    const Player::Stat resourceIds[] =
-    {
-        Player::ENERGY,
-        Player::MATERIAL,
-        Player::DIAMONDS,
-        Player::BLOBS,
-        Player::MONEY,
-        Player::RESEARCH,
-    };
-
-    static_assert(sizeof(resourceIds) / sizeof(Player::Stat) == NUM_EXT_RESOURCES);
-
     for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const int reward = mRewards[i];
 
         if(reward > 0)
-            p->SumResource(resourceIds[i], reward);
+            p->SumResource(static_cast<ExtendedResource>(i), reward);
     }
 
     // update reward data

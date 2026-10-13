@@ -208,9 +208,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         auto game = GetGame();
         Player * player = game->GetLocalPlayer();
 
-        player->SumResource(Player::Stat::MONEY, -costExploreMoney);
-        player->SumResource(Player::Stat::ENERGY, -costExploreEnergy);
-        player->SumResource(Player::Stat::MATERIAL, -costExploreMaterial);
+        player->SumResource(ER_MONEY, -costExploreMoney);
+        player->SumResource(ER_ENERGY, -costExploreEnergy);
+        player->SumResource(ER_MATERIAL, -costExploreMaterial);
 
         // handle the result
         Planet * planet = game->GetCurrentPlanet();
@@ -316,10 +316,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         Player * player = game->GetLocalPlayer();
 
         // pay costs
-        player->SumResource(Player::Stat::MONEY, -costConquestMoney);
-        player->SumResource(Player::Stat::ENERGY, -costConquestEnergy);
-        player->SumResource(Player::Stat::MATERIAL, -costConquestMaterial);
-        player->SumResource(Player::Stat::DIAMONDS, -costConquestDiamonds);
+        player->SumResource(ER_MONEY, -costConquestMoney);
+        player->SumResource(ER_ENERGY, -costConquestEnergy);
+        player->SumResource(ER_MATERIAL, -costConquestMaterial);
+        player->SumResource(ER_DIAMONDS, -costConquestDiamonds);
 
         // attempt the conquest
         const int territory = mPlanetMap->GetSelectedTerritoryId();
@@ -345,11 +345,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             const int multRes1 = 100;
             const int multRes2 = 10;
 
-            player->SumResource(Player::Stat::MONEY, multMoney * planet->GetMapValue(territory));
-            player->SumResource(Player::Stat::ENERGY, multRes1 * planet->GetMapEnergy(territory));
-            player->SumResource(Player::Stat::MATERIAL, multRes1 * planet->GetMapMaterial(territory));
-            player->SumResource(Player::Stat::BLOBS, multRes2 * planet->GetMapBlobs(territory));
-            player->SumResource(Player::Stat::DIAMONDS, multRes2 * planet->GetMapDiamonds(territory));
+            player->SumResource(ER_MONEY, multMoney * planet->GetMapValue(territory));
+            player->SumResource(ER_ENERGY, multRes1 * planet->GetMapEnergy(territory));
+            player->SumResource(ER_MATERIAL, multRes1 * planet->GetMapMaterial(territory));
+            player->SumResource(ER_BLOBS, multRes2 * planet->GetMapBlobs(territory));
+            player->SumResource(ER_DIAMONDS, multRes2 * planet->GetMapDiamonds(territory));
 
             // update UI
             mPlanetMap->SetButtonState(territory, pf, status);

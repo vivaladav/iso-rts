@@ -1046,12 +1046,12 @@ void Game::CreatePlayers()
         p->SetFaction(f);
 
         // set initial resources
-        p->SetResource(Player::Stat::BLOBS, START_BLOBS);
-        p->SetResource(Player::Stat::DIAMONDS, START_DIAMONDS);
-        p->SetResource(Player::Stat::ENERGY, START_ENERGY);
-        p->SetResource(Player::Stat::MATERIAL, START_MATERIAL);
-        p->SetResource(Player::Stat::MONEY, START_MONEY);
-        p->SetResource(Player::Stat::RESEARCH, START_RESEARCH);
+        p->SetResource(ER_ENERGY, START_ENERGY);
+        p->SetResource(ER_MATERIAL, START_MATERIAL);
+        p->SetResource(ER_DIAMONDS, START_DIAMONDS);
+        p->SetResource(ER_BLOBS, START_BLOBS);
+        p->SetResource(ER_MONEY, START_MONEY);
+        p->SetResource(ER_RESEARCH, START_RESEARCH);
 
         if(f == mLocalFaction)
         {

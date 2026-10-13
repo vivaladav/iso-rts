@@ -26,7 +26,7 @@ ResourceGenerator::ResourceGenerator(const ObjectData & data, const ObjectInitDa
         mResource = ER_MATERIAL;
     else
     {
-        mResource = ER_INVALID;
+        mResource = ER_NULL;
         return ;
     }
 

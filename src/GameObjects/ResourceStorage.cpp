@@ -27,7 +27,7 @@ ResourceStorage::ResourceStorage(const ObjectData & data, const ObjectInitData &
         mResource = ER_MATERIAL;
     else
     {
-        mResource = ER_INVALID;
+        mResource = ER_NULL;
         return;
     }
 
@@ -78,16 +78,8 @@ void ResourceStorage::OnLinkedChanged()
 
     const int diff = IsLinked() ? mCapacity : -mCapacity;
 
-    const Player::Stat statIds[NUM_PRI_RESOURCES] =
-    {
-        Player::Stat::ENERGY,
-        Player::Stat::MATERIAL,
-        Player::Stat::DIAMONDS,
-        Player::Stat::BLOBS
-    };
-
     Player * p = GetOwner();
-    p->SumResourceMax(statIds[mResource], diff);
+    p->SumResourceMax(mResource, diff);
 }
 
 void ResourceStorage::OnAttributeChanged()
@@ -106,16 +98,8 @@ void ResourceStorage::UpdateCapacity()
     {
         const int diff = mCapacity - oldCapacity;
 
-        const Player::Stat statIds[NUM_PRI_RESOURCES] =
-        {
-            Player::Stat::ENERGY,
-            Player::Stat::MATERIAL,
-            Player::Stat::DIAMONDS,
-            Player::Stat::BLOBS
-        };
-
         Player * p = GetOwner();
-        p->SumResourceMax(statIds[mResource], diff);
+        p->SumResourceMax(mResource, diff);
     }
 }
 

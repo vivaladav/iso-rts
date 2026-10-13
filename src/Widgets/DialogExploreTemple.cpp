@@ -165,7 +165,7 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     icon->SetPosition(x, y);
 
     // MONEY - SLIDER
-    const int playerMoney = player->GetResource(Player::Stat::MONEY).GetValue();
+    const int playerMoney = player->GetResource(ER_MONEY).GetValue();
     const int maxTempleMoney = temple->GetMaxInvestableMoney();
     const int maxMoney =  playerMoney < maxTempleMoney ? playerMoney : maxTempleMoney;
 
@@ -195,7 +195,7 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     icon->SetPosition(x, y);
 
     // MATERIAL - SLIDER
-    const int playerMaterial = player->GetResource(Player::Stat::MATERIAL).GetValue();
+    const int playerMaterial = player->GetResource(ER_MATERIAL).GetValue();
     const int maxTempleMaterial = temple->GetMaxInvestableMaterial();
     const int maxMaterial =  playerMaterial < maxTempleMaterial ? playerMaterial : maxTempleMaterial;
 
@@ -226,7 +226,7 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
     icon->SetPosition(x, y);
 
     // DIAMONDS - SLIDER
-    const int playerDiamonds = player->GetResource(Player::Stat::DIAMONDS).GetValue();
+    const int playerDiamonds = player->GetResource(ER_DIAMONDS).GetValue();
     const int maxTempleDiamonds = temple->GetMaxInvestableBlobs();
     const int maxDiamonds =  playerDiamonds < maxTempleDiamonds ? playerDiamonds : maxTempleDiamonds;
 
@@ -257,7 +257,7 @@ DialogExploreTemple::DialogExploreTemple(Player * player, Temple * temple)
 
 
     // BLOBS - SLIDER
-    const int playerBlobs = player->GetResource(Player::Stat::BLOBS).GetValue();
+    const int playerBlobs = player->GetResource(ER_BLOBS).GetValue();
     const int maxTempleBlobs = temple->GetMaxInvestableBlobs();
     const int maxBlobs =  playerBlobs < maxTempleBlobs ? playerBlobs : maxTempleBlobs;
 

@@ -68,14 +68,14 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     const int numDigitsResearch = 6;
     const int numDigits = 5;
 
-    mCallbackValIds.resize(Player::Stat::NUM_PSTATS, 0);
-    mCallbackRangeIds.resize(Player::Stat::NUM_PSTATS, 0);
+    mCallbackValIds.resize(NUM_EXT_RESOURCES, 0);
+    mCallbackRangeIds.resize(NUM_EXT_RESOURCES, 0);
 
-    mGameTooltips.assign(Player::Stat::NUM_PSTATS, nullptr);
-    mSimpleTooltips.assign(Player::Stat::NUM_PSTATS, nullptr);
+    mGameTooltips.assign(NUM_EXT_RESOURCES, nullptr);
+    mSimpleTooltips.assign(NUM_EXT_RESOURCES, nullptr);
 
     // MONEY
-    auto st = Player::Stat::MONEY;
+    auto st = ER_MONEY;
     const StatValue & money = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MONEY);
     auto srd = new SimpleResourceDisplay(tex, numDigitsMoney, this);
@@ -89,7 +89,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         srd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::MONEY).GetValue();
+            const int resVal = mPlayer->GetResource(ER_MONEY).GetValue();
             const int resMax = 0;
             const int resIn = mPlayer->GetResourceProduction(ER_MONEY);
             const int resOut = mPlayer->GetResourceConsumption(ER_MONEY);
@@ -107,7 +107,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     slotX += slotW;
 
     // ENERGY
-    st = Player::Stat::ENERGY;
+    st = ER_ENERGY;
     const StatValue & energy = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_ENERGY);
     auto rd = new ResourceDisplay(tex, numDigits, this);
@@ -122,8 +122,8 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         rd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::ENERGY).GetValue();
-            const int resMax = mPlayer->GetResource(Player::ENERGY).GetMax();
+            const int resVal = mPlayer->GetResource(ER_ENERGY).GetValue();
+            const int resMax = mPlayer->GetResource(ER_ENERGY).GetMax();
             const int resIn = mPlayer->GetResourceProduction(ER_ENERGY);
             const int resOut = mPlayer->GetResourceConsumption(ER_ENERGY);
             tt->SetValues(resVal, resMax, resIn, resOut);
@@ -144,7 +144,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     slotX += slotW;
 
     // MATERIAL
-    st = Player::Stat::MATERIAL;
+    st = ER_MATERIAL;
     const StatValue & material = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_MATERIAL);
     rd = new ResourceDisplay(tex, numDigits, this);
@@ -159,8 +159,8 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         rd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::MATERIAL).GetValue();
-            const int resMax = mPlayer->GetResource(Player::MATERIAL).GetMax();
+            const int resVal = mPlayer->GetResource(ER_MATERIAL).GetValue();
+            const int resMax = mPlayer->GetResource(ER_MATERIAL).GetMax();
             const int resIn = mPlayer->GetResourceProduction(ER_MATERIAL);
             const int resOut = mPlayer->GetResourceConsumption(ER_MATERIAL);
             tt->SetValues(resVal, resMax, resIn, resOut);
@@ -181,7 +181,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     slotX += slotW;
 
     // DIAMONDS
-    st = Player::Stat::DIAMONDS;
+    st = ER_DIAMONDS;
     const StatValue & diamonds = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_DIAMOND);
     rd = new ResourceDisplay(tex, numDigits, this);
@@ -196,8 +196,8 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         rd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::DIAMONDS).GetValue();
-            const int resMax = mPlayer->GetResource(Player::DIAMONDS).GetMax();
+            const int resVal = mPlayer->GetResource(ER_DIAMONDS).GetValue();
+            const int resMax = mPlayer->GetResource(ER_DIAMONDS).GetMax();
             const int resIn = mPlayer->GetResourceProduction(ER_DIAMONDS);
             const int resOut = mPlayer->GetResourceConsumption(ER_DIAMONDS);
             tt->SetValues(resVal, resMax, resIn, resOut);
@@ -218,7 +218,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     slotX += slotW;
 
     // BLOBS
-    st = Player::Stat::BLOBS;
+    st = ER_BLOBS;
     const StatValue & blobs = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_BLOB);
     rd = new ResourceDisplay(tex, numDigits, this);
@@ -233,8 +233,8 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         rd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::BLOBS).GetValue();
-            const int resMax = mPlayer->GetResource(Player::BLOBS).GetMax();
+            const int resVal = mPlayer->GetResource(ER_BLOBS).GetValue();
+            const int resMax = mPlayer->GetResource(ER_BLOBS).GetMax();
             const int resIn = mPlayer->GetResourceProduction(ER_BLOBS);
             const int resOut = mPlayer->GetResourceConsumption(ER_BLOBS);
             tt->SetValues(resVal, resMax, resIn, resOut);
@@ -255,7 +255,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
     slotX += slotW;
 
     // RESEARCH POINTS
-    st = Player::Stat::RESEARCH;
+    st = ER_RESEARCH;
     const StatValue & researchPts = player->GetResource(st);
     tex = tm->GetSprite(SpriteFileResourcesBar, IND_RESBAR_RESEARCH);
     srd = new SimpleResourceDisplay(tex, numDigitsResearch, this);
@@ -269,7 +269,7 @@ PanelResources::PanelResources(Player * player, GameMap * gm, sgl::sgui::Widget 
 
         srd->SetFunctionOnShowingTooltip([this, tt]
         {
-            const int resVal = mPlayer->GetResource(Player::RESEARCH).GetValue();
+            const int resVal = mPlayer->GetResource(ER_RESEARCH).GetValue();
             const int resMax = 0;
             const int resIn = mPlayer->GetResourceProduction(ER_RESEARCH);
             const int resOut = mPlayer->GetResourceConsumption(ER_RESEARCH);
@@ -292,13 +292,13 @@ PanelResources::PanelResources(Player * player, sgl::sgui::Widget * parent)
 
 PanelResources::~PanelResources()
 {
-    assert(mCallbackValIds.size() == Player::NUM_PSTATS);
-    assert(mCallbackRangeIds.size() == Player::NUM_PSTATS);
+    assert(mCallbackValIds.size() == NUM_EXT_RESOURCES);
+    assert(mCallbackRangeIds.size() == NUM_EXT_RESOURCES);
 
     // CLEAR OBSERVERS FROM PLAYER STATS
-    for(unsigned int i = 0; i < Player::NUM_PSTATS; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
-        const auto st = static_cast<Player::Stat>(i);
+        const auto st = static_cast<ExtendedResource>(i);
 
         mPlayer->RemoveOnResourceChanged(st, mCallbackValIds[i]);
         mPlayer->RemoveOnResourceRangeChanged(st, mCallbackRangeIds[i]);
@@ -339,22 +339,22 @@ void PanelResources::OnStringsChanged()
 
     if(mGameMap != nullptr)
     {
-        for(unsigned int i = 0; i < Player::Stat::NUM_PSTATS; ++i)
+        for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
             mGameTooltips[i]->UpdateStrings();
     }
     else
     {
         const char * text[] =
         {
-            "BLOBS",
-            "DIAMONDS",
             "ENERGY",
             "MATERIAL",
+            "DIAMONDS",
+            "BLOBS",
             "MONEY",
             "RESEARCH_PTS",
         };
 
-        for(unsigned int i = 0; i < Player::Stat::NUM_PSTATS; ++i)
+        for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
             mSimpleTooltips[i]->SetText(sm->GetCString(text[i]));
     }
 }

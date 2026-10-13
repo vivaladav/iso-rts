@@ -27,21 +27,6 @@ enum TechUpgradeId : unsigned int;
 class Player
 {
 public:
-    enum Stat : unsigned int
-    {
-        BLOBS,
-        DIAMONDS,
-        ENERGY,
-        MATERIAL,
-        MONEY,
-        RESEARCH,
-
-        NUM_PSTATS,
-
-        INVALID_STAT
-    };
-
-public:
     Player();
     Player(int pid);
     ~Player();
@@ -97,19 +82,20 @@ public:
     void SetBase(Base * b);
 
     // resources
-    const StatValue & GetResource(Stat sid) const;
-    bool HasEnough(Stat sid, int val) const;
-    void SetResource(Stat sid, int val);
-    void SumResource(Stat sid, int val);
-    void SetResourceMax(Stat sid, int val);
-    void SumResourceMax(Stat sid, int val);
+    const StatValue & GetResource(ExtendedResource res) const;
+    bool HasEnough(ExtendedResource res, int val) const;
+    void SetResource(ExtendedResource res, int val);
+    void SumResource(ExtendedResource res, int val);
+    void SetResourceMax(ExtendedResource res, int val);
+    void SumResourceMax(ExtendedResource res, int val);
     unsigned int AddOnResourcesChanged(const std::function<void()> & f);
     void RemoveOnResourcesChanged(unsigned int funId);
-    unsigned int AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *,
-                                                                         int, int)> & f);
-    unsigned int AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f);
-    void RemoveOnResourceChanged(Stat sid, unsigned int funId);
-    void RemoveOnResourceRangeChanged(Stat sid, unsigned int funId);
+    unsigned int AddOnResourceChanged(ExtendedResource res,
+                                      const std::function<void(const StatValue *, int, int)> & f);
+    unsigned int AddOnResourceRangeChanged(ExtendedResource res,
+                                           const std::function<void(const StatValue *)> & f);
+    void RemoveOnResourceChanged(ExtendedResource res, unsigned int funId);
+    void RemoveOnResourceRangeChanged(ExtendedResource res, unsigned int funId);
 
     // kills
     unsigned int GetEnemiesKilled() const;
@@ -197,8 +183,8 @@ private:
     // resources
     void SwitchFromGlobalToLocalResources();
     void SwitchFromLocalToGlobalResources();
-    StatValue & GetCurrentResource(Stat sid);
-    const StatValue & GetCurrentResource(Stat sid) const;
+    StatValue & GetCurrentResource(ExtendedResource res);
+    const StatValue & GetCurrentResource(ExtendedResource res) const;
 
 private:
     std::unordered_map<TechUpgradeId, bool> mUpgrades;
@@ -303,22 +289,6 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 
 inline Base * Player::GetBase() const { return mBase; }
 inline void Player::SetBase(Base * b) { mBase = b; }
-
-inline const StatValue & Player::GetResource(Stat sid) const
-{
-    if(sid < NUM_PSTATS)
-        return GetCurrentResource(sid);
-    else
-        return mDummyStat;
-}
-
-inline bool Player::HasEnough(Stat sid, int val) const
-{
-    if(sid < NUM_PSTATS)
-        return val <= GetCurrentResource(sid).GetValue();
-    else
-        return false;
-}
 
 inline unsigned int Player::GetEnemiesKilled() const { return mEnemiesKilled;  }
 inline void Player::RegisterEnemyKill() { ++mEnemiesKilled; }

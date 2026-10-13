@@ -161,7 +161,7 @@ enum ExtendedResource : unsigned int
 
     NUM_EXT_RESOURCES,
 
-    ER_INVALID
+    ER_NULL
 };
 
 enum TechUpgradeId : unsigned int

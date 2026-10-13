@@ -70,7 +70,7 @@ GameHUD::GameHUD(ScreenGame * screen)
     // LOCAL PLAYER
     Player * local = game->GetLocalPlayer();
 
-    mResearchTrackerId = local->AddOnResourceChanged(Player::RESEARCH,
+    mResearchTrackerId = local->AddOnResourceChanged(ER_RESEARCH,
                                                  [this](const StatValue *, int, int)
                                                  {
                                                      UpdateUpgradesNotification();
@@ -185,7 +185,7 @@ GameHUD::~GameHUD()
 {
     Player * player = mScreen->GetGame()->GetLocalPlayer();
 
-    player->RemoveOnResourceChanged(Player::RESEARCH, mResearchTrackerId);
+    player->RemoveOnResourceChanged(ER_RESEARCH, mResearchTrackerId);
     player->SetOnNumUnitsChanged([]{});
 }
 
@@ -230,7 +230,7 @@ void GameHUD::UpdateUpgradesNotification()
     auto game = mScreen->GetGame();
     auto player = game->GetLocalPlayer();
 
-    const int resPoints = player->GetResource(Player::RESEARCH).GetValue();
+    const int resPoints = player->GetResource(ER_RESEARCH).GetValue();
     int count = 0;
 
     for(unsigned int i = 0; i < NUM_TECH_UPGRADES; ++i)
@@ -640,10 +640,10 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
         HideDialogExploreTemple();
 
         // spend allocated resources
-        player->SumResource(Player::Stat::MONEY, -temple->GetInvestedMoney());
-        player->SumResource(Player::Stat::MATERIAL, -temple->GetInvestedMaterial());
-        player->SumResource(Player::Stat::BLOBS, -temple->GetInvestedBlobs());
-        player->SumResource(Player::Stat::DIAMONDS, -temple->GetInvestedDiamonds());
+        player->SumResource(ER_MONEY, -temple->GetInvestedMoney());
+        player->SumResource(ER_MATERIAL, -temple->GetInvestedMaterial());
+        player->SumResource(ER_BLOBS, -temple->GetInvestedBlobs());
+        player->SumResource(ER_DIAMONDS, -temple->GetInvestedDiamonds());
 
         // start exploration
         temple->StartExploring(player->GetFaction(), [this, player, temple]

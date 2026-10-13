@@ -52,10 +52,10 @@ void StepGameWaitUnitCanBuild::Update(float delta)
 
     // check if player can afford building
     const auto & costs = mData.GetCosts();
-    const bool costOk = mPlayer->HasEnough(Player::ENERGY, costs[ER_ENERGY]) &&
-                        mPlayer->HasEnough(Player::MATERIAL, costs[ER_MATERIAL]) &&
-                        mPlayer->HasEnough(Player::DIAMONDS, costs[ER_DIAMONDS]) &&
-                        mPlayer->HasEnough(Player::BLOBS, costs[ER_BLOBS]);
+    const bool costOk = mPlayer->HasEnough(ER_ENERGY, costs[ER_ENERGY]) &&
+                        mPlayer->HasEnough(ER_MATERIAL, costs[ER_MATERIAL]) &&
+                        mPlayer->HasEnough(ER_DIAMONDS, costs[ER_DIAMONDS]) &&
+                        mPlayer->HasEnough(ER_BLOBS, costs[ER_BLOBS]);
 
     if(costOk)
         SetDone();

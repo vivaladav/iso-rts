@@ -201,9 +201,6 @@ void ScreenGame::InitLoadedGame()
     auto cam = sgl::graphic::Camera::GetDefaultCamera();
     cam->SetPosition(mCameraInitPos.x, mCameraInitPos.y);
 
-    // update Players
-    auto game = GetGame();
-
     // update selection
     if(mLastSelected != nullptr)
     {
@@ -1197,12 +1194,12 @@ void ScreenGame::OnKeyUp(sgl::core::KeyboardEvent & event)
                   << "CURRENT CELL: " << mCurrCell.row << "," << mCurrCell.col
                   << " (" << pcc.x << "," << pcc.y << ")" << "\n"
                   << "RESOURCES"
-                     " - MONEY: " << mLocalPlayer->GetResource(Player::MONEY).GetValue()
-                  << " - ENERGY: " << mLocalPlayer->GetResource(Player::ENERGY).GetValue()
-                  << " - MATERIAL: " << mLocalPlayer->GetResource(Player::MATERIAL).GetValue()
-                  << " - DIAMONDS: " << mLocalPlayer->GetResource(Player::DIAMONDS).GetValue()
-                  << " - BLOBS: " << mLocalPlayer->GetResource(Player::BLOBS).GetValue()
-                  << " - RESEARCH: " << mLocalPlayer->GetResource(Player::RESEARCH).GetValue() << "\n"
+                     " - MONEY: " << mLocalPlayer->GetResource(ER_MONEY).GetValue()
+                  << " - ENERGY: " << mLocalPlayer->GetResource(ER_ENERGY).GetValue()
+                  << " - MATERIAL: " << mLocalPlayer->GetResource(ER_MATERIAL).GetValue()
+                  << " - DIAMONDS: " << mLocalPlayer->GetResource(ER_DIAMONDS).GetValue()
+                  << " - BLOBS: " << mLocalPlayer->GetResource(ER_BLOBS).GetValue()
+                  << " - RESEARCH: " << mLocalPlayer->GetResource(ER_RESEARCH).GetValue() << "\n"
                   << std::endl;
 
         mTrackerMG->PrintState();
@@ -1349,15 +1346,15 @@ void ScreenGame::UpdateAI(float delta)
         return ;
 
     std::cout << "\n----- ScreenGame::UpdateAI " << turnAI << " -----\n"
-              << "MONEY: " << player->GetResource(Player::MONEY).GetValue()
-              << " - ENERGY: " << player->GetResource(Player::ENERGY).GetValue() << " / "
-              << player->GetResource(Player::ENERGY).GetMax()
-              << " - MATERIAL: " << player->GetResource(Player::MATERIAL).GetValue() << "/"
-              << player->GetResource(Player::MATERIAL).GetMax()
-              << " - BLOBS: " << player->GetResource(Player::BLOBS).GetValue() << "/"
-              << player->GetResource(Player::BLOBS).GetMax()
-              << " - DIAMONDS: " << player->GetResource(Player::DIAMONDS).GetValue() << "/"
-              << player->GetResource(Player::DIAMONDS).GetMax()
+              << "MONEY: " << player->GetResource(ER_MONEY).GetValue()
+              << " - ENERGY: " << player->GetResource(ER_ENERGY).GetValue() << " / "
+              << player->GetResource(ER_ENERGY).GetMax()
+              << " - MATERIAL: " << player->GetResource(ER_MATERIAL).GetValue() << "/"
+              << player->GetResource(ER_MATERIAL).GetMax()
+              << " - BLOBS: " << player->GetResource(ER_BLOBS).GetValue() << "/"
+              << player->GetResource(ER_BLOBS).GetMax()
+              << " - DIAMONDS: " << player->GetResource(ER_DIAMONDS).GetValue() << "/"
+              << player->GetResource(ER_DIAMONDS).GetMax()
               << std::endl;
 
     // make AI decide what to do
@@ -2603,8 +2600,6 @@ bool ScreenGame::SetupUnitMove(Unit * unit, const Cell2D & start, const Cell2D &
     const auto path = mPathfinder->MakePath(start.row, start.col, end.row, end.col,
                                             sgl::ai::Pathfinder::ALL_OPTIONS);
 
-    const Player * player = GetGame()->GetActivePlayerByFaction(unit->GetFaction());
-
     // empty path -> exit
     if(path.empty())
     {
@@ -3602,9 +3597,9 @@ void ScreenGame::ShowCellConquestIndicator(Unit * unit, const Cell2D & dest)
     const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot;
 
     const int costResEnergy = cp.GetCostResourceEnergy();
-    const bool doableResEnergy = mLocalPlayer->HasEnough(Player::ENERGY, costResEnergy);
+    const bool doableResEnergy = mLocalPlayer->HasEnough(ER_ENERGY, costResEnergy);
     const int costResMaterial = cp.GetCostResourceMaterial();
-    const bool doableResMaterial = mLocalPlayer->HasEnough(Player::MATERIAL, costResMaterial);
+    const bool doableResMaterial = mLocalPlayer->HasEnough(ER_MATERIAL, costResMaterial);
 
     mOverlayCellConquest->SetPath(totPath, costUnitEnergy, costResEnergy, costResMaterial);
     mOverlayCellConquest->SetCostsDoable(doableUnit, doableResEnergy, doableResMaterial);
@@ -3766,9 +3761,9 @@ void ScreenGame::ShowBuildWallIndicator(Unit * unit, const Cell2D & dest)
     const bool doableUnit = unit->GetEnergy() >= costUnitEnergyTot;
 
     const int costResEnergy = wp.GetCostResourceEnergy();
-    const bool doableResEnergy = mLocalPlayer->HasEnough(Player::ENERGY, costResEnergy);
+    const bool doableResEnergy = mLocalPlayer->HasEnough(ER_ENERGY, costResEnergy);
     const int costResMaterial = wp.GetCostResourceMaterial();
-    const bool doableResMaterial = mLocalPlayer->HasEnough(Player::MATERIAL, costResMaterial);
+    const bool doableResMaterial = mLocalPlayer->HasEnough(ER_MATERIAL, costResMaterial);
 
     mOverlayWall->SetPath(totPath, costUnitEnergy, costResEnergy, costResMaterial);
     mOverlayWall->SetCostsDoable(doableUnit, doableResEnergy, doableResMaterial);

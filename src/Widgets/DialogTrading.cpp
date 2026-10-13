@@ -49,16 +49,16 @@ constexpr unsigned int colorData = 0xadd4ebff;
 
 const std::string zero4("0000");
 
-const Player::Stat stats[] =
+const ExtendedResource stats[] =
 {
-    Player::ENERGY,
-    Player::MATERIAL,
-    Player::DIAMONDS,
-    Player::BLOBS,
-    Player::RESEARCH,
+    ER_ENERGY,
+    ER_MATERIAL,
+    ER_DIAMONDS,
+    ER_BLOBS,
+    ER_RESEARCH,
 };
 
-const unsigned int numRes = sizeof(stats) / sizeof(Player::Stat);
+const unsigned int numRes = sizeof(stats) / sizeof(ExtendedResource);
 
 const ExtendedResource extRes[] =
 {
@@ -912,7 +912,7 @@ void DialogTrading::IncBuyQuantity(TradedResources res, sgl::sgui::Label * label
     const int price = mGame->GetResourcePriceBuy(extRes[res]);
     const int currSpend = GetCurrentSpend();
     const int spend = currSpend + (incBuy * price);
-    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(ER_MONEY).GetValue();
 
     int inc = incBuy;
 
@@ -1018,7 +1018,7 @@ void DialogTrading::UpdateStockLabel(unsigned int statId)
     };
 
     const TradedResources res = resources[statId];
-    const StatValue & s = mPlayer->GetResource(static_cast<Player::Stat>(statId));
+    const StatValue & s = mPlayer->GetResource(static_cast<ExtendedResource>(statId));
 
     auto label = mLabelStock[res];
 
@@ -1049,7 +1049,7 @@ void DialogTrading::UpdateStockLabel(unsigned int statId)
 void DialogTrading::UpdateButtons()
 {
     const int currSpend = GetCurrentSpend();
-    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(ER_MONEY).GetValue();
 
     for(unsigned int i = 0; i < NUM_TRADED_RES; ++i)
     {
@@ -1084,19 +1084,19 @@ void DialogTrading::Buy()
 {
     // spend money
     const int spend = GetCurrentSpend();
-    const int money = mPlayer->GetResource(Player::Stat::MONEY).GetValue();
+    const int money = mPlayer->GetResource(ER_MONEY).GetValue();
 
     if(money < spend || spend == 0)
         return ;
 
-    mPlayer->SumResource(Player::Stat::MONEY, -spend);
+    mPlayer->SumResource(ER_MONEY, -spend);
 
     // get stuff
-    mPlayer->SumResource(Player::Stat::ENERGY, mBuy[TR_ENERGY]);
-    mPlayer->SumResource(Player::Stat::MATERIAL, mBuy[TR_MATERIAL]);
-    mPlayer->SumResource(Player::Stat::DIAMONDS, mBuy[TR_DIAMONDS]);
-    mPlayer->SumResource(Player::Stat::BLOBS, mBuy[TR_BLOBS]);
-    mPlayer->SumResource(Player::Stat::RESEARCH, mBuy[TR_RESEARCH]);
+    mPlayer->SumResource(ER_ENERGY, mBuy[TR_ENERGY]);
+    mPlayer->SumResource(ER_MATERIAL, mBuy[TR_MATERIAL]);
+    mPlayer->SumResource(ER_DIAMONDS, mBuy[TR_DIAMONDS]);
+    mPlayer->SumResource(ER_BLOBS, mBuy[TR_BLOBS]);
+    mPlayer->SumResource(ER_RESEARCH, mBuy[TR_RESEARCH]);
 
     // reset buy quantities
     for(unsigned int i = 0; i < NUM_TRADED_RES; ++i)
@@ -1116,16 +1116,16 @@ void DialogTrading::Sell()
     }
 
     // remove stuff
-    mPlayer->SumResource(Player::Stat::ENERGY, -mSell[TR_ENERGY]);
-    mPlayer->SumResource(Player::Stat::MATERIAL, -mSell[TR_MATERIAL]);
-    mPlayer->SumResource(Player::Stat::DIAMONDS, -mSell[TR_DIAMONDS]);
-    mPlayer->SumResource(Player::Stat::BLOBS, -mSell[TR_BLOBS]);
-    mPlayer->SumResource(Player::Stat::RESEARCH, -mSell[TR_RESEARCH]);
+    mPlayer->SumResource(ER_ENERGY, -mSell[TR_ENERGY]);
+    mPlayer->SumResource(ER_MATERIAL, -mSell[TR_MATERIAL]);
+    mPlayer->SumResource(ER_DIAMONDS, -mSell[TR_DIAMONDS]);
+    mPlayer->SumResource(ER_BLOBS, -mSell[TR_BLOBS]);
+    mPlayer->SumResource(ER_RESEARCH, -mSell[TR_RESEARCH]);
 
     // get money
     const int gain = GetCurrentGain();
 
-    mPlayer->SumResource(Player::Stat::MONEY, gain);
+    mPlayer->SumResource(ER_MONEY, gain);
 
     // reset sell quantities
     for(unsigned int i = 0; i < NUM_TRADED_RES; ++i)

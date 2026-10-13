@@ -329,9 +329,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([this]
     {
         auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellLootbox1));
-        const unsigned int prizeType = LootBox::LB_MATERIAL;
         const int prizeQuantity = 350;
-        return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
+        return new StepGameSetLootboxPrize(lootbox, ER_MATERIAL, prizeQuantity);
     });
     // OPEN LOOTBOX
     AddStep([this, local, game, isoMap]
@@ -451,9 +450,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([this]
     {
         auto lootbox = static_cast<LootBox *>(GetObjectInCell(cellSpecialLootbox1));
-        const unsigned int prizeType = LootBox::LB_NULL;
         const int prizeQuantity = 0;
-        return new StepGameSetLootboxPrize(lootbox, prizeType, prizeQuantity);
+        return new StepGameSetLootboxPrize(lootbox, ER_NULL, prizeQuantity);
     });
     // OPEN SPECIAL LOOTBOX
     AddStep([this, gameMap, isoMap]

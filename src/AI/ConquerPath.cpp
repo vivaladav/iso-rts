@@ -119,8 +119,8 @@ bool ConquerPath::HasResourcesToConquerCell()
         return false;
 
     // check if player has enough resources
-    return mPlayer->HasEnough(Player::Stat::ENERGY, COST_CELL_CONQ_ENERGY) &&
-           mPlayer->HasEnough(Player::Stat::MATERIAL, COST_CELL_CONQ_MATERIAL);
+    return mPlayer->HasEnough(ER_ENERGY, COST_CELL_CONQ_ENERGY) &&
+           mPlayer->HasEnough(ER_MATERIAL, COST_CELL_CONQ_MATERIAL);
 }
 
 bool ConquerPath::InitNextConquest()
@@ -159,8 +159,8 @@ bool ConquerPath::InitNextConquest()
         mOverlay->PopFrontPath();
 
     // take resource from player
-    mPlayer->SumResource(Player::Stat::ENERGY, -COST_CELL_CONQ_ENERGY);
-    mPlayer->SumResource(Player::Stat::MATERIAL, -COST_CELL_CONQ_MATERIAL);
+    mPlayer->SumResource(ER_ENERGY, -COST_CELL_CONQ_ENERGY);
+    mPlayer->SumResource(ER_MATERIAL, -COST_CELL_CONQ_MATERIAL);
 
     // create progress bar
     GameHUD * HUD = mScreen->GetHUD();
