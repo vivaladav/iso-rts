@@ -420,7 +420,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     // PRESENT DIAMONDS
     AddStep([this, local, isoMap]
     {
-        const core::Pointd2D p0(700, 600);
+        const core::Pointd2D p0(600, 200);
         return new StepGameInfoArea(isoMap, areaDiamondsTL, areaDiamondsBR,
                                     "TUT_GAME_MOVE_UNIT_4a", "TUT_GAME_MOVE_UNIT_4b", p0);
     });
@@ -607,7 +607,7 @@ TutorialGame2::TutorialGame2(Screen * screen)
     AddStep([game, isoMap, local]
     {
         const core::Pointd2D p0(1300, 200);
-        const Cell2D target(13,21);
+        const Cell2D target(14,21);
         const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SOLDIER1);
         const auto unit = all.back();
         return new StepGameMoveUnitFree(game, unit, isoMap, "TUT_GAME_MOVE_SOLDIER",
