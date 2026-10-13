@@ -23,6 +23,7 @@
 #include "States/StateTest.h"
 #include "Tutorial/TutorialManager.h"
 
+#include <sgl/core/event/MouseEvent.h>
 #include <sgl/graphic/Cursor.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -40,16 +41,14 @@
 #include <sgl/utilities/UniformDistribution.h>
 
 #ifdef DEBUG
-#include <sgl/core/event/MouseEvent.h>
 #include <sgl/core/ModuleCore.h>
 #include <sgl/graphic/ModuleGraphic.h>
 #include <sgl/media/ModuleMedia.h>
-
-#include <iostream>
 #endif
 
 #ifdef DEV_MODE
 #include <chrono>
+#include <iostream>
 #include <sstream>
 #endif
 
