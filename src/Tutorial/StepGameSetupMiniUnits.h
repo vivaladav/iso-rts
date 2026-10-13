@@ -29,7 +29,8 @@ class FocusArea;
 class StepGameSetupMiniUnits : public TutorialInfoStep
 {
 public:
-    StepGameSetupMiniUnits(GameHUD * HUD, const std::vector<int> & values, GameObjectTypeId type);
+    StepGameSetupMiniUnits(GameHUD * HUD, unsigned int squads, unsigned int elements,
+                           GameObjectTypeId type);
     ~StepGameSetupMiniUnits();
 
     void OnStart() override;

@@ -501,6 +501,8 @@ add_executable(
     src/Tutorial/StepGameWaitTurn.cpp
     src/Tutorial/StepGameWaitUnitCanBuild.h
     src/Tutorial/StepGameWaitUnitCanBuild.cpp
+    src/Tutorial/StepGameWaitUnitCanSpawn.h
+    src/Tutorial/StepGameWaitUnitCanSpawn.cpp
     src/Tutorial/StepGameWallBuildEnd.h
     src/Tutorial/StepGameWallBuildEnd.cpp
     src/Tutorial/StepGameWallBuildIcon.h

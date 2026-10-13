@@ -62,6 +62,7 @@
 #include "Tutorial/StepGameWaitTurn.h"
 #include "Tutorial/StepGameWaitStructCanBuild.h"
 #include "Tutorial/StepGameWaitUnitCanBuild.h"
+#include "Tutorial/StepGameWaitUnitCanSpawn.h"
 #include "Tutorial/StepSaveGame.h"
 #include "Tutorial/TutorialConstants.h"
 #include "Widgets/GameHUD.h"
@@ -103,6 +104,9 @@ const Cell2D wallRight3BR(44, 77);
 
 const Cell2D areaStorageTL(38, 38);
 const Cell2D areaStorageBR(47, 47);
+
+const unsigned int muSquads = 3;
+const unsigned int muElements = 2;
 
 }
 
@@ -985,13 +989,29 @@ TutorialGame3::TutorialGame3(Screen * screen)
     });
     AddStep([] { return new StepDelay(0.5f); });
     // SPAWN MINI UNITS
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_MINI_UNIT1);
+
+        auto step = new StepGameWaitUnitCanSpawn(local, data, muSquads, muElements,
+                                                 "TUT_GAME_BUILD_MU");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([game, gs, panelActions]
         {
             const core::Pointd2D p0(200, 600);
             return new StepGameSpawnIcon(game, gs, panelActions, p0);
         });
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud] { return new StepGameSetupMiniUnits(hud, { 2, 3 }, ObjectData::TYPE_MINI_UNIT1); });
+    AddStep([hud]
+    {
+        return new StepGameSetupMiniUnits(hud, muSquads , muElements, ObjectData::TYPE_MINI_UNIT1);
+    });
     AddStep([local]
     {
         const auto all = local->GetUnitsByType(ObjectData::TYPE_UNIT_SPAWNER1);
