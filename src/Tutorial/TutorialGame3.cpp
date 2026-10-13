@@ -60,6 +60,7 @@
 #include "Tutorial/StepGameWaitLootboxOpen.h"
 #include "Tutorial/StepGameWaitObjectIdle.h"
 #include "Tutorial/StepGameWaitTurn.h"
+#include "Tutorial/StepGameWaitStructCanBuild.h"
 #include "Tutorial/StepGameWaitUnitCanBuild.h"
 #include "Tutorial/StepSaveGame.h"
 #include "Tutorial/TutorialConstants.h"
@@ -138,11 +139,18 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([] { return new StepGameIntro3; });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WORKER 1
-    AddStep([localBase, game, isoMap]
+    AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 100);
-        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BUILD_WORKER", p0,
-                                        delayAnimLong);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_UNIT_WORKER1);
+
+        auto step = new StepGameWaitStructCanBuild(local, data, ObjectData::TYPE_BASE,
+                                                   "TUT_GAME_BUILD_WORKER");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
     });
     AddStep([game, gs, panelActions]
     {
@@ -382,12 +390,19 @@ TutorialGame3::TutorialGame3(Screen * screen)
         });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD WORKER UNIT 2
-    AddStep([localBase, game, isoMap]
-        {
-            const core::Pointd2D p0(500, 200);
-            return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4",
-                                            p0, delayAnimLong);
-        });
+    AddStep([local, game]
+    {
+        const core::Pointd2D p0(1300, 100);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_UNIT_WORKER1);
+
+        auto step = new StepGameWaitStructCanBuild(local, data, ObjectData::TYPE_BASE,
+                                                   "TUT_GAME_BUILD_WORKER");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
+    });
     AddStep([game, gs, panelActions]
     {
         const core::Pointd2D p0(1300, 100);
@@ -899,11 +914,18 @@ TutorialGame3::TutorialGame3(Screen * screen)
     });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD SPAWNER
-    AddStep([localBase, game, isoMap]
+    AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 100);
-        return new StepGameSelectObject(game, isoMap, localBase, "TUT_GAME_BASE_4", p0,
-                                        delayAnimLong);
+
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_UNIT_SPAWNER1);
+
+        auto step = new StepGameWaitStructCanBuild(local, data, ObjectData::TYPE_BASE,
+                                                   "TUT_GAME_BUILD_SPAWNER_1");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
     });
     AddStep([game, gs, panelActions]
     {
@@ -1621,14 +1643,18 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD SOLDIER
-    AddStep([local, game, isoMap]
+    AddStep([local, game]
     {
         const core::Pointd2D p0(1300, 100);
-        const auto all = local->GetStructuresByType(ObjectData::TYPE_BARRACKS);
-        const GameObject * barracks = all.back();
 
-        return new StepGameSelectObject(game, isoMap, barracks, "TUT_GAME_BUILD_LSOLDIER", p0,
-                                        delayAnimLong);
+        const auto reg = game->GetObjectsRegistry();
+        const ObjectData & data = reg->GetObjectData(ObjectData::TYPE_UNIT_SOLDIER1);
+
+        auto step = new StepGameWaitStructCanBuild(local, data, ObjectData::TYPE_BARRACKS,
+                                                   "TUT_GAME_BUILD_LSOLDIER");
+        step->SetInfoPosition(p0.x, p0.y);
+
+        return step;
     });
     AddStep([game, gs, panelActions]
     {
