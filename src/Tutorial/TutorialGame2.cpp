@@ -25,7 +25,7 @@
 #include "Tutorial/StepGameConnectStructFree.h"
 #include "Tutorial/StepGameConnectWall.h"
 #include "Tutorial/StepGameConquerStructFree.h"
-#include "Tutorial/StepGameDialogTrading.h"
+#include "Tutorial/StepGameDialogTradingBuy.h"
 #include "Tutorial/StepGameInfoArea.h"
 #include "Tutorial/StepGameMissionGoalsIcon.h"
 #include "Tutorial/StepGameMoveCameraOverCell.h"
@@ -1155,9 +1155,9 @@ TutorialGame2::TutorialGame2(Screen * screen)
         return new StepGameTradeIcon(game, gs, panelActions, p0);
     });
     AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud]
+    AddStep([game, local, hud]
     {
-        return new StepGameDialogTrading(hud);
+        return new StepGameDialogTradingBuy(game, local, hud->GetDialogTrading());
     });
     AddStep([] { return new StepDelay(0.5f); });
     // SAVE GAME
