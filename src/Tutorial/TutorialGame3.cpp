@@ -1266,7 +1266,7 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([gameMap, isoMap, local]
     {
         const core::Pointd2D p0(1300, 200);
-        const Cell2D target(45, 73);
+        const Cell2D target(45, 72);
         return new StepGameMoveToCellFree(gameMap, isoMap, "TUT_GAME_MOVE_UNIT_6",
                                           target, p0);
     });
@@ -1639,8 +1639,8 @@ TutorialGame3::TutorialGame3(Screen * screen)
     AddStep([gameMap, isoMap]
     {
         const core::Pointd2D p0(1300, 100);
-        const Cell2D areaTL(69, 55);
-        const Cell2D areaBR(71, 61);
+        const Cell2D areaTL(64, 53);
+        const Cell2D areaBR(70, 59);
         const int numToBuild = 1;
 
         auto step = new StepGameBuildStructAreaFree(gameMap, isoMap, areaTL, areaBR,
