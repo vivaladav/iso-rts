@@ -374,6 +374,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Added construction of wall with gate at the end of tutorial 1.\n"
                   "- Units can build towers and gates on cells with wall.\n"
                   "- Towers and bunkers can attack manually.\n"
+                  "- Save slots show mission and turn when saved in game.\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
                   "- Energy and material generators produce more resources.\n"

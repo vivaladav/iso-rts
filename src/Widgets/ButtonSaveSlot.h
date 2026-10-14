@@ -13,8 +13,8 @@ class ButtonSaveSlot : public sgl::sgui::ImageButton
 {
 public:
     ButtonSaveSlot(sgl::sgui::Widget * parent);
-    ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, std::time_t timestamp,
-                   sgl::sgui::Widget * parent);
+    ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, unsigned int map, int turn,
+                   std::time_t timestamp, sgl::sgui::Widget * parent);
 
 #ifdef DEMO_MODE
     void MarkNotAvailable();
@@ -31,6 +31,7 @@ private:
 private:
     sgl::sgui::Label * mLabelMode = nullptr;
     sgl::sgui::Label * mLabelPlanet = nullptr;
+    sgl::sgui::Label * mLabelTurn = nullptr;
     sgl::sgui::Label * mLabelFaction = nullptr;
     sgl::sgui::Label * mLabelTimestamp = nullptr;
 

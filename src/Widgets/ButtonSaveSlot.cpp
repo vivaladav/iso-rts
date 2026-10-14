@@ -14,16 +14,18 @@
 #include <sgl/sgui/Label.h>
 #include <sgl/utilities/StringManager.h>
 
+#include <sstream>
+
 namespace game
 {
 
 ButtonSaveSlot::ButtonSaveSlot(sgl::sgui::Widget * parent)
-    : ButtonSaveSlot(GM_NULL, NO_FACTION, PLANET_UNKNOWN, 0, parent)
+    : ButtonSaveSlot(GM_NULL, NO_FACTION, PLANET_UNKNOWN, 0, -1, 0, parent)
 {
 }
 
-ButtonSaveSlot::ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, std::time_t timestamp,
-                               sgl::sgui::Widget * parent)
+ButtonSaveSlot::ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, unsigned int map,
+                               int turn, std::time_t timestamp, sgl::sgui::Widget * parent)
     : sgl::sgui::ImageButton({ ID_DLG_NEWG_SLOT_NORMAL, ID_DLG_NEWG_SLOT_DISABLED,
                               ID_DLG_NEWG_SLOT_OVER, ID_DLG_NEWG_SLOT_NORMAL,
                               ID_DLG_NEWG_SLOT_CHECKED },
@@ -44,11 +46,11 @@ ButtonSaveSlot::ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, 
     {
         // GAME MODE
         const char * strModes[] =
-            {
-                "FCAMPAIGN",
-                "SMISSION",
-                "ENDLESSM",
-            };
+        {
+            "FCAMPAIGN",
+            "SMISSION",
+            "ENDLESSM",
+        };
 
         const int paddingH = 20;
         const int spacing = 4;
@@ -62,12 +64,24 @@ ButtonSaveSlot::ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, 
         auto fontData = fm->GetFont(WidgetsConstants::FontFilePanelText, sizeData,
                                     graphic::Font::NORMAL);
 
-        mLabelPlanet = new sgui::Label(Planet::PLANETS_NAME[planet], fontData, this);
-        mLabelPlanet->SetPosition(GetWidth() - mLabelPlanet->GetWidth() -  paddingH,
-                                  modeY0 + (mLabelMode->GetHeight() - mLabelPlanet->GetHeight()) / 2);
-
         mLabelFaction = new sgui::Label(FACTIONS_NAME[f], fontData, this);
-        mLabelFaction->SetPosition(modeX0, modeY0 + mLabelMode->GetHeight() + spacing);
+        mLabelFaction->SetPosition(GetWidth() - mLabelFaction->GetWidth() -  paddingH,
+                                   modeY0 + (mLabelMode->GetHeight() - mLabelFaction->GetHeight()) / 2);
+
+        mLabelPlanet = new sgui::Label(Planet::PLANETS_NAME[planet], fontData, this);
+        mLabelPlanet->SetPosition(modeX0, modeY0 + mLabelMode->GetHeight() + spacing);
+
+        if(turn > 0)
+        {
+            const int marginL = 15;
+            std::ostringstream os;
+
+            os << "(" << sm->GetCString("MISSION") << " " << (map + 1) << " #"
+               << std::to_string(turn) << ")";
+            mLabelTurn = new sgui::Label(os.str().c_str(), fontData, this);
+            mLabelTurn->SetPosition(mLabelPlanet->GetX() + mLabelPlanet->GetWidth() + marginL,
+                                    mLabelPlanet->GetY());
+        }
 
         const unsigned int maxSize = 32;
         char strTimestamp[maxSize];
@@ -75,7 +89,7 @@ ButtonSaveSlot::ButtonSaveSlot(GameMode mode, PlayerFaction f, PlanetId planet, 
 
         mLabelTimestamp = new sgui::Label(strTimestamp, fontData, this);
         mLabelTimestamp->SetPosition(GetWidth() - mLabelTimestamp->GetWidth() -  paddingH,
-                                     mLabelFaction->GetY());
+                                     mLabelPlanet->GetY());
     }
     // empty slot
     else
@@ -129,6 +143,9 @@ void ButtonSaveSlot::UpdateColors(sgl::sgui::AbstractButton::VisualState state)
         if(mLabelPlanet != nullptr)
             mLabelPlanet->SetColor(colorDisabled);
 
+        if(mLabelTurn != nullptr)
+            mLabelTurn->SetColor(colorDisabled);
+
         if(mLabelFaction != nullptr)
             mLabelFaction->SetColor(colorDisabled);
 
@@ -141,6 +158,9 @@ void ButtonSaveSlot::UpdateColors(sgl::sgui::AbstractButton::VisualState state)
 
         if(mLabelPlanet != nullptr)
             mLabelPlanet->SetColor(WidgetsConstants::colorPanelText);
+
+        if(mLabelTurn != nullptr)
+            mLabelTurn->SetColor(WidgetsConstants::colorPanelText);
 
         if(mLabelFaction != nullptr)
             mLabelFaction->SetColor(PLAYER_COLOR[mFaction]);

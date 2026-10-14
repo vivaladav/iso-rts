@@ -77,7 +77,7 @@ namespace game
 bool Game::GOD_MODE = false;
 #endif
 
-const std::string Game::SAVE_VERSION("0.2.1");
+const std::string Game::SAVE_VERSION("0.2.2");
 const std::string Game::SETTINGS_VERSION("0.1.3");
 
 Game::Game(int argc, char * argv[])
@@ -393,7 +393,8 @@ bool Game::IsSaveFileValid(const std::string & saveFile) const
 }
 
 bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
-                          unsigned int & map, std::time_t & timestamp, const std::string & saveFile)
+                          unsigned int & map, int & turn, std::time_t & timestamp,
+                          const std::string & saveFile)
 {
     using namespace sgl;
 
@@ -431,6 +432,7 @@ bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & p
     faction = static_cast<PlayerFaction>(bf.ReadUint());
     planet = static_cast<PlanetId>(bf.ReadUint());
     map = bf.ReadUint();
+    turn = bf.ReadInt();
     timestamp = bf.ReadTimeT();
 
 #ifdef DEV_MODE
@@ -486,6 +488,7 @@ bool Game::LoadGame(const std::string & saveFile)
     mLocalFaction = static_cast<PlayerFaction>(mReaderSave->ReadUint());
     mCurrPlanet = static_cast<PlanetId>(mReaderSave->ReadUint());
     mCurrTerritory = mReaderSave->ReadUint();
+    const int turn = mReaderSave->ReadInt();
     const std::time_t timestamp = mReaderSave->ReadTimeT();
 
     // game data
@@ -609,6 +612,7 @@ bool Game::SaveGame(const std::string & saveFile)
     bf.WriteUint(mLocalFaction);
     bf.WriteUint(mCurrPlanet);
     bf.WriteUint(mCurrTerritory);
+    bf.WriteInt(GetCurrentLocalTurn());
     const auto now = std::chrono::system_clock::now();
     bf.WriteTimeT(std::chrono::system_clock::to_time_t(now));
 
@@ -989,6 +993,19 @@ void Game::NotifyOnSettingsChanged()
 {
     for(auto & it: mOnSettingsChanged)
         it.second();
+}
+
+int Game::GetCurrentLocalTurn() const
+{
+    const int noTurn = -1;
+
+    if(NO_FACTION == mLocalFaction)
+        return noTurn;
+
+    if(mStateMan->GetActiveStateId() != GAME)
+        return noTurn;
+    else
+        return GetLocalPlayer()->GetTurnsPlayed();
 }
 
 void Game::Update(float delta)

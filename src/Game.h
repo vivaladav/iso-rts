@@ -91,8 +91,8 @@ public:
     bool IsSaveFileValid(const std::string & saveFile = std::string()) const;
 
     bool LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
-                          unsigned int & map, std::time_t & timestamp,
-                          const std::string & saveFile = std::string());
+                        unsigned int & map, int & turn, std::time_t & timestamp,
+                        const std::string & saveFile = std::string());
     bool LoadGame(const std::string & saveFile = std::string());
     bool SaveGame(const std::string & saveFile = std::string());
     bool LoadSettings();
@@ -207,6 +207,8 @@ private:
     void ClearPlanets();
 
     void NotifyOnSettingsChanged();
+
+    int GetCurrentLocalTurn() const;
 
     void Update(float delta) override;
 

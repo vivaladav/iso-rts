@@ -495,17 +495,18 @@ void DialogNewGame::CreatePanelSaves()
     PlayerFaction faction;
     PlanetId planet;
     unsigned int map;
+    int turn;
     std::time_t timestamp;
     bool used;
     ButtonSaveSlot * btn;
     int slot = 0;
 
     // SLOT 1
-    used = mGame->LoadGameHeader(mode, faction, planet, map, timestamp,
+    used = mGame->LoadGameHeader(mode, faction, planet, map, turn, timestamp,
                                  mGame->GetSavefile(mGame->GetGameMode(), slot++));
 
     if(used)
-        btn = new ButtonSaveSlot(mode, faction, planet, timestamp, mPanelSave);
+        btn = new ButtonSaveSlot(mode, faction, planet, map, turn, timestamp, mPanelSave);
     else
         btn = new ButtonSaveSlot(mPanelSave);
 
@@ -516,11 +517,11 @@ void DialogNewGame::CreatePanelSaves()
     btnY += btn->GetHeight() + spacingButtons;
 
     // SLOT 2
-    used = mGame->LoadGameHeader(mode, faction, planet, map, timestamp,
+    used = mGame->LoadGameHeader(mode, faction, planet, map, turn, timestamp,
                                  mGame->GetSavefile(mGame->GetGameMode(), slot++));
 
     if(used)
-        btn = new ButtonSaveSlot(mode, faction, planet, timestamp, mPanelSave);
+        btn = new ButtonSaveSlot(mode, faction, planet, map, turn, timestamp, mPanelSave);
     else
         btn = new ButtonSaveSlot(mPanelSave);
 
@@ -535,11 +536,11 @@ void DialogNewGame::CreatePanelSaves()
     btnY += btn->GetHeight() + spacingButtons;
 
     // SLOT 3
-    used = mGame->LoadGameHeader(mode, faction, planet, map, timestamp,
+    used = mGame->LoadGameHeader(mode, faction, planet, map, turn, timestamp,
                                  mGame->GetSavefile(mGame->GetGameMode(), slot++));
 
     if(used)
-        btn = new ButtonSaveSlot(mode, faction, planet, timestamp, mPanelSave);
+        btn = new ButtonSaveSlot(mode, faction, planet, map, turn, timestamp, mPanelSave);
     else
         btn = new ButtonSaveSlot(mPanelSave);
 
