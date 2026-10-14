@@ -391,6 +391,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Add missing view attribute to City Block.\n"
                   "- Owned Structures are unlinked if enemy interrups connection"
                   " conquering a structure.\n"
+                  "- Reduced camera shake when following moving units.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);
