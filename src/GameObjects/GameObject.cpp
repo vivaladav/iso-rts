@@ -377,6 +377,23 @@ void GameObject::SetCell(const GameMapCell * cell)
 
     if(mOverlaySel != nullptr)
         mOverlaySel->UpdateObjectCell(this);
+
+    // check if selected object has anything on top below energy and health bars
+    if(mSelected && mBarEnergy != nullptr && mBarHealth != nullptr)
+    {
+        const int row1 = GetRow1();
+        const int col1 = GetCol1();
+
+        const bool hideBars = row1 > 0 && col1 > 0 && mGameMap->HasObject(row1 - 1, col1 - 1);
+
+        const int alphaOn = 255;
+        const int alphaOff = 102;
+        const int diff = alphaOn - alphaOff;
+        const int alpha = alphaOn - (hideBars * diff);
+
+        mBarEnergy->SetAlpha(alpha);
+        mBarHealth->SetAlpha(alpha);
+    }
 }
 
 int GameObject::GetVisibilityLevel() const
@@ -903,22 +920,6 @@ void GameObject::OnNewTurn(PlayerFaction faction)
 
 void GameObject::Update(float)
 {
-    // check if selected object has anything on top below energy and health bars
-    if(mSelected && mBarEnergy != nullptr && mBarHealth != nullptr)
-    {
-        const int row1 = GetRow1();
-        const int col1 = GetCol1();
-
-        const bool hideBars = row1 > 0 && col1 > 0 && mGameMap->HasObject(row1 - 1, col1 - 1);
-
-        const int alphaOn = 255;
-        const int alphaOff = 102;
-        const int diff = alphaOn - alphaOff;
-        const int alpha = alphaOn - (hideBars * diff);
-
-        mBarEnergy->SetAlpha(alpha);
-        mBarHealth->SetAlpha(alpha);
-    }
 }
 
 void GameObject::OnFactionChanged()
