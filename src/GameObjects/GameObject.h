@@ -271,6 +271,8 @@ private:
     void PositionHealthBar();
     void UpdateHealthBar();
 
+    void UpdateBarsAlpha();
+
     void SetEnergy(float val);
     void SetExperience(int val);
 
@@ -346,6 +348,8 @@ private:
     bool mVisited = false;
     bool mLinked = false;
     bool mIndestructible = false;
+
+    bool mCellChanged = false;
 };
 
 inline bool GameObject::IsInGroup() const { return mGroup != nullptr; }
