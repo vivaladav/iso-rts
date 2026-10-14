@@ -25,6 +25,7 @@
 #include "Tutorial/StepGameClearSelection.h"
 #include "Tutorial/StepGameConnectStructIntro.h"
 #include "Tutorial/StepGameConquerCells.h"
+#include "Tutorial/StepGameConquerCellsContinue.h"
 #include "Tutorial/StepGameConquerCellsEnd.h"
 #include "Tutorial/StepGameConquerCellsSimple.h"
 #include "Tutorial/StepGameConquerEnergyGenIntro.h"
@@ -320,10 +321,18 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(1000, 250);
             return new StepGameConquerCellsSimple(game, isoMap, cellStart, target, p0);
         });
+    AddStep([this, isoMap, game]
+        {
+            const Cell2D target(27, 10);
+            const core::Pointd2D p0(1000, 250);
+            const auto overlay = GetOverlayCellConquest();
+
+            return new StepGameConquerCellsContinue(game, isoMap, target, overlay, p0);
+        });
     AddStep([this, local, isoMap, game]
         {
             const auto unit = local->GetUnit(indUnit1);
-            const Cell2D cellEnd(31, 11);
+            const Cell2D cellEnd(30, 10);
             const core::Pointd2D p0(1000, 300);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
