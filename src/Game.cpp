@@ -48,8 +48,11 @@
 
 #ifdef DEV_MODE
 #include <chrono>
-#include <iostream>
 #include <sstream>
+#endif
+
+#if defined(DEBUG) || defined(DEV_MODE)
+#include <iostream>
 #endif
 
 #include <filesystem>
