@@ -375,6 +375,8 @@ void ScreenMainMenu::CreateChangelog()
                   "- Units can build towers and gates on cells with wall.\n"
                   "- Towers and bunkers can attack manually.\n"
                   "- Save slots show mission and turn when saved in game.\n"
+                  "- Experimental multiple screen support in settings.\n"
+                  "- Video mode and resolution saved and loaded from settings.\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
                   "- Energy and material generators produce more resources.\n"

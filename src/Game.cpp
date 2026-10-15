@@ -78,7 +78,7 @@ bool Game::GOD_MODE = false;
 #endif
 
 const std::string Game::SAVE_VERSION("0.2.2");
-const std::string Game::SETTINGS_VERSION("0.1.3");
+const std::string Game::SETTINGS_VERSION("0.1.4");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -105,6 +105,30 @@ Game::Game(int argc, char * argv[])
     core::ModuleCore::PrintRuntimeLibs();
     graphic::ModuleGraphic::PrintRuntimeLibs();
     media::ModuleMedia::PrintRuntimeLibs();
+
+    // -- DISPLAY --
+    std::cout << "\n===== DISPLAYS INFO =====\n";
+    const int numDisplays = graphic::ModuleGraphic::GetNumDisplays();
+    std::cout << "DISPLAYS: " << numDisplays << std::endl;
+
+#ifdef DEV_MODE
+    if(numDisplays > 0)
+    {
+        for(int d = 0; d < numDisplays; ++d)
+        {
+            int dX, dY, dW, dH;
+            graphic::ModuleGraphic::GetDisplayBounds(d, dX, dY, dW, dH);
+
+            std::cout << "DISPLAY " << d
+                      << "(" << dX << ", " << dY << " - " << dW << " x " << dH
+                      << ") - #MODES: "
+                      << graphic::ModuleGraphic::GetNumDisplayModes(d)<< std::endl;
+
+            graphic::ModuleGraphic::PrintDisplayModes(d);
+        }
+    }
+#endif
+    std::cout << "=========================\n";
 
     std::cout << std::endl;
 #endif
@@ -160,7 +184,20 @@ Game::Game(int argc, char * argv[])
     sm->RegisterPackage("data/text/game.bin");
 
     const std::string title = std::string("Virtualord - v. ") + std::string(VERSION);
-    mWin = graphic::Window::Create(title.c_str(), 0, 0, this);
+
+    // try to create a 16:9 window
+    if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1920, 1080, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1920, 1080, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1600, 900, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1600, 900, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1366, 768, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1366, 768, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1280, 720, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1280, 720, this);
+    // all failed -> fallback to first available display whatever it is
+    else
+        mWin = graphic::Window::Create(title.c_str(), 0, 0, this);
+
     mRenderer = graphic::Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
 
@@ -728,8 +765,17 @@ bool Game::LoadSettings()
     mButtonSelect = bf.ReadInt();
     mButtonAction = bf.ReadInt();
 
+    const int display = bf.ReadInt();
+    const int dMode = bf.ReadInt();
+    const auto vMode = static_cast<graphic::Window::VideoMode>(bf.ReadInt());
     mTimeAutoHideMouse = bf.ReadFloat();
     SetAutoHideMouseEnabled(bf.ReadBool());
+
+    if(display >= 0 && dMode >= 0)
+    {
+        if(mWin->SetDisplayMode(display, dMode))
+            mWin->SetVideoMode(vMode);
+    }
 
     mMapDragging = bf.ReadBool();
     mMapScrollingOnEdges = bf.ReadBool();
@@ -779,6 +825,9 @@ bool Game::SaveSettings()
     bf.WriteInt(mButtonSelect);
     bf.WriteInt(mButtonAction);
 
+    bf.WriteInt(mWin->GetCurrentDisplayIndex());
+    bf.WriteInt(mWin->GetCurrentDisplayModeIndex());
+    bf.WriteInt(mWin->GetVideoMode());
     bf.WriteFloat(mTimeAutoHideMouse);
     bf.WriteBool(IsAutoHideMouseEnable());
 
