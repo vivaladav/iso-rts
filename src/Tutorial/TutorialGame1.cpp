@@ -48,6 +48,7 @@
 #include "Tutorial/StepGameMoveCamera.h"
 #include "Tutorial/StepGameMoveCameraOverObject.h"
 #include "Tutorial/StepGameMoveUnit.h"
+#include "Tutorial/StepGameMoveUnitSimple.h"
 #include "Tutorial/StepGameMoveUnitToCorner.h"
 #include "Tutorial/StepGamePrimaryMissionGoal.h"
 #include "Tutorial/StepGameQuickUnitButton.h"
@@ -708,6 +709,7 @@ TutorialGame1::TutorialGame1(Screen * screen)
             return new StepGameConnectStructIntro(p0);
         });
     AddStep([game, gs, panelActions] { return new StepGameUnitConquerCellsIcon(game, gs, panelActions); });
+    AddStep([local] { return new StepGameSetSelectionDefaultAction(local, GameObjectActionType::MOVE); });
     AddStep([this, isoMap, game]
         {
             const core::Pointd2D p0(1100, 450);
@@ -722,6 +724,22 @@ TutorialGame1::TutorialGame1(Screen * screen)
             const core::Pointd2D p0(1100, 450);
             return new StepGameConquerCellsEnd(game, isoMap, unit, cellEnd, p0);
         });
+    AddStep([]
+        {
+            const core::Pointd2D p0(1200, 400);
+            return new StepGameWallBuildIntro(p0);
+        });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE UNIT NEXT TO BUILD CELL
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([local, isoMap, game]
+    {
+        const auto unit = local->GetUnit(indUnit2);
+        const Cell2D target(51, 33);
+        const core::Pointd2D p0(1100, 400);
+        return new StepGameMoveUnitSimple(game, unit, isoMap, target, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
     // END TURN
     AddStep([panelTurn] { return new StepGameEndTurnSimple(panelTurn); });
     AddStep([gs] { return new StepGameWaitTurn(gs); });
@@ -729,12 +747,6 @@ TutorialGame1::TutorialGame1(Screen * screen)
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
     AddStep([] { return new StepDelay(0.5f); });
     // BUILD GATE WITH UNIT 2
-    AddStep([]
-        {
-            const core::Pointd2D p0(1200, 400);
-            return new StepGameWallBuildIntro(p0);
-        });
-    AddStep([] { return new StepDelay(0.5f); });
     AddStep([game, gs, panelActions]
         {
             const core::Pointd2D p0(1100, 400);
