@@ -4570,11 +4570,12 @@ void GameMap::ContinueMiniUnitGroupMove(const ObjectPath * prevOP)
         return ;
     }
 
-    group->SetPath(std::move(path));
-
     // path found -> start move
     auto op = new ObjectPath(obj, mIsoMap, this, mScreenGame);
     op->SetPath(path);
+
+    // assign path to group
+    group->SetPath(std::move(path));
 
     if(!MoveUnit(op))
     {
