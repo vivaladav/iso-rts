@@ -971,11 +971,10 @@ TutorialGame3::TutorialGame3(Screen * screen)
                                     cellEnemy1, true);
     });
     // MOVE CAMERA
-    AddStep([game]
+    AddStep([isoMap]
     {
-        const int movX = -250;
-        const int movY = -250;
-        return new StepGameMoveCamera(movX, movY);
+        const Cell2D target(73, 67);
+        return new StepGameMoveCameraOverCell(target, isoMap, speedCamera);
     });
     // MOVE SPAWNER NEAR ENEMY
     AddStep([] { return new StepDelay(0.5f); });
