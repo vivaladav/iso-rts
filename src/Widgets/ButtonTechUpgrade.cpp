@@ -109,9 +109,12 @@ ButtonTechUpgrade::~ButtonTechUpgrade()
     if(!mIconVisible)
         delete mIcon;
 
-    // delete level background if not registered as renderable
-    if(mLevel == 0)
+    // delete level background and level if not registered as renderable
+    if(!IsRenderableRegistered(mBgLevel))
         delete mBgLevel;
+
+    if(!IsRenderableRegistered(mLabelLevel))
+        delete mLabelLevel;
 }
 
 void ButtonTechUpgrade::SetUpgrade(TechUpgradeId upgrade)
