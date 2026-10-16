@@ -359,7 +359,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.15 - \"\"", font, content);
+    auto title = new sgui::Label("0.6.15 - \"Playtest more\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -385,6 +385,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Removed auto turn end.\n"
                   "- Improved particles explosion for lasers.\n"
                   "- Changed design for showing text in bottom control panel.\n"
+                  "' Tutorial missions 2 and 3 redesigned from scratch.\n"
                   "\nFIXES\n"
                   "- Music no longer stops after first play during missions.\n"
                   "- Music no longer stops after first play in other screens.\n"
