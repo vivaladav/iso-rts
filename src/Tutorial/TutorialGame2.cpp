@@ -1004,43 +1004,6 @@ TutorialGame2::TutorialGame2(Screen * screen)
         return step;
     });
     AddStep([] { return new StepDelay(0.5f); });
-    // MOVE CAMERA
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([this, local]
-    {
-        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
-        const GameObject * rc = all.back();
-        const float speed = 1000.f;
-        return new StepGameMoveCameraOverObject(rc, speed);
-    });
-    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([]
-    {
-        const core::Pointd2D p0(685, 200);
-        return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
-    });
-    AddStep([this, game, isoMap, local]
-    {
-        const core::Pointd2D p0(710, 250);
-        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
-        const GameObject * rc = all.back();
-        return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
-    });
-    AddStep([game, gs, panelActions]
-    {
-        const core::Pointd2D p0(1000, 650);
-        return new StepGameTechTreeIcon(game, gs, panelActions, p0);
-    });
-    AddStep([] { return new StepDelay(0.5f); });
-    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_TRADING_POST, false); });
-    AddStep([] { return new StepDelay(0.5f); });
-    // MOVE CAMERA
-    AddStep([isoMap]
-    {
-        return new StepGameMoveCameraOverCell(wallLeftBR, isoMap, speedCamera);
-    });
-    AddStep([] { return new StepDelay(0.5f); });
     // BUILD TOWERS IN LEFT WALL
     AddStep([local, game]
     {
@@ -1089,6 +1052,36 @@ TutorialGame2::TutorialGame2(Screen * screen)
     });
     // SAVE GAME
     AddStep([game, gs] { return new StepSaveGame(game, gs); });
+    AddStep([] { return new StepDelay(0.5f); });
+    // MOVE CAMERA
+    AddStep([this, local]
+    {
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        const float speed = 1000.f;
+        return new StepGameMoveCameraOverObject(rc, speed);
+    });
+    // SELECT RESEARCH CENTER AND UNLOCK UPGRADE
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([]
+    {
+        const core::Pointd2D p0(685, 200);
+        return new StepGameSingleInfo(p0, "TUT_GAME_RES_CEN_2");
+    });
+    AddStep([this, game, isoMap, local]
+    {
+        const core::Pointd2D p0(710, 250);
+        const auto all = local->GetStructuresByType(ObjectData::TYPE_RESEARCH_CENTER);
+        const GameObject * rc = all.back();
+        return new StepGameSelectObject(game, isoMap, rc, "TUT_GAME_RES_CEN_1", p0);
+    });
+    AddStep([game, gs, panelActions]
+    {
+        const core::Pointd2D p0(1000, 650);
+        return new StepGameTechTreeIcon(game, gs, panelActions, p0);
+    });
+    AddStep([] { return new StepDelay(0.5f); });
+    AddStep([hud] { return new StepGameTechTreeDialog(hud, TECH_UP_TRADING_POST, false); });
     AddStep([] { return new StepDelay(0.5f); });
     // MOVE CAMERA
     AddStep([isoMap]
