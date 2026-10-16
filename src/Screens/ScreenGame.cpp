@@ -3868,24 +3868,24 @@ void ScreenGame::ShowParticlesCost(const std::vector<int> & cost, const GameObje
     const float timeLife = allIcons ? 1.25f : 1.f;
     const float delay = 0.f;
 
-    const DataParticleOutput pd1(-cost[OBJ_COST_ENERGY], OT_ENERGY, x1, y12,
+    const DataParticleOutput pd1(-cost[OBJ_COST_ENERGY], ER_ENERGY, x1, y12,
                                  speed, delay, decaySpeed, timeLife);
     pu->AddParticle(pd1);
 
-    const DataParticleOutput pd2(-cost[OBJ_COST_MATERIAL], OT_MATERIAL, x2, y12,
+    const DataParticleOutput pd2(-cost[OBJ_COST_MATERIAL], ER_MATERIAL, x2, y12,
                                  speed, delay, decaySpeed, timeLife);
     pu->AddParticle(pd2);
 
     if(cost[OBJ_COST_BLOBS] > 0)
     {
-        const DataParticleOutput pd1(-cost[OBJ_COST_BLOBS], OT_BLOBS, x1, y34,
+        const DataParticleOutput pd1(-cost[OBJ_COST_BLOBS], ER_BLOBS, x1, y34,
                                      speed, delay, decaySpeed, timeLife);
         pu->AddParticle(pd1);
     }
 
     if(cost[OBJ_COST_DIAMONDS] > 0)
     {
-        const DataParticleOutput pd1(-cost[OBJ_COST_DIAMONDS], OT_DIAMONDS, x2, y34,
+        const DataParticleOutput pd1(-cost[OBJ_COST_DIAMONDS], ER_DIAMONDS, x2, y34,
                                      speed, delay, decaySpeed, timeLife);
         pu->AddParticle(pd1);
     }

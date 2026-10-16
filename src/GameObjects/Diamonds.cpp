@@ -45,7 +45,7 @@ void Diamonds::Collected(Player * collector)
     const float decaySpeed = 150.f;
     const float delay = 0.f;
 
-    DataParticleOutput pd(GetNumUnits(), OT_DIAMONDS, x0, y0, delay);
+    DataParticleOutput pd(GetNumUnits(), ER_DIAMONDS, x0, y0, delay);
 
     pu->AddParticle(pd);
 

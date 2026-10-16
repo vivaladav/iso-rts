@@ -90,7 +90,7 @@ void CityBlock::OnNewTurn(PlayerFaction faction)
     const float y = GetY() - marginV;
     const float delay = 0.f;
 
-    const DataParticleOutput pd(money, OT_MONEY, x, y, delay);
+    const DataParticleOutput pd(money, ER_MONEY, x, y, delay);
     pu->AddParticle(pd);
 }
 

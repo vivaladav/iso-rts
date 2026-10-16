@@ -105,24 +105,11 @@ void LootBox::Open(Player * p)
     const float x0 = GetX() + GetWidth() * 0.5f;
     const float y0 = GetY() - GetHeight() * 0.25f;
 
-    OutputType ot[NUM_OUTPUT_TYPES] =
-    {
-        OT_BLOBS,
-        OT_DIAMONDS,
-        OT_ENERGY,
-        OT_MATERIAL,
-        OT_MONEY,
-        OT_RESEARCH,
-    };
-
-    static_assert(static_cast<unsigned int>(NUM_OUTPUT_TYPES) ==
-                  static_cast<unsigned int>(NUM_EXT_RESOURCES));
-
     const float speed = 40.f;
     const float decaySpeed = 80.f;
     const float timeLife = 1.f;
     const float delay = 0.f;
-    DataParticleOutput pd(mPrizeQuantity, ot[mPrizeType], x0, y0, speed, delay, decaySpeed, timeLife);
+    DataParticleOutput pd(mPrizeQuantity, mPrizeType, x0, y0, speed, delay, decaySpeed, timeLife);
 
     pu->AddParticle(pd);
 

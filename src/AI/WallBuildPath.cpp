@@ -172,11 +172,11 @@ bool WallBuildPath::InitNextBuild()
         const float delay = 0.f;
 
             const int costEne = Wall::GetCostEnergy(mLevel);
-            const DataParticleOutput pd1(-costEne, OT_ENERGY, x1, y12, speed, delay, decaySpeed, timeLife);
+            const DataParticleOutput pd1(-costEne, ER_ENERGY, x1, y12, speed, delay, decaySpeed, timeLife);
             pu->AddParticle(pd1);
 
             const int costMat = Wall::GetCostMaterial(mLevel);
-            const DataParticleOutput pd2(-costMat, OT_MATERIAL, x2, y12, speed, delay, decaySpeed, timeLife);
+            const DataParticleOutput pd2(-costMat, ER_MATERIAL, x2, y12, speed, delay, decaySpeed, timeLife);
             pu->AddParticle(pd2);
         }
 

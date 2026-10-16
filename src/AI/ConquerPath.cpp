@@ -193,11 +193,11 @@ bool ConquerPath::InitNextConquest()
             const float timeLife = 0.75f;
             const float delay = 0.f;
 
-            const DataParticleOutput pd1(-COST_CELL_CONQ_ENERGY, OT_ENERGY, x1, y12,
+            const DataParticleOutput pd1(-COST_CELL_CONQ_ENERGY, ER_ENERGY, x1, y12,
                                          speed, delay, decaySpeed, timeLife);
             pu->AddParticle(pd1);
 
-            const DataParticleOutput pd2(-COST_CELL_CONQ_MATERIAL, OT_MATERIAL, x2, y12,
+            const DataParticleOutput pd2(-COST_CELL_CONQ_MATERIAL, ER_MATERIAL, x2, y12,
                                          speed, delay, decaySpeed, timeLife);
             pu->AddParticle(pd2);
         }

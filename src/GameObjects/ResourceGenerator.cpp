@@ -100,12 +100,12 @@ void ResourceGenerator::OnNewTurn(PlayerFaction faction)
         return ;
 
     const GameObjectTypeId type = GetObjectType();
-    OutputType outputType;
+    ExtendedResource outputType;
 
     if(type == ObjectData::TYPE_RES_GEN_ENERGY || type == ObjectData::TYPE_RES_GEN_ENERGY_SOLAR)
-        outputType = OT_ENERGY;
+        outputType = ER_ENERGY;
     else if(type == ObjectData::TYPE_RES_GEN_MATERIAL || type == ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT)
-        outputType = OT_MATERIAL;
+        outputType = ER_MATERIAL;
     else
         return ;
 

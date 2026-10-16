@@ -93,15 +93,15 @@ void Base::OnNewTurn(PlayerFaction faction)
     const float delay = 0.f;
 
     const int energy = GetResourceProduction(ER_ENERGY);
-    const DataParticleOutput pd1(energy, OT_ENERGY, x1, y12, delay);
+    const DataParticleOutput pd1(energy, ER_ENERGY, x1, y12, delay);
     pu->AddParticle(pd1);
 
     const int material = GetResourceProduction(ER_MATERIAL);
-    const DataParticleOutput pd2(material, OT_MATERIAL, x2, y12, delay);
+    const DataParticleOutput pd2(material, ER_MATERIAL, x2, y12, delay);
     pu->AddParticle(pd2);
 
     const int money = GetResourceProduction(ER_MONEY);
-    const DataParticleOutput pd3(money, OT_MONEY, x3, y3, delay);
+    const DataParticleOutput pd3(money, ER_MONEY, x3, y3, delay);
     pu->AddParticle(pd3);
 }
 
