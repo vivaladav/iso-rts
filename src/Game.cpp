@@ -28,6 +28,7 @@
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/GraphicConstants.h>
+#include <sgl/graphic/ModuleGraphic.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Window.h>
@@ -42,7 +43,6 @@
 
 #ifdef DEBUG
 #include <sgl/core/ModuleCore.h>
-#include <sgl/graphic/ModuleGraphic.h>
 #include <sgl/media/ModuleMedia.h>
 #endif
 
@@ -51,10 +51,7 @@
 #include <sstream>
 #endif
 
-#if defined(DEBUG) || defined(DEV_MODE)
 #include <iostream>
-#endif
-
 #include <filesystem>
 
 #include <cassert>
@@ -143,23 +140,28 @@ Game::Game(int argc, char * argv[])
     auto steam = sgl::services::Steam::Create();
 
     const bool steamOK = steam->Init();
+#ifdef DEBUG
     std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << std::endl;
+#endif
 
     if(steamOK)
     {
         // user info
+#ifdef DEBUG
         std::cout << "Steam user: " << steam->GetUserName()
                   << " (" << steam->GetUserId() << ")" << std::endl;
 
         std::cout << "Steam app: " << steam->GetAppId() << std::endl;
+#endif
 
         // update default language based on Steam settings
         const char * lang = steam->GetAppLanguage();
 
         if(lang != nullptr)
         {
+#ifdef DEBUG
             std::cout << "Steam language: " << lang << std::endl;
-
+#endif
             const std::string strLang(lang);
 
             const std::string strFrench("french");
