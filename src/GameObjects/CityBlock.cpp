@@ -86,7 +86,7 @@ void CityBlock::OnNewTurn(PlayerFaction faction)
     auto pu = static_cast<UpdaterOutput *>(partMan->GetUpdater(PU_OUTPUT));
 
     const int marginV = 20;
-    const float x = GetX() + GetWidth() / 2;
+    const float x = GetX() + GetWidth() / 2.f;
     const float y = GetY() - marginV;
     const float delay = 0.f;
 

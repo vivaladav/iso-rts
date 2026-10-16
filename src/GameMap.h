@@ -251,14 +251,15 @@ private:
 
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
-    void PropagatePlayerObjVisibility(GameObject * obj, std::function<void(int)> visFun);
+    void PropagatePlayerObjVisibility(GameObject * obj, const std::function<void (int)> & visFun);
 
     void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
-    void PropagatePlayerCellVisibility(const GameMapCell & cell, std::function<void(int)> visFun);
+    void PropagatePlayerCellVisibility(const GameMapCell & cell,
+                                       const std::function<void(int)> & visFun);
 
     void PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
-                                   std::function<void(int)> visFun);
+                                   const std::function<void (int)> & visFun);
 
     void DestroyObjectPaths(GameObject * obj);
     void UpdateObjectPaths(float delta);

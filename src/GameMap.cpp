@@ -3862,7 +3862,7 @@ void GameMap::DelPlayerObjVisibility(GameObject * obj, Player * player)
                                  std::bind(&GameMap::DelVisibilityToCell, this, player, _1));
 }
 
-void GameMap::PropagatePlayerObjVisibility(GameObject * obj, std::function<void(int)> visFun)
+void GameMap::PropagatePlayerObjVisibility(GameObject * obj, const std::function<void(int)> & visFun)
 {
     const Cell2D cell1(obj->GetRow1(), obj->GetCol1());
     const Cell2D cell0(obj->GetRow0(), obj->GetCol0());
@@ -3890,7 +3890,8 @@ void GameMap::DelPlayerCellVisibility(const GameMapCell & cell, Player * player)
                                   std::bind(&GameMap::DelVisibilityToCell, this, player, _1));
 }
 
-void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, std::function<void(int)> visFun)
+void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell,
+                                            const std::function<void(int)> & visFun)
 {
     const Cell2D c(cell.row, cell.col);
 
@@ -3901,7 +3902,7 @@ void GameMap::PropagatePlayerCellVisibility(const GameMapCell & cell, std::funct
 }
 
 void GameMap::PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0,
-                                        int visLevel, std::function<void(int)> visFun)
+                                        int visLevel, const std::function<void(int)> & visFun)
 {
     const int objRows = 1 + cell0.row - cell1.row;
     const int objCols = 1 + cell0.col - cell1.col;

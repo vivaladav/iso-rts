@@ -388,7 +388,7 @@ void ObjectsDataRegistry::InitObjectData()
                    OCS_WALL, OCAT_DEFENSE, WeaponData::TYPE_NULL, 1, 1));
 
 #ifdef DEV_MODE
-    for(auto it : mDataObjects)
+    for(const auto & it : mDataObjects)
         assert(it.first == it.second.GetType());
 #endif
 }
@@ -421,7 +421,7 @@ void ObjectsDataRegistry::InitWeaponData()
                    { {ATT_AIMED_SHOT, 40}, {ATT_BURST_SHOT, 25}, {ATT_QUICK_SHOT, 30} }));
 
 #ifdef DEV_MODE
-    for(auto it : mDataWeapons)
+    for(const auto & it : mDataWeapons)
         assert(it.first == it.second.GetType());
 #endif
 }
