@@ -36,7 +36,13 @@ void ParticleHitPoints::SetData(const DataParticleHitPoints & data)
     delete mTxt;
 
     // TEXT
-    const int fontSize = 24;
+    int fontSize = 22;
+
+    if(data.fatal)
+        fontSize = 26;
+    else if(data.miss)
+        fontSize = 18;
+
     auto fm = graphic::FontManager::Instance();
     graphic::Font * font = fm->GetFont("Lato-Bold.ttf", fontSize, graphic::Font::NORMAL);
 
