@@ -78,7 +78,7 @@ bool Game::GOD_MODE = false;
 #endif
 
 const std::string Game::SAVE_VERSION("0.2.2");
-const std::string Game::SETTINGS_VERSION("0.1.4");
+const std::string Game::SETTINGS_VERSION("0.1.5");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -773,6 +773,7 @@ bool Game::LoadSettings()
     const int display = bf.ReadInt();
     const int dMode = bf.ReadInt();
     const auto vMode = static_cast<graphic::Window::VideoMode>(bf.ReadInt());
+    const bool grabMouse = bf.ReadBool();
     mTimeAutoHideMouse = bf.ReadFloat();
     SetAutoHideMouseEnabled(bf.ReadBool());
 
@@ -781,6 +782,8 @@ bool Game::LoadSettings()
         if(mWin->SetDisplayMode(display, dMode))
             mWin->SetVideoMode(vMode);
     }
+
+    mWin->GrabMouse(grabMouse);
 
     mMapDragging = bf.ReadBool();
     mMapScrollingOnEdges = bf.ReadBool();
@@ -833,6 +836,7 @@ bool Game::SaveSettings()
     bf.WriteInt(mWin->GetCurrentDisplayIndex());
     bf.WriteInt(mWin->GetCurrentDisplayModeIndex());
     bf.WriteInt(mWin->GetVideoMode());
+    bf.WriteBool(mWin->IsMouseGrabbed());
     bf.WriteFloat(mTimeAutoHideMouse);
     bf.WriteBool(IsAutoHideMouseEnable());
 

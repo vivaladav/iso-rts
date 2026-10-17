@@ -804,6 +804,27 @@ void DialogSettings::CreatePanelVideo()
                                 mGame->SetAutoHideMouseEnabled(checked);
                             });
 
+    // GRAB MOUSE
+    x = contX0;
+    y += blockSettingH;
+
+    label = new sgui::Label(mSM->GetCString("LOCK_MOUSE"), font, panel);
+    mHeadersVideo.emplace_back(label);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    cb = new SettingsCheckbox(panel);
+    cb->SetChecked(win->IsMouseGrabbed());
+
+    x = panelContentW - cb->GetWidth() - marginPanelH;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([win](bool checked)
+                            {
+                                win->GrabMouse(checked);
+                            });
+
     // VSYNC
     // TODO
     /*
@@ -1139,6 +1160,7 @@ void DialogSettings::OnStringsChanged()
         "RESOLUTION",
         "VIDEO_MODE",
         "AUTO_HIDE_MOUSE",
+        "LOCK_MOUSE",
     };
 
     numLabels = mHeadersVideo.size();

@@ -377,6 +377,7 @@ void ScreenMainMenu::CreateChangelog()
                   "- Save slots show mission and turn when saved in game.\n"
                   "- Experimental multiple screen support in settings.\n"
                   "- Video mode and resolution saved and loaded from settings.\n"
+                  "- New Video option to grab the mouse inside the game window.\n"
                   "\nCHANGES\n"
                   "- Game is no longer paused when mouse leaves the screen.\n"
                   "- Energy and material generators produce more resources.\n"
