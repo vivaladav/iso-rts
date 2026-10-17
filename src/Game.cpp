@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "GameConstants.h"
+#include "GameStats.h"
 #include "Planet.h"
 #include "Player.h"
 #include "ResourceLoader.h"
@@ -8,29 +9,32 @@
 #include "AI/PlayerAI.h"
 #include "GameObjects/ObjectsDataRegistry.h"
 #include "States/StatesIds.h"
+#include "States/StateCredits.h"
 #include "States/StateFactionSelection.h"
 #include "States/StateGame.h"
 #include "States/StateInit.h"
 #include "States/StateInitGame.h"
-#include "States/StateLeaveGame.h"
-#include "States/StateLeavePregame.h"
+#include "States/StateInitGameSetup.h"
 #include "States/StateLoadGame.h"
 #include "States/StateMainMenu.h"
-#include "States/StateNewGame.h"
+#include "States/StateNewGameSetup.h"
 #include "States/StatePlanetMap.h"
 #include "States/StateSettings.h"
 #include "States/StateTest.h"
 #include "Tutorial/TutorialManager.h"
 
+#include <sgl/core/event/MouseEvent.h>
 #include <sgl/graphic/Cursor.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
 #include <sgl/graphic/GraphicConstants.h>
+#include <sgl/graphic/ModuleGraphic.h>
 #include <sgl/graphic/Renderer.h>
 #include <sgl/graphic/TextureManager.h>
 #include <sgl/graphic/Window.h>
 #include <sgl/media/AudioManager.h>
 #include <sgl/media/AudioPlayer.h>
+#include <sgl/services/Steam.h>
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/BinaryFile.h>
 #include <sgl/utilities/StateManager.h>
@@ -38,19 +42,16 @@
 #include <sgl/utilities/UniformDistribution.h>
 
 #ifdef DEBUG
-#include <sgl/core/event/MouseEvent.h>
 #include <sgl/core/ModuleCore.h>
-#include <sgl/graphic/ModuleGraphic.h>
 #include <sgl/media/ModuleMedia.h>
-
-#include <iostream>
 #endif
 
 #ifdef DEV_MODE
 #include <chrono>
-#include <iostream>
+#include <sstream>
 #endif
 
+#include <iostream>
 #include <filesystem>
 
 #include <cassert>
@@ -76,8 +77,8 @@ namespace game
 bool Game::GOD_MODE = false;
 #endif
 
-const std::string Game::SAVE_VERSION("0.1.0");
-const std::string Game::SETTINGS_VERSION("0.1.0");
+const std::string Game::SAVE_VERSION("0.2.2");
+const std::string Game::SETTINGS_VERSION("0.1.5");
 
 Game::Game(int argc, char * argv[])
     : sgl::core::Application(argc, argv)
@@ -89,10 +90,6 @@ Game::Game(int argc, char * argv[])
     , mLanguage(LANG_NULL)
     , mButtonSelect(sgl::core::MouseEvent::BUTTON_LEFT)
     , mButtonAction(sgl::core::MouseEvent::BUTTON_RIGHT)
-#ifdef DEV_MODE
-    // tutorial disabled in DEV MODE
-    //, mTutorialEnabled(false)
-#endif
 {
     using namespace sgl;
 
@@ -109,17 +106,103 @@ Game::Game(int argc, char * argv[])
     graphic::ModuleGraphic::PrintRuntimeLibs();
     media::ModuleMedia::PrintRuntimeLibs();
 
+    // -- DISPLAY --
+    std::cout << "\n===== DISPLAYS INFO =====\n";
+    const int numDisplays = graphic::ModuleGraphic::GetNumDisplays();
+    std::cout << "DISPLAYS: " << numDisplays << std::endl;
+
+#ifdef DEV_MODE
+    if(numDisplays > 0)
+    {
+        for(int d = 0; d < numDisplays; ++d)
+        {
+            int dX, dY, dW, dH;
+            graphic::ModuleGraphic::GetDisplayBounds(d, dX, dY, dW, dH);
+
+            std::cout << "DISPLAY " << d
+                      << "(" << dX << ", " << dY << " - " << dW << " x " << dH
+                      << ") - #MODES: "
+                      << graphic::ModuleGraphic::GetNumDisplayModes(d)<< std::endl;
+
+            graphic::ModuleGraphic::PrintDisplayModes(d);
+        }
+    }
+#endif
+    std::cout << "=========================\n";
+
     std::cout << std::endl;
 #endif
+
+    // set default language
+    LanguageId startLanguage = LANG_ENGLISH;
+
+    // -- STEAM INTEGRATION --
+    auto steam = sgl::services::Steam::Create();
+
+    const bool steamOK = steam->Init();
+#ifdef DEBUG
+    std::cout << "Steam init: " << (steamOK ? "OK" : "FAILED") << std::endl;
+#endif
+
+    if(steamOK)
+    {
+        // user info
+#ifdef DEBUG
+        std::cout << "Steam user: " << steam->GetUserName()
+                  << " (" << steam->GetUserId() << ")" << std::endl;
+
+        std::cout << "Steam app: " << steam->GetAppId() << std::endl;
+#endif
+
+        // update default language based on Steam settings
+        const char * lang = steam->GetAppLanguage();
+
+        if(lang != nullptr)
+        {
+#ifdef DEBUG
+            std::cout << "Steam language: " << lang << std::endl;
+#endif
+            const std::string strLang(lang);
+
+            const std::string strFrench("french");
+            const std::string strGerman("german");
+            const std::string strItalian("italian");
+            const std::string strSpanishEs("spanish");
+            const std::string strSpanishLa("latam");
+
+            if(strLang == strSpanishEs || strLang == strSpanishLa)
+                startLanguage = LANG_SPANISH;
+            else if(strLang == strGerman)
+                startLanguage = LANG_GERMAN;
+            else if(strLang == strItalian)
+                startLanguage = LANG_ITALIAN;
+            else if(strLang == strFrench)
+                startLanguage = LANG_FRENCH;
+        }
+    }
+
+    // INIT GAME STATS
+    mGameStats = new GameStats;
 
     // -- INIT TEXT DATA --
     auto sm = utilities::StringManager::Create();
     sm->RegisterPackage("data/text/game.bin");
 
-    SetLanguage(LANG_ENGLISH);
-
     const std::string title = std::string("Virtualord - v. ") + std::string(VERSION);
-    mWin = graphic::Window::Create(title.c_str(), 0, 0, this);
+
+    // try to create a 16:9 window
+    if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1920, 1080, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1920, 1080, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1600, 900, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1600, 900, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1366, 768, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1366, 768, this);
+    else if(graphic::ModuleGraphic::IsDisplayModeSupported(0, 1280, 720, -1))
+        mWin = graphic::Window::Create(title.c_str(), 1280, 720, this);
+    // all failed -> fallback to first available display whatever it is
+    else
+        mWin = graphic::Window::Create(title.c_str(), 0, 0, this);
+
     mRenderer = graphic::Renderer::Create(mWin, true);
     mRenderer->SetLogicalSize(1920, 1080);
 
@@ -135,17 +218,17 @@ Game::Game(int argc, char * argv[])
     // -- State Manager --
     mStateMan = new utilities::StateManager;
 
+    mStateMan->AddState(new StateNewGameSetup(this));
     mStateMan->AddState(new StateFactionSelection(this));
     mStateMan->AddState(new StateGame(this));
     mStateMan->AddState(new StateInit(this));
     mStateMan->AddState(new StateInitGame(this));
-    mStateMan->AddState(new StateLeaveGame(this));
-    mStateMan->AddState(new StateLeavePregame(this));
+    mStateMan->AddState(new StateInitGameSetup(this));
     mStateMan->AddState(new StateMainMenu(this));
-    mStateMan->AddState(new StateNewGame(this));
     mStateMan->AddState(new StateLoadGame(this));
     mStateMan->AddState(new StatePlanetMap(this));
     mStateMan->AddState(new StateSettings(this));
+    mStateMan->AddState(new StateCredits(this));
     mStateMan->AddState(new StateTest(this));
 
     mStateMan->SetInitialActiveState(StateId::INIT);
@@ -172,7 +255,7 @@ Game::Game(int argc, char * argv[])
     mTimeAutoHideMouse = 1.f;
 #endif
 
-    mStage->AutoHideInactiveCursor(true, mTimeAutoHideMouse);
+    SetAutoHideMouseEnabled(true);
 
     // INIT TECH UPGRADES COST
     mCostUpgrades.emplace(TECH_UP_NULL, 0);
@@ -203,21 +286,39 @@ Game::Game(int argc, char * argv[])
     // TEMP CODE
     // TODO handle save directory properly
     mDirSave = "save/";
-
+    mDirSettings = "save/";
     InitDirectories();
 
-    // TODO handle save files properly
-    mCurrSaveFile = mDirSave + std::string("001.sav");
+    mSettingsFile = std::string("settings.sav");
 
-    mSettingsFile = mDirSave + std::string("settings.sav");
+    // init save files
+    mSaveFiles.emplace_back("00_001.sav");
+    mSaveFiles.emplace_back("00_002.sav");
+    mSaveFiles.emplace_back("00_003.sav");
+    mSaveFiles.emplace_back("01_001.sav");
+    mSaveFiles.emplace_back("01_002.sav");
+    mSaveFiles.emplace_back("01_003.sav");
+    mSaveFiles.emplace_back("02_001.sav");
+    mSaveFiles.emplace_back("02_002.sav");
+    mSaveFiles.emplace_back("02_003.sav");
 
     // load settings when starting
-    LoadSettings();
+    const bool settingsOK = LoadSettings();
+
+    // default init when settings are not loaded (first start)
+    if(!settingsOK)
+    {
+        SetLanguage(startLanguage);
+    }
 }
 
 Game::~Game()
 {
     using namespace sgl;
+
+    delete mGameStats;
+
+    sgl::services::Steam::Destroy();
 
     for(auto it: mCursors)
         delete it.second;
@@ -278,16 +379,41 @@ void Game::CloseSaveFileForReading()
     mReaderSave = nullptr;
 }
 
-bool Game::IsSaveFileValid() const
+const std::string & Game::GetSavefile(GameMode mode, unsigned int ind) const
+{
+    static const std::string empty;
+
+    const unsigned int savesPerMode = 3;
+
+    if(mode < NUM_GAME_MODES && ind < savesPerMode)
+        return mSaveFiles[(savesPerMode * mode) + ind];
+    else
+        return empty;
+}
+
+bool Game::HasSavedFiles() const
+{
+    for(const std::string & f : mSaveFiles)
+    {
+        if(IsSaveFileValid(f))
+            return true;
+    }
+
+    return false;
+}
+
+bool Game::IsSaveFileValid(const std::string & saveFile) const
 {
     using namespace sgl;
 
     // OPEN save file
-    utilities::BinaryFile bf(mCurrSaveFile, utilities::BinaryFile::OPEN_INPUT);
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::IsSaveFileValid - can't open file " << path << std::endl;
         return false;
     }
 
@@ -297,7 +423,7 @@ bool Game::IsSaveFileValid() const
 
     if(version != SAVE_VERSION)
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << mCurrSaveFile << " is "
+        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << path << " is "
                   << version << " (expected " << SAVE_VERSION << ")" << std::endl;
         return false;
     }
@@ -308,13 +434,68 @@ bool Game::IsSaveFileValid() const
     return true;
 }
 
-bool Game::LoadGame()
+bool Game::LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
+                          unsigned int & map, int & turn, std::time_t & timestamp,
+                          const std::string & saveFile)
 {
     using namespace sgl;
 
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::LoadGame - START LOADING: " << mCurrSaveFile << std::endl;
+    std::cout << "Game::LoadGameHeader - START LOADING: " << path << std::endl;
+    auto t0 = std::chrono::high_resolution_clock::now();
+#endif
+
+    // OPEN save file for reading
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT);
+
+    if(!bf.IsOpen())
+    {
+        std::cout << "[ERR] Game::LoadGameHeader - can't open file " << path << std::endl;
+
+        return false;
+    }
+
+    // VERSION
+    std::string version;
+    bf.ReadString(version);
+
+    if(version != SAVE_VERSION)
+    {
+        std::cout << "[ERR] Game::LoadGameHeader - version in file " << path << " is "
+                  << version << " (expected " << SAVE_VERSION << ")" << std::endl;
+        return false;
+    }
+
+    // READ HEADER
+    mode = static_cast<GameMode>(bf.ReadUint());
+    faction = static_cast<PlayerFaction>(bf.ReadUint());
+    planet = static_cast<PlanetId>(bf.ReadUint());
+    map = bf.ReadUint();
+    turn = bf.ReadInt();
+    timestamp = bf.ReadTimeT();
+
+#ifdef DEV_MODE
+    // TODO remove later, now left just for reference on testing times
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0);
+    std::cout << "Game::LoadGameHeader - GAME HEADER LOADED in: " << duration.count() << " ms" << std::endl;
+#endif
+
+    return true;
+}
+
+bool Game::LoadGame(const std::string & saveFile)
+{
+    using namespace sgl;
+
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
+#ifdef DEV_MODE
+    // TODO remove later, now left just for reference on testing times
+    std::cout << "Game::LoadGame - START LOADING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
@@ -322,36 +503,44 @@ bool Game::LoadGame()
         CloseSaveFileForReading();
 
     // OPEN save file for reading
-    mReaderSave = new utilities::BinaryFile(mCurrSaveFile, utilities::BinaryFile::OPEN_INPUT);
+    mReaderSave = new utilities::BinaryFile(path, utilities::BinaryFile::OPEN_INPUT);
 
     if(!mReaderSave->IsOpen())
     {
-        std::cout << "[ERR] Game::GetSaveFileForReading - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::LoadGame - can't open file " << path << std::endl;
 
         delete mReaderSave;
         mReaderSave = nullptr;
+        return false;
     }
 
-    // version
+    // VERSION
     std::string version;
     mReaderSave->ReadString(version);
 
     if(version != SAVE_VERSION)
     {
-        std::cout << "[ERR] Game::IsSaveFileValid - version in file " << mCurrSaveFile << " is "
+        std::cout << "[ERR] Game::LoadGame - version in file " << path << " is "
                   << version << " (expected " << SAVE_VERSION << ")" << std::endl;
         return false;
     }
 
-    // game data
-    mDifficulty = static_cast<Difficulty>(mReaderSave->ReadUint());
+    // HEADER with data used for quick load
+    mGameMode = static_cast<GameMode>(mReaderSave->ReadUint());
     mLocalFaction = static_cast<PlayerFaction>(mReaderSave->ReadUint());
     mCurrPlanet = static_cast<PlanetId>(mReaderSave->ReadUint());
     mCurrTerritory = mReaderSave->ReadUint();
+    const int turn = mReaderSave->ReadInt();
+    const std::time_t timestamp = mReaderSave->ReadTimeT();
+
+    // game data
+    mDifficulty = static_cast<Difficulty>(mReaderSave->ReadUint());
     mRandSeed = mReaderSave->ReadUint();
 
     // Tutorial
     mTutMan->Load(*mReaderSave);
+
+    mTutorialEnabled = mReaderSave->ReadBool();
 
     // Planets
     const unsigned int numPlanets = mReaderSave->ReadUint();
@@ -430,40 +619,53 @@ bool Game::LoadGame()
     std::cout << "Game::LoadGame - GAME LOADED in: " << duration.count() << " ms" << std::endl;
 #endif
 
+    if(!saveFile.empty())
+        mCurrSaveFile = saveFile;
+
     return true;
 }
 
-bool Game::SaveGame()
+bool Game::SaveGame(const std::string & saveFile)
 {
     using namespace sgl;
 
+    const std::string path = saveFile.empty() ? (mDirSave + mCurrSaveFile) : (mDirSave + saveFile);
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::SaveGame - START SAVING: " << mCurrSaveFile << std::endl;
+    std::cout << "Game::SaveGame - START SAVING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN save file
-    utilities::BinaryFile bf(mCurrSaveFile, utilities::BinaryFile::OPEN_OUTPUT, true);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_OUTPUT, true);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::SaveGame - can't open file " << mCurrSaveFile << std::endl;
+        std::cout << "[ERR] Game::SaveGame - can't open file " << path << std::endl;
         return false;
     }
 
     // version
     bf.WriteString(SAVE_VERSION);
 
-    // game data
-    bf.WriteUint(mDifficulty);
+    // HEADER with data used for quick load
+    bf.WriteUint(mGameMode);
     bf.WriteUint(mLocalFaction);
     bf.WriteUint(mCurrPlanet);
     bf.WriteUint(mCurrTerritory);
+    bf.WriteInt(GetCurrentLocalTurn());
+    const auto now = std::chrono::system_clock::now();
+    bf.WriteTimeT(std::chrono::system_clock::to_time_t(now));
+
+    // game data
+    bf.WriteUint(mDifficulty);
     bf.WriteUint(mRandSeed);
 
     // Tutorial
     mTutMan->Save(bf);
+    // save if tutorial is enabled in game file as it's a game specific setting
+    bf.WriteBool(mTutorialEnabled);
 
     // Planets
     const unsigned int numPlanets = mPlanets.size();
@@ -531,18 +733,20 @@ bool Game::LoadSettings()
 {
     using namespace sgl;
 
+    const std::string path = mDirSettings + mSettingsFile;
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::LoadSettings - START LOADING: " << mSettingsFile << std::endl;
+    std::cout << "Game::LoadSettings - START LOADING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN settings file
-    utilities::BinaryFile bf(mSettingsFile, utilities::BinaryFile::OPEN_INPUT, false);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_INPUT, false);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::LoadSettings - can't open file " << mSettingsFile << std::endl;
+        std::cout << "[ERR] Game::LoadSettings - can't open file " << path << std::endl;
         return false;
     }
 
@@ -566,14 +770,25 @@ bool Game::LoadSettings()
     mButtonSelect = bf.ReadInt();
     mButtonAction = bf.ReadInt();
 
+    const int display = bf.ReadInt();
+    const int dMode = bf.ReadInt();
+    const auto vMode = static_cast<graphic::Window::VideoMode>(bf.ReadInt());
+    const bool grabMouse = bf.ReadBool();
     mTimeAutoHideMouse = bf.ReadFloat();
+    SetAutoHideMouseEnabled(bf.ReadBool());
+
+    if(display >= 0 && dMode >= 0)
+    {
+        if(mWin->SetDisplayMode(display, dMode))
+            mWin->SetVideoMode(vMode);
+    }
+
+    mWin->GrabMouse(grabMouse);
 
     mMapDragging = bf.ReadBool();
     mMapScrollingOnEdges = bf.ReadBool();
     mMapScrollingConstSpeed = bf.ReadBool();
-    mAutoEndTurn = bf.ReadBool();
     mAutoUnitCamera = bf.ReadBool();
-    mTutorialEnabled = bf.ReadBool();
     mAutoSave = bf.ReadBool();
 
 #ifdef DEV_MODE
@@ -590,23 +805,25 @@ bool Game::SaveSettings()
 {
     using namespace sgl;
 
+    const std::string path = mDirSettings + mSettingsFile;
+
 #ifdef DEV_MODE
     // TODO remove later, now left just for reference on testing times
-    std::cout << "Game::SaveSettings - START SAVING: " << mSettingsFile << std::endl;
+    std::cout << "Game::SaveSettings - START SAVING: " << path << std::endl;
     auto t0 = std::chrono::high_resolution_clock::now();
 #endif
 
     // OPEN settings file
-    utilities::BinaryFile bf(mSettingsFile, utilities::BinaryFile::OPEN_OUTPUT, true);
+    utilities::BinaryFile bf(path, utilities::BinaryFile::OPEN_OUTPUT, true);
 
     if(!bf.IsOpen())
     {
-        std::cout << "[ERR] Game::SaveSettings - can't open file " << mSettingsFile << std::endl;
+        std::cout << "[ERR] Game::SaveSettings - can't open file " << path << std::endl;
         return false;
     }
 
     // version
-    bf.WriteString(SAVE_VERSION);
+    bf.WriteString(SETTINGS_VERSION);
 
     // settings
     bf.WriteUint(mLanguage);
@@ -616,14 +833,17 @@ bool Game::SaveSettings()
     bf.WriteInt(mButtonSelect);
     bf.WriteInt(mButtonAction);
 
+    bf.WriteInt(mWin->GetCurrentDisplayIndex());
+    bf.WriteInt(mWin->GetCurrentDisplayModeIndex());
+    bf.WriteInt(mWin->GetVideoMode());
+    bf.WriteBool(mWin->IsMouseGrabbed());
     bf.WriteFloat(mTimeAutoHideMouse);
+    bf.WriteBool(IsAutoHideMouseEnable());
 
     bf.WriteBool(mMapDragging);
     bf.WriteBool(mMapScrollingOnEdges);
     bf.WriteBool(mMapScrollingConstSpeed);
-    bf.WriteBool(mAutoEndTurn);
     bf.WriteBool(mAutoUnitCamera);
-    bf.WriteBool(mTutorialEnabled);
     bf.WriteBool(mAutoSave);
 
 #ifdef DEV_MODE
@@ -636,12 +856,39 @@ bool Game::SaveSettings()
     return true;
 }
 
+#ifdef DEV_MODE
+bool Game::SaveGameTurn()
+{
+    using namespace std;
+
+    ostringstream ss;
+
+    ss << "mission_" << setw(2) << setfill('0') <<  GetCurrentPlanet()->GetPlanetId()
+       << "_" << setw(2) << setfill('0') << GetCurrentTerritory()
+       << "-" << setw(3) << setfill('0') << GetLocalPlayer()->GetTurnsPlayed() << ".sav";
+
+    return SaveGame(ss.str());
+}
+
+bool Game::SaveGamePlanet()
+{
+using namespace std;
+
+    ostringstream ss;
+
+    ss << "planet_" << setw(2) << setfill('0') <<  GetCurrentPlanet()->GetPlanetId()
+       << "_" << setw(2) << setfill('0') << GetCurrentTerritory() << ".sav";
+
+    return SaveGame(ss.str());
+}
+#endif
+
 void Game::LowerCostSaveGame()
 {
-    const unsigned int minMoney = 1000;
+    const unsigned int minMoney = 500;
     const unsigned int minEnergy = 100;
     const unsigned int minMaterial = 10;
-    const unsigned int decMoney = 1000;
+    const unsigned int decMoney = mCostSave[ER_MONEY] > 1000 ? 1000 : 500;
     const unsigned int decEnergy = 100;
     const unsigned int decMaterial = 10;
 
@@ -716,9 +963,9 @@ int Game::GetResourcePriceBuy(ExtendedResource t) const
         100,
     };
 
-    static_assert(sizeof(price) / sizeof(int) == NUM_EXTENDED_RESOURCES);
+    static_assert(sizeof(price) / sizeof(int) == NUM_EXT_RESOURCES);
 
-    if(t < NUM_EXTENDED_RESOURCES)
+    if(t < NUM_EXT_RESOURCES)
         return price[t];
     else
         return 0;
@@ -737,9 +984,9 @@ int Game::GetResourcePriceSell(ExtendedResource t) const
         90,
     };
 
-    static_assert(sizeof(price) / sizeof(int) == NUM_EXTENDED_RESOURCES);
+    static_assert(sizeof(price) / sizeof(int) == NUM_EXT_RESOURCES);
 
-    if(t < NUM_EXTENDED_RESOURCES)
+    if(t < NUM_EXT_RESOURCES)
         return price[t];
     else
         return 0;
@@ -806,6 +1053,19 @@ void Game::NotifyOnSettingsChanged()
         it.second();
 }
 
+int Game::GetCurrentLocalTurn() const
+{
+    const int noTurn = -1;
+
+    if(NO_FACTION == mLocalFaction)
+        return noTurn;
+
+    if(mStateMan->GetActiveStateId() != GAME)
+        return noTurn;
+    else
+        return GetLocalPlayer()->GetTurnsPlayed();
+}
+
 void Game::Update(float delta)
 {
     mRenderer->Clear(mClearR, mClearG, mClearB, mClearA);
@@ -838,9 +1098,9 @@ void Game::InitDirectories()
 
 void Game::InitCostSaveGame()
 {
-    const unsigned int maxMoney = 10000;
-    const unsigned int maxEnergy = 1000;
-    const unsigned int maxMaterial = 100;
+    const unsigned int maxMoney = 4000;
+    const unsigned int maxEnergy = 500;
+    const unsigned int maxMaterial = 50;
 
     mCostSave.insert_or_assign(ER_MONEY, maxMoney);
     mCostSave.insert_or_assign(ER_ENERGY, maxEnergy);
@@ -860,12 +1120,12 @@ void Game::CreatePlayers()
         p->SetFaction(f);
 
         // set initial resources
-        p->SetResource(Player::Stat::BLOBS, START_BLOBS);
-        p->SetResource(Player::Stat::DIAMONDS, START_DIAMONDS);
-        p->SetResource(Player::Stat::ENERGY, START_ENERGY);
-        p->SetResource(Player::Stat::MATERIAL, START_MATERIAL);
-        p->SetResource(Player::Stat::MONEY, START_MONEY);
-        p->SetResource(Player::Stat::RESEARCH, START_RESEARCH);
+        p->SetResource(ER_ENERGY, START_ENERGY);
+        p->SetResource(ER_MATERIAL, START_MATERIAL);
+        p->SetResource(ER_DIAMONDS, START_DIAMONDS);
+        p->SetResource(ER_BLOBS, START_BLOBS);
+        p->SetResource(ER_MONEY, START_MONEY);
+        p->SetResource(ER_RESEARCH, START_RESEARCH);
 
         if(f == mLocalFaction)
         {
@@ -1057,6 +1317,16 @@ void Game::SetLanguage(LanguageId lang)
     static_assert((sizeof(languages) / sizeof(char *)) == NUM_LANGUAGES);
 
     sm->LoadStringsFromPackage(languages[lang]);
+}
+
+bool Game::IsAutoHideMouseEnable() const
+{
+    return sgl::sgui::Stage::Instance()->IsAutoHidingCursor();
+}
+
+void Game::SetAutoHideMouseEnabled(bool val)
+{
+    sgl::sgui::Stage::Instance()->AutoHideInactiveCursor(val, mTimeAutoHideMouse);
 }
 
 } // namespace game

@@ -1,5 +1,7 @@
 #include "Tutorial/StepGameEnding.h"
 
+#include "Game.h"
+#include "GameStats.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
 
 #include <sgl/utilities/StringManager.h>
@@ -7,8 +9,8 @@
 namespace game
 {
 
-StepGameEnding::StepGameEnding(const sgl::core::Pointd2D & p0)
-    : TutorialInfoStep(650, 150)
+StepGameEnding::StepGameEnding(const Game * game, const sgl::core::Pointd2D & p0)
+    : TutorialInfoStep(650, 175)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
@@ -21,8 +23,11 @@ StepGameEnding::StepGameEnding(const sgl::core::Pointd2D & p0)
     info->AddInfoEntry(sm->GetCString("TUT_GAME_END_2"), 10.f, true, true);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_END_3"), 6.f, true, true);
 
-    info->SetFunctionOnFinished([this]
+    info->SetFunctionOnFinished([this, game]
                                 {
+                                    // update stats
+                                    game->GetGameStats()->SetTutorialCompleted();
+
                                     SetDone();
                                 });
 }

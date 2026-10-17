@@ -23,6 +23,10 @@ public:
         MOUNTAINS_6,
         MOUNTAINS_7,
         MOUNTAINS_8,
+        MOUNTAINS_L2,
+        MOUNTAINS_T2,
+        MOUNTAINS_B2,
+        MOUNTAINS_R2,
 
         NUM_MOUNTAINS_PARTS,
 
@@ -43,6 +47,14 @@ public:
         ROCKS_BR,
         ROCKS_BL,
         ROCKS_TR,
+        ROCKS_L2,
+        ROCKS_R2,
+        ROCKS_B2,
+        ROCKS_T2,
+        ROCKS_TL2,
+        ROCKS_BR2,
+        ROCKS_BL2,
+        ROCKS_TR2,
 
         NUM_ROCKS_PARTS
     };

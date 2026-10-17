@@ -1,5 +1,6 @@
 #include "Widgets/PanelPlanetActionConquerAI.h"
 
+#include "GameConstants.h"
 #include "Player.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
@@ -80,10 +81,10 @@ void PanelPlanetActionConquerAI::ShowAction()
     mContentSuccess->SetVisible(false);
 
     // update costs
-    const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
-    const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
-    const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
-    const bool enoughDiamonds = mPlayer->HasEnough(Player::Stat::DIAMONDS, mCostDiamonds);
+    const bool enoughMoney = mPlayer->HasEnough(ER_MONEY, mCostMoney);
+    const bool enoughEnergy = mPlayer->HasEnough(ER_ENERGY, mCostenergy);
+    const bool enoughMaterial = mPlayer->HasEnough(ER_MATERIAL, mCostmaterial);
+    const bool enoughDiamonds = mPlayer->HasEnough(ER_DIAMONDS, mCostDiamonds);
     const bool canConquer = enoughMoney && enoughEnergy && enoughMaterial && enoughDiamonds;
 
     mLabelMoney->SetColor(enoughMoney ? WidgetsConstants::colorPlanetMapEnoughRes :

@@ -5,7 +5,7 @@
 namespace game
 {
 
-enum ResourceType : unsigned int;
+enum ExtendedResource : unsigned int;
 
 class ResourceStorage : public Structure
 {
@@ -15,7 +15,7 @@ public:
     bool Load(sgl::utilities::BinaryFile & bf) override;
     bool Save(sgl::utilities::BinaryFile & bf) const override;
 
-    ResourceType GetResourceType() const;
+    ExtendedResource GetExtendedResource() const;
 
     void OnCapacityUpgraded();
 
@@ -31,12 +31,12 @@ private:
     void SetImage();
 
 private:
-    ResourceType mResource;
+    ExtendedResource mResource;
 
     int mCapacity = 0;
 };
 
-inline ResourceType ResourceStorage::GetResourceType() const { return mResource; }
+inline ExtendedResource ResourceStorage::GetExtendedResource() const { return mResource; }
 
 inline void ResourceStorage::OnCapacityUpgraded() { UpdateCapacity(); }
 

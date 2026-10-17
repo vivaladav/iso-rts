@@ -47,6 +47,7 @@ public:
 public:
     ObjectActionButton(ActionIcon icon, const char * shortcut, int shortcutKey,
                        const char * tooltip, sgl::sgui::Widget * parent);
+    ~ObjectActionButton();
 
     void SetTooltipText(const char * text);
 

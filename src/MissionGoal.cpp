@@ -116,7 +116,7 @@ const std::unordered_map<MissionGoalType, MissionCategory> MissionGoal::CATEGORI
 
 MissionGoal::MissionGoal()
 {
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 }
 
 MissionGoal::MissionGoal(MissionGoalType type, unsigned int quantity,
@@ -128,7 +128,7 @@ MissionGoal::MissionGoal(MissionGoalType type, unsigned int quantity,
     , mPrimary(primary)
     , mHidden(hidden)
 {
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 
     SetCategory();
 
@@ -183,35 +183,23 @@ void MissionGoal::AssignReward(Player * p)
         return ;
 
     // assign rewards to player
-    const Player::Stat resourceIds[] =
-    {
-        Player::ENERGY,
-        Player::MATERIAL,
-        Player::DIAMONDS,
-        Player::BLOBS,
-        Player::MONEY,
-        Player::RESEARCH,
-    };
-
-    static_assert(sizeof(resourceIds) / sizeof(Player::Stat) == NUM_EXTENDED_RESOURCES);
-
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
         const int reward = mRewards[i];
 
         if(reward > 0)
-            p->SumResource(resourceIds[i], reward);
+            p->SumResource(static_cast<ExtendedResource>(i), reward);
     }
 
     // update reward data
     mRewardCollected = true;
 
-    mRewards.assign(NUM_EXTENDED_RESOURCES, 0);
+    mRewards.assign(NUM_EXT_RESOURCES, 0);
 }
 
 int MissionGoal::GetRewardByType(ExtendedResource r) const
 {
-    if(r < NUM_EXTENDED_RESOURCES)
+    if(r < NUM_EXT_RESOURCES)
         return mRewards[r];
     else
         return 0;
@@ -276,10 +264,10 @@ void MissionGoal::SetMissionRewards()
             const int multMaterial = 50;
             mRewards[ER_MATERIAL] = mQuantity * multMaterial;
 
-            const int multBlobs = 10;
+            const int multBlobs = 5;
             mRewards[ER_BLOBS] = mQuantity * multBlobs;
 
-            const int multDiamonds = 10;
+            const int multDiamonds = 5;
             mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
         }
         else if(mType == TYPE_BUILD_STRUCTURES)
@@ -364,24 +352,24 @@ void MissionGoal::SetMissionRewards()
         }
         else if(mType == TYPE_CONQUER_GEN_ENERGY || mType == TYPE_CONQUER_GEN_MATERIAL)
         {
-            const int multMoney = 500;
-            mRewards[ER_MONEY] = mQuantity * multMoney;
-
-            const int multEnergy = 10;
-            mRewards[ER_ENERGY] = mQuantity * multEnergy;
-
-            const int multMaterial = 10;
-            mRewards[ER_MATERIAL] = mQuantity * multMaterial;
-        }
-        else if(mType == TYPE_CONQUER_STRUCTURES)
-        {
-            const int multMoney = 100;
+            const int multMoney = 250;
             mRewards[ER_MONEY] = mQuantity * multMoney;
 
             const int multBlobs = 5;
             mRewards[ER_BLOBS] = mQuantity * multBlobs;
 
             const int multDiamonds = 5;
+            mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
+        }
+        else if(mType == TYPE_CONQUER_STRUCTURES)
+        {
+            const int multMoney = 150;
+            mRewards[ER_MONEY] = mQuantity * multMoney;
+
+            const int multBlobs = 3;
+            mRewards[ER_BLOBS] = mQuantity * multBlobs;
+
+            const int multDiamonds = 3;
             mRewards[ER_DIAMONDS] = mQuantity * multDiamonds;
         }
         else if(mType == TYPE_GAIN_MONEY)
@@ -400,10 +388,10 @@ void MissionGoal::SetMissionRewards()
         }
         else if(mType == TYPE_GEN_RESEARCH)
         {
-            const int divBlobs = 10;
+            const int divBlobs = 100;
             mRewards[ER_BLOBS] = mQuantity / divBlobs;
 
-            const int divDiamonds = 10;
+            const int divDiamonds = 100;
             mRewards[ER_DIAMONDS] = mQuantity / divDiamonds;
         }
         else if(mType == TYPE_MINE_MATERIAL)

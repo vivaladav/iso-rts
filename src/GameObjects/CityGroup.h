@@ -7,6 +7,8 @@ namespace game
 
 class Player;
 
+struct Cell2D;
+
 class CityGroup : public GameObjectsGroup
 {
 public:
@@ -18,6 +20,8 @@ public:
     bool IsCityConquered() const;
 
     void UpdateCityConquered(Player * conqueror);
+
+    bool GetCityBoundaries(Cell2D & tl, Cell2D & br) const;
 
 private:
     bool mConquered = false;

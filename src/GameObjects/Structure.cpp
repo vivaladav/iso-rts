@@ -106,24 +106,13 @@ void Structure::ProduceResources()
     if(p == nullptr)
         return ;
 
-    const Player::Stat statIds[] =
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
-        Player::ENERGY,
-        Player::MATERIAL,
-        Player::DIAMONDS,
-        Player::BLOBS,
-        Player::MONEY,
-        Player::RESEARCH
-    };
-
-    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXTENDED_RESOURCES);
-
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
-    {
-        const int val = GetResourceProduction(static_cast<ExtendedResource>(i));
+        const auto res = static_cast<ExtendedResource>(i);
+        const int val = GetResourceProduction(res);
 
         if(val > 0)
-            p->SumResource(statIds[i], val);
+            p->SumResource(res, val);
     }
 }
 
@@ -134,24 +123,13 @@ void Structure::ConsumeResources()
     if(p == nullptr)
         return ;
 
-    const Player::Stat statIds[] =
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
-        Player::ENERGY,
-        Player::MATERIAL,
-        Player::DIAMONDS,
-        Player::BLOBS,
-        Player::MONEY,
-        Player::RESEARCH
-    };
-
-    static_assert((sizeof(statIds) / sizeof(Player::Stat)) == NUM_EXTENDED_RESOURCES);
-
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
-    {
-        const int val = GetResourceUsage(static_cast<ExtendedResource>(i));
+        const auto res = static_cast<ExtendedResource>(i);
+        const int val = GetResourceUsage(res);
 
         if(val > 0)
-            p->SumResource(statIds[i], -val);
+            p->SumResource(res, -val);
     }
 }
 

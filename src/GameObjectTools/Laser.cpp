@@ -113,6 +113,8 @@ void Laser::OnShoot(float x0, float y0)
         }
     }
 
+    const float delay = 0.f;
+
     const DataParticleSingleLaser pd =
     {
         mTex,
@@ -124,6 +126,7 @@ void Laser::OnShoot(float x0, float y0)
         tX,
         tY,
         speed,
+        delay,
         damage,
         owner,
         fatal

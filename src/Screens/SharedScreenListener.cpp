@@ -1,6 +1,7 @@
 #include "Screens/SharedScreenListener.h"
 
 #include "Game.h"
+#include "GameConstants.h"
 #include "Player.h"
 #include "Screens/Screen.h"
 
@@ -43,22 +44,22 @@ void SharedScreenListener::OnKeyUp(sgl::core::KeyboardEvent & event)
         // SHIFT + C -> add resources
         if(event.IsModShiftDown())
         {
-            p->SumResource(Player::MONEY, 1000);
-            p->SumResource(Player::ENERGY, 1000);
-            p->SumResource(Player::MATERIAL, 1000);
-            p->SumResource(Player::BLOBS, 100);
-            p->SumResource(Player::DIAMONDS, 100);
-            p->SumResource(Player::RESEARCH, 500);
+            p->SumResource(ER_MONEY, 1000);
+            p->SumResource(ER_ENERGY, 1000);
+            p->SumResource(ER_MATERIAL, 1000);
+            p->SumResource(ER_BLOBS, 100);
+            p->SumResource(ER_DIAMONDS, 100);
+            p->SumResource(ER_RESEARCH, 500);
         }
         // CTRL + C -> remove resources
         else if(event.IsModCtrlDown())
         {
-            p->SumResource(Player::MONEY, -100);
-            p->SumResource(Player::ENERGY, -100);
-            p->SumResource(Player::MATERIAL, -100);
-            p->SumResource(Player::BLOBS, -10);
-            p->SumResource(Player::DIAMONDS, -10);
-            p->SumResource(Player::RESEARCH, -100);
+            p->SumResource(ER_MONEY, -100);
+            p->SumResource(ER_ENERGY, -100);
+            p->SumResource(ER_MATERIAL, -100);
+            p->SumResource(ER_BLOBS, -10);
+            p->SumResource(ER_DIAMONDS, -10);
+            p->SumResource(ER_RESEARCH, -100);
         }
     }
     // ALT + G : switch GOD MODE

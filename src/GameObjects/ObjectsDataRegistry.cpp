@@ -48,7 +48,8 @@ void ObjectsDataRegistry::InitObjectData()
                    OCS_BARRACKS, OCAT_GENERIC, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_CITY_BLOCK,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 7}, {OBJ_ATT_RESISTANCE, 5} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 7}, {OBJ_ATT_RESISTANCE, 5},
+                     {OBJ_ATT_VIEW_RANGE, 4}, }, {},
                    { ID_CITY_TL1_F1, ID_CITY_TL1_F2, ID_CITY_TL1_F3, ID_CITY_TL1_NF },
                    SpriteFileCity, ObjectData::TYPE_CITY_BLOCK, ObjectData::CAT_SCENE_OBJ,
                    OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
@@ -129,20 +130,25 @@ void ObjectsDataRegistry::InitObjectData()
                    OCMU_SOLDIER, OCAT_MINI_UNIT, WeaponData::TYPE_LASER1, 1, 1));
 
     mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS1,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 7} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
                    { ID_MOUNTAIN1_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS1,
                    ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS2,
-        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 7} }, {},
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
                    { ID_MOUNTAIN2_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS2,
+                   ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
+
+    mDataObjects.emplace(ObjectData::TYPE_MOUNTAINS3,
+        ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_HEALTH, 9}, {OBJ_ATT_RESISTANCE, 8} }, {},
+                   { ID_MOUNTAIN3_1 }, SpriteFileSceneObjects, ObjectData::TYPE_MOUNTAINS3,
                    ObjectData::CAT_SCENE_OBJ, OCO_SCENE, OCAT_UNDEFINED, WeaponData::TYPE_NULL, 2, 2));
 
     mDataObjects.emplace(ObjectData::TYPE_PRACTICE_TARGET,
         ObjectData({ {OBJ_ATT_ENERGY, 1}, {OBJ_ATT_VIEW_RANGE, 2}, {OBJ_ATT_REGENERATION, 5},
                      {OBJ_ATT_RESISTANCE, 8}, {OBJ_ATT_SHIELD, 8}, {OBJ_ATT_HEALTH, 9} },
                    { 200, 350, 0, 0 },
-                   { ID_PRACTICE_TARGET }, SpriteFileStructures,
+                   { ID_PRACTICE_TARGET, ID_PRACTICE_TARGET_NF }, SpriteFileStructures,
                    ObjectData::TYPE_PRACTICE_TARGET, ObjectData::CAT_STRUCTURE,
                    OCS_TARGET, OCAT_GENERIC, WeaponData::TYPE_NULL, 1, 1));
 
@@ -377,12 +383,12 @@ void ObjectsDataRegistry::InitObjectData()
                      {OBJ_ATT_RESISTANCE, 5}, {OBJ_ATT_SHIELD, 5}, {OBJ_ATT_HEALTH, 7} },
                    { 150, 150, 0, 0 },
                    { WALL_GATE_L1_F1_HORIZ_CLOSED, WALL_GATE_L1_F2_HORIZ_CLOSED,
-                     WALL_GATE_L1_F3_HORIZ_CLOSED }, SpriteFileStructures,
+                     WALL_GATE_L1_F3_HORIZ_CLOSED, WALL_GATE_L1_HORIZ_CLOSED }, SpriteFileStructures,
                    ObjectData::TYPE_WALL_GATE, ObjectData::CAT_STRUCTURE,
                    OCS_WALL, OCAT_DEFENSE, WeaponData::TYPE_NULL, 1, 1));
 
 #ifdef DEV_MODE
-    for(auto it : mDataObjects)
+    for(const auto & it : mDataObjects)
         assert(it.first == it.second.GetType());
 #endif
 }
@@ -415,7 +421,7 @@ void ObjectsDataRegistry::InitWeaponData()
                    { {ATT_AIMED_SHOT, 40}, {ATT_BURST_SHOT, 25}, {ATT_QUICK_SHOT, 30} }));
 
 #ifdef DEV_MODE
-    for(auto it : mDataWeapons)
+    for(const auto & it : mDataWeapons)
         assert(it.first == it.second.GetType());
 #endif
 }

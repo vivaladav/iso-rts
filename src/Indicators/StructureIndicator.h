@@ -16,6 +16,8 @@ public:
 
     void SetDoable(bool doable);
 
+    void ResetTexture(sgl::graphic::Texture * tex);
+
 private:
     bool mDoable = false;
 };

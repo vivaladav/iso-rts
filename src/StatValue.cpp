@@ -47,6 +47,12 @@ void StatValue::SetMax(int max)
 
 void StatValue::SetValue(int val)
 {
+    // clamp value
+    if(val > mMax)
+        val = mMax;
+    else if(val < mMin)
+        val = mMin;
+
     // same value -> exit
     if(val == mValue)
         return ;

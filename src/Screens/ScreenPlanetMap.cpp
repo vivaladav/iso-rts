@@ -21,6 +21,11 @@
 #include "Widgets/WidgetsConstants.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
 
+#ifdef DEMO_MODE
+#include "Widgets/GameSimpleTooltip.h"
+#include "Widgets/WidgetCover.h"
+#endif
+
 #include <sgl/core/event/KeyboardEvent.h>
 #include <sgl/graphic/Font.h>
 #include <sgl/graphic/FontManager.h>
@@ -203,9 +208,9 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         auto game = GetGame();
         Player * player = game->GetLocalPlayer();
 
-        player->SumResource(Player::Stat::MONEY, -costExploreMoney);
-        player->SumResource(Player::Stat::ENERGY, -costExploreEnergy);
-        player->SumResource(Player::Stat::MATERIAL, -costExploreMaterial);
+        player->SumResource(ER_MONEY, -costExploreMoney);
+        player->SumResource(ER_ENERGY, -costExploreEnergy);
+        player->SumResource(ER_MATERIAL, -costExploreMaterial);
 
         // handle the result
         Planet * planet = game->GetCurrentPlanet();
@@ -311,10 +316,10 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
         Player * player = game->GetLocalPlayer();
 
         // pay costs
-        player->SumResource(Player::Stat::MONEY, -costConquestMoney);
-        player->SumResource(Player::Stat::ENERGY, -costConquestEnergy);
-        player->SumResource(Player::Stat::MATERIAL, -costConquestMaterial);
-        player->SumResource(Player::Stat::DIAMONDS, -costConquestDiamonds);
+        player->SumResource(ER_MONEY, -costConquestMoney);
+        player->SumResource(ER_ENERGY, -costConquestEnergy);
+        player->SumResource(ER_MATERIAL, -costConquestMaterial);
+        player->SumResource(ER_DIAMONDS, -costConquestDiamonds);
 
         // attempt the conquest
         const int territory = mPlanetMap->GetSelectedTerritoryId();
@@ -340,11 +345,11 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
             const int multRes1 = 100;
             const int multRes2 = 10;
 
-            player->SumResource(Player::Stat::MONEY, multMoney * planet->GetMapValue(territory));
-            player->SumResource(Player::Stat::ENERGY, multRes1 * planet->GetMapEnergy(territory));
-            player->SumResource(Player::Stat::MATERIAL, multRes1 * planet->GetMapMaterial(territory));
-            player->SumResource(Player::Stat::BLOBS, multRes2 * planet->GetMapBlobs(territory));
-            player->SumResource(Player::Stat::DIAMONDS, multRes2 * planet->GetMapDiamonds(territory));
+            player->SumResource(ER_MONEY, multMoney * planet->GetMapValue(territory));
+            player->SumResource(ER_ENERGY, multRes1 * planet->GetMapEnergy(territory));
+            player->SumResource(ER_MATERIAL, multRes1 * planet->GetMapMaterial(territory));
+            player->SumResource(ER_BLOBS, multRes2 * planet->GetMapBlobs(territory));
+            player->SumResource(ER_DIAMONDS, multRes2 * planet->GetMapDiamonds(territory));
 
             // update UI
             mPlanetMap->SetButtonState(territory, pf, status);
@@ -419,12 +424,24 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     auto buttonLeave = new ButtonLeavePlanet(panelLeave);
     buttonLeave->SetPosition((panelLeave->GetWidth() - buttonLeave->GetWidth()) / 2,
                               (panelLeave->GetHeight() - buttonLeave->GetHeight()) / 2);
+    // TODO enable when there's a galaxy screen
+    buttonLeave->SetEnabled(false);
 
     buttonLeave->AddOnClickFunction([this]
     {
-        // TODO change to galaxy screen
-        GetGame()->RequestNextActiveState(StateId::LEAVE_GAME);
     });
+
+#ifdef DEMO_MODE
+    // cover button to show tooltip when mouse is over
+    auto cover = new WidgetCover(panelLeave);
+    cover->SetPosition(panelLeave->GetX(), panelLeave->GetY());
+
+    auto sm = utilities::StringManager::Instance();
+    mTooltipDemo = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
+    cover->SetTooltip(mTooltipDemo);
+    cover->SetTooltipShowingTime(5000);
+    cover->SetTooltipDelay(100);
+#endif
 
     SetPlanetName(Planet::PLANETS_NAME[planet->GetPlanetId()]);
 
@@ -432,7 +449,7 @@ ScreenPlanetMap::ScreenPlanetMap(Game * game)
     SetDate("001 - 2200");
 
     // START MUSIC
-    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("game/music_01.ogg");
+    media::AudioManager::Instance()->GetPlayer()->PlayMusicLoop("game/music_01.ogg");
 
     // TUTORIAL
     if(game->IsTutorialEnabled())
@@ -530,6 +547,8 @@ ScreenPlanetMap::~ScreenPlanetMap()
 {
     delete mBg;
 
+    GetGame()->GetTutorialManager()->ClearLastStartedTutorialId();
+
     sgl::sgui::Stage::Instance()->ClearWidgets();
 }
 
@@ -593,10 +612,10 @@ void ScreenPlanetMap::ShowInfo(int territory)
 
     // PANEL RESOURCES
     mPanelResources->SetEnabled(true);
-    mPanelResources->SetResourceValue(RES_ENERGY, planet->GetMapEnergy(territory));
-    mPanelResources->SetResourceValue(RES_MATERIAL1, planet->GetMapMaterial(territory));
-    mPanelResources->SetResourceValue(RES_BLOBS, planet->GetMapBlobs(territory));
-    mPanelResources->SetResourceValue(RES_DIAMONDS, planet->GetMapDiamonds(territory));
+    mPanelResources->SetResourceValue(ER_ENERGY, planet->GetMapEnergy(territory));
+    mPanelResources->SetResourceValue(ER_MATERIAL, planet->GetMapMaterial(territory));
+    mPanelResources->SetResourceValue(ER_BLOBS, planet->GetMapBlobs(territory));
+    mPanelResources->SetResourceValue(ER_DIAMONDS, planet->GetMapDiamonds(territory));
 
     // PANEL INFO
     const int rows = planet->GetMapRows(territory);
@@ -694,5 +713,13 @@ void ScreenPlanetMap::ShowDialogExit()
     const int posY = (renderer->GetHeight() - mDialogExit->GetHeight()) / 2;
     mDialogExit->SetPosition(posX, posY);
 }
+
+#ifdef DEMO_MODE
+void ScreenPlanetMap::OnStringsChanged()
+{
+    auto sm = sgl::utilities::StringManager::Instance();
+    mTooltipDemo->SetText(sm->GetCString("NOT_IN_DEMO"));
+}
+#endif
 
 } // namespace game

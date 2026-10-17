@@ -2,10 +2,12 @@
 
 #include "Game.h"
 #include "GameConstants.h"
+#include "Tutorial/TutorialManager.h"
 #include "Widgets/ButtonDialogClose.h"
 #include "Widgets/ButtonPanelTab.h"
 #include "Widgets/GameSliderH.h"
 #include "Widgets/GameUIData.h"
+#include "Widgets/SettingsCheckbox.h"
 #include "Widgets/WidgetsConstants.h"
 
 #include <sgl/core/event/KeyboardEvent.h>
@@ -27,10 +29,10 @@
 #include <sgl/sgui/Image.h>
 #include <sgl/sgui/ImageButton.h>
 #include <sgl/sgui/Label.h>
-#include <sgl/sgui/Stage.h>
 #include <sgl/utilities/StringManager.h>
 
 #include <cassert>
+#include <cmath>
 #include <iostream>
 #include <sstream>
 
@@ -53,8 +55,8 @@ constexpr int contY0 = 40;
 constexpr int marginPanelH = 30;
 
 constexpr int minResW = 1024;
-constexpr float minResRatio = 1.25f;
-constexpr int minRefresh = 60;
+constexpr int maxResW = 1920;
+constexpr int refresh = 60;
 
 const int mouseBtnId[] =
 {
@@ -259,80 +261,7 @@ private:
     int mMode = 0;
 };
 
-// ====== CHECKBOX BUTTON =====
-
-class SettingsCheckbox : public sgl::sgui::AbstractButton
-{
-public:
-    SettingsCheckbox(sgl::sgui::Widget * parent)
-        : sgl::sgui::AbstractButton(parent)
-    {
-        using namespace sgl;
-
-        SetCheckable(true);
-
-        // BAR
-        mBg = new graphic::Image;
-        RegisterRenderable(mBg);
-
-        // UPDATE CONTENT
-        UpdateGraphics(NORMAL);
-        UpdatePositions();
-    }
-
-private:
-    void HandleButtonDown() override
-    {
-        sgl::sgui::AbstractButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/checkbox-01.ogg");
-    }
-
-    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
-    {
-        UpdateGraphics(state);
-    }
-
-    void HandlePositionChanged() override
-    {
-        UpdatePositions();
-    }
-
-    void UpdateGraphics(sgl::sgui::AbstractButton::VisualState state)
-    {
-        using namespace sgl;
-
-        auto tm = graphic::TextureManager::Instance();
-
-        const unsigned int texIDs[] =
-        {
-            ID_DLG_SETT_CHB_NORMAL,
-            ID_DLG_SETT_CHB_DISABLED,
-            ID_DLG_SETT_CHB_OVER,
-            ID_DLG_SETT_CHB_PUSHED,
-            ID_DLG_SETT_CHB_CHECKED,
-        };
-
-        auto tex = tm->GetSprite(SpriteFileDialogSettings, texIDs[state]);
-
-
-        mBg->SetTexture(tex);
-
-        SetSize(mBg->GetWidth(), mBg->GetHeight());
-    }
-
-    void UpdatePositions()
-    {
-        const int x0 = GetScreenX();
-        const int y0 = GetScreenY();
-        mBg->SetPosition(x0, y0);
-    }
-
-private:
-    sgl::graphic::Image * mBg = nullptr;
-};
-
+// ====== SLIDER SETTINGS =====
 class SliderSettings : public GameSliderH
 {
 public:
@@ -450,8 +379,17 @@ DialogSettings::DialogSettings(Game * game)
     CreatePanelControls();
     mPanels[Panel::CONTROLS]->SetPosition(x, y);
 
-    // default panel is GAME
-    mGroupButtons->SetButtonChecked(Panel::GAME, true);
+    // default panel is GAME, unless tutorial is ON
+    auto tutMan = game->GetTutorialManager();
+
+    if(tutMan->HasActiveTutorial())
+    {
+        mGroupButtons->SetButtonEnabled(Panel::GAME, false);
+
+        mGroupButtons->SetButtonChecked(Panel::AUDIO, true);
+    }
+    else
+        mGroupButtons->SetButtonChecked(Panel::GAME, true);
 }
 
 DialogSettings::~DialogSettings()
@@ -529,27 +467,6 @@ void DialogSettings::CreatePanelGame()
         mGame->SetLanguage(static_cast<LanguageId>(ind));
     });
 
-    // AUTO END TURN
-    x = contX0;
-    y += blockSettingH;
-
-    label = new sgui::Label(mSM->GetCString("AUTO_END_TURN"), font, panel);
-    mHeadersGame.emplace_back(label);
-    label->SetColor(colorTxt);
-    label->SetPosition(x, y);
-
-    auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(mGame->IsAutoEndTurnEnabled());
-
-    x = panelContentW - cb->GetWidth() - marginPanelH;
-    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(x, y);
-
-    cb->AddOnToggleFunction([this](bool checked)
-    {
-        mGame->SetAutoEndTurn(checked);
-    });
-
     // AUTO UNIT CAMERA
     x = contX0;
     y += blockSettingH;
@@ -559,7 +476,7 @@ void DialogSettings::CreatePanelGame()
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    cb = new SettingsCheckbox(panel);
+    auto cb = new SettingsCheckbox(panel);
     cb->SetChecked(mGame->IsAutoUnitCameraEnabled());
 
     x = panelContentW - cb->GetWidth() - marginPanelH;
@@ -570,27 +487,6 @@ void DialogSettings::CreatePanelGame()
                             {
                                 mGame->SetAutoUnitCamera(checked);
                             });
-
-    // TUTORIAL
-    x = contX0;
-    y += blockSettingH;
-
-    label = new sgui::Label(mSM->GetCString("TUTORIAL"), font, panel);
-    mHeadersGame.emplace_back(label);
-    label->SetColor(colorTxt);
-    label->SetPosition(x, y);
-
-    cb = new SettingsCheckbox(panel);
-    cb->SetChecked(mGame->IsTutorialEnabled());
-
-    x = panelContentW - cb->GetWidth() - marginPanelH;
-    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
-    cb->SetPosition(x, y);
-
-    cb->AddOnToggleFunction([this](bool checked)
-    {
-        mGame->SetTutorialEnabled(checked);
-    });
 }
 
 void DialogSettings::CreatePanelAudio()
@@ -628,7 +524,7 @@ void DialogSettings::CreatePanelAudio()
 
         // restart music if re-enabled
         if(checked)
-            ap->PlayMusic("menus/menu_01.ogg");
+            ap->PlayMusicLoop("menus/menu_01.ogg");
     });
 
     // MUSIC VOLUME
@@ -740,6 +636,9 @@ void DialogSettings::CreatePanelVideo()
     auto fm = graphic::FontManager::Instance();
     auto font = fm->GetFont(WidgetsConstants::FontFileText, sizeTxt, graphic::Font::NORMAL);
 
+    auto win = graphic::Window::Instance();
+    const auto videoMode = win->GetVideoMode();
+
     // RESOLUTION
     auto label = new sgui::Label(mSM->GetCString("RESOLUTION"), font, panel);
     mHeadersVideo.emplace_back(label);
@@ -747,36 +646,63 @@ void DialogSettings::CreatePanelVideo()
     label->SetPosition(x, y);
 
     mComboRes = new SettingsComboBox(panel);
-    auto win = graphic::Window::Instance();
 
     const graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
 
+    const float ratios[] =
+    {
+        1.77f,
+        1.60f,
+        1.33f,
+        1.25f,
+    };
+    const int numRatios = sizeof(ratios) / sizeof(float);
+    const float delta = 0.1f;
+
+    const int numDisplays = win->GetNumDisplays();
+    const int currentDisplay = win->GetCurrentDisplayIndex();
     int currIndex = -1;
     int validModes = 0;
 
-    for(int d = 0; d < win->GetNumDisplays(); ++d)
+    for(int r = 0; r < numRatios; ++r)
     {
-        for(int m = 0; m < win->GetNumDisplayModes(d); ++m)
+        const float currRatio = ratios[r];
+
+        for(int d = 0; d < numDisplays; ++d)
         {
-            const graphic::DisplayMode dm = win->GetDisplayMode(d, m);
+            for(int m = 0; m < win->GetNumDisplayModes(d); ++m)
+            {
+                const graphic::DisplayMode dm = win->GetDisplayMode(d, m);
 
-            // display requirements
-            const float ratio = static_cast<float>(dm.width) / static_cast<float>(dm.height);
+                // display requirements
+                const float ratio = static_cast<float>(dm.width) / static_cast<float>(dm.height);
 
-            if(ratio < minResRatio || dm.width < minResW || dm.refresh < minRefresh)
-                continue ;
+                if(dm.width < minResW || dm.width > maxResW || dm.refresh != refresh ||
+                   std::fabs(ratio - currRatio) > delta)
+                    continue ;
 
-            /// add combo item
-            std::ostringstream oss;
-            oss << dm.width << "x" << dm.height << " @ " << dm.refresh << "Hz";
-            mComboRes->AddItem(new ComboBoxItemResolution(d, m, oss.str().c_str()));
+                /// add combo item
+                std::ostringstream oss;
 
-            // record current mode
-            if(dm.width == currDM.width && dm.height == currDM.height && dm.refresh == currDM.refresh)
-                currIndex = validModes;
+                if(numDisplays > 1)
+                    oss << dm.width << "x" << dm.height << " - " << (d + 1);
+                else
+                    oss << dm.width << "x" << dm.height;
 
-            ++validModes;
+                mComboRes->AddItem(new ComboBoxItemResolution(d, m, oss.str().c_str()));
+
+                // record current mode
+                if(currentDisplay == d && dm.width == currDM.width && dm.height == currDM.height &&
+                    dm.refresh == currDM.refresh)
+                    currIndex = validModes;
+
+                ++validModes;
+            }
         }
+
+        // stop adding resolutions if already found some
+        if(mComboRes->GetNumItems() > 0)
+            break;
     }
 
     // fallback to first resolution if no good one is found
@@ -786,7 +712,7 @@ void DialogSettings::CreatePanelVideo()
 
         /// add combo item
         std::ostringstream oss;
-        oss << dm.width << "x" << dm.height << " @ " << dm.refresh << "Hz";
+        oss << dm.width << "x" << dm.height;
         mComboRes->AddItem(new ComboBoxItemResolution(0, 0, oss.str().c_str()));
 
 #ifdef DEBUG
@@ -799,12 +725,16 @@ void DialogSettings::CreatePanelVideo()
 
     // weird case where there are valid modes, but initial mode doesn't match any
     // it was happening on Windows 11 when scaling is enabled for example
+    // avoid to do this when BORDERLESS as display mode can be bigger than max resolution
     if(-1 == currIndex)
     {
         currIndex = 0;
-        win->SetDisplayMode(0, 0);
+
+        if(videoMode != graphic::Window::VM_BORDERLESS)
+            win->SetDisplayMode(0, 0);
     }
 
+    mComboRes->SetEnabled(videoMode != graphic::Window::VM_BORDERLESS);
     mComboRes->SetActiveItem(currIndex);
 
     mComboRes->SetOnActiveChanged([this, win](int)
@@ -827,8 +757,6 @@ void DialogSettings::CreatePanelVideo()
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    const auto videoMode = win->GetVideoMode();
-
     mComboVMode = new SettingsComboBox(panel);
     mComboVMode->AddItem(new SettingsComboBoxItem(mSM->GetCString("BORDERLESS")));
     mComboVMode->AddItem(new SettingsComboBoxItem(mSM->GetCString("FULLSCREEN")));
@@ -839,9 +767,14 @@ void DialogSettings::CreatePanelVideo()
     {
         win->SetVideoMode(static_cast<sgl::graphic::Window::VideoMode>(mode));
 
-        // update resolution
-        mComboRes->SetEnabled(mode != sgl::graphic::Window::VM_BORDERLESS);
-        UpdateCurrentResolution();
+        // update resolution when not in BORDLESS mode
+        if(mode != graphic::Window::VM_BORDERLESS)
+        {
+            mComboRes->SetEnabled(true);
+            UpdateCurrentResolution();
+        }
+        else
+            mComboRes->SetEnabled(false);
     });
 
     mComboRes->SetEnabled(videoMode != sgl::graphic::Window::VM_BORDERLESS);
@@ -859,17 +792,37 @@ void DialogSettings::CreatePanelVideo()
     label->SetColor(colorTxt);
     label->SetPosition(x, y);
 
-    auto stage = sgui::Stage::Instance();
     auto cb = new SettingsCheckbox(panel);
-    cb->SetChecked(stage->IsAutoHidingCursor());
+    cb->SetChecked(mGame->IsAutoHideMouseEnable());
 
     x = panelContentW - cb->GetWidth() - marginPanelH;
     y += (label->GetHeight() - cb->GetHeight()) * 0.5;
     cb->SetPosition(x, y);
 
-    cb->AddOnToggleFunction([this, stage](bool checked)
+    cb->AddOnToggleFunction([this](bool checked)
                             {
-                                stage->AutoHideInactiveCursor(checked, mGame->GetTimeAutoHideMouse());
+                                mGame->SetAutoHideMouseEnabled(checked);
+                            });
+
+    // GRAB MOUSE
+    x = contX0;
+    y += blockSettingH;
+
+    label = new sgui::Label(mSM->GetCString("LOCK_MOUSE"), font, panel);
+    mHeadersVideo.emplace_back(label);
+    label->SetColor(colorTxt);
+    label->SetPosition(x, y);
+
+    cb = new SettingsCheckbox(panel);
+    cb->SetChecked(win->IsMouseGrabbed());
+
+    x = panelContentW - cb->GetWidth() - marginPanelH;
+    y += (label->GetHeight() - cb->GetHeight()) * 0.5;
+    cb->SetPosition(x, y);
+
+    cb->AddOnToggleFunction([win](bool checked)
+                            {
+                                win->GrabMouse(checked);
                             });
 
     // VSYNC
@@ -1112,36 +1065,17 @@ void DialogSettings::UpdateCurrentResolution()
 
     auto win = graphic::Window::Instance();
 
-    const graphic::DisplayMode currDM = win->GetCurrentDisplayMode();
+    const unsigned int numModes = mComboRes->GetNumItems();
+    const int currentDisplay = win->GetCurrentDisplayIndex();
+    const int currentDisplayModeIndex = win->GetCurrentDisplayModeIndex();
 
-    int currIndex = -1;
-    int validModes = 0;
-
-    for(int d = 0; d < win->GetNumDisplays(); ++d)
+    for(unsigned int i = 0; i < numModes; ++i)
     {
-        for(int m = 0; m < win->GetNumDisplayModes(d); ++m)
-        {
-            const graphic::DisplayMode dm = win->GetDisplayMode(d, m);
+        auto item = static_cast<ComboBoxItemResolution *>(mComboRes->GetItem(i));
 
-            // display requirements
-            const float ratio = static_cast<float>(dm.width) / static_cast<float>(dm.height);
-
-            if(ratio < minResRatio || dm.width < minResW || dm.refresh < minRefresh)
-                continue ;
-
-            // record current mode
-            if(dm.width == currDM.width && dm.height == currDM.height && dm.refresh == currDM.refresh)
-                currIndex = validModes;
-
-            ++validModes;
-        }
+        if(item->GetDisplay() == currentDisplay && item->GetMode() == currentDisplayModeIndex)
+            mComboRes->SetActiveItem(i);
     }
-
-    // fallback to first resolution if no good one is found
-    if(0 == validModes || -1 == currIndex)
-        currIndex = 0;
-
-    mComboRes->SetActiveItem(currIndex);
 }
 
 void DialogSettings::OnStringsChanged()
@@ -1174,9 +1108,7 @@ void DialogSettings::OnStringsChanged()
     const char * strIdsGame[] =
     {
         "LANGUAGE",
-        "AUTO_END_TURN",
         "AUTO_UNIT_CAM",
-        "TUTORIAL",
     };
 
     unsigned int numLabels = mHeadersGame.size();
@@ -1228,6 +1160,7 @@ void DialogSettings::OnStringsChanged()
         "RESOLUTION",
         "VIDEO_MODE",
         "AUTO_HIDE_MOUSE",
+        "LOCK_MOUSE",
     };
 
     numLabels = mHeadersVideo.size();

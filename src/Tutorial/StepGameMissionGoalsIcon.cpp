@@ -60,6 +60,8 @@ StepGameMissionGoalsIcon::StepGameMissionGoalsIcon(const Game * game, Screen * s
 
                             mFocusArea->SetScreenArea(f2X, f2Y, f2W, f2H, true);
                             mFocusArea->SetVisible(true);
+
+                            mShowingFocus = true;
                         });
 
     mClickId = panel->AddButtonFunction(PanelObjectActions::BTN_MISSION_GOALS, [this]
@@ -73,6 +75,14 @@ StepGameMissionGoalsIcon::~StepGameMissionGoalsIcon()
     mPanelActions->RemoveButtonFunction(PanelObjectActions::BTN_MISSION_GOALS, mClickId);
 
     delete mFocusArea;
+}
+
+void StepGameMissionGoalsIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

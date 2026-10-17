@@ -22,16 +22,21 @@ void StepGameSetCollectableUnits::OnStart()
 {
     TutorialStep::OnStart();
 
-    const std::vector<GameObject *> & objs = mGameMap->GetObjects();
+    const unsigned int cols = mGameMap->GetNumCols();
 
-    for(GameObject * obj : objs)
+    for(int r = mTL.row; r <= mBR.row; ++r)
     {
-        const int genR = obj->GetRow0();
-        const int genC = obj->GetCol0();
+        const unsigned int ind0 = r * cols;
 
-        if(obj->GetObjectType() == mGenType &&
-           genR >= mTL.row && genR <= mBR.row && genC >= mTL.col && genC <= mBR.col)
-            static_cast<Collectable *>(obj)->RandomizeNumUnits(mMin, mMax);
+        for(int c = mTL.col; c <= mBR.col; ++c)
+        {
+            const unsigned int ind = ind0 + c;
+
+            auto obj = mGameMap->GetObject(ind);
+
+            if(obj != nullptr && obj->GetObjectType() == mGenType)
+                static_cast<Collectable *>(obj)->RandomizeNumUnits(mMin, mMax);
+        }
     }
 
     SetDone();

@@ -2,6 +2,7 @@
 
 #include <sgl/core/Application.h>
 
+#include <chrono>
 #include <functional>
 #include <map>
 #include <string>
@@ -33,6 +34,7 @@ namespace sgl
 namespace game
 {
 
+class GameStats;
 class ObjectsDataRegistry;
 class Planet;
 class Player;
@@ -41,6 +43,7 @@ class TutorialManager;
 
 enum ExtendedResource : unsigned int;
 enum GameCursorId : unsigned int;
+enum GameMode : unsigned int;
 enum LanguageId : unsigned int;
 enum PlanetId : unsigned int;
 enum PlayerFaction : unsigned int;
@@ -78,15 +81,27 @@ public:
     void ClearGameData();
 
     // -- LOAD & SAVE --
-    const std::string & GetCurrentSaveFilePath() const;
+    const std::string & GetSavefile(GameMode mode, unsigned int ind) const;
+
+    void SetSaveFile(const std::string & f);
+
     sgl::utilities::BinaryFile * GetSaveFileForReading() const;
     void CloseSaveFileForReading();
-    bool IsSaveFileValid() const;
+    bool HasSavedFiles() const;
+    bool IsSaveFileValid(const std::string & saveFile = std::string()) const;
 
-    bool LoadGame();
-    bool SaveGame();
+    bool LoadGameHeader(GameMode & mode, PlayerFaction & faction, PlanetId & planet,
+                        unsigned int & map, int & turn, std::time_t & timestamp,
+                        const std::string & saveFile = std::string());
+    bool LoadGame(const std::string & saveFile = std::string());
+    bool SaveGame(const std::string & saveFile = std::string());
     bool LoadSettings();
     bool SaveSettings();
+
+#ifdef DEV_MODE
+    bool SaveGameTurn();
+    bool SaveGamePlanet();
+#endif
 
     const std::unordered_map<ExtendedResource, int> & GetCostSaveGame() const;
     void LowerCostSaveGame();
@@ -115,7 +130,12 @@ public:
     Difficulty GetDifficulty() const;
     void SetDifficulty(Difficulty level);
 
+    GameMode GetGameMode() const;
+    void SetGameMode(GameMode m);
+
     const ObjectsDataRegistry * GetObjectsRegistry() const;
+
+    GameStats * GetGameStats() const;
 
     // -- players --
     int GetNumActivePlayers() const;
@@ -144,6 +164,8 @@ public:
     bool IsMapDragging() const;
     void SetMapDragging(bool val);
 
+    bool IsAutoHideMouseEnable() const;
+    void SetAutoHideMouseEnabled(bool val);
     int GetMapScrollingSpeed() const;
     void SetMapScrollingSpeed(int val);
     bool IsMapScrollingOnEdges() const;
@@ -186,6 +208,8 @@ private:
 
     void NotifyOnSettingsChanged();
 
+    int GetCurrentLocalTurn() const;
+
     void Update(float delta) override;
 
     // -- LOAD & SAVE --
@@ -207,7 +231,10 @@ private:
 
     std::unordered_map<ExtendedResource, int> mCostSave;
 
+    std::vector<std::string> mSaveFiles;
+
     std::string mDirSave;
+    std::string mDirSettings;
     std::string mCurrSaveFile;
     std::string mSettingsFile;
 
@@ -221,6 +248,8 @@ private:
     sgl::media::AudioManager * mAudioMan = nullptr;
 
     ResourceLoader * mResLoader = nullptr;
+
+    GameStats * mGameStats = nullptr;
 
     TutorialManager * mTutMan = nullptr;
 
@@ -237,6 +266,8 @@ private:
 
     unsigned int mRandSeed = 0;
 
+    GameMode mGameMode;
+
     // SETTINGS
     LanguageId mLanguage;
     int mMapDraggingSpeed = 5;
@@ -247,7 +278,6 @@ private:
     bool mMapDragging = true;
     bool mMapScrollingOnEdges = true;
     bool mMapScrollingConstSpeed = false;
-    bool mAutoEndTurn = true;
     bool mAutoUnitCamera = true;
     bool mTutorialEnabled = true;
     bool mAutoSave = true;
@@ -260,7 +290,8 @@ private:
 
 inline ResourceLoader * Game::GetResourceLoader() const { return mResLoader; }
 
-inline const std::string & Game::GetCurrentSaveFilePath() const { return mCurrSaveFile; }
+inline void Game::SetSaveFile(const std::string & f) { mCurrSaveFile = f; }
+
 inline sgl::utilities::BinaryFile * Game::GetSaveFileForReading() const
 {
     return mReaderSave;
@@ -290,7 +321,12 @@ inline void Game::SetClearColor(unsigned char r, unsigned char g, unsigned char 
 inline Difficulty Game::GetDifficulty() const { return mDifficulty; }
 inline void Game::SetDifficulty(Difficulty level) { mDifficulty = level; }
 
+inline GameMode Game::GetGameMode() const { return mGameMode; }
+inline void Game::SetGameMode(GameMode m) { mGameMode = m; }
+
 inline const ObjectsDataRegistry * Game::GetObjectsRegistry() const { return mObjsRegistry; }
+
+inline GameStats * Game::GetGameStats() const { return mGameStats; }
 
 inline int Game::GetNumActivePlayers() const { return mActivePlayers.size(); }
 
@@ -347,15 +383,6 @@ inline void Game::SetMapScrollingOnEdges(bool val)
 }
 inline bool Game::IsMapScrollingConstant() const { return mMapScrollingConstSpeed; }
 inline void Game::SetMapScrollingConstant(bool val) { mMapScrollingConstSpeed = val; }
-inline bool Game::IsAutoEndTurnEnabled() const { return mAutoEndTurn; }
-inline void Game::SetAutoEndTurn(bool val)
-{
-    if(val != mAutoEndTurn)
-    {
-        mAutoEndTurn = val;
-        NotifyOnSettingsChanged();
-    }
-}
 
 inline bool Game::IsAutoUnitCameraEnabled() const { return mAutoUnitCamera; }
 inline void Game::SetAutoUnitCamera(bool val) { mAutoUnitCamera = val; }

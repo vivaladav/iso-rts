@@ -30,6 +30,7 @@
 #include <sgl/media/AudioPlayer.h>
 #include <sgl/utilities/BinaryFile.h>
 #include <sgl/utilities/UniformDistribution.h>
+#include <sgl/utilities/UniformRealDistribution.h>
 
 #include <cstdlib>
 
@@ -149,6 +150,7 @@ bool GameObject::Load(sgl::utilities::BinaryFile & bf)
     mCanBeConq = bf.ReadBool();
     mVisible = bf.ReadBool();
     mVisited = bf.ReadBool();
+    mIndestructible = bf.ReadBool();
 
     return true;
 }
@@ -188,6 +190,7 @@ bool GameObject::Save(sgl::utilities::BinaryFile & bf) const
     bf.WriteBool(mCanBeConq);
     bf.WriteBool(mVisible);
     bf.WriteBool(mVisited);
+    bf.WriteBool(mIndestructible);
 
     return true;
 }
@@ -374,6 +377,8 @@ void GameObject::SetCell(const GameMapCell * cell)
 
     if(mOverlaySel != nullptr)
         mOverlaySel->UpdateObjectCell(this);
+
+    mCellChanged = true;
 }
 
 int GameObject::GetVisibilityLevel() const
@@ -467,11 +472,7 @@ bool GameObject::HasEnergyForActionStep(GameObjectActionType action) const
         const float cost = (ATTACK == action) ? mWeapon->GetCostEnergy() :
                            GetActionEnergyCost(action);
 
-        // turn energy is only valid for units
-        if(mOwner != nullptr && mCategory == ObjectData::CAT_UNIT)
-            return GetEnergy() >= cost && mOwner->GetTurnEnergy() >= cost;
-        else
-            return GetEnergy() >= cost;
+        return GetEnergy() >= cost;
     }
     else
         return false;
@@ -487,15 +488,11 @@ void GameObject::ActionStepCompleted(GameObjectActionType action)
 
     SumEnergy(costEnergy);
 
-    // turn energy is only valid for units
-    if(mOwner != nullptr && mCategory == ObjectData::CAT_UNIT)
-        mOwner->SumTurnEnergy(costEnergy);
-
     // EXPERIENCE
     SumExperience(GetActionExperienceGain(action));
 }
 
-int GameObject::GetExperienceToLevel(int level) const
+int GameObject::GetExperienceToLevel(unsigned int level) const
 {
     // TODO use different values according to difficulty level
     // increments
@@ -537,10 +534,6 @@ void GameObject::UpgradeLevel(const std::vector<int> & attChanges)
     // update visibility if needed
     if(IsFactionLocal() && attChanges[OBJ_ATT_VIEW_RANGE] > 0)
         mGameMap->UpdateLocalObjectVisibility(this);
-
-    // update turn energy if unit
-    if(mCategory == ObjectData::CAT_UNIT && mOwner != nullptr)
-        mOwner->AdjustTurnMaxEnergy();
 
     // notify object and observers
     OnAttributeChanged();
@@ -619,6 +612,20 @@ void GameObject::SetFatalHit(bool enabled)
 {
     if(mWeapon != nullptr)
         mWeapon->SetFatalHit(enabled);
+}
+
+void GameObject::ClearTargetAttack()
+{
+    if(mWeapon != nullptr)
+        mWeapon->ClearTarget();
+}
+
+bool GameObject::SetTargetAttack(GameObject * obj)
+{
+    if(mWeapon != nullptr)
+        return mWeapon->SetTarget(obj);
+    else
+        return false;
 }
 
 void GameObject::FindAndSetEnemyTarget()
@@ -726,6 +733,13 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     if(IsDestroyed())
         return ;
 
+    // do not take any damage when indestructible
+    if(mIndestructible)
+    {
+        damage = 0.f;
+        fatal = false;
+    }
+
     const bool selfDestruct = damage < 0.f;
 
     // fatal hit
@@ -750,33 +764,16 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
 
     SumHealth(-damage);
 
-    const int numPart0 = 30 * mRows * mCols;
+    // use more particles for bigger objects
+    const int numPart0 = 250 * mRows;
     int numPart = numPart0;
 
-    const int maxQuad = 4;
-    int numQuad = 1;
-
-    const float angInc = 90.f;
-    float ang0 = 0.f;
-
-    // hit, but alive -> pick random quadrant
-    if(mHealth > 0.f)
+    // hit and destroyed
+    if(IsDestroyed())
     {
-        const int quad0 = 0;
-        utilities::UniformDistribution genQuad(quad0, maxQuad - 1);
-
-        ang0 += angInc * genQuad.GetNextValue();
-
+        // use more particles
         const int partDestroyedMult = 2;
         numPart *= partDestroyedMult;
-    }
-    // hit and destroyed -> use all quadrants
-    else
-    {
-        const int multPart = maxQuad;
-        numPart *= multPart;
-
-        numQuad = maxQuad;
 
         // record stats for players
         // NOTE register kills only when destroying enemies
@@ -790,10 +787,6 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
                 mGameMap->RegisterCasualty(GetFaction());
         }
     }
-
-    float ang1 = ang0 + angInc;
-
-    const int numPartQuad = numPart / numQuad;
 
     auto partMan = GetParticlesManager();
     auto pu = static_cast<UpdaterDamage *>(partMan->GetUpdater(PU_DAMAGE));
@@ -810,58 +803,53 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     utilities::UniformDistribution genRot(minRot, maxRot);
 
     // random generator for velocity direction
-    utilities::UniformDistribution genVel(static_cast<int>(ang0), static_cast<int>(ang1));
+    const int ang0 = 0;
+    const int ang1 = 360;
+    utilities::UniformDistribution genVel(ang0, ang1);
 
     const float deg2rad = sgl::core::Math::PIf / 180.f;
 
     // random generator for speed
     const int minSpeed = 100;
-    const int maxSpeed = 300;
+    const int maxSpeed = 250;
     utilities::UniformDistribution genSpeed(minSpeed, maxSpeed);
 
     // random generator for decay speed
-    const int minDecSpeed = 200;
-    const int maxDecSpeed = 400;
+    const int minDecSpeed = 250;
+    const int maxDecSpeed = 425;
     utilities::UniformDistribution genDecSpeed(minDecSpeed, maxDecSpeed);
 
     // random generator for scale
-    const int minScale = 1;
-    const int maxScale = 2;
-    utilities::UniformDistribution genScale(minScale, maxScale);
+    const float minScale = 0.5f;
+    const float maxScale = 1.5f;
+    utilities::UniformRealDistribution genScale(minScale, maxScale);
 
     // random generator for color
     const int color0 = 0;
     const int colorN = mObjColors.size() - 1;
-
     utilities::UniformDistribution genColor(color0, colorN);
 
-    for(int q = 0; q < numQuad; ++q)
+    // random generator for delay
+    const float minDelay = 0.f;
+    const float maxDelay = 0.17f;
+    utilities::UniformRealDistribution genDelay(minDelay, maxDelay);
+
+    for(int p = 0; p < numPart; ++p)
     {
-        for(int p = 0; p < numPartQuad; ++p)
-        {
-            const double rot = genRot.GetNextValue();
+        const double rot = genRot.GetNextValue();
+        const float ang = genVel.GetNextValue() * deg2rad;
+        const float velX = cosf(ang);
+        const float velY = sinf(ang);
+        const float speed = genSpeed.GetNextValue();
+        const float decSpeed = genDecSpeed.GetNextValue();
+        const unsigned int color = mObjColors[genColor.GetNextValue()];
+        const float scale = genScale.GetNextValue();
+        const float delay = genDelay.GetNextValue();
 
-            const float ang = genVel.GetNextValue() * deg2rad;
-            const float velX = cosf(ang);
-            const float velY = sinf(ang);
+        DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, delay, decSpeed,
+                                scale, color);
 
-            const float speed = genSpeed.GetNextValue();
-
-            const float decSpeed = genDecSpeed.GetNextValue();
-
-            const unsigned int color = mObjColors[genColor.GetNextValue()];
-
-            const float scale = 1.f / static_cast<float>(genScale.GetNextValue());
-
-            DataParticleDamage data(tex, rot, objXC, objYC, velX, velY, speed, decSpeed, scale, color);
-
-            pu->AddParticle(data);
-        }
-
-        ang0 += angInc;
-        ang1 += angInc;
-
-        genVel.SetParameters(static_cast<int>(ang0), static_cast<int>(ang1));
+        pu->AddParticle(data);
     }
 
     // -- HIT POINTS --
@@ -875,15 +863,16 @@ void GameObject::Hit(float damage, GameObject * attacker, bool fatal, bool showH
     utilities::UniformDistribution genPosHP(minXDeltaHP, maxXDeltaHP);
 
     const float posXHP = objXC + genPosHP.GetNextValue();
-    const float posYHP = objYC - (mIsoObj->GetHeight() * 0.25f);
+    const float posYHP = GetStatusIconBaseY();
 
     const float speedHP = 75.f;
     const float decaySpeedHP = 40.f;
     const float maxDistHP = 60.f;
+    const float delayHP = 0.f;
 
     auto puHP = static_cast<UpdaterHitPoints *>(partMan->GetUpdater(PU_HIT_POINTS));
 
-    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, decaySpeedHP, maxDistHP, fatal);
+    DataParticleHitPoints dataHP(damage, posXHP, posYHP, speedHP, delayHP, decaySpeedHP, maxDistHP, fatal);
     puHP->AddParticle(dataHP);
 }
 
@@ -898,8 +887,9 @@ void GameObject::MissHit()
     const float speedHP = 75.f;
     const float decaySpeedHP = 50.f;
     const float maxDistHP = 50.f;
+    const float delay = 0.f;
 
-    DataParticleHitPoints dataHP(posX, posY, speedHP, decaySpeedHP, maxDistHP);
+    DataParticleHitPoints dataHP(posX, posY, speedHP, delay, decaySpeedHP, maxDistHP);
     puHP->AddParticle(dataHP);
 }
 
@@ -915,21 +905,11 @@ void GameObject::OnNewTurn(PlayerFaction faction)
 
 void GameObject::Update(float)
 {
-    // check if selected object has anything on top below energy and health bars
-    if(mSelected && mBarEnergy != nullptr && mBarHealth != nullptr)
+    // update stuff only when cell is changed
+    if(mCellChanged)
     {
-        const int row1 = GetRow1();
-        const int col1 = GetCol1();
-
-        const bool hideBars = row1 > 0 && col1 > 0 && mGameMap->HasObject(row1 - 1, col1 - 1);
-
-        const int alphaOn = 255;
-        const int alphaOff = 102;
-        const int diff = alphaOn - alphaOff;
-        const int alpha = alphaOn - (hideBars * diff);
-
-        mBarEnergy->SetAlpha(alpha);
-        mBarHealth->SetAlpha(alpha);
+        UpdateBarsAlpha();
+        mCellChanged = false;
     }
 }
 
@@ -1196,6 +1176,26 @@ void GameObject::UpdateHealthBar()
 
     const unsigned int val = std::roundf(ObjectHealthBar::MAX_VAL * GetHealth() / GetMaxHealth());
     mBarHealth->SetValue(val);
+}
+
+void GameObject::UpdateBarsAlpha()
+{
+    // check if selected object has anything on top below energy and health bars
+    if(!mSelected || mBarEnergy == nullptr || mBarHealth == nullptr)
+        return ;
+
+    const int row1 = GetRow1();
+    const int col1 = GetCol1();
+
+    const bool hideBars = row1 > 0 && col1 > 0 && mGameMap->HasObject(row1 - 1, col1 - 1);
+
+    const int alphaOn = 255;
+    const int alphaOff = 127;
+    const int diff = alphaOn - alphaOff;
+    const int alpha = alphaOn - (hideBars * diff);
+
+    mBarEnergy->SetAlpha(alpha);
+    mBarHealth->SetAlpha(alpha);
 }
 
 void GameObject::SetEnergy(float val)

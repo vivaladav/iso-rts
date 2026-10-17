@@ -1,0 +1,68 @@
+#include "Tutorial/StepGameConnectWall.h"
+
+#include "GameMap.h"
+#include "IsoMap.h"
+#include "GameObjects/GameObject.h"
+#include "Widgets/Tutorial/IsoFocusArea.h"
+#include "Widgets/Tutorial/PanelClickFilter.h"
+#include "Widgets/Tutorial/PanelInfoTutorial.h"
+
+#include <sgl/utilities/StringManager.h>
+
+namespace game
+{
+
+StepGameConnectWall::StepGameConnectWall(const GameMap * gm, const IsoMap * im,
+                                         const Cell2D & areaTL, const Cell2D & areaBR,
+                                         const char * text)
+    : TutorialInfoStep(550, 150)
+    , mFocusArea(new IsoFocusArea(im))
+    , mGameMap(gm)
+    , mAreaTL(areaTL)
+    , mAreaBR(areaBR)
+{
+    auto sm = sgl::utilities::StringManager::Instance();
+
+    // FOCUS
+    mFocusArea->SetCellArea(areaBR.row, areaBR.col, areaTL.row, areaTL.col, true);
+    mFocusArea->SetCornersColorAction();
+    mFocusArea->SetVisible(false);
+
+    // INFO
+    auto info = GetPanelInfo();
+
+    info->AddActionEntry(sm->GetCString(text), 0.f, false, false, [this]
+                        {
+                            mFocusArea->SetVisible(true);
+
+                            auto cf = GetClickFilter();
+                            cf->ExpandClickableArea();
+                        });
+}
+
+StepGameConnectWall::~StepGameConnectWall()
+{
+    delete mFocusArea;
+}
+
+void StepGameConnectWall::Update(float)
+{
+    for(int r = mAreaTL.row; r <= mAreaBR.row; ++r)
+    {
+        const int ind0 = r * mGameMap->GetNumCols();
+
+        for(int c = mAreaTL.col; c <= mAreaBR.col; ++c)
+        {
+            const int ind = ind0 + c;
+            const auto obj = mGameMap->GetObject(ind);
+
+            if(obj != nullptr && obj->IsStructure() && obj->IsLinked())
+            {
+                SetDone();
+                return ;
+            }
+        }
+    }
+}
+
+} // namespace game

@@ -70,7 +70,7 @@ GameHUD::GameHUD(ScreenGame * screen)
     // LOCAL PLAYER
     Player * local = game->GetLocalPlayer();
 
-    mResearchTrackerId = local->AddOnResourceChanged(Player::RESEARCH,
+    mResearchTrackerId = local->AddOnResourceChanged(ER_RESEARCH,
                                                  [this](const StatValue *, int, int)
                                                  {
                                                      UpdateUpgradesNotification();
@@ -185,7 +185,7 @@ GameHUD::~GameHUD()
 {
     Player * player = mScreen->GetGame()->GetLocalPlayer();
 
-    player->RemoveOnResourceChanged(Player::RESEARCH, mResearchTrackerId);
+    player->RemoveOnResourceChanged(ER_RESEARCH, mResearchTrackerId);
     player->SetOnNumUnitsChanged([]{});
 }
 
@@ -220,6 +220,9 @@ void GameHUD::ShowPanelObjectActions(GameObject * obj)
         UpdateUpgradesNotification();
     else if(type == ObjectData::TYPE_BASE)
         UpdateGoalsNotification();
+    // disable ATTACK when tower or bunker is not linked
+    else if(type == ObjectData::TYPE_BUNKER || type == ObjectData::TYPE_DEFENSIVE_TOWER)
+        mPanelObjActions->SetActionEnabled(PanelObjectActions::BTN_ATTACK, obj->IsLinked());
 }
 
 void GameHUD::UpdateUpgradesNotification()
@@ -227,7 +230,7 @@ void GameHUD::UpdateUpgradesNotification()
     auto game = mScreen->GetGame();
     auto player = game->GetLocalPlayer();
 
-    const int resPoints = player->GetStat(Player::RESEARCH).GetValue();
+    const int resPoints = player->GetResource(ER_RESEARCH).GetValue();
     int count = 0;
 
     for(unsigned int i = 0; i < NUM_TECH_UPGRADES; ++i)
@@ -364,11 +367,12 @@ void GameHUD::ShowPanelHit(const GameObject * attacker, const GameObject * targe
     const int isoX = camera->GetWorldToScreenX(target->GetX());
     const int isoY = camera->GetWorldToScreenY(target->GetY());
 
-    int posX = isoX + target->GetWidth();
+    const int marginX = 24;
+    int posX = isoX + target->GetWidth() + marginX;
     int posY = isoY + (target->GetHeight() - panelH) / 2;
 
     if((posX + panelW) > rendW)
-        posX = isoX - panelW;
+        posX = isoX - panelW - marginX;
 
     if(posY < 0)
         posY = 0;
@@ -452,7 +456,7 @@ void GameHUD::ShowDialogMissionGoals()
     mScreen->SetPause(true);
 
     Game * game = mScreen->GetGame();
-    mDialogMissionGoals = new DialogMissionGoals(mScreen->mTrackerMG);
+    mDialogMissionGoals = new DialogMissionGoals(mScreen->mTrackerMG, mScreen->GetGame());
     mDialogMissionGoals->SetFocus();
 
     mDialogMissionGoals->AddFunctionOnClose([this]
@@ -569,7 +573,7 @@ void GameHUD::ShowDialogExit()
 
     mDialogExit->SetFocus();
 
-    mDialogExit->SetFunctionOnShowingDialogSettings([this]
+    mDialogExit->SetFunctionOnShowingDialogSettings([this, tutMan]
     {
         ++mVisibleDialogs;
 
@@ -577,6 +581,8 @@ void GameHUD::ShowDialogExit()
 
         // keep game paused
         mScreen->SetPause(true);
+        // and tutorial too
+        tutMan->SetTutorialPause(true);
     });
 
     mDialogExit->SetFunctionOnHidingDialogSettings([this]
@@ -635,10 +641,10 @@ void GameHUD::ShowDialogExploreTemple(Player * player, Temple * temple)
         HideDialogExploreTemple();
 
         // spend allocated resources
-        player->SumResource(Player::Stat::MONEY, -temple->GetInvestedMoney());
-        player->SumResource(Player::Stat::MATERIAL, -temple->GetInvestedMaterial());
-        player->SumResource(Player::Stat::BLOBS, -temple->GetInvestedBlobs());
-        player->SumResource(Player::Stat::DIAMONDS, -temple->GetInvestedDiamonds());
+        player->SumResource(ER_MONEY, -temple->GetInvestedMoney());
+        player->SumResource(ER_MATERIAL, -temple->GetInvestedMaterial());
+        player->SumResource(ER_BLOBS, -temple->GetInvestedBlobs());
+        player->SumResource(ER_DIAMONDS, -temple->GetInvestedDiamonds());
 
         // start exploration
         temple->StartExploring(player->GetFaction(), [this, player, temple]
@@ -795,16 +801,15 @@ void GameHUD::ShowPanelSelectedObject(GameObject * obj)
     OpenPanelSelectedObject();
 }
 
-void GameHUD::ShowTurnControlPanel()
+void GameHUD::HideTurnControlText()
 {
-    mPanelTurnCtrl->ShowPanel();
+    mPanelTurnCtrl->HideText();
 }
 
 void GameHUD::ShowTurnControlText(const char * text)
 {
     mPanelTurnCtrl->ShowText(text);
 }
-
 
 void GameHUD::UpdatePanelTurnControl()
 {
@@ -832,7 +837,7 @@ void GameHUD::UpdatePanelTurnControl()
     else if(TURN_STAGE_TOWERS_ATTACK == mScreen->mTurnStage)
         ShowTurnControlText(sm->GetCString("TOWERS_SHOOTING"));
     else
-        ShowTurnControlPanel();
+        HideTurnControlText();
 }
 
 
@@ -1107,7 +1112,7 @@ void GameHUD::SetLocalActionsEnabled(bool enabled)
     mPanelObjActions->SetActionsEnabled(enabled);
 
     // PANEL TURN CONTROL
-    mPanelTurnCtrl->SetButtonEndTurnEnabled(enabled);
+    mPanelTurnCtrl->SetButtonsEnabled(enabled);
 
     // QUICK UNIT SELECTION
     const unsigned int numButtons = mScreen->mLocalPlayer->GetNumUnits();

@@ -46,8 +46,6 @@ class WeaponData;
 struct Cell2D;
 struct GameMapCell;
 
-enum ResourceType : unsigned int;
-
 /// Class that handles most of the logic of what happens on the game map.
 class GameMap : public sgl::ai::IPathMap
 {
@@ -73,6 +71,8 @@ public:
 
     const std::vector<GameMapCell> & GetCells() const;
     const std::vector<GameObject *> & GetObjects() const;
+    void GetObjectsInAreaByType(std::vector<GameObject *> & objs, const Cell2D & tl,
+                                const Cell2D & br, GameObjectTypeId type) const;
     const std::vector<CollectableGenerator *> & GetCollectableGenerators() const;
 
     bool IsCellVisibleToLocalPlayer(unsigned int ind) const;
@@ -121,6 +121,10 @@ public:
 
     void InitCities();
 
+    // object action
+    void SetObjectActionCompleted(GameObject * obj);
+    void SetObjectActionFailed(GameObject * obj);
+
     // kills
     void RegisterEnemyKill(GameObject * killer, GameObject * victim);
     void RegisterCasualty(PlayerFaction killed);
@@ -141,6 +145,7 @@ public:
     bool CanBuildStructure(Unit * unit, const Cell2D & cell, Player * player, GameObjectTypeId st);
     void StartBuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
     GameObject * BuildStructure(const Cell2D & cell, Player * player, GameObjectTypeId st);
+    bool IsDefensiveObject(const GameObject * obj);
 
     // wall building
     bool HasResourcesToBuildWall(Unit * unit, unsigned int level);
@@ -246,14 +251,15 @@ private:
 
     void AddPlayerObjVisibility(GameObject * obj, Player * player);
     void DelPlayerObjVisibility(GameObject * obj, Player * player);
-    void PropagatePlayerObjVisibility(GameObject * obj, std::function<void(int)> visFun);
+    void PropagatePlayerObjVisibility(GameObject * obj, const std::function<void (int)> & visFun);
 
     void AddPlayerCellVisibility(const GameMapCell & cell, Player * player);
     void DelPlayerCellVisibility(const GameMapCell & cell, Player * player);
-    void PropagatePlayerCellVisibility(const GameMapCell & cell, std::function<void(int)> visFun);
+    void PropagatePlayerCellVisibility(const GameMapCell & cell,
+                                       const std::function<void(int)> & visFun);
 
     void PropagatePlayerVisibility(const Cell2D & cell1, const Cell2D & cell0, int visLevel,
-                                   std::function<void(int)> visFun);
+                                   const std::function<void (int)> & visFun);
 
     void DestroyObjectPaths(GameObject * obj);
     void UpdateObjectPaths(float delta);

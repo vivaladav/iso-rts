@@ -164,7 +164,7 @@ public:
     void ActionStepCompleted(GameObjectActionType action);
 
     int GetExperience() const;
-    int GetExperienceToLevel(int level) const;
+    int GetExperienceToLevel(unsigned int level) const;
     int GetExperienceToNextLevel() const;
     int GetExperienceLevel() const;
     void SumExperience(int val);
@@ -187,6 +187,8 @@ public:
     void SetAttackMode(AttackMode am);
     void SetPerfectShot(bool enabled);
     void SetFatalHit(bool enabled);
+    void ClearTargetAttack();
+    bool SetTargetAttack(GameObject * obj);
 
     void FindAndSetEnemyTarget();
     bool HasEnemyInRange();
@@ -194,6 +196,7 @@ public:
     void Hit(float damage, GameObject * attacker, bool fatal, bool showHitPoints = true);
     void MissHit();
     void SelfDestroy();
+    void SetIndestructible(bool val);
 
     GameObjectActionType GetActiveAction() const;
     void SetActiveAction(GameObjectActionType action);
@@ -267,6 +270,8 @@ private:
     void HideHealthBar();
     void PositionHealthBar();
     void UpdateHealthBar();
+
+    void UpdateBarsAlpha();
 
     void SetEnergy(float val);
     void SetExperience(int val);
@@ -342,6 +347,9 @@ private:
     bool mVisible = true;
     bool mVisited = false;
     bool mLinked = false;
+    bool mIndestructible = false;
+
+    bool mCellChanged = false;
 };
 
 inline bool GameObject::IsInGroup() const { return mGroup != nullptr; }
@@ -429,6 +437,8 @@ inline const std::unordered_map<ObjAttId, int> & GameObject::GetAttributes() con
 }
 
 inline const Weapon * GameObject::GetWeapon() const { return mWeapon; }
+
+inline void GameObject::SetIndestructible(bool val) { mIndestructible = val; }
 
 inline GameObjectActionType GameObject::GetActiveAction() const { return mActiveAction; }
 inline void GameObject::SetActiveAction(GameObjectActionType action) { mActiveAction = action; }

@@ -18,6 +18,8 @@
 #include <sgl/media/AudioManager.h>
 #include <sgl/utilities/StringManager.h>
 
+#include <cassert>
+
 #ifdef DEV_MODE
 #include <chrono>
 #include <iostream>
@@ -65,8 +67,11 @@ void ResourceLoader::LoadFirstInitData()
     auto fm = graphic::FontManager::Instance();
 
     // BACKGROUND
+    assert(mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM] == nullptr);
+
     mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM] =
         new sgl::core::DataPackage("data/img/backgrounds-perm.bin");
+
     tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PERM], "space_bg.jpg");
 
     // FONT
@@ -91,6 +96,11 @@ void ResourceLoader::LoadPreGameData()
     SetupPregameTextures();
 }
 
+void ResourceLoader::LoadGameSetupData()
+{
+    SetupGameSetupTextures();
+}
+
 void ResourceLoader::LoadGameData()
 {
     SetupGameTextures();
@@ -104,10 +114,19 @@ void ResourceLoader::DestroyPreGameTextures()
     tm->DestroyTexture("main_menu_bg.png");
     // UI PREGAME
     tm->DestroySprite(SpriteFileDialogChangelog);
-    tm->DestroyTexture("UI/main_menu_build_badge.png");
-    tm->DestroyTexture("UI/main_menu_warning_bg.png");
+    // CREDITS
+    tm->DestroySprite(SpriteFileDialogCredits);
+    tm->DestroyTexture(SpriteFileDialogCreditsExp);
+    tm->DestroyTexture(SpriteFileLogoVoxelay);
     // MAIN MENU BUTTONS
-    tm->DestroySprite(SpriteFileMainMenuButtons);
+    tm->DestroySprite(SpriteFileMainMenuUI);
+
+    // DELETE PACKAGES
+    delete mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME];
+    mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_PREGAME];
+    mTexPackages[PACKAGE_IMGS_UI_PREGAME] = nullptr;
 
     // TEST
 #ifdef DEV_MODE
@@ -120,7 +139,27 @@ void ResourceLoader::DestroyPreGameTextures()
     tm->DestroyTexture("test/test-bar-nobg.png");
     tm->DestroyTexture("test/text_area.png");
     tm->DestroyTexture(SpriteFileTestSprite);
+
+    delete mTexPackages[PACKAGE_IMGS_TEST];
+    mTexPackages[PACKAGE_IMGS_TEST] = nullptr;
 #endif
+}
+
+void ResourceLoader::DestroyGameSetupTextures()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
+    // ---- UI ----
+    // DIALOG FACTION SELECTION
+    tm->DestroySprite(SpriteFileDialogFactionSelection);
+    tm->DestroyTexture(SpriteFileDialogFactionSelectionExp);
+    // DIALOG NEW GAME
+    tm->DestroySprite(SpriteFileDialogNewGame);
+    tm->DestroyTexture(SpriteFileDialogNewGameExp);
+
+    // ---- DELETE PACKAGES ----
+    delete mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP];
+    mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] = nullptr;
 }
 
 void ResourceLoader::DestroyGameTextures()
@@ -179,9 +218,6 @@ void ResourceLoader::DestroyGameTextures()
     // DIALOG UPGRADE
     tm->DestroySprite(SpriteFileDialogUpgrade);
     tm->DestroyTexture(SpriteFileDialogUpgradeExp);
-    // FACTION SELECTION
-    tm->DestroySprite(SpriteFileDialogFactionSelection);
-    tm->DestroyTexture(SpriteFileDialogFactionSelectionExp);
     // GAME UI
     tm->DestroySprite(SpriteFileGameUIExp);
     // MAP UI
@@ -218,6 +254,16 @@ void ResourceLoader::DestroyGameTextures()
     // ===== UI TUTORIAL =====
     tm->DestroySprite(SpriteFileTutorial);
     tm->DestroySprite(SpriteFileTutorialExp);
+
+    // DELETE PACKAGES
+    delete mTexPackages[PACKAGE_IMGS_GAME];
+    mTexPackages[PACKAGE_IMGS_GAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_GAME];
+    mTexPackages[PACKAGE_IMGS_UI_GAME] = nullptr;
+
+    delete mTexPackages[PACKAGE_IMGS_UI_TUTORIAL];
+    mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] = nullptr;
 }
 
 void ResourceLoader::Update(float delta)
@@ -386,6 +432,8 @@ void ResourceLoader::SetupPermanentTextures()
     // UI PERMANENT PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_PERM] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_PERM] = new sgl::core::DataPackage("data/img/UI/UI-perm.bin");
     });
 
@@ -421,6 +469,7 @@ void ResourceLoader::SetupPermanentTextures()
             { 293, 312, 45, 39 },
             { 339, 312, 45, 39 },
             { 385, 312, 45, 39 },
+            { 431, 312, 45, 39 },
 
             // SLIDER
             { 201, 352, 304, 18 },
@@ -508,22 +557,22 @@ void ResourceLoader::SetupPermanentTextures()
             { 278, 0, 24, 24 },
             { 303, 0, 24, 24 },
             // BUTTON DIALOG STANDARD
-            { 0, 138, 350, 44 },
-            { 0, 183, 350, 44 },
-            { 0, 228, 350, 44 },
-            { 0, 273, 350, 44 },
+            { 0, 138, 400, 44 },
+            { 0, 183, 400, 44 },
+            { 0, 228, 400, 44 },
+            { 0, 273, 400, 44 },
             // STARS BAR
-            { 812, 0, 112, 16 },
-            { 812, 17, 112, 16 },
-            { 812, 34, 112, 16 },
-            { 812, 51, 112, 16 },
-            { 812, 68, 112, 16 },
-            { 812, 85, 112, 16 },
-            { 812, 102, 112, 16 },
-            { 812, 119, 112, 16 },
-            { 812, 136, 112, 16 },
-            { 812, 153, 112, 16 },
-            { 812, 170, 112, 16 },
+            { 401, 549, 112, 16 },
+            { 401, 566, 112, 16 },
+            { 401, 583, 112, 16 },
+            { 401, 600, 112, 16 },
+            { 401, 617, 112, 16 },
+            { 401, 634, 112, 16 },
+            { 514, 549, 112, 16 },
+            { 514, 566, 112, 16 },
+            { 514, 583, 112, 16 },
+            { 514, 600, 112, 16 },
+            { 514, 617, 112, 16 },
             // BUTTON DIALOG OK
             { 401, 0, 220, 40 },
             { 401, 41, 220, 40 },
@@ -555,6 +604,22 @@ void ResourceLoader::SetupPermanentTextures()
             { 717, 0, 94, 40 },
             { 622, 41, 94, 40 },
             { 717, 41, 94, 40 },
+            // STEAM BUTTON
+            { 0, 396, 400, 50 },
+            { 0, 447, 400, 50 },
+            { 0, 498, 400, 50 },
+            // DISCORD BUTTON
+            { 401, 396, 400, 50 },
+            { 401, 447, 400, 50 },
+            { 401, 498, 400, 50 },
+            // FEEDBACK BUTTON
+            { 0, 549, 400, 50 },
+            { 0, 600, 400, 50 },
+            { 0, 651, 400, 50 },
+            // ICONS BUTTONS
+            { 622, 82, 32, 24 },
+            { 655, 82, 32, 24 },
+            { 688, 82, 32, 24 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PERM], SpriteFileUIShared, rects);
@@ -569,14 +634,18 @@ void ResourceLoader::SetupPregameTextures()
     // BACKGROUNDS PREGAME
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_BACKGROUNDS_PREGAME] =
             new sgl::core::DataPackage("data/img/backgrounds-pregame.bin");
-    });
+        });
 
 #ifdef DEV_MODE
     // TEST
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_TEST] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_TEST] = new sgl::core::DataPackage("data/img/test.bin");
     });
 #endif
@@ -584,6 +653,8 @@ void ResourceLoader::SetupPregameTextures()
     // UI PREGAME
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_PREGAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_PREGAME] =
             new sgl::core::DataPackage("data/img/UI/UI-pregame.bin");
     });
@@ -595,6 +666,27 @@ void ResourceLoader::SetupPregameTextures()
     });
 
     // ===== REGISTER TEXTURES - UI PREGAME =====
+    // CREDITS
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 90, 802 },
+            { 91, 0, 110, 802 },
+
+            // SCROLLBAR
+            { 202, 0, 20, 680 },
+            { 202, 681, 24, 30 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogCredits, rects);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogCreditsExp);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileLogoVoxelay);
+    });
+
     // MAIN MENU
     mJobs.emplace_back([this, tm]
     {
@@ -612,10 +704,6 @@ void ResourceLoader::SetupPregameTextures()
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileDialogChangelog, rects);
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], "UI/main_menu_build_badge.png");
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], "UI/main_menu_warning_bg.png");
     });
 
     // MAIN MENU BUTTONS
@@ -623,29 +711,21 @@ void ResourceLoader::SetupPregameTextures()
     {
         const std::vector<sgl::core::Rectd> rects
         {
+            // BACKROUNDS
+            { 0, 244, 500, 250 },
+            { 0, 495, 554, 136 },
+
             // PRIMARY BUTTON
-            { 0, 0, 360, 70 },
-            { 0, 71, 360, 70 },
-            { 0, 142, 360, 70 },
-            { 0, 213, 360, 70 },
-            { 0, 284, 360, 70 },
-            // WISHLIST BUTTON
-            { 0, 355, 285, 50 },
-            { 0, 406, 285, 50 },
-            { 0, 457, 285, 50 },
-            // SOCIAL BUTTON
-            { 286, 355, 90, 50 },
-            { 286, 406, 90, 50 },
-            { 286, 457, 90, 50 },
+            { 0, 0, 400, 60 },
+            { 0, 61, 400, 60 },
+            { 0, 122, 400, 60 },
+            { 0, 183, 400, 60 },
+
             // ICONS
-            { 0, 508, 32, 24 },
-            { 33, 508, 32, 24 },
-            { 66, 508, 27, 24 },
-            { 94, 508, 34, 24 },
-            { 129, 508, 24, 24 }
+            { 401, 0, 16, 16 },
         };
 
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileMainMenuButtons, rects);
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_PREGAME], SpriteFileMainMenuUI, rects);
     });
 
     // ===== REGISTER TEXTURES - TEST =====
@@ -719,27 +799,107 @@ void ResourceLoader::SetupPregameTextures()
 #endif
 }
 
+void ResourceLoader::SetupGameSetupTextures()
+{
+    auto tm = sgl::graphic::TextureManager::Instance();
+
+    // LOAD UI GAME SETUP PACKAGE
+    mJobs.emplace_back([this]
+    {
+        assert(mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] == nullptr);
+
+        mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP] =
+            new sgl::core::DataPackage("data/img/UI/UI-game_setup.bin");
+    });
+
+    // FACTION SELECTION
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 90, 885 },
+            { 91, 0, 365, 885 },
+            { 0, 886, 450, 200 },
+            { 0, 1087, 500, 50 },
+
+            // BUTTON FACTION
+            { 457, 0, 230, 200 },
+            { 457, 201, 230, 200 },
+            { 457, 402, 230, 200 },
+
+            // LOGOS
+            { 530, 603, 152, 170 },
+            { 530, 774, 152, 170 },
+            { 530, 945, 152, 170 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                           SpriteFileDialogFactionSelection, rects);
+
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                            SpriteFileDialogFactionSelectionExp);
+    });
+
+    // NEW GAME DIALOG
+    mJobs.emplace_back([this, tm]
+    {
+        const std::vector<sgl::core::Rectd> rects
+        {
+            // BACKGROUND
+            { 0, 0, 80, 925 },
+            { 81, 0, 365, 925 },
+            // PANELS
+            { 447, 0, 580, 740 },
+            { 447, 741, 580, 360 },
+            // BUTTON
+            { 1028, 0, 540, 200 },
+            { 1028, 201, 540, 200 },
+            { 1028, 402, 540, 200 },
+            { 1028, 603, 540, 200 },
+            // SAVE SLOT
+            { 1028, 804, 540, 70 },
+            { 1028, 875, 540, 70 },
+            { 1028, 946, 540, 70 },
+            { 1028, 1017, 540, 70 },
+        };
+
+        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                           SpriteFileDialogNewGame, rects);
+
+        // NEW GAME DIALOG - EXPANDABLE GRAPHICS
+        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME_SETUP],
+                            SpriteFileDialogNewGameExp);
+    });
+}
+
 void ResourceLoader::SetupGameTextures()
 {
     // LOAD GAME PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_GAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_GAME] = new sgl::core::DataPackage("data/img/game.bin");
     });
 
     // LOAD UI GAME PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_GAME] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_GAME] = new sgl::core::DataPackage("data/img/UI/UI-game.bin");
     });
 
     // LOAD UI TUTORIAL PACKAGE
     mJobs.emplace_back([this]
     {
+        assert(mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] == nullptr);
+
         mTexPackages[PACKAGE_IMGS_UI_TUTORIAL] = new sgl::core::DataPackage("data/img/UI/UI-tutorial.bin");
     });
 
-        auto tm = sgl::graphic::TextureManager::Instance();
+    auto tm = sgl::graphic::TextureManager::Instance();
 
     // CELLS
     mJobs.emplace_back([this, tm]
@@ -1091,51 +1251,84 @@ void ResourceLoader::SetupGameTextures()
         const std::vector<sgl::core::Rectd> rects
         {
             // MOUNTAINS 1
-            { 0, 0, 192, 134 },
-            { 193, 0, 192, 108 },
-            { 387, 0, 192, 131 },
-            { 579, 0, 192, 130 },
-            { 0, 135, 192, 134 },
-            { 193, 135, 192, 130 },
-            { 387, 135, 192, 132 },
-            { 579, 135, 192, 134 },
-            { 0, 270, 192, 132 },
-            { 193, 270, 192, 134 },
-            { 387, 270, 192, 131 },
-            { 579, 270, 192, 134 },
+            { 0, 0, 192, 113 },
+            { 193, 0, 192, 115 },
+            { 387, 0, 192, 130 },
+            { 579, 0, 192, 133 },
+            { 772, 0, 192, 133 },
+            { 965, 0, 192, 130 },
+            { 1158, 0, 192, 132 },
+            { 1351, 0, 192, 134 },
+            { 772, 135, 192, 132 },
+            { 965, 135, 192, 134 },
+            { 1158, 135, 192, 131 },
+            { 1351, 135, 192, 132 },
+            { 0, 135, 192, 130 },
+            { 193, 135, 192, 108 },
+            { 387, 135, 192, 128 },
+            { 579, 135, 192, 126 },
 
             // MOUNTAINS 2
-            { 772, 0, 192, 126 },
-            { 965, 0, 192, 105 },
-            { 1158, 0, 192, 135 },
-            { 1351, 0, 192, 134 },
-            { 772, 127, 192, 128 },
-            { 965, 106, 192, 132 },
-            { 1158, 136, 192, 132 },
-            { 1351, 135, 192, 126 },
-            { 772, 256, 192, 128 },
-            { 965, 239, 192, 130 },
-            { 1158, 269, 192, 127 },
-            { 1351, 262, 192, 128 },
+            { 0, 270, 192, 126 },
+            { 193, 270, 192, 105 },
+            { 387, 270, 192, 135 },
+            { 579, 270, 192, 134 },
+            { 772, 270, 192, 130 },
+            { 965, 270, 192, 118 },
+            { 1158, 270, 192, 132 },
+            { 1351, 270, 192, 126 },
+            { 772, 406, 192, 128 },
+            { 965, 406, 192, 130 },
+            { 1158, 406, 192, 128 },
+            { 1351, 406, 192, 128 },
+            { 0, 406, 192, 112 },
+            { 193, 406, 192, 108 },
+            { 387, 406, 192, 126 },
+            { 579, 406, 192, 129 },
+
+            // MOUNTAINS 3
+            { 0, 537, 192, 96 },
+            { 193, 537, 192, 96 },
+            { 387, 537, 192, 106 },
+            { 579, 537, 192, 106 },
+            { 772, 537, 192, 106 },
+            { 965, 537, 192, 106 },
+            { 1158, 537, 192, 106 },
+            { 1351, 537, 192, 106 },
+            { 772, 644, 192, 106 },
+            { 965, 644, 192, 106 },
+            { 1158, 644, 192, 106 },
+            { 1351, 644, 192, 106 },
+            { 0, 644, 192, 96 },
+            { 193, 644, 192, 96 },
+            { 387, 644, 192, 106 },
+            { 579, 644, 192, 106 },
 
             // ROCKS V1
-            { 0, 405, 96, 48 },
-            { 97, 405, 96, 50 },
-            { 194, 405, 96, 50 },
-            { 291, 405, 96, 48 },
-            { 388, 405, 96, 48 },
-            { 485, 405, 96, 52 },
-            { 582, 405, 96, 52 },
-            { 679, 405, 96, 52 },
-
-            { 0, 458, 96, 50 },
-            { 97, 458, 96, 48 },
-            { 194, 458, 96, 48 },
-            { 291, 458, 96, 51 },
-            { 388, 458, 96, 50 },
-            { 485, 458, 96, 48 },
-            { 582, 458, 96, 51 },
-            { 679, 458, 96, 51 },
+            { 0, 751, 96, 48 },
+            { 97, 751, 96, 50 },
+            { 194, 751, 96, 50 },
+            { 291, 751, 96, 48 },
+            { 388, 751, 96, 48 },
+            { 485, 751, 96, 52 },
+            { 582, 751, 96, 52 },
+            { 679, 751, 96, 52 },
+            { 776, 751, 96, 50 },
+            { 873, 751, 96, 48 },
+            { 970, 751, 96, 48 },
+            { 1067, 751, 96, 51 },
+            { 1164, 751, 96, 50 },
+            { 1261, 751, 96, 48 },
+            { 1358, 751, 96, 51 },
+            { 1455, 751, 96, 51 },
+            { 776, 804, 96, 50 },
+            { 873, 804, 96, 48 },
+            { 970, 804, 96, 48 },
+            { 1067, 804, 96, 51 },
+            { 1164, 804, 96, 50 },
+            { 1261, 804, 96, 48 },
+            { 1358, 804, 96, 51 },
+            { 1455, 804, 96, 53 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileSceneObjects, rects);
@@ -1261,13 +1454,19 @@ void ResourceLoader::SetupGameTextures()
             { 873, 714, 96, 48 },
             { 970, 714, 96, 48 },
             { 1067, 714, 96, 48 },
+            // GATE LVL 1 NO FACTION
+            { 0, 763, 96, 48 },
+            { 97, 763, 96, 48 },
+            { 194, 763, 96, 48 },
+            { 291, 763, 96, 48 },
             // BUNKER
-            { 0, 763, 96, 55 },
-            { 97, 763, 96, 55 },
-            { 194, 763, 96, 55 },
-            { 291, 763, 96, 55 },
+            { 0, 812, 96, 55 },
+            { 97, 812, 96, 55 },
+            { 194, 812, 96, 55 },
+            { 291, 812, 96, 55 },
             // PRACTICE TARGET
             { 388, 763, 96, 48 },
+            { 388, 812, 96, 48 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_GAME], SpriteFileStructures, rects);
@@ -1551,12 +1750,6 @@ void ResourceLoader::SetupGameTextures()
             // BACKGROUND
             { 0, 0, 604, 70 },
             { 0, 71, 604, 90 },
-            // BUTTON WISHLIST
-            { 0, 162, 350, 44 },
-            { 0, 207, 350, 44 },
-            { 0, 252, 300, 44 },
-            // ICONS
-            { 351, 162, 32, 24 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogExit, rects);
@@ -1851,33 +2044,6 @@ void ResourceLoader::SetupGameTextures()
         tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogUpgradeExp);
     });
 
-    // FACTION SELECTION
-    mJobs.emplace_back([this, tm]
-    {
-        const std::vector<sgl::core::Rectd> rects
-        {
-            // BACKGROUND
-            { 0, 0, 90, 885 },
-            { 91, 0, 365, 885 },
-            { 0, 886, 450, 200 },
-            { 0, 1087, 500, 50 },
-
-            // BUTTON FACTION
-            { 457, 0, 230, 200 },
-            { 457, 201, 230, 200 },
-            { 457, 402, 230, 200 },
-
-            // LOGOS
-            { 530, 603, 152, 170 },
-            { 530, 774, 152, 170 },
-            { 530, 945, 152, 170 },
-        };
-
-        tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogFactionSelection, rects);
-
-        tm->RegisterTexture(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFileDialogFactionSelectionExp);
-    });
-
     // GAME UI
     mJobs.emplace_back([this, tm]
     {
@@ -1983,22 +2149,16 @@ void ResourceLoader::SetupGameTextures()
         {
             // BACKGROUND
             { 0, 0, 750, 62 },
-            // PROGRESS BAR
-            { 0, 63, 404, 16 },
-            { 0, 80, 400, 12 },
-            { 0, 93, 404, 16 },
             // BUTTON BASE
-            { 751, 0, 60, 44 },
-            { 812, 0, 60, 44 },
-            { 751, 45, 60, 44 },
-            { 812, 45, 60, 44 },
+            { 0, 63, 60, 44 },
+            { 61, 63, 60, 44 },
+            { 122, 63, 60, 44 },
+            { 183, 63, 60, 44 },
             // BUTTON NEXT TURN
-            { 405, 63, 60, 44 },
-            { 466, 63, 60, 44 },
-            { 527, 63, 60, 44 },
-            { 588, 63, 60, 44 },
-            // ICONS
-            { 649, 63, 32, 32 },
+            { 244, 63, 60, 44 },
+            { 305, 63, 60, 44 },
+            { 366, 63, 60, 44 },
+            { 427, 63, 60, 44 },
         };
 
         tm->RegisterSprite(*mTexPackages[PACKAGE_IMGS_UI_GAME], SpriteFilePanelTurnControl, rects);

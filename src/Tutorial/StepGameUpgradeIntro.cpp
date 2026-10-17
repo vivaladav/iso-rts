@@ -59,6 +59,8 @@ StepGameUpgradeIntro::StepGameUpgradeIntro(const Game * game, Screen * screen,
 
                             mFocusArea->SetScreenArea(f2X, f2Y, f2W, f2H, true);
                             mFocusArea->SetVisible(true);
+
+                            mShowingFocus = true;
                         });
 
     mClickId = panel->AddButtonFunction(PanelObjectActions::BTN_UPGRADE, [this]
@@ -72,6 +74,14 @@ StepGameUpgradeIntro::~StepGameUpgradeIntro()
     mPanelActions->RemoveButtonFunction(PanelObjectActions::BTN_UPGRADE, mClickId);
 
     delete mFocusArea;
+}
+
+void StepGameUpgradeIntro::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

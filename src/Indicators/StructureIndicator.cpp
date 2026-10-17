@@ -34,5 +34,10 @@ void StructureIndicator::SetDoable(bool doable)
     SetColor(colors[doable]);
 }
 
+void StructureIndicator::ResetTexture(sgl::graphic::Texture * tex)
+{
+    SetTexture(tex);
+}
+
 
 } // namespace game

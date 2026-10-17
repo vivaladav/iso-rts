@@ -16,6 +16,8 @@ public:
     StepGameEndTurnSimple(const PanelTurnControl * panel);
     ~StepGameEndTurnSimple();
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
 

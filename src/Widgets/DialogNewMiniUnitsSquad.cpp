@@ -591,10 +591,10 @@ void DialogNewMiniUnitsSquad::UpdateTotalCosts()
 
     const bool canSpend[NUM_OBJ_COSTS] =
     {
-        mPlayer->HasEnough(Player::ENERGY,  totCost[OBJ_COST_ENERGY]),
-        mPlayer->HasEnough(Player::MATERIAL, totCost[OBJ_COST_MATERIAL]),
-        mPlayer->HasEnough(Player::DIAMONDS, totCost[OBJ_COST_DIAMONDS]),
-        mPlayer->HasEnough(Player::BLOBS, totCost[OBJ_COST_BLOBS])
+        mPlayer->HasEnough(ER_ENERGY,  totCost[OBJ_COST_ENERGY]),
+        mPlayer->HasEnough(ER_MATERIAL, totCost[OBJ_COST_MATERIAL]),
+        mPlayer->HasEnough(ER_DIAMONDS, totCost[OBJ_COST_DIAMONDS]),
+        mPlayer->HasEnough(ER_BLOBS, totCost[OBJ_COST_BLOBS])
     };
 
     const unsigned int colors[] =

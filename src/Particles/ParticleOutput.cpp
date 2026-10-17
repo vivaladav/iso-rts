@@ -1,5 +1,6 @@
 #include "Particles/ParticleOutput.h"
 
+#include "GameConstants.h"
 #include "Particles/DataParticleOutput.h"
 #include "Widgets/GameUIData.h"
 
@@ -34,6 +35,8 @@ void ParticleOutput::SetData(const DataParticleOutput & data)
     mDecaySpeed = data.decaySpeed;
     mTimerLife = data.timeLife;
 
+    SetDelay(data.delay);
+
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
 
@@ -46,32 +49,32 @@ void ParticleOutput::SetData(const DataParticleOutput & data)
 
     switch(data.type)
     {
-        case OT_BLOBS:
+        case ER_BLOBS:
             iconTexId = ID_UIS_ICON_C_RES_BLOBS_24;
             color = 0xe481e4ff;
         break;
 
-        case OT_DIAMONDS:
+        case ER_DIAMONDS:
             iconTexId = ID_UIS_ICON_C_RES_DIAMONDS_24;
             color = 0xe4e481ff;
         break;
 
-        case OT_ENERGY:
+        case ER_ENERGY:
             iconTexId = ID_UIS_ICON_C_RES_ENERGY_24;
             color = 0xe4cb81ff;
         break;
 
-        case OT_MATERIAL:
+        case ER_MATERIAL:
             iconTexId = ID_UIS_ICON_C_RES_MATERIAL_24;
             color = 0xa3c2bfff;
         break;
 
-        case OT_MONEY:
+        case ER_MONEY:
             iconTexId = ID_UIS_ICON_C_RES_MONEY_24;
             color = 0x81e481ff;
         break;
 
-        case OT_RESEARCH:
+        case ER_RESEARCH:
             iconTexId = ID_UIS_ICON_C_RES_RESEARCH_24;
             color = 0x9eccfaff;
         break;

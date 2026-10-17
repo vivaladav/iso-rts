@@ -8,7 +8,6 @@
 #include "GameObjects/ObjectInitData.h"
 #include "Particles/DataParticleHealing.h"
 #include "Particles/UpdaterHealing.h"
-#include "Screens/ScreenGame.h"
 
 #include <sgl/graphic/ParticlesManager.h>
 #include <sgl/graphic/Texture.h>
@@ -24,7 +23,6 @@ const float HealPowers[maxAttVals] = { 0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8
 
 Hospital::Hospital(const ObjectData & data, const ObjectInitData & initData)
     : Structure(data, initData)
-    , mScreen(initData.GetScreen())
 {
     // SET ATTRIBUTES values in range [1-10]
     // set healing range converting attribute
@@ -177,7 +175,7 @@ void Hospital::UpdateHealing(float delta)
                 mTargetHealing = nullptr;
 
                 // mark healing action as completed
-                mScreen->SetObjectActionCompleted(this);
+                GetGameMap()->SetObjectActionCompleted(this);
 
                 return ;
             }
@@ -187,7 +185,7 @@ void Hospital::UpdateHealing(float delta)
             mTargetHealing = nullptr;
 
             // mark healing action as failed
-            mScreen->SetObjectActionFailed(this);
+            GetGameMap()->SetObjectActionFailed(this);
         }
     }
     // target destroyed -> stop
@@ -196,7 +194,7 @@ void Hospital::UpdateHealing(float delta)
         mTargetHealing = nullptr;
 
         // mark healing action as failed
-        mScreen->SetObjectActionFailed(this);
+        GetGameMap()->SetObjectActionFailed(this);
     }
 
     mTimerHealing = mTimeHealing;
@@ -226,6 +224,7 @@ void Hospital::Heal()
     const float tX = mTargetHealing->GetX() + (mTargetHealing->GetWidth() - tex->GetWidth()) * 0.5f;
     const float tY = mTargetHealing->GetY() + (mTargetHealing->GetHeight() - tex->GetHeight()) * 0.5f;
     const float speed = 100.f;
+    const float delay = 0.f;
 
     const DataParticleHealing pd =
         {
@@ -237,6 +236,7 @@ void Hospital::Heal()
             tX,
             tY,
             speed,
+            delay,
             mHealingPower,
             GetFaction()
         };

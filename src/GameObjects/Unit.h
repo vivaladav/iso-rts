@@ -6,7 +6,6 @@
 namespace game
 {
 
-class ScreenGame;
 
 class Unit : public GameObject
 {
@@ -18,9 +17,7 @@ public:
 
     // attack
     bool CanAttack() const;
-    void ClearTargetAttack();
     bool IsTargetAttackInRange(const GameObject * obj) const;
-    bool SetTargetAttack(GameObject * obj);
 
     // heal
     bool CanHeal() const;
@@ -69,8 +66,6 @@ private:
     float mTimeHealing = 0.5f;
     float mTimerHealing = 0.f;
     GameObject * mTargetHealing = nullptr;
-
-    ScreenGame * mScreen = nullptr;
 
     GameObjectTypeId mStructToBuild;
 };

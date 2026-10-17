@@ -20,13 +20,13 @@ ResourceGenerator::ResourceGenerator(const ObjectData & data, const ObjectInitDa
 {
     if(ObjectData::TYPE_RES_GEN_ENERGY == data.GetType() ||
        ObjectData::TYPE_RES_GEN_ENERGY_SOLAR == data.GetType())
-        mResource = RES_ENERGY;
+        mResource = ER_ENERGY;
     else if(ObjectData::TYPE_RES_GEN_MATERIAL == data.GetType() ||
             ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT == data.GetType())
-        mResource = RES_MATERIAL1;
+        mResource = ER_MATERIAL;
     else
     {
-        mResource = RES_INVALID;
+        mResource = ER_NULL;
         return ;
     }
 
@@ -76,8 +76,8 @@ void ResourceGenerator::ScaleOutput(float mult)
 
 int ResourceGenerator::GetResourceProduction(ExtendedResource res) const
 {
-    if((res == ER_ENERGY && mResource == RES_ENERGY) ||
-       (res == ER_MATERIAL && mResource == RES_MATERIAL1))
+    if((res == ER_ENERGY && mResource == ER_ENERGY) ||
+       (res == ER_MATERIAL && mResource == ER_MATERIAL))
         return mOutput;
     else
         return 0;
@@ -100,12 +100,12 @@ void ResourceGenerator::OnNewTurn(PlayerFaction faction)
         return ;
 
     const GameObjectTypeId type = GetObjectType();
-    OutputType outputType;
+    ExtendedResource outputType;
 
     if(type == ObjectData::TYPE_RES_GEN_ENERGY || type == ObjectData::TYPE_RES_GEN_ENERGY_SOLAR)
-        outputType = OT_ENERGY;
+        outputType = ER_ENERGY;
     else if(type == ObjectData::TYPE_RES_GEN_MATERIAL || type == ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT)
-        outputType = OT_MATERIAL;
+        outputType = ER_MATERIAL;
     else
         return ;
 
@@ -115,8 +115,9 @@ void ResourceGenerator::OnNewTurn(PlayerFaction faction)
 
     const float x0 = GetX() + GetWidth() * 0.5f;
     const float y0 = GetY() - GetHeight() * 0.1f;
+    const float delay = 0.f;
 
-    DataParticleOutput pd(mOutput, outputType, x0, y0);
+    DataParticleOutput pd(mOutput, outputType, x0, y0, delay);
 
     pu->AddParticle(pd);
 }
@@ -183,9 +184,9 @@ void ResourceGenerator::UpdateOutput()
     const GameObjectTypeId type = GetObjectType();
 
     if(type == ObjectData::TYPE_RES_GEN_ENERGY)
-        mOutput = 140;
+        mOutput = 160;
     else if(type == ObjectData::TYPE_RES_GEN_MATERIAL)
-        mOutput = 100;
+        mOutput = 110;
     else if(type == ObjectData::TYPE_RES_GEN_ENERGY_SOLAR)
         mOutput = 35;
     else if(type == ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT)

@@ -18,6 +18,8 @@ public:
                          const sgl::core::Pointd2D & p0);
     ~StepGameSpawnIcon();
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
     PanelObjectActions * mPanelActions = nullptr;

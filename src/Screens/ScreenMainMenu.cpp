@@ -2,15 +2,18 @@
 
 #include "Game.h"
 #include "GameConstants.h"
-#include "Planet.h"
 #include "Version.h"
 #include "States/StatesIds.h"
-#include "States/StateLeavePregame.h"
 #include "Widgets/ButtonMainMenu.h"
-#include "Widgets/ButtonMainMenuSocial.h"
-#include "Widgets/ButtonMainMenuWishlist.h"
-#include "Widgets/GameUIData.h"
 #include "Widgets/DialogChangelog.h"
+#include "Widgets/ExternalButtons.h"
+#include "Widgets/GameButton.h"
+#include "Widgets/GameSimpleTooltip.h"
+#include "Widgets/GameUIData.h"
+
+#ifdef DEMO_MODE
+#include "Widgets/WidgetCover.h"
+#endif
 
 #include <sgl/core/event/ApplicationEvent.h>
 #include <sgl/core/event/KeyboardEvent.h>
@@ -31,7 +34,7 @@
 
 namespace
 {
-const int buttonsCX = 450;
+constexpr int buttonsCX = 460;
 }
 
 namespace game
@@ -50,7 +53,7 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     auto panelButtons = new sgui::Widget;
 
     int buttonY = 0;
-    const int VMARGIN = 30;
+    const int VMARGIN = 35;
 
     const int screenW = graphic::Renderer::Instance()->GetWidth();
     const int screenH = graphic::Renderer::Instance()->GetHeight();
@@ -61,26 +64,30 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     mBg = new graphic::Image(tex);
 
-    // -- BUILD BADGE --
-    auto bb = new sgui::Image("UI/main_menu_build_badge.png");
-    bb->SetX(screenW - bb->GetWidth());
+#ifdef DEMO_MODE
+    auto fontDemo = fm->GetFont("Lato-Bold.ttf", 38, graphic::Font::NORMAL);
+
+    auto labelDemo = new sgui::Label("DEMO", fontDemo);
+    labelDemo->SetColor(0xf7796eff);
+
+    const int demoX = buttonsCX - labelDemo->GetWidth() / 2;
+    const int demoY = 215;
+    labelDemo->SetPosition(demoX, demoY);
+#endif
 
     // -- BUTTON NEW GAME --
     ButtonMainMenu * button = new ButtonMainMenu(sm->GetCString("NEW_GAME"), panelButtons);
 
     button->AddOnClickFunction([game]
     {
-        // TODO REMOVE WHEN PLANET SELECTION IS DONE
-        game->SetCurrentPlanet(PLANET_1);
-
-        StateDataLeavePregame data(StateId::INIT_GAME);
-        game->RequestNextActiveState(StateId::LEAVE_PREGAME, &data);
+        game->RequestNextActiveState(StateId::INIT_GAME_SETUP);
     });
 
     buttonY += button->GetHeight() + VMARGIN;
 
     // -- WARNING TOOLTIP --
-    auto tooltipWarning = new sgui::Image("UI/main_menu_warning_bg.png");
+    tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_WARN_PANEL_BG);
+    auto tooltipWarning = new sgui::Image(tex);
 
     auto fontHeader = fm->GetFont("Lato-Regular.ttf", 26, graphic::Font::NORMAL);
     auto fontText = fm->GetFont("Lato-Regular.ttf", 16, graphic::Font::NORMAL);
@@ -105,15 +112,39 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     button->SetTooltipDelay(100);
 
     // -- BUTTON LOAD GAME --
-    button = new ButtonMainMenu(sm->GetCString("LOAD_GAME"), panelButtons);
+    // only visible if there's a save file available
+    if(game->HasSavedFiles())
+    {
+        button = new ButtonMainMenu(sm->GetCString("LOAD_GAME"), panelButtons);
+        button->SetY(buttonY);
+
+        button->AddOnClickFunction([game]
+        {
+            // TODO
+            //  replace hardcoded values with proper implementation.
+            //  This will be changed to a dialog or screen to select a slot
+            game->LoadGame(game->GetSavefile(GM_CAMPAIGN, 0));
+        });
+
+        buttonY += button->GetHeight() + VMARGIN;
+    }
+
+    // -- BUTTON MAP EDITOR --
+    button = new ButtonMainMenu(sm->GetCString("MAP_EDITOR"), panelButtons);
     button->SetY(buttonY);
 
-    button->AddOnClickFunction([game]
-                               {
-                                    game->LoadGame();
-                               });
+#ifdef DEMO_MODE
+    button->SetEnabled(false);
 
-    button->SetEnabled(game->IsSaveFileValid());
+    // cover button to show tooltip when mouse is over
+    auto cover = new WidgetCover(button, panelButtons);
+    cover->SetPosition(button->GetX(), button->GetY());
+
+    auto tt = new GameSimpleTooltip(sm->GetCString("NOT_IN_DEMO"));
+    cover->SetTooltip(tt);
+    cover->SetTooltipShowingTime(5000);
+    cover->SetTooltipDelay(100);
+#endif
 
     buttonY += button->GetHeight() + VMARGIN;
 
@@ -128,6 +159,17 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     buttonY += button->GetHeight() + VMARGIN;
 
+    // -- CREDITS --
+    button = new ButtonMainMenu(sm->GetCString("CREDITS"), panelButtons);
+    button->SetY(buttonY);
+
+    button->AddOnClickFunction([game]
+    {
+        game->RequestNextActiveState(StateId::CREDITS);
+    });
+
+    buttonY += button->GetHeight() + VMARGIN;
+
     // -- BUTTON EXIT --
     button = new ButtonMainMenu(sm->GetCString("EXIT"), panelButtons);
     button->SetY(buttonY);
@@ -136,90 +178,45 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
 
     // position buttons panel
     const int containerX = buttonsCX - panelButtons->GetWidth() * 0.5f;
-    const int containerY = 280;
+    const int containerY = 350;
     panelButtons->SetPosition(containerX, containerY);
-
-    // -- BUTTON WISHLIST --
-    auto btnWishlist = new ButtonMainMenuWishlist(nullptr);
-
-    const int marginBottom = 150;
-    int buttonX = buttonsCX - btnWishlist->GetWidth() * 0.5f;
-    buttonY = screenH - marginBottom - btnWishlist->GetHeight();
-
-    btnWishlist->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtualord_The_Virtual_Conqueror/"
-                             "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=mainmenu");
-    });
-
-    btnWishlist->SetPosition(buttonX, buttonY);
-
-    // -- SOCIAL BUTTONS --
-    auto panelSocial = new sgui::Widget;
-
-    const int socialMarginH = 15;
-    int socialX = 0;
-
-    // DISCORD
-    auto btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_DISCORD, panelSocial);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://discord.gg/pdEPr7efQX");
-    });
-
-    // YOUTUBE
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_YOUTUBE, panelSocial);
-    btnSocial->SetX(socialX);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://www.youtube.com/c/vivaladev");
-    });
-
-    // BLUESKY
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_BLUESKY, panelSocial);
-    btnSocial->SetX(socialX);
-    socialX += btnSocial->GetWidth() + socialMarginH;
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://bsky.app/profile/voxelay.bsky.social");
-    });
-
-    // LINKEDIN
-    btnSocial = new ButtonMainMenuSocial(IND_MM_ICON_LINKEDIN, panelSocial);
-    btnSocial->SetX(socialX);
-
-    btnSocial->AddOnClickFunction([]
-    {
-        utilities::System sys;
-        sys.OpenUrlInBrowser("https://www.linkedin.com/company/vivaladev/");
-    });
-
-    // position panel social buttons
-    const int psMarginTop = 25;
-    const int psX = buttonsCX - panelSocial->GetWidth() * 0.5f;
-    const int psY = btnWishlist->GetY() + btnWishlist->GetHeight() + psMarginTop;
-    panelSocial->SetPosition(psX, psY);
 
     // CHANGELOG
     CreateChangelog();
 
+    // EXTERNAL ACTIONS PANEL
+    const int marginPanelTop = 31;
+    const int spacingButtons = 20;
+    tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_SECOND_PANEL_BG);
+    auto panelExt = new sgui::Image(tex);
+    panelExt->SetX(screenW - panelExt->GetWidth());
+
+    const std::string urlSteam("https://store.steampowered.com/app/1607580/"
+                               "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
+                               "utm_medium=button&utm_campaign=game&utm_content=mainmenu");
+    auto btnSteam = new ButtonExtSteam(urlSteam, panelExt);
+
+    buttonY = marginPanelTop;
+    btnSteam->SetPosition((panelExt->GetWidth() - btnSteam->GetWidth()) / 2, buttonY);
+
+    buttonY += btnSteam->GetHeight() + spacingButtons;
+
+    auto btnDiscord = new ButtonExtDiscord(panelExt);
+    btnDiscord->SetPosition((panelExt->GetWidth() - btnDiscord->GetWidth()) / 2, buttonY);
+
+    buttonY += btnDiscord->GetHeight() + spacingButtons;
+
+    auto btnFeedback = new ButtonExtFeedback(panelExt);
+    btnFeedback->SetPosition((panelExt->GetWidth() - btnFeedback->GetWidth()) / 2, buttonY);
+
     // VERSION LABEL
-    graphic::Font * fnt = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+    auto fntVer = fm->GetFont("Lato-Bold.ttf", 18, graphic::Font::NORMAL);
 
     const unsigned int colorVersion = 0xb2b2b2ff;
     const int marginLabelH = 15;
     const int marginLabelV = 10;
 
-    auto labelVer = new sgui::Label(VERSION, fnt);
+    auto labelVer = new sgui::Label(VERSION, fntVer);
     labelVer->SetColor(colorVersion);
 
 #if defined(DEBUG)
@@ -230,11 +227,13 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     const std::string strBuildType("?");
 #endif
 
+    auto fntBuild = fm->GetFont("Lato-Regular.ttf", 18, graphic::Font::NORMAL);
+
     const std::string strBuild = std::string(VERSION_BRANCH) + std::string("-") +
                                  std::string(VERSION_NUM) + strBuildType + std::string("-") +
                                  std::string(VERSION_SHORT_HASH);
 
-    auto labelBuild = new sgui::Label(strBuild.c_str(), fnt);
+    auto labelBuild = new sgui::Label(strBuild.c_str(), fntBuild);
     labelBuild->SetColor(colorVersion);
 
     const int labelBuildX = screenW - labelBuild->GetWidth() - marginLabelH;
@@ -242,27 +241,40 @@ ScreenMainMenu::ScreenMainMenu(Game * game)
     labelBuild->SetPosition(labelBuildX, labelBuildY);
 
     const int labelVerX = screenW - labelVer->GetWidth() - marginLabelH;
-    const int labelVerY = labelBuildY - labelVer->GetHeight();
-    labelVer->SetPosition(labelVerX, labelVerY);
+    int labelY = labelBuildY - labelVer->GetHeight();
+    labelVer->SetPosition(labelVerX, labelY);
 
 #ifdef DEV_MODE
     // SHOW DEV MODE LABEL
-    graphic::Font * fntBold = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
+    auto fntBold = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
 
     const unsigned int colorDev = 0xf66455ff;
     auto labelDEV = new sgui::Label(sm->GetCString("DEV_MODE"), fntBold);
     labelDEV->SetColor(colorDev);
 
     const int labelDevX = screenW - labelDEV->GetWidth() - marginLabelH;
-    const int labelDevY = labelVerY - labelDEV->GetHeight();
-    labelDEV->SetPosition(labelDevX, labelDevY);
+    labelY -= labelDEV->GetHeight();
+    labelDEV->SetPosition(labelDevX, labelY);
+#endif
+
+#ifdef PLAYTEST
+    // SHOW PLAYTEST LABEL
+    auto fntPlaytest = fm->GetFont("Lato-Bold.ttf", 20, graphic::Font::NORMAL);
+
+    const unsigned int colorPlaytest = 0x55c0f6ff;
+    auto labelPlaytest = new sgui::Label("PLAYTEST", fntPlaytest);
+    labelPlaytest->SetColor(colorPlaytest);
+
+    const int labelPlaytestX = screenW - labelPlaytest->GetWidth() - marginLabelH;
+    labelY -= labelPlaytest->GetHeight();
+    labelPlaytest->SetPosition(labelPlaytestX, labelY);
 #endif
 
     // makes sure game data is cleared before starting something new
     game->ClearGameData();
 
     // START MUSIC
-    sgl::media::AudioManager::Instance()->GetPlayer()->PlayMusic("menus/menu_01.ogg");
+    media::AudioManager::Instance()->GetPlayer()->PlayMusicLoop("menus/menu_01.ogg");
 }
 
 ScreenMainMenu::~ScreenMainMenu()
@@ -282,16 +294,6 @@ void ScreenMainMenu::OnKeyUp(sgl::core::KeyboardEvent & event)
     // CTRL-T -> open test screen
     if(key == core::KeyboardEvent::KEY_T && event.IsModCtrlDown())
         GetGame()->RequestNextActiveState(StateId::TEST);
-    // CTRL-M -> Go straight to mission
-    else if(key == core::KeyboardEvent::KEY_M && event.IsModCtrlDown())
-    {
-        Game * game = GetGame();
-
-        game->SetLocalPlayerFaction(static_cast<PlayerFaction>(rand() % NUM_FACTIONS));
-        game->SetCurrentPlanet(PLANET_1);
-        game->SetCurrentTerritory(0);
-        game->RequestNextActiveState(StateId::NEW_GAME);
-    }
 #endif
 }
 
@@ -357,7 +359,7 @@ void ScreenMainMenu::CreateChangelog()
     const int contX = 0;
     int contY = 0;
 
-    auto title = new sgui::Label("0.6.9 - \"Graduation battle\"", font, content);
+    auto title = new sgui::Label("0.6.15.1 - \"Playtest more\"", font, content);
     title->SetPosition(contX, contY);
     title->SetColor(colorContent);
 
@@ -368,46 +370,35 @@ void ScreenMainMenu::CreateChangelog()
 
     auto text = new sgui::TextArea(contentW, minBlockH, font, true, content);
     text->SetText("NEW FEATURES\n"
-                  "- Third tutorial mission.\n"
-                  "- Structure indicator turns green when it's possible to build and red when not.\n"
-                  "- Add missing sound to UI sliders.\n"
-                  "- Focus areas in tutorial are animated on show.\n"
-                  "- New UI for selected objects.\n"
-                  "- Settings are saved on file and loaded when restarting the game.\n"
-                  "- Enemy faction is truly random when starting a new mission.\n"
-                  "- Game load & save (experimental).\n"
-                  "- New option in settings to control auto-save.\n"
-                  "- New mountains version.\n"
-                  "- New camera tracking objects when moving.\n"
-                  "- New plant type: cactus.\n"
-                  "- 2 new maps (planet 1 completed).\n"
-                  "- Units and structures show resources spent when doing something.\n"
+                  "- New screen: CREDITS.\n"
+                  "- Added construction of wall with gate at the end of tutorial 1.\n"
+                  "- Units can build towers and gates on cells with wall.\n"
+                  "- Towers and bunkers can attack manually.\n"
+                  "- Save slots show mission and turn when saved in game.\n"
+                  "- Experimental multiple screen support in settings.\n"
+                  "- Video mode and resolution saved and loaded from settings.\n"
+                  "- New Video option to grab the mouse inside the game window.\n"
                   "\nCHANGES\n"
-                  "- In tutorial 1, text explaining to move to tower stays on screen until you"
-                  " center the view on it.\n"
-                  "- Exploding mini-units now explode when they stop next to an enemy even if they"
-                  " haven't reached their target yet.\n"
-                  "- Simplified values setting in dialog to control research production.\n"
+                  "- Game is no longer paused when mouse leaves the screen.\n"
+                  "- Energy and material generators produce more resources.\n"
+                  "- Updated graphics of: trading post, spawning tower, hospital.\n"
+                  "- Removed faction energy.\n"
+                  "- Removed auto turn end.\n"
+                  "- Improved particles explosion for lasers.\n"
+                  "- Changed design for showing text in bottom control panel.\n"
+                  "- Tutorial missions 2 and 3 redesigned from scratch.\n"
+                  "- Different font sizes for hit points depending on outcome.\n"
+                  "- Increased contrast in tutorial info panels.\n"
                   "\nFIXES\n"
-                  "- Walls now connect to bunkers too.\n"
-                  "- Units no longer can build structures far away without moving.\n"
-                  "- Camera no longer keeps moving when view is centered on some object or cell.\n"
-                  "- Selection no longer allowed when moving camera in tutorial 1.\n"
-                  "- Tutorial always starting if enabled and starting a new game.\n"
-                  "- It's no longer possible to select random objects during the tutorial.\n"
-                  "- Automatic camera works fine when moving near map's border too.\n"
-                  "- It's no longer possible to move units when clicking action buttons during"
-                  " the tutorial.\n"
-                  "- Exploding objects damage all surrounding objects.\n"
-                  "- End mission dialog shows correct number of casualties.\n"
-                  "- Mini-units no longer shoot only once.\n"
-                  "- Casualties and kills stats are updated when using exploding mini-units too.\n"
-                  "- Quitting a tutorial doesn't award the mission goal \"tutorial completed\".\n"
-                  "- Cancelling an object action now works (reset to default action) for all"
-                  " actions.\n"
-                  "- Fixed random crashes when aborting the tutorial while a dialog is open.\n"
-                  "- Fixed crash when leaving game while conquering cells.\n"
-                  "- Resources spent when conquering structure are properly handled now.\n"
+                  "- Music no longer stops after first play during missions.\n"
+                  "- Music no longer stops after first play in other screens.\n"
+                  "- Option to hide static cursor is saved correctly.\n"
+                  "- Fixed Research Center not producing research points when on low resources.\n"
+                  "- Fixed check of valid saved files in main menu.\n"
+                  "- Add missing view attribute to City Block.\n"
+                  "- Owned Structures are unlinked if enemy interrups connection"
+                  " conquering a structure.\n"
+                  "- Reduced camera shake when following moving units.\n"
                   );
     text->SetPosition(contX, contY);
     text->SetColor(colorContent);

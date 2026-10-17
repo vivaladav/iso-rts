@@ -1,9 +1,7 @@
 #include "Tutorial/StepGameCollectObjects.h"
 
-#include "Game.h"
 #include "GameMap.h"
 #include "IsoMap.h"
-#include "GameObjects/Unit.h"
 #include "Widgets/Tutorial/IsoFocusArea.h"
 #include "Widgets/Tutorial/PanelClickFilter.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
@@ -13,16 +11,15 @@
 namespace game
 {
 
-StepGameCollectObjects::StepGameCollectObjects(const Unit * unit, GameObjectTypeId objType,
-                                               const Game * game, const GameMap * gm, const IsoMap * im,
+StepGameCollectObjects::StepGameCollectObjects(GameObjectTypeId objType,
+                                               const GameMap * gm, const IsoMap * im,
                                                const Cell2D & areaTL, const Cell2D & areaBR,
                                                const char * intro, const sgl::core::Pointd2D & p0)
-    : TutorialInfoStep(600, 150)
+    : TutorialInfoStep(550, 150)
     , mFocusArea(new IsoFocusArea(im))
     , mAreaTL(areaTL)
     , mAreaBR(areaBR)
     , mGameMap(gm)
-    , mUnit(unit)
     , mObjType(objType)
 {
     auto sm = sgl::utilities::StringManager::Instance();
@@ -37,13 +34,12 @@ StepGameCollectObjects::StepGameCollectObjects(const Unit * unit, GameObjectType
 
     info->SetPosition(p0.x, p0.y);
 
-    info->AddActionEntry(sm->GetCString(intro), 0.f, false, false, [this, im, game]
+    info->AddActionEntry(sm->GetCString(intro), 0.f, false, false, [this, im]
                         {
                             mFocusArea->SetVisible(true);
 
                             auto cf = GetClickFilter();
-                            cf->SetButtonToAllow(game->GetButtonAction());
-                            cf->AddClickableCells(im, mAreaTL, mAreaBR);
+                            cf->ExpandClickableArea();
                         });
 }
 
@@ -54,19 +50,10 @@ StepGameCollectObjects::~StepGameCollectObjects()
 
 void StepGameCollectObjects::Update(float)
 {
-    unsigned int objsLeft = 0;
+    std::vector<GameObject *> objs;
+    mGameMap->GetObjectsInAreaByType(objs, mAreaTL, mAreaBR, mObjType);
 
-    for(int r = mAreaTL.row; r <= mAreaBR.row; ++r)
-    {
-        for(int c = mAreaTL.col; c <= mAreaBR.col; ++c)
-        {
-            objsLeft += mGameMap->HasObjectType(mObjType, r, c);
-        }
-    }
-
-    const float energyMove = mUnit->GetEnergyForActionStep(MOVE) * 2.f;
-
-    if(objsLeft == 0 || mUnit->GetEnergy() < energyMove)
+    if(objs.empty())
         SetDone();
 }
 

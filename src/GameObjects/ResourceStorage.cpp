@@ -18,16 +18,16 @@ ResourceStorage::ResourceStorage(const ObjectData & data, const ObjectInitData &
     : Structure(data, initData)
 {
     if(ObjectData::TYPE_RES_STORAGE_BLOBS == data.GetType())
-        mResource = RES_BLOBS;
+        mResource = ER_BLOBS;
     else if(ObjectData::TYPE_RES_STORAGE_DIAMONDS == data.GetType())
-        mResource = RES_DIAMONDS;
+        mResource = ER_DIAMONDS;
     else if(ObjectData::TYPE_RES_STORAGE_ENERGY == data.GetType())
-        mResource = RES_ENERGY;
+        mResource = ER_ENERGY;
     else if(ObjectData::TYPE_RES_STORAGE_MATERIAL == data.GetType())
-        mResource = RES_MATERIAL1;
+        mResource = ER_MATERIAL;
     else
     {
-        mResource = RES_INVALID;
+        mResource = ER_NULL;
         return;
     }
 
@@ -78,16 +78,8 @@ void ResourceStorage::OnLinkedChanged()
 
     const int diff = IsLinked() ? mCapacity : -mCapacity;
 
-    const Player::Stat statIds[NUM_RESOURCES] =
-    {
-        Player::Stat::ENERGY,
-        Player::Stat::MATERIAL,
-        Player::Stat::DIAMONDS,
-        Player::Stat::BLOBS
-    };
-
     Player * p = GetOwner();
-    p->SumResourceMax(statIds[mResource], diff);
+    p->SumResourceMax(mResource, diff);
 }
 
 void ResourceStorage::OnAttributeChanged()
@@ -106,16 +98,8 @@ void ResourceStorage::UpdateCapacity()
     {
         const int diff = mCapacity - oldCapacity;
 
-        const Player::Stat statIds[NUM_RESOURCES] =
-        {
-            Player::Stat::ENERGY,
-            Player::Stat::MATERIAL,
-            Player::Stat::DIAMONDS,
-            Player::Stat::BLOBS
-        };
-
         Player * p = GetOwner();
-        p->SumResourceMax(statIds[mResource], diff);
+        p->SumResourceMax(mResource, diff);
     }
 }
 
@@ -124,7 +108,7 @@ void ResourceStorage::UpdateCapacityValue()
     Player * p = GetOwner();
 
     // set max capacity value
-    const bool mainRes = RES_ENERGY == mResource || RES_MATERIAL1 == mResource;
+    const bool mainRes = ER_ENERGY == mResource || ER_MATERIAL == mResource;
     const float maxCapacity = mainRes ? 2000.f : 1000.f;
 
     // define upgrade multiplier
@@ -132,13 +116,13 @@ void ResourceStorage::UpdateCapacityValue()
 
     if(p != nullptr)
     {
-        if(RES_ENERGY == mResource)
+        if(ER_ENERGY == mResource)
             mult = p->GetStorageEnergyMult();
-        else if(RES_MATERIAL1 == mResource)
+        else if(ER_MATERIAL == mResource)
             mult = p->GetStorageMaterialMult();
-        else if(RES_DIAMONDS == mResource)
+        else if(ER_DIAMONDS == mResource)
             mult = p->GetStorageDiamondsMult();
-        else if(RES_BLOBS == mResource)
+        else if(ER_BLOBS == mResource)
             mult = p->GetStorageBlobsMult();
     }
 
@@ -161,28 +145,28 @@ void ResourceStorage::SetImage()
 
     unsigned int texId = 0;
 
-    if(RES_ENERGY == mResource)
+    if(ER_ENERGY == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_ENERGY_F1 + faction;
         else
             texId = ID_STRUCT_STORAGE_ENERGY;
     }
-    else if(RES_MATERIAL1 == mResource)
+    else if(ER_MATERIAL == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_MATERIAL_F1 + faction ;
         else
             texId = ID_STRUCT_STORAGE_MATERIAL;
     }
-    else if(RES_DIAMONDS == mResource)
+    else if(ER_DIAMONDS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_DIAMONDS_F1 + faction;
         else
             texId = ID_STRUCT_STORAGE_DIAMONDS;
     }
-    else if(RES_BLOBS == mResource)
+    else if(ER_BLOBS == mResource)
     {
         if(faction != NO_FACTION && IsVisible())
             texId = ID_STRUCT_STORAGE_BLOBS_F1 + faction;

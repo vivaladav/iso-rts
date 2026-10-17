@@ -28,6 +28,10 @@ class ButtonChangelog : public GameButton
 {
 public:
     ButtonChangelog();
+
+private:
+    void HandleMouseOver() override;
+    void HandleButtonDown() override;
 };
 
 // ===== DIALOG CHANGELOG =====

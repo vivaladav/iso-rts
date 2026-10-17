@@ -19,11 +19,15 @@ public:
                        const sgl::core::Pointd2D & p0);
     ~StepGameBackToBase();
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
 
     sgl::sgui::AbstractButton * mButton = nullptr;
     unsigned int mFuncId = 0;
+
+    bool mShowingFocus = false;
 };
 
 } // namespace game

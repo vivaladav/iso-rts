@@ -620,9 +620,6 @@ void PlayerAI::AddActionEndTurn()
 
     const float c = 100.f;
 
-    // consider turn energy
-    const float energyLeftTurn = mPlayer->GetTurnEnergy() * c / mPlayer->GetTurnMaxEnergy();
-
     // consider total units energy
     float totEnergy = 0.f;
     float totMaxEnergy = 0.f;
@@ -664,9 +661,7 @@ void PlayerAI::AddActionEndTurn()
     const float energyLeftObjs = energyLeftUnits * facUnits + energyLeftStructs * factStructs;
 
     // decrease priority base on global energy left (turn + objects)
-    const float facTurn = 0.5f;
-    const float facObjs = 1.f - facTurn;
-    const int decPriority = std::roundf(facTurn * energyLeftTurn + facObjs * energyLeftObjs);
+    const int decPriority = std::roundf(energyLeftObjs);
     action->priority -= decPriority;
 
     // push action if above priority threshold
@@ -696,7 +691,7 @@ void PlayerAI::AddActionsStructure(Structure * s)
     // do not consider unit if energy is too low
     const float minEnergy = 5.f;
 
-    if(s->GetEnergy() < minEnergy || mPlayer->GetTurnEnergy() < minEnergy)
+    if(s->GetEnergy() < minEnergy)
         return ;
 
     // type specific actions
@@ -784,7 +779,7 @@ void PlayerAI::AddActionsUnit(Unit * u)
     // do not consider unit if energy is too low
     const float minEnergy = 5.f;
 
-    if(u->GetEnergy() < minEnergy || mPlayer->GetTurnEnergy() < minEnergy)
+    if(u->GetEnergy() < minEnergy)
         return ;
 
     // ATTACK
@@ -802,8 +797,8 @@ void PlayerAI::AddActionsUnit(Unit * u)
         AddActionUnitConnectStructure(u);
 
         // CONQUEST RESOURCE GENERATORS
-        AddActionUnitConquerResGen(u, RES_ENERGY);
-        AddActionUnitConquerResGen(u, RES_MATERIAL1);
+        AddActionUnitConquerResGen(u, ER_ENERGY);
+        AddActionUnitConquerResGen(u, ER_MATERIAL);
         AddActionUnitConquerCity(u);
     }
 
@@ -1062,19 +1057,19 @@ void PlayerAI::AddActionUnitBuildStructure(Unit * u)
 
     // RESOURCE GENERATORS
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_GEN_ENERGY_SOLAR))
-        AddActionUnitBuildResourceGenerator(u, RES_ENERGY, priority);
+        AddActionUnitBuildResourceGenerator(u, ER_ENERGY, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_GEN_MATERIAL_EXTRACT))
-        AddActionUnitBuildResourceGenerator(u, RES_MATERIAL1, priority);
+        AddActionUnitBuildResourceGenerator(u, ER_MATERIAL, priority);
 
     // RESOURCE STORAGE
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_ENERGY))
-        AddActionUnitBuildResourceStorage(u, RES_ENERGY, priority);
+        AddActionUnitBuildResourceStorage(u, ER_ENERGY, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_MATERIAL))
-        AddActionUnitBuildResourceStorage(u, RES_MATERIAL1, priority);
+        AddActionUnitBuildResourceStorage(u, ER_MATERIAL, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_BLOBS))
-        AddActionUnitBuildResourceStorage(u, RES_BLOBS, priority);
+        AddActionUnitBuildResourceStorage(u, ER_BLOBS, priority);
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_RES_STORAGE_DIAMONDS))
-        AddActionUnitBuildResourceStorage(u, RES_DIAMONDS, priority);
+        AddActionUnitBuildResourceStorage(u, ER_DIAMONDS, priority);
 
     // UNIT CREATION
     if(mPlayer->IsStructureAvailable(ObjectData::TYPE_BARRACKS))
@@ -1232,10 +1227,10 @@ void PlayerAI::AddActionUnitBuildUnitCreator(Unit * u, GameObjectTypeId structTy
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resType, int priority0)
+void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ExtendedResource resType, int priority0)
 {
     // resource not supported
-    if(resType != RES_ENERGY && resType != RES_MATERIAL1)
+    if(resType != ER_ENERGY && resType != ER_MATERIAL)
         return ;
 
     const GameObjectTypeId structTypes[] =
@@ -1253,13 +1248,7 @@ void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resTyp
     int priority = priority0;
 
     // decrease priority based on current resource level (high level -> lower priority)
-    const Player::Stat ps[] =
-    {
-        Player::ENERGY,
-        Player::MATERIAL,
-    };
-
-    const StatValue & res = mPlayer->GetStat(ps[resType]);
+    const StatValue & res = mPlayer->GetResource(resType);
 
     const int resCur = res.GetValue();
     const int resMax = res.GetMax();
@@ -1286,7 +1275,7 @@ void PlayerAI::AddActionUnitBuildResourceGenerator(Unit * u, ResourceType resTyp
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ResourceType resType, int priority0)
+void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ExtendedResource resType, int priority0)
 {
     const GameObjectTypeId structTypes[] =
     {
@@ -1305,15 +1294,7 @@ void PlayerAI::AddActionUnitBuildResourceStorage(Unit * u, ResourceType resType,
     int priority = priority0;
 
     // decrease priority based on current storage level
-    const Player::Stat ps[] =
-    {
-        Player::ENERGY,
-        Player::MATERIAL,
-        Player::DIAMONDS,
-        Player::BLOBS
-    };
-
-    const StatValue & res = mPlayer->GetStat(ps[resType]);
+    const StatValue & res = mPlayer->GetResource(resType);
 
     const int resCur = res.GetValue();
     const int resMax = res.GetMax();
@@ -1462,7 +1443,7 @@ void PlayerAI::AddActionUnitCollectBlobs(Unit * u)
 
     // decrease priority based on owned blobs
     const float decBlobs = -30.f;
-    const StatValue & blobs = mPlayer->GetStat(Player::BLOBS);
+    const StatValue & blobs = mPlayer->GetResource(ER_BLOBS);
     priority += std::roundf(decBlobs * blobs.GetValue() / blobs.GetMax());
 
     // decrease priority based on unit's energy
@@ -1532,7 +1513,7 @@ void PlayerAI::AddActionUnitCollectDiamonds(Unit * u)
 
     // decrease priority based on owned diamonds
     const float decDiamonds = -30.f;
-    const StatValue & diamonds = mPlayer->GetStat(Player::DIAMONDS);
+    const StatValue & diamonds = mPlayer->GetResource(ER_DIAMONDS);
     priority += std::roundf(decDiamonds * diamonds.GetValue() / diamonds.GetMax());
 
     // decrease priority based on unit's energy
@@ -1692,8 +1673,6 @@ void PlayerAI::AddActionUnitConnectStructure(Unit * u)
     int minDist = GetMaxDistanceForObject(u);
     Cell2D startConquest;
 
-    const PlayerFaction faction = mPlayer->GetFaction();
-
     const Cell2D posUnit(u->GetRow0(), u->GetCol0());
 
     for(unsigned int i = 0; i < numStructures; ++i)
@@ -1820,7 +1799,7 @@ void PlayerAI::AddActionUnitConquerCity(Unit * u)
     priority += GetUnitPriorityBonusHealth(u, bonusHealth);
 
     // bonus energy availability level
-    const StatValue & stat = mPlayer->GetStat(Player::Stat::ENERGY);
+    const StatValue & stat = mPlayer->GetResource(ER_ENERGY);
 
     const float bonusRes = -40.f;
     priority += std::roundf(bonusRes * stat.GetValue() / stat.GetMax());
@@ -1880,26 +1859,17 @@ void PlayerAI::AddActionUnitConquerCity(Unit * u)
     AddNewAction(action);
 }
 
-void PlayerAI::AddActionUnitConquerResGen(Unit * u, ResourceType type)
+void PlayerAI::AddActionUnitConquerResGen(Unit * u, ExtendedResource type)
 {
     // resource not supported
-    if(type != RES_ENERGY && type != RES_MATERIAL1)
+    if(type != ER_ENERGY && type != ER_MATERIAL)
         return ;
 
     // not enough energy to consider this action now
     if(!u->HasEnergyForActionStep(GameObjectActionType::CONQUER_STRUCTURE))
         return ;
 
-    const int supportedRes = 2;
-
-    const enum Player::Stat types[supportedRes] =
-    {
-        Player::Stat::ENERGY,
-        Player::Stat::MATERIAL,
-    };
-
-    const enum Player::Stat ptype = types[type];
-    const StatValue & stat = mPlayer->GetStat(ptype);
+    const StatValue & stat = mPlayer->GetResource(type);
 
     int priority = MAX_PRIORITY;
 
@@ -1936,7 +1906,7 @@ void PlayerAI::AddActionUnitConquerResGen(Unit * u, ResourceType type)
     {
         auto resGen = static_cast<ResourceGenerator *>(mResGenerators[i]);
 
-        if(resGen->GetResourceType() != type)
+        if(resGen->GetExtendedResource() != type)
             continue;
 
         ++totGenerators;
@@ -2174,10 +2144,10 @@ void PlayerAI::AddActionCreateUnit(Structure * gen, const std::vector<GameObject
 
     const unsigned int numTypes = types.size();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(ER_ENERGY).GetValue();
+    const int material = mPlayer->GetResource(ER_MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(ER_BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(ER_DIAMONDS).GetValue();
 
     unsigned int bestInd = numTypes;
     int bestPriority = mMinPriority;
@@ -2203,34 +2173,34 @@ void PlayerAI::AddActionCreateUnit(Structure * gen, const std::vector<GameObject
 
         const float bonusRes = -10.f;
 
-        if(costs[RES_ENERGY] > 0)
+        if(costs[ER_ENERGY] > 0)
         {
             if(energy > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_ENERGY] / energy);
+                typePriority += std::roundf(bonusRes * costs[ER_ENERGY] / energy);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_MATERIAL1] > 0)
+        if(costs[ER_MATERIAL] > 0)
         {
             if(material > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_MATERIAL1] / material);
+                typePriority += std::roundf(bonusRes * costs[ER_MATERIAL] / material);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_BLOBS] > 0)
+        if(costs[ER_BLOBS] > 0)
         {
             if(blobs > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_BLOBS] / blobs);
+                typePriority += std::roundf(bonusRes * costs[ER_BLOBS] / blobs);
             else
                 typePriority += bonusRes;
         }
 
-        if(costs[RES_DIAMONDS] > 0)
+        if(costs[ER_DIAMONDS] > 0)
         {
             if(diamonds > 0)
-                typePriority += std::roundf(bonusRes * costs[RES_DIAMONDS] / diamonds);
+                typePriority += std::roundf(bonusRes * costs[ER_DIAMONDS] / diamonds);
             else
                 typePriority += bonusRes;
         }
@@ -2327,18 +2297,9 @@ int PlayerAI::GetStructurePriorityBonusEnergy(const Structure * s, float bonus) 
 {
     const float energyUnit = s->GetEnergy();
     const float energyUnitMax = s->GetMaxEnergy();
-    const float energyTurn = mPlayer->GetTurnEnergy();
-    const float energyTurnMax = mPlayer->GetTurnMaxEnergy();
 
-    // bonuses
     const float bonusStruct = bonus * (energyUnitMax - energyUnit) / energyUnitMax;
-    const float bonusTurn = bonus * (energyTurnMax - energyTurn) / energyTurnMax;
-
-    // weights
-    const float wStruct = 0.4f;
-    const float wTurn = 1.f - wStruct;
-
-    return std::roundf(bonusStruct * wStruct + bonusTurn * wTurn);
+    return std::roundf(bonusStruct);
 }
 
 int PlayerAI::GetUnitPriorityBonusDistance(const Unit * u, int dist, float bonus) const
@@ -2363,18 +2324,9 @@ int PlayerAI::GetUnitPriorityBonusEnergy(const Unit * u, float bonus) const
 {
     const float energyUnit = u->GetEnergy();
     const float energyUnitMax = u->GetMaxEnergy();
-    const float energyTurn = mPlayer->GetTurnEnergy();
-    const float energyTurnMax = mPlayer->GetTurnMaxEnergy();
 
-    // bonuses
     const float bonusUnit = bonus * (energyUnitMax - energyUnit) / energyUnitMax;
-    const float bonusTurn = bonus * (energyTurnMax - energyTurn) / energyTurnMax;
-
-    // weights
-    const float wUnit = 0.6f;
-    const float wTurn = 1.f - wUnit;
-
-    return std::roundf(bonusUnit * wUnit + bonusTurn * wTurn);
+    return std::roundf(bonusUnit);
 }
 
 int PlayerAI::GetUnitPriorityBonusHealth(const Unit * u, float bonus) const
@@ -2388,14 +2340,14 @@ bool PlayerAI::HasPlayerResourcesToBuild(GameObjectTypeId t) const
     const ObjectData & data = mDataReg->GetObjectData(t);
     const auto & costs = data.GetCosts();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(ER_ENERGY).GetValue();
+    const int material = mPlayer->GetResource(ER_MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(ER_BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(ER_DIAMONDS).GetValue();
 
     // not enough resources to build
-    return energy >= costs[RES_ENERGY] && material >= costs[RES_MATERIAL1] &&
-           diamonds >= costs[RES_DIAMONDS] && blobs >= costs[RES_BLOBS];
+    return energy >= costs[ER_ENERGY] && material >= costs[ER_MATERIAL] &&
+           diamonds >= costs[ER_DIAMONDS] && blobs >= costs[ER_BLOBS];
 }
 
 // NOTE this requires that HasPlayerResourcesToBuild is called before to stop execution
@@ -2405,41 +2357,41 @@ int PlayerAI::GetPriorityBonusStructureBuildCost(GameObjectTypeId t, float bonus
     const ObjectData & data = mDataReg->GetObjectData(t);
     const auto & costs = data.GetCosts();
 
-    const int energy = mPlayer->GetStat(Player::ENERGY).GetValue();
-    const int material = mPlayer->GetStat(Player::MATERIAL).GetValue();
-    const int blobs = mPlayer->GetStat(Player::BLOBS).GetValue();
-    const int diamonds = mPlayer->GetStat(Player::DIAMONDS).GetValue();
+    const int energy = mPlayer->GetResource(ER_ENERGY).GetValue();
+    const int material = mPlayer->GetResource(ER_MATERIAL).GetValue();
+    const int blobs = mPlayer->GetResource(ER_BLOBS).GetValue();
+    const int diamonds = mPlayer->GetResource(ER_DIAMONDS).GetValue();
 
     float b = 0.f;
 
-    if(costs[RES_ENERGY] > 0)
+    if(costs[ER_ENERGY] > 0)
     {
         if(energy > 0)
-            b += bonus * costs[RES_ENERGY] / energy;
+            b += bonus * costs[ER_ENERGY] / energy;
         else
             b += bonus;
     }
 
-    if(costs[RES_MATERIAL1] > 0)
+    if(costs[ER_MATERIAL] > 0)
     {
         if(material > 0)
-            b += bonus * costs[RES_MATERIAL1] / material;
+            b += bonus * costs[ER_MATERIAL] / material;
         else
             b += bonus;
     }
 
-    if(costs[RES_BLOBS] > 0)
+    if(costs[ER_BLOBS] > 0)
     {
         if(blobs > 0)
-            b += bonus * costs[RES_BLOBS] / blobs;
+            b += bonus * costs[ER_BLOBS] / blobs;
         else
             b += bonus;
     }
 
-    if(costs[RES_DIAMONDS] > 0)
+    if(costs[ER_DIAMONDS] > 0)
     {
         if(diamonds > 0)
-            b += bonus * costs[RES_DIAMONDS] / diamonds;
+            b += bonus * costs[ER_DIAMONDS] / diamonds;
         else
             b += bonus;
     }
@@ -2531,8 +2483,7 @@ void PlayerAI::PrintdActionDebug(const char * title, const ActionAI * a)
     if(a->cellDst.row != -1)
         std::cout << " | CELL DST: " << a->cellDst.row << "," << a->cellDst.col;
 
-    std::cout << " | TURN - ENRG: " << mPlayer->GetTurnEnergy() << "/" << mPlayer->GetTurnMaxEnergy()
-              << std::endl;
+    std::cout << std::endl;
 }
 
 } // namespace game

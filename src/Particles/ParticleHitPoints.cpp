@@ -27,6 +27,8 @@ void ParticleHitPoints::SetData(const DataParticleHitPoints & data)
     mDecaySpeed = data.decaySpeed;
     mMaxDistance = data.maxDistance;
 
+    SetDelay(data.delay);
+
     const float maxAlpha = 255.f;
     mAlpha = maxAlpha;
 
@@ -34,7 +36,13 @@ void ParticleHitPoints::SetData(const DataParticleHitPoints & data)
     delete mTxt;
 
     // TEXT
-    const int fontSize = 24;
+    int fontSize = 22;
+
+    if(data.fatal)
+        fontSize = 26;
+    else if(data.miss)
+        fontSize = 18;
+
     auto fm = graphic::FontManager::Instance();
     graphic::Font * font = fm->GetFont("Lato-Bold.ttf", fontSize, graphic::Font::NORMAL);
 

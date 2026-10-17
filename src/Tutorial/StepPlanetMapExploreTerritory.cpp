@@ -67,4 +67,11 @@ void StepPlanetMapExploreTerritory::OnStart()
     mFocusArea->SetVisible(true);
 }
 
+void StepPlanetMapExploreTerritory::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

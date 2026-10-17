@@ -15,22 +15,6 @@
 #include <iostream>
 #endif
 
-namespace
-{
-using namespace game;
-
-const Player::Stat resourceIds[] =
-{
-    Player::ENERGY,
-    Player::MATERIAL,
-    Player::DIAMONDS,
-    Player::BLOBS,
-    Player::MONEY,
-    Player::RESEARCH,
-};
-
-}
-
 namespace game
 {
 
@@ -39,18 +23,18 @@ MissionGoalsTracker::MissionGoalsTracker(Game * g, Player * p)
     , mPlayer(p)
 {
     // init support data
-    mResourcesGained.assign(NUM_EXTENDED_RESOURCES, 0);
-    mResourceTrackerIds.assign(NUM_EXTENDED_RESOURCES, 0);
+    mResourcesGained.assign(NUM_EXT_RESOURCES, 0);
+    mResourceTrackerIds.assign(NUM_EXT_RESOURCES, 0);
 
     // setup resource trackers
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
-        const Player::Stat resId = resourceIds[i];
+        const auto resId = static_cast<ExtendedResource>(i);
 
         mResourceTrackerIds[i] = mPlayer->AddOnResourceChanged(resId,
             [this, resId](const StatValue *, int oldVal, int newVal)
             {
-                if(newVal > oldVal)
+                if(mStart && newVal > oldVal)
                     mResourcesGained[resId] += newVal - oldVal;
             });
     }
@@ -69,9 +53,9 @@ MissionGoalsTracker::MissionGoalsTracker(Game * g, Player * p)
 
 MissionGoalsTracker::~MissionGoalsTracker()
 {
-    for(unsigned int i = 0; i < NUM_EXTENDED_RESOURCES; ++i)
+    for(unsigned int i = 0; i < NUM_EXT_RESOURCES; ++i)
     {
-        const Player::Stat resId = resourceIds[i];
+        const auto resId = static_cast<ExtendedResource>(i);
         const int funId = mResourceTrackerIds[i];
 
         mPlayer->RemoveOnResourceChanged(resId, funId);
@@ -197,25 +181,6 @@ bool MissionGoalsTracker::Save(sgl::utilities::BinaryFile & bf) const
     return true;
 }
 
-void MissionGoalsTracker::SetGoals(const std::vector<MissionGoal> & goals)
-{
-    mMissionGoals = goals;
-
-    // remove tutorial missions if tutorial is disabled
-    if(!mGame->IsTutorialEnabled())
-    {
-        auto it = mMissionGoals.begin();
-
-        while(it != mMissionGoals.end())
-        {
-            if(it->GetCategory() == MC_TUTORIAL)
-                it = mMissionGoals.erase(it);
-            else
-                ++it;
-        }
-    }
-}
-
 unsigned int MissionGoalsTracker::AddOnGoalCollectedFunction(const std::function<void()> & f)
 {
     static unsigned int num = 0;
@@ -268,6 +233,9 @@ void MissionGoalsTracker::CollectMissionGoalReward(unsigned int index)
 
 void MissionGoalsTracker::Update()
 {
+    if(!mStart)
+        return;
+
     // check goals
     unsigned int primaryGoals = 0;
     unsigned int completedPrimaryGoals = 0;
@@ -341,12 +309,12 @@ void MissionGoalsTracker::PrintState()
 {
     std::cout << "MissionGoalsTracker::PrintState\n"
               << "RESOURCES GAINED"
-              << " - ENERGY: " << mResourcesGained[Player::ENERGY]
-              << " - MATERIAL: " << mResourcesGained[Player::MATERIAL]
-              << " - BLOBS: " << mResourcesGained[Player::BLOBS]
-              << " - DIAMONDS: " << mResourcesGained[Player::DIAMONDS]
-              << " - MONEY: " << mResourcesGained[Player::MONEY]
-              << " - RESEARCH: " << mResourcesGained[Player::RESEARCH] << "\n"
+              << " - ENERGY: " << mResourcesGained[ER_ENERGY]
+              << " - MATERIAL: " << mResourcesGained[ER_MATERIAL]
+              << " - BLOBS: " << mResourcesGained[ER_BLOBS]
+              << " - DIAMONDS: " << mResourcesGained[ER_DIAMONDS]
+              << " - MONEY: " << mResourcesGained[ER_MONEY]
+              << " - RESEARCH: " << mResourcesGained[ER_RESEARCH] << "\n"
               << "MINI UNITS CREATED: " << mMiniUnitsCreated
               << " - UNITS CREATED: " << mUnitsCreated << "\n"
               << "STRUCTURES BUILT: " << mTotStructuresBuilt
@@ -369,22 +337,18 @@ bool MissionGoalsTracker::CheckIfGoalCompleted(MissionGoal & g)
 
     if(gt == MissionGoal::TYPE_COLLECT_BLOBS)
     {
-        const auto resId = resourceIds[ER_BLOBS];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_BLOBS] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_BLOBS] * 100 / g.GetQuantity());
 
             return false;
         }
     }
     else if(gt == MissionGoal::TYPE_COLLECT_DIAMONDS)
     {
-        const auto resId = resourceIds[ER_DIAMONDS];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_DIAMONDS] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_DIAMONDS] * 100 / g.GetQuantity());
 
             return false;
         }
@@ -410,7 +374,7 @@ bool MissionGoalsTracker::CheckIfGoalCompleted(MissionGoal & g)
 
             return false;
         }
-        else if (state == TS_ABORTED)
+        else if(state == TS_ABORTED)
         {
             g.SetProgress(0);
             return false;
@@ -580,44 +544,36 @@ bool MissionGoalsTracker::CheckIfGoalCompleted(MissionGoal & g)
     }
     else if(gt == MissionGoal::TYPE_GAIN_MONEY)
     {
-        const auto resId = resourceIds[ER_MONEY];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_MONEY] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_MONEY] * 100 / g.GetQuantity());
 
             return false;
         }
     }
     else if(gt == MissionGoal::TYPE_GEN_RESEARCH)
     {
-        const auto resId = resourceIds[ER_RESEARCH];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_RESEARCH] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_RESEARCH] * 100 / g.GetQuantity());
 
             return false;
         }
     }
     else if(gt == MissionGoal::TYPE_MINE_ENERGY)
     {
-        const auto resId = resourceIds[ER_ENERGY];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_ENERGY] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_ENERGY] * 100 / g.GetQuantity());
 
             return false;
         }
     }
     else if(gt == MissionGoal::TYPE_MINE_MATERIAL)
     {
-        const auto resId = resourceIds[ER_MATERIAL];
-
-        if(mResourcesGained[resId] < g.GetQuantity())
+        if(mResourcesGained[ER_MATERIAL] < g.GetQuantity())
         {
-            g.SetProgress(mResourcesGained[resId] * 100 / g.GetQuantity());
+            g.SetProgress(mResourcesGained[ER_MATERIAL] * 100 / g.GetQuantity());
 
             return false;
         }

@@ -72,7 +72,7 @@ void GameButton::OnStateChanged(VisualState state)
     SetCurrBg(mBody);
 
     // update label color
-    SetLabelColor(mLabelsColor[state]);
+    SetContentColor(mLabelsColor[state]);
 }
 
 } // namespace game

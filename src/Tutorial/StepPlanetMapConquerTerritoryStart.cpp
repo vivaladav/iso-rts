@@ -46,6 +46,8 @@ StepPlanetMapConquerTerritoryStart::StepPlanetMapConquerTerritoryStart(PanelPlan
         mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
         mFocusArea->SetVisible(true);
 
+        mShowingFocus = true;
+
         // CLICK FILTER
         auto cf = GetClickFilter();
         cf->SetScreenClickableArea(fX, fY, fW, fH);
@@ -65,6 +67,14 @@ StepPlanetMapConquerTerritoryStart::~StepPlanetMapConquerTerritoryStart()
 
     // clear callback
     mButton->RemoveClickFunction(mFuncId);
+}
+
+void StepPlanetMapConquerTerritoryStart::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

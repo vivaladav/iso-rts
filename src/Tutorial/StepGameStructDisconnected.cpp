@@ -8,14 +8,14 @@ namespace game
 {
 
 StepGameStructDisconnected::StepGameStructDisconnected()
-    : TutorialInfoStep(600, 320)
+    : TutorialInfoStep(650, 320)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
     // INFO
     auto info = GetPanelInfo();
 
-    info->SetPosition(1250, 250);
+    info->SetPosition(1150, 250);
 
     info->AddInfoEntry(sm->GetCString("TUT_GAME_STRUCT_DISCONNECTED_2"), 7.f, true, false);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_STRUCT_DISCONNECTED_3"), 7.f, true, false);

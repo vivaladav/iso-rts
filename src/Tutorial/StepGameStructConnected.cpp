@@ -8,16 +8,15 @@ namespace game
 {
 
 StepGameStructConnected::StepGameStructConnected()
-    : TutorialInfoStep(750, 300)
+    : TutorialInfoStep(750, 250)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
     // INFO
     auto info = GetPanelInfo();
 
-    info->SetPosition(1150, 450);
+    info->SetPosition(1050, 150);
 
-    info->AddInfoEntry(sm->GetCString("TUT_GAME_STRUCT_CONNECTED_1"), 10.f, true, false);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_STRUCT_CONNECTED_2"), 12.f, true, false);
     info->AddInfoEntry(sm->GetCString("TUT_GAME_STRUCT_CONNECTED_3"), 13.f, true, false);
 

@@ -7,7 +7,7 @@
 namespace game
 {
 
-StepGameWallBuildIntro::StepGameWallBuildIntro()
+StepGameWallBuildIntro::StepGameWallBuildIntro(const sgl::core::Pointd2D & p0)
     : TutorialInfoStep(550, 150)
 {
     auto sm = sgl::utilities::StringManager::Instance();
@@ -15,7 +15,7 @@ StepGameWallBuildIntro::StepGameWallBuildIntro()
     // INFO
     auto info = GetPanelInfo();
 
-    info->SetPosition(1250, 150);
+    info->SetPosition(p0.x, p0.y);
 
     info->AddInfoEntry(sm->GetCString("TUT_GAME_BUILD_WALL_1"), 7.f, true, false);
 

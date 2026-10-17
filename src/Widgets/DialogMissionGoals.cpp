@@ -1,8 +1,10 @@
 #include "Widgets/DialogMissionGoals.h"
 
+#include "Game.h"
 #include "GameConstants.h"
 #include "MissionGoal.h"
 #include "MissionGoalsTracker.h"
+#include "Tutorial/TutorialManager.h"
 #include "Widgets/ButtonDialogClose.h"
 #include "Widgets/GameButton.h"
 #include "Widgets/GameUIData.h"
@@ -135,12 +137,12 @@ namespace game
 {
 
 // ===== DIALOG =====
-DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt)
+DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt, Game * game)
     : mTrackerMG(mgt)
 {
     using namespace sgl;
 
-    const std::vector<MissionGoal> & goals = mTrackerMG->GetGoals();
+    const std::vector<MissionGoal> & fullGoals = mTrackerMG->GetGoals();
 
     auto fm = graphic::FontManager::Instance();
     auto tm = graphic::TextureManager::Instance();
@@ -162,6 +164,20 @@ DialogMissionGoals::DialogMissionGoals(MissionGoalsTracker * mgt)
     const int paddingHeaderGoalH = 5;
     const int endButtonAreaH = 45;
 
+    // clear goals if not needed
+    std::vector<MissionGoal> goals;
+
+    for(auto it = fullGoals.begin(); it != fullGoals.end(); ++it)
+    {
+        // skip tutorial goals if not playing it
+        if(it->GetCategory() == MC_TUTORIAL &&
+          (!game->IsTutorialEnabled() || !game->GetTutorialManager()->IsLastTutorialIdNotNull()))
+            continue;
+
+        goals.emplace_back(*it);
+    }
+
+    // setup goals data
     const unsigned int numGoals = goals.size();
     unsigned int numPrimaryGoals = 0;
     unsigned int numPrimaryGoalsCompleted = 0;
@@ -434,7 +450,7 @@ sgl::sgui::Widget * DialogMissionGoals::CreateGoalEntry(unsigned int goalInd,
         const int rewardMargin = 5;
         const int rewardMarginIcon = 30;
 
-        const unsigned int iconIds[NUM_EXTENDED_RESOURCES] =
+        const unsigned int iconIds[NUM_EXT_RESOURCES] =
         {
             ID_UIS_ICON_C_RES_ENERGY_24,
             ID_UIS_ICON_C_RES_MATERIAL_24,
@@ -444,7 +460,7 @@ sgl::sgui::Widget * DialogMissionGoals::CreateGoalEntry(unsigned int goalInd,
             ID_UIS_ICON_C_RES_RESEARCH_24,
         };
 
-        for(unsigned int r = 0; r < NUM_EXTENDED_RESOURCES; ++r)
+        for(unsigned int r = 0; r < NUM_EXT_RESOURCES; ++r)
         {
             const int reward = g.GetRewardByType(static_cast<ExtendedResource>(r));
 

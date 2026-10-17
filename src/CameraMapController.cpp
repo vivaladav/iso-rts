@@ -393,12 +393,11 @@ void CameraMapController::Update(float delta)
         const int diffX = std::abs(cX - mCamera->GetCenterX());
         const int diffY = std::abs(cY - mCamera->GetCenterY());
 
-        // camera center is already very close to object -> set position to its center
+        // camera center is already very close to object -> move at fixed low speed
         if(diffX < maxDiff && diffY < maxDiff)
         {
-            CenterCameraToPoint(cX, cY);
-
-            return ;
+            const float speed = 300.f;
+            MoveCenterCameraToPoint(cX, cY, speed);
         }
         // camera center is far from object -> quickly move over it
         else

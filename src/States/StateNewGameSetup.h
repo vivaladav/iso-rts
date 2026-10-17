@@ -1,14 +1,14 @@
 #pragma once
 
-#include "States/BaseGameState.h"
+#include "BaseGameState.h"
 
 namespace game
 {
 
-class StateLeaveGame : public BaseGameState
+class StateNewGameSetup : public BaseGameState
 {
 public:
-    StateLeaveGame(Game * game);
+    StateNewGameSetup(Game * game);
 
 private:
     void OnActive() override;

@@ -106,7 +106,7 @@ public:
     void ShowPanelSelectedObject(GameObject * obj);
     const PanelSelectedObject * GetPanelSelectedObject() const;
 
-    void ShowTurnControlPanel();
+    void HideTurnControlText();
     void ShowTurnControlText(const char * text);
     void UpdatePanelTurnControl();
     const PanelTurnControl * GetPanelTurnControl() const;

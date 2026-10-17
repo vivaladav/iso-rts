@@ -18,6 +18,8 @@ public:
 
     void OnStart() override;
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
 

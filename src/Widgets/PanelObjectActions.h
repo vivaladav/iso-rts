@@ -65,6 +65,7 @@ public:
     void ShowNotification(Button btnId, int val);
     void HideNotification(Button btnId);
 
+    void SetActionEnabled(Button btnId, bool val);
     void SetActionsEnabled(bool val);
 
     const sgl::sgui::AbstractButton * GetButton(Button btnId);

@@ -83,6 +83,16 @@ ObjectActionButton::ObjectActionButton(ActionIcon icon, const char * shortcut, i
     SetState(NORMAL);
 }
 
+ObjectActionButton::~ObjectActionButton()
+{
+    // delete notification background and label if not registered as renderable
+    if(!IsRenderableRegistered(mNotificationBg))
+        delete mNotificationBg;
+
+    if(!IsRenderableRegistered(mNotificationLabel))
+        delete mNotificationLabel;
+}
+
 void ObjectActionButton::SetTooltipText(const char * text)
 {
     if(mTooltip == nullptr)

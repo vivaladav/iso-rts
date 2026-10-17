@@ -7,7 +7,7 @@
 #include "Widgets/ButtonDialogClose.h"
 #include "Widgets/DialogSave.h"
 #include "Widgets/DialogSettings.h"
-#include "Widgets/GameButton.h"
+#include "Widgets/ExternalButtons.h"
 #include "Widgets/GameHUD.h"
 #include "Widgets/GameUIData.h"
 #include "Widgets/WidgetsConstants.h"
@@ -73,126 +73,6 @@ public:
     }
 };
 
-// ===== BUTTON WISHLIST =====
-class ButtonWishlistDialogExit : public sgl::sgui::AbstractButton
-{
-
-public:
-    ButtonWishlistDialogExit(sgl::sgui::Widget * parent)
-        : sgl::sgui::AbstractButton(parent)
-        , mBody(new sgl::graphic::Image)
-        , mIcon(new sgl::graphic::Image)
-    {
-        using namespace sgl;
-
-        // REGISTER GRAPHICS
-        RegisterRenderable(mBody);
-        RegisterRenderable(mIcon);
-
-        // TEXT LABEL
-        // TODO use setLabel after adding support for icon to PushButton
-        auto sm = utilities::StringManager::Instance();
-        auto fm = graphic::FontManager::Instance();
-        auto font = fm->GetFont(WidgetsConstants::FontFileButton, 18, graphic::Font::NORMAL);
-        mText = new graphic::Text(sm->GetCString("WL_NOW"), font, true);
-        RegisterRenderable(mText);
-
-        // init to normal state
-        SetState(NORMAL);
-
-        PositionElements();
-    }
-
-private:
-    void HandleMouseOver() override
-    {
-        sgl::sgui::AbstractButton::HandleMouseOver();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_over-02.ogg");
-    }
-
-    void HandleButtonDown() override
-    {
-        sgl::sgui::AbstractButton::HandleButtonDown();
-
-        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
-        player->PlaySound("UI/button_click-02.ogg");
-    }
-
-    void HandlePositionChanged() override
-    {
-        PositionElements();
-    }
-
-    void OnStateChanged(sgl::sgui::AbstractButton::VisualState state) override
-    {
-        using namespace sgl;
-
-        const unsigned int texBgIds[NUM_VISUAL_STATES] =
-            {
-                ID_DLG_EXIT_BTN_WL_NORMAL,
-                ID_DLG_EXIT_BTN_WL_NORMAL,
-                ID_DLG_EXIT_BTN_WL_OVER,
-                ID_DLG_EXIT_BTN_WL_PUSHED,
-                ID_DLG_EXIT_BTN_WL_PUSHED
-            };
-
-        const unsigned int colorsTxt[NUM_VISUAL_STATES] =
-            {
-                0xc7ced1ff,
-                0xc7ced1ff,
-                0xe3e6e8ff,
-                0xabb5baff,
-                0xabb5baff,
-            };
-
-        // body
-        auto tm = graphic::TextureManager::Instance();
-        graphic::Texture * tex = tm->GetSprite(SpriteFileDialogExit, texBgIds[state]);
-        mBody->SetTexture(tex);
-
-        SetSize(mBody->GetWidth(), mBody->GetHeight());
-
-        // icon
-        tex = tm->GetSprite(SpriteFileDialogExit, ID_DLG_EXIT_ICON_STEAM);
-        mIcon->SetTexture(tex);
-
-        mIcon->SetColor(colorsTxt[state]);
-        mText->SetColor(colorsTxt[state]);
-    }
-
-    void PositionElements()
-    {
-        const int x = GetScreenX();
-        const int y = GetScreenY();
-        const int w = GetWidth();
-        const int h = GetHeight();
-
-        const int marginH = 10;
-        const int totW = mIcon->GetWidth() + marginH + mText->GetWidth();
-        const int x0 = x + (w - totW) * 0.5f;
-
-        // position BG
-        mBody->SetPosition(x, y);
-
-        // icon
-        const int iconX = x0;
-        const int iconY = y + (h - mIcon->GetHeight()) * 0.5f;
-        mIcon->SetPosition(iconX, iconY);
-
-        // text
-        const int textX = iconX + mIcon->GetWidth() + marginH;
-        const int textY = y + (h - mText->GetHeight()) * 0.5f;
-        mText->SetPosition(textX, textY);
-    }
-
-private:
-    sgl::graphic::Image * mBody = nullptr;
-    sgl::graphic::Image * mIcon = nullptr;
-    sgl::graphic::Text * mText = nullptr;
-};
-
 } // namespace
 
 namespace game
@@ -248,25 +128,22 @@ DialogExit::DialogExit(DialogButtons buttons, Game * game, Screen * screen)
     GameButton * btn = nullptr;
 
 #ifdef DEV_MODE
-    // BUTTON SAVE
-    if(buttons & BTN_SAVE)
-    {
-        btn = new ButtonDialogExit(this);
-        btn->SetLabel(sm->GetCString("SAVE_GAME"));
-        btn->SetEnabled(!game->GetTutorialManager()->HasActiveTutorial());
+    // BUTTON SAVE - only available in DEV MODE
+    btn = new ButtonDialogExit(this);
+    btn->SetLabel(sm->GetCString("SAVE_GAME"));
+    btn->SetEnabled(!game->GetTutorialManager()->HasActiveTutorial());
 
-        btnX = (w - btn->GetWidth()) / 2;
-        btn->SetPosition(btnX, btnY);
+    btnX = (w - btn->GetWidth()) / 2;
+    btn->SetPosition(btnX, btnY);
 
-        btn->AddOnClickFunction([game, screen]
-                                {
-                                    game->SaveGame();
-                                    screen->ShowLabelGameSaved();
-                                });
+    btn->AddOnClickFunction([game, screen]
+                            {
+                                game->SaveGame();
+                                screen->ShowLabelGameSaved();
+                            });
 
-        btnY += btn->GetHeight() + marginBtnV;
-        contentH += btn->GetHeight() + marginBtnV;
-    }
+    btnY += btn->GetHeight() + marginBtnV;
+    contentH += btn->GetHeight() + marginBtnV;
 #endif
 
     // BUTTON SETTINGS
@@ -334,8 +211,16 @@ DialogExit::DialogExit(DialogButtons buttons, Game * game, Screen * screen)
 
         btn->AddOnClickFunction([game]
         {
-            game->GetTutorialManager()->AbortTutorial();
-            game->RequestNextActiveState(StateId::LEAVE_GAME);
+            auto tm = game->GetTutorialManager();
+
+            // abort the tutorial without saving
+            if(tm->HasActiveTutorial())
+                tm->AbortTutorial();
+            // auto save if not playing a tutorial
+            else
+                game->SaveGame();
+
+            game->RequestNextActiveState(StateId::INIT);
         });
 
         btnY += btn->GetHeight() + marginBtnV;
@@ -363,24 +248,36 @@ DialogExit::DialogExit(DialogButtons buttons, Game * game, Screen * screen)
     }
 
     // BUTTON WISHLIST
-    auto btn2 = new ButtonWishlistDialogExit(this);
+    const std::string urlSteam("https://store.steampowered.com/app/1607580/"
+                               "Virtualord_The_Virtual_Conqueror/?utm_source=game&"
+                               "utm_medium=button&utm_campaign=game&utm_content=exitdialog");
+    auto btnSteam = new ButtonExtSteam(urlSteam, this);
 
-    const int marginBottom = 20;
-    btnX = (w - btn2->GetWidth()) / 2;
+    btnX = (w - btnSteam->GetWidth()) / 2;
+    btnSteam->SetPosition(btnX, btnY);
 
-    btn2->SetPosition(btnX, btnY);
+    btnY += btnSteam->GetHeight() + marginBtnV;
+    contentH += btnSteam->GetHeight() + marginBtnV;
 
-    btn2->AddOnClickFunction([game]
-    {
-        sgl::utilities::System sys;
-        sys.OpenUrlInBrowser("https://store.steampowered.com/app/1607580/Virtualord_The_Virtual_Conqueror/"
-                             "?utm_source=game&utm_medium=button&utm_campaign=game&utm_content=exitdialog");
-    });
+    // BUTTON DISCORD
+    auto btnDiscord = new ButtonExtDiscord(this);
+
+    btnX = (w - btnDiscord->GetWidth()) / 2;
+    btnDiscord->SetPosition(btnX, btnY);
+
+    btnY += btnDiscord->GetHeight() + marginBtnV;
+    contentH += btnDiscord->GetHeight() + marginBtnV;
+
+    // BUTTON Feedback
+    auto btnFeedback = new ButtonExtFeedback(this);
+
+    btnX = (w - btnFeedback->GetWidth()) / 2;
+    btnFeedback->SetPosition(btnX, btnY);
 
     // UPDATE SIZE
     mBgMid->SetHeight(contentH);
 
-    const int h = mBgTop->GetHeight() + mBgMid->GetHeight() + mBgBot->GetHeight();
+    const int h = mBgTop->GetHeight() + contentH + mBgBot->GetHeight();
     SetSize(w, h);
 }
 

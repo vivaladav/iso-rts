@@ -6,7 +6,6 @@ namespace game
 {
 
 class ObjectData;
-class ScreenGame;
 
 class Hospital : public Structure
 {
@@ -41,8 +40,6 @@ private:
     float mHealingPower = 1.f;
     int mRangeHealing = 1;
     GameObject * mTargetHealing = nullptr;
-
-    ScreenGame * mScreen = nullptr;
 };
 
 inline int Hospital::GetRangeHealing() const { return mRangeHealing; }

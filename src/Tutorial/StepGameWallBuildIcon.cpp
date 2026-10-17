@@ -71,4 +71,11 @@ StepGameWallBuildIcon::~StepGameWallBuildIcon()
     delete mFocusArea;
 }
 
+void StepGameWallBuildIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

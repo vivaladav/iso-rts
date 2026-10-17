@@ -11,7 +11,7 @@ namespace game
 
 StepGameCityIntro::StepGameCityIntro(const Cell2D & tl, const Cell2D & br, const IsoMap * isoMap,
                                      const sgl::core::Pointd2D & p0)
-    : TutorialInfoStep(550, 150)
+    : TutorialInfoStep(550, 175)
     , mFocusArea(new IsoFocusArea(isoMap))
 
 {
@@ -27,12 +27,12 @@ StepGameCityIntro::StepGameCityIntro(const Cell2D & tl, const Cell2D & br, const
 
     info->SetPosition(p0.x, p0.y);
 
-    info->AddActionEntry(sm->GetCString("TUT_GAME_CITY_1"), 9.f, true, false,
-                        [this]
-                        {
+    info->AddInfoEntry(sm->GetCString("TUT_GAME_CITY_1"), 12.f, true, false,
+                       [this]
+                       {
                             // FOCUS
                             mFocusArea->SetVisible(true);
-                        });
+                       });
 
     info->SetFunctionOnFinished([this] { SetDone(); });
 }

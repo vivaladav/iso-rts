@@ -22,6 +22,8 @@ public:
 
     void OnStart() override;
 
+    void SetPause(bool paused) override;
+
 private:
     FocusArea * mFocusArea = nullptr;
     FocusArea * mFocusInfo = nullptr;
@@ -29,6 +31,8 @@ private:
 
     sgl::sgui::AbstractButton * mButton = nullptr;
     unsigned int mFuncId = 0;
+
+    bool mShowingFocus = false;
 };
 
 } // namespace game

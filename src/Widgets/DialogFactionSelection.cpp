@@ -130,7 +130,7 @@ DialogFactionSelection::DialogFactionSelection::DialogFactionSelection(Game * ga
 
     mButtonClose->AddOnClickFunction([this]
     {
-        mGame->RequestNextActiveState(StateId::LEAVE_GAME);
+        mGame->RequestNextActiveState(StateId::NEW_GAME_SETUP);
     });
 
     // TITLE
@@ -180,7 +180,7 @@ DialogFactionSelection::DialogFactionSelection::DialogFactionSelection(Game * ga
     mButtonSel->AddOnClickFunction([this]
     {
         mGame->SetLocalPlayerFaction(mFaction);
-        mGame->RequestNextActiveState(StateId::NEW_GAME);
+        mGame->RequestNextActiveState(StateId::INIT_GAME);
     });
 }
 

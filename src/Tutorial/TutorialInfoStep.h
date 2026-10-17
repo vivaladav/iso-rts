@@ -15,6 +15,8 @@ public:
     TutorialInfoStep(Screen * screen, int infoW, int infoH);
     ~TutorialInfoStep();
 
+    void SetInfoPosition(int x, int y);
+
     void SetPause(bool paused) override;
 
     void OnStart() override;

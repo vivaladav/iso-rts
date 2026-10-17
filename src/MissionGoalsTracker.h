@@ -24,6 +24,8 @@ public:
     MissionGoalsTracker(Game * g, Player * p);
     ~MissionGoalsTracker();
 
+    void Start();
+
     bool Load(sgl::utilities::BinaryFile & bf);
     bool Save(sgl::utilities::BinaryFile & bf) const;
 
@@ -102,7 +104,10 @@ private:
     unsigned int mSelfDestructed = 0;
 
     bool mMapCompleted = false;
+    bool mStart = false;
 };
+
+inline void MissionGoalsTracker::Start() { mStart = true; }
 
 inline void MissionGoalsTracker::SetGameHUD(GameHUD * gh) { mHUD = gh; }
 inline void MissionGoalsTracker::SetControlMap(const ControlMap * cm) { mControlMap = cm; }
@@ -110,6 +115,10 @@ inline void MissionGoalsTracker::SetControlMap(const ControlMap * cm) { mControl
 inline const std::vector<MissionGoal> & MissionGoalsTracker::GetGoals() const
 {
     return mMissionGoals;
+}
+inline void MissionGoalsTracker::SetGoals(const std::vector<MissionGoal> & goals)
+{
+    mMissionGoals = goals;
 }
 
 inline unsigned int MissionGoalsTracker::GetNumCompletedGoals() const { return mCompletedGoals; }

@@ -12,9 +12,9 @@ enum PlayerFaction : unsigned int;
 
 struct DataParticleHealing : public sgl::graphic::TexturedParticleData
 {
-    DataParticleHealing(sgl::graphic::Texture * t, GameMap * gm, GameObject * obj, float x,
-                        float y, float tx, float ty, float sp, float hl, PlayerFaction hlr)
-        : sgl::graphic::TexturedParticleData(x, y, sp ,t)
+    DataParticleHealing(sgl::graphic::Texture * t, GameMap * gm, GameObject * obj, float x, float y,
+                        float tx, float ty, float sp, float de, float hl, PlayerFaction hlr)
+        : sgl::graphic::TexturedParticleData(x, y, sp, de, t)
         , map(gm)
         , target(obj)
         , targetX(tx)

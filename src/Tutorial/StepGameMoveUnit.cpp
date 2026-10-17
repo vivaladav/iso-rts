@@ -12,7 +12,7 @@
 
 namespace
 {
-const int destR = 32;
+const int destR = 42;
 const int destC = 11;
 }
 

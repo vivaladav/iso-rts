@@ -70,7 +70,7 @@ public:
     bool IsReadyToShoot() const;
     void Shoot(float x0, float y0);
 
-    bool Update(float delta);
+    void Update(float delta);
 
 protected:
     GameObject * GetOwner() const;

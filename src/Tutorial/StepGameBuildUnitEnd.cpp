@@ -13,8 +13,8 @@
 namespace game
 {
 
-StepGameBuildUnitEnd::StepGameBuildUnitEnd(GameHUD * HUD)
-    : TutorialInfoStep(500, 150)
+StepGameBuildUnitEnd::StepGameBuildUnitEnd(GameHUD * HUD, const char * text, float animDelay)
+    : TutorialInfoStep(550, 150)
     , mFocusArea(new FocusArea)
     , mHUD(HUD)
 {
@@ -30,7 +30,7 @@ StepGameBuildUnitEnd::StepGameBuildUnitEnd(GameHUD * HUD)
 
     info->SetPosition(750, 860);
 
-    info->AddActionEntry(sm->GetCString("TUT_GAME_BASE_BUILD_UNIT_3"), 0.f, false, false, [this, HUD]
+    info->AddActionEntry(sm->GetCString(text), 0.f, false, false, [this, HUD, animDelay]
                         {
                             auto dialog = HUD->GetDialogNewElement();
                             auto btn = dialog->GetButtonBuild();
@@ -47,7 +47,7 @@ StepGameBuildUnitEnd::StepGameBuildUnitEnd(GameHUD * HUD)
                             const int fW = btn->GetWidth() + (padding * 2);
                             const int fH = btn->GetHeight() + (padding * 2);
 
-                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
+                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true, animDelay);
                             mFocusArea->SetVisible(true);
 
                             // CLICK FILTER

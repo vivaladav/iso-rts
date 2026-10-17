@@ -1,7 +1,9 @@
 #include "Tutorial/StepGameDialogTradingBuy.h"
 
+#include "Game.h"
+#include "GameConstants.h"
+#include "Player.h"
 #include "Widgets/DialogTrading.h"
-#include "Widgets/GameHUD.h"
 #include "Widgets/Tutorial/FocusArea.h"
 #include "Widgets/Tutorial/PanelClickFilter.h"
 #include "Widgets/Tutorial/PanelInfoTutorial.h"
@@ -11,20 +13,16 @@
 #include <sgl/sgui/Stage.h>
 #include <sgl/utilities/StringManager.h>
 
-namespace
-{
-constexpr unsigned int valEnergy = 130;
-constexpr unsigned int valMaterial = 100;
-constexpr unsigned int valResearch = 120;
-}
-
 namespace game
 {
 
-StepGameDialogTradingBuy::StepGameDialogTradingBuy(GameHUD * HUD)
+StepGameDialogTradingBuy::StepGameDialogTradingBuy(const Game * game, const Player * p,
+                                                   const DialogTrading * dialog)
     : TutorialInfoStep(600, 150)
     , mFocusArea(new FocusArea)
-    , mDialog(HUD->GetDialogTrading())
+    , mDialog(dialog)
+    , mGame(game)
+    , mPlayer(p)
 {
     auto sm = sgl::utilities::StringManager::Instance();
 
@@ -35,35 +33,69 @@ StepGameDialogTradingBuy::StepGameDialogTradingBuy(GameHUD * HUD)
 
     // INFO
     auto info = GetPanelInfo();
-
     info->SetPosition(650, 100);
 
-    const std::string strEnergy = sm->GetParametricString("TUT_GAME_TRAD_POST_4a",
-                                                          std::to_string(valEnergy));
-    info->AddActionEntry(strEnergy.c_str(), 0.f, false, true,
+    // DEFINE QUANTITIES TO BUY
+    int spent = 0;
+
+    const unsigned int maxMaterial = 100;
+    const unsigned int valMaterial = GetQuantityToBuy(ER_MATERIAL, maxMaterial, spent);
+    spent += valMaterial * mGame->GetResourcePriceBuy(ER_MATERIAL);
+
+    const unsigned int maxEnergy = 30;
+    const unsigned int valEnergy = GetQuantityToBuy(ER_ENERGY, maxEnergy, spent);
+    spent += valEnergy * mGame->GetResourcePriceBuy(ER_ENERGY);
+
+    const unsigned int maxResearch = 10;
+    const unsigned int valResearch = GetQuantityToBuy(ER_RESEARCH, maxResearch, spent);
+    spent += valResearch * mGame->GetResourcePriceBuy(ER_RESEARCH);
+
+    bool buying = false;
+
+    if(valEnergy > 0)
+    {
+        const std::string strEnergy = sm->GetParametricString("TUT_GAME_TRAD_POST_4a",
+                                                              std::to_string(valEnergy));
+        info->AddActionEntry(strEnergy.c_str(), 0.f, false, true,
+                            [this, valEnergy]
+                            {
+                                HandleButton(DialogTrading::TR_ENERGY, valEnergy);
+                            });
+
+        buying = true;
+    }
+
+    if(valMaterial > 0)
+    {
+        const std::string strMaterial = sm->GetParametricString("TUT_GAME_TRAD_POST_4b",
+                                                                std::to_string(valMaterial));
+        info->AddActionEntry(strMaterial.c_str(), 0.f, false, true,
+                             [this, valMaterial]
+                             {
+                                HandleButton(DialogTrading::TR_MATERIAL, valMaterial);
+                             });
+
+        buying = true;
+    }
+
+    if(valResearch > 0)
+    {
+        const std::string strResearch = sm->GetParametricString("TUT_GAME_TRAD_POST_4c",
+                                                             std::to_string(valResearch));
+        info->AddActionEntry(strResearch.c_str(), 0.f, false, true,
+                             [this, valResearch]
+                             {
+                                HandleButton(DialogTrading::TR_RESEARCH, valResearch);
+                             });
+
+        buying = true;
+    }
+
+    // this should always happen
+    if(buying)
+    {
+        info->AddActionEntry(sm->GetCString("TUT_GAME_TRAD_POST_3"), 0.f, false, true,
                         [this, info]
-                        {
-                            HandleButton(DialogTrading::TR_ENERGY, valEnergy);
-                        });
-
-    const std::string strMaterial = sm->GetParametricString("TUT_GAME_TRAD_POST_4b",
-                                                            std::to_string(valMaterial));
-    info->AddActionEntry(strMaterial.c_str(), 0.f, false, true,
-                         [this, info]
-                         {
-                            HandleButton(DialogTrading::TR_MATERIAL, valMaterial);
-                         });
-
-    const std::string strResearch = sm->GetParametricString("TUT_GAME_TRAD_POST_4c",
-                                                            std::to_string(valResearch));
-    info->AddActionEntry(strResearch.c_str(), 0.f, false, true,
-                         [this, info]
-                         {
-                            HandleButton(DialogTrading::TR_RESEARCH, valResearch);
-                         });
-
-    info->AddActionEntry(sm->GetCString("TUT_GAME_TRAD_POST_3"), 0.f, false, true,
-                         [this, info]
                          {
                             auto btn = mDialog->mButtonBuy;
                             const auto cid = btn->AddOnClickFunction([this]
@@ -90,6 +122,7 @@ StepGameDialogTradingBuy::StepGameDialogTradingBuy(GameHUD * HUD)
                             const int fH2 = btn->GetHeight();
                             GetClickFilter()->SetScreenClickableArea(fX2, fY2, fW2, fH2);
                          });
+    }
 
     info->AddActionEntry(sm->GetCString("TUT_GAME_MISSION_GOALS_DIALOG_5"), 0.f, false, false,
                          [this]
@@ -136,6 +169,19 @@ void StepGameDialogTradingBuy::OnStart()
     stage->MoveChildToFront(mFocusArea);
     stage->MoveChildToFront(GetClickFilter());
     stage->MoveChildToFront(GetPanelInfo());
+}
+
+unsigned int StepGameDialogTradingBuy::GetQuantityToBuy(ExtendedResource res, unsigned int max,
+                                                        int spent) const
+{
+    const int money = mPlayer->GetResource(ER_MONEY).GetValue() - spent;
+    const int price = mGame->GetResourcePriceBuy(res);
+    const unsigned int maxCanAfford = money / price;
+
+    if(maxCanAfford > max)
+        return max;
+    else
+        return maxCanAfford - (maxCanAfford % 10);
 }
 
 void StepGameDialogTradingBuy::HandleButton(unsigned int res, unsigned int value)

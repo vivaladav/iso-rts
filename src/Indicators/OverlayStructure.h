@@ -4,6 +4,11 @@
 
 #include <unordered_map>
 
+namespace sgl
+{
+    namespace graphic { class Texture; }
+}
+
 namespace game
 {
 
@@ -24,6 +29,8 @@ public:
     void ClearIndicator();
     void ShowIndicator(GameObjectTypeId type, int row, int col,
                        int unitCost = -1, bool doable = true);
+
+    void ResetIndicatorTexture(sgl::graphic::Texture * tex);
 
 private:
     StructureIndicator * GetNewIndicator(GameObjectTypeId type, bool doable);

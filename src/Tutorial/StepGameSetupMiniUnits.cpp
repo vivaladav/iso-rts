@@ -14,8 +14,8 @@
 namespace game
 {
 
-StepGameSetupMiniUnits::StepGameSetupMiniUnits(GameHUD * HUD, const std::vector<int> & values,
-                                               GameObjectTypeId type)
+StepGameSetupMiniUnits::StepGameSetupMiniUnits(GameHUD * HUD, unsigned int squads,
+                                               unsigned int elements, GameObjectTypeId type)
     : TutorialInfoStep(600, 150)
     , mFocusArea(new FocusArea)
 {
@@ -65,32 +65,32 @@ StepGameSetupMiniUnits::StepGameSetupMiniUnits(GameHUD * HUD, const std::vector<
     }
 
     // set number of elements, if needed
-    if(dialog->mSliderElements->GetValue() != values[0])
+    if(dialog->mSliderElements->GetValue() != elements)
     {
         const std::string str1 = sm->GetParametricString("TUT_GAME_BUILD_MU_1",
-                                                         std::to_string(values[0]));
+                                                         std::to_string(elements));
 
         info->AddActionEntry(str1.c_str(), 0.f, false, true,
-                            [this, dialog, info, values]
+                             [this, dialog, info, elements]
                             {
                                 auto slider = dialog->mSliderElements;
 
-                                HandleSlider(slider, values[0]);
+            HandleSlider(slider, elements);
                             });
     }
 
     // set number of squads, if needed
-    if(dialog->mSliderSquads->GetValue() != values[1])
+    if(dialog->mSliderSquads->GetValue() != squads)
     {
         const std::string str2 = sm->GetParametricString("TUT_GAME_BUILD_MU_2",
-                                                         std::to_string(values[1]));
+                                                         std::to_string(squads));
 
         info->AddActionEntry(str2.c_str(), 0.f, false, true,
-                             [this, dialog, info, values]
+                             [this, dialog, info, squads]
                              {
                                  auto slider = dialog->mSliderSquads;
 
-                                 HandleSlider(slider, values[1]);
+            HandleSlider(slider, squads);
                              });
     }
 

@@ -10,12 +10,15 @@ namespace game
 OverlaySelection::OverlaySelection(IsoLayer * layer)
     : mLayer(layer)
 {
-
 }
 
 OverlaySelection::~OverlaySelection()
 {
+    for(auto pi : mActiveIndicators)
+        delete pi;
 
+    for(auto pi : mAvailableIndicators)
+        delete pi;
 }
 
 void OverlaySelection::ClearIndicators()
@@ -58,6 +61,11 @@ void OverlaySelection::AddObject(GameObject * obj, bool primary)
         mLayer->AddObject(indBR, r0, c0);
 
         mAreaIndicators.emplace(obj, MultiIndicator(indTL, indTR, indBL, indBR));
+
+        mActiveIndicators.emplace_back(indTL);
+        mActiveIndicators.emplace_back(indTR);
+        mActiveIndicators.emplace_back(indBL);
+        mActiveIndicators.emplace_back(indBR);
     }
     // single cell object
     else
@@ -67,6 +75,8 @@ void OverlaySelection::AddObject(GameObject * obj, bool primary)
         mLayer->AddObject(ind, r0, c0);
 
         mCellIndicators.emplace(obj, ind);
+
+        mActiveIndicators.emplace_back(ind);
     }
 }
 

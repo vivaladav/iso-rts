@@ -26,6 +26,7 @@ const GameObjectTypeId ObjectData::TYPE_MINI_UNIT1 = 11607141519420994464u;
 const GameObjectTypeId ObjectData::TYPE_MINI_UNIT2 = 548432711892482871u;
 const GameObjectTypeId ObjectData::TYPE_MOUNTAINS1 = 5129307706687418303u;
 const GameObjectTypeId ObjectData::TYPE_MOUNTAINS2 = 14028903865635517329u;
+const GameObjectTypeId ObjectData::TYPE_MOUNTAINS3 = 13315659151425906851u;
 const GameObjectTypeId ObjectData::TYPE_PRACTICE_TARGET = 17051503364827447577u;
 const GameObjectTypeId ObjectData::TYPE_RADAR_STATION = 5616405813767426356u;
 const GameObjectTypeId ObjectData::TYPE_RADAR_TOWER = 8134168089495879870u;
@@ -71,6 +72,7 @@ const std::unordered_map<GameObjectTypeId, std::string> ObjectData::TITLES =
     { ObjectData::TYPE_MINI_UNIT2, "MINI_UNIT2"},
     { ObjectData::TYPE_MOUNTAINS1, "MOUNTAINS"},
     { ObjectData::TYPE_MOUNTAINS2, "MOUNTAINS"},
+    { ObjectData::TYPE_MOUNTAINS3, "MOUNTAINS"},
     { ObjectData::TYPE_PRACTICE_TARGET, "PRACTICE_TARGET"},
     { ObjectData::TYPE_RADAR_STATION, "RADAR_STATION"},
     { ObjectData::TYPE_RADAR_TOWER, "RADAR_TOWER"},
@@ -117,6 +119,7 @@ const std::unordered_map<GameObjectTypeId, std::string> ObjectData::DESCRIPTIONS
     { ObjectData::TYPE_MINI_UNIT2, "DESC_MINI_UNIT2"},
     { ObjectData::TYPE_MOUNTAINS1, "DESC_MOUNTAINS"},
     { ObjectData::TYPE_MOUNTAINS2, "DESC_MOUNTAINS"},
+    { ObjectData::TYPE_MOUNTAINS3, "DESC_MOUNTAINS"},
     { ObjectData::TYPE_PRACTICE_TARGET, "DESC_PRACTICE_TARGET"},
     { ObjectData::TYPE_RADAR_STATION, "DESC_RADAR_STATION"},
     { ObjectData::TYPE_RADAR_TOWER, "DESC_RADAR_TOWER"},

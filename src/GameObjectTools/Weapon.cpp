@@ -258,33 +258,36 @@ void Weapon::Shoot(float x0, float y0)
     else
         mTarget = nullptr;
 
+    // notify action is completed
+    if(nullptr == mTarget)
+        mGameMap->SetObjectActionCompleted(mOwner);
+
     mReadyToShoot = false;
 }
 
 // returns TRUE when owner needs to shoot
-bool Weapon::Update(float delta)
+void Weapon::Update(float delta)
 {
     mTimerAttack -= delta;
 
     // nothing to do
     if(mTarget == nullptr)
-        return true;
+        return ;
 
     // FAIL target already destroyed
     if(!mGameMap->HasObject(mTarget))
     {
         mTarget = nullptr;
-        return false;
+        mGameMap->SetObjectActionFailed(mOwner);
+        return ;
     }
 
     // cooldown time not over yet
     if(mTimerAttack > 0.f)
-        return true;
+        return ;
 
     // all good -> shoot!
     mReadyToShoot = true;
-
-    return true;
 }
 
 float Weapon::GetBonusHitOnAttackMode(float prob) const

@@ -4,6 +4,8 @@
 #include "GameMapCell.h"
 #include "GameObjects/GameObject.h"
 
+#include <sgl/utilities/BinaryFile.h>
+
 #include <cmath>
 
 #include <algorithm>
@@ -13,7 +15,7 @@
 namespace game
 {
 
-const std::string MapIO::MAP_VERSION("0.3.2");
+const std::string MapIO::MAP_VERSION("0.4.0");
 
 const std::string MapIO::MAP_TAG_COMMENT("#");
 const std::string MapIO::MAP_TAG_GOAL("G");
@@ -58,48 +60,188 @@ void MapIO::Clear()
     mStatValue = 0;
 }
 
-bool MapIO::Load(const std::string & filename)
+bool MapIO::Load(const std::string & filename, bool binary)
 {
-    // open map file
-    std::fstream fs(filename);
-
-    if(!fs.is_open())
-        return false;
-
-    ReadHeader(fs);
-
-    ReadMap(fs);
-
-    ReadObjectsData(fs);
-
-    fs.close();
-
-    return true;
+    if(binary)
+        return LoadBinary(filename);
+    else
+        return LoadText(filename);
 }
 
-bool MapIO::LoadHeader(const std::string & filename)
+bool MapIO::LoadHeader(const std::string & filename, bool binary)
 {
-    // open map file
-    std::fstream fs(filename);
-
-    if(!fs.is_open())
-        return false;
-
-    ReadHeader(fs);
-
-    fs.close();
-
-    return true;
+    if(binary)
+        return LoadHeaderBinary(filename);
+    else
+        return LoadHeaderText(filename);
 }
 
 bool MapIO::Save(const std::string & filename, const std::vector<GameMapCell> & cells,
                  const std::vector<GameObject *> & objects, const std::vector<MissionGoal> & goals,
-                 int rows, int cols)
+                 int rows, int cols, bool binary)
 {
     // no data to save -> EXIT
     if(0 == rows || 0 == cols)
         return false;
 
+    if(binary)
+        return SaveBinary(filename, cells, objects, goals, rows, cols);
+    else
+        return SaveText(filename, cells, objects, goals, rows, cols);
+}
+
+bool MapIO::LoadBinary(const std::string & filename)
+{
+    using namespace sgl;
+
+    // OPEN file
+    utilities::BinaryFile bf(filename, utilities::BinaryFile::OPEN_INPUT, false);
+
+    if(!bf.IsOpen())
+    {
+        std::cout << "[ERR] MapIO::LoadBinary - can't open file " << filename << std::endl;
+        return false;
+    }
+
+    if(!ReadHeaderBinary(bf))
+        return false;
+
+    ReadDataBinary(bf);
+
+    return true;
+}
+
+bool MapIO::LoadText(const std::string & filename)
+{
+    // open map file
+    std::fstream fs(filename);
+
+    if(!fs.is_open())
+        return false;
+
+    if(!ReadHeaderText(fs))
+        return false;
+
+    ReadDataText(fs);
+
+    fs.close();
+
+    return true;
+}
+
+bool MapIO::LoadHeaderBinary(const std::string & filename)
+{
+    using namespace sgl;
+
+    // OPEN file
+    utilities::BinaryFile bf(filename, utilities::BinaryFile::OPEN_INPUT, false);
+
+    if(!bf.IsOpen())
+    {
+        std::cout << "[ERR] MapIO::LoadHeaderBinary - can't open file " << filename << std::endl;
+        return false;
+    }
+
+    return ReadHeaderBinary(bf);
+}
+
+bool MapIO::LoadHeaderText(const std::string & filename)
+{
+    // open map file
+    std::fstream fs(filename);
+
+    if(!fs.is_open())
+        return false;
+
+    return ReadHeaderText(fs);
+}
+
+bool MapIO::SaveBinary(const std::string & filename, const std::vector<GameMapCell> & cells,
+                       const std::vector<GameObject *> & objects,
+                       const std::vector<MissionGoal> & goals, int rows, int cols)
+{
+    using namespace sgl;
+
+    // OPEN file
+    utilities::BinaryFile bf(filename, utilities::BinaryFile::OPEN_OUTPUT, true);
+
+    if(!bf.IsOpen())
+    {
+        std::cout << "[ERR] MapIO::SaveBinary - can't open file " << filename << std::endl;
+        return false;
+    }
+
+    // -- HEADER --
+    // save current map version
+    bf.WriteString(MAP_VERSION);
+
+    // mission goals
+    const unsigned int numGoals = goals.size();
+    bf.WriteUint(numGoals);
+
+    for(const MissionGoal & g : goals)
+    {
+        bf.WriteBool(g.IsPrimary());
+        bf.WriteBool(g.IsHidden());
+        bf.WriteSizeT(g.GetType());
+        bf.WriteUint(g.GetQuantity());
+        bf.WriteUint(g.GetExtraValue());
+    }
+
+    // map size
+    const int mapSize = rows * cols;
+    bf.WriteUint(rows);
+    bf.WriteUint(cols);
+
+    // stats
+    const int statBlobs = DefineStatResourceForCells(cells, CT_BLOBS_SOURCE);
+    bf.WriteInt(statBlobs);
+
+    const int statDiamonds = DefineStatResourceForCells(cells, CT_DIAMONDS_SOURCE);
+    bf.WriteInt(statDiamonds);
+
+    const int statEnergy = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_ENERGY);
+    bf.WriteInt(statEnergy);
+
+    const int statMaterial = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_MATERIAL);
+    bf.WriteInt(statMaterial);
+
+    const int statValue = DefineStatValue(statBlobs, statDiamonds, statEnergy, statMaterial);
+    bf.WriteInt(statValue);
+
+    // -- DATA --
+    // save cells type
+    for(unsigned int r = 0; r < rows; ++r)
+    {
+        const unsigned int ind0 = r * cols;
+
+        for(unsigned int c = 0; c < cols; ++c)
+        {
+            const unsigned int ind = ind0 + c;
+            bf.WriteInt(cells[ind].currType);
+        }
+    }
+
+    // save objects
+    const unsigned int numObjs = objects.size();
+    bf.WriteUint(numObjs);
+
+    for(const GameObject * obj : objects)
+    {
+        bf.WriteSizeT(obj->GetObjectType());
+        bf.WriteSizeT(obj->GetObjectVariant());
+        bf.WriteUint(obj->GetFaction());
+        bf.WriteInt(obj->GetRow0());
+        bf.WriteInt(obj->GetCol0());
+    }
+
+    return true;
+}
+
+bool MapIO::SaveText(const std::string & filename, const std::vector<GameMapCell> & cells,
+                     const std::vector<GameObject *> & objects,
+                     const std::vector<MissionGoal> & goals, int rows, int cols)
+{
     // open map file
     std::ofstream fs(filename, std::ios::out | std::ios::trunc);
 
@@ -132,10 +274,10 @@ bool MapIO::Save(const std::string & filename, const std::vector<GameMapCell> & 
     const int statDiamonds = DefineStatResourceForCells(cells, CT_DIAMONDS_SOURCE);
     fs << MAP_TAG_STAT_DIAMONDS << " " << statDiamonds << "\n";
 
-    const int statEnergy = DefineStatResourceForObjects(objects, mapSize, ObjectData::TYPE_RES_GEN_ENERGY);
+    const int statEnergy = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_ENERGY);
     fs << MAP_TAG_STAT_ENERGY << " " << statEnergy << "\n";
 
-    const int statMaterial = DefineStatResourceForObjects(objects, mapSize, ObjectData::TYPE_RES_GEN_MATERIAL);
+    const int statMaterial = DefineStatResourceForGenerators(objects, mapSize, ObjectData::TYPE_RES_GEN_MATERIAL);
     fs << MAP_TAG_STAT_MATERIAL << " " << statMaterial << "\n";
 
     const int statValue = DefineStatValue(statBlobs, statDiamonds, statEnergy, statMaterial);
@@ -180,7 +322,7 @@ bool MapIO::Save(const std::string & filename, const std::vector<GameMapCell> & 
 
 int MapIO::DefineStatResourceForCells(const std::vector<GameMapCell> & cells, CellTypes res) const
 {
-    const float maxResPerc = 0.05f;
+    const float maxResPerc = 0.01f;
 
     const int resCells = std::count_if(cells.begin(), cells.end(),
                                        [res](const GameMapCell & cell)
@@ -200,20 +342,17 @@ int MapIO::DefineStatResourceForCells(const std::vector<GameMapCell> & cells, Ce
         return MAX_STAT_VALUE;
 }
 
-int MapIO::DefineStatResourceForObjects(const std::vector<GameObject *> & objects,
+int MapIO::DefineStatResourceForGenerators(const std::vector<GameObject *> & objects,
                                         int mapSize, GameObjectTypeId type) const
 {
-    const float genArea = 16.f;
-    const float maxPerc = 10.f;
-    const float maxGetSlots = mapSize / (genArea * maxPerc);
-
-    const int resGens = std::count_if(objects.begin(), objects.end(),
-                                      [type](const GameObject * obj)
-                                      {
-                                          return obj->GetObjectType() == type;
-                                      });
-
-    const float perc = resGens / maxGetSlots;
+    const int numGenerators = std::count_if(objects.begin(), objects.end(),
+                                            [type](const GameObject * obj)
+                                            {
+                                                return obj->GetObjectType() == type;
+                                            });
+    const float generatorArea = 4.f;
+    const float scaleMult = 1.25f;
+    const float perc = scaleMult * (generatorArea * numGenerators) * 100.f / mapSize;
 
     const float stat = std::roundf(MAX_STAT_VALUE * perc);
 
@@ -231,7 +370,56 @@ int MapIO::DefineStatValue(int statBlobs, int statDiamonds, int statEnergy, int 
     return (statEnergy + statMaterial) * w1 + (statBlobs + statDiamonds) * w2;
 }
 
-void MapIO::ReadHeader(std::fstream & fs)
+bool MapIO::ReadHeaderBinary(sgl::utilities::BinaryFile & bf)
+{
+    // current map version
+    bf.ReadString(mVer);
+
+    // map version doesn't match expected one
+    if(mVer != MAP_VERSION)
+    {
+#ifdef DEV_MODE
+        std::cout << "[ERR] MapIO::ReadHeaderBinary - map file version (" << mVer
+                  << ") is different from current one (" << MAP_VERSION << ")"
+                  << std::endl;
+#endif
+                return false;
+            }
+
+    // mission goals
+    const unsigned int numGoals = bf.ReadUint();
+
+    for(unsigned int i = 0; i < numGoals; i++)
+    {
+        const bool primary = bf.ReadBool();
+        const bool hidden = bf.ReadBool();
+        const auto type = static_cast<MissionGoalType>(bf.ReadSizeT());
+        const unsigned int quantity = bf.ReadUint();
+        const unsigned int extra = bf.ReadUint();
+
+        // store goal
+        mGoals.emplace_back(type, quantity, extra, primary, hidden);
+
+        // assign category based on first primary goal
+        if(primary && MC_UNKNOWN == mCategory)
+            mCategory = mGoals[mGoals.size() - 1].GetCategory();
+    }
+
+    // map size
+    mRows = bf.ReadUint();
+    mCols = bf.ReadUint();
+
+    // stats
+    mStatBlobs = bf.ReadInt();
+    mStatDiamonds = bf.ReadInt();
+    mStatEnergy = bf.ReadInt();
+    mStatMaterial = bf.ReadInt();
+    mStatValue = bf.ReadInt();
+
+    return true;
+}
+
+bool MapIO::ReadHeaderText(std::fstream & fs)
 {
     std::string line;
     std::istringstream ss;
@@ -255,10 +443,12 @@ void MapIO::ReadHeader(std::fstream & fs)
             if(mVer != MAP_VERSION)
             {
 #ifdef DEV_MODE
-                std::cout << "[WAR] map file version (" << mVer
+                std::cout << "[ERR] MapIO::ReadHeaderText - map file version (" << mVer
                           << ") is different from current one (" << MAP_VERSION << ")"
                           << std::endl;
 #endif
+
+                return false;
             }
         }
         // reading goal
@@ -326,9 +516,39 @@ void MapIO::ReadHeader(std::fstream & fs)
         else if(line.compare(0, LEN_END_TAG, MAP_TAG_END_HEADER) == 0)
             break;
     }
+
+    return true;
 }
 
-void MapIO::ReadMap(std::fstream & fs)
+void MapIO::ReadDataBinary(sgl::utilities::BinaryFile & bf)
+{
+    // read cells type
+    mCellTypes.reserve(mRows * mCols);
+
+    for(unsigned int r = 0; r < mRows; ++r)
+    {
+        for(unsigned int c = 0; c < mCols; ++c)
+            mCellTypes.emplace_back(bf.ReadInt());
+    }
+
+    // save objects
+    const unsigned int numObjs = bf.ReadInt();
+
+    for(unsigned int i = 0; i < numObjs; ++i)
+    {
+        MapObjectEntry e;
+
+        e.typeId = bf.ReadSizeT();
+        e.variantId = bf.ReadSizeT();
+        e.faction = bf.ReadUint();
+        e.r0 = bf.ReadInt();
+        e.c0 = bf.ReadInt();
+
+        mObjEntries.emplace_back(e);
+    }
+}
+
+void MapIO::ReadDataText(std::fstream & fs)
 {
     std::string line;
     std::istringstream ss;
@@ -371,13 +591,6 @@ void MapIO::ReadMap(std::fstream & fs)
             mCellTypes.push_back(type);
         }
     }
-}
-
-
-void MapIO::ReadObjectsData(std::fstream & fs)
-{
-    std::string line;
-    std::istringstream ss;
 
     // READ OBJECTS
     while(std::getline(fs, line))

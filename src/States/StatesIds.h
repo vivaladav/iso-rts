@@ -7,15 +7,15 @@ enum StateId : unsigned int
 {
     INIT,
     INIT_GAME,
+    INIT_GAME_SETUP,
     GAME,
     MAIN_MENU,
+    NEW_GAME_SETUP,
     FACTION_SEL,
-    LEAVE_GAME,
-    LEAVE_PREGAME,
-    NEW_GAME,
     LOAD_GAME,
     PLANET_MAP,
     SETTINGS,
+    CREDITS,
     TEST,
 
     NUM_SCREENS // keep last

@@ -1,5 +1,6 @@
 #include "Widgets/PanelPlanetActionExplore.h"
 
+#include "GameConstants.h"
 #include "Player.h"
 #include "Widgets/ButtonPlanetMap.h"
 #include "Widgets/GameUIData.h"
@@ -79,9 +80,9 @@ void PanelPlanetActionExplore::ShowAction()
     mContentSuccess->SetVisible(false);
 
     // update costs
-    const bool enoughMoney = mPlayer->HasEnough(Player::Stat::MONEY, mCostMoney);
-    const bool enoughEnergy = mPlayer->HasEnough(Player::Stat::ENERGY, mCostenergy);
-    const bool enoughMaterial = mPlayer->HasEnough(Player::Stat::MATERIAL, mCostmaterial);
+    const bool enoughMoney = mPlayer->HasEnough(ER_MONEY, mCostMoney);
+    const bool enoughEnergy = mPlayer->HasEnough(ER_ENERGY, mCostenergy);
+    const bool enoughMaterial = mPlayer->HasEnough(ER_MATERIAL, mCostmaterial);
     const bool canExplore = enoughMoney && enoughEnergy && enoughMaterial;
 
     mLabelMoney->SetColor(enoughMoney ? WidgetsConstants::colorPlanetMapEnoughRes :

@@ -19,12 +19,13 @@ namespace sgl
 namespace game
 {
 
+class Game;
 class MissionGoalsTracker;
 
 class DialogMissionGoals : public sgl::sgui::Widget
 {
 public:
-    DialogMissionGoals(MissionGoalsTracker * mgt);
+    DialogMissionGoals(MissionGoalsTracker * mgt, Game * game);
 
     sgl::sgui::AbstractButton * GetButtonClose() const;
     sgl::sgui::AbstractButton * GetButtonEnd() const;

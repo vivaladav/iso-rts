@@ -74,4 +74,11 @@ StepGameUnitAttackIcon::~StepGameUnitAttackIcon()
     delete mFocusArea;
 }
 
+void StepGameUnitAttackIcon::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    mFocusArea->SetVisible(!paused);
+}
+
 } // namespace game

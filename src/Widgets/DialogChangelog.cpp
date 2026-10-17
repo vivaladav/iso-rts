@@ -12,6 +12,8 @@
 #include <sgl/graphic/Image.h>
 #include <sgl/graphic/Text.h>
 #include <sgl/graphic/TextureManager.h>
+#include <sgl/media/AudioManager.h>
+#include <sgl/media/AudioPlayer.h>
 #include <sgl/sgui/Label.h>
 #include <sgl/sgui/ScrollArea.h>
 #include <sgl/sgui/Scrollbar.h>
@@ -55,6 +57,22 @@ private:
         const int y0 = GetScreenY();
 
         mBg->SetPosition(x0, y0);
+    }
+
+    void HandleMouseOver() override
+    {
+        sgl::sgui::AbstractButton::HandleMouseOver();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_over-02.ogg");
+    }
+
+    void HandleButtonDown() override
+    {
+        sgl::sgui::AbstractButton::HandleButtonDown();
+
+        auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+        player->PlaySound("UI/button_click-02.ogg");
     }
 
 private:
@@ -140,15 +158,17 @@ public:
                                           cont->SetY(CONT_Y0 - val);
                                           cont->SetVisibleArea(0, val, CONT_W, CONT_H);
                                       });
-    }
 
-    void HandlePositionChanged() override
-    {
-        UpdatePositions();
+        const int sbX = GetWidth() - mScrollbar->GetWidth();
+        const int sbY = 0;
+        mScrollbar->SetPosition(sbX, sbY);
     }
 
     void HandleMouseWheel(sgl::core::MouseWheelEvent & event) override
     {
+        if(!mScrollbar->IsEnabled())
+            return ;
+
         const int val = mScrollbar->GetValue();
         const int inc = 20;
 
@@ -165,21 +185,13 @@ private:
         cont->SetPosition(CONT_X0, CONT_Y0);
         cont->SetVisibleArea(0, 0, CONT_W, CONT_H);
 
-        if(cont->GetHeight() < CONT_H)
+        if(cont->GetHeight() <= CONT_H)
             mScrollbar->SetEnabled(false);
         else
         {
             mScrollbar->SetEnabled(true);
             mScrollbar->SetMinMax(0, cont->GetHeight() - CONT_H);
         }
-    }
-
-    void UpdatePositions()
-    {
-        // SCROLLBAR
-        const int sbX = GetWidth() - mScrollbar->GetWidth();
-        const int sbY = 0;
-        mScrollbar->SetPosition(sbX, sbY);
     }
 
 private:
@@ -216,9 +228,32 @@ ButtonChangelog::ButtonChangelog()
     auto fnt = fm->GetFont(WidgetsConstants::FontFileButton, size, graphic::Font::NORMAL);
     SetLabelFont(fnt);
 
+    // ICON
+    const int marginIcon = 10;
+    auto tm = graphic::TextureManager::Instance();
+    auto tex = tm->GetSprite(SpriteFileMainMenuUI, ID_MM_ICON_UP);
+    SetIcon(tex);
+    SetIconMargin(marginIcon);
+
     // TEXT
     auto sm = sgl::utilities::StringManager::Instance();
     SetLabel(sm->GetCString("UPDATES"));
+}
+
+void ButtonChangelog::HandleMouseOver()
+{
+    GameButton::HandleMouseOver();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_over-01.ogg");
+}
+
+void ButtonChangelog::HandleButtonDown()
+{
+    GameButton::HandleButtonDown();
+
+    auto player = sgl::media::AudioManager::Instance()->GetPlayer();
+    player->PlaySound("UI/button_click-01.ogg");
 }
 
 // ===== DIALOG CHANGELOG =====

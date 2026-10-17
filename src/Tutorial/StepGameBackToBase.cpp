@@ -22,6 +22,8 @@ StepGameBackToBase::StepGameBackToBase(const PanelTurnControl * panel, const cha
 
     // FOCUS
     mFocusArea->SetVisible(false);
+    mFocusArea->SetCornersColorAction();
+    mFocusArea->SetBlinking(true);
 
     // INFO
     auto info = GetPanelInfo();
@@ -32,20 +34,25 @@ StepGameBackToBase::StepGameBackToBase(const PanelTurnControl * panel, const cha
 
     info->AddActionEntry(sm->GetCString("TUT_GAME_BACK_TO_BASE_2"), 0.f, false, false, [this]
                         {
+                            // CLICK FILTER
+                            const int fX = mButton->GetScreenX();
+                            const int fY = mButton->GetScreenY();
+                            const int fW = mButton->GetWidth();
+                            const int fH = mButton->GetHeight();
+
+                            GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
+
                             // FOCUS
                             const int padding = 10;
-                            const int fX = mButton->GetScreenX() - padding;
-                            const int fY = mButton->GetScreenY() - padding;
-                            const int fW = mButton->GetWidth() + (padding * 2);
-                            const int fH = mButton->GetHeight() + (padding * 2);
+                            const int f2X = fX - padding;
+                            const int f2Y = fY - padding;
+                            const int f2W = fW + (padding * 2);
+                            const int f2H = fH + (padding * 2);
 
-                            mFocusArea->SetCornersColorAction();
-                            mFocusArea->SetBlinking(true);
-                            mFocusArea->SetScreenArea(fX, fY, fW, fH, true);
+                            mFocusArea->SetScreenArea(f2X, f2Y, f2W, f2H, true);
                             mFocusArea->SetVisible(true);
 
-                            // CLICK FILTER
-                            GetClickFilter()->SetScreenClickableArea(fX, fY, fW, fH);
+                            mShowingFocus = true;
                         });
 
     mFuncId = mButton->AddOnClickFunction([this]
@@ -60,6 +67,14 @@ StepGameBackToBase::~StepGameBackToBase()
 
     // clear callback
     mButton->RemoveClickFunction(mFuncId);
+}
+
+void StepGameBackToBase::SetPause(bool paused)
+{
+    TutorialInfoStep::SetPause(paused);
+
+    if(mShowingFocus)
+        mFocusArea->SetVisible(!paused);
 }
 
 } // namespace game

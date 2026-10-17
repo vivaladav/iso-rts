@@ -21,27 +21,11 @@ class Structure;
 class Unit;
 
 enum ExtendedResource : unsigned int;
-enum ResourceType : unsigned int;
 enum PlayerFaction : unsigned int;
 enum TechUpgradeId : unsigned int;
 
 class Player
 {
-public:
-    enum Stat : unsigned int
-    {
-        BLOBS,
-        DIAMONDS,
-        ENERGY,
-        MATERIAL,
-        MONEY,
-        RESEARCH,
-
-        NUM_PSTATS,
-
-        INVALID_STAT
-    };
-
 public:
     Player();
     Player(int pid);
@@ -60,6 +44,7 @@ public:
     void AddUnit(Unit * unit);
     void RemoveUnit(Unit * unit);
     Unit * GetUnit(unsigned int index) const;
+    std::vector<Unit *> GetUnitsByType(GameObjectTypeId type) const;
 
     unsigned int GetNumStructures() const;
     unsigned int GetNumStructuresByType(GameObjectTypeId type) const;
@@ -69,8 +54,6 @@ public:
     bool HasStructure(GameObjectTypeId type) const;
     std::vector<Structure *> GetStructuresByType(GameObjectTypeId type) const;
     const std::vector<Structure *> & GetStructures() const;
-
-    void ClearMissionObjects();
 
     unsigned int GetNumObjects() const;
     bool HasObjects() const;
@@ -98,20 +81,21 @@ public:
     Base * GetBase() const;
     void SetBase(Base * b);
 
-    // stats
-    const StatValue & GetStat(Stat sid);
-    bool HasEnough(Stat sid, int val);
-    void SetResource(Stat sid, int val);
-    void SumResource(Stat sid, int val);
-    void SetResourceMax(Stat sid, int val);
-    void SumResourceMax(Stat sid, int val);
+    // resources
+    const StatValue & GetResource(ExtendedResource res) const;
+    bool HasEnough(ExtendedResource res, int val) const;
+    void SetResource(ExtendedResource res, int val);
+    void SumResource(ExtendedResource res, int val);
+    void SetResourceMax(ExtendedResource res, int val);
+    void SumResourceMax(ExtendedResource res, int val);
     unsigned int AddOnResourcesChanged(const std::function<void()> & f);
     void RemoveOnResourcesChanged(unsigned int funId);
-    unsigned int AddOnResourceChanged(Stat sid, const std::function<void(const StatValue *,
-                                                                         int, int)> & f);
-    unsigned int AddOnResourceRangeChanged(Stat sid, const std::function<void(const StatValue *)> & f);
-    void RemoveOnResourceChanged(Stat sid, unsigned int funId);
-    void RemoveOnResourceRangeChanged(Stat sid, unsigned int funId);
+    unsigned int AddOnResourceChanged(ExtendedResource res,
+                                      const std::function<void(const StatValue *, int, int)> & f);
+    unsigned int AddOnResourceRangeChanged(ExtendedResource res,
+                                           const std::function<void(const StatValue *)> & f);
+    void RemoveOnResourceChanged(ExtendedResource res, unsigned int funId);
+    void RemoveOnResourceRangeChanged(ExtendedResource res, unsigned int funId);
 
     // kills
     unsigned int GetEnemiesKilled() const;
@@ -173,16 +157,11 @@ public:
 
     // -- TURN --
     void OnNewTurn();
-    float GetTurnEnergy() const;
-    float GetTurnMaxEnergy() const;
-    void AdjustTurnMaxEnergy();
-    void ResetTurnEnergy();
-    void SumTurnEnergy(float val);
-    void SetOnTurnEnergyChanged(const std::function<void()> & f);
-    void SetOnTurnMaxEnergyChanged(const std::function<void()> & f);
-
     unsigned int GetTurnsPlayed() const;
-    void ResetTurnsPlayed(unsigned int start = 0);
+
+    // GAME STAGES
+    void OnNewMission();
+    void OnMissionOver();
 
     // -- AI --
     bool IsAI() const;
@@ -192,13 +171,20 @@ public:
     bool IsLocal() const;
 
 private:
+    void InitResources();
     void InitUpgrades();
 
     int GetCellsEnergyUsed() const;
     void NotifyResourcesChanged();
     void NotifyUpgradeUnlock(TechUpgradeId upgrade);
 
-    void UpgradeResourceStorage(ResourceType res, float mult);
+    void UpgradeResourceStorage(ExtendedResource res, float mult);
+
+    // resources
+    void SwitchFromGlobalToLocalResources();
+    void SwitchFromLocalToGlobalResources();
+    StatValue & GetCurrentResource(ExtendedResource res);
+    const StatValue & GetCurrentResource(ExtendedResource res) const;
 
 private:
     std::unordered_map<TechUpgradeId, bool> mUpgrades;
@@ -209,7 +195,8 @@ private:
 
     std::vector<int> mVisMap;
 
-    std::vector<StatValue> mStats;
+    std::vector<StatValue> mLocalResources;
+    std::vector<StatValue> mGlobalResources;
     StatValue mDummyStat;
 
     std::vector<GameObjectTypeId> mAvailableMiniUnits;
@@ -226,8 +213,6 @@ private:
     std::unordered_map<unsigned int, std::function<void()>> mOnResourcesChanged;
     std::unordered_map<unsigned int, std::function<void(TechUpgradeId)>> mOnUpgradeUnlocked;
     std::function<void()> mOnNumUnitsChanged;
-    std::function<void()> mOnTurnEnergyChanged;
-    std::function<void()> mOnTurnMaxEnergyChanged;
 
     PlayerAI * mAI = nullptr;
 
@@ -238,9 +223,6 @@ private:
     int mPlayerId;
 
     PlayerFaction mFaction;
-
-    float mTurnEnergy = 0.f;
-    float mTurnMaxEnergy = 0.f;
 
     unsigned int mTurnsPlayed = 0;
 
@@ -257,6 +239,8 @@ private:
     float mStorageMaterialMult = 1.f;
     float mStorageDiamondsMult = 1.f;
     float mStorageBlobsMult = 1.f;
+
+    bool mUseGlobalRes = true;
 };
 
 inline PlayerFaction Player::GetFaction() const { return mFaction; }
@@ -269,12 +253,6 @@ inline unsigned int Player::GetNumUnits() const { return mUnits.size(); }
 inline unsigned int Player::GetNumStructures() const { return mStructures.size(); }
 
 inline const std::vector<Structure *> & Player::GetStructures() const { return mStructures; }
-
-inline void Player::ClearMissionObjects()
-{
-    mUnits.clear();
-    mStructures.clear();
-}
 
 inline unsigned int Player::GetNumObjects() const
 {
@@ -311,22 +289,6 @@ inline int Player::GetPlayerId() const { return mPlayerId; }
 
 inline Base * Player::GetBase() const { return mBase; }
 inline void Player::SetBase(Base * b) { mBase = b; }
-
-inline const StatValue & Player::GetStat(Stat sid)
-{
-    if(sid < NUM_PSTATS)
-        return mStats[sid];
-    else
-        return mDummyStat;
-}
-
-inline bool Player::HasEnough(Stat sid, int val)
-{
-    if(sid < NUM_PSTATS)
-        return val <= mStats[sid].GetValue();
-    else
-        return false;
-}
 
 inline unsigned int Player::GetEnemiesKilled() const { return mEnemiesKilled;  }
 inline void Player::RegisterEnemyKill() { ++mEnemiesKilled; }
@@ -388,20 +350,7 @@ inline float Player::GetStorageMaterialMult() const { return mStorageMaterialMul
 inline float Player::GetStorageDiamondsMult() const { return mStorageDiamondsMult; }
 inline float Player::GetStorageBlobsMult() const { return mStorageBlobsMult; }
 
-inline float Player::GetTurnEnergy() const { return mTurnEnergy; }
-inline float Player::GetTurnMaxEnergy() const { return mTurnMaxEnergy; }
-
-inline void Player::SetOnTurnEnergyChanged(const std::function<void()> & f)
-{
-    mOnTurnEnergyChanged = f;
-}
-inline void Player::SetOnTurnMaxEnergyChanged(const std::function<void()> & f)
-{
-    mOnTurnMaxEnergyChanged = f;
-}
-
 inline unsigned int Player::GetTurnsPlayed() const { return mTurnsPlayed; }
-inline void Player::ResetTurnsPlayed(unsigned int start) { mTurnsPlayed = start; }
 
 inline bool Player::IsAI() const { return mAI != nullptr; }
 inline PlayerAI * Player::GetAI() const { return mAI; }

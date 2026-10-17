@@ -11,8 +11,6 @@ constexpr int COST_UNIT_UPGRADE[] = { 1, 2 };
 constexpr float TIME_AI_MIN = 0.1f;
 constexpr float TIME_GOD_MODE = 0.25f;
 
-constexpr float TIME_AUTO_END_TURN = 2.f;
-
 constexpr float MAX_STAT_FVAL = 10.f;
 constexpr int MAX_STAT_IVAL = 10;
 
@@ -43,6 +41,17 @@ enum GameCursorId : unsigned int
     NUM_GAME_CURSORS,
 
     CURSOR_NULL
+};
+
+enum GameMode : unsigned int
+{
+    GM_CAMPAIGN,
+    GM_MISSION,
+    GM_ENDLESS,
+
+    NUM_GAME_MODES,
+
+    GM_NULL
 };
 
 enum LanguageId : unsigned int
@@ -138,30 +147,21 @@ enum PlayerFaction : unsigned int
     NO_FACTION = 99
 };
 
-enum ResourceType : unsigned int
-{
-    RES_ENERGY,
-    RES_MATERIAL1,
-    RES_DIAMONDS,
-    RES_BLOBS,
-
-    NUM_RESOURCES,
-
-    RES_INVALID
-};
-
 enum ExtendedResource : unsigned int
 {
     ER_ENERGY,
     ER_MATERIAL,
     ER_DIAMONDS,
     ER_BLOBS,
-    ER_MONEY,
+
+    NUM_PRI_RESOURCES,
+
+    ER_MONEY = NUM_PRI_RESOURCES,
     ER_RESEARCH,
 
-    NUM_EXTENDED_RESOURCES,
+    NUM_EXT_RESOURCES,
 
-    ER_INVALID
+    ER_NULL
 };
 
 enum TechUpgradeId : unsigned int

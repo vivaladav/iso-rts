@@ -23,6 +23,22 @@ enum SpriteIdDialogChangelog : unsigned int
     ID_DLG_CHLG_BTN_UP_BG_PUSHED,
 };
 
+// DIALOG CREDITS
+extern const char SpriteFileDialogCredits[];
+
+enum SpriteIdDialogCredits : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_CRE_BG_L,
+    ID_DLG_CRE_BG_R,
+
+    // SCROLLBAR
+    ID_DLG_CRE_SCROLL_BG,
+    ID_DLG_CRE_SCROLL_BTN,
+};
+
+extern const char SpriteFileDialogCreditsExp[];
+
 // DIALOG END MISSION
 extern const char SpriteFileDialogEndMission[];
 
@@ -43,12 +59,6 @@ enum SpriteIdDialogExit : unsigned int
     // BACKGROUND
     ID_DLG_EXIT_BG_TOP,
     ID_DLG_EXIT_BG_BOT,
-    // BUTTON WISHLIST
-    ID_DLG_EXIT_BTN_WL_NORMAL,
-    ID_DLG_EXIT_BTN_WL_OVER,
-    ID_DLG_EXIT_BTN_WL_PUSHED,
-    // ICONS
-    ID_DLG_EXIT_ICON_STEAM,
 };
 
 extern const char SpriteFileDialogExitExp[];
@@ -153,6 +163,31 @@ enum SpriteIdDialogNewElementExp : unsigned int
     ID_DLG_NEWE_U_BG_C,
     ID_DLG_NEWE_S_BG_C,
 };
+
+// NEW GAME DIALOG
+extern const char SpriteFileDialogNewGame[];
+
+enum SpriteIdDialogNewGame : unsigned int
+{
+    // BACKGROUND
+    ID_DLG_NEWG_BG_L,
+    ID_DLG_NEWG_BG_R,
+    // PANELS
+    ID_DLG_NEWG_PANEL,
+    ID_DLG_NEWG_PANEL2,
+    // BUTTON
+    ID_DLG_NEWG_BTN_NORMAL,
+    ID_DLG_NEWG_BTN_DISABLED,
+    ID_DLG_NEWG_BTN_OVER,
+    ID_DLG_NEWG_BTN_CHECKED,
+    // BUTTON SLOT
+    ID_DLG_NEWG_SLOT_NORMAL,
+    ID_DLG_NEWG_SLOT_DISABLED,
+    ID_DLG_NEWG_SLOT_OVER,
+    ID_DLG_NEWG_SLOT_CHECKED,
+};
+
+extern const char SpriteFileDialogNewGameExp[];
 
 // NEW MINI UNITS SQUAD DIALOG
 extern const char SpriteFileDialogNewMiniUnits[];
@@ -468,34 +503,26 @@ enum SpriteIdPanelSelectedObject : unsigned int
     ID_PAN_SELOBJ_ICON_ACT_UPGRADE,
 };
 
+// LOGO VOXELAY
+extern const char SpriteFileLogoVoxelay[];
+
 // MAIN MENU BUTTONS
-extern const char SpriteFileMainMenuButtons[];
+extern const char SpriteFileMainMenuUI[];
 
 enum SpriteIdMainMenuButtons : unsigned int
 {
+    // BACKROUNDS
+    ID_MM_SECOND_PANEL_BG,
+    ID_MM_WARN_PANEL_BG,
+
     // PRIMARY BUTTON
-    IND_MM_BTN1_NORMAL,
-    IND_MM_BTN1_DISABLED,
-    IND_MM_BTN1_OVER,
-    IND_MM_BTN1_PUSHED,
-    IND_MM_BTN1_CHECKED,
-
-    // WISHLIST BUTTON
-    IND_MM_BTNW_NORMAL,
-    IND_MM_BTNW_OVER,
-    IND_MM_BTNW_PUSHED,
-
-    // SOCIAL BUTTON
-    IND_MM_BTNS_NORMAL,
-    IND_MM_BTNS_OVER,
-    IND_MM_BTNS_PUSHED,
+    ID_MM_BTN1_NORMAL,
+    ID_MM_BTN1_DISABLED,
+    ID_MM_BTN1_OVER,
+    ID_MM_BTN1_PUSHED,
 
     // ICONS
-    IND_MM_ICON_STEAM,
-    IND_MM_ICON_DISCORD,
-    IND_MM_ICON_BLUESKY,
-    IND_MM_ICON_YOUTUBE,
-    IND_MM_ICON_LINKEDIN,
+    ID_MM_ICON_UP,
 
     NUM_MAIN_MENU_SPRITES
 };
@@ -560,10 +587,6 @@ enum SpriteIdPanelTurnControl : unsigned int
 {
     // BACKGROUND
     ID_TURNC_BG,
-    // PROGRESS BAR
-    ID_TURNC_PB_BG,
-    ID_TURNC_PB_BAR,
-    ID_TURNC_PB_MARKS,
     // BUTTON BASE
     ID_TURNC_BTN_BASE_NORMAL,
     ID_TURNC_BTN_BASE_DISABLED,
@@ -574,8 +597,6 @@ enum SpriteIdPanelTurnControl : unsigned int
     ID_TURNC_BTN_NEXTT_DISABLED,
     ID_TURNC_BTN_NEXTT_OVER,
     ID_TURNC_BTN_NEXTT_PUSHED,
-    // ICONS
-    ID_TURNC_ICON,
 };
 
 // PANEL UNIT ACTIONS
@@ -757,6 +778,7 @@ enum SpriteIdSettings : unsigned int
     ID_DLG_SETT_CHB_OVER,
     ID_DLG_SETT_CHB_PUSHED,
     ID_DLG_SETT_CHB_CHECKED,
+    ID_DLG_SETT_CHB_CHECKED_DISABLED,
 
     // SLIDER
     ID_DLG_SETT_SLIDER_BG,
@@ -886,6 +908,22 @@ enum SpriteIdUIShared : unsigned int
     ID_BTN_DLG_BACK_DISABLED,
     ID_BTN_DLG_BACK_OVER,
     ID_BTN_DLG_BACK_PUSHED,
+    // STEAM BUTTON
+    ID_BTN_STEAM_NORMAL,
+    ID_BTN_STEAM_OVER,
+    ID_BTN_STEAM_PUSHED,
+    // DISCORD BUTTON
+    ID_BTN_DISCORD_NORMAL,
+    ID_BTN_DISCORD_OVER,
+    ID_BTN_DISCORD_PUSHED,
+    // FEEDBACK BUTTON
+    ID_BTN_FEEDBACK_NORMAL,
+    ID_BTN_FEEDBACK_OVER,
+    ID_BTN_FEEDBACK_PUSHED,
+    // ICONS BUTTONS
+    ID_ICON_STEAM,
+    ID_ICON_DISCORD,
+    ID_ICON_FEEDBACK,
 };
 
 // UNIT QUICK SELECTION

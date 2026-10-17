@@ -37,6 +37,11 @@ TutorialInfoStep::~TutorialInfoStep()
     }
 }
 
+void TutorialInfoStep::SetInfoPosition(int x, int y)
+{
+    mInfo->SetPosition(x, y);
+}
+
 void TutorialInfoStep::SetPause(bool paused)
 {
     TutorialStep::SetPause(paused);

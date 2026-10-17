@@ -11,16 +11,13 @@ namespace sgl
     namespace sgui
     {
         class AbstractButton;
-        class Image;
         class Label;
-        class ProgressBar;
     }
 }
 
 namespace game
 {
 
-class DigitsDisplay;
 class GameSimpleTooltip;
 class Player;
 
@@ -28,14 +25,13 @@ class PanelTurnControl : public sgl::sgui::Widget
 {
 public:
     PanelTurnControl(Player * player, sgl::sgui::Widget * parent);
-    ~PanelTurnControl();
 
     void AddFunctionGoToBase(const std::function<void()> & f);
     void AddFunctionEndTurn(const std::function<void()> & f);
 
-    void SetButtonEndTurnEnabled(bool enabled);
+    void SetButtonsEnabled(bool enabled);
 
-    void ShowPanel();
+    void HideText();
     void ShowText(const char * text);
 
     sgl::sgui::AbstractButton * GetButtonBackToBase() const;
@@ -49,13 +45,8 @@ private:
 private:
     sgl::graphic::Image * mBg = nullptr;
 
-    sgl::sgui::Image * mIconEnergy = nullptr;
-    sgl::sgui::ProgressBar * mEnergyBar = nullptr;
-    DigitsDisplay * mDigits = nullptr;
     sgl::sgui::AbstractButton * mButtonBase = nullptr;
     sgl::sgui::AbstractButton * mButtonEndTurn = nullptr;
-
-    GameSimpleTooltip * mTooltipEnergy = nullptr;
 
     sgl::sgui::Label * mText = nullptr;
 
